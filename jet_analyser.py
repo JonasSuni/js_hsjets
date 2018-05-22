@@ -6,6 +6,18 @@ import pandas as pd
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def v_decomp(B,v):
+
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    v_par = (v*B)/Bmag
+    v_perp = v-v_par
+
+    v_par_mag = np.linalg.norm(v_par,axis=-1)
+    v_perp_mag = np.linalg.norm(v_perp,axis=-1)
+
+    return np.array([v_par_mag,v_perp_mag])
+
 def phi_hist(input_file):
     # creates normed histogram of the angle phi, weighted according to the number of cells
 

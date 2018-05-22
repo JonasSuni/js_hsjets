@@ -1,4 +1,5 @@
 import pytools as pt
+import numpy as np
 import jetfile_make as jfm
 import jet_contours as jc
 import jet_analyser as ja
@@ -6,6 +7,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
+m_p = 1.672621898e-27
+
+def expr_pdyn(exprmaps):
+  # exprmaps is ["rho","v"]
+
+  rho = exprmaps[0]
+  v=exprmaps[1]
+
+  pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+
+  pdyn /= 1.0e-9
+
+  return pdyn
     
 def plot_plaschke(filenumber,run,newfile=True,cmap="viridis",draw_pic=None):
 

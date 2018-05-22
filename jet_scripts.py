@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import jet_analyser as ja
 import jet_contours as jc
 
+m_p = 1.672621898e-27
+r_e = 6.371e+6
+
 def prop_file_maker(run,start,stop,halftimewidth):
     # create properties files, with custom jet criteria for bulk files in 
     # range start,stop (inclusive)
@@ -195,7 +198,6 @@ def contour_gen(run,start,stop,contour_type,halftimewidth):
     for n in xrange(start,stop+1):
       pc.plot_plaschke(n,run)
 
-
   elif contour_type == "ArcherHorbury":
     for n in xrange(start,stop+1):
       pc.plot_archerhorbury(n,run,halftimewidth)
@@ -212,6 +214,132 @@ def contour_gen(run,start,stop,contour_type,halftimewidth):
     pass
 
   return None
+
+def make_wave_figs(outputfolder,start,stop):
+
+    if not os.path.exists(outputfolder):
+        os.makedirs(outputfolder)
+
+    f_path = "/proj/vlasov/2D/ABA/bulk/"
+
+    for n in xrange(start,stop+1):
+
+        f_name="bulk."+str(n).zfill(7)+".vlsv"
+
+        pt.plot.plot_colormap(filename=f_path+f_name,outputdir=outputfolder+"/"+str(n)+"_",colormap="viridis",vmin=0,vmax=1.5,usesci=0,lin=1,cbtitle="nPa",boxre=[6,18,-10,2],expression=pc.expr_pdyn,external=sc_pos_marker,pass_vars=["rho","v"])
+
+    return None
+
+def sc_pos_marker(ax,XmeshXY,YmeshXY,extmaps):
+
+    pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=2)
+
+def get_pos_index(posre):
+
+    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
+
+    X = vlsvreader.read_variable("X")
+    Y = vlsvreader.read_variable("Y")
+    cellids = vlsvreader.read_variable("CellID")
+
+    x_i = np.where(abs(X-posre[0]*r_e)<120000)[0]
+    y_i = np.where(abs(Y-posre[1]*r_e)<120000)[0]
+
+    pos_index = np.intersect1d(x_i,y_i)
+
+    pos_id = cellids[pos_index[0]]
+
+    return pos_id
+
+def wave_spacecraft(start,stop,step,pos,font_size):
+
+    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
+
+    X = vlsvreader.read_variable("X")
+    Y = vlsvreader.read_variable("Y")
+    cellids = vlsvreader.read_variable("CellID")
+
+    x_i = np.where(abs(X-pos[0]*r_e)<100000)[0]
+    y_i = np.where(abs(Y-pos[1]*r_e)<100000)[0]
+
+    pos_index = np.intersect1d(x_i,y_i)
+
+    pos_id = cellids[pos_index[0]]
+    f_path = "/proj/vlasov/2D/ABA/bulk/"
+
+    B_arr = np.array([])
+    v_arr = np.array([])
+    rho_arr = np.array([])
+    pdyn_arr = np.array([])
+
+    for n in xrange(start,stop+1,step):
+
+        f_name="bulk."+str(n).zfill(7)+".vlsv"
+
+        f = pt.vlsvfile.VlsvReader(f_path+f_name)
+
+        B = f.read_variable("B",cellids=pos_id,operator="magnitude")
+        v = f.read_variable("v",cellids=pos_id,operator="magnitude")
+        rho = f.read_variable("rho",cellids=pos_id)
+
+        pdyn = m_p*rho*(v**2)
+
+        B_arr = np.append(B_arr,B)
+        v_arr = np.append(v_arr,v)
+        rho_arr = np.append(rho_arr,rho)
+        pdyn_arr = np.append(pdyn_arr,pdyn)
+
+    time_arr = np.array(xrange(start,stop+1,step)).astype(float)/2
+
+    B_arr /= 1.0e-9
+    v_arr /= 1.0e+3
+    rho_arr /= 1.0e+6
+    pdyn_arr /= 1.0e-9
+
+    plt.ion()
+    fig = plt.figure()
+
+    B_ax = fig.add_subplot(411)
+    v_ax = fig.add_subplot(412)
+    rho_ax = fig.add_subplot(413)
+    pdyn_ax = fig.add_subplot(414)
+
+    B_ax.set_xlim(250,305)
+    v_ax.set_xlim(250,305)
+    rho_ax.set_xlim(250,305)
+    pdyn_ax.set_xlim(250,305)
+
+    B_ax.set_ylim(2,10)
+    v_ax.set_ylim(600,800)
+    rho_ax.set_ylim(0.6,2.0)
+    pdyn_ax.set_ylim(0.6,1.8)
+
+    B_ax.set_ylabel("B [nT]",fontsize=font_size)
+    v_ax.set_ylabel("v [km/s]",fontsize=font_size)
+    rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
+    pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+    pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
+
+    B_ax.set_yticks([4,6,8,10])
+    v_ax.set_yticks([650,700,750,800])
+    rho_ax.set_yticks([0.8,1.2,1.6,2.0])
+    pdyn_ax.set_yticks([0.8,1.0,1.2,1.4,1.6,1.8])
+
+    plt.tight_layout()
+
+    B_ax.plot(time_arr,B_arr)
+    v_ax.plot(time_arr,v_arr)
+    rho_ax.plot(time_arr,rho_arr)
+    pdyn_ax.plot(time_arr,pdyn_arr)
+
+    B_ax.axvline(280,linestyle="dashed")
+    v_ax.axvline(280,linestyle="dashed")
+    rho_ax.axvline(280,linestyle="dashed")
+    pdyn_ax.axvline(280,linestyle="dashed")
+
+    fig.show()
+
+    plt.savefig("Figures/"+str(start)+"_"+str(stop)+".png")
 
 def make_figs(outputfolder,box_re=[8,16,-6,6],plaschkemax=1,rhomax=6,rhomax5=6,rhomin=0,pdynmax=1.5):
 
