@@ -17,7 +17,7 @@ def prop_file_maker(run,start,stop,halftimewidth):
     timerange = xrange(start,stop+1)
 
     for n in timerange:
-        props = ja.jet_script_cust(n,run,halftimewidth,boxre=[8,16,-6,6],min_size=100,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
+        props = ja.jet_script_cust(n,run,halftimewidth,boxre=[8,16,-6,6],min_size=50,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
 
     return None
 
@@ -44,7 +44,9 @@ def hist_xy(runid,var1,var2,figname):
     nr_cells = np.array([])
 
     # create dictionary for axis labels
-    label_dict = dict(zip(xrange(21),["$n_{avg} [cm^{-3}]$","$n_{med} [cm^{-3}]$","$n_{max} [cm^{-3}]$","$v_{avg} [km/s]$","$v_{med} [km/s]$","$v_{max} [km/s]$","$B_{avg} [nT]$","$B_{med} [nT]$","$B_{max} [nT]$","$T_{avg} [MK]$","$T_{med} [MK]$","$T_{max} [MK]$","$X_{vmax} [R_e]$","$Y_{vmax} [R_e]$","$Z_{vmax} [R_e]$","$A [km^2]$","$Nr\_cells$","$phi [deg]$","$mag\_p\_bool$","$x\_size [R_e]$","$y\_size [R_e]$"]))
+    label_list = pd.read_csv("Props/"+runid+"/"+filenames[0]).columns.tolist()
+    label_length = len(label_list)
+    label_dict = dict(zip(xrange(label_length),label_list))
 
     for filename in filenames:
 
@@ -54,7 +56,7 @@ def hist_xy(runid,var1,var2,figname):
         # append the values of the properties to the variables
         x = np.append(x,props[:,var1])
         y = np.append(y,props[:,var2])
-        nr_cells = np.append(nr_cells,props[:,16])
+        nr_cells = np.append(nr_cells,props[:,19])
 
     # create figure
     plt.ion()
@@ -81,7 +83,9 @@ def plot_xy(runid,var1,var2,figname):
     y = np.array([])
 
     # create dictionary for axis labels
-    label_dict = dict(zip(xrange(21),["$n_{avg} [cm^{-3}]$","$n_{med} [cm^{-3}]$","$n_{max} [cm^{-3}]$","$v_{avg} [km/s]$","$v_{med} [km/s]$","$v_{max} [km/s]$","$B_{avg} [nT]$","$B_{med} [nT]$","$B_{max} [nT]$","$T_{avg} [MK]$","$T_{med} [MK]$","$T_{max} [MK]$","$X_{vmax} [R_e]$","$Y_{vmax} [R_e]$","$Z_{vmax} [R_e]$","$A [km^2]$","$Nr\_cells$","$phi [deg]$","$mag\_p\_bool$","$x\_size [R_e]$","$y\_size [R_e]$"]))
+    label_list = pd.read_csv("Props/"+runid+"/"+filenames[0]).columns.tolist()
+    label_length = len(label_list)
+    label_dict = dict(zip(xrange(label_length),label_list))
 
     for filename in filenames:
 
@@ -116,7 +120,9 @@ def var_hist_mult(runid,var1,figname):
     nr_cells = np.array([])
 
     # create dictionary for axis labels
-    label_dict = dict(zip(xrange(21),["$n_{avg} [cm^{-3}]$","$n_{med} [cm^{-3}]$","$n_{max} [cm^{-3}]$","$v_{avg} [km/s]$","$v_{med} [km/s]$","$v_{max} [km/s]$","$B_{avg} [nT]$","$B_{med} [nT]$","$B_{max} [nT]$","$T_{avg} [MK]$","$T_{med} [MK]$","$T_{max} [MK]$","$X_{vmax} [R_e]$","$Y_{vmax} [R_e]$","$Z_{vmax} [R_e]$","$A [km^2]$","$Nr\_cells$","$phi [deg]$","$mag\_p\_bool$","$x\_size [R_e]$","$y\_size [R_e]$"]))
+    label_list = pd.read_csv("Props/"+runid+"/"+filenames[0]).columns.tolist()
+    label_length = len(label_list)
+    label_dict = dict(zip(xrange(label_length),label_list))
 
     for filename in filenames:
 
@@ -125,13 +131,13 @@ def var_hist_mult(runid,var1,figname):
 
         # append the values of the properties to the variables
         hist_var = np.append(hist_var,props[:,var1])
-        nr_cells = np.append(nr_cells,props[:,16])
+        nr_cells = np.append(nr_cells,props[:,19])
 
     # create figure
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_dict[var1])
+    ax.set_xlabel("$"+label_dict[var1]+"$")
     ax.set_ylabel("Probability density")
 
     # draw histogram
@@ -151,8 +157,8 @@ def y_hist_mult(runid,figname):
 
     props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-    y = np.append(y,props[:,13])
-    nr_cells = np.append(nr_cells,props[:,16])
+    y = np.append(y,props[:,16])
+    nr_cells = np.append(nr_cells,props[:,19])
 
   plt.ion()
   fig = plt.figure()
@@ -177,8 +183,8 @@ def phi_hist_mult(runid,figname):
 
     props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-    phi = np.append(phi,props[:,17])
-    nr_cells = np.append(nr_cells,props[:,16])
+    phi = np.append(phi,props[:,20])
+    nr_cells = np.append(nr_cells,props[:,19])
 
   plt.ion()
   fig = plt.figure()
@@ -234,9 +240,9 @@ def sc_pos_marker(ax,XmeshXY,YmeshXY,extmaps):
 
     pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=2)
 
-def get_pos_index(posre):
+def get_pos_index(posre,runid,file_number):
 
-    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
+    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(file_number).zfill(7)+".vlsv")
 
     X = vlsvreader.read_variable("X")
     Y = vlsvreader.read_variable("Y")

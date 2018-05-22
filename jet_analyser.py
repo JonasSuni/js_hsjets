@@ -10,20 +10,42 @@ def v_decomp(B,v):
 
     Bmag = np.linalg.norm(B,axis=-1)
 
-    v_par = (v*B)/Bmag
+    Bhat = B
+    Bhat[:,0] /= Bmag
+    Bhat[:,1] /= Bmag
+    Bhat[:,2] /= Bmag
+
+    Bv_dot = np.sum(v*Bhat,axis=-1)
+
+    v_par = Bhat
+    v_par[:,0] *= Bv_dot
+    v_par[:,1] *= Bv_dot
+    v_par[:,2] *= Bv_dot
+
     v_perp = v-v_par
 
     v_par_mag = np.linalg.norm(v_par,axis=-1)
     v_perp_mag = np.linalg.norm(v_perp,axis=-1)
+    
+    v_decomps = np.array([v_par_mag,v_perp_mag]).T
 
-    return np.array([v_par_mag,v_perp_mag])
+    return v_decomps
+
+def T_decomp(T,v_decomps,vmag):
+
+    T_par = T*(v_decomps[:,0]/vmag)**2
+    T_perp = T*(v_decomps[:,1]/vmag)**2
+
+    T_decomps = np.array([T_par,T_perp]).T
+
+    return T_decomps
 
 def phi_hist(input_file):
     # creates normed histogram of the angle phi, weighted according to the number of cells
 
     # read variables from properties file
-    phi = pd.read_csv(input_file).as_matrix()[:,17]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,16]
+    phi = pd.read_csv(input_file).as_matrix()[:,20]
+    nr_cells = pd.read_csv(input_file).as_matrix()[:,19]
     
     #create figure
     plt.ion()
@@ -41,8 +63,8 @@ def y_hist(input_file):
     # creates normed histogram of the angle phi, weighted according to the number of cells
 
     # read variables from properties file
-    y = pd.read_csv(input_file).as_matrix()[:,13]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,16]
+    y = pd.read_csv(input_file).as_matrix()[:,16]
+    nr_cells = pd.read_csv(input_file).as_matrix()[:,19]
     
     # create figure
     plt.ion()
@@ -66,10 +88,10 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","w").close()
 
     # open csv file for writing
-    outputfile = open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+criterion+"_"+str(halftimewidth)+freeform_file_id+".csv","a")
+    outputfile = open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","a")
 
     # write header to csv file
-    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],mag_p_bool,x_size [R_e],y_size [R_e]")
+    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e]")
 
     # initialise list of properties
     props_list = []
@@ -81,12 +103,16 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
 
+    T_decomps = T_decomp(T,v_decomp(B,v),vmag)
+    Tpar = T_decomps[:,0]
+    Tperp = T_decomps[:,1]
+
     for event in jets:
 
         outputfile.write("\n")
 
         # get the values of the variables corresponding to cellids in the current event
-        jrho,jvmag,jBmag,jT,jX,jY,jZ,jva,jvms = ci2vars_nofile([rho,vmag,Bmag,T,X,Y,Z,va,vms],cellids,event)
+        jrho,jvmag,jBmag,jT,jX,jY,jZ,jva,jvms,jTpar,jTperp = ci2vars_nofile([rho,vmag,Bmag,T,X,Y,Z,va,vms,Tpar,Tperp],cellids,event)
 
         # calculate mean, maximum and median of density
         n_avg = np.mean(jrho)/1.0e+6
@@ -103,10 +129,18 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         B_max = max(jBmag)/1.0e-9
         B_med = np.median(jBmag)/1.0e-9
 
-        # calculate mean, maximum and median of temperature
-        T_avg = np.mean(jT)/1.0e+6
+        # calculate mean, maximum and median of temperatures
+        T_avg = np.nanmean(jT)/1.0e+6
         T_max = max(jT)/1.0e+6
         T_med = np.median(jT)/1.0e+6
+
+        Tpar_avg = np.nanmean(jTpar)/1.0e+6
+        Tpar_max = max(jTpar)/1.0e+6
+        Tpar_med = np.median(jTpar)/1.0e+6
+
+        Tperp_avg = np.nanmean(jTperp)/1.0e+6
+        Tperp_max = max(jTperp)/1.0e+6
+        Tperp_med = np.median(jTperp)/1.0e+6
 
         # calculate the position of the cell that corresponds to maximum velocity
         X_vmax = jX[np.where(jvmag==max(jvmag))[0]][0]/r_e
@@ -120,34 +154,19 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         # calculate angular position of jet
         phi = np.arctan(Y_vmax/X_vmax)*360/(2*np.pi)
 
+        # radial distance of jet
+        r_d = ((X_vmax**2+Y_vmax**2)**0.5)
+
         # does jet reach magnetopause?
         mag_p_bool = 0.0
-        if (X_vmax**2+Y_vmax**2)**0.5 < 8:
+        if r_d < 8:
             mag_p_bool = 1.0
-
-        # linear sizes
-
-        #X_xmin = min(jX)
-        #Y_xmin = jY[np.where(jX==X_xmin)][0][0]
-
-        #Y_ymin = min(jY)
-        #X_ymin = jX[np.where(jY==Y_ymin)][0][0]
-
-        #X_xmax = max(jX)
-        #Y_xmax = jY[np.where(jX==X_xmax)][0][0]
-
-        #Y_ymax = max(jY)
-        #X_ymax = jX[np.where(jY==Y_ymax)][0][0]
-
-        #rad_size = np.linalg.norm((np.array([X_xmax,Y_xmax])+np.array([X_ymax,Y_ymax]))/2-(np.array([X_xmin,Y_xmin])+np.array([X_ymin,Y_ymin]))/2)/r_e
-
-        #tan_size = np.linalg.norm((np.array([X_xmax,Y_xmax])+np.array([X_ymin,Y_ymin]))/2-(np.array([X_xmin,Y_xmin])+np.array([X_ymax,Y_ymax]))/2)/r_e
 
         x_size = (max(jX)-min(jX))/r_e
         y_size = (max(jY)-min(jY))/r_e
 
         # properties for current event
-        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,mag_p_bool,x_size,y_size]
+        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size]
 
         # write properties for current event to list of properties
         props_list.append(temp_arr)
@@ -156,6 +175,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         outputfile.write(",".join(map(str,temp_arr)))
 
     outputfile.close()
+    print("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv")
 
     return np.asarray([np.asarray(prop) for prop in props_list])
 

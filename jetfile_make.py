@@ -96,6 +96,11 @@ def pahkmake(file_number,runid,halftimewidth,sw_params=[1.0e+6,750.0e+3]):
     spdynx = pdynx[origid.argsort()]
     srho = rho[origid.argsort()]
 
+    spdynx_sw,srho_sw = ja.ci2vars_nofile([spdynx,srho],sorigid,ja.restrict_area(vlsvreader,[14,16],[-4,4]))
+
+    pdyn_sw = np.mean(spdynx_sw)
+    rho_sw = np.mean(srho_sw)
+
     # calculate ratios
     npdynx = spdynx/pdyn_sw
     npdyn = spdyn/pdyn_sw

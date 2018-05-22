@@ -207,7 +207,7 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
 
     npdynx,nrho,tapdyn,tarho,tpdynavg,trhoavg,srho,cellids = extmaps[0],extmaps[1],extmaps[2],extmaps[3],extmaps[4],extmaps[5],extmaps[6],extmaps[7]
 
-    srho_ref = trhoavg[np.where(cellids==1339391)][0]
+    #srho_ref = trhoavg[np.where(cellids==1339391)][0]
 
     npdynx = scipy.ndimage.zoom(npdynx, 3)
     nrho = scipy.ndimage.zoom(nrho, 3)
@@ -220,7 +220,7 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
     YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
     jet = np.ma.masked_greater(npdynx,0.25)
-    jet.mask[srho < 3*srho_ref] = False
+    jet.mask[nrho < 3] = False
     jet.mask[tapdyn > 2] = True
     jet.fill_value = 0
     jet[jet.mask == False] = 1
