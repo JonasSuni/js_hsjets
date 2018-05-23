@@ -44,8 +44,8 @@ def phi_hist(input_file):
     # creates normed histogram of the angle phi, weighted according to the number of cells
 
     # read variables from properties file
-    phi = pd.read_csv(input_file).as_matrix()[:,20]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,19]
+    phi = pd.read_csv(input_file).as_matrix()[:,23]
+    nr_cells = pd.read_csv(input_file).as_matrix()[:,22]
     
     #create figure
     plt.ion()
@@ -63,8 +63,8 @@ def y_hist(input_file):
     # creates normed histogram of the angle phi, weighted according to the number of cells
 
     # read variables from properties file
-    y = pd.read_csv(input_file).as_matrix()[:,16]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,19]
+    y = pd.read_csv(input_file).as_matrix()[:,19]
+    nr_cells = pd.read_csv(input_file).as_matrix()[:,22]
     
     # create figure
     plt.ion()
@@ -158,10 +158,16 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         r_d = ((X_vmax**2+Y_vmax**2)**0.5)
 
         # does jet reach magnetopause?
+        if runid == "ABA":
+            mag_p_cond = 10
+        elif runid == "ABC":
+            mag_p_cond = 9
+
         mag_p_bool = 0.0
-        if r_d < 8:
+        if r_d < mag_p_cond:
             mag_p_bool = 1.0
 
+        # linear sizes of jet
         x_size = (max(jX)-min(jX))/r_e
         y_size = (max(jY)-min(jY))/r_e
 
@@ -388,7 +394,17 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     v = vlsvreader.read_variable("v")[np.argsort(origid)]
 
     # ratio of x-directional dynamic pressure and solar wind dynamic pressure
-    npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
+    spdynx = m_p*rho*(v[:,0]**2)
+
+    #npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
+    #nrho = rho/rho_sw
+
+    spdynx_sw,srho_sw = ci2vars_nofile([spdynx,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
+
+    pdyn_sw = np.mean(spdynx_sw)
+    rho_sw = np.mean(srho_sw)
+
+    npdynx = spdynx/pdyn_sw
     nrho = rho/rho_sw
 
     # dynamic pressure
@@ -438,7 +454,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
 
     # make plaschke mask
     jet_p = np.ma.masked_greater(npdynx,0.25)
-    jet_p.mask[nrho < 3] = False
+    jet_p.mask[nrho < 3.5] = False
 
     # make archer&horbury mask
     jet_ah = np.ma.masked_greater(tapdyn,2)

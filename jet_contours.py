@@ -22,11 +22,11 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps):
 
     # thresholds
     level_plaschke = 0.25
-    level_sw = 2
+    level_sw = 3.5
 
     # mask plaschke but not solar wind
     jet = np.ma.masked_greater(npdynx,level_plaschke)
-    #jet.mask[nrho < level_sw] = False
+    jet.mask[nrho < level_sw] = False
     jet.fill_value = 0
     jet[jet.mask == False] = 1
 
@@ -38,7 +38,7 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps):
 
     contour_plaschke = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors=color_plaschke)
 
-    contour_plaschke2 = ax.contour(XmeshXY,YmeshXY,jet2.filled(),[0.5],linewidths=1.0, colors="white")
+    #contour_plaschke2 = ax.contour(XmeshXY,YmeshXY,jet2.filled(),[0.5],linewidths=1.0, colors="white")
 
     return None
 
@@ -220,7 +220,7 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
     YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
     jet = np.ma.masked_greater(npdynx,0.25)
-    jet.mask[nrho < 3] = False
+    jet.mask[nrho < 3.5] = False
     jet.mask[tapdyn > 2] = True
     jet.fill_value = 0
     jet[jet.mask == False] = 1

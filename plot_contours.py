@@ -28,7 +28,7 @@ def plot_plaschke(filenumber,run,newfile=True,cmap="viridis",draw_pic=None):
         jfm.pfmake(filenumber,run)
 
     # create the plot with contours
-    pt.plot.plot_colormap(filename="VLSV/temp_plaschke.vlsv",var="npdynx",colormap=cmap,outputdir="Contours/"+run+"_P"+str(filenumber)+"_",usesci=0,lin=1,draw=draw_pic,boxre=[8,16,-6,6],vmax=1,cbtitle="",title="",external=jc.jc_plaschke,pass_vars=["npdynx","nrho"])
+    pt.plot.plot_colormap(filename="VLSV/temp_plaschke.vlsv",var="npdynx",colormap=cmap,outputdir="Contours/"+run+"_P"+str(filenumber)+"_",usesci=0,lin=1,draw=draw_pic,boxre=[6,16,-6,6],vmax=1,cbtitle="",title="",external=jc.jc_plaschke,pass_vars=["npdynx","nrho"])
 
 def plot_archerhorbury(filenumber,run,halftimewidth,draw_pic=None):
 

@@ -56,7 +56,7 @@ def hist_xy(runid,var1,var2,figname):
         # append the values of the properties to the variables
         x = np.append(x,props[:,var1])
         y = np.append(y,props[:,var2])
-        nr_cells = np.append(nr_cells,props[:,19])
+        nr_cells = np.append(nr_cells,props[:,22])
 
     # create figure
     plt.ion()
@@ -131,7 +131,7 @@ def var_hist_mult(runid,var1,figname):
 
         # append the values of the properties to the variables
         hist_var = np.append(hist_var,props[:,var1])
-        nr_cells = np.append(nr_cells,props[:,19])
+        nr_cells = np.append(nr_cells,props[:,22])
 
     # create figure
     plt.ion()
@@ -157,8 +157,8 @@ def y_hist_mult(runid,figname):
 
     props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-    y = np.append(y,props[:,16])
-    nr_cells = np.append(nr_cells,props[:,19])
+    y = np.append(y,props[:,19])
+    nr_cells = np.append(nr_cells,props[:,22])
 
   plt.ion()
   fig = plt.figure()
@@ -183,8 +183,8 @@ def phi_hist_mult(runid,figname):
 
     props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-    phi = np.append(phi,props[:,20])
-    nr_cells = np.append(nr_cells,props[:,19])
+    phi = np.append(phi,props[:,23])
+    nr_cells = np.append(nr_cells,props[:,22])
 
   plt.ion()
   fig = plt.figure()
