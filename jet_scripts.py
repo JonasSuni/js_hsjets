@@ -32,7 +32,7 @@ def prop_file_maker_AH(run,start,stop,halftimewidth):
 
     return None
 
-def hist_xy(runid,var1,var2,normed_b=True,weight_b=True,figname):
+def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True):
     # create 2D histogram of the specified variables
 
     # list filenames of files in folder
@@ -66,8 +66,8 @@ def hist_xy(runid,var1,var2,normed_b=True,weight_b=True,figname):
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_dict[var1])
-    ax.set_ylabel(label_dict[var2])
+    ax.set_xlabel("$"+label_dict[var1]+"$")
+    ax.set_ylabel("$"+label_dict[var2]+"$")
 
     # draw histogram
     xy_hist = ax.hist2d(x,y,bins=15,normed=normed_b,weights=nr_cells)
@@ -104,8 +104,8 @@ def plot_xy(runid,var1,var2,figname):
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_dict[var1])
-    ax.set_ylabel(label_dict[var2])
+    ax.set_xlabel("$"+label_dict[var1]+"$")
+    ax.set_ylabel("$"+label_dict[var2]+"$")
 
     # draw plot
     xy_plot = ax.plot(x,y,"x",color="black")
@@ -113,7 +113,7 @@ def plot_xy(runid,var1,var2,figname):
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
-def var_hist_mult(runid,var1,normed_b=True,weight_b=True,figname):
+def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
     # create histogram of specified variable
 
     # list filenames of files in folder
@@ -138,8 +138,8 @@ def var_hist_mult(runid,var1,normed_b=True,weight_b=True,figname):
         nr_cells = np.append(nr_cells,props[:,22])
 
     if not weight_b:
-    nr_cells *= 0
-    nr_cells += 1.0
+        nr_cells *= 0
+        nr_cells += 1.0
 
     # create figure
     plt.ion()
@@ -154,7 +154,7 @@ def var_hist_mult(runid,var1,normed_b=True,weight_b=True,figname):
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
-def y_hist_mult(runid,normed_b=True,weight_b=True,figname):
+def y_hist_mult(runid,figname,normed_b=True,weight_b=True):
 
     filenames = os.listdir("Props/"+runid)
 
@@ -170,8 +170,8 @@ def y_hist_mult(runid,normed_b=True,weight_b=True,figname):
 
   
     if not weight_b:
-    nr_cells *= 0
-    nr_cells += 1.0
+        nr_cells *= 0
+        nr_cells += 1.0
 
     plt.ion()
     fig = plt.figure()
@@ -185,7 +185,7 @@ def y_hist_mult(runid,normed_b=True,weight_b=True,figname):
 
     plt.savefig("Figures/"+figname+".png")
 
-def phi_hist_mult(runid,normed_b=True,weight_b=True,figname):
+def phi_hist_mult(runid,figname,normed_b=True,weight_b=True):
 
     filenames = os.listdir("Props/"+runid)
 
@@ -200,8 +200,8 @@ def phi_hist_mult(runid,normed_b=True,weight_b=True,figname):
         nr_cells = np.append(nr_cells,props[:,22])
 
     if not weight_b:
-    nr_cells *= 0
-    nr_cells += 1.0
+        nr_cells *= 0
+        nr_cells += 1.0
 
     plt.ion()
     fig = plt.figure()
