@@ -32,7 +32,7 @@ def prop_file_maker_AH(run,start,stop,halftimewidth):
 
     return None
 
-def hist_xy(runid,var1,var2,figname):
+def hist_xy(runid,var1,var2,normed_b=True,weight_b=True,figname):
     # create 2D histogram of the specified variables
 
     # list filenames of files in folder
@@ -58,6 +58,10 @@ def hist_xy(runid,var1,var2,figname):
         y = np.append(y,props[:,var2])
         nr_cells = np.append(nr_cells,props[:,22])
 
+    if not weight_b:
+        nr_cells *= 0
+        nr_cells += 1.0
+
     # create figure
     plt.ion()
     fig = plt.figure()
@@ -66,7 +70,7 @@ def hist_xy(runid,var1,var2,figname):
     ax.set_ylabel(label_dict[var2])
 
     # draw histogram
-    xy_hist = ax.hist2d(x,y,bins=15,normed=True,weights=nr_cells)
+    xy_hist = ax.hist2d(x,y,bins=15,normed=normed_b,weights=nr_cells)
     plt.colorbar(xy_hist[3], ax=ax)
 
     # save figure
@@ -109,7 +113,7 @@ def plot_xy(runid,var1,var2,figname):
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
-def var_hist_mult(runid,var1,figname):
+def var_hist_mult(runid,var1,normed_b=True,weight_b=True,figname):
     # create histogram of specified variable
 
     # list filenames of files in folder
@@ -133,6 +137,10 @@ def var_hist_mult(runid,var1,figname):
         hist_var = np.append(hist_var,props[:,var1])
         nr_cells = np.append(nr_cells,props[:,22])
 
+    if not weight_b:
+    nr_cells *= 0
+    nr_cells += 1.0
+
     # create figure
     plt.ion()
     fig = plt.figure()
@@ -141,62 +149,71 @@ def var_hist_mult(runid,var1,figname):
     ax.set_ylabel("Probability density")
 
     # draw histogram
-    var_h = ax.hist(hist_var,bins=15,weights=nr_cells,normed=True)
+    var_h = ax.hist(hist_var,bins=15,weights=nr_cells,normed=normed_b)
 
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
-def y_hist_mult(runid,figname):
+def y_hist_mult(runid,normed_b=True,weight_b=True,figname):
 
-  filenames = os.listdir("Props/"+runid)
+    filenames = os.listdir("Props/"+runid)
 
-  y = np.array([])
-  nr_cells = np.array([])
+    y = np.array([])
+    nr_cells = np.array([])
 
-  for filename in filenames:
+    for filename in filenames:
 
-    props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
+        props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-    y = np.append(y,props[:,19])
-    nr_cells = np.append(nr_cells,props[:,22])
+        y = np.append(y,props[:,19])
+        nr_cells = np.append(nr_cells,props[:,22])
 
-  plt.ion()
-  fig = plt.figure()
-  ax = fig.add_subplot(111)
-  ax.set_xlabel("$Y_{vmax}$ $[R_e]$")
-  ax.set_ylabel("Probability density")
+  
+    if not weight_b:
+    nr_cells *= 0
+    nr_cells += 1.0
 
-  y_h = ax.hist(y,bins=list(xrange(-6,7)),weights=nr_cells,normed=True)
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("$Y_{vmax}$ $[R_e]$")
+    ax.set_ylabel("Probability density")
 
-  fig.show()
+    y_h = ax.hist(y,bins=list(xrange(-6,7)),weights=nr_cells,normed=normed_b)
 
-  plt.savefig("Figures/"+figname+".png")
+    fig.show()
 
-def phi_hist_mult(runid,figname):
+    plt.savefig("Figures/"+figname+".png")
 
-  filenames = os.listdir("Props/"+runid)
+def phi_hist_mult(runid,normed_b=True,weight_b=True,figname):
 
-  phi = np.array([])
-  nr_cells = np.array([])
+    filenames = os.listdir("Props/"+runid)
 
-  for filename in filenames:
+    phi = np.array([])
+    nr_cells = np.array([])
 
-    props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
+    for filename in filenames:
 
-    phi = np.append(phi,props[:,23])
-    nr_cells = np.append(nr_cells,props[:,22])
+        props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
 
-  plt.ion()
-  fig = plt.figure()
-  ax = fig.add_subplot(111)
-  ax.set_xlabel("$Angle [deg]$")
-  ax.set_ylabel("Probability density")
+        phi = np.append(phi,props[:,23])
+        nr_cells = np.append(nr_cells,props[:,22])
 
-  phi_h = ax.hist(phi,bins=list(xrange(-40,41,5)),weights=nr_cells,normed=True)
+    if not weight_b:
+    nr_cells *= 0
+    nr_cells += 1.0
 
-  fig.show()
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("$Angle [deg]$")
+    ax.set_ylabel("Probability density")
 
-  plt.savefig("Figures/"+figname+".png")
+    phi_h = ax.hist(phi,bins=list(xrange(-40,41,5)),weights=nr_cells,normed=normed_b)
+
+    fig.show()
+
+    plt.savefig("Figures/"+figname+".png")
 
 def contour_gen(run,start,stop,contour_type,halftimewidth):
 
