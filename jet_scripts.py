@@ -380,6 +380,25 @@ def wave_spacecraft(start,stop,step,pos,font_size):
 
     plt.savefig("Figures/"+str(start)+"_"+str(stop)+".png")
 
+def fromfile_cont_movie(outputfolder,runid,start,stop):
+
+    if not os.path.exists(outputfolder):
+        os.makedirs(outputfolder)
+
+    if runid == "ABA":
+
+        v_max = 5.0
+
+    elif runid == "ABC":
+
+        v_max = 15.0
+
+    parula = pc.make_parula()
+
+    for n in xrange(start,stop+1):
+
+        pt.plot.plot_colormap(filename="/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(n).zfill(7)+".vlsv",outputdir="Contours/"+outputfolder+"/"+runid+"_"+str(n)+"_",usesci=0,lin=1,vmin=0.8,vmax=v_max,colormap="viridis",boxre=[4,16,-6,6],cbtitle="",expression=pc.expr_srho,external=jc.jc_fromfile,pass_vars=["rho","CellID"],ext_pars=[runid,n,180])
+
 def make_figs(outputfolder,box_re=[8,16,-6,6],plaschkemax=1,rhomax=6,rhomax5=6,rhomin=0,pdynmax=1.5):
 
     if not os.path.exists(outputfolder):

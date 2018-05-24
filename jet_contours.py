@@ -257,8 +257,12 @@ def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     msk = np.reshape(msk,rho.shape)
 
-    jet = np.ma.masked_greater_equal(rho,0.0)
-    jet.mask[np.where(msk<1.0)] = False
+    #rho = scipy.ndimage.zoom(rho, 3)
+    #msk = scipy.ndimage.zoom(msk, 3)
+    #XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
+    #YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
+
+    jet = np.ma.masked_greater_equal(msk,1.0)
     jet.fill_value = 0
     jet[jet.mask == False] = 1
 
