@@ -6,7 +6,7 @@ import scipy.ndimage
 
 r_e = 6.371e+6
 
-def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps):
+def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,p_crit]
 
     npdynx = extmaps[0]
@@ -43,7 +43,7 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps):
     return None
 
 
-def jc_archerhorbury(ax,XmeshXY,YmeshXY,extmaps):
+def jc_archerhorbury(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [tapdyn]
 
     tapdyn = extmaps[0]
@@ -70,7 +70,7 @@ def jc_archerhorbury(ax,XmeshXY,YmeshXY,extmaps):
     return None    
 
 
-def jc_karlsson(ax,XmeshXY,YmeshXY,extmaps):
+def jc_karlsson(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [tarho]
 
     tarho = extmaps[0]
@@ -95,7 +95,7 @@ def jc_karlsson(ax,XmeshXY,YmeshXY,extmaps):
     contour_karlsson = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors=color_karlsson)
 
 
-def jc_all(ax,XmeshXY,YmeshXY,extmaps):
+def jc_all(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,tarho]
 
     npdynx,nrho,tapdyn,tarho = extmaps[0],extmaps[1],extmaps[2],extmaps[3]
@@ -139,7 +139,7 @@ def jc_all(ax,XmeshXY,YmeshXY,extmaps):
     return None
 
 
-def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps):
+def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,tarho,identifiers]
 
     npdynx,nrho,tapdyn,tarho = extmaps[0],extmaps[1],extmaps[2],extmaps[3]
@@ -202,7 +202,7 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps):
 
     return None
 
-def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
+def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,identifiers]
 
     npdynx,nrho,tapdyn = extmaps[0],extmaps[1],extmaps[2]
@@ -240,5 +240,20 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
     contour_new = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="black")
 
     #ax.plot(x,y,"o",color="black",markersize=2)
+
+    return None
+
+def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    runid = ext_pars[0]
+    file_nr = ext_pars[1]
+    halftimewidth = ext_pars[2]
+
+    props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr)+"_"+str(halftimewidth)+".csv").as_matrix()
+
+    x = props[:,18]
+    y = props[:,19]
+
+    ax.plot(x,y,"o",color="black",markersize=2)
 
     return None
