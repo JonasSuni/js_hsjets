@@ -91,7 +91,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     outputfile = open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","a")
 
     # write header to csv file
-    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e]")
+    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e],MMS,MA")
 
     # initialise list of properties
     props_list = []
@@ -171,8 +171,15 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         x_size = (max(jX)-min(jX))/r_e
         y_size = (max(jY)-min(jY))/r_e
 
+        # Mach numbers for max velocity
+        vms_vmax = jvms[np.where(jvmag==max(jvmag))[0]][0]/1.0e+3
+        va_vmax = jva[np.where(jvmag==max(jvmag))[0]][0]/1.0e+3
+
+        MMS = v_max/vms_vmax
+        MA = v_max/va_vmax
+
         # properties for current event
-        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size]
+        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size,MMS,MA]
 
         # write properties for current event to list of properties
         props_list.append(temp_arr)
@@ -461,6 +468,8 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
 
     jet_cust = jet_ah
     jet_cust.mask = np.logical_or(jet_cust.mask,jet_p.mask)
+
+    np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",jet_cust.mask)
 
     # discard unmasked cellids
     masked_ci = sorigid[jet_cust.mask]

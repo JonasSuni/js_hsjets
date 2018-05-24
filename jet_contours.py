@@ -203,19 +203,31 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps):
     return None
 
 def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
-    # extmaps consists of [npdynx,nrho,tapdyn,tarho,tpdynavg,trhoavg,srho,CellID]
+    # extmaps consists of [npdynx,nrho,tapdyn,identifiers]
 
-    npdynx,nrho,tapdyn,tarho,tpdynavg,trhoavg,srho,cellids = extmaps[0],extmaps[1],extmaps[2],extmaps[3],extmaps[4],extmaps[5],extmaps[6],extmaps[7]
+    npdynx,nrho,tapdyn = extmaps[0],extmaps[1],extmaps[2]
 
-    #srho_ref = trhoavg[np.where(cellids==1339391)][0]
+    #identifiers = extmaps[3]
+
+    #identifiers = identifiers[0]
+    #ids = []
+
+    #for value in identifiers:
+    #    for n in value:
+    #        ids.append(n)
+
+    #runid = "".join(map(chr,ids[0:3]))
+    #file_nr = ids[3]
+    #halftimewidth = ids[4]
+
+    #props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr)+"_"+str(halftimewidth)+".csv").as_matrix()
+
+    #x = props[:,18]
+    #y = props[:,19]
 
     npdynx = scipy.ndimage.zoom(npdynx, 3)
     nrho = scipy.ndimage.zoom(nrho, 3)
     tapdyn = scipy.ndimage.zoom(tapdyn, 3)
-    tarho = scipy.ndimage.zoom(tarho, 3)
-    tpdynavg = scipy.ndimage.zoom(tpdynavg, 3)
-    trhoavg = scipy.ndimage.zoom(trhoavg, 3)
-    srho = scipy.ndimage.zoom(srho, 3)
     XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
     YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
@@ -226,5 +238,7 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps):
     jet[jet.mask == False] = 1
 
     contour_new = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="black")
+
+    #ax.plot(x,y,"o",color="black",markersize=2)
 
     return None
