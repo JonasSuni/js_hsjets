@@ -32,6 +32,22 @@ def prop_file_maker_AH(run,start,stop,halftimewidth):
 
     return None
 
+def magp_ratio(runid):
+
+    filenames = os.listdir("Props/"+runid)
+
+    mag_p_bool = np.array([])
+
+    for filename in filenames:
+
+        props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
+
+        mag_p_bool = np.append(mag_p_bool,props[:,25])
+
+    magp_ratio = float(mag_p_bool[mag_p_bool>0].size)/float(mag_p_bool.size)
+
+    return magp_ratio
+
 def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True):
     # create 2D histogram of the specified variables
 

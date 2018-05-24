@@ -13,13 +13,23 @@ def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
 
   rho = exprmaps[0]
-  v=exprmaps[1]
+  v = exprmaps[1]
 
   pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
   pdyn /= 1.0e-9
 
   return pdyn
+
+def expr_srho(exprmaps):
+  # exprmaps is ["rho","CellID"]
+
+  rho = exprmaps[0][:,:]
+  cellids = exprmaps[1][:,:]
+
+  srho = rho/1.0e+6
+
+  return srho
     
 def plot_plaschke(filenumber,run,newfile=True,cmap="viridis",draw_pic=None):
 

@@ -245,15 +245,27 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
 def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
+    rho = extmaps[0]
+
     runid = ext_pars[0]
     file_nr = ext_pars[1]
     halftimewidth = ext_pars[2]
 
     props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr)+"_"+str(halftimewidth)+".csv").as_matrix()
 
+    msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask")
+
+    msk = np.reshape(msk,rho.shape)
+
+    jet = np.ma.masked_greater_equal(rho,0.0)
+    jet.mask[np.where(msk<1.0)] = False
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
+
     x = props[:,18]
     y = props[:,19]
 
-    ax.plot(x,y,"o",color="black",markersize=2)
+    contour_fromfile = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0,colors="black")
+    marks1, = ax.plot(x,y,"x",color="red",markersize=2)
 
     return None
