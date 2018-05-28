@@ -270,6 +270,6 @@ def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     y = props[:,19]
 
     contour_fromfile = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0,colors="black")
-    marks1, = ax.plot(x,y,"x",color="red",markersize=2)
+    marks1, = ax.plot(x,y,"x",color="red",markersize=6)
 
     return None

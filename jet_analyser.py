@@ -97,15 +97,13 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     props_list = []
 
     # read variables from vlsv object
-    rho,v,B,T,X,Y,Z,va,vms,cellids = read_mult_vars(vlsvobj,["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"])
+    rho,v,B,T,X,Y,Z,va,vms,cellids,Tpar,Tperp = read_mult_vars(vlsvobj,["rho","v","B","Temperature","X","Y","Z","va","vms","CellID","TParallel","TPerpendicular"])
 
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
 
-    T_decomps = T_decomp(T,v_decomp(B,v),vmag)
-    Tpar = T_decomps[:,0]
-    Tperp = T_decomps[:,1]
+
 
     for event in jets:
 

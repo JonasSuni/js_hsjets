@@ -6,9 +6,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import jet_analyser as ja
 import jet_contours as jc
+import jetfile_make as jfm
+
+from matplotlib import rc
+rc('text', usetex=False)
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
+
+###PROP MAKER FILES HERE###
 
 def prop_file_maker(run,start,stop,halftimewidth):
     # create properties files, with custom jet criteria for bulk files in 
@@ -17,7 +23,7 @@ def prop_file_maker(run,start,stop,halftimewidth):
     timerange = xrange(start,stop+1)
 
     for n in timerange:
-        props = ja.jet_script_cust(n,run,halftimewidth,boxre=[8,16,-6,6],min_size=50,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
+        props = ja.jet_script_cust(n,run,halftimewidth,boxre=[6,16,-6,6],min_size=50,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
 
     return None
 
@@ -31,6 +37,12 @@ def prop_file_maker_AH(run,start,stop,halftimewidth):
         props = ja.jet_script(n,run,halftimewidth,criterion="AH",boxre=[8,16,-6,6],min_size=100,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
 
     return None
+
+
+
+
+
+###FIGURE MAKERS HERE###
 
 def magp_ratio(runid):
 
@@ -48,7 +60,7 @@ def magp_ratio(runid):
 
     return magp_ratio
 
-def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True):
+def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True,bins=15):
     # create 2D histogram of the specified variables
 
     # list filenames of files in folder
@@ -82,11 +94,11 @@ def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True):
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("$"+label_dict[var1]+"$")
-    ax.set_ylabel("$"+label_dict[var2]+"$")
+    ax.set_xlabel(label_dict[var1])
+    ax.set_ylabel(label_dict[var2])
 
     # draw histogram
-    xy_hist = ax.hist2d(x,y,bins=15,normed=normed_b,weights=nr_cells)
+    xy_hist = ax.hist2d(x,y,bins=bins,normed=normed_b,weights=nr_cells)
     plt.colorbar(xy_hist[3], ax=ax)
 
     # save figure
@@ -120,8 +132,8 @@ def plot_xy(runid,var1,var2,figname):
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("$"+label_dict[var1]+"$")
-    ax.set_ylabel("$"+label_dict[var2]+"$")
+    ax.set_xlabel(label_dict[var1])
+    ax.set_ylabel(label_dict[var2])
 
     # draw plot
     xy_plot = ax.plot(x,y,"x",color="black")
@@ -161,7 +173,7 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("$"+label_dict[var1]+"$")
+    ax.set_xlabel(label_dict[var1])
     ax.set_ylabel("Probability density")
 
     # draw histogram
@@ -231,28 +243,32 @@ def phi_hist_mult(runid,figname,normed_b=True,weight_b=True):
 
     plt.savefig("Figures/"+figname+".png")
 
-def contour_gen(run,start,stop,contour_type,halftimewidth):
 
-  if contour_type == "Plaschke":
+
+
+
+###CONTOUR MAKER HERE###
+
+def contour_gen(run,start,stop):
+
+    rc('text', usetex=True)
+
     for n in xrange(start,stop+1):
-      pc.plot_plaschke(n,run)
 
-  elif contour_type == "ArcherHorbury":
-    for n in xrange(start,stop+1):
-      pc.plot_archerhorbury(n,run,halftimewidth)
+        
+        jfm.pahkmake(n,run,180)
 
-  elif contour_type == "Karlsson":
-    for n in xrange(start,stop+1):
-      pc.plot_karlsson(n,run,halftimewidth)
+        pt.plot.plot_colormap(filename="VLSV/temp_all.vlsv",var="spdyn",colormap="viridis",outputdir="Contours/"+run+"/"+str(n)+"_",boxre=[6,16,-6,6],vmin=0,vmax=1.5,cbtitle="nPa",usesci=0,lin=1,external=jc.jc_cust_new,pass_vars=["npdynx","nrho","tapdyn"])
 
-  elif contour_type == "All":
-    for n in xrange(start,stop+1):
-        pc.plot_all(n,run,halftimewidth)
+    rc('text', usetex=False)
 
-  else:
-    pass
+    return None
 
-  return None
+
+
+
+
+###VIRTUAL SPACECRAFT MAKER HERE###
 
 def make_wave_figs(outputfolder,start,stop):
 
@@ -298,8 +314,8 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
-    x_i = np.where(abs(X-pos[0]*r_e)<100000)[0]
-    y_i = np.where(abs(Y-pos[1]*r_e)<100000)[0]
+    x_i = np.where(abs(X-pos[0])<120000)[0]
+    y_i = np.where(abs(Y-pos[1])<120000)[0]
 
     pos_index = np.intersect1d(x_i,y_i)
 
@@ -343,26 +359,30 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     rho_ax = fig.add_subplot(413)
     pdyn_ax = fig.add_subplot(414)
 
-    B_ax.set_xlim(250,305)
-    v_ax.set_xlim(250,305)
-    rho_ax.set_xlim(250,305)
-    pdyn_ax.set_xlim(250,305)
+    B_ax.set_xlim(200,500)
+    v_ax.set_xlim(200,500)
+    rho_ax.set_xlim(200,500)
+    pdyn_ax.set_xlim(200,500)
 
-    B_ax.set_ylim(2,10)
-    v_ax.set_ylim(600,800)
-    rho_ax.set_ylim(0.6,2.0)
-    pdyn_ax.set_ylim(0.6,1.8)
+    B_ax.set_ylim(0,30)
+    v_ax.set_ylim(0,400)
+    rho_ax.set_ylim(2,7)
+    pdyn_ax.set_ylim(0,1)
 
-    B_ax.set_ylabel("B [nT]",fontsize=font_size)
-    v_ax.set_ylabel("v [km/s]",fontsize=font_size)
-    rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
-    pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+    #B_ax.set_ylabel("B [nT]",fontsize=font_size)
+    #v_ax.set_ylabel("v [km/s]",fontsize=font_size)
+    #rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
+    #pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
 
-    B_ax.set_yticks([4,6,8,10])
-    v_ax.set_yticks([650,700,750,800])
-    rho_ax.set_yticks([0.8,1.2,1.6,2.0])
-    pdyn_ax.set_yticks([0.8,1.0,1.2,1.4,1.6,1.8])
+    B_ax.set_yticks([0,10,20,30])
+    v_ax.set_yticks([0,100,200,300,400])
+    rho_ax.set_yticks([2,3,4,5,6,7])
+    pdyn_ax.set_yticks([0,0.5,1])
+    B_ax.set_xticks([])
+    v_ax.set_xticks([])
+    rho_ax.set_xticks([])
+    pdyn_ax.set_xticks([250,300,350,400,450,500])
 
     plt.tight_layout()
 
@@ -371,14 +391,60 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     rho_ax.plot(time_arr,rho_arr)
     pdyn_ax.plot(time_arr,pdyn_arr)
 
-    B_ax.axvline(280,linestyle="dashed")
-    v_ax.axvline(280,linestyle="dashed")
-    rho_ax.axvline(280,linestyle="dashed")
-    pdyn_ax.axvline(280,linestyle="dashed")
+    B_ax.axvline(305.5,linestyle="dashed")
+    v_ax.axvline(305.5,linestyle="dashed")
+    rho_ax.axvline(305.5,linestyle="dashed")
+    pdyn_ax.axvline(305.5,linestyle="dashed")
 
     fig.show()
 
     plt.savefig("Figures/"+str(start)+"_"+str(stop)+".png")
+
+
+
+
+
+###MULTI FILE SCRIPTS HERE###
+
+def presentation_script(run_id,fig_name):
+
+    '''props are 
+    0: n_avg [cm^-3],   1: n_med [cm^-3],   2: n_max [cm^-3],
+    3: v_avg [km/s],    4: v_med [km/s],    5: v_max [km/s],
+    6: B_avg [nT],      7: B_med [nT],      8: B_max [nT],
+    9: T_avg [MK],      10: T_med [MK],     11: T_max [MK],
+    12: Tpar_avg [MK],  13: Tpar_med [MK],  14: Tpar_max [MK],
+    15: Tperp_avg [MK], 16: Tperp_med [MK], 17: Tperp_max [MK],
+    18: X_vmax [R_e],   19: Y_vmax [R_e],   20: Z_vmax [R_e],
+    21: A [km^2],       22: Nr_cells,       23: phi [deg],
+    24: r_d [R_e],      25: mag_p_bool,     26: size_x [R_e],
+    27: size_y [R_e],   28: MMS,            29: MA'''
+
+    hist_xy(run_id,18,19,fig_name+run_id+"_x_y",normed_b=False,weight_b=True,bins=[np.linspace(8,12,17),np.linspace(-4,4,17)])
+
+    hist_xy(run_id,18,5,fig_name+run_id+"_x_vmax",normed_b=True,weight_b=True,bins=[np.linspace(8,12,17),np.linspace(100,900,17)])
+    #hist_xy(run_id,18,12,fig_name+run_id+"_x_Tpar_avg",normed_b=True,weight_b=True)
+    #hist_xy(run_id,18,15,fig_name+run_id+"_x_Tperp_avg",normed_b=True,weight_b=True)
+
+    hist_xy(run_id,19,5,fig_name+run_id+"_y_vmax",normed_b=True,weight_b=True,bins=[np.linspace(-4,4,17),np.linspace(100,900,17)])
+    #hist_xy(run_id,19,12,fig_name+run_id+"_y_Tpar_avg",normed_b=True,weight_b=True)
+    #hist_xy(run_id,19,15,fig_name+run_id+"_y_Tperp_avg",normed_b=True,weight_b=True)
+
+    hist_xy(run_id,18,22,fig_name+run_id+"_x_nrcells",normed_b=True,weight_b=True,bins=[np.linspace(8,12,17),np.linspace(50,1950,17)])
+    hist_xy(run_id,19,22,fig_name+run_id+"_y_nrcells",normed_b=True,weight_b=True,bins=[np.linspace(-4,4,17),np.linspace(50,1950,17)])
+    #hist_xy(run_id,22,12,fig_name+run_id+"_nrcells_Tpar_avg",normed_b=True,weight_b=True)
+    #hist_xy(run_id,22,15,fig_name+run_id+"_nrcells_Tperp_avg",normed_b=True,weight_b=True)
+    hist_xy(run_id,22,5,fig_name+run_id+"_nrcells_vmax",normed_b=True,weight_b=True,bins=[np.linspace(50,1950,17),np.linspace(100,900,17)])
+
+    var_hist_mult(run_id,18,fig_name+run_id+"_x_hist",normed_b=True,weight_b=True)
+    var_hist_mult(run_id,19,fig_name+run_id+"_y_hist",normed_b=True,weight_b=True)
+    var_hist_mult(run_id,5,fig_name+run_id+"_vmax_hist",normed_b=True,weight_b=True)
+    #var_hist_mult(run_id,12,fig_name+run_id+"_Tpar_avg_hist",normed_b=True,weight_b=True)
+    #var_hist_mult(run_id,15,fig_name+run_id+"_Tperp_avg_hist",normed_b=True,weight_b=True)
+
+    print("Magp_ratio is "+str(magp_ratio(run_id)))
+
+    plt.close("all")
 
 def fromfile_cont_movie(outputfolder,runid,start,stop):
 
