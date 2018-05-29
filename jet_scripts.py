@@ -9,7 +9,6 @@ import jet_contours as jc
 import jetfile_make as jfm
 
 from matplotlib import rc
-rc('text', usetex=False)
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -63,6 +62,8 @@ def magp_ratio(runid):
 def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True,bins=15):
     # create 2D histogram of the specified variables
 
+    rc('text', usetex=False)
+
     # list filenames of files in folder
     filenames = os.listdir("Props/"+runid)
 
@@ -104,8 +105,12 @@ def hist_xy(runid,var1,var2,figname,normed_b=True,weight_b=True,bins=15):
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
+    rc('text', usetex=True)
+
 def plot_xy(runid,var1,var2,figname):
     # plot the two specified variables against each other
+
+    rc('text', usetex=False)
 
     # list filenames of files in folder
     filenames = os.listdir("Props/"+runid)
@@ -141,8 +146,12 @@ def plot_xy(runid,var1,var2,figname):
     # save figure
     plt.savefig("Figures/"+figname+".png")
 
+    rc('text', usetex=True)
+
 def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
     # create histogram of specified variable
+
+    rc('text', usetex=False)
 
     # list filenames of files in folder
     filenames = os.listdir("Props/"+runid)
@@ -181,6 +190,8 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     # save figure
     plt.savefig("Figures/"+figname+".png")
+
+    rc('text', usetex=True)
 
 def y_hist_mult(runid,figname,normed_b=True,weight_b=True):
 
@@ -251,16 +262,12 @@ def phi_hist_mult(runid,figname,normed_b=True,weight_b=True):
 
 def contour_gen(run,start,stop):
 
-    rc('text', usetex=True)
-
     for n in xrange(start,stop+1):
 
         
         jfm.pahkmake(n,run,180)
 
         pt.plot.plot_colormap(filename="VLSV/temp_all.vlsv",var="spdyn",colormap="viridis",outputdir="Contours/"+run+"/"+str(n)+"_",boxre=[6,16,-6,6],vmin=0,vmax=1.5,cbtitle="nPa",usesci=0,lin=1,external=jc.jc_cust_new,pass_vars=["npdynx","nrho","tapdyn"])
-
-    rc('text', usetex=False)
 
     return None
 
@@ -285,7 +292,7 @@ def make_wave_figs(outputfolder,start,stop):
 
     return None
 
-def sc_pos_marker(ax,XmeshXY,YmeshXY,extmaps):
+def sc_pos_marker(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=2)
 
@@ -306,7 +313,7 @@ def get_pos_index(posre,runid,file_number):
 
     return pos_id
 
-def wave_spacecraft(start,stop,step,pos,font_size):
+def slam_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,12)):
 
     vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
 
@@ -314,8 +321,169 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
-    x_i = np.where(abs(X-pos[0])<120000)[0]
-    y_i = np.where(abs(Y-pos[1])<120000)[0]
+    x_i = np.where(abs(X-pos[0]*r_e)<120000)[0]
+    y_i = np.where(abs(Y-pos[1]*r_e)<120000)[0]
+
+    pos_index = np.intersect1d(x_i,y_i)
+
+    pos_id = cellids[pos_index[0]]
+    f_path = "/proj/vlasov/2D/ABA/bulk/"
+
+    B_imf = np.array([-np.cos(np.deg2rad(30))*5.0e-9,np.sin(np.deg2rad(30))*5.0e-9,0])
+
+    phi_arr = np.array([])
+    Bx_arr = np.array([])
+    By_arr = np.array([])
+    Bz_arr = np.array([])
+    Bmag_arr = np.array([])
+    rho_arr = np.array([])
+    vmag_arr = np.array([])
+    pdyn_arr = np.array([])
+
+    for n in xrange(start,stop+1):
+
+        f_name="bulk."+str(n).zfill(7)+".vlsv"
+
+        f = pt.vlsvfile.VlsvReader(f_path+f_name)
+
+        B = f.read_variable("B",cellids=pos_id)
+        
+        phi = np.rad2deg(np.arccos(np.dot(B,B_imf)/(np.linalg.norm(B)*np.linalg.norm(B_imf))))
+
+        Bx = B[0]
+        By = B[1]
+        Bz = B[2]
+        Bmag = np.linalg.norm(B,axis=-1)
+
+        rho = f.read_variable("rho",cellids=pos_id)
+        vmag = f.read_variable("v",cellids=pos_id,operator="magnitude")
+        pdyn = m_p*rho*(vmag**2)
+
+        phi_arr = np.append(phi_arr,phi)
+        Bx_arr = np.append(Bx_arr,Bx)
+        By_arr = np.append(By_arr,By)
+        Bz_arr = np.append(Bz_arr,Bz)
+        Bmag_arr = np.append(Bmag_arr,Bmag)
+        rho_arr = np.append(rho_arr,rho)
+        vmag_arr = np.append(vmag_arr,vmag)
+        pdyn_arr = np.append(pdyn_arr,pdyn)
+
+    time_arr = np.array(xrange(start,stop+1)).astype(float)/2
+
+    Bx_arr /= 1.0e-9
+    By_arr /= 1.0e-9
+    Bz_arr /= 1.0e-9
+    Bmag_arr /= 1.0e-9
+    rho_arr /= 1.0e+6
+    vmag_arr /= 1.0e+3
+    pdyn_arr /= 1.0e-9
+
+    plt.ion()
+    fig = plt.figure(figsize=fig_size)
+
+    #phi_ax = fig.add_subplot(811)
+    Bx_ax = fig.add_subplot(812)
+    By_ax = fig.add_subplot(813)
+    Bz_ax = fig.add_subplot(814)
+    Bmag_ax = fig.add_subplot(815)
+    rho_ax = fig.add_subplot(816)
+    vmag_ax = fig.add_subplot(817)
+    pdyn_ax = fig.add_subplot(818)
+
+    #phi_ax.set_xlim(260,310)
+    Bx_ax.set_xlim(260,310)
+    By_ax.set_xlim(260,310)
+    Bz_ax.set_xlim(260,310)
+    Bmag_ax.set_xlim(260,310)
+    rho_ax.set_xlim(260,310)
+    vmag_ax.set_xlim(260,310)
+    pdyn_ax.set_xlim(260,310)
+
+    #phi_ax.set_ylim(10,50)
+    Bx_ax.set_ylim(-10,0)
+    By_ax.set_ylim(0,10)
+    Bz_ax.set_ylim(-5,5)
+    Bmag_ax.set_ylim(4,10)
+    rho_ax.set_ylim(0.5,2)
+    vmag_ax.set_ylim(600,800)
+    pdyn_ax.set_ylim(0.5,2)
+
+    #phi_ax.set_ylabel("$\\phi$ [deg]",fontsize=font_size)
+    Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
+    By_ax.set_ylabel("$B_y$ [nT]",fontsize=font_size)
+    Bz_ax.set_ylabel("$B_z$ [nT]",fontsize=font_size)
+    Bmag_ax.set_ylabel("$|B|$ [nT]",fontsize=font_size)
+    rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
+    vmag_ax.set_ylabel("$|v|$ [km/s]",fontsize=font_size)
+    pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+    pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
+
+    #phi_ax.set_yticks([10,20,30,40,50])
+    Bx_ax.set_yticks([-10,-7.5,-5,-2.5,0])
+    By_ax.set_yticks([0,2.5,5,7.5,10])
+    Bz_ax.set_yticks([-5,-2.5,0,2.5,5])
+    Bmag_ax.set_yticks([4,6,8,10])
+    rho_ax.set_yticks([0.5,1,1.5,2])
+    vmag_ax.set_yticks([600,650,700,750,800])
+    pdyn_ax.set_yticks([0.5,1,1.5,2])
+
+    #phi_ax.set_xticks([])
+    Bx_ax.set_xticks([])
+    By_ax.set_xticks([])
+    Bz_ax.set_xticks([])
+    Bmag_ax.set_xticks([])
+    rho_ax.set_xticks([])
+    vmag_ax.set_xticks([])
+    pdyn_ax.set_xticks([270,280,290,300,310])
+
+    #phi_ax.tick_params(labelsize=16)
+    Bx_ax.tick_params(labelsize=16)
+    By_ax.tick_params(labelsize=16)
+    Bz_ax.tick_params(labelsize=16)
+    Bmag_ax.tick_params(labelsize=16)
+    rho_ax.tick_params(labelsize=16)
+    vmag_ax.tick_params(labelsize=16)
+    pdyn_ax.tick_params(labelsize=16)
+
+    #phi_ax.plot(time_arr,phi_arr,color="black",linewidth=2)
+    Bx_ax.plot(time_arr,Bx_arr,color="black",linewidth=2)
+    By_ax.plot(time_arr,By_arr,color="black",linewidth=2)
+    Bz_ax.plot(time_arr,Bz_arr,color="black",linewidth=2)
+    Bmag_ax.plot(time_arr,Bmag_arr,color="black",linewidth=2)
+    rho_ax.plot(time_arr,rho_arr,color="black",linewidth=2)
+    vmag_ax.plot(time_arr,vmag_arr,color="black",linewidth=2)
+    pdyn_ax.plot(time_arr,pdyn_arr,color="black",linewidth=2)
+
+    #phi_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    Bx_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    By_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    Bz_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    Bz_ax.axhline(0,linestyle="dotted",color="black",linewidth=2)
+    Bmag_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    rho_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    vmag_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+    pdyn_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
+
+    plt.tight_layout()
+
+    fig.show()
+
+    plt.savefig("Figures/SLAM_"+str(start)+"_"+str(stop)+".png")
+    print("Figures/SLAM_"+str(start)+"_"+str(stop)+".png")
+
+def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=16):
+
+    x_def = 60521928.9248/r_e
+    y_def = -26995643.4721/r_e
+
+    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
+
+    X = vlsvreader.read_variable("X")
+    Y = vlsvreader.read_variable("Y")
+    cellids = vlsvreader.read_variable("CellID")
+
+    x_i = np.where(abs(X-pos[0]*r_e)<120000)[0]
+    y_i = np.where(abs(Y-pos[1]*r_e)<120000)[0]
 
     pos_index = np.intersect1d(x_i,y_i)
 
@@ -352,6 +520,7 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     pdyn_arr /= 1.0e-9
 
     plt.ion()
+    plt.tick_params(labelsize=16)
     fig = plt.figure()
 
     B_ax = fig.add_subplot(411)
@@ -374,6 +543,11 @@ def wave_spacecraft(start,stop,step,pos,font_size):
     #rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
     #pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
+
+    magsh_Bticks = [0,10,20,30]
+    magsh_vticks = [0,100,200,300,400]
+    magsh_rhoticks = [2,3,4,5,6,7]
+    magsh_pdynticks = [0,0.5,1]
 
     B_ax.set_yticks([0,10,20,30])
     v_ax.set_yticks([0,100,200,300,400])
