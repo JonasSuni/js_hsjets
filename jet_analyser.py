@@ -97,7 +97,9 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     props_list = []
 
     # read variables from vlsv object
-    rho,v,B,T,X,Y,Z,va,vms,cellids,Tpar,Tperp = read_mult_vars(vlsvobj,["rho","v","B","Temperature","X","Y","Z","va","vms","CellID","TParallel","TPerpendicular"])
+    rho,v,B,T,X,Y,Z,va,vms,cellids = read_mult_vars(vlsvobj,["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"])
+
+    Tpar,Tperp = read_mult_vars(vlsvobj,["TParallel","TPerpendicular"])
 
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
@@ -110,7 +112,9 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         outputfile.write("\n")
 
         # get the values of the variables corresponding to cellids in the current event
-        jrho,jvmag,jBmag,jT,jX,jY,jZ,jva,jvms,jTpar,jTperp = ci2vars_nofile([rho,vmag,Bmag,T,X,Y,Z,va,vms,Tpar,Tperp],cellids,event)
+        jrho,jvmag,jBmag,jT,jX,jY,jZ,jva,jvms = ci2vars_nofile([rho,vmag,Bmag,T,X,Y,Z,va,vms],cellids,event)
+
+        jTpar,jTperp = ci2vars_nofile([Tpar,Tperp],cellids,event)
 
         # calculate mean, maximum and median of density
         n_avg = np.mean(jrho)/1.0e+6
