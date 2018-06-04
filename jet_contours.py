@@ -253,7 +253,13 @@ def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr)+"_"+str(halftimewidth)+".csv").as_matrix()
 
-    msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask")
+    cellids = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(file_nr).zfill(7)+".vlsv").read_variable("CellID")
+
+    cellids = cellids[cellids.argsort()]
+
+    msk_ids = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask")
+
+    msk = np.in1d(cellids,msk_ids).astype(int)
 
     msk = np.reshape(msk,rho.shape)
 

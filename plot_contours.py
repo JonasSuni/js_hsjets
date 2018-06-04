@@ -5,12 +5,87 @@ import jet_contours as jc
 import jet_analyser as ja
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 from matplotlib.colors import LinearSegmentedColormap
 
 m_p = 1.672621898e-27
+r_e = 6.371e+6
+
+###EXTERNAL FUNCTIONS###
+
+def cust_contour(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+  # extmaps is ["rho","v","X","Y"]
+
+  if type(extmaps[0]) is not list:
+    print("Requires pass_times to be larger than 0. Exiting.")
+    quit()
+
+  timewidth = len(extmaps)
+  curr_step = (timewidth-1)/2
+  curr_maps = extmaps[curr_step]
+
+  rho = np.ma.masked_less_equal(curr_maps[0][:,:], 0)
+  v = curr_maps[1][:,:,:]
+  vx = curr_maps[1][:,:,0]
+  pdyn = rho*(np.linalg.norm(v,axis=-1)**2)
+  pdynx = rho*(vx**2)
+
+  X = curr_maps[2][:,:]
+  Y = curr_maps[3][:,:]
+
+  sw_mask = np.ma.masked_greater(X,16*r_e)
+  sw_mask.mask[X < 14*r_e] = True
+  sw_mask.mask[Y < -4*r_e] = True
+  sw_mask.mask[Y > 4*r_e] = True
+
+  rho_sw = np.mean(np.ma.array(rho,mask=sw_mask.mask).compressed())
+  pdyn_sw = np.mean(np.ma.array(pdyn,mask=sw_mask.mask).compressed())
+
+  avgpdyn = np.zeros(np.array(pdyn.shape))
+
+  for i in range(timewidth):
+    if i == curr_step:
+        continue
+    tmaps = extmaps[i]
+    tpdyn = tmaps[0]*(np.linalg.norm(tmaps[1],axis=-1)**2)
+    avgpdyn = np.add(avgpdyn,tpdyn)
+
+  avgpdyn = np.divide(np.ma.masked_less_equal(avgpdyn,0),np.array([timewidth-1]))
+  avgpdyn = np.ma.masked_less_equal(avgpdyn,0)
+
+  Plaschke = pdynx/pdyn_sw
+  SWCrit = rho/rho_sw
+  ArcherHorbury = np.divide(pdyn,avgpdyn)
+
+  jet = np.ma.masked_greater(Plaschke,0.25)
+  jet.mask[SWCrit < 3.5] = False
+  jet.mask[ArcherHorbury > 2] = True
+  jet.fill_value = 0
+  jet[jet.mask == False] = 1
+
+  contour_jet = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0,colors="black")
+
+def expr_pdyn_gen(exprmaps):
+  # for use with cust_contour
+  # exprmaps is ["rho","v"]
+  # returns dynamic pressure in nanopascals
+
+  timewidth = len(exprmaps)
+  curr_step = (timewidth-1)/2
+  curr_maps = exprmaps[curr_step]
+
+  rho = curr_maps[0]
+  v = curr_maps[1]
+
+  pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+
+  pdyn /= 1.0e-9
+
+  return pdyn
 
 def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
+  # returns dynamic pressure in nanopascals
 
   rho = exprmaps[0]
   v = exprmaps[1]
@@ -23,6 +98,7 @@ def expr_pdyn(exprmaps):
 
 def expr_srho(exprmaps):
   # exprmaps is ["rho","CellID"]
+  # returns number density in cm^-3
 
   rho = exprmaps[0][:,:]
   cellids = exprmaps[1][:,:]
@@ -31,6 +107,24 @@ def expr_srho(exprmaps):
 
   return srho
     
+###PLOTTERS###
+
+def plot_new(runid,filenumber,vmax=1.5):
+
+  # get colormap
+  parula = make_parula()
+
+  # create outputdir if it doesn't already exist
+  outputdir = "Contours/"+runid+"/"
+  if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
+  bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+  bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+  print(bulkname)
+
+  pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=filenumber,outputdir=outputdir,colormap=parula,lin=1,usesci=0,title="",cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],expression=expr_pdyn_gen,external=cust_contour,pass_vars=["rho","v","X","Y"],pass_times=180)
+
 def plot_plaschke(filenumber,run,newfile=True,cmap="viridis",draw_pic=None):
 
     # create temporary vlsv file for plotting

@@ -6,78 +6,6 @@ import pandas as pd
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def v_decomp(B,v):
-
-    Bmag = np.linalg.norm(B,axis=-1)
-
-    Bhat = B
-    Bhat[:,0] /= Bmag
-    Bhat[:,1] /= Bmag
-    Bhat[:,2] /= Bmag
-
-    Bv_dot = np.sum(v*Bhat,axis=-1)
-
-    v_par = Bhat
-    v_par[:,0] *= Bv_dot
-    v_par[:,1] *= Bv_dot
-    v_par[:,2] *= Bv_dot
-
-    v_perp = v-v_par
-
-    v_par_mag = np.linalg.norm(v_par,axis=-1)
-    v_perp_mag = np.linalg.norm(v_perp,axis=-1)
-    
-    v_decomps = np.array([v_par_mag,v_perp_mag]).T
-
-    return v_decomps
-
-def T_decomp(T,v_decomps,vmag):
-
-    T_par = T*(v_decomps[:,0]/vmag)**2
-    T_perp = T*(v_decomps[:,1]/vmag)**2
-
-    T_decomps = np.array([T_par,T_perp]).T
-
-    return T_decomps
-
-def phi_hist(input_file):
-    # creates normed histogram of the angle phi, weighted according to the number of cells
-
-    # read variables from properties file
-    phi = pd.read_csv(input_file).as_matrix()[:,23]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,22]
-    
-    #create figure
-    plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("Angle [deg]")
-    ax.set_ylabel("Probability density")
-
-    # draw histogram
-    phi_h = ax.hist(phi,bins=list(xrange(-40,41,5)),weights=nr_cells,normed=True)
-
-    fig.show()
-
-def y_hist(input_file):
-    # creates normed histogram of the angle phi, weighted according to the number of cells
-
-    # read variables from properties file
-    y = pd.read_csv(input_file).as_matrix()[:,19]
-    nr_cells = pd.read_csv(input_file).as_matrix()[:,22]
-    
-    # create figure
-    plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("$Y_{vmax}$ $[R_e]$")
-    ax.set_ylabel("Probability density")
-
-    # draw histogram
-    y_h = ax.hist(y,bins=list(xrange(-6,7)),weights=nr_cells,normed=True)
-
-    fig.show()
-
 def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_file_id=""):
     # calculates certain properties for the jets
 
@@ -104,8 +32,6 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
-
-
 
     for event in jets:
 
@@ -238,20 +164,6 @@ def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
 
     return events_culled
 
-
-def jet_script(filenumber,runid,halftimewidth=180,criterion="AH",boxre=[8,16,-6,6],min_size=0,max_size=3000,neighborhood_reach=[1,1],freeform_file_id=""):
-
-    file_nr = str(filenumber).zfill(7)
-    file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
-
-    vlsvobj=pt.vlsvfile.VlsvReader(file_path)
-
-    msk = make_mask(filenumber,runid,halftimewidth,criterion,boxre)
-    jets = sort_jets(vlsvobj,msk,min_size,max_size,neighborhood_reach)
-    props = calc_props(vlsvobj,jets,runid,filenumber,criterion,halftimewidth,freeform_file_id)
-
-    return props
-
 def jet_script_cust(filenumber,runid,halftimewidth=180,boxre=[8,16,-6,6],min_size=0,max_size=3000,neighborhood_reach=[1,1],freeform_file_id=""):
 
     file_nr = str(filenumber).zfill(7)
@@ -379,7 +291,6 @@ def restrict_area(vlsvobj,xlim,ylim):
 
     return masked_ci
 
-
 def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
 
     # finds cellids of cells that fulfill the specified criterion and the specified
@@ -415,7 +326,7 @@ def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
     jet_p = np.ma.masked_greater(npdynx,0.25)
     jet_p.mask[nrho < 3.5] = False
 
-    masked_ci = sorigid[jet_p.mask]
+    masked_ci = np.ma.array(sorigid,mask=jet_p.mask).compressed()
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
@@ -514,169 +425,13 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     jet_cust = jet_ah
     jet_cust.mask = np.logical_or(jet_cust.mask,jet_p.mask)
 
-    np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",jet_cust.mask)
-
     # discard unmasked cellids
-    masked_ci = sorigid[jet_cust.mask]
+    masked_ci = np.ma.array(sorigid,mask=jet_cust.mask).compressed()
+
+    np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
     else:
         return masked_ci
-
-def make_mask(timestep,runid,halftimewidth,criterion,boxre=[8,16,-6,6]):
-    # finds cellids of cells that fulfill the specified criterion and the specified
-    # X,Y-limits
-
-    # find correct file based on file number and run id
-    file_nr = str(timestep).zfill(7)
-    file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
-
-    # open vlsv file for reading
-    vlsvreader = pt.vlsvfile.VlsvReader(file_path)
-
-    origid = vlsvreader.read_variable("CellID")
-    sorigid = origid[np.argsort(origid)]
-
-    # solar wind parameters
-    rho_sw = 1.0e+6
-    vx_sw = 750.0e+3
-
-    rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
-    v = vlsvreader.read_variable("v")[np.argsort(origid)]
-
-    if criterion == "P":
-        # mask according to Plaschke criterion
-
-        # ratio of x-directional dynamic pressure and solar wind dynamic pressure
-        npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
-        nrho = rho/rho_sw
-
-        # mask according to the criterion
-        jet = np.ma.masked_greater(npdynx,0.25)
-        jet.mask[nrho < 2] = False
-
-        # discard unmasked cellids
-        masked_ci = sorigid[jet.mask]
-
-        # if boundaries have been set, discard cellids outside boundaries
-        if not not boxre:
-            return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
-        else:
-            return masked_ci
-
-    elif criterion == "AH":
-        # mask according to Archer&Horbury criterion
-
-        # calculate dynamic pressure
-        pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
-
-        timerange = xrange(timestep-halftimewidth,timestep+halftimewidth+1)
-
-        # initialise time average of dynamic pressure
-        tpdynavg = np.zeros(np.shape(pdyn))
-
-        for n in timerange:
-
-            # exclude the main timestep
-            if n == timestep:
-                continue
-
-            # find correct file path for current time step
-            tfile_nr = str(n).zfill(7)
-            tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
-
-            # open file for current time step
-            f = pt.vlsvfile.VlsvReader(tfile_p)
-        
-            trho = f.read_variable("rho")
-            tv = f.read_variable("v")
-
-            # read cellids for current time step
-            cellids = f.read_variable("CellID")
-        
-            # dynamic pressure for current time step
-            tpdyn = m_p*trho*(np.linalg.norm(tv,axis=-1)**2)
-
-            # sort dynamic pressures
-            otpdyn = tpdyn[cellids.argsort()]
-
-            # prevent divide by zero errors
-            otpdyn[otpdyn == 0.0] = 1.0e-27
-        
-            tpdynavg += otpdyn
-
-        # calculate time average of dynamic pressure
-        tpdynavg /= len(timerange)-1
-
-        # ratio of dynamic pressure to its time average
-        tapdyn = np.divide(pdyn,tpdynavg)
-
-        # mask according to criterion
-        jet = np.ma.masked_greater(tapdyn,2)
-
-        # discard unmasked cellids
-        masked_ci = sorigid[jet.mask]
-
-        # if boundaries have been set, discard cellids outside boundaries
-        if not not boxre:
-            return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:5]))
-        else:
-            return masked_ci
-
-    elif criterion == "K":
-        # mask according to Karlsson criterion
-
-        timerange = xrange(timestep-halftimewidth,timestep+halftimewidth+1)
-
-        # initialise time average of density
-        trhoavg = np.zeros(np.shape(rho))
-
-        for n in timerange:
-
-            # exclude main timestep
-            if n == timestep:
-                continue
-
-            # find correct file path for current time step
-            tfile_nr = str(n).zfill(7)
-            tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
-
-            # open file for current time step
-            f = pt.vlsvfile.VlsvReader(tfile_p)
-        
-            trho = f.read_variable("rho")
-
-            # read cellids for current time step
-            cellids = f.read_variable("CellID")
-
-            # sort dynamic pressures
-            otrho = trho[cellids.argsort()]
-
-            # prevent divide by zero errors
-            otrho[otrho == 0.0] = 1.0e-27
-        
-            trhoavg += otrho
-
-        # calculate time average of density
-        trhoavg /= len(timerange)-1
-
-        # ratio of density to its time average
-        tarho = np.divide(rho,trhoavg)
-
-        # mask according to criterion
-        jet = np.ma.masked_greater(tarho,1.5)
-
-        # exclude unmasked cellids
-        masked_ci = sorigid[jet.mask]
-
-        # if boundaries have been set, discard cellids outside boundaries
-        if not not boxre:
-            return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:5]))
-        else:
-            return masked_ci
-
-    else:
-        print("criterion must be either P, AH or K")
-        return None

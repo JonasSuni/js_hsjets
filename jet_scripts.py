@@ -28,17 +28,6 @@ def prop_file_maker(run,start,stop,halftimewidth):
 
     return None
 
-def prop_file_maker_AH(run,start,stop,halftimewidth):
-    # create properties files, with AH jet criteria, for bulk files in
-    # range start,stop (inclusive)
-
-    timerange = xrange(start,stop+1)
-
-    for n in timerange:
-        props = ja.jet_script(n,run,halftimewidth,criterion="AH",boxre=[8,16,-6,6],min_size=100,max_size=3000,neighborhood_reach=[1,1],freeform_file_id="")
-
-    return None
-
 def linsize_maker(run,start,stop):
 
     timerange = xrange(start,stop+1)
@@ -320,81 +309,17 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     rc('text', usetex=True)
 
-def y_hist_mult(runid,figname,normed_b=True,weight_b=True):
-
-    filenames = os.listdir("Props/"+runid)
-
-    y = np.array([])
-    nr_cells = np.array([])
-
-    for filename in filenames:
-
-        props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
-
-        y = np.append(y,props[:,19])
-        nr_cells = np.append(nr_cells,props[:,22])
-
-  
-    if not weight_b:
-        nr_cells *= 0
-        nr_cells += 1.0
-
-    plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("$Y_{vmax}$ $[R_e]$")
-    ax.set_ylabel("Probability density")
-
-    y_h = ax.hist(y,bins=list(xrange(-6,7)),weights=nr_cells,normed=normed_b)
-
-    fig.show()
-
-    plt.savefig("Figures/"+figname+".png")
-
-def phi_hist_mult(runid,figname,normed_b=True,weight_b=True):
-
-    filenames = os.listdir("Props/"+runid)
-
-    phi = np.array([])
-    nr_cells = np.array([])
-
-    for filename in filenames:
-
-        props = pd.read_csv("Props/"+runid+"/"+filename).as_matrix()
-
-        phi = np.append(phi,props[:,23])
-        nr_cells = np.append(nr_cells,props[:,22])
-
-    if not weight_b:
-        nr_cells *= 0
-        nr_cells += 1.0
-
-    plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("$Angle [deg]$")
-    ax.set_ylabel("Probability density")
-
-    phi_h = ax.hist(phi,bins=list(xrange(-40,41,5)),weights=nr_cells,normed=normed_b)
-
-    fig.show()
-
-    plt.savefig("Figures/"+figname+".png")
-
 
 
 
 
 ###CONTOUR MAKER HERE###
 
-def contour_gen(run,start,stop):
+def contour_gen(runid,start,stop,vmax=1.5):
 
     for n in xrange(start,stop+1):
 
-        
-        jfm.pahkmake(n,run,180)
-
-        pt.plot.plot_colormap(filename="VLSV/temp_all.vlsv",var="spdyn",colormap=parula,outputdir="Contours/"+run+"/"+str(n)+"_",boxre=[6,16,-6,6],vmin=0,vmax=1.5,cbtitle="nPa",usesci=0,lin=1,external=jc.jc_cust_new,pass_vars=["npdynx","nrho","tapdyn"])
+        pc.plot_new(runid,n,vmax)
 
     return None
 
