@@ -108,6 +108,68 @@ def calc_linsize(vlsvobj,jets,runid,file_number):
 
 ###FIGURE MAKERS HERE###
 
+def linsize_fig(figsize=(10,10)):
+
+    linsizes = pd.read_csv("jet_linsize.csv").as_matrix()
+
+    time_arr = linsizes[:,0]
+    area_arr = linsizes[:,3]
+    rad_size_arr = linsizes[:,7]
+    tan_size_arr = linsizes[:,8]
+
+    plt.ion()
+    fig = plt.figure(figsize=figsize)
+
+    area_ax = fig.add_subplot(311)
+    rad_size_ax = fig.add_subplot(312)
+    tan_size_ax = fig.add_subplot(313)
+
+    area_ax.grid()
+    rad_size_ax.grid()
+    tan_size_ax.grid()
+
+    area_ax.set_xlim(290,320)
+    rad_size_ax.set_xlim(290,320)
+    tan_size_ax.set_xlim(290,320)
+
+    area_ax.set_ylim(0.4,2.6)
+    rad_size_ax.set_ylim(0.6,2.8)
+    tan_size_ax.set_ylim(0.4,1.4)
+
+    area_ax.set_yticks([0.5,1,1.5,2,2.5])
+    rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
+    tan_size_ax.set_yticks([0.6,1,1.4])
+
+    area_ax.set_xticks([295,300,305,310,315,320])
+    rad_size_ax.set_xticks([295,300,305,310,315,320])
+    tan_size_ax.set_xticks([295,300,305,310,315,320])
+
+    area_ax.set_xticklabels([])
+    rad_size_ax.set_xticklabels([])
+
+    area_ax.set_ylabel("Area [R$_{e}^{2}$]",fontsize=20)
+    rad_size_ax.set_ylabel("Radial size [R$_{e}$]",fontsize=20)
+    tan_size_ax.set_ylabel("Tangential size [R$_{e}$]",fontsize=20)
+    tan_size_ax.set_xlabel("Time [s]",fontsize=20)
+
+    area_ax.tick_params(labelsize=16)
+    rad_size_ax.tick_params(labelsize=16)
+    tan_size_ax.tick_params(labelsize=16)
+
+    area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
+    rad_size_ax.plot(time_arr,rad_size_arr,color="black",linewidth=2)
+    tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
+
+    plt.tight_layout()
+
+    fig.show()
+
+    plt.savefig("lin_sizes/sizefig.png")
+    print("lin_sizes/sizefig.png")
+
+    return None
+
+
 def magp_ratio(runid):
 
     filenames = os.listdir("Props/"+runid)

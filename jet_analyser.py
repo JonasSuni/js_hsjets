@@ -380,6 +380,49 @@ def restrict_area(vlsvobj,xlim,ylim):
     return masked_ci
 
 
+def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
+
+    # finds cellids of cells that fulfill the specified criterion and the specified
+    # X,Y-limits
+
+    # find correct file based on file number and run id
+    file_nr = str(filenumber).zfill(7)
+    file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
+
+    # open vlsv file for reading
+    vlsvreader = pt.vlsvfile.VlsvReader(file_path)
+
+    origid = vlsvreader.read_variable("CellID")
+    sorigid = origid[np.argsort(origid)]
+
+    rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
+    v = vlsvreader.read_variable("v")[np.argsort(origid)]
+
+    # ratio of x-directional dynamic pressure and solar wind dynamic pressure
+    spdynx = m_p*rho*(v[:,0]**2)
+
+    #npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
+    #nrho = rho/rho_sw
+
+    spdynx_sw,srho_sw = ci2vars_nofile([spdynx,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
+
+    pdyn_sw = np.mean(spdynx_sw)
+    rho_sw = np.mean(srho_sw)
+
+    npdynx = spdynx/pdyn_sw
+    nrho = rho/rho_sw
+
+    jet_p = np.ma.masked_greater(npdynx,0.25)
+    jet_p.mask[nrho < 3.5] = False
+
+    masked_ci = sorigid[jet_p.mask]
+
+    # if boundaries have been set, discard cellids outside boundaries
+    if not not boxre:
+        return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
+    else:
+        return masked_ci
+
 def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
 
     # finds cellids of cells that fulfill the specified criterion and the specified
