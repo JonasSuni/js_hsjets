@@ -12,6 +12,7 @@ def custmake(runid,filenumber,outputfilename):
     bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
     vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    open("/wrk/sunijona/VLSV/"+outputfilename,"w").close()
     vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="/wrk/sunijona/VLSV/"+outputfilename)
 
     rho = vlsvreader.read_variable("rho")
