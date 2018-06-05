@@ -323,9 +323,18 @@ def contour_gen(runid,start,stop,vmax=1.5):
 
     return None
 
+def contour_gen_ff(runid,start,stop,vmax=1.5):
 
+    outputfilename = "new_"+runid+"_"+str(start)+"_"+str(stop)+".vlsv"
+    outputdir = "Conts2/"+runid+"/"
 
+    for n in xrange(start,stop+1):
 
+        jfm.custmake(runid,n,outputfilename)
+
+        pt.plot.plot_colormap(filename="/wrk/sunijona/VLSV/"+outputfilename,var="spdyn",run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,title="",cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],external=jc.jc_cust_scr,pass_vars=["npdynx","nrho","tapdyn"])
+
+    return None
 
 ###VIRTUAL SPACECRAFT MAKER HERE###
 

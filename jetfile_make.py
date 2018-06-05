@@ -6,6 +6,95 @@ import jet_analyser as ja
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def custmake(runid,filenumber,outputfilename):
+
+    bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="/wrk/sunijona/VLSV/"+outputfilename)
+
+    rho = vlsvreader.read_variable("rho")
+    v = vlsvreader.read_variable("v")
+
+    origid = vlsvreader.read_variable("CellID")
+    sorigid = vlsvreader.read_variable("CellID")
+    sorigid.sort()
+
+    # calculate the dynamic pressure and the x-direction dynamic pressure
+    pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+    pdynx = m_p*rho*(v[:,0]**2)
+
+    timerange = xrange(filenumber-180,filenumber+180+1)
+
+    # initialise the time average of the dynamic pressures and densities
+    tpdynavg = np.zeros(len(pdyn))
+
+    for n in timerange:
+
+        if n == filenumber:
+            continue
+        
+        # find correct file for current time step
+        tfile_nr = str(n).zfill(7)
+        tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
+
+        # open file for current time step
+        f = pt.vlsvfile.VlsvReader(tfile_p)
+        
+        trho = f.read_variable("rho")
+        tv = f.read_variable("v")
+
+        # read cellids for current time step
+        cellids = f.read_variable("CellID")
+        
+        # dynamic pressure for current time step
+        tpdyn = m_p*trho*(np.linalg.norm(tv,axis=-1)**2)
+
+        # sort dynamic pressures
+        otpdyn = tpdyn[cellids.argsort()]
+
+        # prevent divide by zero errors
+        otpdyn[otpdyn == 0.0] = 1.0e-27
+
+        tpdynavg += otpdyn
+
+    tpdynavg /= len(timerange)-1
+
+    # sort dynamic pressure, x-directional dynamic pressure and density
+    spdyn = pdyn[origid.argsort()]
+    spdynx = pdynx[origid.argsort()]
+    srho = rho[origid.argsort()]
+
+    spdyn_sw,srho_sw = ja.ci2vars_nofile([spdyn,srho],sorigid,ja.restrict_area(vlsvreader,[14,16],[-4,4]))
+
+    pdyn_sw = np.mean(spdynx_sw)
+    rho_sw = np.mean(srho_sw)
+
+    npdynx = spdynx/pdyn_sw
+    nrho = srho/rho_sw
+    tapdyn = spdyn/tpdynavg
+
+    # density to 1/cm^3
+    srho /= 1.0e+6
+
+    # dynamic pressure to nPa
+    spdyn /= 1.0e-9
+    tpdynavg /= 1.0e-9
+
+    # write the new variables to the writer file 
+    vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=tapdyn,name="tapdyn",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=spdyn,name="spdyn",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=sorigid,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
+
+    # copy variables from reader file to writer file
+    vlsvwriter.copy_variables(vlsvreader)
+    
+    vlsvwriter.close()
+    
+    return None
 
 def pahkmake(file_number,runid,halftimewidth,sw_params=[1.0e+6,750.0e+3]):
     # creates temporary vlsv file with new variables: x-directional dynamic pressure/solar wind

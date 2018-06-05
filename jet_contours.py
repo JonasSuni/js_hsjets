@@ -225,42 +225,77 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     #x = props[:,18]
     #y = props[:,19]
 
+    # zoom variables for smoother contours
     npdynx = scipy.ndimage.zoom(npdynx, 3)
     nrho = scipy.ndimage.zoom(nrho, 3)
     tapdyn = scipy.ndimage.zoom(tapdyn, 3)
     XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
     YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
+    # make custom mask
     jet = np.ma.masked_greater(npdynx,0.25)
     jet.mask[nrho < 3.5] = False
     jet.mask[tapdyn > 2] = True
     jet.fill_value = 0
     jet[jet.mask == False] = 1
 
+    # draw contour
     contour_new = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="black")
 
     #ax.plot(x,y,"o",color="black",markersize=2)
 
     return None
 
+def jc_cust_scr(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # extmaps consists of [npdynx,nrho,tapdyn]
+
+    npdynx,nrho,tapdyn = extmaps[0],extmaps[1],extmaps[2]
+
+    # zoom variables for smoother contours
+    npdynx = scipy.ndimage.zoom(npdynx, 3)
+    nrho = scipy.ndimage.zoom(nrho, 3)
+    tapdyn = scipy.ndimage.zoom(tapdyn, 3)
+    XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
+    YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
+
+    # make custom mask
+    jet = np.ma.masked_greater(npdynx,0.25)
+    jet.mask[nrho < 3.5] = False
+    jet.mask[tapdyn > 2] = True
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
+
+    # draw contour
+    contour_new = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="black")
+
+    return None
+
 def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
+    # read variable to get valid shape
     rho = extmaps[0]
 
+    # read external parameters
     runid = ext_pars[0]
     file_nr = ext_pars[1]
     halftimewidth = ext_pars[2]
 
+    # open properties file
     props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr)+"_"+str(halftimewidth)+".csv").as_matrix()
 
+    # read cellids from file
     cellids = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(file_nr).zfill(7)+".vlsv").read_variable("CellID")
 
+    # sort cellids numerically
     cellids = cellids[cellids.argsort()]
 
+    # load masked cellids from file
     msk_ids = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask")
 
+    # reconstruct mask
     msk = np.in1d(cellids,msk_ids).astype(int)
 
+    # shape mask to fit rho
     msk = np.reshape(msk,rho.shape)
 
     #rho = scipy.ndimage.zoom(rho, 3)
@@ -268,14 +303,18 @@ def jc_fromfile(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     #XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
     #YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
-    jet = np.ma.masked_greater_equal(msk,1.0)
-    jet.fill_value = 0
-    jet[jet.mask == False] = 1
+    #jet = np.ma.masked_greater_equal(msk,1.0)
+    #jet.fill_value = 0
+    #jet[jet.mask == False] = 1
 
+    # positions of jets
     x = props[:,18]
     y = props[:,19]
 
-    contour_fromfile = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0,colors="black")
+    # draw contour
+    contour_fromfile = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
+    
+    # draw positions of jets
     marks1, = ax.plot(x,y,"x",color="red",markersize=6)
 
     return None

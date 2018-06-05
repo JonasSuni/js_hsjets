@@ -15,16 +15,23 @@ r_e = 6.371e+6
 
 def cust_contour(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
   # extmaps is ["rho","v","X","Y"]
+  # creates mask based on Plaschke and Archer&Horbury criteria
 
+  # Algorithm requires time-averaging, exit if no time steps to avg from
   if type(extmaps[0]) is not list:
     print("Requires pass_times to be larger than 0. Exiting.")
     quit()
 
+  # width of timeframe to average from
   timewidth = len(extmaps)
+
+  # find the index of the time step to be plotted
   curr_step = (timewidth-1)/2
   curr_maps = extmaps[curr_step]
 
+  # mask values that would lead to divide-by-0 errors
   rho = np.ma.masked_less_equal(curr_maps[0][:,:], 0)
+  
   v = curr_maps[1][:,:,:]
   vx = curr_maps[1][:,:,0]
   pdyn = rho*(np.linalg.norm(v,axis=-1)**2)
@@ -33,36 +40,49 @@ def cust_contour(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
   X = curr_maps[2][:,:]
   Y = curr_maps[3][:,:]
 
+  # ~mask region from which solar wind parameters are calculated
   sw_mask = np.ma.masked_greater(X,16*r_e)
   sw_mask.mask[X < 14*r_e] = True
   sw_mask.mask[Y < -4*r_e] = True
   sw_mask.mask[Y > 4*r_e] = True
 
+  # calculate averages of rho and pdyn in said region
   rho_sw = np.mean(np.ma.array(rho,mask=sw_mask.mask).compressed())
   pdyn_sw = np.mean(np.ma.array(pdyn,mask=sw_mask.mask).compressed())
 
+  # initialise pdyn time average
   avgpdyn = np.zeros(np.array(pdyn.shape))
 
   for i in range(timewidth):
+    
+    # exclude plotted time step from average
     if i == curr_step:
         continue
+
+    # add pdyn of time step to pdyn time average
     tmaps = extmaps[i]
     tpdyn = tmaps[0]*(np.linalg.norm(tmaps[1],axis=-1)**2)
     avgpdyn = np.add(avgpdyn,tpdyn)
 
+  # divide pdyn time average by number of steps averaged over
   avgpdyn = np.divide(np.ma.masked_less_equal(avgpdyn,0),np.array([timewidth-1]))
+  
+  # mask values that would lead to divide-by-0 errors
   avgpdyn = np.ma.masked_less_equal(avgpdyn,0)
 
+  # define the criteria
   Plaschke = pdynx/pdyn_sw
   SWCrit = rho/rho_sw
   ArcherHorbury = np.divide(pdyn,avgpdyn)
 
+  # create the mask
   jet = np.ma.masked_greater(Plaschke,0.25)
   jet.mask[SWCrit < 3.5] = False
   jet.mask[ArcherHorbury > 2] = True
   jet.fill_value = 0
   jet[jet.mask == False] = 1
 
+  # draw the contour
   contour_jet = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0,colors="black")
 
 def expr_pdyn_gen(exprmaps):
@@ -70,6 +90,7 @@ def expr_pdyn_gen(exprmaps):
   # exprmaps is ["rho","v"]
   # returns dynamic pressure in nanopascals
 
+  # find variables for the time step to be plotted
   timewidth = len(exprmaps)
   curr_step = (timewidth-1)/2
   curr_maps = exprmaps[curr_step]

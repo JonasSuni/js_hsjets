@@ -1,18 +1,28 @@
-# Installation:
+### Installation:
 
-# Install dependencies:
+### Install dependencies:
 sudo apt-get install mayavi2 python-matplotlib python-numpy python-scipy ipython
 
-# Install analysator
+### Install analysator
 https://github.com/fmihpc/analysator
 
-# Set pythonpath environment variable:
+### Set pythonpath environment variable:
 echo "export PYTHONPATH=$PYTHONPATH:/homeappl/home/<username>/js_hsjets" >> $HOME/.bashrc
 
-# Modify plot_panel.py in analysator/pyPlots
+### Modify plot_panel.py in analysator/pyPlots
+
 # Add to the input vars of plot_colormap the new var
 ext_pars = []
 # Change
 extresult=external(ax1, XmeshXY,YmeshXY, pass_maps)
 # To
 extresult=external(ax1, XmeshXY,YmeshXY, pass_maps, ext_pars)
+
+# change
+cb.ax.tick_params(labelsize=fontsize3)
+# to
+cb.ax.tick_params(labelsize=16)
+
+### Modify pytools.py
+
+# comment out the "else" statement leading to "import grid"
