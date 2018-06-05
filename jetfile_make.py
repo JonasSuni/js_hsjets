@@ -68,7 +68,7 @@ def custmake(runid,filenumber,outputfilename):
 
     spdyn_sw,srho_sw = ja.ci2vars_nofile([spdyn,srho],sorigid,ja.restrict_area(vlsvreader,[14,16],[-4,4]))
 
-    pdyn_sw = np.mean(spdynx_sw)
+    pdyn_sw = np.mean(spdyn_sw)
     rho_sw = np.mean(srho_sw)
 
     npdynx = spdynx/pdyn_sw
