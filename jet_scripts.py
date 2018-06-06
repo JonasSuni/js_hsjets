@@ -339,7 +339,7 @@ def contour_gen(runid,start,stop,vmax=1.5):
 
     return None
 
-def contour_gen_ff(runid,start,stop,vmax=1.5):
+def contour_gen_ff(runid,start,stop,vmax=1.5,boxre=[6,16,-6,6]):
 
     outputfilename = "new_"+runid+"_"+str(start)+"_"+str(stop)+".vlsv"
     outputdir = "Conts2/"+runid+"/"
@@ -351,7 +351,7 @@ def contour_gen_ff(runid,start,stop,vmax=1.5):
 
         jfm.custmake(runid,n,outputfilename)
 
-        pt.plot.plot_colormap(filename="/wrk/sunijona/VLSV/"+outputfilename,var="spdyn",run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],external=jc.jc_cust_scr,pass_vars=["npdynx","nrho","tapdyn"])
+        pt.plot.plot_colormap(filename="/wrk/sunijona/VLSV/"+outputfilename,var="spdyn",run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,boxre=boxre,external=jc.jc_cust_scr,pass_vars=["npdynx","nrho","tapdyn"])
 
     return None
 
