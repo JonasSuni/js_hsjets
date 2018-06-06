@@ -289,7 +289,7 @@ def restrict_area(vlsvobj,xlim,ylim):
     if type(X) is not np.ndarray:
 
         cellids = cellids[cellids.argsort()]
-        simext = vlsvobj.get_spatial_mesh_size()
+        simext = vlsvobj.get_spatial_mesh_extent()
         
         if simsize[1] != 1:
             simbounds = [simext[0],simext[3],simext[1],simext[4]]
