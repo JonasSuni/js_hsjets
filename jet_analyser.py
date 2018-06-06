@@ -276,9 +276,36 @@ def restrict_area(vlsvobj,xlim,ylim):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
 
     # read variables from vlsvobject
+    simsize = vlsvobj.get_spatial_mesh_size()
+    
     X = vlsvobj.read_variable("X")
-    Y = vlsvobj.read_variable("Y")
+    if simsize[1] !=1 :
+        Y = vlsvobj.read_variable("Y")
+    else:
+        Y = vlsvobj.read_variable("Z")
+
     cellids = vlsvobj.read_variable("CellID")
+
+    if type(X) is not np.ndarray:
+
+        cellids = cellids[cellids.argsort()]
+        simext = vlsvobj.get_spatial_mesh_size()
+        
+        if simsize[1] != 1:
+            simbounds = [simext[0],simext[3],simext[1],simext[4]]
+        else:
+            simbounds = [simext[0],simext[3],simext[2],simext[5]]
+
+        simdim = simsize[simsize!=1]
+
+        X = np.linspace(simbounds[0],simbounds[1],simdim[0]+1)[:-1]
+        X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
+
+        Y = np.linspace(simbounds[2],simbounds[3],simdim[1]+1)[:-1]
+        Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
+        Y = np.reshape(Y,(simdim[0],simdim[1]))
+        Y = Y.T
+        Y = Y.flatten()
 
     # mask the cellids within the specified limits
     msk = np.ma.masked_greater_equal(X,xlim[0]*r_e)

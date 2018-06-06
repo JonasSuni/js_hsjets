@@ -85,6 +85,7 @@ def custmake(runid,filenumber,outputfilename):
 
     X = vlsvreader.read_variable("X")
     Y = vlsvreader.read_variable("Y")
+    Z = vlsvreader.read_variable("Z")
 
     # write the new variables to the writer file 
     vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
@@ -94,6 +95,7 @@ def custmake(runid,filenumber,outputfilename):
     vlsvwriter.write(data=sorigid,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=X,name="X",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=Y,name="Y",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=Z,name="Z",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=srho,name="rho",tag="VARIABLE",mesh="SpatialGrid")
 
     # copy variables from reader file to writer file
