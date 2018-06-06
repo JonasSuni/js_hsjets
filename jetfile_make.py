@@ -12,7 +12,7 @@ def custmake(runid,filenumber,outputfilename):
     bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
     vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-    open("/wrk/sunijona/VLSV/"+outputfilename,"w").close()
+    #open("/wrk/sunijona/VLSV/"+outputfilename,"w").close()
     vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="/wrk/sunijona/VLSV/"+outputfilename)
 
     rho = vlsvreader.read_variable("rho")
@@ -26,18 +26,18 @@ def custmake(runid,filenumber,outputfilename):
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
     pdynx = m_p*rho*(v[:,0]**2)
 
-    timerange = xrange(filenumber-180,filenumber+180+1)
+    timerange = xrange(filenumber-20,filenumber+20+1)
 
     # initialise the time average of the dynamic pressures and densities
     tpdynavg = np.zeros(len(pdyn))
 
-    for n in timerange:
+    for n_t in timerange:
 
-        if n == filenumber:
+        if n_t == filenumber:
             continue
         
         # find correct file for current time step
-        tfile_nr = str(n).zfill(7)
+        tfile_nr = str(n_t).zfill(7)
         tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
 
         # open file for current time step
@@ -83,15 +83,21 @@ def custmake(runid,filenumber,outputfilename):
     spdyn /= 1.0e-9
     tpdynavg /= 1.0e-9
 
+    X = vlsvreader.read_variable("X")
+    Y = vlsvreader.read_variable("Y")
+
     # write the new variables to the writer file 
     vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=tapdyn,name="tapdyn",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=spdyn,name="spdyn",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=sorigid,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=X,name="X",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=Y,name="Y",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=srho,name="rho",tag="VARIABLE",mesh="SpatialGrid")
 
     # copy variables from reader file to writer file
-    vlsvwriter.copy_variables(vlsvreader)
+    #vlsvwriter.copy_variables(vlsvreader)
     
     vlsvwriter.close()
     

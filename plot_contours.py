@@ -144,7 +144,7 @@ def plot_new(runid,filenumber,vmax=1.5):
   bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
   print(bulkname)
 
-  pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=filenumber,outputdir=outputdir,colormap=parula,lin=1,usesci=0,title="",cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],expression=expr_pdyn_gen,external=cust_contour,pass_vars=["rho","v","X","Y"],pass_times=180)
+  pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=filenumber,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],expression=expr_pdyn_gen,external=cust_contour,pass_vars=["rho","v","X","Y"],pass_times=180)
 
 def plot_plaschke(filenumber,run,newfile=True,cmap="viridis",draw_pic=None):
 

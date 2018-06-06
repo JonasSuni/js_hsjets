@@ -311,7 +311,23 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
 
 
+###PLOT MAKER HERE###
 
+def plotmake(runid,start,stop,vmax=1.5):
+
+    bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+    outputdir = "Plots/"+runid+"/"
+
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
+    for n in xrange(start,stop+1):
+
+        bulkname="bulk."+str(n).zfill(7)+".vlsv"
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,expression=pc.expr_pdyn,pass_vars=["rho","v"])
+
+    return None
 
 ###CONTOUR MAKER HERE###
 
@@ -328,11 +344,14 @@ def contour_gen_ff(runid,start,stop,vmax=1.5):
     outputfilename = "new_"+runid+"_"+str(start)+"_"+str(stop)+".vlsv"
     outputdir = "Conts2/"+runid+"/"
 
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
     for n in xrange(start,stop+1):
 
         jfm.custmake(runid,n,outputfilename)
 
-        pt.plot.plot_colormap(filename="/wrk/sunijona/VLSV/"+outputfilename,var="spdyn",run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,title="",cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],external=jc.jc_cust_scr,pass_vars=["npdynx","nrho","tapdyn"])
+        pt.plot.plot_colormap(filename="/wrk/sunijona/VLSV/"+outputfilename,var="spdyn",run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,boxre=[6,16,-6,6],external=jc.jc_cust_scr,pass_vars=["npdynx","nrho","tapdyn"])
 
     return None
 
