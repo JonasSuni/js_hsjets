@@ -296,6 +296,8 @@ def restrict_area(vlsvobj,xlim,ylim):
         else:
             simbounds = [simext[0],simext[3],simext[2],simext[5]]
 
+        simbounds = np.reshape(simext,(2,3)).T[simsize!=1].flatten()
+
         simdim = simsize[simsize!=1]
 
         X = np.linspace(simbounds[0],simbounds[1],simdim[0]+1)[:-1]
