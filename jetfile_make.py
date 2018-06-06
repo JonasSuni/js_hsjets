@@ -6,8 +6,6 @@ import jet_analyser as ja
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-#test
-
 def custmake(runid,filenumber,outputfilename):
 
     bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
