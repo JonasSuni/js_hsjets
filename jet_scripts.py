@@ -29,6 +29,7 @@ def prop_file_maker(run,start,stop,halftimewidth):
     return None
 
 def linsize_maker(run,start,stop):
+    # create linsize properties files with custom jet criteria for bulk files in range
 
     timerange = xrange(start,stop+1)
 
@@ -39,54 +40,76 @@ def linsize_maker(run,start,stop):
     return None
 
 def jet_script_dim(filenumber,runid):
+    # script for creating linsize properties files
 
+    # find correct file based on runid and filenumber
     file_nr = str(filenumber).zfill(7)
     file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
 
+    # open file
     vlsvobj=pt.vlsvfile.VlsvReader(file_path)
 
+    # make mask
     msk = ja.make_cust_mask(filenumber,runid,180,[8,16,-6,6])
+    
+    # sort jets
     jets = ja.sort_jets(vlsvobj,msk,100,3000,[1,1])
+    
+    # create linsize properties file
     calc_linsize(vlsvobj,jets,runid,filenumber)
 
     return None
 
 def calc_linsize(vlsvobj,jets,runid,file_number):
 
+    # Area of one cell
     dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
 
+    # erase contents of outputfile if it already exists
     open("lin_sizes/"+runid+"/linsizes_"+runid+"_"+str(file_number)+".csv","w").close()
 
+    # open outputfile in append mode
     outputfile = open("lin_sizes/"+runid+"/linsizes_"+runid+"_"+str(file_number)+".csv","a")
 
+    # write header to outputfile
     outputfile.write("x_mean [R_e],y_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]")
 
+    # read variables
     v,X,Y,cellids = ja.read_mult_vars(vlsvobj,["v","X","Y","CellID"])
 
+    # calculate magnitude
     vmag = np.linalg.norm(v,axis=-1)
 
     for event in jets:
 
         outputfile.write("\n")
 
+        # restrict variables to cellids corresponding to jets
         jvmag,jX,jY = ja.ci2vars_nofile([vmag,X,Y],cellids,event)
 
+        # calculate geometric center of jet
         x_mean = np.mean([max(jX),min(jX)])/r_e
         y_mean = np.mean([max(jY),min(jY)])/r_e
 
+        # calculate jet size
         A = dA*event.size/(r_e**2)
         Nr_cells = event.size
 
+        # geometric center of jet in polar coordinates
         phi = np.rad2deg(np.arctan(y_mean/x_mean))
         r_d = np.linalg.norm([x_mean,y_mean])
 
+        # r-coordinates corresponding to all (x,y)-points in jet
         r = np.linalg.norm(np.array([jX,jY]),axis=0)/r_e
 
+        # calculate linear sizes of jet
         size_rad = max(r)-min(r)
         size_tan = A/size_rad
 
+        # properties array
         temp_arr = [x_mean,y_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
 
+        # write array to file
         outputfile.write(",".join(map(str,temp_arr)))
 
     outputfile.close()
@@ -98,6 +121,7 @@ def calc_linsize(vlsvobj,jets,runid,file_number):
 ###FIGURE MAKERS HERE###
 
 def linsize_fig(figsize=(10,10)):
+    # script for creating time series of jet linear sizes and area
 
     linsizes = pd.read_csv("jet_linsize.csv").as_matrix()
 

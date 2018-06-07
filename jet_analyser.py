@@ -19,7 +19,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     outputfile = open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","a")
 
     # write header to csv file
-    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e],MMS,MA")
+    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e],MMS_max,MA_max")
 
     # initialise list of properties
     props_list = []
@@ -99,15 +99,16 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         x_size = (max(jX)-min(jX))/r_e
         y_size = (max(jY)-min(jY))/r_e
 
-        # Mach numbers for max velocity
-        vms_vmax = jvms[np.where(jvmag==max(jvmag))[0]][0]/1.0e+3
-        va_vmax = jva[np.where(jvmag==max(jvmag))[0]][0]/1.0e+3
+        # Mach numbers
+        MMS = np.divide(jvmag,jvms)
+        MA = np.divide(jvmag,jva)
 
-        MMS = v_max/vms_vmax
-        MA = v_max/va_vmax
+        # Maximum mach numbers
+        MMS_max = max(MMS)
+        MA_max = max(MA)
 
         # properties for current event
-        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size,MMS,MA]
+        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size,MMS_max,MA_max]
 
         # write properties for current event to list of properties
         props_list.append(temp_arr)
@@ -275,34 +276,41 @@ def read_mult_vars(vlsvobj,input_vars):
 def restrict_area(vlsvobj,xlim,ylim):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
 
-    # read variables from vlsvobject
+    # Get the simulation size
     simsize = vlsvobj.get_spatial_mesh_size()
     
+    # Read X from vlsvobj
     X = vlsvobj.read_variable("X")
+    
+    # check if ecliptic or polar run and assign Y accordingly
     if simsize[1] !=1 :
         Y = vlsvobj.read_variable("Y")
     else:
         Y = vlsvobj.read_variable("Z")
 
+    # read cellids
     cellids = vlsvobj.read_variable("CellID")
 
+    # if variables X,Y,Z do not exist, reconstruct them from simulation parameters
     if type(X) is not np.ndarray:
 
+        # sort cellids
         cellids = cellids[cellids.argsort()]
+        
+        # simulation extents
         simext = vlsvobj.get_spatial_mesh_extent()
         
-        if simsize[1] != 1:
-            simbounds = [simext[0],simext[3],simext[1],simext[4]]
-        else:
-            simbounds = [simext[0],simext[3],simext[2],simext[5]]
-
+        # simulation extents for the simulation plane only
         simbounds = np.reshape(simext,(2,3)).T[simsize!=1].flatten()
 
+        # simulation size for the simulation plane only
         simdim = simsize[simsize!=1]
 
+        # reconstruct X
         X = np.linspace(simbounds[0],simbounds[1],simdim[0]+1)[:-1]
         X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
 
+        # reconstruct Y
         Y = np.linspace(simbounds[2],simbounds[3],simdim[1]+1)[:-1]
         Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
         Y = np.reshape(Y,(simdim[0],simdim[1]))
@@ -403,7 +411,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
     # initialise time average of dynamic pressure
-    tpdynavg = np.zeros(np.shape(pdyn))
+    tpdynavg = np.zeros(pdyn.shape)
 
     # range of timesteps to calculate average of
     timerange = xrange(filenumber-halftimewidth,filenumber+halftimewidth+1)
@@ -432,14 +440,14 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
 
         # sort dynamic pressures
         otpdyn = tpdyn[cellids.argsort()]
-
-        # prevent divide by zero errors
-        otpdyn[otpdyn == 0.0] = 1.0e-27
         
-        tpdynavg += otpdyn
+        tpdynavg = np.add(tpdynavg,otpdyn)
 
     # calculate time average of dynamic pressure
     tpdynavg /= len(timerange)-1
+
+    # prevent divide by zero errors
+    tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
     # ratio of dynamic pressure to its time average
     tapdyn = np.divide(pdyn,tpdynavg)

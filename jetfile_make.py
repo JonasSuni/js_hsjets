@@ -66,11 +66,14 @@ def custmake(runid,filenumber,outputfilename):
     spdynx = pdynx[origid.argsort()]
     srho = rho[origid.argsort()]
 
+    # pull values of pdyn and rho in boxre area [14,16,-4,4]
     spdyn_sw,srho_sw = ja.ci2vars_nofile([spdyn,srho],sorigid,ja.restrict_area(vlsvreader,[14,16],[-4,4]))
 
+    # calculate averages of said pdyn and rho to use as solar wind parameters
     pdyn_sw = np.mean(spdyn_sw)
     rho_sw = np.mean(srho_sw)
 
+    # calculate ratios
     npdynx = spdynx/pdyn_sw
     nrho = srho/rho_sw
     tapdyn = np.divide(spdyn,tpdynavg)

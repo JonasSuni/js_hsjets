@@ -98,8 +98,10 @@ def expr_pdyn_gen(exprmaps):
   rho = curr_maps[0]
   v = curr_maps[1]
 
+  # calculate dynamic pressure
   pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
+  # pdyn in nanopascals
   pdyn /= 1.0e-9
 
   return pdyn
@@ -111,8 +113,10 @@ def expr_pdyn(exprmaps):
   rho = exprmaps[0]
   v = exprmaps[1]
 
+  # calculate dynamic pressure
   pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
+  # pdyn in nanopascals
   pdyn /= 1.0e-9
 
   return pdyn
@@ -124,6 +128,7 @@ def expr_srho(exprmaps):
   rho = exprmaps[0][:,:]
   cellids = exprmaps[1][:,:]
 
+  # rho in cm^-3
   srho = rho/1.0e+6
 
   return srho
@@ -140,6 +145,7 @@ def plot_new(runid,filenumber,vmax=1.5):
   if not os.path.exists(outputdir):
         os.makedirs(outputdir)
 
+  # find correct file based on runid and filenumber
   bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
   bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
   print(bulkname)

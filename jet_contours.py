@@ -9,6 +9,7 @@ r_e = 6.371e+6
 def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,p_crit]
 
+    # assign variables and zoom for smoother contours
     npdynx = extmaps[0]
     nrho = extmaps[1]
 
@@ -46,6 +47,7 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_archerhorbury(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [tapdyn]
 
+    # assign variable and zoom it for smoother contours
     tapdyn = extmaps[0]
 
     tapdyn = scipy.ndimage.zoom(tapdyn, 3)
@@ -73,6 +75,7 @@ def jc_archerhorbury(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_karlsson(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [tarho]
 
+    # assign variable and zoom it for smoother contours
     tarho = extmaps[0]
     
     tarho = scipy.ndimage.zoom(tarho, 3)
@@ -98,6 +101,7 @@ def jc_karlsson(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_all(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,tarho]
 
+    # assign variables and zoom for smoother contours
     npdynx,nrho,tapdyn,tarho = extmaps[0],extmaps[1],extmaps[2],extmaps[3]
 
     npdynx = scipy.ndimage.zoom(npdynx, 3)
@@ -142,6 +146,7 @@ def jc_all(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,tarho,identifiers]
 
+    # assign variables and zoom for smoother contours
     npdynx,nrho,tapdyn,tarho = extmaps[0],extmaps[1],extmaps[2],extmaps[3]
 
     npdynx = scipy.ndimage.zoom(npdynx, 3)
@@ -151,6 +156,7 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
     YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
 
+    # assign identifier parameters
     identifiers = extmaps[4]
     identifiers = identifiers[0]
     ids = []
@@ -163,8 +169,10 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     file_nr_1 = ids[3]
     halftimewidth_1 = ids[4]
 
+    # open properties file
     props = pd.read_csv("Props/"+runid+"/props_"+runid+"_"+str(file_nr_1)+"_"+str(halftimewidth_1)+".csv").as_matrix()
 
+    # read variables from prop file
     x = props[:,12]
     y = props[:,13]
 
@@ -197,6 +205,7 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # draw contours
     contour_cust = ax.contour(XmeshXY,YmeshXY,jet_cust.filled(),[0.5],linewidths=1.0, colors="black",label="CUSTOM")
 
+    # draw positions of jets
     ax.plot(x,y,"x",color="red")
 
 
@@ -205,6 +214,7 @@ def jc_all_cust(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn,identifiers]
 
+    # assign variables
     npdynx,nrho,tapdyn = extmaps[0],extmaps[1],extmaps[2]
 
     #identifiers = extmaps[3]
@@ -249,6 +259,7 @@ def jc_cust_new(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jc_cust_scr(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,tapdyn]
 
+    # assign variables
     npdynx,nrho,tapdyn = extmaps[0],extmaps[1],extmaps[2]
 
     # zoom variables for smoother contours
