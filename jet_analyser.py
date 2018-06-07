@@ -110,11 +110,13 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         # properties for current event
         temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size,MMS_max,MA_max]
 
-        # write properties for current event to list of properties
-        props_list.append(temp_arr)
+        if True:
 
-        # write properties for current event to csv file
-        outputfile.write(",".join(map(str,temp_arr)))
+            # write properties for current event to list of properties
+            props_list.append(temp_arr)
+
+            # write properties for current event to csv file
+            outputfile.write(",".join(map(str,temp_arr)))
 
     outputfile.close()
     print("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv")
