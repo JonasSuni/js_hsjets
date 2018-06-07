@@ -26,10 +26,10 @@ def custmake(runid,filenumber,outputfilename):
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
     pdynx = m_p*rho*(v[:,0]**2)
 
-    timerange = xrange(filenumber-20,filenumber+20+1)
+    timerange = xrange(filenumber-180,filenumber+180+1)
 
     # initialise the time average of the dynamic pressures and densities
-    tpdynavg = np.zeros(len(pdyn))
+    tpdynavg = np.zeros(pdyn.shape)
 
     for n_t in timerange:
 
@@ -37,11 +37,10 @@ def custmake(runid,filenumber,outputfilename):
             continue
         
         # find correct file for current time step
-        tfile_nr = str(n_t).zfill(7)
-        tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
+        tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
 
         # open file for current time step
-        f = pt.vlsvfile.VlsvReader(tfile_p)
+        f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
         
         trho = f.read_variable("rho")
         tv = f.read_variable("v")
@@ -55,12 +54,12 @@ def custmake(runid,filenumber,outputfilename):
         # sort dynamic pressures
         otpdyn = tpdyn[cellids.argsort()]
 
-        # prevent divide by zero errors
-        otpdyn[otpdyn == 0.0] = 1.0e-27
-
-        tpdynavg += otpdyn
+        tpdynavg = np.add(tpdynavg,otpdyn)
 
     tpdynavg /= len(timerange)-1
+
+    # prevent divide-by-0 errors
+    tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
     # sort dynamic pressure, x-directional dynamic pressure and density
     spdyn = pdyn[origid.argsort()]
@@ -74,7 +73,7 @@ def custmake(runid,filenumber,outputfilename):
 
     npdynx = spdynx/pdyn_sw
     nrho = srho/rho_sw
-    tapdyn = spdyn/tpdynavg
+    tapdyn = np.divide(spdyn,tpdynavg)
 
     # density to 1/cm^3
     srho /= 1.0e+6
@@ -83,19 +82,12 @@ def custmake(runid,filenumber,outputfilename):
     spdyn /= 1.0e-9
     tpdynavg /= 1.0e-9
 
-    X = vlsvreader.read_variable("X")
-    Y = vlsvreader.read_variable("Y")
-    Z = vlsvreader.read_variable("Z")
-
     # write the new variables to the writer file 
     vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=tapdyn,name="tapdyn",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=spdyn,name="spdyn",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=sorigid,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
-    vlsvwriter.write(data=X,name="X",tag="VARIABLE",mesh="SpatialGrid")
-    vlsvwriter.write(data=Y,name="Y",tag="VARIABLE",mesh="SpatialGrid")
-    vlsvwriter.write(data=Z,name="Z",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=srho,name="rho",tag="VARIABLE",mesh="SpatialGrid")
 
     # copy variables from reader file to writer file
