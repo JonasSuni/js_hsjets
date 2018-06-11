@@ -339,7 +339,11 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
 def plotmake(runid,start,stop,vmax=1.5):
 
-    bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
     outputdir = "Plots/"+runid+"/"
 
     if not os.path.exists(outputdir):
@@ -347,7 +351,10 @@ def plotmake(runid,start,stop,vmax=1.5):
 
     for n in xrange(start,stop+1):
 
-        bulkname="bulk."+str(n).zfill(7)+".vlsv"
+        if runid == "AED":
+            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
 
         pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,expression=pc.expr_pdyn,pass_vars=["rho","v"])
 

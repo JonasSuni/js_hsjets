@@ -8,8 +8,15 @@ r_e = 6.371e+6
 
 def custmake(runid,filenumber,outputfilename):
 
-    bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
-    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
     vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
     #open("/wrk/sunijona/VLSV/"+outputfilename,"w").close()
@@ -37,7 +44,10 @@ def custmake(runid,filenumber,outputfilename):
             continue
         
         # find correct file for current time step
-        tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
+        if runid == "AED":
+            tfile_name = "bulk.old."+str(n_t).zfill(7)+".vlsv"
+        else:
+            tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
 
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
