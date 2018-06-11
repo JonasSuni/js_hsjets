@@ -23,7 +23,12 @@ def custmake(runid,filenumber,outputfilename):
     vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="/wrk/sunijona/VLSV/"+outputfilename)
 
     rho = vlsvreader.read_variable("rho")
+    if type(rho) is not np.ndarray:
+        rho = vlsvreader.read_variable("proton/rho")
+
     v = vlsvreader.read_variable("v")
+    if type(v) is not np.ndarray:
+        v = vlsvreader.read_variable("proton/V")
 
     origid = vlsvreader.read_variable("CellID")
     sorigid = vlsvreader.read_variable("CellID")
@@ -53,7 +58,12 @@ def custmake(runid,filenumber,outputfilename):
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
         
         trho = f.read_variable("rho")
+        if type(trho) is not np.ndarray:
+            trho = f.read_variable("proton/rho")
+
         tv = f.read_variable("v")
+        if type(tv) is not np.ndarray:
+            tv = f.read_variable("proton/V")
 
         # read cellids for current time step
         cellids = f.read_variable("CellID")
@@ -253,7 +263,7 @@ def pahkmake(file_number,runid,halftimewidth,sw_params=[1.0e+6,750.0e+3]):
     return None
 
 
-def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3]):
+def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3],test_bool=False):
     # creates temporary vlsv file with new variable: ratio of x-directional dynamic pressure
     # and solar wind dynamic pressure
     
@@ -267,6 +277,7 @@ def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3]):
     
     rho = vlsvreader.read_variable("rho")
     v = vlsvreader.read_variable("v")
+    cellids = vlsvreader.read_variable("CellID")
 
     # calculate the dynamic pressure and the x-direction dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
@@ -282,10 +293,15 @@ def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3]):
     npdynx = pdynx/pdyn_sw
     nrho = rho/rho_sw
 
+    if test_bool:
+
+        pdyn[np.where(np.in1d(cellids,ja.restrict_area(vlsvreader,[14,16],[-4,4])))] = 42
+
     # write the new variables to the writer file
     vlsvwriter.write(data=npdyn,name="npdyn",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=pdyn,name="pdyn",tag="VARIABLE",mesh="SpatialGrid")
 
     # copy variables from reader file to writer file
     vlsvwriter.copy_variables(vlsvreader)
