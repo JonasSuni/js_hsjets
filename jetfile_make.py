@@ -25,11 +25,10 @@ def custmake(runid,filenumber,outputfilename):
     rho = vlsvreader.read_variable("rho")
     if type(rho) is not np.ndarray:
         rho = vlsvreader.read_variable("proton/rho")
-
-    v = vlsvreader.read_variable("v")
-    if type(v) is not np.ndarray:
         v = vlsvreader.read_variable("proton/V")
-
+    else:
+        v = vlsvreader.read_variable("v")
+    
     origid = vlsvreader.read_variable("CellID")
     sorigid = vlsvreader.read_variable("CellID")
     sorigid.sort()
@@ -60,10 +59,9 @@ def custmake(runid,filenumber,outputfilename):
         trho = f.read_variable("rho")
         if type(trho) is not np.ndarray:
             trho = f.read_variable("proton/rho")
-
-        tv = f.read_variable("v")
-        if type(tv) is not np.ndarray:
             tv = f.read_variable("proton/V")
+        else:
+            tv = f.read_variable("v")
 
         # read cellids for current time step
         cellids = f.read_variable("CellID")

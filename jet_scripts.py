@@ -361,8 +361,6 @@ def plotmake(runid,start,stop,vmax=1.5):
 
         if type(pt.vlsvfile.VlsvReader(bulkpath+bulkname).read_variable("rho")) is not np.ndarray:
             pv_1 = "proton/rho"
-
-        if type(pt.vlsvfile.VlsvReader(bulkpath+bulkname).read_variable("v")) is not np.ndarray:
             pv_2 = "proton/V"
 
         pt.plot.plot_colormap(filename=bulkpath+bulkname,run=runid,step=n,outputdir=outputdir,colormap=parula,lin=1,usesci=0,cbtitle="nPa",vmin=0,vmax=vmax,expression=pc.expr_pdyn,pass_vars=[pv_1,pv_2])
