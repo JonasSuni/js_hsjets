@@ -48,9 +48,17 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
 
         X,Y,Z = xyz_reconstruct(vlsvobj)
 
+    else:
+
+        X,Y,Z = X[cellids.argsort()],Y[cellids.argsort()],Z[cellids.argsort()]
+
+    rho,v,B,T,va,vms,Tpar,Tperp = rho[cellids.argsort()],v[cellids.argsort()],B[cellids.argsort()],T[cellids.argsort()],va[cellids.argsort()],vms[cellids.argsort()],Tpar[cellids.argsort()],Tperp[cellids.argsort()]
+
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
+
+    cellids = cellids[cellids.argsort()]
 
     for event in jets:
 
@@ -294,9 +302,6 @@ def read_mult_vars(vlsvobj,input_vars):
     return output_vars
 
 def xyz_reconstruct(vlsvobj):
-
-    cellids = vlsvobj.read_variable("CellID")
-    cellids = cellids[cellids.argsort()]
 
     simext = vlsvobj.get_spatial_mesh_extent()
     simsize = vlsvobj.get_spatial_mesh_size()
