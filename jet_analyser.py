@@ -32,7 +32,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     var_list = ["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"]
     T_list = ["TParallel","TPerpendicular"]
 
-    # if file has separate populations, read the proton populations
+    # if file has separate populations, read the proton populations instead
     if not vlsvobj.checK_variable("rho"):
 
         var_list[0] = "proton/rho"
@@ -312,20 +312,25 @@ def read_mult_vars(vlsvobj,input_vars):
 
 def xyz_reconstruct(vlsvobj):
 
+    # get simulation extents and dimension sizes
     simext = vlsvobj.get_spatial_mesh_extent()
     simsize = vlsvobj.get_spatial_mesh_size()
 
+    # discard 3rd dimension
     simdim = simsize[simsize!=1]
 
+    # reconstruct X
     X = np.linspace(simext[0],simext[3],simdim[0]+1)[:-1]
     X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
 
+    # reconstruct Y
     Y = np.linspace(simext[1],simext[4],simdim[1]+1)[:-1]
     Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
     Y = np.reshape(Y,(simdim[0],simdim[1]))
     Y = Y.T
     Y = Y.flatten()
 
+    # reconstruct Z
     Z = np.linspace(simext[2],simext[5],simdim[1]+1)[:-1]
     Z = np.pad(Z,(0,simdim[1]*(simdim[0]-1)),"wrap")
     Z = np.reshape(Z,(simdim[0],simdim[1]))
@@ -438,7 +443,6 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # X,Y-limits
 
     # find correct file based on file number and run id
-
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
     else:
@@ -459,6 +463,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     rho_sw = 1.0e+6
     vx_sw = 750.0e+3
 
+    # if file has separate populations, read proton population
     if type(vlsvreader.read_variable("rho")) is not np.ndarray:
         rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
@@ -504,6 +509,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
         
+        # if file has separate populations, read proton population
         if type(f.read_variable("rho")) is not np.ndarray:
             trho = f.read_variable("proton/rho")
             tv = f.read_variable("proton/V")
@@ -538,6 +544,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # make archer&horbury mask
     jet_ah = np.ma.masked_greater(tapdyn,2)
 
+    # make custom mask
     jet_cust = jet_ah
     jet_cust.mask = np.logical_or(jet_cust.mask,jet_p.mask)
 
