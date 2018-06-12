@@ -424,11 +424,19 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # X,Y-limits
 
     # find correct file based on file number and run id
-    file_nr = str(filenumber).zfill(7)
-    file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
+
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
     # open vlsv file for reading
-    vlsvreader = pt.vlsvfile.VlsvReader(file_path)
+    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
     origid = vlsvreader.read_variable("CellID")
     sorigid = origid[np.argsort(origid)]
@@ -474,11 +482,13 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
             continue
 
         # find correct file path for current time step
-        tfile_nr = str(n).zfill(7)
-        tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
+        if runid == "AED":
+            tfile_name = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            tfile_name = "bulk."+str(n).zfill(7)+".vlsv"
 
         # open file for current time step
-        f = pt.vlsvfile.VlsvReader(tfile_p)
+        f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
         
         if type(f.read_variable("rho")) is not np.ndarray:
             trho = f.read_variable("proton/rho")
