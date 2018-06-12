@@ -24,10 +24,29 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     # initialise list of properties
     props_list = []
 
-    # read variables from vlsv object
-    rho,v,B,T,X,Y,Z,va,vms,cellids = read_mult_vars(vlsvobj,["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"])
+    var_list = ["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"]
 
-    Tpar,Tperp = read_mult_vars(vlsvobj,["TParallel","TPerpendicular"])
+    T_list = ["TParallel","TPerpendicular"]
+
+    if not vlsvobj.checK_variable("rho"):
+
+        var_list[0] = "proton/rho"
+        var_list[1] = "proton/V"
+        var_list[3] = "proton/Temperature"
+        var_list[7] = "proton/va"
+        var_list[8] = "proton/vms"
+
+        T_list[0] = "proton/TParallel"
+        T_list[1] = "proton/TPerpendicular"
+
+    # read variables from vlsv object
+    rho,v,B,T,X,Y,Z,va,vms,cellids = read_mult_vars(vlsvobj,var_list)
+
+    Tpar,Tperp = read_mult_vars(vlsvobj,T_list)
+
+    if type(X) is not np.ndarray:
+
+        X,Y,Z = xyz_reconstruct(vlsvobj)
 
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
@@ -274,6 +293,32 @@ def read_mult_vars(vlsvobj,input_vars):
 
     return output_vars
 
+def xyz_reconstruct(vlsvobj):
+
+    cellids = vlsvobj.read_variable("CellID")
+    cellids = cellids[cellids.argsort()]
+
+    simext = vlsvobj.get_spatial_mesh_extent()
+    simsize = vlsvobj.get_spatial_mesh_size()
+
+    simdim = simsize[simsize!=1]
+
+    X = np.linspace(simext[0],simext[3],simdim[0]+1)[:-1]
+    X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
+
+    Y = np.linspace(simext[1],simext[4],simdim[1]+1)[:-1]
+    Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
+    Y = np.reshape(Y,(simdim[0],simdim[1]))
+    Y = Y.T
+    Y = Y.flatten()
+
+    Z = np.linspace(simext[2],simext[5],simdim[1]+1)[:-1]
+    Z = np.pad(Z,(0,simdim[1]*(simdim[0]-1)),"wrap")
+    Z = np.reshape(Z,(simdim[0],simdim[1]))
+    Z = Z.T
+    Z = Z.flatten()
+
+    return np.array([X,Y,Z])
 
 def restrict_area(vlsvobj,xlim,ylim):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
@@ -392,8 +437,12 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     rho_sw = 1.0e+6
     vx_sw = 750.0e+3
 
-    rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
-    v = vlsvreader.read_variable("v")[np.argsort(origid)]
+    if type(vlsvreader.read_variable("rho")) is not np.ndarray:
+        rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
+        v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
+    else:
+        rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
+        v = vlsvreader.read_variable("v")[np.argsort(origid)]
 
     # ratio of x-directional dynamic pressure and solar wind dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
@@ -431,8 +480,12 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(tfile_p)
         
-        trho = f.read_variable("rho")
-        tv = f.read_variable("v")
+        if type(f.read_variable("rho")) is not np.ndarray:
+            trho = f.read_variable("proton/rho")
+            tv = f.read_variable("proton/V")
+        else:
+            trho = f.read_variable("rho")
+            tv = f.read_variable("v")
 
         # read cellids for current time step
         cellids = f.read_variable("CellID")
