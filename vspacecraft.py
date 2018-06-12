@@ -17,14 +17,18 @@ m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 def make_wave_figs(outputfolder,start,stop):
+    # creates colormaps with a marker on the coordinates defined in sc_pos_marker_SLAMS
 
+    # create outputfolder if it doesn't already exist
     if not os.path.exists(outputfolder):
         os.makedirs(outputfolder)
 
+    # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
     for n in xrange(start,stop+1):
 
+        # file names
         f_name="bulk."+str(n).zfill(7)+".vlsv"
 
         pt.plot.plot_colormap(filename=f_path+f_name,outputdir=outputfolder+"/"+str(n)+"_",colormap=parula,vmin=0,vmax=1.5,usesci=0,lin=1,cbtitle="nPa",boxre=[6,18,-10,2],expression=pc.expr_pdyn,external=sc_pos_marker_SLAMS,pass_vars=["rho","v"])
@@ -32,14 +36,19 @@ def make_wave_figs(outputfolder,start,stop):
     return None
 
 def make_jet_figs(outputfolder,start,stop):
+    # creates colormaps with markers on the coordinates defined in sc_pos_marker_JET
+    # and draws custom contours
 
+    # create outputfolder if it doesn't already exist
     if not os.path.exists(outputfolder):
         os.makedirs(outputfolder)
 
+    # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
     for n in xrange(start,stop+1):
 
+        # file names
         f_name="bulk."+str(n).zfill(7)+".vlsv"
 
         pt.plot.plot_colormap(filename=f_path+f_name,outputdir=outputfolder+"/"+str(n)+"_",colormap=parula,vmin=0,vmax=1.5,usesci=0,lin=1,cbtitle="nPa",boxre=[6,18,-10,2],expression=pc.expr_pdyn,external=sc_pos_marker_JET,pass_vars=["rho","v"])
@@ -47,48 +56,63 @@ def make_jet_figs(outputfolder,start,stop):
     return None
 
 def sc_pos_marker_SLAMS(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # external function for make_wave_figs
+    # extmaps is [rho,v]
 
-    pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=2)
+    # draw markers
+    pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=3)
 
 def sc_pos_marker_JET(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # external function for make_jet_figs
+    # extmaps is [rho,v]
 
+    # read rho to get shape
     rho = extmaps[0]
 
+    # read mask from file and reshape to fit rho
     msk = np.loadtxt("Masks/ABA/611.mask")
-
     msk = np.reshape(msk,rho.shape)
 
-    jet = np.ma.masked_greater_equal(msk,1.0)
-    jet.fill_value = 0
-    jet[jet.mask == False] = 1
+    # draw contours
+    contour_fromfile = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=0.75,colors="black")
 
-    contour_fromfile = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=0.75,colors="black")
-
+    # draw markers
     pos_mark1 = ax.plot(9.17,-3.69,marker="o",color="green",markersize=3)
     pos_mark2 = ax.plot(9.98,-4.4,marker="o",color="red",markersize=3)
     pos_mark3 = ax.plot(10.81,-5.15,marker="o",color="cyan",markersize=3)
 
 def get_pos_index(posre,runid,file_number):
+    # gets id of cell nearest to the given coordinates for specified file_number in runid
 
+    # open file
     vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(file_number).zfill(7)+".vlsv")
 
+    # read variables
     X = vlsvreader.read_variable("X")
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
+    # indices of cells nearest to posre in x- and y-directions separately
     x_i = np.where(abs(X-posre[0]*r_e)<120000)[0]
     y_i = np.where(abs(Y-posre[1]*r_e)<120000)[0]
 
+    # index of cell nearest to posre in both x- and y-direction
     pos_index = np.intersect1d(x_i,y_i)
 
+    # id of said cell
     pos_id = cellids[pos_index[0]]
 
     return pos_id
 
 def jet_spacecrafts(start,stop,figname="",font_size=20):
+    # draws time series of Bx,By,Bz,Bmag,vx,vy,vz,vmag,rho,pdyn at
+    # the specified 3 sets of coordinates for files in range 
+    # start-stop (inclusive)
 
+    # open file to get cellids, X and Y
     vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
 
+    # specified coordinates
     pos1 = [9.17,-3.69]
     pos2 = [9.98,-4.4]
     pos3 = [10.81,-5.15]
@@ -97,6 +121,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
+    # indices of cells nearest to pos{1,2,3} in x- and y-directions separately
     x1_i = np.where(abs(X-pos1[0]*r_e)<120000)[0]
     y1_i = np.where(abs(Y-pos1[1]*r_e)<120000)[0]
 
@@ -106,18 +131,23 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     x3_i = np.where(abs(X-pos3[0]*r_e)<120000)[0]
     y3_i = np.where(abs(Y-pos3[1]*r_e)<120000)[0]
 
+    # index of cell nearest to pos{1,2,3} in both x- and y-direction
     pos1_index = np.intersect1d(x1_i,y1_i)
     pos2_index = np.intersect1d(x2_i,y2_i)
     pos3_index = np.intersect1d(x3_i,y3_i)
 
+    # cellids corresponding to indices
     pos1_id = cellids[pos1_index[0]]
     pos2_id = cellids[pos2_index[0]]
     pos3_id = cellids[pos3_index[0]]
 
+    # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
+    # Background interplanetary magnetic field
     B_imf = np.array([-np.cos(np.deg2rad(30))*5.0e-9,np.sin(np.deg2rad(30))*5.0e-9,0])
 
+    # initialise variable arrays
     Bx_arr = np.array([])
     By_arr = np.array([])
     Bz_arr = np.array([])
@@ -129,46 +159,58 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_arr = np.array([])
     pdyn_arr = np.array([])
 
+    # erase contents of raw data files if they already exist
     open("jetsc/jetsc_1.csv","w").close()
     open("jetsc/jetsc_2.csv","w").close()
     open("jetsc/jetsc_3.csv","w").close()
 
+    # open raw data files
     sc1_file = open("jetsc/jetsc_1.csv","a")
     sc2_file = open("jetsc/jetsc_2.csv","a")
     sc3_file = open("jetsc/jetsc_3.csv","a")
 
+    # write headers to raw data files
     sc1_file.write("t [s],Bx [nT],By [nT],Bz [nT],|B| [nT],vx [km/s],vy [km/s],vz [km/s],|v| [km/s],rho [cm^-3],Pdyn [nPa]")
     sc2_file.write("t [s],Bx [nT],By [nT],Bz [nT],|B| [nT],vx [km/s],vy [km/s],vz [km/s],|v| [km/s],rho [cm^-3],Pdyn [nPa]")
     sc3_file.write("t [s],Bx [nT],By [nT],Bz [nT],|B| [nT],vx [km/s],vy [km/s],vz [km/s],|v| [km/s],rho [cm^-3],Pdyn [nPa]")
 
     for n in xrange(start,stop+1):
 
+        # write newline
         sc1_file.write("\n")
         sc2_file.write("\n")
         sc3_file.write("\n")
 
+        # file name
         f_name="bulk."+str(n).zfill(7)+".vlsv"
 
+        # open file
         f = pt.vlsvfile.VlsvReader(f_path+f_name)
 
+        # Read components of B and magnitude
         B = f.read_variable("B",cellids=[pos1_id,pos2_id,pos3_id])
         Bx = B[:,0]
         By = B[:,1]
         Bz = B[:,2]
         Bmag = np.linalg.norm(B,axis=-1)
 
+        # read components of v and magnitude
         v = f.read_variable("v",cellids=[pos1_id,pos2_id,pos3_id])
         vx = v[:,0]
         vy = v[:,1]
         vz = v[:,2]
         vmag = np.linalg.norm(v,axis=-1)
 
+        # read rho
         rho = f.read_variable("rho",cellids=[pos1_id,pos2_id,pos3_id])
 
+        # calculate dynamic pressure
         pdyn = m_p*rho*(vmag**2)
 
+        # current time
         time = float(n)/2
 
+        # append variable values to their respective arrays
         Bx_arr = np.append(Bx_arr,Bx)
         By_arr = np.append(By_arr,By)
         Bz_arr = np.append(Bz_arr,Bz)
@@ -180,27 +222,32 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
         rho_arr = np.append(rho_arr,rho)
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
+        # lists of variable values for current time step
         sc1_arr = [time,Bx[0]/1.0e-9,By[0]/1.0e-9,Bz[0]/1.0e-9,Bmag[0]/1.0e-9,vx[0]/1.0e+3,vy[0]/1.0e+3,vz[0]/1.0e+3,vmag[0]/1.0e+3,rho[0]/1.0e+6,pdyn[0]/1.0e-9]
         sc2_arr = [time,Bx[1]/1.0e-9,By[1]/1.0e-9,Bz[1]/1.0e-9,Bmag[1]/1.0e-9,vx[1]/1.0e+3,vy[1]/1.0e+3,vz[1]/1.0e+3,vmag[1]/1.0e+3,rho[1]/1.0e+6,pdyn[1]/1.0e-9]
         sc3_arr = [time,Bx[2]/1.0e-9,By[2]/1.0e-9,Bz[2]/1.0e-9,Bmag[2]/1.0e-9,vx[2]/1.0e+3,vy[2]/1.0e+3,vz[2]/1.0e+3,vmag[2]/1.0e+3,rho[2]/1.0e+6,pdyn[2]/1.0e-9]
 
+        # write lists to raw data files as strings
         sc1_file.write(",".join(map(str,sc1_arr)))
         sc2_file.write(",".join(map(str,sc2_arr)))
         sc3_file.write(",".join(map(str,sc3_arr)))
 
+    # define time array
     time_arr = np.array(xrange(start,stop+1)).astype(float)/2
 
-    Bx_arr /= 1.0e-9
-    By_arr /= 1.0e-9
-    Bz_arr /= 1.0e-9
-    Bmag_arr /= 1.0e-9
-    vx_arr /= 1.0e+3
-    vy_arr /= 1.0e+3
-    vz_arr /= 1.0e+3
-    vmag_arr /= 1.0e+3
-    rho_arr /= 1.0e+6
-    pdyn_arr /= 1.0e-9
+    # scale variable values
+    Bx_arr /= 1.0e-9 # nanotesla
+    By_arr /= 1.0e-9 # nanotesla
+    Bz_arr /= 1.0e-9 # nanotesla
+    Bmag_arr /= 1.0e-9 # nanotesla
+    vx_arr /= 1.0e+3 # km/s
+    vy_arr /= 1.0e+3 # km/s
+    vz_arr /= 1.0e+3 # km/s
+    vmag_arr /= 1.0e+3 # km/s
+    rho_arr /= 1.0e+6 # cm^-3
+    pdyn_arr /= 1.0e-9 # nanopascal
 
+    # reshape variable arrays according to the 3 sets of coordinates
     Bx_arr = np.reshape(Bx_arr,(len(xrange(start,stop+1)),3))
     By_arr = np.reshape(By_arr,(len(xrange(start,stop+1)),3))
     Bz_arr = np.reshape(Bz_arr,(len(xrange(start,stop+1)),3))
@@ -212,9 +259,11 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_arr = np.reshape(rho_arr,(len(xrange(start,stop+1)),3))
     pdyn_arr = np.reshape(pdyn_arr,(len(xrange(start,stop+1)),3))
 
+    # initialise figure
     plt.ion()
     fig = plt.figure(figsize=(30,15))
 
+    # create subplots
     Bx_ax = fig.add_subplot(521)
     By_ax = fig.add_subplot(523)
     Bz_ax = fig.add_subplot(525)
@@ -226,6 +275,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_ax = fig.add_subplot(529)
     pdyn_ax = fig.add_subplot(5,2,10)
 
+    # draw grids
     Bx_ax.grid()
     By_ax.grid()
     Bz_ax.grid()
@@ -253,6 +303,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     #pdyn_ax.yaxis.set_ticks_position('both')
     #pdyn_ax.yaxis.set_label_position("right")
 
+    # set x-limits
     Bx_ax.set_xlim(290,320)
     By_ax.set_xlim(290,320)
     Bz_ax.set_xlim(290,320)
@@ -264,6 +315,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_ax.set_xlim(290,320)
     pdyn_ax.set_xlim(290,320)
 
+    # set y-limits
     Bx_ax.set_ylim(-10,10)
     By_ax.set_ylim(-15,30)
     Bz_ax.set_ylim(-20,20)
@@ -275,6 +327,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_ax.set_ylim(2,5)
     pdyn_ax.set_ylim(0,1.5)
 
+    # set y-ticks
     Bx_ax.set_yticks([-10,-5,0,5,10])
     By_ax.set_yticks([-15,0,15,30])
     Bz_ax.set_yticks([-20,-10,0,10,20])
@@ -286,6 +339,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_ax.set_yticks([2,3,4,5])
     pdyn_ax.set_yticks([0,0.5,1,1.5])
 
+    # set x-ticks
     Bx_ax.set_xticks([295,300,305,310,315,320])
     By_ax.set_xticks([295,300,305,310,315,320])
     Bz_ax.set_xticks([295,300,305,310,315,320])
@@ -297,6 +351,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     rho_ax.set_xticks([295,300,305,310,315,320])
     pdyn_ax.set_xticks([295,300,305,310,315,320])
 
+    # set x-tick labels
     Bx_ax.set_xticklabels([])
     By_ax.set_xticklabels([])
     Bz_ax.set_xticklabels([])
@@ -306,7 +361,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vz_ax.set_xticklabels([])
     vmag_ax.set_xticklabels([])
 
-
+    # set y-labels
     Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
     By_ax.set_ylabel("$B_y$ [nT]",fontsize=font_size)
     Bz_ax.set_ylabel("$B_z$ [nT]",fontsize=font_size)
@@ -317,9 +372,12 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vmag_ax.set_ylabel("$|v|$ [km/s]",fontsize=font_size)
     rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
     pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+
+    # set x-labels
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
     rho_ax.set_xlabel("Time [s]",fontsize=font_size)
 
+    # set tick label sizes
     Bx_ax.tick_params(labelsize=16)
     By_ax.tick_params(labelsize=16)
     Bz_ax.tick_params(labelsize=16)
@@ -332,8 +390,10 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vmag_ax.tick_params(labelsize=16)
     pdyn_ax.tick_params(labelsize=16)
 
+    # colour representing 1st set of coordinates
     sp1_color="green"
 
+    # plot time series for 1st set of coordinates
     Bx_ax.plot(time_arr,Bx_arr[:,0],color=sp1_color,linewidth=2)
     By_ax.plot(time_arr,By_arr[:,0],color=sp1_color,linewidth=2)
     Bz_ax.plot(time_arr,Bz_arr[:,0],color=sp1_color,linewidth=2)
@@ -346,6 +406,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vmag_ax.plot(time_arr,vmag_arr[:,0],color=sp1_color,linewidth=2)
     pdyn_ax.plot(time_arr,pdyn_arr[:,0],color=sp1_color,linewidth=2)
 
+    # plot time series for 2nd set of coordinates
     Bx_ax.plot(time_arr,Bx_arr[:,1],color="red",linewidth=2)
     By_ax.plot(time_arr,By_arr[:,1],color="red",linewidth=2)
     Bz_ax.plot(time_arr,Bz_arr[:,1],color="red",linewidth=2)
@@ -358,6 +419,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vmag_ax.plot(time_arr,vmag_arr[:,1],color="red",linewidth=2)
     pdyn_ax.plot(time_arr,pdyn_arr[:,1],color="red",linewidth=2)
 
+    # plot time series for 3rd set of coordinates
     Bx_ax.plot(time_arr,Bx_arr[:,2],color="cyan",linewidth=2)
     By_ax.plot(time_arr,By_arr[:,2],color="cyan",linewidth=2)
     Bz_ax.plot(time_arr,Bz_arr[:,2],color="cyan",linewidth=2)
@@ -370,6 +432,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     vmag_ax.plot(time_arr,vmag_arr[:,2],color="cyan",linewidth=2)
     pdyn_ax.plot(time_arr,pdyn_arr[:,2],color="cyan",linewidth=2)
 
+    # draw vertical line corresponding to t=305.5s
     Bx_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
     By_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
     Bz_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
@@ -386,6 +449,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
 
     fig.show()
 
+    # save figure
     plt.savefig("jetsc/scrafts_"+str(start)+"_"+str(stop)+"_"+figname+".png")
     print("jetsc/scrafts_"+str(start)+"_"+str(stop)+"_"+figname+".png")
 
@@ -396,23 +460,34 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     return None
 
 def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),figname="",cols2=False,alt_labels=False):
+    # draws time series of Bx,By,Bz,Bmag,vmag,rho,pdyn at
+    # the specified coordinates for files in range 
+    # start-stop (inclusive)
 
+    # open file to get cellids, X, Y
     vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
 
     X = vlsvreader.read_variable("X")
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
+    # indices of cells nearest to pos in x- and y-directions separately
     x_i = np.where(abs(X-pos[0]*r_e)<120000)[0]
     y_i = np.where(abs(Y-pos[1]*r_e)<120000)[0]
 
+    # index of cell nearest to pos in both x- and y-direction
     pos_index = np.intersect1d(x_i,y_i)
 
+    # cellid corresponding to index
     pos_id = cellids[pos_index[0]]
+
+    # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
+    # background interplanetary magnetic field
     B_imf = np.array([-np.cos(np.deg2rad(30))*5.0e-9,np.sin(np.deg2rad(30))*5.0e-9,0])
 
+    # initialise variable arrays
     phi_arr = np.array([])
     Bx_arr = np.array([])
     By_arr = np.array([])
@@ -424,23 +499,30 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
 
     for n in xrange(start,stop+1):
 
+        # file name
         f_name="bulk."+str(n).zfill(7)+".vlsv"
 
+        # open file
         f = pt.vlsvfile.VlsvReader(f_path+f_name)
 
+        # read B
         B = f.read_variable("B",cellids=pos_id)
         
+        # calculate angle between B and B_imf
         phi = np.rad2deg(np.arccos(np.dot(B,B_imf)/(np.linalg.norm(B)*np.linalg.norm(B_imf))))
 
+        # components and magnitude of B
         Bx = B[0]
         By = B[1]
         Bz = B[2]
         Bmag = np.linalg.norm(B,axis=-1)
 
+        # density, velocity magnitude and dynamic pressure
         rho = f.read_variable("rho",cellids=pos_id)
         vmag = f.read_variable("v",cellids=pos_id,operator="magnitude")
         pdyn = m_p*rho*(vmag**2)
 
+        # append variable values to their respective arrays
         phi_arr = np.append(phi_arr,phi)
         Bx_arr = np.append(Bx_arr,Bx)
         By_arr = np.append(By_arr,By)
@@ -450,22 +532,27 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
         vmag_arr = np.append(vmag_arr,vmag)
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
+    # define time array
     time_arr = np.array(xrange(start,stop+1)).astype(float)/2
 
-    Bx_arr /= 1.0e-9
-    By_arr /= 1.0e-9
-    Bz_arr /= 1.0e-9
-    Bmag_arr /= 1.0e-9
-    rho_arr /= 1.0e+6
-    vmag_arr /= 1.0e+3
-    pdyn_arr /= 1.0e-9
+    # scale variable values
+    Bx_arr /= 1.0e-9 # nanotesla
+    By_arr /= 1.0e-9 # nanotesla
+    Bz_arr /= 1.0e-9 # nanotesla
+    Bmag_arr /= 1.0e-9 # nanotesla
+    rho_arr /= 1.0e+6 # cm^-3
+    vmag_arr /= 1.0e+3 # km/s
+    pdyn_arr /= 1.0e-9 # nanopascal
 
+    # initialise figure
     plt.ion()
     fig = plt.figure(figsize=fig_size)
 
     # 1 COLUMNS VERSION
 
     if not cols2:
+
+        # add subplots in 1 column
 
         #phi_ax = fig.add_subplot(811)
         Bx_ax = fig.add_subplot(711)
@@ -479,6 +566,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     # ALTERNATING LABELS
 
     if not cols2 and alt_labels:
+
+        # alternate subplot label positions between left and right
 
         By_ax.yaxis.tick_right()
         By_ax.yaxis.set_ticks_position('both')
@@ -494,6 +583,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
 
     if cols2:
 
+        # add subplots in 2 columns
+
         Bx_ax = fig.add_subplot(421)
         By_ax = fig.add_subplot(423)
         Bz_ax = fig.add_subplot(425)
@@ -501,6 +592,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
         rho_ax = fig.add_subplot(422)
         vmag_ax = fig.add_subplot(424)
         pdyn_ax = fig.add_subplot(426)
+
+    # set x-limits
 
     #phi_ax.set_xlim(260,310)
     Bx_ax.set_xlim(260,310)
@@ -511,6 +604,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     vmag_ax.set_xlim(260,310)
     pdyn_ax.set_xlim(260,310)
 
+    # set y-limits
+
     #phi_ax.set_ylim(10,50)
     Bx_ax.set_ylim(-10,0)
     By_ax.set_ylim(0,10)
@@ -520,6 +615,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     vmag_ax.set_ylim(600,800)
     pdyn_ax.set_ylim(0.5,2)
 
+    # set y-labels
+
     #phi_ax.set_ylabel("$\\phi$ [deg]",fontsize=font_size)
     Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
     By_ax.set_ylabel("$B_y$ [nT]",fontsize=font_size)
@@ -528,7 +625,11 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
     vmag_ax.set_ylabel("$|v|$ [km/s]",fontsize=font_size)
     pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+
+    # set x-label
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
+
+    # set y-ticks
 
     #phi_ax.set_yticks([10,20,30,40,50])
     Bx_ax.set_yticks([-10,-7.5,-5,-2.5,0])
@@ -539,6 +640,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     vmag_ax.set_yticks([600,650,700,750,800])
     pdyn_ax.set_yticks([0.5,1,1.5,2])
 
+    # set x-ticks
+
     #phi_ax.set_xticks([])
     Bx_ax.set_xticks([])
     By_ax.set_xticks([])
@@ -547,6 +650,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     rho_ax.set_xticks([])
     vmag_ax.set_xticks([])
     pdyn_ax.set_xticks([270,280,290,300,310])
+
+    # set tick label sizes
 
     #phi_ax.tick_params(labelsize=16)
     Bx_ax.tick_params(labelsize=16)
@@ -557,6 +662,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     vmag_ax.tick_params(labelsize=16)
     pdyn_ax.tick_params(labelsize=16)
 
+    # plot time series for variables
+
     #phi_ax.plot(time_arr,phi_arr,color="black",linewidth=2)
     Bx_ax.plot(time_arr,Bx_arr,color="black",linewidth=2)
     By_ax.plot(time_arr,By_arr,color="black",linewidth=2)
@@ -565,6 +672,8 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     rho_ax.plot(time_arr,rho_arr,color="black",linewidth=2)
     vmag_ax.plot(time_arr,vmag_arr,color="black",linewidth=2)
     pdyn_ax.plot(time_arr,pdyn_arr,color="black",linewidth=2)
+
+    # draw vertical line at t=280s and horizontal line at B_z=0
 
     #phi_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
     Bx_ax.axvline(280,linestyle="dashed",color="black",linewidth=2)
@@ -584,26 +693,37 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     print("Figures/SLAMS_"+str(start)+"_"+str(stop)+"_"+figname+".png")
 
 def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16)):
+    # draws time series of Bmag,vmag,rho,pdyn at
+    # the specified coordinates for files in range 
+    # start-stop (inclusive)
 
+    # defined coordinates
     x_def = 60521928.9248/r_e
     y_def = -26995643.4721/r_e
 
     pos = [x_def,y_def]
 
+    # open file to get cellids, X, Y
     vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv")
 
     X = vlsvreader.read_variable("X")
     Y = vlsvreader.read_variable("Y")
     cellids = vlsvreader.read_variable("CellID")
 
+    # indices of cells nearest to pos in x- and y-directions separately
     x_i = np.where(abs(X-pos[0]*r_e)<120000)[0]
     y_i = np.where(abs(Y-pos[1]*r_e)<120000)[0]
 
+    # index of cell nearest to pos in both x- and y-direction
     pos_index = np.intersect1d(x_i,y_i)
 
+    # cellid corresponding to index
     pos_id = cellids[pos_index[0]]
+    
+    # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
+    # initialise variable arrays
     B_arr = np.array([])
     v_arr = np.array([])
     rho_arr = np.array([])
@@ -611,41 +731,52 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
 
     for n in xrange(start,stop+1,step):
 
+        # file name
         f_name="bulk."+str(n).zfill(7)+".vlsv"
 
+        # open file
         f = pt.vlsvfile.VlsvReader(f_path+f_name)
 
+        # read Bmag, vmag, rho
         B = f.read_variable("B",cellids=pos_id,operator="magnitude")
         v = f.read_variable("v",cellids=pos_id,operator="magnitude")
         rho = f.read_variable("rho",cellids=pos_id)
 
+        # calculate dynamic pressure
         pdyn = m_p*rho*(v**2)
 
+        # append variable values to respective arrays
         B_arr = np.append(B_arr,B)
         v_arr = np.append(v_arr,v)
         rho_arr = np.append(rho_arr,rho)
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
+    # define time array
     time_arr = np.array(xrange(start,stop+1,step)).astype(float)/2
 
-    B_arr /= 1.0e-9
-    v_arr /= 1.0e+3
-    rho_arr /= 1.0e+6
-    pdyn_arr /= 1.0e-9
+    # scale variable values
+    B_arr /= 1.0e-9 # nanotesla
+    v_arr /= 1.0e+3 # km/s
+    rho_arr /= 1.0e+6 # cm^-3
+    pdyn_arr /= 1.0e-9 # nanopascal
 
+    # initialise figure
     plt.ion()
     fig = plt.figure(figsize=fig_size)
 
+    # add subplots
     B_ax = fig.add_subplot(411)
     v_ax = fig.add_subplot(412)
     rho_ax = fig.add_subplot(413)
     pdyn_ax = fig.add_subplot(414)
 
+    # set x-limits
     B_ax.set_xlim(200,500)
     v_ax.set_xlim(200,500)
     rho_ax.set_xlim(200,500)
     pdyn_ax.set_xlim(200,500)
 
+    # set y-limits
     B_ax.set_ylim(0,30)
     v_ax.set_ylim(0,400)
     rho_ax.set_ylim(2,7)
@@ -655,37 +786,46 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
     #v_ax.set_ylabel("v [km/s]",fontsize=font_size)
     #rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
     #pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+    
+    # set x-labels
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
 
+    # predefined ticks
     magsh_Bticks = [0,10,20,30]
     magsh_vticks = [0,100,200,300,400]
     magsh_rhoticks = [2,3,4,5,6,7]
     magsh_pdynticks = [0,0.5,1]
 
+    # set y-ticks
     B_ax.set_yticks([0,10,20,30])
     v_ax.set_yticks([0,100,200,300,400])
     rho_ax.set_yticks([2,3,4,5,6,7])
     pdyn_ax.set_yticks([0,0.5,1])
 
+    # set x-ticks
     B_ax.set_xticks([250,300,350,400,450,500])
     v_ax.set_xticks([250,300,350,400,450,500])
     rho_ax.set_xticks([250,300,350,400,450,500])
     pdyn_ax.set_xticks([250,300,350,400,450,500])
 
+    # set x-tick labels
     B_ax.set_xticklabels([])
     v_ax.set_xticklabels([])
     rho_ax.set_xticklabels([])
 
+    # plot time series for variales
     B_ax.plot(time_arr,B_arr,color="black",linewidth=2)
     v_ax.plot(time_arr,v_arr,color="black",linewidth=2)
     rho_ax.plot(time_arr,rho_arr,color="black",linewidth=2)
     pdyn_ax.plot(time_arr,pdyn_arr,color="black",linewidth=2)
 
+    # draw vertical line at t=305.5s
     B_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
     v_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
     rho_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
     pdyn_ax.axvline(305.5,linestyle="dashed",color="black",linewidth=2)
 
+    # set tick label sizes
     B_ax.tick_params(labelsize=16)
     v_ax.tick_params(labelsize=16)
     rho_ax.tick_params(labelsize=16)

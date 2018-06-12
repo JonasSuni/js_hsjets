@@ -311,6 +311,7 @@ def read_mult_vars(vlsvobj,input_vars):
     return output_vars
 
 def xyz_reconstruct(vlsvobj):
+    # reconstructs coordinates based on spatial mesh parameters
 
     # get simulation extents and dimension sizes
     simext = vlsvobj.get_spatial_mesh_extent()
@@ -395,7 +396,6 @@ def restrict_area(vlsvobj,xlim,ylim):
     return masked_ci
 
 def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
-
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits
 
@@ -438,7 +438,6 @@ def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
         return masked_ci
 
 def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
-
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits
 
@@ -494,17 +493,17 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # range of timesteps to calculate average of
     timerange = xrange(filenumber-halftimewidth,filenumber+halftimewidth+1)
 
-    for n in timerange:
+    for n_t in timerange:
 
         # exclude the main timestep
-        if n == filenumber:
+        if n_t == filenumber:
             continue
 
         # find correct file path for current time step
         if runid == "AED":
-            tfile_name = "bulk.old."+str(n).zfill(7)+".vlsv"
+            tfile_name = "bulk.old."+str(n_t).zfill(7)+".vlsv"
         else:
-            tfile_name = "bulk."+str(n).zfill(7)+".vlsv"
+            tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
 
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
