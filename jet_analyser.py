@@ -12,6 +12,10 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     # area of one cell
     dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
 
+    # if dY happens to be 0
+    if not dA:
+        dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DZ")[0]
+
     # erase contents of file if it's not already empty
     open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","w").close()
 
@@ -19,15 +23,16 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
     outputfile = open("Props/"+runid+"/props_"+runid+"_"+str(file_number)+"_"+str(halftimewidth)+freeform_file_id+".csv","a")
 
     # write header to csv file
-    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [km^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,size_x [R_e],size_y [R_e],MMS_max,MA_max")
+    outputfile.write("n_avg [cm^-3],n_med [cm^-3],n_max [cm^-3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],Tpar_avg [MK],Tpar_med [MK],Tpar_max [MK],Tperp_avg [MK],Tperp_med [MK],Tperp_max [MK],X_vmax [R_e],Y_vmax [R_e],Z_vmax [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],mag_p_bool,rad_size [R_e],tan_size [R_e],MMS_max,MA_max")
 
     # initialise list of properties
     props_list = []
 
+    # lists of variables to be read
     var_list = ["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"]
-
     T_list = ["TParallel","TPerpendicular"]
 
+    # if file has separate populations, read the proton populations
     if not vlsvobj.checK_variable("rho"):
 
         var_list[0] = "proton/rho"
@@ -44,6 +49,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
 
     Tpar,Tperp = read_mult_vars(vlsvobj,T_list)
 
+    # if X,Y,Z are empty, reconstruct them
     if type(X) is not np.ndarray:
 
         X,Y,Z = xyz_reconstruct(vlsvobj)
@@ -52,12 +58,14 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
 
         X,Y,Z = X[cellids.argsort()],Y[cellids.argsort()],Z[cellids.argsort()]
 
+    # sort all variables
     rho,v,B,T,va,vms,Tpar,Tperp = rho[cellids.argsort()],v[cellids.argsort()],B[cellids.argsort()],T[cellids.argsort()],va[cellids.argsort()],vms[cellids.argsort()],Tpar[cellids.argsort()],Tperp[cellids.argsort()]
 
     # calculate magnitudes
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
 
+    # sort cellids
     cellids = cellids[cellids.argsort()]
 
     for event in jets:
@@ -103,14 +111,14 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         Z_vmax = jZ[np.where(jvmag==max(jvmag))[0]][0]/r_e
 
         # calculate area of current event
-        A = dA*event.size/1.0e+6
+        A = dA*event.size/(r_e**2)
         Nr_cells = event.size
 
         # calculate angular position of jet
-        phi = np.arctan(Y_vmax/X_vmax)*360/(2*np.pi)
+        phi = np.rad2deg(np.arctan(Y_vmax/X_vmax))
 
         # radial distance of jet
-        r_d = ((X_vmax**2+Y_vmax**2)**0.5)
+        r_d = np.linalg.norm(np.array([X_vmax,Y_vmax,Z_vmax]))
 
         # does jet reach magnetopause?
         if runid == "ABA":
@@ -123,8 +131,9 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
             mag_p_bool = 1.0
 
         # linear sizes of jet
-        x_size = (max(jX)-min(jX))/r_e
-        y_size = (max(jY)-min(jY))/r_e
+        r = np.linalg.norm(np.array([jX,jY,jZ]),axis=0)/r_e
+        rad_size = max(r)-min(r)
+        tan_size = A/rad_size
 
         # Mach numbers
         MMS = np.divide(jvmag,jvms)
@@ -135,7 +144,7 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         MA_max = max(MA)
 
         # properties for current event
-        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,x_size,y_size,MMS_max,MA_max]
+        temp_arr = [n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,Tpar_avg,Tpar_med,Tpar_max,Tperp_avg,Tperp_med,Tperp_max,X_vmax,Y_vmax,Z_vmax,A,Nr_cells,phi,r_d,mag_p_bool,rad_size,tan_size,MMS_max,MA_max]
 
         if True:
 

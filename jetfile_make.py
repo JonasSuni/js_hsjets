@@ -8,11 +8,13 @@ r_e = 6.371e+6
 
 def custmake(runid,filenumber,outputfilename):
 
+    # find correct bulk path for run
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
+    # find correct file name for run
     if runid == "AED":
         bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
     else:
@@ -22,6 +24,7 @@ def custmake(runid,filenumber,outputfilename):
     #open("/wrk/sunijona/VLSV/"+outputfilename,"w").close()
     vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="/wrk/sunijona/VLSV/"+outputfilename)
 
+    # if file has separate populations, read the proton population
     rho = vlsvreader.read_variable("rho")
     if type(rho) is not np.ndarray:
         rho = vlsvreader.read_variable("proton/rho")
@@ -56,6 +59,7 @@ def custmake(runid,filenumber,outputfilename):
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
         
+        # if file has separate populations, read the proton population
         trho = f.read_variable("rho")
         if type(trho) is not np.ndarray:
             trho = f.read_variable("proton/rho")
