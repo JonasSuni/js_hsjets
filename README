@@ -26,3 +26,19 @@ cb.ax.tick_params(labelsize=16)
 ### Modify pytools.py
 
 # comment out the "else" statement leading to "import grid"
+
+### Modify pyVlsv/reduction.py
+
+# add the following to the end of the file
+
+#reducers for proton population
+datareducers["proton/vms"] =                    DataReducerVariable(["proton/Pressure", "proton/rho", "B"], vms, "m/s")
+datareducers["proton/va"] =                     DataReducerVariable(["proton/rho", "B"], va, "m/s")
+datareducers["proton/PTensor"] =                DataReducerVariable(["proton/PTensorDiagonal", "proton/PTensorOffDiagonal"], PTensor, "Pa")
+datareducers["proton/Pressure"] =               DataReducerVariable(["proton/PTensorDiagonal"], Pressure, "Pa")
+
+datareducers["proton/TTensor"] =                DataReducerVariable(["proton/PTensor", "proton/rho"], TTensor, "K")
+datareducers["proton/TTensorRotated"] =         DataReducerVariable(["proton/TTensor", "B"], TTensorRotated, "K")
+datareducers["proton/Temperature"] =            DataReducerVariable(["proton/Pressure", "proton/rho"], Temperature, "K")
+datareducers["proton/TParallel"] =              DataReducerVariable(["proton/TTensorRotated"], TParallel, "K")
+datareducers["proton/TPerpendicular"] =         DataReducerVariable(["proton/TTensorRotated"], TPerpendicular, "K")
