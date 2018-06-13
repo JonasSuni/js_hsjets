@@ -380,7 +380,7 @@ def contour_gen(runid,start,stop,vmax=1.5):
 def contour_gen_ff(runid,start,stop,vmax=1.5,boxre=[6,16,-6,6]):
 
     outputfilename = "new_"+runid+"_"+str(start)+"_"+str(stop)+".vlsv"
-    outputdir = "/wrk/sunijona/Contours/"+runid+"/"
+    outputdir = "/wrk/sunijona/DONOTREMOVE/Contours/"+runid+"/"
 
     if not os.path.exists(outputdir):
         os.makedirs(outputdir)
