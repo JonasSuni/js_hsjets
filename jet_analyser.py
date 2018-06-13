@@ -314,25 +314,25 @@ def xyz_reconstruct(vlsvobj):
     # reconstructs coordinates based on spatial mesh parameters
 
     # get simulation extents and dimension sizes
-    simext = vlsvobj.get_spatial_mesh_extent()
+    simextent = vlsvobj.get_spatial_mesh_extent()
     simsize = vlsvobj.get_spatial_mesh_size()
 
     # discard 3rd dimension
     simdim = simsize[simsize!=1]
 
     # reconstruct X
-    X = np.linspace(simext[0],simext[3],simdim[0]+1)[:-1]
+    X = np.linspace(simextent[0],simextent[3],simdim[0]+1)[:-1]
     X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
 
     # reconstruct Y
-    Y = np.linspace(simext[1],simext[4],simdim[1]+1)[:-1]
+    Y = np.linspace(simextent[1],simextent[4],simdim[1]+1)[:-1]
     Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
     Y = np.reshape(Y,(simdim[0],simdim[1]))
     Y = Y.T
     Y = Y.flatten()
 
     # reconstruct Z
-    Z = np.linspace(simext[2],simext[5],simdim[1]+1)[:-1]
+    Z = np.linspace(simextent[2],simextent[5],simdim[1]+1)[:-1]
     Z = np.pad(Z,(0,simdim[1]*(simdim[0]-1)),"wrap")
     Z = np.reshape(Z,(simdim[0],simdim[1]))
     Z = Z.T
@@ -365,10 +365,10 @@ def restrict_area(vlsvobj,xlim,ylim):
         cellids = cellids[cellids.argsort()]
         
         # simulation extents
-        simext = vlsvobj.get_spatial_mesh_extent()
+        simextent = vlsvobj.get_spatial_mesh_extent()
         
         # simulation extents for the simulation plane only
-        simbounds = np.reshape(simext,(2,3)).T[simsize!=1].flatten()
+        simbounds = np.reshape(simextent,(2,3)).T[simsize!=1].flatten()
 
         # simulation size for the simulation plane only
         simdim = simsize[simsize!=1]
