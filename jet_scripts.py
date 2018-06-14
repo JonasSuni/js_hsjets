@@ -507,3 +507,25 @@ def minna_figs(outputfolder,box_re=[8,16,-6,6],plaschkemax=1,rhomax=6,rhomax5=5,
     pt.plot.plot_colormap(filename=file_name,var="trhoavg",colormap=parula,outputdir=outputfolder+"/Fig4c_",usesci=0,lin=1,boxre=box_re,vmax=rhomax,vmin=0,cbtitle="",title="")
 
     pt.plot.plot_colormap(filename=file_name,var="srho",colormap=parula,outputdir=outputfolder+"/Fig5_",usesci=0,lin=1,boxre=box_re,vmax=rhomax5,vmin=rhomin,cbtitle="",title="",external=jc.jc_all,pass_vars=["npdynx","nrho","tapdyn","tarho"])
+
+### MISC SCRIPTS ###
+
+def find_missing(inputfolder,start,stop):
+
+    filenames = os.listdir(inputfolder)
+
+    filenums = []
+
+    for filename in filenames:
+
+        filenums.append(int(filename[14:-4]))
+
+    rangelist = list(xrange(start,stop+1))
+
+    for n in rangelist:
+
+        if n not in filenums:
+
+            print(n)
+
+    return None
