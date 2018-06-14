@@ -1,6 +1,7 @@
 import plot_contours as pc
 import pytools as pt
 import os
+import scipy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -413,9 +414,9 @@ def presentation_script(run_id,fig_name):
     12: Tpar_avg [MK],  13: Tpar_med [MK],  14: Tpar_max [MK],
     15: Tperp_avg [MK], 16: Tperp_med [MK], 17: Tperp_max [MK],
     18: X_vmax [R_e],   19: Y_vmax [R_e],   20: Z_vmax [R_e],
-    21: A [km^2],       22: Nr_cells,       23: phi [deg],
-    24: r_d [R_e],      25: mag_p_bool,     26: size_x [R_e],
-    27: size_y [R_e],   28: MMS,            29: MA'''
+    21: A [R_e^2],       22: Nr_cells,       23: phi [deg],
+    24: r_d [R_e],      25: mag_p_bool,     26: rad_size[R_e],
+    27: tan_size [R_e],   28: MMS,            29: MA'''
 
     hist_xy(run_id,18,19,fig_name+run_id+"_x_y",normed_b=False,weight_b=True,bins=[np.linspace(8,12,17),np.linspace(-4,4,17)])
 

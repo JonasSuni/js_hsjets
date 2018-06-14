@@ -125,6 +125,8 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
             mag_p_cond = 10
         elif runid == "ABC":
             mag_p_cond = 9
+        else:
+            mag_p_cond = 10
 
         mag_p_bool = 0.0
         if r_d < mag_p_cond:
