@@ -187,13 +187,13 @@ def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
 
         for n in it_range:
 
-            curr_event_temp = curr_event
+            curr_event_size = curr_event.size
 
             # find neighbors within the confines of the mask
             curr_event = np.unique(np.append(curr_event,np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))))
 
             # exit loop if all valid neighbors found
-            if curr_event_temp.size == curr_event.size:
+            if curr_event_size == curr_event.size:
                 break
 
         # cast cellids of current event to int and append to list of events
@@ -205,12 +205,21 @@ def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
 
     return events_culled
 
-def jet_script_cust(filenumber,runid,halftimewidth=180,boxre=[8,16,-6,6],min_size=0,max_size=3000,neighborhood_reach=[1,1],freeform_file_id=""):
+def jet_script_cust(filenumber,runid,halftimewidth=180,boxre=[6,16,-6,6],min_size=0,max_size=3000,neighborhood_reach=[1,1],freeform_file_id=""):
 
-    file_nr = str(filenumber).zfill(7)
-    file_path = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+file_nr+".vlsv"
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
-    vlsvobj=pt.vlsvfile.VlsvReader(file_path)
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    # open vlsv file for reading
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
     msk = make_cust_mask(filenumber,runid,halftimewidth,boxre)
     jets = sort_jets(vlsvobj,msk,min_size,max_size,neighborhood_reach)
@@ -259,20 +268,22 @@ def ci2vars(vlsvobj,input_vars,cells):
     # initialise list of output vars
     output_vars = []
 
-    cellids = vlsvobj.read_variable("CellID")
+    #cellids = vlsvobj.read_variable("CellID")
 
     # find the indices of the masked cells
-    n_i = np.where(np.in1d(cellids,cells))[0]
+    #n_i = np.where(np.in1d(cellids,cells))[0]
 
     for input_var in input_vars:
 
-        variable = vlsvobj.read_variable(input_var)
+        #variable = vlsvobj.read_variable(input_var)
+        variable = vlsvobj.read_variable(input_var,cellids=cells)
 
         # find values of the variable for the masked cells
-        n_var = variable[n_i]
+        #n_var = variable[n_i]
 
         # append variable values to list of output vars
-        output_vars.append(n_var)
+        #output_vars.append(n_var)
+        output_vars.append(variable)
 
     return output_vars
 
@@ -431,7 +442,7 @@ def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
     jet_p = np.ma.masked_greater(npdynx,0.25)
     jet_p.mask[nrho < 3.5] = False
 
-    masked_ci = np.ma.array(sorigid,mask=jet_p.mask).compressed()
+    masked_ci = np.ma.array(sorigid,mask=~jet_p.mask).compressed()
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
@@ -538,19 +549,13 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # ratio of dynamic pressure to its time average
     tapdyn = np.divide(pdyn,tpdynavg)
 
-    # make plaschke mask
-    jet_p = np.ma.masked_greater(npdynx,0.25)
-    jet_p.mask[nrho < 3.5] = False
-
-    # make archer&horbury mask
-    jet_ah = np.ma.masked_greater(tapdyn,2)
-
-    # make custom mask
-    jet_cust = jet_ah
-    jet_cust.mask = np.logical_or(jet_cust.mask,jet_p.mask)
+    # make custom jet mask
+    jet = np.ma.masked_greater(npdynx,0.25)
+    jet.mask[nrho < 3.5] = False
+    jet.mask[tapdyn > 2] = True
 
     # discard unmasked cellids
-    masked_ci = np.ma.array(sorigid,mask=jet_cust.mask).compressed()
+    masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
     #np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
 
