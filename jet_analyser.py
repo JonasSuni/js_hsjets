@@ -309,7 +309,7 @@ def ci2vars_nofile(input_vars,cellids,cells):
     return output_vars
 
 
-def read_mult_vars(vlsvobj,input_vars):
+def read_mult_vars(vlsvobj,input_vars,cells=-1):
     # reads multiple variables from vlsvobject
 
     # initialise list of output vars
@@ -318,7 +318,7 @@ def read_mult_vars(vlsvobj,input_vars):
     for input_var in input_vars:
 
         # read variable from vlsvobject and append it to list of output_vars
-        variable = vlsvobj.read_variable(input_var)
+        variable = vlsvobj.read_variable(input_var,cellids=cells)
         output_vars.append(variable)
 
     return output_vars

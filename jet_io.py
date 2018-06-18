@@ -1,11 +1,12 @@
-import numpy as numpy
+import numpy as np
 import pytools as pt
 import scipy
-import pandas as pandas
+import pandas as pd
 import jet_scripts as js
 import jet_analyser as ja
 import jetfile_make as jfm
 import os
+import jet_scripts as js
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -105,7 +106,7 @@ def jetfile_read(runid,filenr,key):
 
     for line in lines:
 
-        outputlist.append(map(int,line))
+        outputlist.append(map(int,line.split(",")))
 
     return outputlist
 
@@ -119,9 +120,67 @@ def eventfile_read(runid,filenr):
 
     for line in lines:
 
-        outputlist.append(map(int,line))
+        outputlist.append(map(int,line.split(",")))
 
     return outputlist
+
+def calc_jet_properties(runid,start,jetid):
+
+    jet_list = jetfile_read(runid,start,jetid)
+    time_list = timefile_read(runid,start,jetid)
+
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    nr_list = [int(t*2) for t in time_list]
+
+    prop_arr = np.array([])
+
+    for n in xrange(len(nr_list)):
+
+        if runid == "AED":
+            bulkname = "bulk.old."+str(nr_list[n]).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(nr_list[n]).zfill(7)+".vlsv"
+
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+        dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
+
+        # read variables
+        X,Y = ja.read_mult_vars(vlsvobj,["X","Y"],cells=jet_list[n])
+
+        # calculate geometric center of jet
+        x_mean = np.mean([max(X),min(X)])/r_e
+        y_mean = np.mean([max(Y),min(Y)])/r_e
+
+        # calculate jet size
+        A = dA*len(jet_list[n])/(r_e**2)
+        Nr_cells = len(jet_list[n])
+
+        # geometric center of jet in polar coordinates
+        phi = np.rad2deg(np.arctan(y_mean/x_mean))
+        r_d = np.linalg.norm([x_mean,y_mean])
+
+        # r-coordinates corresponding to all (x,y)-points in jet
+        r = np.linalg.norm(np.array([X,Y]),axis=0)/r_e
+
+        # calculate linear sizes of jet
+        size_rad = max(r)-min(r)
+        size_tan = A/size_rad
+
+        time = time_list[n]
+
+        # "time [s],x_mean [R_e],y_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"
+        temp_arr = [time,x_mean,y_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
+
+        prop_arr = np.append(prop_arr,np.array(temp_arr))
+
+    prop_arr = np.reshape(prop_arr,(len(nr_list),len(temp_arr)))
+
+    return prop_arr
 
 def track_jets(runid,start,stop):
 
@@ -141,8 +200,8 @@ def track_jets(runid,start,stop):
 
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-    events_old = eventfile_read(runid,start) #PH events in file start
-    events = eventfile_read(runid,start+1) #PH events in file start+1
+    events_old = eventfile_read(runid,start)
+    events = eventfile_read(runid,start+1)
 
     # remove non-bow shock events from events_old
 
@@ -150,15 +209,17 @@ def track_jets(runid,start,stop):
 
     for old_event in events_old:
 
-        X,Y = ci2vars(vlsvobj,["X","Y"],old_event)
+        X,Y = ja.ci2vars(vlsvobj,["X","Y"],old_event)
 
         r = np.linalg.norm([X,Y],axis=0)
 
-        if max(r)/r_e > 11:
+        if max(r)/r_e > 10:
 
             bs_events.append(old_event)
 
     jet_dict = dict()
+
+    jetobj_list = []
 
     counter = 1
 
@@ -170,12 +231,11 @@ def track_jets(runid,start,stop):
 
                 curr_id = str(counter).zfill(5)
 
-                jet_dict[curr_id] = event
+                jetobj_list.append(Jet(curr_id,runid,float(start)/2))
 
-                jetfile_write(runid,start,curr_id,bs_event) # write bs_event to file
-                jetfile_write(runid,start,curr_id,event)# write event to file
-                timefile_write(runid,start,curr_id,float(start)/2)# write times to file
-                timefile_write(runid,start,curr_id,float(start+1)/2)
+                jetobj_list[-1].cellids.append(bs_event)
+                jetobj_list[-1].cellids.append(event)
+                jetobj_list[-1].times.append(float(start+1)/2)
 
                 counter += 1
 
@@ -183,27 +243,29 @@ def track_jets(runid,start,stop):
 
     for n in xrange(start+2,stop+1):
 
-        events = eventfile_read(runid,n) #PH events in file n
+        events = eventfile_read(runid,n)
 
-        for k in jet_dict.keys():
+        for jetobj in jetobj_list:
 
-            key_del = True
 
             for event in events:
 
-                if np.intersect1d(jet_dict[k],event) > 0.6*len(event):
+                if np.intersect1d(jetobj.cellids[-1],event).size > 0.6*len(event):
 
-                    jet_dict[k] = event
-
-                    jetfile_write(runid,start,k,event) #write event to file
-                    timefile_write(runid,start,k,float(n)/2)#write time to file
-
-                    key_del = False
+                    jetobj.cellids.append(event)
+                    jetobj.times.append(float(n)/2)
 
                     break
 
-            if key_del:
+    for jetobj in jetobj_list:
 
-                jet_dict.pop(k)
+        jetfile = open("/homeappl/home/sunijona/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".jet","w")
+        timefile = open("/homeappl/home/sunijona/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+
+        jetfile.write(jetobj.return_cellid_string())
+        timefile.write(jetobj.return_time_string())
+
+        jetfile.close()
+        timefile.close()
 
     return None
