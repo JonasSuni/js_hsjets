@@ -125,6 +125,15 @@ def eventfile_read(runid,filenr):
 
     return outputlist
 
+def propfile_write(runid,filenr,key,props):
+
+    open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
+    pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"+"\n")
+    pf.write("\n".join([",".join(map(str,line)) for line in props]))
+    pf.close()
+    print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
+
 def jio_figmake(runid,start,jetid,figname):
 
     props = calc_jet_properties(runid,start,jetid)
@@ -188,6 +197,8 @@ def calc_jet_properties(runid,start,jetid):
         prop_arr = np.append(prop_arr,np.array(temp_arr))
 
     prop_arr = np.reshape(prop_arr,(len(nr_list),len(temp_arr)))
+
+    propfile_write(runid,start,jetid,prop_arr)
 
     return prop_arr
 
@@ -286,6 +297,12 @@ def track_jets(runid,start,stop):
                         flags.append(jetobj.ID)
 
                         break
+
+        for jetobj in jetobj_list:
+
+            if jetobj.ID not in flags:
+
+                jetobj_list.remove(jetobj)
 
     for jetobj in jetobj_list:
 
