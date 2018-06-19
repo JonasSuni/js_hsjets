@@ -146,7 +146,7 @@ def figmake_script(runid,start,ids):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
 
-def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=None):
+def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
 
     if props_arr == None:
@@ -158,30 +158,36 @@ def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=No
     area_arr = linsizes[:,3]
     rad_size_arr = linsizes[:,7]
     tan_size_arr = linsizes[:,8]
+    r_arr = linsizes[:,6]
 
     tmin,tmax=min(time_arr),max(time_arr)
     Amin,Amax=min(area_arr),max(area_arr)
     rsmin,rsmax=min(rad_size_arr),max(rad_size_arr)
     psmin,psmax=min(tan_size_arr),max(tan_size_arr)
+    rmin,rmax=min(r_arr),max(r_arr)
 
     plt.ion()
     fig = plt.figure(figsize=figsize)
 
-    area_ax = fig.add_subplot(311)
-    rad_size_ax = fig.add_subplot(312)
-    tan_size_ax = fig.add_subplot(313)
+    area_ax = fig.add_subplot(411)
+    rad_size_ax = fig.add_subplot(412)
+    tan_size_ax = fig.add_subplot(413)
+    r_ax = fig.add_subplot(414)
 
     area_ax.grid()
     rad_size_ax.grid()
     tan_size_ax.grid()
+    r_ax.grid()
 
     area_ax.set_xlim(tmin,tmax)
     rad_size_ax.set_xlim(tmin,tmax)
     tan_size_ax.set_xlim(tmin,tmax)
+    r_ax.set_xlim(tmin,tmax)
 
     area_ax.set_ylim(Amin,Amax)
     rad_size_ax.set_ylim(rsmin,rsmax)
     tan_size_ax.set_ylim(psmin,psmax)
+    r_ax.set_ylim(rmin,rmax)
 
     #area_ax.set_yticks([0.5,1,1.5,2,2.5])
     #rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
@@ -193,19 +199,23 @@ def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=No
 
     area_ax.set_xticklabels([])
     rad_size_ax.set_xticklabels([])
+    tan_size_ax.set_xticklabels([])
 
     area_ax.set_ylabel("Area [R$_{e}^{2}$]",fontsize=20)
     rad_size_ax.set_ylabel("Radial size [R$_{e}$]",fontsize=20)
     tan_size_ax.set_ylabel("Tangential size [R$_{e}$]",fontsize=20)
-    tan_size_ax.set_xlabel("Time [s]",fontsize=20)
+    r_ax.set_ylabel("Radial distance [R$_{e}$]",fontsize=20)
+    r_ax.set_xlabel("Time [s]",fontsize=20)
 
     area_ax.tick_params(labelsize=16)
     rad_size_ax.tick_params(labelsize=16)
     tan_size_ax.tick_params(labelsize=16)
+    r_ax.tick_params(labelsize=16)
 
     area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
     rad_size_ax.plot(time_arr,rad_size_arr,color="black",linewidth=2)
     tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
+    r_ax.plot(time_arr,r_arr,color="black",linewidth=2)
 
     plt.tight_layout()
 
