@@ -8,6 +8,7 @@ import jetfile_make as jfm
 import os
 import jet_scripts as js
 import copy
+import matplotlib.pyplot as plt
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -138,7 +139,77 @@ def jio_figmake(runid,start,jetid,figname):
 
     props = calc_jet_properties(runid,start,jetid)
 
-    js.linsize_fig(figsize=(10,10),figname=figname,props_arr=props)
+    jetsize_fig(runid,start,jetid,figsize=(10,10),figname=figname,props_arr=props)
+
+def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=None):
+    # script for creating time series of jet linear sizes and area
+
+    if props_arr == None:
+        linsizes = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+str(start)+"."+jetid+".props").as_matrix()
+    else:
+        linsizes = props_arr
+
+    time_arr = linsizes[:,0]
+    area_arr = linsizes[:,3]
+    rad_size_arr = linsizes[:,7]
+    tan_size_arr = linsizes[:,8]
+
+    tmin,tmax=min(time_arr),max(time_arr)
+    Amin,Amax=min(area_arr),max(area_arr)
+    rmin,rmax=min(rad_size_arr),max(rad_size_arr)
+    pmin,pmax=min(tan_size_arr),max(tan_size_arr)
+
+    plt.ion()
+    fig = plt.figure(figsize=figsize)
+
+    area_ax = fig.add_subplot(311)
+    rad_size_ax = fig.add_subplot(312)
+    tan_size_ax = fig.add_subplot(313)
+
+    area_ax.grid()
+    rad_size_ax.grid()
+    tan_size_ax.grid()
+
+    area_ax.set_xlim(tmin,tmax)
+    rad_size_ax.set_xlim(tmin,tmax)
+    tan_size_ax.set_xlim(tmin,tmax)
+
+    area_ax.set_ylim(Amin,Amax)
+    rad_size_ax.set_ylim(rmin,rmax)
+    tan_size_ax.set_ylim(pmin,pmax)
+
+    #area_ax.set_yticks([0.5,1,1.5,2,2.5])
+    #rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
+    #tan_size_ax.set_yticks([0.6,1,1.4])
+
+    #area_ax.set_xticks([295,300,305,310,315,320])
+    #rad_size_ax.set_xticks([295,300,305,310,315,320])
+    #tan_size_ax.set_xticks([295,300,305,310,315,320])
+
+    area_ax.set_xticklabels([])
+    rad_size_ax.set_xticklabels([])
+
+    area_ax.set_ylabel("Area [R$_{e}^{2}$]",fontsize=20)
+    rad_size_ax.set_ylabel("Radial size [R$_{e}$]",fontsize=20)
+    tan_size_ax.set_ylabel("Tangential size [R$_{e}$]",fontsize=20)
+    tan_size_ax.set_xlabel("Time [s]",fontsize=20)
+
+    area_ax.tick_params(labelsize=16)
+    rad_size_ax.tick_params(labelsize=16)
+    tan_size_ax.tick_params(labelsize=16)
+
+    area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
+    rad_size_ax.plot(time_arr,rad_size_arr,color="black",linewidth=2)
+    tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
+
+    plt.tight_layout()
+
+    fig.show()
+
+    plt.savefig("jet_sizes/"+figname+".png")
+    print("jet_sizes/"+figname+".png")
+
+    return None
 
 def calc_jet_properties(runid,start,jetid):
 
@@ -202,7 +273,7 @@ def calc_jet_properties(runid,start,jetid):
 
     return prop_arr
 
-def track_jets(runid,start,stop):
+def track_jets(runid,start,stop,threshold=0.6):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -247,7 +318,7 @@ def track_jets(runid,start,stop):
 
         for bs_event in bs_events:
 
-            if np.intersect1d(bs_event,event).size > 0.6*len(event):
+            if np.intersect1d(bs_event,event).size > threshold*len(event):
 
                 curr_id = str(counter).zfill(5)
 
@@ -271,7 +342,7 @@ def track_jets(runid,start,stop):
 
             for jetobj in jetobj_list:
 
-                if np.intersect1d(jetobj.cellids[-1],event).size > 0.6*len(event):
+                if np.intersect1d(jetobj.cellids[-1],event).size > threshold*len(event):
 
                     if jetobj.ID in flags:
 
@@ -298,11 +369,11 @@ def track_jets(runid,start,stop):
 
                         break
 
-        for jetobj in jetobj_list:
+        #for jetobj in jetobj_list:
 
-            if jetobj.ID not in flags:
+        #    if jetobj.ID not in flags:
 
-                jetobj_list.remove(jetobj)
+        #        jetobj_list.remove(jetobj)
 
     for jetobj in jetobj_list:
 
