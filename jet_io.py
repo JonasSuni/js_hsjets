@@ -141,6 +141,11 @@ def jio_figmake(runid,start,jetid,figname):
 
     jetsize_fig(runid,start,jetid,figsize=(10,10),figname=figname,props_arr=props)
 
+def figmake_script(runid,start,ids):
+
+    for ID in ids:
+        jio_figmake(runid,start,ID,figname=ID)
+
 def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
 
@@ -156,8 +161,8 @@ def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=No
 
     tmin,tmax=min(time_arr),max(time_arr)
     Amin,Amax=min(area_arr),max(area_arr)
-    rmin,rmax=min(rad_size_arr),max(rad_size_arr)
-    pmin,pmax=min(tan_size_arr),max(tan_size_arr)
+    rsmin,rsmax=min(rad_size_arr),max(rad_size_arr)
+    psmin,psmax=min(tan_size_arr),max(tan_size_arr)
 
     plt.ion()
     fig = plt.figure(figsize=figsize)
@@ -175,8 +180,8 @@ def jetsize_fig(runid,start,jetid,figsize=(10,10),figname="sizefig",props_arr=No
     tan_size_ax.set_xlim(tmin,tmax)
 
     area_ax.set_ylim(Amin,Amax)
-    rad_size_ax.set_ylim(rmin,rmax)
-    tan_size_ax.set_ylim(pmin,pmax)
+    rad_size_ax.set_ylim(rsmin,rsmax)
+    tan_size_ax.set_ylim(psmin,psmax)
 
     #area_ax.set_yticks([0.5,1,1.5,2,2.5])
     #rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
