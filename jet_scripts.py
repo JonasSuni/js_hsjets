@@ -121,10 +121,13 @@ def calc_linsize(vlsvobj,jets,runid,file_number):
 
 ###FIGURE MAKERS HERE###
 
-def linsize_fig(figsize=(10,10)):
+def linsize_fig(figsize=(10,10),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
 
-    linsizes = pd.read_csv("jet_linsize.csv").as_matrix()
+    if props_arr == None:
+        linsizes = pd.read_csv("jet_linsize.csv").as_matrix()
+    else:
+        linsizes = props_arr
 
     time_arr = linsizes[:,0]
     area_arr = linsizes[:,3]
@@ -178,8 +181,8 @@ def linsize_fig(figsize=(10,10)):
 
     fig.show()
 
-    plt.savefig("lin_sizes/sizefig.png")
-    print("lin_sizes/sizefig.png")
+    plt.savefig("lin_sizes/"+figname+".png")
+    print("lin_sizes/"+figname+".png")
 
     return None
 

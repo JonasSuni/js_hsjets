@@ -7,6 +7,7 @@ import jet_analyser as ja
 import jetfile_make as jfm
 import os
 import jet_scripts as js
+import copy
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -124,6 +125,12 @@ def eventfile_read(runid,filenr):
 
     return outputlist
 
+def jio_figmake(runid,start,jetid,figname):
+
+    props = calc_jet_properties(runid,start,jetid)
+
+    js.linsize_fig(figsize=(10,10),figname=figname,props_arr=props)
+
 def calc_jet_properties(runid,start,jetid):
 
     jet_list = jetfile_read(runid,start,jetid)
@@ -147,10 +154,12 @@ def calc_jet_properties(runid,start,jetid):
 
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-        dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
+        if n == 0:
+            dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
 
         # read variables
-        X,Y = ja.read_mult_vars(vlsvobj,["X","Y"],cells=jet_list[n])
+        X = vlsvobj.read_variable("X",cellids=jet_list[n])
+        Y = vlsvobj.read_variable("Y",cellids=jet_list[n])
 
         # calculate geometric center of jet
         x_mean = np.mean([max(X),min(X)])/r_e
@@ -243,19 +252,40 @@ def track_jets(runid,start,stop):
 
     for n in xrange(start+2,stop+1):
 
+        flags = []
+
         events = eventfile_read(runid,n)
 
-        for jetobj in jetobj_list:
+        for event in events:
 
-
-            for event in events:
+            for jetobj in jetobj_list:
 
                 if np.intersect1d(jetobj.cellids[-1],event).size > 0.6*len(event):
 
-                    jetobj.cellids.append(event)
-                    jetobj.times.append(float(n)/2)
+                    if jetobj.ID in flags:
 
-                    break
+                        jetobj_new = copy.deepcopy(jetobj)
+                        jetobj_new.ID = str(counter).zfill(5)
+                        print("Created jet with ID "+jetobj_new.ID)
+                        jetobj_new.cellids = jetobj_new.cellids[:-1]
+                        jetobj_new.cellids.append(event)
+                        jetobj_new.times = jetobj_new.times[:-1]
+                        jetobj_new.times.append(float(n)/2)
+
+                        jetobj_list.append(jetobj_new)
+
+                        counter += 1
+
+                        break
+
+                    else:
+
+                        jetobj.cellids.append(event)
+                        jetobj.times.append(float(n)/2)
+
+                        flags.append(jetobj.ID)
+
+                        break
 
     for jetobj in jetobj_list:
 
