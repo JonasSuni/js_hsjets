@@ -139,7 +139,7 @@ def jio_figmake(runid,start,jetid,figname):
 
     props = calc_jet_properties(runid,start,jetid)
 
-    jetsize_fig(runid,start,jetid,figsize=(10,10),figname=figname,props_arr=props)
+    jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
 
 def figmake_script(runid,start,ids):
 
@@ -266,9 +266,9 @@ def calc_jet_properties(runid,start,jetid):
 
             X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,jet_list[n])
 
-        if n == 0 and f.check_variable("DX"):
+        if n == 0 and vlsvobj.check_variable("DX"):
             dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
-        elif n == 0 and not f.check_variable("DX"):
+        elif n == 0 and not vlsvobj.check_variable("DX"):
             dA = ja.get_cell_area(vlsvobj)
 
         # calculate geometric center of jet
