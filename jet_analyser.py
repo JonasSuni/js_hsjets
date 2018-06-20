@@ -308,6 +308,15 @@ def ci2vars_nofile(input_vars,cellids,cells):
 
     return output_vars
 
+def get_cell_area(vlsvobj):
+
+    simextent = vlsvobj.get_spatial_mesh_extent().reshape((2,3))
+    simsize = vlsvobj.get_spatial_mesh_size()
+
+    cell_sizes = (simextent[1]-simextent[0])/simsize
+    dA = cell_sizes[0]*cell_sizes[1]
+
+    return dA
 
 def read_mult_vars(vlsvobj,input_vars,cells=-1):
     # reads multiple variables from vlsvobject

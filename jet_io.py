@@ -60,7 +60,7 @@ def jet_maker(runid,start,stop):
 
         print(len(msk))
 
-        jets = ja.sort_jets(vlsvobj,msk,100,3000,[1,1])
+        jets = ja.sort_jets(vlsvobj,msk,100,5000,[1,1])
 
         open(outputdir+str(file_nr)+".events","w").close()
 
@@ -155,10 +155,10 @@ def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=No
         linsizes = props_arr
 
     time_arr = linsizes[:,0]
-    area_arr = linsizes[:,3]
-    rad_size_arr = linsizes[:,7]
-    tan_size_arr = linsizes[:,8]
-    r_arr = linsizes[:,6]
+    area_arr = linsizes[:,4]
+    rad_size_arr = linsizes[:,8]
+    tan_size_arr = linsizes[:,9]
+    r_arr = linsizes[:,7]
 
     tmin,tmax=min(time_arr),max(time_arr)
     Amin,Amax=min(area_arr),max(area_arr)
@@ -231,6 +231,12 @@ def calc_jet_properties(runid,start,jetid):
     jet_list = jetfile_read(runid,start,jetid)
     time_list = timefile_read(runid,start,jetid)
 
+    dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
+
+    if max(dt) > 5:
+        print("Jet not sufficiently continuous, exiting.")
+        return 1
+
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
     else:
@@ -249,27 +255,37 @@ def calc_jet_properties(runid,start,jetid):
 
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-        if n == 0:
-            dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
-
         # read variables
-        X = vlsvobj.read_variable("X",cellids=jet_list[n])
-        Y = vlsvobj.read_variable("Y",cellids=jet_list[n])
+        if vlsvobj.check_variable("X"):
+            X = vlsvobj.read_variable("X",cellids=jet_list[n])
+            Y = vlsvobj.read_variable("Y",cellids=jet_list[n])
+            Z = vlsvobj.read_variable("Z",cellids=jet_list[n])
+        else:
+            sorigid = vlsvobj.read_variable("CellID")
+            sorigid = sorigid[sorigid.argsort()]
+
+            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,jet_list[n])
+
+        if n == 0 and f.check_variable("DX"):
+            dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
+        elif n == 0 and not f.check_variable("DX"):
+            dA = ja.get_cell_area(vlsvobj)
 
         # calculate geometric center of jet
         x_mean = np.mean([max(X),min(X)])/r_e
         y_mean = np.mean([max(Y),min(Y)])/r_e
+        z_mean = np.mean([max(Z),min(Z)])/r_e
 
         # calculate jet size
         A = dA*len(jet_list[n])/(r_e**2)
         Nr_cells = len(jet_list[n])
 
         # geometric center of jet in polar coordinates
-        phi = np.rad2deg(np.arctan(y_mean/x_mean))
-        r_d = np.linalg.norm([x_mean,y_mean])
+        phi = np.rad2deg(np.arctan((y_mean+z_mean)/x_mean))
+        r_d = np.linalg.norm([x_mean,y_mean,z_mean])
 
         # r-coordinates corresponding to all (x,y)-points in jet
-        r = np.linalg.norm(np.array([X,Y]),axis=0)/r_e
+        r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
 
         # calculate linear sizes of jet
         size_rad = max(r)-min(r)
@@ -277,8 +293,8 @@ def calc_jet_properties(runid,start,jetid):
 
         time = time_list[n]
 
-        # "time [s],x_mean [R_e],y_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"
-        temp_arr = [time,x_mean,y_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
+        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
 
         prop_arr = np.append(prop_arr,np.array(temp_arr))
 
