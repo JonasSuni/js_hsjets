@@ -268,21 +268,11 @@ def ci2vars(vlsvobj,input_vars,cells):
     # initialise list of output vars
     output_vars = []
 
-    #cellids = vlsvobj.read_variable("CellID")
-
-    # find the indices of the masked cells
-    #n_i = np.where(np.in1d(cellids,cells))[0]
-
     for input_var in input_vars:
 
-        #variable = vlsvobj.read_variable(input_var)
         variable = vlsvobj.read_variable(input_var,cellids=cells)
 
-        # find values of the variable for the masked cells
-        #n_var = variable[n_i]
-
         # append variable values to list of output vars
-        #output_vars.append(n_var)
         output_vars.append(variable)
 
     return output_vars
@@ -310,10 +300,14 @@ def ci2vars_nofile(input_vars,cellids,cells):
 
 def get_cell_area(vlsvobj):
 
+    # get spatial extent of simulation and the number of cells in each direction
     simextent = vlsvobj.get_spatial_mesh_extent().reshape((2,3))
     simsize = vlsvobj.get_spatial_mesh_size()
 
+    # calculate DX,DY,DZ
     cell_sizes = (simextent[1]-simextent[0])/simsize
+    
+    # calculate area of one cell
     dA = cell_sizes[0]*cell_sizes[1]
 
     return dA
@@ -437,9 +431,6 @@ def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
     # ratio of x-directional dynamic pressure and solar wind dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
 
-    #npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
-    #nrho = rho/rho_sw
-
     spdynx_sw,srho_sw = ci2vars_nofile([spdynx,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
 
     pdyn_sw = np.mean(spdynx_sw)
@@ -480,10 +471,6 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     origid = vlsvreader.read_variable("CellID")
     sorigid = origid[np.argsort(origid)]
 
-    # solar wind parameters
-    rho_sw = 1.0e+6
-    vx_sw = 750.0e+3
-
     # if file has separate populations, read proton population
     if type(vlsvreader.read_variable("rho")) is not np.ndarray:
         rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
@@ -494,9 +481,6 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
 
     # ratio of x-directional dynamic pressure and solar wind dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
-
-    #npdynx = rho*(v[:,0]**2)/(rho_sw*(vx_sw**2))
-    #nrho = rho/rho_sw
 
     spdynx_sw,srho_sw = ci2vars_nofile([spdynx,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
 

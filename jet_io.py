@@ -14,6 +14,7 @@ m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 class Jet:
+    # Class for identifying and handling individual jets and their properties
 
     def __init__(self,ID,runid,birthday):
 
@@ -26,7 +27,7 @@ class Jet:
         print("Created jet with ID "+self.ID)
 
     def return_cellid_string(self):
-
+        
         return "\n".join([",".join(map(str,l)) for l in self.cellids])
 
     def return_time_string(self):
@@ -139,7 +140,10 @@ def jio_figmake(runid,start,jetid,figname):
 
     props = calc_jet_properties(runid,start,jetid)
 
-    jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
+    if props == 1:
+        return 1
+    else:
+        jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
 
 def figmake_script(runid,start,ids):
 
@@ -221,8 +225,11 @@ def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=No
 
     fig.show()
 
-    plt.savefig("jet_sizes/"+figname+".png")
-    print("jet_sizes/"+figname+".png")
+    if not os.path.exists("jet_sizes/"+runid):
+        os.makedirs("jet_sizes/"+runid)
+
+    plt.savefig("jet_sizes/"+runid+"/"+figname+".png")
+    print("jet_sizes/"+runid+"/"+figname+".png")
 
     return None
 
@@ -291,15 +298,19 @@ def calc_jet_properties(runid,start,jetid):
         size_rad = max(r)-min(r)
         size_tan = A/size_rad
 
+        # current time
         time = time_list[n]
 
         # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"
         temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
 
+        # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))
 
+    # reshape property array
     prop_arr = np.reshape(prop_arr,(len(nr_list),len(temp_arr)))
 
+    # write property array to file
     propfile_write(runid,start,jetid,prop_arr)
 
     return prop_arr
@@ -399,12 +410,6 @@ def track_jets(runid,start,stop,threshold=0.6):
                         flags.append(jetobj.ID)
 
                         break
-
-        #for jetobj in jetobj_list:
-
-        #    if jetobj.ID not in flags:
-
-        #        jetobj_list.remove(jetobj)
 
     for jetobj in jetobj_list:
 
