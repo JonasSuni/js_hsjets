@@ -30,19 +30,15 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
 
     # lists of variables to be read
     var_list = ["rho","v","B","Temperature","X","Y","Z","va","vms","CellID"]
+    var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","X","Y","Z","proton/va","proton/vms","CellID"]
     T_list = ["TParallel","TPerpendicular"]
+    T_list_alt = ["proton/TParallel","proton/TPerpendicular"]
 
     # if file has separate populations, read the proton populations instead
     if not vlsvobj.checK_variable("rho"):
 
-        var_list[0] = "proton/rho"
-        var_list[1] = "proton/V"
-        var_list[3] = "proton/Temperature"
-        var_list[7] = "proton/va"
-        var_list[8] = "proton/vms"
-
-        T_list[0] = "proton/TParallel"
-        T_list[1] = "proton/TPerpendicular"
+        var_list = var_list_alt
+        T_list = T_list_alt
 
     # read variables from vlsv object
     rho,v,B,T,X,Y,Z,va,vms,cellids = read_mult_vars(vlsvobj,var_list)

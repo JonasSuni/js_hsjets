@@ -27,7 +27,7 @@ class Jet:
         print("Created jet with ID "+self.ID)
 
     def return_cellid_string(self):
-        
+
         return "\n".join([",".join(map(str,l)) for l in self.cellids])
 
     def return_time_string(self):
@@ -164,11 +164,11 @@ def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=No
     tan_size_arr = linsizes[:,9]
     r_arr = linsizes[:,7]
 
-    tmin,tmax=min(time_arr),max(time_arr)
-    Amin,Amax=min(area_arr),max(area_arr)
-    rsmin,rsmax=min(rad_size_arr),max(rad_size_arr)
-    psmin,psmax=min(tan_size_arr),max(tan_size_arr)
-    rmin,rmax=min(r_arr),max(r_arr)
+    tmin,tmax = min(time_arr),max(time_arr)
+    Amin,Amax = min(area_arr),max(area_arr)
+    rsmin,rsmax = min(rad_size_arr),max(rad_size_arr)
+    psmin,psmax = min(tan_size_arr),max(tan_size_arr)
+    rmin,rmax = min(r_arr),max(r_arr)
 
     plt.ion()
     fig = plt.figure(figsize=figsize)
@@ -270,13 +270,18 @@ def calc_jet_properties(runid,start,jetid):
         else:
             sorigid = vlsvobj.read_variable("CellID")
             sorigid = sorigid[sorigid.argsort()]
-
             X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,jet_list[n])
 
         if n == 0 and vlsvobj.check_variable("DX"):
             dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
         elif n == 0 and not vlsvobj.check_variable("DX"):
             dA = ja.get_cell_area(vlsvobj)
+
+        var_list = ["rho","v","B","Temperature","va","vms","CellID","TParallel","TPerpendicular"]
+        var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/va","proton/vms","CellID","proton/TParallel","proton/TPerpendicular"]
+
+        if not vlsvobj.check_variable("rho"):
+            var_list = var_list_alt
 
         # calculate geometric center of jet
         x_mean = np.mean([max(X),min(X)])/r_e
@@ -288,7 +293,7 @@ def calc_jet_properties(runid,start,jetid):
         Nr_cells = len(jet_list[n])
 
         # geometric center of jet in polar coordinates
-        phi = np.rad2deg(np.arctan((y_mean+z_mean)/x_mean))
+        phi = np.rad2deg(np.arctan(np.linalg.norm(y_mean,z_mean)/x_mean))
         r_d = np.linalg.norm([x_mean,y_mean,z_mean])
 
         # r-coordinates corresponding to all (x,y)-points in jet
