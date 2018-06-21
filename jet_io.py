@@ -9,6 +9,7 @@ import os
 import jet_scripts as js
 import copy
 import matplotlib.pyplot as plt
+import plot_contours as pc
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -140,7 +141,7 @@ def jio_figmake(runid,start,jetid,figname):
 
     props = calc_jet_properties(runid,start,jetid)
 
-    if props == 1:
+    if type(props) is not np.ndarray:
         return 1
     else:
         jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
@@ -149,6 +150,67 @@ def figmake_script(runid,start,ids):
 
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
+
+def plotmake_script(start,stop):
+
+    filenames = os.listdir("jets/ABA")
+    prop_fns = []
+    for filename in filenames:
+        if ".props" in filename:
+            prop_fns.append(filename)
+
+    prop_fns.sort()
+
+    tpos_dict_list = []
+
+    for fname in prop_fns:
+        props = pd.read_csv("/homeappl/home/sunijona/jets/ABA/"+fname).as_matrix()
+        t=props[:,0]
+        X=props[:,1]
+        Y=props[:,2]
+
+        tpos_dict_list.append(dict(zip(t,np.array([X,Y]).T)))
+
+    cells_list = []
+
+    filenames = os.listdir("events/ABA")
+    filenames.sort()
+
+    for filename in filenames:
+
+        fileobj = open("events/ABA/"+filename,"r")
+        contents = fileobj.read()
+        cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        cells_list.append(cells)
+
+    for itr in xrange(start,stop+1):
+
+        x_list = []
+        y_list = []
+
+        for tpos_dict in tpos_dict_list:
+
+            if float(itr)/2 in tpos_dict:
+
+                x_list.append(tpos_dict[float(itr)/2][0])
+                y_list.append(tpos_dict[float(itr)/2][1])
+
+        pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run="ABA",usesci=0,lin=1,boxre=[8,16,-6,6],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start]])
+
+
+def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    rho,v,cellids = extmaps
+
+    x_list,y_list,cells = ext_pars
+
+    msk = np.in1d(cellids,cells).astype(int)
+
+    msk=np.reshape(msk,rho.shape)
+
+    cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
+
+    ax.plot(x_list,y_list,"x",color="red",markersize=4)
 
 def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
@@ -293,7 +355,7 @@ def calc_jet_properties(runid,start,jetid):
         Nr_cells = len(jet_list[n])
 
         # geometric center of jet in polar coordinates
-        phi = np.rad2deg(np.arctan(np.linalg.norm(y_mean,z_mean)/x_mean))
+        phi = np.rad2deg(np.arctan(np.linalg.norm([y_mean,z_mean])/x_mean))
         r_d = np.linalg.norm([x_mean,y_mean,z_mean])
 
         # r-coordinates corresponding to all (x,y)-points in jet
@@ -347,7 +409,12 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
 
     for old_event in events_old:
 
-        X,Y = ja.ci2vars(vlsvobj,["X","Y"],old_event)
+        if vlsvobj.check_variable("X"):
+            X,Y = ja.ci2vars(vlsvobj,["X","Y"],old_event)
+        else:
+            sorigid = vlsvobj.read_variable("CellID")
+            sorigid = sorigid[sorigid.argsort()]
+            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,old_event)
 
         r = np.linalg.norm([X,Y],axis=0)
 
