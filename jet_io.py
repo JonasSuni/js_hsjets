@@ -197,6 +197,12 @@ def plotmake_script(start,stop):
         cells = map(int,contents.replace("\n",",").split(",")[:-1])
         cells_list.append(cells)
 
+    fullmask_list = []
+    for itr2 in xrange(start,stop+1):
+
+        fullmask = np.loadtxt("Masks/ABA/"+str(itr2)+".mask")
+        fullmask_list.append(fullmask)
+
     for itr in xrange(start,stop+1):
 
         # Find positions of all jets for current time step
@@ -208,21 +214,25 @@ def plotmake_script(start,stop):
                 y_list.append(tpos_dict[float(itr)/2][1])
 
         # Create plot
-        pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run="ABA",usesci=0,lin=1,boxre=[8,16,-6,6],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start]])
+        pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run="ABA",usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     rho,v,cellids = extmaps
 
-    x_list,y_list,cells = ext_pars
+    x_list,y_list,cells,fullmask = ext_pars
 
     # Create mask
     msk = np.in1d(cellids,cells).astype(int)
-    msk=np.reshape(msk,rho.shape)
+    msk = np.reshape(msk,rho.shape)
+
+    fullmsk = np.in1d(cellids,fullmask).astype(int)
+    fullmsk = np.reshape(fullmsk,rho.shape)
 
     # Draw contours
     cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
+    fullcont = ax.contour(XmeshXY,YmeshXY,fullmsk,[0.5],linewidths=1.0,colors="magenta")
 
     # Plot jet positions
     ax.plot(x_list,y_list,"x",color="red",markersize=4)

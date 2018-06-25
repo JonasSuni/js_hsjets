@@ -546,7 +546,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    #np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+    np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
