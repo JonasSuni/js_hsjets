@@ -2,6 +2,7 @@ import numpy as np
 import pytools as pt
 import linecache as lc
 import pandas as pd
+import os
 
 m_p = 1.672621898e-27
 
