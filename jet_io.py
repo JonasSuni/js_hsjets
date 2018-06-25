@@ -235,7 +235,8 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     fullcont = ax.contour(XmeshXY,YmeshXY,fullmsk,[0.5],linewidths=1.0,colors="magenta")
 
     # Plot jet positions
-    ax.plot(x_list,y_list,"x",color="red",markersize=4)
+    if len(x_list) != 0:
+        ax.plot(x_list,y_list,"x",color="red",markersize=4)
 
 def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
@@ -447,6 +448,9 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
 
     # Open file to get
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    sorigid = vlsvobj.read_variable("CellID")
+    sorigid = sorigid[sorigid.argsort()]
+    fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
@@ -455,13 +459,8 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        if vlsvobj.check_variable("X"):
-            X,Y = ja.ci2vars(vlsvobj,["X","Y"],old_event)
-        else:
-            sorigid = vlsvobj.read_variable("CellID")
-            sorigid = sorigid[sorigid.argsort()]
-            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,old_event)
-        r = np.linalg.norm([X,Y],axis=0)
+        X,Y,Z = ja.ci2vars_nofile([fX,fY,fZ],sorigid,old_event)
+        r = np.linalg.norm([X,Y,Z],axis=0)
         if max(r)/r_e > bs_d:
             bs_events.append(old_event)
 
@@ -471,6 +470,7 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
     # Initialise unique ID counter
     counter = 1
 
+    # Look for jets at bow shock
     for event in events:
 
         for bs_event in bs_events:
@@ -493,7 +493,15 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
 
                 break
 
+    # Track jets
     for n in xrange(start+2,stop+1):
+
+        bs_events = []
+        for old_event in events:
+            X,Y,Z = ja.ci2vars_nofile([fX,fY,fZ],sorigid,old_event)
+            r = np.linalg.norm([X,Y,Z],axis=0)
+            if max(r)/r_e > bs_d:
+                bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets
         flags = []
@@ -501,6 +509,30 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
         # Read event file for current time step
         events = eventfile_read(runid,n)
 
+        # Look for new jets at bow shock
+        for event in events:
+
+            for bs_event in bs_events:
+
+                if np.intersect1d(bs_event,event).size > threshold*len(event):
+
+                    # Create unique ID
+                    curr_id = str(counter).zfill(5)
+
+                    # Create new jet object
+                    jetobj_list.append(Jet(curr_id,runid,float(n-1)/2))
+
+                    # Append current events to jet object properties
+                    jetobj_list[-1].cellids.append(bs_event)
+                    jetobj_list[-1].cellids.append(event)
+                    jetobj_list[-1].times.append(float(n)/2)
+
+                    # Iterate counter
+                    counter += 1
+
+                    break
+
+        # Update existing jets
         for event in events:
 
             for jetobj in jetobj_list:

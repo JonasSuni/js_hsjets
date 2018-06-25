@@ -6,6 +6,17 @@ import pandas as pd
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def sw_par_dict():
+
+    runs = ["ABA","ABC","AFA","AFB","BEB"]
+    sw_v = [750e+3,600e+3,750e+3,600e+3,450e+3]
+    sw_rho = [1e+6,3.3e+6,1e+6,3.3e+6,4e+6]
+
+    sw_pars = list(zip(sw_rho,sw_v))
+    sw_pars_dict = dict(zip(runs,sw_pars))
+
+    return sw_pars_dict
+
 def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_file_id=""):
     # calculates certain properties for the jets
 
@@ -102,9 +113,10 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
         Tperp_med = np.median(jTperp)/1.0e+6
 
         # calculate the position of the cell that corresponds to maximum velocity
-        X_vmax = jX[np.where(jvmag==max(jvmag))[0]][0]/r_e
-        Y_vmax = jY[np.where(jvmag==max(jvmag))[0]][0]/r_e
-        Z_vmax = jZ[np.where(jvmag==max(jvmag))[0]][0]/r_e
+        jvmag_max_pos = np.in1d(jvmag,max(jvmag))
+        X_vmax = jX[jvmag_max_pos][0]/r_e
+        Y_vmax = jY[jvmag_max_pos][0]/r_e
+        Z_vmax = jZ[jvmag_max_pos][0]/r_e
 
         # calculate area of current event
         A = dA*event.size/(r_e**2)
@@ -282,7 +294,7 @@ def ci2vars_nofile(input_vars,cellids,cells):
     output_vars = []
 
     # find the indices of the masked cells
-    n_i = np.where(np.in1d(cellids,cells))[0]
+    n_i = np.in1d(cellids,cells)
 
     for input_var in input_vars:
 
