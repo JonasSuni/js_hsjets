@@ -6,6 +6,21 @@ import pandas as pd
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def bow_shock_finder(vlsvobj,rho_sw):
+
+    if vlsvobj.check_variable("rho"):
+        rho = vlsvobj.read_variable("rho")
+    else:
+        rho = vlsvobj.read_variable("proton/rho")
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    bs = np.ma.masked_greater(rho,2.0*rho_sw)
+
+    masked_ci = np.ma.array(cellids,mask=bs.mask).compressed()
+
+    return masked_ci
+
 def sw_par_dict():
 
     runs = ["ABA","ABC","AFA","AFB","BEB"]

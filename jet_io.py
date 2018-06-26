@@ -35,7 +35,7 @@ class Jet:
 
         return "\n".join(map(str,self.times))
 
-def jet_maker(runid,start,stop,boxre=[6,16,-8,8]):
+def jet_maker(runid,start,stop,boxre=[6,16,-6,6]):
 
     outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
 
@@ -65,7 +65,7 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,8]):
         print(len(msk))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,100,5000,[1,1])
+        jets = ja.sort_jets(vlsvobj,msk,50,4500,[1,1])
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -164,7 +164,7 @@ def figmake_script(runid,start,ids):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
 
-def plotmake_script(runid,start,stop):
+def plotmake_script(runid,start,stop,vmax=1.5):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     # Find names of property files
@@ -219,7 +219,7 @@ def plotmake_script(runid,start,stop):
                 y_list.append(tpos_dict[float(itr)/2][1])
 
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run=runid,usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
+        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
@@ -434,7 +434,7 @@ def calc_jet_properties(runid,start,jetid):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
+def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -456,6 +456,7 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
     sorigid = vlsvobj.read_variable("CellID")
     sorigid = sorigid[sorigid.argsort()]
     fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
+    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw)
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
@@ -464,9 +465,7 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        X,Y,Z = ja.ci2vars_nofile([fX,fY,fZ],sorigid,old_event)
-        r = np.linalg.norm([X,Y,Z],axis=0)
-        if max(r)/r_e > bs_d:
+        if np.intersect1d(bs_cells,old_event).size > 0:
             bs_events.append(old_event)
 
     # Initialise list of jet objects
@@ -503,9 +502,7 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
 
         bs_events = []
         for old_event in events:
-            X,Y,Z = ja.ci2vars_nofile([fX,fY,fZ],sorigid,old_event)
-            r = np.linalg.norm([X,Y,Z],axis=0)
-            if max(r)/r_e > bs_d:
+            if np.intersect1d(bs_cells,old_event).size > 0:
                 bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets

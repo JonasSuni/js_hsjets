@@ -264,8 +264,71 @@ def pahkmake(file_number,runid,halftimewidth,sw_params=[1.0e+6,750.0e+3]):
     
     return None
 
+def pahmake_fast(runid,filenumber,outputname="temp_pah.vlsv"):
+    # creates temporary vlsv file
+    
+    # find correct bulk path for run
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
-def pfmake(file_number,runid,test_bool=False):
+    # find correct file name for run
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    # open vlsv files for reading and writing
+    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="VLSV/"+outputname)
+    
+    rho = vlsvreader.read_variable("rho")
+    v = vlsvreader.read_variable("v")
+    cellids = vlsvreader.read_variable("CellID")
+
+    # calculate the dynamic pressure and the x-direction dynamic pressure
+    pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+    pdynx = m_p*rho*(v[:,0]**2)
+
+    # get solar wind parameters
+    sw_params = ja.sw_par_dict()[runid]
+
+    # solar wind density and dynamic pressure
+    rho_sw = sw_params[0]
+    v_sw = sw_params[1]
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
+
+    tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+    tpdynavg[tpdynavg == 0] = 1.0e-27
+
+    pdyn = pdyn[cellids.argsort()]
+    pdynx = pdynx[cellids.argsort()]
+    rho = rho[cellids.argsort()]
+    cellids = cellids[cellids.argsort()]
+
+    # calculate the ratios of the dynamic pressures and density with respective solar wind values
+    npdyn = pdyn/pdyn_sw
+    npdynx = pdynx/pdyn_sw
+    nrho = rho/rho_sw
+    tapdyn = np.divide(pdyn,tpdynavg)
+
+    pdyn /= 1.0e-9
+
+    # write the new variables to the writer file
+    vlsvwriter.write(data=npdyn,name="npdyn",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=pdyn,name="pdyn",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=rho,name="rho",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=cellids,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=tapdyn,name="tapdyn",tag="VARIABLE",mesh="SpatialGrid")    
+
+    vlsvwriter.close()
+    
+    return None
+
+def pfmake(file_number,runid,test_bool=False,outputname="temp_plaschke.vlsv"):
     # creates temporary vlsv file with new variable: ratio of x-directional dynamic pressure
     # and solar wind dynamic pressure
     
@@ -275,7 +338,7 @@ def pfmake(file_number,runid,test_bool=False):
 
     # open vlsv files for reading and writing
     vlsvreader = pt.vlsvfile.VlsvReader(file_path)
-    vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="VLSV/temp_plaschke.vlsv")
+    vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="VLSV/"+outputname)
     
     rho = vlsvreader.read_variable("rho")
     v = vlsvreader.read_variable("v")
@@ -297,6 +360,8 @@ def pfmake(file_number,runid,test_bool=False):
     npdynx = pdynx/pdyn_sw
     nrho = rho/rho_sw
 
+    pdyn /= 1.0e-9
+
     if test_bool:
 
         pdyn[np.where(np.in1d(cellids,ja.restrict_area(vlsvreader,[14,16],[-4,4])))] = 42
@@ -306,9 +371,11 @@ def pfmake(file_number,runid,test_bool=False):
     vlsvwriter.write(data=npdynx,name="npdynx",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=nrho,name="nrho",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=pdyn,name="pdyn",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=rho,name="rho",tag="VARIABLE",mesh="SpatialGrid")
+    vlsvwriter.write(data=cellids,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
 
     # copy variables from reader file to writer file
-    vlsvwriter.copy_variables(vlsvreader)
+    #vlsvwriter.copy_variables(vlsvreader)
     
     vlsvwriter.close()
     

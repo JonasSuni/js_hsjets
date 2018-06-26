@@ -16,6 +16,28 @@ parula = pc.make_parula()
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+###TEMPORARY SCRIPTS HERE###
+
+def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    level_sw = ext_pars[0]
+    rho_sw = ext_pars[1]
+    rho = extmaps[0]
+
+    bs = np.ma.masked_greater(rho,level_sw*rho_sw)
+    bs.fill_value = 0
+    bs[bs.mask == False] = 1
+
+    contour = ax.contour(XmeshXY,YmeshXY,bs.filled(),[0.5],linewidths=1.0, colors="black")
+
+def run_script(runid,start,stop,vmax=1.5,outputname="temp_plaschke.vlsv"):
+
+    for n in xrange(start,stop+1):
+
+        jfm.pfmake(n,runid,outputname=outputname)
+
+        pt.plot.plot_colormap(filename="VLSV/"+outputname,outputdir="Contours/"+runid+"/",run=runid,step=n,usesci=0,lin=1,vmin=0,vmax=vmax,cbtitle="",var="pdyn",boxre=[6,16,-8,8],colormap="parula",external=jc.jc_plaschke,pass_vars=["npdynx","nrho"],ext_pars=[0.5,2.0])
+
 ###PROP MAKER FILES HERE###
 
 def prop_file_maker(run,start,stop,halftimewidth):

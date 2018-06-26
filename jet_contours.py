@@ -22,8 +22,8 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     color_plaschke = '#000000'
 
     # thresholds
-    level_plaschke = 0.25
-    level_sw = 3.5
+    level_plaschke = ext_pars[0]
+    level_sw = ext_pars[1]
 
     # mask plaschke but not solar wind
     jet = np.ma.masked_greater(npdynx,level_plaschke)
@@ -34,6 +34,43 @@ def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     jet2 = np.ma.masked_greater(npdynx,0.5)
     jet2.fill_value = 0
     jet2[jet2.mask == False] = 1
+
+    # draw contours
+
+    contour_plaschke = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors=color_plaschke)
+
+    #contour_plaschke2 = ax.contour(XmeshXY,YmeshXY,jet2.filled(),[0.5],linewidths=1.0, colors="white")
+
+    return None
+
+def jc_pah(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # extmaps consists of [npdynx,nrho,tapdyn]
+
+    # assign variables and zoom for smoother contours
+    npdynx = extmaps[0]
+    nrho = extmaps[1]
+    tapdyn = extmaps[2]
+
+    npdynx = scipy.ndimage.zoom(npdynx, 3)
+    nrho = scipy.ndimage.zoom(nrho, 3)
+    tapdyn = scipy.ndimage.zoom(tapdyn, 3)
+    XmeshXY = scipy.ndimage.zoom(XmeshXY, 3)
+    YmeshXY = scipy.ndimage.zoom(YmeshXY, 3)
+
+    # colours to use
+    color_plaschke = '#000000'
+
+    # thresholds
+    level_plaschke = ext_pars[0]
+    level_sw = ext_pars[1]
+    level_archerhorbury = ext_pars[2]
+
+    # mask plaschke and archerhorbury but not solar wind
+    jet = np.ma.masked_greater(npdynx,level_plaschke)
+    jet.mask[nrho < level_sw] = False
+    jet.mask[tapdyn > level_archerhorbury] = True
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
 
     # draw contours
 
