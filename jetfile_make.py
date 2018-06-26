@@ -265,7 +265,7 @@ def pahkmake(file_number,runid,halftimewidth,sw_params=[1.0e+6,750.0e+3]):
     return None
 
 
-def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3],test_bool=False):
+def pfmake(file_number,runid,test_bool=False):
     # creates temporary vlsv file with new variable: ratio of x-directional dynamic pressure
     # and solar wind dynamic pressure
     
@@ -285,10 +285,12 @@ def pfmake(file_number,runid,sw_params=[1.0e+6,750.0e+3],test_bool=False):
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
     pdynx = m_p*rho*(v[:,0]**2)
 
+    sw_params = ja.sw_par_dict()[runid]
+
     # solar wind density and dynamic pressure
     rho_sw = sw_params[0]
-    vx_sw = sw_params[1]
-    pdyn_sw = m_p*rho_sw*(vx_sw**2)
+    v_sw = sw_params[1]
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
 
     # calculate the ratios of the dynamic pressures and density with respective solar wind values
     npdyn = pdyn/pdyn_sw

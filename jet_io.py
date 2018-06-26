@@ -164,11 +164,11 @@ def figmake_script(runid,start,ids):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
 
-def plotmake_script(start,stop):
+def plotmake_script(runid,start,stop):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     # Find names of property files
-    filenames = os.listdir("jets/ABA")
+    filenames = os.listdir("jets/"+runid)
     prop_fns = []
     for filename in filenames:
         if ".props" in filename:
@@ -178,21 +178,21 @@ def plotmake_script(start,stop):
     # Create dictionaries of jet positions with their times as keys
     tpos_dict_list = []
     for fname in prop_fns:
-        props = pd.read_csv("/homeappl/home/sunijona/jets/ABA/"+fname).as_matrix()
+        props = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+fname).as_matrix()
         t=props[:,0]
         X=props[:,1]
         Y=props[:,2]
         tpos_dict_list.append(dict(zip(t,np.array([X,Y]).T)))
 
     # Find names of event files
-    filenames = os.listdir("events/ABA")
+    filenames = os.listdir("events/"+runid)
     filenames.sort()
 
     # Create list of arrays of cellids to use as contour mask
     cells_list = []
     for filename in filenames:
 
-        fileobj = open("events/ABA/"+filename,"r")
+        fileobj = open("events/"+runid+"/"+filename,"r")
         contents = fileobj.read()
         cells = map(int,contents.replace("\n",",").split(",")[:-1])
         cells_list.append(cells)
@@ -200,8 +200,13 @@ def plotmake_script(start,stop):
     fullmask_list = []
     for itr2 in xrange(start,stop+1):
 
-        fullmask = np.loadtxt("Masks/ABA/"+str(itr2)+".mask")
+        fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask")
         fullmask_list.append(fullmask)
+
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
     for itr in xrange(start,stop+1):
 
@@ -214,7 +219,7 @@ def plotmake_script(start,stop):
                 y_list.append(tpos_dict[float(itr)/2][1])
 
         # Create plot
-        pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run="ABA",usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
+        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/temp/",step=itr,run=runid,usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=1.5,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
@@ -231,8 +236,8 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     fullmsk = np.reshape(fullmsk,rho.shape)
 
     # Draw contours
-    cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
     fullcont = ax.contour(XmeshXY,YmeshXY,fullmsk,[0.5],linewidths=1.0,colors="magenta")
+    cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
 
     # Plot jet positions
     if len(x_list) != 0:
@@ -509,29 +514,6 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
         # Read event file for current time step
         events = eventfile_read(runid,n)
 
-        # Look for new jets at bow shock
-        for event in events:
-
-            for bs_event in bs_events:
-
-                if np.intersect1d(bs_event,event).size > threshold*len(event):
-
-                    # Create unique ID
-                    curr_id = str(counter).zfill(5)
-
-                    # Create new jet object
-                    jetobj_list.append(Jet(curr_id,runid,float(n-1)/2))
-
-                    # Append current events to jet object properties
-                    jetobj_list[-1].cellids.append(bs_event)
-                    jetobj_list[-1].cellids.append(event)
-                    jetobj_list[-1].times.append(float(n)/2)
-
-                    # Iterate counter
-                    counter += 1
-
-                    break
-
         # Update existing jets
         for event in events:
 
@@ -544,7 +526,7 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
                         # Clone previously existing jet object as a new unique jet
                         jetobj_new = copy.deepcopy(jetobj)
                         jetobj_new.ID = str(counter).zfill(5)
-                        print("Created jet with ID "+jetobj_new.ID)
+                        print("Cloned jet to new one with ID "+jetobj_new.ID)
                         jetobj_new.cellids = jetobj_new.cellids[:-1]
                         jetobj_new.cellids.append(event)
                         jetobj_new.times = jetobj_new.times[:-1]
@@ -564,6 +546,31 @@ def track_jets(runid,start,stop,threshold=0.3,bs_d=10):
 
                         # Flag jet object
                         flags.append(jetobj.ID)
+
+                        break
+
+        # Look for new jets at bow shock
+        for event in events:
+
+            for bs_event in bs_events:
+
+                if np.intersect1d(bs_event,event).size > threshold*len(event):
+
+                    if event not in [jetobj.cellids[-1] for jetobj in jetobj_list]:
+
+                        # Create unique ID
+                        curr_id = str(counter).zfill(5)
+
+                        # Create new jet object
+                        jetobj_list.append(Jet(curr_id,runid,float(n-1)/2))
+
+                        # Append current events to jet object properties
+                        jetobj_list[-1].cellids.append(bs_event)
+                        jetobj_list[-1].cellids.append(event)
+                        jetobj_list[-1].times.append(float(n)/2)
+
+                        # Iterate counter
+                        counter += 1
 
                         break
 
