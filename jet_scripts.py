@@ -19,16 +19,30 @@ r_e = 6.371e+6
 ###TEMPORARY SCRIPTS HERE###
 
 def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # extmaps is rho,v
 
-    level_sw = ext_pars[0]
+    level_plaschke = ext_pars[0]
     rho_sw = ext_pars[1]
+    v_sw = ext_pars[2]
     rho = extmaps[0]
+    v = extmaps[1]
 
-    bs = np.ma.masked_greater(rho,level_sw*rho_sw)
+    pdynx = m_p*rho*(v[:,:,0]**2)
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
+
+    bs = np.ma.masked_greater(pdynx,level_plaschke*pdyn_sw)
     bs.fill_value = 0
     bs[bs.mask == False] = 1
 
+    jet = np.ma.masked_greater(pdynx,0.25*pdyn_sw)
+    jet.mask[rho < 3.5*rho_sw] = False
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
+
     contour = ax.contour(XmeshXY,YmeshXY,bs.filled(),[0.5],linewidths=1.0, colors="black")
+    cont2 = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="magenta")
+
+    return None
 
 def run_script(runid,start,stop,vmax=1.5,outputname="temp_plaschke.vlsv"):
 
@@ -37,6 +51,8 @@ def run_script(runid,start,stop,vmax=1.5,outputname="temp_plaschke.vlsv"):
         jfm.pfmake(n,runid,outputname=outputname)
 
         pt.plot.plot_colormap(filename="VLSV/"+outputname,outputdir="Contours/"+runid+"/",run=runid,step=n,usesci=0,lin=1,vmin=0,vmax=vmax,cbtitle="",var="pdyn",boxre=[6,16,-8,8],colormap="parula",external=jc.jc_plaschke,pass_vars=["npdynx","nrho"],ext_pars=[0.5,2.0])
+
+    return None
 
 ###PROP MAKER FILES HERE###
 

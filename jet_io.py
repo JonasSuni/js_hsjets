@@ -243,7 +243,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     if len(x_list) != 0:
         ax.plot(x_list,y_list,"x",color="red",markersize=4)
 
-def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=None):
+def jetsize_fig(runid,start,jetid,figsize=(10,15),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
 
     # Decide whether to read properties from file or input variable
@@ -255,44 +255,56 @@ def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=No
     # Create variable value arrays
     time_arr = linsizes[:,0]
     area_arr = linsizes[:,4]
-    rad_size_arr = linsizes[:,8]
-    tan_size_arr = linsizes[:,9]
-    r_arr = linsizes[:,7]
+    rad_size_arr = linsizes[:,9]
+    tan_size_arr = linsizes[:,10]
+    x_arr = linsizes[:,1]
+    y_arr = linsizes[:,2]
+    z_arr = linsizes[:,3]
 
     # Minimum and maximum values
     tmin,tmax = min(time_arr),max(time_arr)
     Amin,Amax = min(area_arr),max(area_arr)
     rsmin,rsmax = min(rad_size_arr),max(rad_size_arr)
     psmin,psmax = min(tan_size_arr),max(tan_size_arr)
-    rmin,rmax = min(r_arr),max(r_arr)
+    xmin,xmax = min(x_arr),max(x_arr)
+    ymin,ymax = min(y_arr),max(y_arr)
+    zmin,zmax = min(z_arr),max(z_arr)
 
     # Create figure
     plt.ion()
     fig = plt.figure(figsize=figsize)
 
     # Add subplots
-    area_ax = fig.add_subplot(411)
-    rad_size_ax = fig.add_subplot(412)
-    tan_size_ax = fig.add_subplot(413)
-    r_ax = fig.add_subplot(414)
+    area_ax = fig.add_subplot(321)
+    rad_size_ax = fig.add_subplot(323)
+    tan_size_ax = fig.add_subplot(325)
+    x_ax = fig.add_subplot(322)
+    y_ax = fig.add_subplot(324)
+    z_ax = fig.add_subplot(326)
 
     # Draw grids
     area_ax.grid()
     rad_size_ax.grid()
     tan_size_ax.grid()
-    r_ax.grid()
+    x_ax.grid()
+    y_ax.grid()
+    z_ax.grid()
 
     # Set x-limits
     area_ax.set_xlim(tmin,tmax)
     rad_size_ax.set_xlim(tmin,tmax)
     tan_size_ax.set_xlim(tmin,tmax)
-    r_ax.set_xlim(tmin,tmax)
+    x_ax.set_xlim(tmin,tmax)
+    y_ax.set_xlim(tmin,tmax)
+    z_ax.set_xlim(tmin,tmax)
 
     # Set y-limits
     area_ax.set_ylim(Amin,Amax)
     rad_size_ax.set_ylim(rsmin,rsmax)
     tan_size_ax.set_ylim(psmin,psmax)
-    r_ax.set_ylim(rmin,rmax)
+    x_ax.set_ylim(xmin,xmax)
+    y_ax.set_ylim(ymin,ymax)
+    z_ax.set_ylim(zmin,zmax)
 
     #area_ax.set_yticks([0.5,1,1.5,2,2.5])
     #rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
@@ -305,26 +317,33 @@ def jetsize_fig(runid,start,jetid,figsize=(10,12),figname="sizefig",props_arr=No
     # Set x-ticklabels
     area_ax.set_xticklabels([])
     rad_size_ax.set_xticklabels([])
-    tan_size_ax.set_xticklabels([])
+    x_ax.set_xticklabels([])
+    y_ax.set_xticklabels([])
 
     # Set y-labels
     area_ax.set_ylabel("Area [R$_{e}^{2}$]",fontsize=20)
     rad_size_ax.set_ylabel("Radial size [R$_{e}$]",fontsize=20)
     tan_size_ax.set_ylabel("Tangential size [R$_{e}$]",fontsize=20)
-    r_ax.set_ylabel("Radial distance [R$_{e}$]",fontsize=20)
-    r_ax.set_xlabel("Time [s]",fontsize=20)
+    tan_size_ax.set_xlabel("Time [s]",fontsize=20)
+    x_ax.set_ylabel("X [R$_{e}$]",fontsize=20)
+    y_ax.set_ylabel("Y [R$_{e}$]",fontsize=20)
+    z_ax.set_ylabel("Z [R$_{e}$]",fontsize=20)
 
     # Set tick label sizes
     area_ax.tick_params(labelsize=16)
     rad_size_ax.tick_params(labelsize=16)
     tan_size_ax.tick_params(labelsize=16)
-    r_ax.tick_params(labelsize=16)
+    x_ax.tick_params(labelsize=16)
+    y_ax.tick_params(labelsize=16)
+    z_ax.tick_params(labelsize=16)
 
     # Plot variables
     area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
     rad_size_ax.plot(time_arr,rad_size_arr,color="black",linewidth=2)
     tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
-    r_ax.plot(time_arr,r_arr,color="black",linewidth=2)
+    x_ax.plot(time_arr,x_arr,color="black",linewidth=2)
+    y_ax.plot(time_arr,y_arr,color="black",linewidth=2)
+    z_ax.plot(time_arr,z_arr,color="black",linewidth=2)
 
     plt.tight_layout()
 
@@ -347,6 +366,9 @@ def calc_jet_properties(runid,start,jetid):
     time_list = timefile_read(runid,start,jetid)
 
     # Discard jet if it has large gaps in the times
+    if len(time_list) < 10:
+        print("Jet not sufficiently long-lived, exiting.")
+        return 1
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
     if max(dt) > 5:
         print("Jet not sufficiently continuous, exiting.")
@@ -398,20 +420,30 @@ def calc_jet_properties(runid,start,jetid):
             var_list = var_list_alt
 
         # calculate geometric center of jet
-        x_mean = np.mean([max(X),min(X)])/r_e
-        y_mean = np.mean([max(Y),min(Y)])/r_e
-        z_mean = np.mean([max(Z),min(Z)])/r_e
+        r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
+        theta = np.rad2deg(np.arccos(Z/r))
+        phi = np.rad2deg(np.arctan(Y/X))
+        r_mean = np.mean(r)
+        theta_mean = np.mean(theta)
+        phi_mean = np.mean(phi)
+
+        x_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.cos(np.deg2rad(phi_mean))
+        y_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.sin(np.deg2rad(phi_mean))
+        z_mean = r_mean*np.cos(np.deg2rad(theta_mean))
+        #x_mean = np.mean([max(X),min(X)])/r_e
+        #y_mean = np.mean([max(Y),min(Y)])/r_e
+        #z_mean = np.mean([max(Z),min(Z)])/r_e
 
         # calculate jet size
         A = dA*len(jet_list[n])/(r_e**2)
         Nr_cells = len(jet_list[n])
 
         # geometric center of jet in polar coordinates
-        phi = np.rad2deg(np.arctan(np.linalg.norm([y_mean,z_mean])/x_mean))
-        r_d = np.linalg.norm([x_mean,y_mean,z_mean])
+        #phi = np.rad2deg(np.arctan(np.linalg.norm([y_mean,z_mean])/x_mean))
+        #r_d = np.linalg.norm([x_mean,y_mean,z_mean])
 
         # r-coordinates corresponding to all (x,y)-points in jet
-        r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
+        #r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
 
         # calculate linear sizes of jet
         size_rad = max(r)-min(r)
@@ -420,8 +452,8 @@ def calc_jet_properties(runid,start,jetid):
         # current time
         time = time_list[n]
 
-        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"
-        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,phi,r_d,size_rad,size_tan]
+        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e]"
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan]
 
         # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))
@@ -434,7 +466,7 @@ def calc_jet_properties(runid,start,jetid):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6):
+def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -499,6 +531,14 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6):
 
     # Track jets
     for n in xrange(start+2,stop+1):
+
+        if runid == "AED":
+            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
         bs_events = []
         for old_event in events:

@@ -64,7 +64,7 @@ def avg_maker(runid,start,stop):
             trho_arr = np.vstack((trho_arr,trho))
             tpdyn_arr = np.vstack((tpdyn_arr,tpdyn))
 
-    for ind in xrange(tpdyn_arr.size):
+    for ind in xrange(len(tpdyn_arr)):
 
         np.savetxt(outputdir+str(ind+start+180)+"_rho.tavg",trho_arr[ind])
         np.savetxt(outputdir+str(ind+start+180)+"_pdyn.tavg",tpdyn_arr[ind])

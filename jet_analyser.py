@@ -6,18 +6,23 @@ import pandas as pd
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def bow_shock_finder(vlsvobj,rho_sw):
+def bow_shock_finder(vlsvobj,rho_sw,v_sw):
 
     if vlsvobj.check_variable("rho"):
         rho = vlsvobj.read_variable("rho")
+        v = vlsvobj.read_variable("v")
     else:
         rho = vlsvobj.read_variable("proton/rho")
+        v = vlsvobj.read_variable("proton/V")
 
     cellids = vlsvobj.read_variable("CellID")
 
-    bs = np.ma.masked_greater(rho,2.0*rho_sw)
+    pdynx = m_p*rho*(v[:,0]**2)
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
 
-    masked_ci = np.ma.array(cellids,mask=bs.mask).compressed()
+    bs = np.ma.masked_greater(pdynx,0.5*pdyn_sw)
+
+    masked_ci = np.ma.array(cellids,mask=~bs.mask).compressed()
 
     return masked_ci
 
