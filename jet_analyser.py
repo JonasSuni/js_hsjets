@@ -189,7 +189,6 @@ def calc_props(vlsvobj,jets,runid,file_number,criterion,halftimewidth,freeform_f
 
     return np.asarray([np.asarray(prop) for prop in props_list])
 
-
 def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
     # sort masked cells into events based on proximity in X,Y-space
 
@@ -578,10 +577,11 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
-
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
-        return np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
+        masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
+        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        return masked_ci
     else:
+        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci

@@ -35,7 +35,7 @@ class Jet:
 
         return "\n".join(map(str,self.times))
 
-def jet_maker(runid,start,stop,boxre=[6,16,-6,6]):
+def jet_maker(runid,start,stop,boxre=[6,16,-6,6],maskfile=False):
 
     outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
 
@@ -60,7 +60,10 @@ def jet_maker(runid,start,stop,boxre=[6,16,-6,6]):
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
         # create mask
-        msk = ja.make_cust_mask(file_nr,runid,180,boxre)
+        if maskfile:
+            msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+        else:
+            msk = ja.make_cust_mask(file_nr,runid,180,boxre)
 
         print(len(msk))
 
@@ -164,7 +167,7 @@ def figmake_script(runid,start,ids):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
 
-def plotmake_script(runid,start,stop,vmax=1.5):
+def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-6,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     # Find names of property files
@@ -178,7 +181,7 @@ def plotmake_script(runid,start,stop,vmax=1.5):
     # Create dictionaries of jet positions with their times as keys
     tpos_dict_list = []
     for fname in prop_fns:
-        props = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+fname).as_matrix()
+        props = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+fname,index_col=False).as_matrix()
         t=props[:,0]
         X=props[:,1]
         Y=props[:,2]
@@ -200,7 +203,7 @@ def plotmake_script(runid,start,stop,vmax=1.5):
     fullmask_list = []
     for itr2 in xrange(start,stop+1):
 
-        fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask")
+        fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
         fullmask_list.append(fullmask)
 
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -219,7 +222,7 @@ def plotmake_script(runid,start,stop,vmax=1.5):
                 y_list.append(tpos_dict[float(itr)/2][1])
 
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=[6,16,-8,8],vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
+        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
@@ -240,8 +243,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
 
     # Plot jet positions
-    if len(x_list) != 0:
-        ax.plot(x_list,y_list,"x",color="red",markersize=4)
+    ax.plot(x_list,y_list,"x",color="red",markersize=4)
 
 def jetsize_fig(runid,start,jetid,figsize=(10,15),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
@@ -466,7 +468,7 @@ def calc_jet_properties(runid,start,jetid):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
+def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -488,7 +490,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
     sorigid = vlsvobj.read_variable("CellID")
     sorigid = sorigid[sorigid.argsort()]
     fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
-    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw)
+    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
@@ -540,6 +542,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
         bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
+        # Filtered list of events that are at the bow shock at the current time
         bs_events = []
         for old_event in events:
             if np.intersect1d(bs_cells,old_event).size > 0:
@@ -556,9 +559,9 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
 
             for jetobj in jetobj_list:
 
-                if np.intersect1d(jetobj.cellids[-1],event).size > threshold*len(event):
-
-                    if jetobj.ID in flags:
+                if jetobj.ID in flags:
+                    
+                    if np.intersect1d(jetobj.cellids[-2],event).size > threshold*len(event):
 
                         # Clone previously existing jet object as a new unique jet
                         jetobj_new = copy.deepcopy(jetobj)
@@ -575,7 +578,9 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
 
                         break
 
-                    else:
+                else:
+
+                    if np.intersect1d(jetobj.cellids[-1],event).size > threshold*len(event):
 
                         # Append event to jet object properties
                         jetobj.cellids.append(event)
@@ -586,6 +591,8 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
 
                         break
 
+        curr_jet_temp_list = [jetobj.cellids[-1] for jetobj in jetobj_list]
+
         # Look for new jets at bow shock
         for event in events:
 
@@ -593,7 +600,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw):
 
                 if np.intersect1d(bs_event,event).size > threshold*len(event):
 
-                    if event not in [jetobj.cellids[-1] for jetobj in jetobj_list]:
+                    if event not in curr_jet_temp_list:
 
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
