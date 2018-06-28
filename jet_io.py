@@ -66,6 +66,7 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
             msk = ja.make_cust_mask(file_nr,runid,180,boxre,avgfile)
 
         print(len(msk))
+        print("Current file number is " + str(file_nr))
 
         # sort jets
         jets = ja.sort_jets(vlsvobj,msk,25,4500,[2,2])
@@ -147,7 +148,7 @@ def propfile_write(runid,filenr,key,props):
 
     open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],A [R_e^2],Nr_cells,phi [deg],r_d [R_e],size_rad [R_e],size_tan [R_e]"+"\n")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -368,11 +369,11 @@ def calc_jet_properties(runid,start,jetid):
     time_list = timefile_read(runid,start,jetid)
 
     # Discard jet if it has large gaps in the times
-    if len(time_list) < 10:
+    if len(time_list) < 4:
         print("Jet not sufficiently long-lived, exiting.")
         return 1
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
-    if max(dt) > 5:
+    if max(dt) > 2:
         print("Jet not sufficiently continuous, exiting.")
         return 1
 
@@ -422,10 +423,10 @@ def calc_jet_properties(runid,start,jetid):
             var_list = var_list_alt
 
         # calculate geometric center of jet
-        r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
+        r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
         theta = np.rad2deg(np.arccos(Z/r))
         phi = np.rad2deg(np.arctan(Y/X))
-        r_mean = np.mean(r)
+        r_mean = np.mean(r)/r_e
         theta_mean = np.mean(theta)
         phi_mean = np.mean(phi)
 
@@ -468,7 +469,7 @@ def calc_jet_properties(runid,start,jetid):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
+def track_jets(runid,start,stop,threshold=0.3):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -484,6 +485,10 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
     # Create outputdir if it doesn't already exist
     if not os.path.exists("/homeappl/home/sunijona/jets/"+runid):
         os.makedirs("/homeappl/home/sunijona/jets/"+runid)
+
+    sw_pars = ja.sw_par_dict()[runid]
+    rho_sw = sw_pars[0]
+    v_sw = sw_pars[1]
 
     # Open file to get
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
@@ -508,6 +513,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
     # Initialise unique ID counter
     counter = 1
 
+    print("t = "+str(float(start+1)/2)+"s")
     # Look for jets at bow shock
     for event in events:
 
@@ -533,6 +539,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
 
     # Track jets
     for n in xrange(start+2,stop+1):
+        print("t = "+str(float(n)/2)+"s")
 
         if runid == "AED":
             bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
@@ -585,6 +592,7 @@ def track_jets(runid,start,stop,threshold=0.3,rho_sw=1.0e+6,v_sw=750e+3):
                         # Append event to jet object properties
                         jetobj.cellids.append(event)
                         jetobj.times.append(float(n)/2)
+                        print("Updated jet with ID "+jetobj.ID)
 
                         # Flag jet object
                         flags.append(jetobj.ID)

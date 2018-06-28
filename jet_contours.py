@@ -5,6 +5,44 @@ import pandas as pd
 import scipy.ndimage
 
 r_e = 6.371e+6
+m_p = 1.672621898e-27
+
+def zoom_test(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    rho = extmaps[0]
+    v = extmaps[1]
+    vx = v[:,:,0]
+
+    scale = ext_pars[0]
+    thresh = ext_pars[1]
+    zoom = ext_pars[2]
+
+    rho_sw = 1.0e+6
+    v_sw = 750e+3
+
+    pdynx = m_p*rho*(vx**2)
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
+
+    nrho = rho/rho_sw
+    npdynx = pdynx/pdyn_sw
+
+    XmeshXY = scipy.ndimage.zoom(XmeshXY, zoom)
+    YmeshXY = scipy.ndimage.zoom(YmeshXY, zoom)
+    #nrho = scipy.ndimage.zoom(nrho, 3)
+    #npdynx = scipy.ndimage.zoom(npdynx, 3)
+
+    jet = np.ma.masked_greater(npdynx,0.25)
+    jet.mask[nrho < 3.5] = False
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
+
+    jet_big = jet.filled()*scale
+
+    jet_big = scipy.ndimage.zoom(jet_big, zoom)
+
+    contour = ax.contour(XmeshXY,YmeshXY,jet_big,[thresh],linewidths=1.0,colors="black")
+
+    return None
 
 def jc_plaschke(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps consists of [npdynx,nrho,p_crit]
