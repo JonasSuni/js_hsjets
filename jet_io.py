@@ -449,7 +449,7 @@ def calc_jet_properties(runid,start,jetid):
         #r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
 
         # calculate linear sizes of jet
-        size_rad = max(r)-min(r)
+        size_rad = (max(r)-min(r))/r_e
         size_tan = A/size_rad
 
         # current time
