@@ -168,7 +168,7 @@ def figmake_script(runid,start,ids):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID)
 
-def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-6,6]):
+def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     # Find names of property files
@@ -246,7 +246,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # Plot jet positions
     ax.plot(x_list,y_list,"x",color="red",markersize=4)
 
-def jetsize_fig(runid,start,jetid,figsize=(10,15),figname="sizefig",props_arr=None):
+def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
 
     # Decide whether to read properties from file or input variable
