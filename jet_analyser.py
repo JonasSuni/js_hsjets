@@ -477,7 +477,7 @@ def make_p_mask(filenumber,runid,boxre=[8,16,-6,6]):
     else:
         return masked_ci
 
-def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
+def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=False):
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits
 
@@ -506,19 +506,24 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
         rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("v")[np.argsort(origid)]
 
-    # ratio of x-directional dynamic pressure and solar wind dynamic pressure
+    # x-directional dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
-
-    spdynx_sw,srho_sw = ci2vars_nofile([spdynx,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
-
-    pdyn_sw = np.mean(spdynx_sw)
-    rho_sw = np.mean(srho_sw)
-
-    npdynx = spdynx/pdyn_sw
-    nrho = rho/rho_sw
 
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+
+    #spdyn_sw,srho_sw = ci2vars_nofile([pdyn,rho],sorigid,restrict_area(vlsvreader,[14,16],[-4,4]))
+
+    #pdyn_sw = np.mean(spdyn_sw)
+    #rho_sw = np.mean(srho_sw)
+
+    sw_pars = sw_par_dict()[runid]
+    rho_sw = sw_pars[0]
+    v_sw = sw_pars[1]
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
+
+    npdynx = spdynx/pdyn_sw
+    nrho = rho/rho_sw
 
     # initialise time average of dynamic pressure
     tpdynavg = np.zeros(pdyn.shape)
@@ -527,6 +532,9 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     timerange = xrange(filenumber-halftimewidth,filenumber+halftimewidth+1)
 
     for n_t in timerange:
+
+        if avgfile:
+            continue
 
         # exclude the main timestep
         if n_t == filenumber:
@@ -566,8 +574,11 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[8,16,-6,6]):
     # prevent divide by zero errors
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
+    if avgfile:
+        tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+
     # ratio of dynamic pressure to its time average
-    tapdyn = np.divide(pdyn,tpdynavg)
+    tapdyn = pdyn/tpdynavg
 
     # make custom jet mask
     jet = np.ma.masked_greater(npdynx,0.25)

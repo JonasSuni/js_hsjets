@@ -35,7 +35,7 @@ class Jet:
 
         return "\n".join(map(str,self.times))
 
-def jet_maker(runid,start,stop,boxre=[6,16,-6,6],maskfile=False):
+def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
 
     outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
 
@@ -63,12 +63,12 @@ def jet_maker(runid,start,stop,boxre=[6,16,-6,6],maskfile=False):
         if maskfile:
             msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
         else:
-            msk = ja.make_cust_mask(file_nr,runid,180,boxre)
+            msk = ja.make_cust_mask(file_nr,runid,180,boxre,avgfile)
 
         print(len(msk))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,50,4500,[1,1])
+        jets = ja.sort_jets(vlsvobj,msk,25,4500,[2,2])
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()

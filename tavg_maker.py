@@ -32,13 +32,14 @@ def avg_maker(runid,start,stop):
             bulkname = "bulk."+str(n).zfill(7)+".vlsv"
 
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        cellids = vlsvobj.read_variable("CellID")
 
         if vlsvobj.check_variable("rho"):
-            rho = vlsvobj.read_variable("rho")
-            v = vlsvobj.read_variable("v")
+            rho = vlsvobj.read_variable("rho")[cellids.argsort()]
+            v = vlsvobj.read_variable("v")[cellids.argsort()]
         else:
-            rho = vlsvobj.read_variable("proton/rho")
-            v = vlsvobj.read_variable("proton/V")
+            rho = vlsvobj.read_variable("proton/rho")[cellids.argsort()]
+            v = vlsvobj.read_variable("proton/V")[cellids.argsort()]
 
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
