@@ -369,11 +369,11 @@ def calc_jet_properties(runid,start,jetid):
     time_list = timefile_read(runid,start,jetid)
 
     # Discard jet if it has large gaps in the times
-    if len(time_list) < 4:
+    if len(time_list) < 2:
         print("Jet not sufficiently long-lived, exiting.")
         return 1
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
-    if max(dt) > 2:
+    if max(dt) > 5:
         print("Jet not sufficiently continuous, exiting.")
         return 1
 
@@ -561,6 +561,8 @@ def track_jets(runid,start,stop,threshold=0.3):
         # Read event file for current time step
         events = eventfile_read(runid,n)
 
+        curr_jet_temp_list = []
+
         # Update existing jets
         for event in events:
 
@@ -571,17 +573,22 @@ def track_jets(runid,start,stop,threshold=0.3):
                     if np.intersect1d(jetobj.cellids[-2],event).size > threshold*len(event):
 
                         # Clone previously existing jet object as a new unique jet
-                        jetobj_new = copy.deepcopy(jetobj)
-                        jetobj_new.ID = str(counter).zfill(5)
-                        print("Cloned jet to new one with ID "+jetobj_new.ID)
-                        jetobj_new.cellids = jetobj_new.cellids[:-1]
-                        jetobj_new.cellids.append(event)
-                        jetobj_new.times = jetobj_new.times[:-1]
-                        jetobj_new.times.append(float(n)/2)
-                        jetobj_list.append(jetobj_new)
+                        #jetobj_new = copy.deepcopy(jetobj)
+                        #jetobj_new.ID = str(counter).zfill(5)
+                        #print("Cloned jet to new one with ID "+jetobj_new.ID)
+                        #jetobj_new.cellids = jetobj_new.cellids[:-1]
+                        #jetobj_new.cellids.append(event)
+                        #jetobj_new.times = jetobj_new.times[:-1]
+                        #jetobj_new.times.append(float(n)/2)
+                        #jetobj_list.append(jetobj_new)
 
                         # Iterate counter
-                        counter += 1
+                        #counter += 1
+
+                        # Alternative algorithm
+                        jetobj.cellids[-1] += event
+                        print("Updated jet with ID "+jetobj.ID)
+                        curr_jet_temp_list.append(event)
 
                         break
 
@@ -596,10 +603,9 @@ def track_jets(runid,start,stop,threshold=0.3):
 
                         # Flag jet object
                         flags.append(jetobj.ID)
+                        curr_jet_temp_list.append(event)
 
                         break
-
-        curr_jet_temp_list = [jetobj.cellids[-1] for jetobj in jetobj_list]
 
         # Look for new jets at bow shock
         for event in events:
