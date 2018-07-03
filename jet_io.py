@@ -268,7 +268,7 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     minmax_list = [min(time_arr),max(time_arr),min(area_arr),max(area_arr),min(rad_size_arr),max(rad_size_arr),min(tan_size_arr),max(tan_size_arr),min(x_arr),max(x_arr),min(y_arr),max(y_arr),min(z_arr),max(z_arr)]
 
     for n in xrange(0,len(minmax_list),2):
-        if np.abs(minmax_list[n]-minmax_list[n+1]) < 1.0e-5:
+        if np.abs((minmax_list[n]-minmax_list[n+1])/float(minmax_list[n])) < 1.0e-5:
             minmax_list[n+1] += 1
             minmax_list[n] -= 1
 
