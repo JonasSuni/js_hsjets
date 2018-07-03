@@ -20,7 +20,8 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw):
     pdynx = m_p*rho*(v[:,0]**2)
     pdyn_sw = m_p*rho_sw*(v_sw**2)
 
-    bs = np.ma.masked_greater(pdynx,0.5*pdyn_sw)
+    #bs = np.ma.masked_greater(pdynx,0.5*pdyn_sw)
+    bs = np.ma.masked_less(rho,3.5*rho_sw)
 
     masked_ci = np.ma.array(cellids,mask=~bs.mask).compressed()
 

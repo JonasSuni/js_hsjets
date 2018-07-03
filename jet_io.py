@@ -505,7 +505,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        if np.intersect1d(bs_cells,old_event).size > 0:
+        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[2,2])).size > 0:
             bs_events.append(old_event)
 
     # Initialise list of jet objects
@@ -553,7 +553,7 @@ def track_jets(runid,start,stop,threshold=0.3):
         # Filtered list of events that are at the bow shock at the current time
         bs_events = []
         for old_event in events:
-            if np.intersect1d(bs_cells,old_event).size > 0:
+            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[2,2])).size > 0:
                 bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets
@@ -561,6 +561,8 @@ def track_jets(runid,start,stop,threshold=0.3):
 
         # Read event file for current time step
         events = eventfile_read(runid,n)
+        events.sort(key=len)
+        events = events[::-1]
 
         curr_jet_temp_list = []
 
@@ -576,15 +578,15 @@ def track_jets(runid,start,stop,threshold=0.3):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet
-                        jetobj_new = Jet(curr_id,runid,float(n-1)/2)
+                        jetobj_new = Jet(curr_id,runid,float(n)/2)
                         #jetobj_new = copy.deepcopy(jetobj)
                         #jetobj_new.ID = str(counter).zfill(5)
                         #print("Cloned jet to new one with ID "+jetobj_new.ID)
                         #jetobj_new.cellids = jetobj_new.cellids[:-1]
-                        jetobj_new.cellids.append(jetobj.cellids[-2])
+                        #jetobj_new.cellids.append(jetobj.cellids[-2])
                         jetobj_new.cellids.append(event)
                         #jetobj_new.times = jetobj_new.times[:-1]
-                        jetobj_new.times.append(float(n)/2)
+                        #jetobj_new.times.append(float(n)/2)
                         jetobj_list.append(jetobj_new)
                         curr_jet_temp_list.append(event)
 
@@ -635,11 +637,11 @@ def track_jets(runid,start,stop,threshold=0.3):
         # Look for new jets at bow shock
         for event in events:
 
-            for bs_event in bs_events:
+            if event not in curr_jet_temp_list:
 
-                if np.intersect1d(bs_event,event).size > threshold*len(event):
+                for bs_event in bs_events:
 
-                    if event not in curr_jet_temp_list:
+                    if np.intersect1d(bs_event,event).size > threshold*len(event):
 
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
