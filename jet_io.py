@@ -265,13 +265,14 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     z_arr = linsizes[:,3]
 
     # Minimum and maximum values
-    tmin,tmax = min(time_arr),max(time_arr)
-    Amin,Amax = min(area_arr),max(area_arr)
-    rsmin,rsmax = min(rad_size_arr),max(rad_size_arr)
-    psmin,psmax = min(tan_size_arr),max(tan_size_arr)
-    xmin,xmax = min(x_arr),max(x_arr)
-    ymin,ymax = min(y_arr),max(y_arr)
-    zmin,zmax = min(z_arr),max(z_arr)
+    minmax_list = [min(time_arr),max(time_arr),min(area_arr),max(area_arr),min(rad_size_arr),max(rad_size_arr),min(tan_size_arr),max(tan_size_arr),min(x_arr),max(x_arr),min(y_arr),max(y_arr),min(z_arr),max(z_arr)]
+
+    for n in xrange(0,len(minmax_list),2):
+        if np.abs(minmax_list[n]-minmax_list[n+1]) < 1.0e-5:
+            minmax_list[n+1] += 1
+            minmax_list[n] -= 1
+
+    tmin,tmax,Amin,Amax,rsmin,rsmax,psmin,psmax,xmin,xmax,ymin,ymax,zmin,zmax = minmax_list
 
     # Create figure
     plt.ion()
