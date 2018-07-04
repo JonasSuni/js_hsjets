@@ -250,8 +250,8 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
 
     # Plot jet positions
-    ax.plot(x_list,y_list,"x",color="red",markersize=5)
-    ax.plot(xmax_list,ymax_list,"x",color="white",markersize=5)
+    ax.plot(x_list,y_list,"o",color="red",markersize=4)
+    ax.plot(xmax_list,ymax_list,"o",color="white",markersize=4)
 
 def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
