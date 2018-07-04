@@ -2,6 +2,7 @@ import pytools as pt
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -588,6 +589,9 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
+
+    if not os.path.exists("Masks/"+runid+"/"):
+        os.makedirs("Masks/"+runid+"/")
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:

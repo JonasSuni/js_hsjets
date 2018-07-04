@@ -89,7 +89,7 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
 def timefile_write(runid,filenr,key,time):
     # Write array of times to file
 
-    tf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".times","a")
+    tf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".times","w")
     tf.write(str(time)+"\n")
     tf.close()
 
@@ -107,7 +107,7 @@ def timefile_read(runid,filenr,key):
 def jetfile_write(runid,filenr,key,jet):
     # Write array of cellids to file
 
-    jf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".jet","a")
+    jf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".jet","w")
     jf.write(",".join(map(str,jet))+"\n")
     jf.close()
 
@@ -148,7 +148,7 @@ def propfile_write(runid,filenr,key,props):
 
     open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e]"+"\n")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -186,7 +186,9 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
         t=props[:,0]
         X=props[:,1]
         Y=props[:,2]
-        tpos_dict_list.append(dict(zip(t,np.array([X,Y]).T)))
+        xmax=props[:,11]
+        ymax=props[:,12]
+        tpos_dict_list.append(dict(zip(t,np.array([X,Y,xmax,ymax]).T)))
 
     # Find names of event files
     filenames = os.listdir("events/"+runid)
@@ -217,20 +219,24 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
         # Find positions of all jets for current time step
         x_list = []
         y_list = []
+        xmax_list = []
+        ymax_list = []
         for tpos_dict in tpos_dict_list:
             if float(itr)/2 in tpos_dict:
                 x_list.append(tpos_dict[float(itr)/2][0])
                 y_list.append(tpos_dict[float(itr)/2][1])
+                xmax_list.append(tpos_dict[float(itr)/2][2])
+                ymax_list.append(tpos_dict[float(itr)/2][3])
 
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start]])
+        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start],xmax_list,ymax_list])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     rho,v,cellids = extmaps
 
-    x_list,y_list,cells,fullmask = ext_pars
+    x_list,y_list,cells,fullmask,xmax_list,ymax_list = ext_pars
 
     # Create mask
     msk = np.in1d(cellids,cells).astype(int)
@@ -244,7 +250,8 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
 
     # Plot jet positions
-    ax.plot(x_list,y_list,"x",color="red",markersize=4)
+    ax.plot(x_list,y_list,"x",color="red",markersize=5)
+    ax.plot(xmax_list,ymax_list,"x",color="white",markersize=5)
 
 def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
     # script for creating time series of jet linear sizes and area
@@ -392,6 +399,9 @@ def calc_jet_properties(runid,start,jetid):
 
     for n in xrange(len(nr_list)):
 
+        curr_list = jet_list[n]
+        curr_list.sort()
+
         # Find correct file name
         if runid == "AED":
             bulkname = "bulk.old."+str(nr_list[n]).zfill(7)+".vlsv"
@@ -401,15 +411,16 @@ def calc_jet_properties(runid,start,jetid):
         # Open VLSV file
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
+        origid = vlsvobj.read_variable("CellID")
+
         # read variables
         if vlsvobj.check_variable("X"):
-            X = vlsvobj.read_variable("X",cellids=jet_list[n])
-            Y = vlsvobj.read_variable("Y",cellids=jet_list[n])
-            Z = vlsvobj.read_variable("Z",cellids=jet_list[n])
+            X = vlsvobj.read_variable("X",cellids=curr_list)
+            Y = vlsvobj.read_variable("Y",cellids=curr_list)
+            Z = vlsvobj.read_variable("Z",cellids=curr_list)
         else:
-            sorigid = vlsvobj.read_variable("CellID")
-            sorigid = sorigid[sorigid.argsort()]
-            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,jet_list[n])
+            sorigid = origid[origid.argsort()]
+            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,curr_list)
 
         # Calculate area of one cell
         if n == 0 and vlsvobj.check_variable("DX"):
@@ -423,10 +434,14 @@ def calc_jet_properties(runid,start,jetid):
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
+        v = vlsvobj.read_variable(var_list[1],cellids=curr_list)
+        vmag = np.linalg.norm(v,axis=-1)
+
         # calculate geometric center of jet
         r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
         theta = np.rad2deg(np.arccos(Z/r))
         phi = np.rad2deg(np.arctan(Y/X))
+
         r_mean = np.mean(r)/r_e
         theta_mean = np.mean(theta)
         phi_mean = np.mean(phi)
@@ -434,20 +449,18 @@ def calc_jet_properties(runid,start,jetid):
         x_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.cos(np.deg2rad(phi_mean))
         y_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.sin(np.deg2rad(phi_mean))
         z_mean = r_mean*np.cos(np.deg2rad(theta_mean))
-        #x_mean = np.mean([max(X),min(X)])/r_e
-        #y_mean = np.mean([max(Y),min(Y)])/r_e
-        #z_mean = np.mean([max(Z),min(Z)])/r_e
+
+        x_max = X[vmag==max(vmag)][0]/r_e
+        y_max = Y[vmag==max(vmag)][0]/r_e
+        z_max = Z[vmag==max(vmag)][0]/r_e
+
+        #r_max = np.linalg.norm(np.array([x_mean,y_mean,z_mean]))
+        #theta_max = np.rad2deg(np.arccos(z_mean/r_mean))
+        #phi_max = np.rad2deg(np.arctan(y_mean/x_mean))
 
         # calculate jet size
-        A = dA*len(jet_list[n])/(r_e**2)
-        Nr_cells = len(jet_list[n])
-
-        # geometric center of jet in polar coordinates
-        #phi = np.rad2deg(np.arctan(np.linalg.norm([y_mean,z_mean])/x_mean))
-        #r_d = np.linalg.norm([x_mean,y_mean,z_mean])
-
-        # r-coordinates corresponding to all (x,y)-points in jet
-        #r = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
+        A = dA*len(curr_list)/(r_e**2)
+        Nr_cells = len(curr_list)
 
         # calculate linear sizes of jet
         size_rad = (max(r)-min(r))/r_e
@@ -456,8 +469,8 @@ def calc_jet_properties(runid,start,jetid):
         # current time
         time = time_list[n]
 
-        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e]"
-        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan]
+        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e]"
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max]
 
         # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))

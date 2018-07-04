@@ -23,7 +23,7 @@ def avg_maker(runid,start,stop):
     pdyn_arr = np.array([])
     rho_arr = np.array([])
 
-    for n in range(start,stop+1):
+    for n in range(start-180,stop+1+180):
 
         # find correct file for current time step
         if runid == "AED":
@@ -53,10 +53,10 @@ def avg_maker(runid,start,stop):
     tpdyn_arr = np.array([])
     trho_arr = np.array([])
 
-    for itr in range(start+180,stop+1-180):
+    for itr in range(start,stop+1):
 
-        trho = (np.sum(rho_arr[itr-180-start:itr+181-start],axis=0)-rho_arr[itr-start])/360
-        tpdyn = (np.sum(pdyn_arr[itr-180-start:itr+181-start],axis=0)-pdyn_arr[itr-start])/360
+        trho = (np.sum(rho_arr[itr-start:itr+361-start],axis=0)-rho_arr[itr+180-start])/360
+        tpdyn = (np.sum(pdyn_arr[itr-start:itr+361-start],axis=0)-pdyn_arr[itr+180-start])/360
 
         if tpdyn_arr.size == 0:
             trho_arr = np.append(trho_arr,trho)
@@ -67,7 +67,7 @@ def avg_maker(runid,start,stop):
 
     for ind in xrange(len(tpdyn_arr)):
 
-        np.savetxt(outputdir+str(ind+start+180)+"_rho.tavg",trho_arr[ind])
-        np.savetxt(outputdir+str(ind+start+180)+"_pdyn.tavg",tpdyn_arr[ind])
+        np.savetxt(outputdir+str(ind+start)+"_rho.tavg",trho_arr[ind])
+        np.savetxt(outputdir+str(ind+start)+"_pdyn.tavg",tpdyn_arr[ind])
 
     return None
