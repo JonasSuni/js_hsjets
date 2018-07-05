@@ -86,15 +86,6 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
 
     return None
 
-def timefile_write(runid,filenr,key,time):
-    # Write array of times to file
-
-    tf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".times","w")
-    tf.write(str(time)+"\n")
-    tf.close()
-
-    return None
-
 def timefile_read(runid,filenr,key):
     # Read array of times from file
 
@@ -103,15 +94,6 @@ def timefile_read(runid,filenr,key):
     tf.close()
 
     return map(float,contents)
-
-def jetfile_write(runid,filenr,key,jet):
-    # Write array of cellids to file
-
-    jf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".jet","w")
-    jf.write(",".join(map(str,jet))+"\n")
-    jf.close()
-
-    return None
 
 def jetfile_read(runid,filenr,key):
     # Read array of cellids from file
@@ -134,8 +116,8 @@ def eventfile_read(runid,filenr):
     outputlist = []
 
     ef = open("/homeappl/home/sunijona/events/"+runid+"/"+str(filenr)+".events","r")
-    contents = ef.read()
-    lines = contents.split("\n")[:-1]
+    contents = ef.read().strip("\n")
+    lines = contents.split("\n")
 
     for line in lines:
 
@@ -529,6 +511,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     counter = 1
 
     print("t = "+str(float(start+1)/2)+"s")
+
     # Look for jets at bow shock
     for event in events:
 
@@ -554,6 +537,7 @@ def track_jets(runid,start,stop,threshold=0.3):
 
     # Track jets
     for n in xrange(start+2,stop+1):
+
         print("t = "+str(float(n)/2)+"s")
 
         if runid == "AED":
