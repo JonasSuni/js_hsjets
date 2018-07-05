@@ -99,7 +99,7 @@ def timefile_read(runid,filenr,key):
     # Read array of times from file
 
     tf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".times","r")
-    contents = tf.read().split("\n")[:-1]
+    contents = tf.read().split("\n")
     tf.close()
 
     return map(float,contents)
@@ -120,7 +120,7 @@ def jetfile_read(runid,filenr,key):
 
     jf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".jet","r")
     contents = jf.read()
-    lines = contents.split("\n")[:-1]
+    lines = contents.split("\n")
 
     for line in lines:
 
