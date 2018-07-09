@@ -132,7 +132,7 @@ def propfile_write(runid,filenr,key,props):
 
     open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e]"+"\n")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],x_min [R_e],rho_vmax [1/cm^3]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -423,8 +423,43 @@ def calc_jet_properties(runid,start,jetid):
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
-        v = vlsvobj.read_variable(var_list[1],cellids=curr_list)
+        rho,v,B,T,va,vms,cellids,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+
+        rho /= 1.0e+6
+        v /= 1.0e+3
+        B /= 1.0e-9
+        T /= 1.0e+6
+        va /= 1.0e+3
+        vms /= 1.0e+3
+        TParallel /= 1.0e+6
+        TPerpendicular /= 1.0e+6
+
         vmag = np.linalg.norm(v,axis=-1)
+        Bmag = np.linalg.norm(B,axis=-1)
+
+        n_avg = np.nanmean(rho)
+        n_med = np.median(rho)
+        n_max = np.max(rho)
+
+        v_avg = np.nanmean(vmag)
+        v_med = np.median(vmag)
+        v_max = np.max(vmag)
+
+        B_avg = np.nanmean(Bmag)
+        B_med = np.median(Bmag)
+        B_max = np.max(Bmag)
+
+        T_avg = np.nanmean(T)
+        T_med = np.median(T)
+        T_max = np.max(T)
+
+        TPar_avg = np.nanmean(TParallel)
+        TPar_med = np.median(TParallel)
+        TPar_max = np.max(TParallel)
+
+        TPerp_avg = np.nanmean(TPerpendicular)
+        TPerp_med = np.median(TPerpendicular)
+        TPerp_max = np.max(TPerpendicular)
 
         # calculate geometric center of jet
         r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
@@ -443,6 +478,9 @@ def calc_jet_properties(runid,start,jetid):
         y_max = Y[vmag==max(vmag)][0]/r_e
         z_max = Z[vmag==max(vmag)][0]/r_e
 
+        x_min = min(X)/r_e
+        rho_vmax = n[vmag==max(vmag)]
+
         #r_max = np.linalg.norm(np.array([x_mean,y_mean,z_mean]))
         #theta_max = np.rad2deg(np.arccos(z_mean/r_mean))
         #phi_max = np.rad2deg(np.arctan(y_mean/x_mean))
@@ -458,8 +496,22 @@ def calc_jet_properties(runid,start,jetid):
         # current time
         time = time_list[n]
 
-        # "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e]"
-        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max]
+        ''' 
+        "0: time [s],
+        1: x_mean [R_e],        2: y_mean [R_e],        3: z_mean [R_e],
+        4: A [R_e^2],           5: Nr_cells,
+        6: r_mean [R_e],        7: theta_mean [deg],    8: phi_mean [deg],
+        9: size_rad [R_e],      10: size_tan [R_e],
+        11: x_max [R_e],        12: y_max [R_e],        13: z_max [R_e],
+        14: n_avg [1/cm^3],     15: n_med [1/cm^3],     16: n_max [1/cm^3],
+        17: v_avg [km/s],       18: v_med [km/s],       19: v_max [km/s],
+        20: B_avg [nT],         21: B_med [nT],         22: B_max [nT],
+        23: T_avg [MK],         24: T_med [MK],         25: T_max [MK],
+        26: TPar_avg [MK],      27: TPar_med [MK],      28: TPar_max [MK],
+        29: TPerp_avg [MK],     30: TPerp_med [MK],     31: TPerp_max [MK],
+        32: x_min [R_e],        33: rho_vmax [1/cm^3]"
+        '''
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,x_min,rho_vmax]
 
         # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))
