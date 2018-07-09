@@ -30,9 +30,9 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw):
 
 def sw_par_dict():
 
-    runs = ["ABA","ABC","AFA","AFB","BEB"]
-    sw_v = [750e+3,600e+3,750e+3,600e+3,450e+3]
-    sw_rho = [1e+6,3.3e+6,1e+6,3.3e+6,4e+6]
+    runs = ["ABA","ABC","AFA","AFB","BEB","AEA","AEC","BFD"]
+    sw_v = [750e+3,600e+3,750e+3,600e+3,450e+3,750e+3,600e+3,750e+3]
+    sw_rho = [1e+6,3.3e+6,1e+6,3.3e+6,4e+6,1.0e+6,3.3e+6,1.0e+6]
 
     sw_pars = list(zip(sw_rho,sw_v))
     sw_pars_dict = dict(zip(runs,sw_pars))
@@ -239,6 +239,8 @@ def jet_script_cust(filenumber,runid,halftimewidth=180,boxre=[6,16,-6,6],min_siz
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
@@ -486,6 +488,8 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 

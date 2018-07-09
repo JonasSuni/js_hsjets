@@ -48,6 +48,8 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
         # find correct file based on file number and run id
         if runid in ["AEC","AEF","BEA","BEB"]:
             bulkpath = "/proj/vlasov/2D/"+runid+"/"
+        elif runid == "AEA":
+            bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
         else:
             bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
@@ -152,6 +154,9 @@ def figmake_script(runid,start,ids):
 
 def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
+
+    if not os.path.exists("Contours/jetfigs/"+runid):
+        os.makedirs("Contours/jetfigs/"+runid)
 
     # Find names of property files
     filenames = os.listdir("jets/"+runid)
@@ -370,6 +375,8 @@ def calc_jet_properties(runid,start,jetid):
     # Find correct bulk path
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
@@ -470,6 +477,8 @@ def track_jets(runid,start,stop,threshold=0.3):
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
