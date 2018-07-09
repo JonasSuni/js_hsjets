@@ -649,32 +649,17 @@ def track_jets(runid,start,stop,threshold=0.3):
                         jetobj_list.append(jetobj_new)
                         curr_jet_temp_list.append(event)
 
+                        #Clone jet
+                        #jetobj_new = copy.deepcopy(jetobj)
+                        #jetobj_new.ID = str(counter).zfill(5)
+                        #print("Cloned jet to new one with ID "+jetobj_new.ID)
+                        #jetobj_new.cellids = jetobj_new.cellids[:-1]
+                        #jetobj_new.cellids.append(event)
+                        #jetobj_list.append(jetobj_new)
+                        #curr_jet_temp_list.append(event)
+
                         # Iterate counter
                         counter += 1
-
-                        # Alternative algorithm
-                        #r_objevent = np.mean(np.linalg.norm(ja.ci2vars_nofile([fX,fY,fZ],sorigid,jetobj.cellids[-1]),axis=0))
-                        #r_event = np.mean(np.linalg.norm(ja.ci2vars_nofile([fX,fY,fZ],sorigid,event),axis=0))
-                        #linsizemin = np.min([np.sqrt(dA*len(jetobj.cellids[-1])),np.sqrt(dA*len(event))])
-
-                        #if np.abs(r_objevent-r_event) < linsizemin:
-                        #    jetobj.cellids[-1] += event
-                        #    print("Updated jet with ID "+jetobj.ID)
-                        #    curr_jet_temp_list.append(event)
-                        #else:
-                            # Clone previously existing jet object as a new unique jet
-                        #    jetobj_new = copy.deepcopy(jetobj)
-                        #    jetobj_new.ID = str(counter).zfill(5)
-                        #    print("Cloned jet to new one with ID "+jetobj_new.ID)
-                        #    jetobj_new.cellids = jetobj_new.cellids[:-1]
-                        #    jetobj_new.cellids.append(event)
-                        #    jetobj_new.times = jetobj_new.times[:-1]
-                        #    jetobj_new.times.append(float(n)/2)
-                        #    jetobj_list.append(jetobj_new)
-                        #    curr_jet_temp_list.append(event)
-
-                            # Iterate counter
-                        #    counter += 1
 
                         break
 
