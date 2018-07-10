@@ -84,8 +84,20 @@ def sc_pos_marker_JET(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def get_pos_index(posre,runid,file_number):
     # gets id of cell nearest to the given coordinates for specified file_number in runid
 
-    # open file
-    vlsvreader = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/"+runid+"/bulk/bulk."+str(file_number).zfill(7)+".vlsv")
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(file_number).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(file_number).zfill(7)+".vlsv"
+
+    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
     # read variables
     X = vlsvreader.read_variable("X")
@@ -103,6 +115,171 @@ def get_pos_index(posre,runid,file_number):
     pos_id = cellids[pos_index[0]]
 
     return pos_id
+
+def jet_sc(runid,start,jetid,font_size=20):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    # Read properties
+    props = pd.read_csv("jets/"+runid+"/"+str(start)+"."+jetid+".props").as_matrix()
+
+    # Find line corresponding to maximum area
+    area = props[:,4]
+    maxline = props[area==max(area)]
+
+    # Time of maximum area
+    t0 = maxline[0]
+    t_n0 = int(t0*2)
+
+    # Geometric mean position of jet at time of maximum area
+    if runid == "BFD":
+        posre = [maxline[1],maxline[3]]
+    else:
+        posre = [maxline[1],maxline[2]]
+
+    # cellid of mean position
+    pos_id = get_pos_index(posre,runid,t_n0)
+
+    # initialise variable arrays
+    Bx_arr = np.array([])
+    By_arr = np.array([])
+    Bz_arr = np.array([])
+    Bmag_arr = np.array([])
+    vx_arr = np.array([])
+    vy_arr = np.array([])
+    vz_arr = np.array([])
+    vmag_arr = np.array([])
+    rho_arr = np.array([])
+    pdyn_arr = np.array([])
+
+    # time series +-30 seconds of time of t0
+    for t_n in xrange(t_n0-60,t_n+60+1):
+
+        if runid == "AED":
+            bulkname = "bulk.old."+str(t_n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(t_n).zfill(7)+".vlsv"
+
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+        B,v,rho = ja.read_mult_vars(vlsvobj,["B","v","rho"],cells=pos_id)
+
+        Bx = B[0]
+        By = B[1]
+        Bz = B[2]
+        Bmag = np.linalg.norm(B)
+
+        vx = v[0]
+        vy = v[1]
+        vz = v[2]
+        vmag = np.linalg.norm(v)
+
+        pdyn = m_p*rho*(vmag**2)
+
+        Bx_arr = np.append(Bx_arr,Bx)
+        By_arr = np.append(By_arr,By)
+        Bz_arr = np.append(Bz_arr,Bz)
+        Bmag_arr = np.append(Bmag_arr,Bmag)
+        vx_arr = np.append(vx_arr,vx)
+        vy_arr = np.append(vy_arr,vy)
+        vz_arr = np.append(vz_arr,vz)
+        vmag_arr = np.append(vmag_arr,vmag)
+        rho_arr = np.append(vmag_arr,vmag)
+        pdyn_arr = np.append(vmag_arr,vmag)
+
+    time_arr = np.array(xrange(t_n0-60,t_n+60+1)).astype(float)/2
+
+    # scale variable values
+    Bx_arr /= 1.0e-9 # nanotesla
+    By_arr /= 1.0e-9 # nanotesla
+    Bz_arr /= 1.0e-9 # nanotesla
+    Bmag_arr /= 1.0e-9 # nanotesla
+    vx_arr /= 1.0e+3 # km/s
+    vy_arr /= 1.0e+3 # km/s
+    vz_arr /= 1.0e+3 # km/s
+    vmag_arr /= 1.0e+3 # km/s
+    rho_arr /= 1.0e+6 # cm^-3
+    pdyn_arr /= 1.0e-9 # nanopascal
+
+    # initialise figure
+    plt.ion()
+    fig = plt.figure(figsize=(10,20))
+
+    # create subplots
+    Bx_ax = fig.add_subplot(10,1,1)
+    By_ax = fig.add_subplot(10,1,2)
+    Bz_ax = fig.add_subplot(10,1,3)
+    Bmag_ax = fig.add_subplot(10,1,4)
+    vx_ax = fig.add_subplot(10,1,5)
+    vy_ax = fig.add_subplot(10,1,6)
+    vz_ax = fig.add_subplot(10,1,7)
+    vmag_ax = fig.add_subplot(10,1,8)
+    rho_ax = fig.add_subplot(10,1,9)
+    pdyn_ax = fig.add_subplot(10,1,10)
+
+    fig.subplots_adjust(wspace=0, hspace=0)
+
+    ax_list = [Bx_ax,By_ax,Bz_ax,Bmag_ax,vx_ax,vy_ax,vz_ax,vmag_ax,rho_ax,pdyn_ax]
+
+    for var_ax in ax_list:
+        var_ax.grid()
+        var_ax.set_xlim(min(time_arr),max(time_arr))
+        var_ax.set_xticks(list(xrange(t0-30,t0+30+1,5)))
+        var_ax.set_xticklabels([])
+
+    for var_ax in ax_list[1::2]:
+        var_ax.yaxis.tick_right()
+        var_ax.yaxis.set_ticks_position('both')
+        var_ax.yaxis.set_label_position("right")
+
+    pdyn_ax.set_xticklabels(list(xrange(t0-30,t0+30+1,5))[:-1])
+
+    # set y-labels
+    Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
+    By_ax.set_ylabel("$B_y$ [nT]",fontsize=font_size)
+    Bz_ax.set_ylabel("$B_z$ [nT]",fontsize=font_size)
+    Bmag_ax.set_ylabel("$|B|$ [nT]",fontsize=font_size)
+    vx_ax.set_ylabel("$v_x$ [km/s]",fontsize=font_size)
+    vy_ax.set_ylabel("$v_y$ [km/s]",fontsize=font_size)
+    vz_ax.set_ylabel("$v_z$ [km/s]",fontsize=font_size)
+    vmag_ax.set_ylabel("$|v|$ [km/s]",fontsize=font_size)
+    rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
+    pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
+
+    # set x-labels
+    pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
+
+    sp1_color = "black"
+
+    # Plot variables
+    Bx_ax.plot(time_arr,Bx_arr,color=sp1_color,linewidth=2)
+    By_ax.plot(time_arr,By_arr,color=sp1_color,linewidth=2)
+    Bz_ax.plot(time_arr,Bz_arr,color=sp1_color,linewidth=2)
+    Bmag_ax.plot(time_arr,Bmag_arr,color=sp1_color,linewidth=2)
+    vx_ax.plot(time_arr,vx_arr,color=sp1_color,linewidth=2)
+    vy_ax.plot(time_arr,vy_arr,color=sp1_color,linewidth=2)
+    vz_ax.plot(time_arr,vz_arr,color=sp1_color,linewidth=2)
+    vmag_ax.plot(time_arr,vmag_arr,color=sp1_color,linewidth=2)
+    rho_ax.plot(time_arr,rho_arr,color=sp1_color,linewidth=2)
+    vmag_ax.plot(time_arr,vmag_arr,color=sp1_color,linewidth=2)
+    pdyn_ax.plot(time_arr,pdyn_arr,color=sp1_color,linewidth=2)
+
+    for var_ax in ax_list:
+        var_ax.axvline(t0,linestyle="dashed",color="black",linewidth=2)
+
+    plt.tight_layout()
+
+    fig.show()
+
+    # save figure
+    plt.savefig("Figures/jets/"+runid+"/"+jetid+"_timeseries.png")
+    print("Figures/jets/"+runid+"/"+jetid+"_timeseries.png")
 
 def jet_spacecrafts(start,stop,figname="",font_size=20):
     # draws time series of Bx,By,Bz,Bmag,vx,vy,vz,vmag,rho,pdyn at
