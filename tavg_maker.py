@@ -14,16 +14,18 @@ def avg_maker(runid,start,stop):
     if not os.path.exists(outputdir):
         os.makedirs(outputdir)
 
-    # find correct bulk path for run
+    # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
     pdyn_arr = np.array([])
     rho_arr = np.array([])
 
-    for n in range(start-180,stop+1+180):
+    for n in xrange(start-180,stop+1+180):
 
         # find correct file for current time step
         if runid == "AED":
@@ -53,7 +55,7 @@ def avg_maker(runid,start,stop):
     tpdyn_arr = np.array([])
     trho_arr = np.array([])
 
-    for itr in range(start,stop+1):
+    for itr in xrange(start,stop+1):
 
         trho = (np.sum(rho_arr[itr-start:itr+361-start],axis=0)-rho_arr[itr+180-start])/360
         tpdyn = (np.sum(pdyn_arr[itr-start:itr+361-start],axis=0)-pdyn_arr[itr+180-start])/360
@@ -69,5 +71,47 @@ def avg_maker(runid,start,stop):
 
         np.savetxt(outputdir+str(ind+start)+"_rho.tavg",trho_arr[ind])
         np.savetxt(outputdir+str(ind+start)+"_pdyn.tavg",tpdyn_arr[ind])
+
+    return None
+
+def TP_maker(runid,start,stop):
+
+    outputdir = "/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    for n in xrange(start,stop+1):
+
+        # find correct file for current time step
+        if runid == "AED":
+            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        cellids = vlsvobj.read_variable("CellID")
+
+        if vlsvobj.check_variable("rho"):
+            TPar = vlsvobj.read_variable("TParallel")
+            TPerp = vlsvobj.read_variable("TPerpendicular")
+        else:
+            TPar = vlsvobj.read_variable("proton/TParallel")
+            TPerp = vlsvobj.read_variable("proton/TPerpendicular")
+
+        TPar = TPar[cellids.argsort()]
+        TPerp = TPerp[cellids.argsort()]
+
+        np.savetxt(outputdir+str(n)+".tpar",TPar)
+        np.savetxt(outputdir+str(n)+".tperp",TPerp)
 
     return None

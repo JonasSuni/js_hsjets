@@ -571,3 +571,31 @@ def find_missing(inputfolder,start,stop):
             print(n)
 
     return None
+
+def find_missing_bulk(inputfolder):
+
+    filenames = os.listdir(inputfolder)
+
+    file_list = []
+
+    for filename in filenames:
+        if "bulk." in filename and ".vlsv" in filename:
+            file_list.append(filename)
+
+    file_nums = []
+
+    for filename in file_list:
+        file_num = int("".join(i for i in filename if i.isdigit()))
+        file_nums.append(file_num)
+
+    file_nums.sort()
+
+    comp_range = xrange(min(file_nums),max(file_nums)+1)
+
+    for n in comp_range:
+        if n not in file_nums:
+            print(str(n)+" is missing!")
+
+    print(str(len(comp_range)-len(file_nums))+" files missing!")
+
+    return None

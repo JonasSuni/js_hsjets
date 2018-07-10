@@ -357,7 +357,25 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
 
     return None
 
+def tpar_reader(runid,filenumber,cellids,cells):
+
+    TPar = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tpar")
+    TPar = TPar[np.in1d(cellids,cells)]
+
+    return TPar
+
+def tperp_reader(runid,filenumber,cellids,cells):
+
+    TPerp = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tperp")
+    TPerp = TPerp[np.in1d(cellids,cells)]
+
+    return TPerp
+
 def calc_jet_properties(runid,start,jetid):
+
+    if str(start)+"."+jetid+".jet" not in os.listdir("jets/"+runid):
+        print("Jet with ID "+jetid+" does not exist, exiting.")
+        return 1
 
     # Read jet cellids and times
     jet_list = jetfile_read(runid,start,jetid)
@@ -424,6 +442,8 @@ def calc_jet_properties(runid,start,jetid):
             var_list = var_list_alt
 
         rho,v,B,T,va,vms,cellids,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+
+        cellids = cellids[cellids.argsort()]
 
         rho /= 1.0e+6
         v /= 1.0e+3
