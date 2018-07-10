@@ -514,7 +514,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         z_max = Z[vmag==max(vmag)][0]/r_e
 
         x_min = min(X)/r_e
-        rho_vmax = n[vmag==max(vmag)]
+        rho_vmax = rho[vmag==max(vmag)]
 
         #r_max = np.linalg.norm(np.array([x_mean,y_mean,z_mean]))
         #theta_max = np.rad2deg(np.arccos(z_mean/r_mean))
