@@ -8,7 +8,9 @@ m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 def bow_shock_finder(vlsvobj,rho_sw,v_sw):
+    # returns cells outside the bow shock
 
+    # If file has separate populations, find proton population
     if vlsvobj.check_variable("rho"):
         rho = vlsvobj.read_variable("rho")
         v = vlsvobj.read_variable("v")
@@ -18,17 +20,21 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw):
 
     cellids = vlsvobj.read_variable("CellID")
 
+    # Dynamic pressures
     pdynx = m_p*rho*(v[:,0]**2)
     pdyn_sw = m_p*rho_sw*(v_sw**2)
 
+    # Create mask
     #bs = np.ma.masked_greater(pdynx,0.5*pdyn_sw)
     bs = np.ma.masked_less(rho,2.0*rho_sw)
 
+    # Find IDs of masked cells
     masked_ci = np.ma.array(cellids,mask=~bs.mask).compressed()
 
     return masked_ci
 
 def sw_par_dict():
+    # Returns a dictionary with solar wind parameters for each relevant run
 
     runs = ["ABA","ABC","AFA","AFB","BEB","AEA","AEC","BFD"]
     sw_v = [750e+3,600e+3,750e+3,600e+3,450e+3,750e+3,600e+3,750e+3]
@@ -330,6 +336,7 @@ def ci2vars_nofile(input_vars,cellids,cells):
     return output_vars
 
 def get_cell_area(vlsvobj):
+    # returns area of one cell
 
     # get spatial extent of simulation and the number of cells in each direction
     simextent = vlsvobj.get_spatial_mesh_extent().reshape((2,3))

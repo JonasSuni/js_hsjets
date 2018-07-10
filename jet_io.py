@@ -361,6 +361,7 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     return None
 
 def tpar_reader(runid,filenumber,cellids,cells):
+    # Read parallel temperatures of specific cells
 
     TPar = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tpar")
     TPar = TPar[np.in1d(cellids,cells)]
@@ -368,6 +369,7 @@ def tpar_reader(runid,filenumber,cellids,cells):
     return TPar
 
 def tperp_reader(runid,filenumber,cellids,cells):
+    # Read perpendicular temperatures of specific cells
 
     TPerp = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tperp")
     TPerp = TPerp[np.in1d(cellids,cells)]
@@ -444,6 +446,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
+        # If temperature files exist, read parallel and perpendicular temperature from those instead
         if tp_files:
 
             var_list = var_list[:-2]
@@ -460,6 +463,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
 
+        # Scale variables
         rho /= 1.0e+6
         v /= 1.0e+3
         B /= 1.0e-9
@@ -469,9 +473,11 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         TParallel /= 1.0e+6
         TPerpendicular /= 1.0e+6
 
+        # Calculate magnitudes of v and B
         vmag = np.linalg.norm(v,axis=-1)
         Bmag = np.linalg.norm(B,axis=-1)
 
+        # Calculate means, medians and maximums for rho,vmag,Bmag,T,TParallel,TPerpendicular
         n_avg = np.nanmean(rho)
         n_med = np.median(rho)
         n_max = np.max(rho)
@@ -496,23 +502,27 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         TPerp_med = np.median(TPerpendicular)
         TPerp_max = np.max(TPerpendicular)
 
-        # calculate geometric center of jet
+        # Convert X,Y,Z to spherical coordinates
         r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
         theta = np.rad2deg(np.arccos(Z/r))
         phi = np.rad2deg(np.arctan(Y/X))
 
+        # calculate geometric center of jet
         r_mean = np.mean(r)/r_e
         theta_mean = np.mean(theta)
         phi_mean = np.mean(phi)
 
+        # Geometric center of jet in cartesian coordinates
         x_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.cos(np.deg2rad(phi_mean))
         y_mean = r_mean*np.sin(np.deg2rad(theta_mean))*np.sin(np.deg2rad(phi_mean))
         z_mean = r_mean*np.cos(np.deg2rad(theta_mean))
 
+        # Position of maximum velocity in cartesian coordinates
         x_max = X[vmag==max(vmag)][0]/r_e
         y_max = Y[vmag==max(vmag)][0]/r_e
         z_max = Z[vmag==max(vmag)][0]/r_e
 
+        # Minimum x and density at maximum velocity
         x_min = min(X)/r_e
         rho_vmax = rho[vmag==max(vmag)]
 
@@ -546,6 +556,8 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         29: TPerp_avg [MK],     30: TPerp_med [MK],     31: TPerp_max [MK],
         32: x_min [R_e],        33: rho_vmax [1/cm^3]"
         '''
+
+        # Create temporary property array
         temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,x_min,rho_vmax]
 
         # append properties to property array
@@ -578,15 +590,20 @@ def track_jets(runid,start,stop,threshold=0.3):
     if not os.path.exists("/homeappl/home/sunijona/jets/"+runid):
         os.makedirs("/homeappl/home/sunijona/jets/"+runid)
 
+    # Get solar wind parameters
     sw_pars = ja.sw_par_dict()[runid]
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
 
-    # Open file to get
+    # Open file, get Cell IDs and sort them
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
     sorigid = vlsvobj.read_variable("CellID")
     sorigid = sorigid[sorigid.argsort()]
-    fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
+
+    # Reconstruct X,Y,Z
+    #fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
+    
+    # Find bow shock cells and area of one cell
     bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
     dA = ja.get_cell_area(vlsvobj)
 
@@ -606,6 +623,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     # Initialise unique ID counter
     counter = 1
 
+    # Print current time
     print("t = "+str(float(start+1)/2)+"s")
 
     # Look for jets at bow shock
@@ -634,13 +652,16 @@ def track_jets(runid,start,stop,threshold=0.3):
     # Track jets
     for n in xrange(start+2,stop+1):
 
+        # Print  current time
         print("t = "+str(float(n)/2)+"s")
 
+        # Find correct bulkname
         if runid == "AED":
             bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
         else:
             bulkname = "bulk."+str(n).zfill(7)+".vlsv"
 
+        # Open bulkfile and get bow shock cells
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
         bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
@@ -658,6 +679,7 @@ def track_jets(runid,start,stop,threshold=0.3):
         events.sort(key=len)
         events = events[::-1]
 
+        # Iniatilise list of cells currently being tracked
         curr_jet_temp_list = []
 
         # Update existing jets
@@ -673,14 +695,7 @@ def track_jets(runid,start,stop,threshold=0.3):
 
                         # Create new jet
                         jetobj_new = Jet(curr_id,runid,float(n)/2)
-                        #jetobj_new = copy.deepcopy(jetobj)
-                        #jetobj_new.ID = str(counter).zfill(5)
-                        #print("Cloned jet to new one with ID "+jetobj_new.ID)
-                        #jetobj_new.cellids = jetobj_new.cellids[:-1]
-                        #jetobj_new.cellids.append(jetobj.cellids[-2])
                         jetobj_new.cellids.append(event)
-                        #jetobj_new.times = jetobj_new.times[:-1]
-                        #jetobj_new.times.append(float(n)/2)
                         jetobj_list.append(jetobj_new)
                         curr_jet_temp_list.append(event)
 

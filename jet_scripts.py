@@ -377,26 +377,33 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
 def jet_area_hist(runid):
 
+    # Get all filenames in folder
     filenames = os.listdir("jets/"+runid)
 
+    # Filter for property files
     file_list = [filename for filename in filenames if ".props" in filename]
 
+    # Initialise area list
     area_list = []
 
+    # Append max area of every jet to area list
     for fname in file_list:
         props = pd.read_csv("jets/"+runid+"/"+fname).as_matrix()
         area = props[:,4]
         area_list.append(max(area))
 
+    # Create figure
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel("Area [R$_{e}^{2}$]",fontsize=20)
 
+    # draw histogram
     area_hist = ax.hist(area_list,bins=10)
 
     plt.tight_layout()
 
+    # save figure
     plt.savefig("Figures/jets/"+runid+"/"+runid+"_area_hist.png")
 
 ###PLOT MAKER HERE###
