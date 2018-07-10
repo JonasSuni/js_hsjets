@@ -12,7 +12,10 @@ def avg_maker(runid,start,stop):
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
-        os.makedirs(outputdir)
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -80,8 +83,11 @@ def TP_maker(runid,start,stop):
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
-        os.makedirs(outputdir)
-
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+            
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"

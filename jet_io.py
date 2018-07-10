@@ -41,7 +41,10 @@ def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
-        os.makedirs(outputdir)
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
 
     for file_nr in xrange(start,stop+1):
 

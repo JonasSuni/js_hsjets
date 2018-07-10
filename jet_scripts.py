@@ -389,7 +389,10 @@ def plotmake(runid,start,stop,vmax=1.5):
     outputdir = "Plots/"+runid+"/"
 
     if not os.path.exists(outputdir):
-        os.makedirs(outputdir)
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
 
     for n in xrange(start,stop+1):
 
@@ -425,7 +428,10 @@ def contour_gen_ff(runid,start,stop,vmax=1.5,boxre=[6,16,-6,6]):
     outputdir = "/wrk/sunijona/DONOTREMOVE/Contours/"+runid+"/"
 
     if not os.path.exists(outputdir):
-        os.makedirs(outputdir)
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
 
     for n in xrange(start,stop+1):
 
