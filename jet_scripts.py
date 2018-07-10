@@ -385,12 +385,19 @@ def jet_area_hist(runid):
 
     # Initialise area list
     area_list = []
+    size_list = []
 
     # Append max area of every jet to area list
     for fname in file_list:
         props = pd.read_csv("jets/"+runid+"/"+fname).as_matrix()
         area = props[:,4]
         area_list.append(max(area))
+        size_list.append(area.size)
+
+    area_list = np.asarray(area_list)
+    size_list = np.asarray(size_list)
+
+    area_list = area_list[size_list > 0.1*max(size_list)]
 
     # Create figure
     plt.ion()

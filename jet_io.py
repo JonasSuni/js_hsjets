@@ -135,7 +135,7 @@ def propfile_write(runid,filenr,key,props):
 
     open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],x_min [R_e],rho_vmax [1/cm^3]"+"\n")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -441,8 +441,8 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
             dA = ja.get_cell_area(vlsvobj)
 
         # If file has more than one population, choose proton population
-        var_list = ["rho","v","B","Temperature","va","vms","CellID","TParallel","TPerpendicular"]
-        var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/va","proton/vms","CellID","proton/TParallel","proton/TPerpendicular"]
+        var_list = ["rho","v","B","Temperature","va","vms","CellID","beta","TParallel","TPerpendicular"]
+        var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/va","proton/vms","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
@@ -451,14 +451,14 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
 
             var_list = var_list[:-2]
 
-            rho,v,B,T,va,vms,cellids = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+            rho,v,B,T,va,vms,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
             cellids = cellids[cellids.argsort()]
             TParallel = tpar_reader(runid,n,cellids,curr_list)
             TPerpendicular = tperp_reader(runid,n,cellids,curr_list)
 
         else:
 
-            rho,v,B,T,va,vms,cellids,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+            rho,v,B,T,va,vms,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
 
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
@@ -477,7 +477,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         vmag = np.linalg.norm(v,axis=-1)
         Bmag = np.linalg.norm(B,axis=-1)
 
-        # Calculate means, medians and maximums for rho,vmag,Bmag,T,TParallel,TPerpendicular
+        # Calculate means, medians and maximums for rho,vmag,Bmag,T,TParallel,TPerpendicular,beta
         n_avg = np.nanmean(rho)
         n_med = np.median(rho)
         n_max = np.max(rho)
@@ -502,6 +502,10 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         TPerp_med = np.median(TPerpendicular)
         TPerp_max = np.max(TPerpendicular)
 
+        beta_avg = np.nanmean(beta)
+        beta_med = np.median(beta)
+        beta_max = np.max(beta)
+
         # Convert X,Y,Z to spherical coordinates
         r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
         theta = np.rad2deg(np.arccos(Z/r))
@@ -525,6 +529,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         # Minimum x and density at maximum velocity
         x_min = min(X)/r_e
         rho_vmax = rho[vmag==max(vmag)]
+        b_vmax = beta[vmag==max(vmag)]
 
         #r_max = np.linalg.norm(np.array([x_mean,y_mean,z_mean]))
         #theta_max = np.rad2deg(np.arccos(z_mean/r_mean))
@@ -542,7 +547,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         time = time_list[n]
 
         ''' 
-        "0: time [s],
+        0: time [s],
         1: x_mean [R_e],        2: y_mean [R_e],        3: z_mean [R_e],
         4: A [R_e^2],           5: Nr_cells,
         6: r_mean [R_e],        7: theta_mean [deg],    8: phi_mean [deg],
@@ -554,11 +559,12 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         23: T_avg [MK],         24: T_med [MK],         25: T_max [MK],
         26: TPar_avg [MK],      27: TPar_med [MK],      28: TPar_max [MK],
         29: TPerp_avg [MK],     30: TPerp_med [MK],     31: TPerp_max [MK],
-        32: x_min [R_e],        33: rho_vmax [1/cm^3]"
+        32: beta_avg,           33: beta_med,           34: beta_max
+        35: x_min [R_e],        36: rho_vmax [1/cm^3],  37: b_vmax
         '''
 
         # Create temporary property array
-        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,x_min,rho_vmax]
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax]
 
         # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))
