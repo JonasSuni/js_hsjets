@@ -374,7 +374,7 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
     return TPerp
 
-def calc_jet_properties(runid,start,jetid):
+def calc_jet_properties(runid,start,jetid,tp_files=False):
 
     if str(start)+"."+jetid+".jet" not in os.listdir("jets/"+runid):
         print("Jet with ID "+jetid+" does not exist, exiting.")
@@ -444,9 +444,21 @@ def calc_jet_properties(runid,start,jetid):
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
-        rho,v,B,T,va,vms,cellids,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+        if tp_files:
 
-        cellids = cellids[cellids.argsort()]
+            var_list = var_list[:-2]
+
+            rho,v,B,T,va,vms,cellids = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+            cellids = cellids[cellids.argsort()]
+            TParallel = tpar_reader(runid,n,cellids,curr_list)
+            TPerpendicular = tperp_reader(runid,n,cellids,curr_list)
+
+        else:
+
+            rho,v,B,T,va,vms,cellids,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+
+        # Q: Why are we doing this?
+        #cellids = cellids[cellids.argsort()]
 
         rho /= 1.0e+6
         v /= 1.0e+3
