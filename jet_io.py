@@ -35,7 +35,7 @@ class Jet:
 
         return "\n".join(map(str,self.times))
 
-def jet_maker(runid,start,stop,boxre=[6,16,-8,6],maskfile=False,avgfile=False):
+def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
 
     outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
 
@@ -159,8 +159,10 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     if not os.path.exists("Contours/jetfigs/"+runid):
-        os.makedirs("Contours/jetfigs/"+runid)
-
+        try:
+            os.makedirs("Contours/jetfigs/"+runid)
+        except OSError:
+            pass
     # Find names of property files
     filenames = os.listdir("jets/"+runid)
     prop_fns = []
@@ -182,7 +184,8 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
 
     # Find names of event files
     filenames = os.listdir("events/"+runid)
-    filenames.sort()
+    nrs = [int(s[:-7]) for s in filenames]
+    filenames=np.array(filenames)[np.argsort(nrs)].tolist()
 
     # Create list of arrays of cellids to use as contour mask
     cells_list = []
@@ -199,8 +202,11 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
         fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
         fullmask_list.append(fullmask)
 
+    # Find correct bulk path
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
@@ -341,7 +347,10 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
 
     # Create outputdir if it doesn't already exist
     if not os.path.exists("jet_sizes/"+runid):
-        os.makedirs("jet_sizes/"+runid)
+        try:
+            os.makedirs("jet_sizes/"+runid)
+        except OSError:
+            pass
 
     # Save figure
     plt.savefig("jet_sizes/"+runid+"/"+figname+".png")
@@ -605,8 +614,10 @@ def track_jets(runid,start,stop,threshold=0.3):
 
     # Create outputdir if it doesn't already exist
     if not os.path.exists("/homeappl/home/sunijona/jets/"+runid):
-        os.makedirs("/homeappl/home/sunijona/jets/"+runid)
-
+        try:
+            os.makedirs("/homeappl/home/sunijona/jets/"+runid)
+        except OSError:
+            pass
     # Get solar wind parameters
     sw_pars = ja.sw_par_dict()[runid]
     rho_sw = sw_pars[0]
