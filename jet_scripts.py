@@ -641,3 +641,17 @@ def find_missing_bulk(inputfolder):
     print(str(len(comp_range)-len(file_nums))+" files missing!")
 
     return None
+
+def read_speed_test(direct=False):
+
+    cells = list(xrange(1234,56789))
+    vlsvobj = pt.vlsvfile.VlsvReader("611w.vlsv")
+    cellids = vlsvobj.read_variable("CellID")
+
+    if direct:
+        X = vlsvobj.read_variable("X",cellids=cells)
+        return X
+    else:
+        X = vlsvobj.read_variable("X")
+        X = X[np.in1d(cellids,cells)]
+        return X

@@ -140,20 +140,20 @@ def propfile_write(runid,filenr,key,props):
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
 
-def jio_figmake(runid,start,jetid,figname):
+def jio_figmake(runid,start,jetid,figname,tp_files=False):
     # Create time series figures of specified jet
 
-    props = calc_jet_properties(runid,start,jetid)
+    props = calc_jet_properties(runid,start,jetid,tp_files=tp_files)
 
     if type(props) is not np.ndarray:
         return 1
     else:
         jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
 
-def figmake_script(runid,start,ids):
+def figmake_script(runid,start,ids,tp_files=False):
 
     for ID in ids:
-        jio_figmake(runid,start,ID,figname=ID)
+        jio_figmake(runid,start,ID,figname=ID,tp_files=tp_files)
 
 def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
@@ -424,14 +424,15 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
         origid = vlsvobj.read_variable("CellID")
+        sorigid = origid[origid.argsort()]
 
         # read variables
         if vlsvobj.check_variable("X"):
-            X = vlsvobj.read_variable("X",cellids=curr_list)
-            Y = vlsvobj.read_variable("Y",cellids=curr_list)
-            Z = vlsvobj.read_variable("Z",cellids=curr_list)
+            X = vlsvobj.read_variable("X")[origid.argsort()]
+            Y = vlsvobj.read_variable("Y")[origid.argsort()]
+            Z = vlsvobj.read_variable("Z")[origid.argsort()]
+            X,Y,Z = ja.ci2vars_nofile([X,Y,Z],sorigid,curr_list)
         else:
-            sorigid = origid[origid.argsort()]
             X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,curr_list)
 
         # Calculate area of one cell
@@ -451,14 +452,35 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
 
             var_list = var_list[:-2]
 
-            rho,v,B,T,va,vms,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+            rho,v,B,T,va,vms,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
             cellids = cellids[cellids.argsort()]
-            TParallel = tpar_reader(runid,n,cellids,curr_list)
-            TPerpendicular = tperp_reader(runid,n,cellids,curr_list)
+            TParallel = tpar_reader(runid,nr_list[n],cellids,curr_list)
+            TPerpendicular = tperp_reader(runid,nr_list[n],cellids,curr_list)
+            
+            rho = rho[origid.argsort()]
+            v = v[origid.argsort()]
+            B = B[origid.argsort()]
+            T = T[origid.argsort()]
+            va = va[origid.argsort()]
+            vms = vms[origid.argsort()]
+            beta = beta[origid.argsort()]
+
+            rho,v,B,T,va,vms,beta = ja.ci2vars_nofile([rho,v,B,T,va,vms,beta],sorigid,curr_list)
 
         else:
 
-            rho,v,B,T,va,vms,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=curr_list)
+            rho,v,B,T,va,vms,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
+            rho = rho[origid.argsort()]
+            v = v[origid.argsort()]
+            B = B[origid.argsort()]
+            T = T[origid.argsort()]
+            va = va[origid.argsort()]
+            vms = vms[origid.argsort()]
+            beta = beta[origid.argsort()]
+            TParallel = TParallel[origid.argsort()]
+            TPerpendicular = TPerpendicular[origid.argsort()]
+
+            rho,v,B,T,va,vms,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,va,vms,beta,TParallel,TPerpendicular],sorigid,curr_list)
 
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
