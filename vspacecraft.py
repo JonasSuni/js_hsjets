@@ -131,7 +131,7 @@ def jet_sc(runid,start,jetid,font_size=20):
 
     # Find line corresponding to maximum area
     area = props[:,4]
-    maxline = props[area==max(area)]
+    maxline = props[area==max(area)][0]
 
     # Time of maximum area
     t0 = maxline[0]
@@ -159,7 +159,7 @@ def jet_sc(runid,start,jetid,font_size=20):
     pdyn_arr = np.array([])
 
     # time series +-30 seconds of time of t0
-    for t_n in xrange(t_n0-60,t_n+60+1):
+    for t_n in xrange(t_n0-60,t_n0+60+1):
 
         if runid == "AED":
             bulkname = "bulk.old."+str(t_n).zfill(7)+".vlsv"
@@ -193,7 +193,10 @@ def jet_sc(runid,start,jetid,font_size=20):
         rho_arr = np.append(vmag_arr,vmag)
         pdyn_arr = np.append(vmag_arr,vmag)
 
-    time_arr = np.array(xrange(t_n0-60,t_n+60+1)).astype(float)/2
+    time_arr = np.array(xrange(t_n0-60,t_n0+60+1)).astype(float)/2
+
+    print(time_arr.size)
+    print(Bx_arr.size)
 
     # scale variable values
     Bx_arr /= 1.0e-9 # nanotesla
@@ -209,7 +212,7 @@ def jet_sc(runid,start,jetid,font_size=20):
 
     # initialise figure
     plt.ion()
-    fig = plt.figure(figsize=(10,20))
+    fig = plt.figure(figsize=(10,18))
 
     # create subplots
     Bx_ax = fig.add_subplot(10,1,1)
@@ -229,8 +232,8 @@ def jet_sc(runid,start,jetid,font_size=20):
 
     for var_ax in ax_list:
         var_ax.grid()
-        var_ax.set_xlim(min(time_arr),max(time_arr))
-        var_ax.set_xticks(list(xrange(t0-30,t0+30+1,5)))
+        var_ax.set_xlim(int(min(time_arr))+1,int(max(time_arr)))
+        var_ax.set_xticks(list(xrange(int(t0-30),int(t0+30)+1,5)))
         var_ax.set_xticklabels([])
 
     for var_ax in ax_list[1::2]:
@@ -238,7 +241,7 @@ def jet_sc(runid,start,jetid,font_size=20):
         var_ax.yaxis.set_ticks_position('both')
         var_ax.yaxis.set_label_position("right")
 
-    pdyn_ax.set_xticklabels(list(xrange(t0-30,t0+30+1,5))[:-1])
+    pdyn_ax.set_xticklabels(list(xrange(int(t0-30),int(t0+30)+1,5))[:-1])
 
     # set y-labels
     Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
