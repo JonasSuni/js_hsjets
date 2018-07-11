@@ -261,15 +261,18 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     y_arr = linsizes[:,2]
     z_arr = linsizes[:,3]
 
+    if runid == "BFD":
+        y_arr = z_arr
+
     # Minimum and maximum values
-    minmax_list = [min(time_arr),max(time_arr),min(area_arr),max(area_arr),min(rad_size_arr),max(rad_size_arr),min(tan_size_arr),max(tan_size_arr),min(x_arr),max(x_arr),min(y_arr),max(y_arr),min(z_arr),max(z_arr)]
+    minmax_list = [min(time_arr),max(time_arr),min(area_arr),max(area_arr),min(rad_size_arr),max(rad_size_arr),min(tan_size_arr),max(tan_size_arr),min(x_arr),max(x_arr),min(y_arr),max(y_arr)]
 
     for n in xrange(0,len(minmax_list),2):
         if np.abs((minmax_list[n]-minmax_list[n+1])/float(minmax_list[n])) < 1.0e-5:
             minmax_list[n+1] += 1
             minmax_list[n] -= 1
 
-    tmin,tmax,Amin,Amax,rsmin,rsmax,psmin,psmax,xmin,xmax,ymin,ymax,zmin,zmax = minmax_list
+    tmin,tmax,Amin,Amax,rsmin,rsmax,psmin,psmax,xmin,xmax,ymin,ymax = minmax_list
 
     # Create figure
     plt.ion()
@@ -281,7 +284,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax = fig.add_subplot(325)
     x_ax = fig.add_subplot(322)
     y_ax = fig.add_subplot(324)
-    z_ax = fig.add_subplot(326)
 
     # Draw grids
     area_ax.grid()
@@ -289,7 +291,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.grid()
     x_ax.grid()
     y_ax.grid()
-    z_ax.grid()
 
     # Set x-limits
     area_ax.set_xlim(tmin,tmax)
@@ -297,7 +298,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.set_xlim(tmin,tmax)
     x_ax.set_xlim(tmin,tmax)
     y_ax.set_xlim(tmin,tmax)
-    z_ax.set_xlim(tmin,tmax)
 
     # Set y-limits
     area_ax.set_ylim(Amin,Amax)
@@ -305,15 +305,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.set_ylim(psmin,psmax)
     x_ax.set_ylim(xmin,xmax)
     y_ax.set_ylim(ymin,ymax)
-    z_ax.set_ylim(zmin,zmax)
-
-    #area_ax.set_yticks([0.5,1,1.5,2,2.5])
-    #rad_size_ax.set_yticks([0.8,1.2,1.6,2,2.4,2.8])
-    #tan_size_ax.set_yticks([0.6,1,1.4])
-
-    #area_ax.set_xticks([295,300,305,310,315,320])
-    #rad_size_ax.set_xticks([295,300,305,310,315,320])
-    #tan_size_ax.set_xticks([295,300,305,310,315,320])
 
     # Set x-ticklabels
     area_ax.set_xticklabels([])
@@ -328,7 +319,7 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.set_xlabel("Time [s]",fontsize=20)
     x_ax.set_ylabel("X [R$_{e}$]",fontsize=20)
     y_ax.set_ylabel("Y [R$_{e}$]",fontsize=20)
-    z_ax.set_ylabel("Z [R$_{e}$]",fontsize=20)
+    y_ax.set_xlabel("Time [s]",fontsize=20)
 
     # Set tick label sizes
     area_ax.tick_params(labelsize=16)
@@ -336,7 +327,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.tick_params(labelsize=16)
     x_ax.tick_params(labelsize=16)
     y_ax.tick_params(labelsize=16)
-    z_ax.tick_params(labelsize=16)
 
     # Plot variables
     area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
@@ -344,7 +334,6 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
     x_ax.plot(time_arr,x_arr,color="black",linewidth=2)
     y_ax.plot(time_arr,y_arr,color="black",linewidth=2)
-    z_ax.plot(time_arr,z_arr,color="black",linewidth=2)
 
     plt.tight_layout()
 

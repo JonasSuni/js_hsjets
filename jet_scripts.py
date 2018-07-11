@@ -375,7 +375,7 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     rc('text', usetex=True)
 
-def jet_area_hist(runid):
+def jet_area_hist(runid,size_thresh=0.1,time_thresh=0.1,bins=15):
 
     # Get all filenames in folder
     filenames = os.listdir("jets/"+runid)
@@ -397,21 +397,24 @@ def jet_area_hist(runid):
     area_list = np.asarray(area_list)
     size_list = np.asarray(size_list)
 
-    area_list = area_list[size_list > 0.1*max(size_list)]
+    area_list = area_list[size_list > time_thresh*max(size_list)]
+    area_list = area_list[area_list > size_thresh*max(area_list)]
 
     # Create figure
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel("Area [R$_{e}^{2}$]",fontsize=20)
+    ax.set_ylabel("Number of jets",fontsize=20)
 
     # draw histogram
-    area_hist = ax.hist(area_list,bins=10)
+    area_hist = ax.hist(area_list,bins=bins)
 
     plt.tight_layout()
 
     # save figure
     plt.savefig("Figures/jets/"+runid+"/"+runid+"_area_hist.png")
+    print("Saved figure to "+"Figures/jets/"+runid+"/"+runid+"_area_hist.png")
 
 ###PLOT MAKER HERE###
 

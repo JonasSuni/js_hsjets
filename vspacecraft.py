@@ -8,6 +8,7 @@ import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_scripts as js
+from matplotlib.ticker import MaxNLocator
 
 from matplotlib import rc
 
@@ -118,6 +119,10 @@ def get_pos_index(posre,runid,file_number):
 
 def jet_sc(runid,start,jetid,font_size=20):
 
+    if str(start)+"."+jetid+".props" not in os.listdir("jets/"+runid):
+        print("Jet not found")
+        return 1
+
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
@@ -190,13 +195,10 @@ def jet_sc(runid,start,jetid,font_size=20):
         vy_arr = np.append(vy_arr,vy)
         vz_arr = np.append(vz_arr,vz)
         vmag_arr = np.append(vmag_arr,vmag)
-        rho_arr = np.append(vmag_arr,vmag)
-        pdyn_arr = np.append(vmag_arr,vmag)
+        rho_arr = np.append(rho_arr,rho)
+        pdyn_arr = np.append(pdyn_arr,pdyn)
 
     time_arr = np.array(xrange(t_n0-60,t_n0+60+1)).astype(float)/2
-
-    print(time_arr.size)
-    print(Bx_arr.size)
 
     # scale variable values
     Bx_arr /= 1.0e-9 # nanotesla
@@ -235,6 +237,7 @@ def jet_sc(runid,start,jetid,font_size=20):
         var_ax.set_xlim(int(min(time_arr))+1,int(max(time_arr)))
         var_ax.set_xticks(list(xrange(int(t0-30),int(t0+30)+1,5)))
         var_ax.set_xticklabels([])
+        var_ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
 
     for var_ax in ax_list[1::2]:
         var_ax.yaxis.tick_right()
@@ -276,7 +279,7 @@ def jet_sc(runid,start,jetid,font_size=20):
     for var_ax in ax_list:
         var_ax.axvline(t0,linestyle="dashed",color="black",linewidth=2)
 
-    plt.tight_layout()
+    #plt.tight_layout()
 
     fig.show()
 
