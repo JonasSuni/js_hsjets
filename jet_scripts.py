@@ -663,3 +663,19 @@ def read_speed_test(direct=False):
         X = vlsvobj.read_variable("X")
         X = X[np.in1d(cellids,cells)]
         return X
+
+def find_missing_jetsizes(runid):
+
+    jetfile_names = os.listdir("jets/"+runid)
+
+    propfile_list = [int(s[4:-6]) for s in jetfile_names if ".props" in s]
+
+    jetsize_names = os.listdir("jet_sizes/"+runid)
+
+    jetsize_list = [int(s[:-4]) for s in jetsize_names]
+
+    for jetid in propfile_list:
+        if jetid not in jetsize_list:
+            print("Jet with ID "+str(jetid)+" has no time series!")
+
+    return None
