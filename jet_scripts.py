@@ -375,7 +375,7 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     rc('text', usetex=True)
 
-def jet_area_hist(runids,size_thresh=0.1,time_thresh=60,bins=10):
+def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
     # Get all filenames in folder
     filenames_list = []
@@ -411,6 +411,7 @@ def jet_area_hist(runids,size_thresh=0.1,time_thresh=60,bins=10):
     ax = fig.add_subplot(111)
     ax.set_xlabel("Area [R$_{e}^{2}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
+    plt.title(",".join(runids),fontsize=20)
 
     # draw histogram
     area_hist = ax.hist(area_list,bins=bins)
@@ -420,6 +421,59 @@ def jet_area_hist(runids,size_thresh=0.1,time_thresh=60,bins=10):
     # save figure
     plt.savefig("Figures/jets/"+"_".join(runids)+"_area_hist.png")
     print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_area_hist.png")
+
+    return None
+
+def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Initialise area list
+    var_list = []
+    size_list = []
+
+    # Append max area of every jet to area list
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
+            area = props[:,4]
+            var = props[area==max(area)][0][19] #vmax
+            var_list.append(var)
+            size_list.append(area.size)
+
+    var_list = np.asarray(var_list)
+    size_list = np.asarray(size_list)
+
+    var_list = var_list[size_list > time_thresh]
+    var_list = var_list[var_list > size_thresh]
+
+    # Create figure
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("V$_{max}$ [km/s]",fontsize=20)
+    ax.set_ylabel("Number of jets",fontsize=20)
+    plt.title(",".join(runids),fontsize=20)
+
+    # draw histogram
+    area_hist = ax.hist(var_list,bins=bins)
+
+    plt.tight_layout()
+
+    # save figure
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_vmax_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_vmax_hist.png")
+
+    return None
+
 
 ###PLOT MAKER HERE###
 
@@ -677,5 +731,16 @@ def find_missing_jetsizes(runid):
     for jetid in propfile_list:
         if jetid not in jetsize_list:
             print("Jet with ID "+str(jetid)+" has no time series!")
+
+    return None
+
+def make_jet_hists(size_thresh=0.0,time_thresh=30,bins=10):
+
+    runids_list=[["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+
+    for runids in runids_list:
+
+        js.jet_area_hist(runids,size_thresh,time_thresh,bins)
+        js.jet_vmax_hist(runids,size_thresh,time_thresh,bins)
 
     return None
