@@ -287,6 +287,10 @@ def jet_sc(runid,start,jetid,font_size=20):
     plt.savefig("Figures/jets/"+runid+"/"+jetid+"_timeseries.png")
     print("Figures/jets/"+runid+"/"+jetid+"_timeseries.png")
 
+    plt.close(fig)
+
+    return None
+
 def jet_spacecrafts(start,stop,figname="",font_size=20):
     # draws time series of Bx,By,Bz,Bmag,vx,vy,vz,vmag,rho,pdyn at
     # the specified 3 sets of coordinates for files in range 

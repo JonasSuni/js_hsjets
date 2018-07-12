@@ -291,7 +291,7 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     tmin,tmax,Amin,Amax,rsmin,rsmax,psmin,psmax,xmin,xmax,ymin,ymax = minmax_list
 
     # Create figure
-    plt.ion()
+    plt.ioff()
     fig = plt.figure(figsize=figsize)
 
     # Add subplots
@@ -365,6 +365,8 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     # Save figure
     plt.savefig("jet_sizes/"+runid+"/"+figname+".png")
     print("jet_sizes/"+runid+"/"+figname+".png")
+
+    plt.close(fig)
 
     return None
 
