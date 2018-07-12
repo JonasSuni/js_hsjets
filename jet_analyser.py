@@ -506,7 +506,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
         bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
     if bulkname not in os.listdir(bulkpath):
-        print(print("Bulk file "+str(filenumber)+" not found, exiting."))
+        print("Bulk file "+str(filenumber)+" not found, exiting.")
         return 1
 
     # open vlsv file for reading
