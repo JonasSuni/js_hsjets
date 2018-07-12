@@ -62,7 +62,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
             bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
 
         if bulkname not in os.listdir(bulkpath):
-            print("Bulk file not found, continuing.")
+            print("Bulk file "+str(file_nr)+" not found, continuing")
             continue
 
         # open vlsv file for reading
@@ -228,8 +228,14 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
                 xmax_list.append(tpos_dict[float(itr)/2][2])
                 ymax_list.append(tpos_dict[float(itr)/2][3])
 
+        bulkname = "bulk."+str(itr).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            pprint("Bulk file "+str(itr)+" not found, continuing")
+            continue
+
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+"bulk."+str(itr).zfill(7)+".vlsv",outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start],xmax_list,ymax_list])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start],xmax_list,ymax_list])
 
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
@@ -392,7 +398,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
     if len(time_list) < 5:
         print("Jet not sufficiently long-lived, exiting.")
         return 1
-        
+
     # Discard jet if it has large gaps in the times
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
     if max(dt) > 5:
