@@ -505,6 +505,10 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
     else:
         bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
+    if bulkname not in os.listdir(bulkpath):
+        print(print("Bulk file "+str(filenumber)+" not found, exiting."))
+        return 1
+
     # open vlsv file for reading
     vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
@@ -544,6 +548,8 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
     # range of timesteps to calculate average of
     timerange = xrange(filenumber-halftimewidth,filenumber+halftimewidth+1)
 
+    missing_file_counter = 0
+
     for n_t in timerange:
 
         if avgfile:
@@ -558,6 +564,11 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
             tfile_name = "bulk.old."+str(n_t).zfill(7)+".vlsv"
         else:
             tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
+
+        if tfile_name not in os.listdir(bulkpath):
+            missing_file_counter += 1
+            print("Bulk file "+str(n_t)+" not found, continuing")
+            continue
 
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
@@ -582,7 +593,7 @@ def make_cust_mask(filenumber,runid,halftimewidth,boxre=[6,16,-6,6],avgfile=Fals
         tpdynavg = np.add(tpdynavg,otpdyn)
 
     # calculate time average of dynamic pressure
-    tpdynavg /= len(timerange)-1
+    tpdynavg /= len(timerange)-1-missing_file_counter
 
     # prevent divide by zero errors
     tpdynavg[tpdynavg == 0.0] = 1.0e-27

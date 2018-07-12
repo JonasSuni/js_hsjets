@@ -375,24 +375,29 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     rc('text', usetex=True)
 
-def jet_area_hist(runid,size_thresh=0.1,time_thresh=60,bins=10):
+def jet_area_hist(runids,size_thresh=0.1,time_thresh=60,bins=10):
 
     # Get all filenames in folder
-    filenames = os.listdir("jets/"+runid)
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
 
     # Filter for property files
-    file_list = [filename for filename in filenames if ".props" in filename]
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Initialise area list
     area_list = []
     size_list = []
 
     # Append max area of every jet to area list
-    for fname in file_list:
-        props = pd.read_csv("jets/"+runid+"/"+fname).as_matrix()
-        area = props[:,4]
-        area_list.append(max(area))
-        size_list.append(area.size)
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
+            area = props[:,4]
+            area_list.append(max(area))
+            size_list.append(area.size)
 
     area_list = np.asarray(area_list)
     size_list = np.asarray(size_list)
@@ -413,8 +418,8 @@ def jet_area_hist(runid,size_thresh=0.1,time_thresh=60,bins=10):
     plt.tight_layout()
 
     # save figure
-    plt.savefig("Figures/jets/"+runid+"/"+runid+"_area_hist.png")
-    print("Saved figure to "+"Figures/jets/"+runid+"/"+runid+"_area_hist.png")
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_area_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_area_hist.png")
 
 ###PLOT MAKER HERE###
 

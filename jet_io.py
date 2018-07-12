@@ -61,6 +61,10 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
         else:
             bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
 
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file not found, continuing.")
+            continue
+
         # open vlsv file for reading
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
@@ -384,10 +388,12 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
     jet_list = jetfile_read(runid,start,jetid)
     time_list = timefile_read(runid,start,jetid)
 
-    # Discard jet if it has large gaps in the times
-    if len(time_list) < 2:
+    # Discard jet if it's very short-lived
+    if len(time_list) < 5:
         print("Jet not sufficiently long-lived, exiting.")
         return 1
+        
+    # Discard jet if it has large gaps in the times
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
     if max(dt) > 5:
         print("Jet not sufficiently continuous, exiting.")
@@ -612,6 +618,10 @@ def track_jets(runid,start,stop,threshold=0.3):
     else:
         bulkname = "bulk."+str(start).zfill(7)+".vlsv"
 
+    if bulkname not in os.listdir("bulkpath"):
+        print("Bulk file "+str(start)+" not found, exiting")
+        return 1
+
     # Create outputdir if it doesn't already exist
     if not os.path.exists("/homeappl/home/sunijona/jets/"+runid):
         try:
@@ -688,6 +698,10 @@ def track_jets(runid,start,stop,threshold=0.3):
             bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
         else:
             bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(n)+" not found, continuing")
+            continue
 
         # Open bulkfile and get bow shock cells
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
