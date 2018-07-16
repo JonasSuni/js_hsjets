@@ -429,6 +429,8 @@ def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
 def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
+    sw_pars = ja.sw_par_dict()
+
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
@@ -448,7 +450,8 @@ def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
         for fname in file_list_list[n]:
             props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
             area = props[:,4]
-            var = props[area==max(area)][0][19] #vmax
+            v_sw = sw_pars[runids[n]][1]/1.0e+3
+            var = props[area==max(area)][0][19]/v_sw #vmax
             var_list.append(var)
             size_list.append(area.size)
 
@@ -462,7 +465,7 @@ def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     plt.ioff()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{max}$ [km/s]",fontsize=20)
+    ax.set_xlabel("V$_{max}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
     ax.set_xlim(0,850)
@@ -482,6 +485,8 @@ def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
 def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
+    sw_pars = ja.sw_par_dict()
+
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
@@ -501,7 +506,8 @@ def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
         for fname in file_list_list[n]:
             props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
             area = props[:,4]
-            var = props[area==max(area)][0][17] #vavg
+            v_sw = sw_pars[runids[n]][1]/1.0e+3
+            var = props[area==max(area)][0][17]/v_sw #vavg
             var_list.append(var)
             size_list.append(area.size)
 
@@ -515,7 +521,7 @@ def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     plt.ioff()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{avg}$ [km/s]",fontsize=20)
+    ax.set_xlabel("V$_{avg}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
     ax.set_xlim(0,850)
@@ -535,6 +541,8 @@ def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
 def jet_vmed_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
+    sw_pars = ja.sw_par_dict()
+
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
@@ -554,7 +562,8 @@ def jet_vmed_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
         for fname in file_list_list[n]:
             props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
             area = props[:,4]
-            var = props[area==max(area)][0][18] #vmed
+            v_sw = sw_pars[runids[n]][1]/1.0e+3
+            var = props[area==max(area)][0][18]/v_sw #vmed
             var_list.append(var)
             size_list.append(area.size)
 
@@ -568,7 +577,7 @@ def jet_vmed_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     plt.ioff()
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{med}$ [km/s]",fontsize=20)
+    ax.set_xlabel("V$_{med}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
     ax.set_xlim(0,850)
