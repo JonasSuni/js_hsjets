@@ -541,6 +541,8 @@ def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
     plt.close(fig)
 
+    plt.close("all")
+
     return None
 
 def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):

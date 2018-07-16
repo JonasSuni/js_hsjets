@@ -126,6 +126,8 @@ def eventfile_read(runid,filenr):
 
     ef = open("/homeappl/home/sunijona/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
+    if contents == "":
+        return []
     lines = contents.split("\n")
 
     for line in lines:
@@ -636,7 +638,7 @@ def track_jets(runid,start,stop,threshold=0.3):
             os.makedirs("/homeappl/home/sunijona/jets/"+runid)
         except OSError:
             pass
-            
+
     # Get solar wind parameters
     sw_pars = ja.sw_par_dict()[runid]
     rho_sw = sw_pars[0]
@@ -666,6 +668,7 @@ def track_jets(runid,start,stop,threshold=0.3):
 
     # Initialise list of jet objects
     jetobj_list = []
+    dead_jetobj_list = []
 
     # Initialise unique ID counter
     counter = 1
@@ -698,6 +701,11 @@ def track_jets(runid,start,stop,threshold=0.3):
 
     # Track jets
     for n in xrange(start+2,stop+1):
+
+        for jetobj in jetobj_list:
+            if float(n)/2 - jetobj.times[-1] > 5:
+                dead_jetobj_list.append(jetobj)
+                jetobj_list.remove(jetobj)
 
         # Print  current time
         print("t = "+str(float(n)/2)+"s")
@@ -803,6 +811,8 @@ def track_jets(runid,start,stop,threshold=0.3):
                         counter += 1
 
                         break
+
+    jetobj_list = jetobj_list + dead_jetobj_list
 
     for jetobj in jetobj_list:
 
