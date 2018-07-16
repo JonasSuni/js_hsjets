@@ -626,7 +626,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     else:
         bulkname = "bulk."+str(start).zfill(7)+".vlsv"
 
-    if bulkname not in os.listdir("bulkpath"):
+    if bulkname not in os.listdir(bulkpath):
         print("Bulk file "+str(start)+" not found, exiting")
         return 1
 
