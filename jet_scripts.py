@@ -419,6 +419,130 @@ def jet_pos_graph(runid):
 
     return None
 
+def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
+
+    sw_pars = ja.sw_par_dict()
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Initialise area list
+    TPar_max_list = []
+    TPerp_max_list = []
+    rho_vmax_list = []
+    b_vmax_list = []
+    size_list = []
+
+    # Append max area of every jet to area list
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
+            area = props[:,4]
+            Tpar_max = props[area==max(area)][0][28]
+            TPerp_max = props[area==max(area)][0][31]
+            rho_vmax = props[area==max(area)][0][36]
+            b_vmax = props[area==max(area)][0][37]
+            TPar_max_list.append(Tpar_max)
+            TPerp_max_list.append(TPerp_max)
+            rho_vmax_list.append(rho_vmax)
+            b_vmax_list.append(b_vmax)
+            size_list.append(area.size)
+
+    TPar = np.asarray(TPar_max_list)
+    TPerp = np.asarray(TPerp_max_list)
+    rho = np.asarray(rho_vmax_list)
+    b = np.asarray(b_vmax_list)
+    size_list = np.asarray(size_list)
+
+    TPar = TPar[size_list > time_thresh]
+    TPerp = TPerp[size_list > time_thresh]
+    rho = rho[size_list > time_thresh]
+    b = b[size_list > time_thresh]
+
+    # Create figures
+    plt.ioff()
+
+    # FIG 1
+    fig = plt.figure()
+    ax_TPar = fig.add_subplot(111)
+    ax_TPar.set_xlabel("T$_{par,max}$ [MK]",fontsize=20)
+    ax_TPar.set_ylabel("Number of jets",fontsize=20)
+    ax_TPar.set_xlim(0,25)
+
+    plt.title(",".join(runids),fontsize=20)
+
+    TPar_hist = ax_TPar.hist(TPar,bins=np.linspace(0,25,24).tolist())
+
+    plt.tight_layout()
+
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_TPar_max_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_TPar_max_hist.png")
+
+    plt.close(fig)
+
+    # FIG 2
+    fig = plt.figure()
+    ax_TPerp = fig.add_subplot(111)
+    ax_TPerp.set_xlabel("T$_{perp,max}$ [MK]",fontsize=20)
+    ax_TPerp.set_ylabel("Number of jets",fontsize=20)
+    ax_TPerp.set_xlim(0,25)
+
+    plt.title(",".join(runids),fontsize=20)
+
+    TPerp_hist = ax_TPerp.hist(TPerp,bins=np.linspace(0,25,24).tolist())
+
+    plt.tight_layout()
+
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_TPerp_max_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_TPerp_max_hist.png")
+
+    plt.close(fig)
+
+    # FIG 3
+    fig = plt.figure()
+    ax_rho = fig.add_subplot(111)
+    ax_rho.set_xlabel("$\\rho _{vmax}$ [cm$^{-3}$]",fontsize=20)
+    ax_rho.set_ylabel("Number of jets",fontsize=20)
+    ax_rho.set_xlim(0,20)
+
+    plt.title(",".join(runids),fontsize=20)
+
+    rho_hist = ax_rho.hist(rho,bins=np.linspace(0,20,19).tolist())
+
+    plt.tight_layout()
+
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_rho_vmax_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_rho_vmax_hist.png")
+
+    plt.close(fig)
+
+    # FIG 4
+    fig = plt.figure()
+    ax_b = fig.add_subplot(111)
+    ax_b.set_xlabel("$\\beta _{vmax}$",fontsize=20)
+    ax_b.set_ylabel("Number of jets",fontsize=20)
+    ax_b.set_xlim(0,40)
+
+    plt.title(",".join(runids),fontsize=20)
+
+    b_hist = ax_b.hist(b,bins=np.linspace(0,40,19).tolist())
+
+    plt.tight_layout()
+
+    plt.savefig("Figures/jets/"+"_".join(runids)+"_b_vmax_hist.png")
+    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_b_vmax_hist.png")
+
+    plt.close(fig)
+
+    return None
+
 def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
     # Get all filenames in folder
@@ -910,5 +1034,6 @@ def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolis
         jet_vmax_hist(runids,size_thresh,time_thresh,bins2)
         jet_vavg_hist(runids,size_thresh,time_thresh,bins2)
         jet_vmed_hist(runids,size_thresh,time_thresh,bins2)
+        jet_mult_hist(runids,size_thresh,time_thresh,bins=10)
 
     return None
