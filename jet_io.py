@@ -636,6 +636,7 @@ def track_jets(runid,start,stop,threshold=0.3):
             os.makedirs("/homeappl/home/sunijona/jets/"+runid)
         except OSError:
             pass
+            
     # Get solar wind parameters
     sw_pars = ja.sw_par_dict()[runid]
     rho_sw = sw_pars[0]

@@ -35,6 +35,10 @@ def avg_maker_slow(runid,start,stop):
 
         missing_file_counter = 0
 
+        if "bulk.old."+str(n).zfill(7)+".vlsv" not in os.listdir(bulkpath):
+            print("Bulk file "+str(n)+" not found, continuing")
+            continue
+
         for t in xrange(n-180,n+180+1):
 
             if t == n:
@@ -184,8 +188,8 @@ def TP_maker(runid,start,stop):
             bulkname = "bulk."+str(n).zfill(7)+".vlsv"
 
         if bulkname not in os.listdir(bulkpath):
-            print("Bulk file "+str(n)+" not found, exiting.")
-            return 1
+            print("Bulk file "+str(n)+" not found, continuing.")
+            continue
 
         # Open file and read cell IDs
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)

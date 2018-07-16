@@ -375,6 +375,50 @@ def var_hist_mult(runid,var1,figname,normed_b=True,weight_b=True):
 
     rc('text', usetex=True)
 
+def jet_pos_graph(runid):
+
+    filenames = os.listdir("jets/"+runid)
+
+    propfiles = [filename for filename in filenames if ".props" in filename]
+
+    r_list = []
+    phi_list = []
+    size_list = []
+
+    for fname in propfiles:
+        props = pd.read_csv("jets/"+runid+"/"+fname).as_matrix()
+        r = props[:,6]
+        phi = props[r==max(r)][0][8]
+        r_list.append(max(r))
+        phi_list.append(phi)
+        size_list.append(r.size)
+
+    r_list = np.asarray(r_list)
+    phi_list = np.asarray(phi_list)
+    size_list = np.asarray(size_list)
+
+    r_list = r_list[size_list > 30]
+    phi_list = phi_list[size_list > 30]
+
+    plt.ion()
+    fig = plt.figure(figsize=(16,8))
+    ax = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
+    ax.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
+    ax.set_ylabel("$\\phi _{mean}$ [deg]",fontsize=20)
+    ax.set_xlim(0,18)
+    ax2.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
+    ax2.set_ylabel("Number of jets",fontsize=20)
+    ax2.set_xlim(0,18)
+    plt.title(runid,fontsize=20)
+
+    rphi_graph = ax.plot(r_list,phi_list,"x",color="black")
+    r_hist = ax2.hist(r_list,bins=list(xrange(0,19)))
+
+    plt.tight_layout()
+
+    return None
+
 def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
     # Get all filenames in folder
