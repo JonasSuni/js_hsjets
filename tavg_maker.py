@@ -35,7 +35,7 @@ def avg_maker_slow(runid,start,stop):
 
         missing_file_counter = 0
 
-        if "bulk.old."+str(n).zfill(7)+".vlsv" not in os.listdir(bulkpath):
+        if "bulk."+str(n).zfill(7)+".vlsv" not in os.listdir(bulkpath):
             print("Bulk file "+str(n)+" not found, continuing")
             continue
 
