@@ -512,7 +512,7 @@ def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax.set_xlabel("V$_{max}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,850)
+    ax.set_xlim(0,1)
 
     # draw histogram
     area_hist = ax.hist(var_list,bins=bins)
@@ -568,7 +568,7 @@ def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax.set_xlabel("V$_{avg}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,850)
+    ax.set_xlim(0,1)
 
     # draw histogram
     area_hist = ax.hist(var_list,bins=bins)
@@ -624,7 +624,7 @@ def jet_vmed_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax.set_xlabel("V$_{med}$ [v$_{sw}$]",fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,850)
+    ax.set_xlim(0,1)
 
     # draw histogram
     area_hist = ax.hist(var_list,bins=bins)
@@ -898,9 +898,11 @@ def find_missing_jetsizes(runid):
 
     return None
 
-def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=10,bins2=10):
+def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolist(),bins2=np.linspace(0,1,19).tolist()):
 
     runids_list=[["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+
+    runids_list=[["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
 
     for runids in runids_list:
 
