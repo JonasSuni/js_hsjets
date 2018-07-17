@@ -71,7 +71,7 @@ def avg_maker_slow(runid,start,stop):
             pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
             # Add to time average
-            if t == n-180:
+            if rho_arr.size == 0:
                 rho_arr = rho
                 pdyn_arr = pdyn
             else:
