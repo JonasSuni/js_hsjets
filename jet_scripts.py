@@ -1028,9 +1028,11 @@ def find_missing_jetsizes(runid):
 
 def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolist(),bins2=np.linspace(0,1,19).tolist()):
 
-    runids_list=[["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+    runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
 
     runids_list=[["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+
+    runids_list = [["ABA"],["AEA"],["AEC"],["ABA","AEA","AEC"]]
 
     for runids in runids_list:
 
