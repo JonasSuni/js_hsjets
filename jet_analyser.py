@@ -26,7 +26,7 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw):
 
     # Create mask
     #bs = np.ma.masked_greater(pdynx,0.5*pdyn_sw)
-    bs = np.ma.masked_less(rho,2.0*rho_sw)
+    bs = np.ma.masked_less(rho,1.85*rho_sw)
 
     # Find IDs of masked cells
     masked_ci = np.ma.array(cellids,mask=~bs.mask).compressed()

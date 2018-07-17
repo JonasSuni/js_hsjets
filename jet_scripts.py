@@ -24,6 +24,7 @@ def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     level_plaschke = ext_pars[0]
     rho_sw = ext_pars[1]
     v_sw = ext_pars[2]
+    level2 = ext_pars[3]
     rho = extmaps[0]
     v = extmaps[1]
 
@@ -31,6 +32,7 @@ def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     pdyn_sw = m_p*rho_sw*(v_sw**2)
 
     bs = np.ma.masked_greater(rho,level_plaschke*rho_sw)
+    bs.mask[rho < level2*rho_sw] = True
     bs.fill_value = 0
     bs[bs.mask == False] = 1
 
@@ -40,7 +42,7 @@ def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     jet[jet.mask == False] = 1
 
     contour = ax.contour(XmeshXY,YmeshXY,bs.filled(),[0.5],linewidths=1.0, colors="black")
-    #cont2 = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="magenta")
+    cont2 = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="magenta")
 
     return None
 

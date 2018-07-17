@@ -663,7 +663,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[2,2])).size > 0:
+        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[3,3])).size > 0:
             bs_events.append(old_event)
 
     # Initialise list of jet objects
@@ -727,7 +727,7 @@ def track_jets(runid,start,stop,threshold=0.3):
         # Filtered list of events that are at the bow shock at the current time
         bs_events = []
         for old_event in events:
-            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[2,2])).size > 0:
+            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[3,3])).size > 0:
                 bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets
