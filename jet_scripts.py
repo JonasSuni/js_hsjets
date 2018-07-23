@@ -451,7 +451,7 @@ def jet_all_hist(runids,time_thresh=30):
             if props.read("A").size > time_thresh:
                 A.append(props.read_at_amax("A"))
                 vmax.append(props.read_at_amax("v_max")/props.sw_pars[1])
-                rhomax.append(props.read_at_amax("n_max"))
+                rhomax.append(props.read_at_amax("n_max")/props.sw_pars[0])
                 Bmax.append(props.read_at_amax("B_max"))
                 Tmax.append(props.read_at_amax("T_max"))
                 TPar_max.append(props.read_at_amax("TPar_max"))
@@ -470,8 +470,8 @@ def jet_all_hist(runids,time_thresh=30):
     for n in xrange(len(vrs)):
         ax.append(fig.add_subplot(2,2,n+1))
 
-    labels = ["Area [R$_{e}^{2}$]","v$_{max}$ [v$_{sw]$]","$\\rho _{max}$ [cm$^{-3}$]","B$_{max}$ [nT]"]
-    xlim_max = [4,1,20,50]
+    labels = ["Area [R$_{e}^{2}$]","v$_{max}$ [v$_{sw]$]","$\\rho _{max}$ [$\\rho _{sw}$]","B$_{max}$ [nT]"]
+    xlim_max = [4,1,10,50]
     bins = [19,19,19,19]
     for n in xrange(len(vrs)):
         ax[n].set_xlabel(labels[n],fontsize=20)
