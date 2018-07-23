@@ -22,6 +22,9 @@ class PropReader:
         self.ID = ID
         self.runid = runid
         self.start = start
+        self.sw_pars = list(ja.sw_par_dict()[runid])
+        self.sw_pars[0] /= 1.0e+6
+        self.sw_pars[1] /= 1.0e+3
 
         if type(fname) is not str:
             self.fname = str(start)+"."+ID+".props"

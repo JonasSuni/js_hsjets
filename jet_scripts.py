@@ -422,6 +422,99 @@ def jet_pos_graph(runid):
 
     return None
 
+def jet_all_hist(runids,time_thresh=30):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Initialise var lists
+    A = []
+    vmax = []
+    rhomax = []
+    Bmax = []
+
+    Tmax = []
+    TPar_max = []
+    TPerp_max = []
+    beta_max = []
+
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("A").size > time_thresh:
+                A.append(props.read_at_amax("A"))
+                vmax.append(props.read_at_amax("v_max")/props.sw_pars[1])
+                rhomax.append(props.read_at_amax("n_max"))
+                Bmax.append(props.read_at_amax("B_max"))
+                Tmax.append(props.read_at_amax("T_max"))
+                TPar_max.append(props.read_at_amax("TPar_max"))
+                TPerp_max.append(props.read_at_amax("TPerp_max"))
+                beta_max.append(props.read_at_amax("beta_max"))
+
+    variables = [A,vmax,rhomax,Bmax,Tmax,TPar_max,TPerp_max,beta_max]
+    A,vmax,rhomax,Bmax,Tmax,TPar_max,TPerp_max,beta_max = [np.asarray(l) for l in variables]
+
+    plt.ioff()
+
+    vrs = variables[0:4]
+
+    fig = plt.figure(figsize=(15,15))
+    ax = []
+    for n in xrange(len(vrs)):
+        ax.append(fig.add_subplot(2,2,n+1))
+
+    labels = ["Area [R$_{e}^{2}$]","v$_{max}$ [v$_{sw]$]","$\\rho _{max}$ [cm$^{-3}$]","B$_{max}$ [nT]"]
+    xlim_max = [4,1,20,50]
+    bins = [19,19,19,19]
+    for n in xrange(len(vrs)):
+        ax[n].set_xlabel(labels[n],fontsize=20)
+        #ax[n].set_ylabel("Number of jets",fontsize=20)
+        ax[n].set_xlim(0,xlim_max[n])
+
+        ax[n].hist(vrs[n],np.linspace(0,xlim_max[n],bins[n]).tolist())
+
+    plt.tight_layout()
+    fig.suptitle(",".join(runids),fontsize=20)
+    fig.subplots_adjust(top=0.95)
+
+    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"_AvnB.png")
+    print("Saved figure to "+"Figures/jets/histograms/"+"_".join(runids)+"_AvnB.png")
+
+    plt.close(fig)
+
+    vrs = variables[4:8]
+
+    fig = plt.figure(figsize=(15,15))
+    ax = []
+    for n in xrange(len(vrs)):
+        ax.append(fig.add_subplot(2,2,n+1))
+
+    labels = ["T$_{max}$ [MK]","T$_{par,max}$ [MK]","T$_{perp,max}$ [MK]","$\\beta _{max}$"]
+    xlim_max = [25,25,25,40]
+    bins = [19,19,19,19]
+    for n in xrange(len(vrs)):
+        ax[n].set_xlabel(labels[n],fontsize=20)
+        #ax[n].set_ylabel("Number of jets",fontsize=20)
+        ax[n].set_xlim(0,xlim_max[n])
+
+        ax[n].hist(vrs[n],np.linspace(0,xlim_max[n],bins[n]).tolist())
+
+    plt.tight_layout()
+    fig.suptitle(",".join(runids),fontsize=20)
+    fig.subplots_adjust(top=0.95)
+
+    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"_Tbeta.png")
+    print("Saved figure to "+"Figures/jets/histograms/"+"_".join(runids)+"_Tbeta.png")
+
+    plt.close(fig)
+
 def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
 
     sw_pars = ja.sw_par_dict()
@@ -479,10 +572,10 @@ def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax_TPar.set_ylabel("Number of jets",fontsize=20)
     ax_TPar.set_xlim(0,25)
 
-    plt.title(",".join(runids),fontsize=20)
 
     TPar_hist = ax_TPar.hist(TPar,bins=np.linspace(0,25,24).tolist())
 
+    plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
     plt.savefig("Figures/jets/"+"_".join(runids)+"_TPar_max_hist.png")
@@ -497,10 +590,9 @@ def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax_TPerp.set_ylabel("Number of jets",fontsize=20)
     ax_TPerp.set_xlim(0,25)
 
-    plt.title(",".join(runids),fontsize=20)
-
     TPerp_hist = ax_TPerp.hist(TPerp,bins=np.linspace(0,25,24).tolist())
 
+    plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
     plt.savefig("Figures/jets/"+"_".join(runids)+"_TPerp_max_hist.png")
@@ -515,10 +607,9 @@ def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax_rho.set_ylabel("Number of jets",fontsize=20)
     ax_rho.set_xlim(0,20)
 
-    plt.title(",".join(runids),fontsize=20)
-
     rho_hist = ax_rho.hist(rho,bins=np.linspace(0,20,19).tolist())
 
+    plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
     plt.savefig("Figures/jets/"+"_".join(runids)+"_rho_vmax_hist.png")
@@ -533,10 +624,9 @@ def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
     ax_b.set_ylabel("Number of jets",fontsize=20)
     ax_b.set_xlim(0,40)
 
-    plt.title(",".join(runids),fontsize=20)
-
     b_hist = ax_b.hist(b,bins=np.linspace(0,40,19).tolist())
 
+    plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
     plt.savefig("Figures/jets/"+"_".join(runids)+"_b_vmax_hist.png")
@@ -1033,7 +1123,7 @@ def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolis
 
     runids_list=[["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
 
-    runids_list = [["ABA"],["AEA"],["AEC"],["ABA","AEA","AEC"]]
+    #runids_list = [["ABA"],["AEA"],["AEC"],["ABA","AEA","AEC"]]
 
     for runids in runids_list:
 
@@ -1042,5 +1132,14 @@ def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolis
         jet_vavg_hist(runids,size_thresh,time_thresh,bins2)
         jet_vmed_hist(runids,size_thresh,time_thresh,bins2)
         jet_mult_hist(runids,size_thresh,time_thresh,bins=10)
+
+    return None
+
+def jethist_script(time_thresh=30):
+
+    runids_list=[["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+
+    for runids in runids_list:
+        jet_all_hist(runids,time_thresh)
 
     return None
