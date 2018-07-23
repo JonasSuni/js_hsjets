@@ -754,6 +754,7 @@ def track_jets(runid,start,stop,threshold=0.3):
 
         if bulkname not in os.listdir(bulkpath):
             print("Bulk file "+str(n)+" not found, continuing")
+            events = []
             continue
 
         # Open bulkfile and get bow shock cells
