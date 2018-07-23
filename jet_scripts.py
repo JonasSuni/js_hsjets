@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
+import jet_io as jio
 
 from matplotlib import rc
 

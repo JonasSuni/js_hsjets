@@ -14,6 +14,42 @@ import plot_contours as pc
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+class PropReader:
+    # Class for reading jet property files
+
+    def __init__(self,ID,runid,start=580,fname=None):
+
+        self.ID = ID
+        self.runid = runid
+        self.start = start
+
+        if type(fname) is not str:
+            self.fname = str(start)+"."+ID+".props"
+        else:
+            self.fname = fname
+
+        try:
+            self.props = pd.read_csv("jets/"+runid+"/"+self.fname).as_matrix()
+        except IOError:
+            raise IOError("File not found!")
+
+        var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
+        n_list = list(xrange(38))
+        self.var_dict = dict(zip(var_list,n_list))
+
+    def read(self,name):
+        if name not in self.var_dict:
+            print("Variable not found!")
+            return None
+        else:
+            return self.props[:,self.var_dict[name]]
+
+    def amax_index(self):
+        return self.read("A").argmax()
+
+    def read_at_amax(self,name):
+        return self.read(name)[self.amax_index()]
+
 class Jet:
     # Class for identifying and handling individual jets and their properties
 
