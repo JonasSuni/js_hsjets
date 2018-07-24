@@ -447,7 +447,7 @@ def jet_cust_hist(runids,var,time_thresh=10):
     key_list = ["duration","size_ratio"]
 
     n_list = list(xrange(len(key_list)))
-    var_dict = dict(zip,key_list,n_list)
+    var_dict = dict(zip(key_list,n_list))
 
     # Initialise var list
     var_list = []
@@ -1272,9 +1272,9 @@ def jethist_script(time_thresh=10):
 
     var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
 
-    for runids in runids_list:
-        for var in var_list:
-            jet_var_hist(runids,var,time_thresh)
+    #for runids in runids_list:
+    #    for var in var_list:
+    #        jet_var_hist(runids,var,time_thresh)
 
     for runids in runids_list:
         jet_cust_hist(runids,"duration",time_thresh)
@@ -1288,9 +1288,9 @@ def jethist_script2(time_thresh=10):
 
     var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
 
-    for runids in runids_list:
-        for var in var_list:
-            jet_var_hist(runids,var,time_thresh)
+    #for runids in runids_list:
+    #    for var in var_list:
+    #        jet_var_hist(runids,var,time_thresh)
 
     for runids in runids_list:
         jet_cust_hist(runids,"duration",time_thresh)
