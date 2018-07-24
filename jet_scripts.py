@@ -410,7 +410,7 @@ def jet_pos_graph(runid):
     ax.set_xlabel("r$_{mean,max}$ [R$_{e}$]",fontsize=20)
     ax.set_ylabel("$\\phi _{mean}$ [deg]",fontsize=20)
     ax.set_xlim(0,18)
-    ax2.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
+    ax2.set_xlabel("r$_{mean,max}$ [R$_{e}$]",fontsize=20)
     ax2.set_ylabel("Number of jets",fontsize=20)
     ax2.set_xlim(0,18)
     plt.title(runid+"\nN = "+str(r_list.size),fontsize=20)
