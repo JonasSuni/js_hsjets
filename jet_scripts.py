@@ -422,6 +422,68 @@ def jet_pos_graph(runid):
 
     return None
 
+def jet_var_hist(runids,var,time_thresh=15):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    key_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
+    n_list = list(xrange(38))
+    var_dict = dict(zip(key_list,n_list))
+
+    # Initialise var list
+    var_list = []
+
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > time_thresh:
+                if var in ["v_max","v_avg","v_med"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[1])
+                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[0])
+                else:
+                    var_list.append(props.read_at_amax(var))
+
+    var_list = np.asarray(var_list)
+
+    label_list = ["Time [s]","x$_{mean}$ [R$_{e}$]","y$_{mean}$ [R$_{e}$]","z$_{mean}$ [R$_{e}$]","Area [R$_{e}^{2}$]","Number of cells","r$_{mean}$ [R$_{e}$]","$\\theta _{mean}$ [deg]","$\\phi _{mean}$ [deg]","Radial size [R$_{e}$]","Tangential size [R$_{e}$]","x$_{v,max}$ [R$_{e}$]","y$_{v,max}$ [R$_{e}$]","z$_{v,max}$ [R$_{e}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{max}$ [n$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]","v$_{max}$ [v$_{sw}$]","B$_{avg}$ [nT]","B$_{med}$ [nT]","B$_{max}$ [nT]","T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]","T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]","T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]","$\\beta _{avg}$","$\\beta _{med}$","$\\beta _{max}$","x$_{min}$ [R$_{e}$]","n$_{v,max}$ [n$_{sw}$]","$\\beta _{v,max}$"]
+
+    xlim_max_list = [1000,20,20,20,4,2500,20,90,90,4,4,20,20,20,10,10,10,2,2,2,50,50,50,25,25,25,25,25,25,25,25,25,50,50,50,20,10,50]
+
+    plt.ioff()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
+    ax.set_ylabel("Number of jets",fontsize=20)
+    ax.set_xlim(0,xlim_max_list[var_dict[var]])
+    if var in ["theta_mean","phi_mean"]:
+        ax.set_xlim(-xlim_max_list[var_dict[var]],xlim_max_list[var_dict[var]])
+
+    hist = ax.hist(var_list,bins=np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],19))
+
+    plt.title(",".join(runids)+"\nN = "+str(var_list.size),fontsize=20)
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/jets/histograms/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("Figures/jets/histograms/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+
+    plt.close(fig)
+
 def jet_all_hist(runids,time_thresh=30):
 
     # Get all filenames in folder
@@ -1135,11 +1197,15 @@ def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolis
 
     return None
 
-def jethist_script(time_thresh=30):
+def jethist_script(time_thresh=15):
 
-    runids_list=[["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+    runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
+
+    var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
 
     for runids in runids_list:
-        jet_all_hist(runids,time_thresh)
+        for var in var_list:
+            jet_var_hist(runids,var,time_thresh)
 
     return None
+
