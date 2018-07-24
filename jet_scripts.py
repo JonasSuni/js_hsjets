@@ -400,14 +400,14 @@ def jet_pos_graph(runid):
     phi_list = np.asarray(phi_list)
     size_list = np.asarray(size_list)
 
-    r_list = r_list[size_list > 30]
-    phi_list = phi_list[size_list > 30]
+    r_list = r_list[size_list > 20]
+    phi_list = phi_list[size_list > 20]
 
     plt.ion()
     fig = plt.figure(figsize=(16,8))
     ax = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
-    ax.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
+    ax.set_xlabel("r$_{mean,max}$ [R$_{e}$]",fontsize=20)
     ax.set_ylabel("$\\phi _{mean}$ [deg]",fontsize=20)
     ax.set_xlim(0,18)
     ax2.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
