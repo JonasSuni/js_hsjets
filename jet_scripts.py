@@ -413,12 +413,22 @@ def jet_pos_graph(runid):
     ax2.set_xlabel("r$_{mean}$ [R$_{e}$]",fontsize=20)
     ax2.set_ylabel("Number of jets",fontsize=20)
     ax2.set_xlim(0,18)
-    plt.title(runid,fontsize=20)
+    plt.title(runid+"\nN = "+str(r_list.size),fontsize=20)
 
     rphi_graph = ax.plot(r_list,phi_list,"x",color="black")
     r_hist = ax2.hist(r_list,bins=list(xrange(0,19)))
 
     plt.tight_layout()
+
+    if not os.path.exists("Figures/jets/debugging/"):
+        try:
+            os.makedirs("Figures/jets/debugging/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/jets/debugging/"+runid+"_"+"rmax.png")
+
+    plt.close(fig)
 
     return None
 
