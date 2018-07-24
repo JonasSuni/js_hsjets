@@ -432,7 +432,66 @@ def jet_pos_graph(runid):
 
     return None
 
-def jet_var_hist(runids,var,time_thresh=15):
+def jet_cust_hist(runids,var,time_thresh=10):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    key_list = ["duration","size_ratio"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip,key_list,n_list)
+
+    # Initialise var list
+    var_list = []
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > time_thresh:
+                if var == "duration":
+                    var_list.append(props.read("time")[-1]-props.read("time")[0])
+                elif var == "size_ratio":
+                    var_list.append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                else:
+                    pass
+
+    var_list = np.asarray(var_list)
+
+    label_list = ["Duration [s]","Radial size/Tangential size"]
+    xlim_max_list = [100,10]
+
+    plt.ioff()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
+    ax.set_ylabel("Number of jets",fontsize=20)
+    ax.set_xlim(0,xlim_max_list[var_dict[var]])
+
+    hist = ax.hist(var_list,bins=np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],19))
+
+    plt.title(",".join(runids)+"\nN = "+str(var_list.size),fontsize=20)
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/jets/histograms/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("Figures/jets/histograms/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+
+    plt.close(fig)
+
+def jet_var_hist(runids,var,time_thresh=10):
 
     # Get all filenames in folder
     filenames_list = []
@@ -1207,7 +1266,7 @@ def make_jet_hists(size_thresh=0.0,time_thresh=30,bins1=np.linspace(0,4,9).tolis
 
     return None
 
-def jethist_script(time_thresh=15):
+def jethist_script(time_thresh=10):
 
     runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC"],["AEA","AEC"],["ABA","AEA"],["ABC","AEC"],["ABA","ABC","AEA","AEC"]]
 
@@ -1217,9 +1276,13 @@ def jethist_script(time_thresh=15):
         for var in var_list:
             jet_var_hist(runids,var,time_thresh)
 
+    for runids in runids_list:
+        jet_cust_hist(runids,"duration",time_thresh)
+        jet_cust_hist(runids,"size_ratio",time_thresh)
+
     return None
 
-def jethist_script2(time_thresh=15):
+def jethist_script2(time_thresh=10):
 
     runids_list = [["BFD"]]
 
@@ -1228,5 +1291,9 @@ def jethist_script2(time_thresh=15):
     for runids in runids_list:
         for var in var_list:
             jet_var_hist(runids,var,time_thresh)
+
+    for runids in runids_list:
+        jet_cust_hist(runids,"duration",time_thresh)
+        jet_cust_hist(runids,"size_ratio",time_thresh)
 
     return None
