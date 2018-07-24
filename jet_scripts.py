@@ -456,7 +456,7 @@ def jet_var_hist(runids,var,time_thresh=15):
 
     label_list = ["Time [s]","x$_{mean}$ [R$_{e}$]","y$_{mean}$ [R$_{e}$]","z$_{mean}$ [R$_{e}$]","Area [R$_{e}^{2}$]","Number of cells","r$_{mean}$ [R$_{e}$]","$\\theta _{mean}$ [deg]","$\\phi _{mean}$ [deg]","Radial size [R$_{e}$]","Tangential size [R$_{e}$]","x$_{v,max}$ [R$_{e}$]","y$_{v,max}$ [R$_{e}$]","z$_{v,max}$ [R$_{e}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{max}$ [n$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]","v$_{max}$ [v$_{sw}$]","B$_{avg}$ [nT]","B$_{med}$ [nT]","B$_{max}$ [nT]","T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]","T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]","T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]","$\\beta _{avg}$","$\\beta _{med}$","$\\beta _{max}$","x$_{min}$ [R$_{e}$]","n$_{v,max}$ [n$_{sw}$]","$\\beta _{v,max}$"]
 
-    xlim_max_list = [1000,20,20,20,4,2500,20,90,90,4,4,20,20,20,10,10,10,2,2,2,50,50,50,25,25,25,25,25,25,25,25,25,50,50,50,20,10,50]
+    xlim_max_list = [1000,20,10,10,4,2500,20,90,90,4,4,20,10,10,10,10,10,2,2,2,50,50,50,25,25,25,25,25,25,25,25,25,50,50,50,20,10,50]
 
     plt.ioff()
 
@@ -465,7 +465,7 @@ def jet_var_hist(runids,var,time_thresh=15):
     ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
     ax.set_ylabel("Number of jets",fontsize=20)
     ax.set_xlim(0,xlim_max_list[var_dict[var]])
-    if var in ["theta_mean","phi_mean"]:
+    if var in ["theta_mean","phi_mean","y_mean","y_vmax","z_mean","z_vmax"]:
         ax.set_xlim(-xlim_max_list[var_dict[var]],xlim_max_list[var_dict[var]])
 
     hist = ax.hist(var_list,bins=np.linspace(ax.get_xlim()[0],ax.get_xlim()[1],19))
