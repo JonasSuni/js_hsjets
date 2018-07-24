@@ -244,7 +244,10 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     fullmask_list = []
     for itr2 in xrange(start,stop+1):
 
-        fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
+        try:
+            fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
+        except IOError:
+            fullmask = np.array([])
         fullmask_list.append(fullmask)
 
     # Find correct bulk path
@@ -272,7 +275,7 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
         bulkname = "bulk."+str(itr).zfill(7)+".vlsv"
 
         if bulkname not in os.listdir(bulkpath):
-            pprint("Bulk file "+str(itr)+" not found, continuing")
+            print("Bulk file "+str(itr)+" not found, continuing")
             continue
 
         # Create plot
