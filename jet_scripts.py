@@ -521,7 +521,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     "T_avg","T_med","T_max",
     "TPar_avg","TPar_med","TPar_max",
     "TPerp_avg","TPerp_med","TPerp_max",
-    "A"]
+    "A",
+    "death_distance"]
 
     n_list = list(xrange(len(key_list)))
     var_dict = dict(zip(key_list,n_list))
@@ -547,6 +548,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                     var_list[n].append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var == "pdyn_vmax":
                     var_list[n].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var == "death_distance":
+                    var_list[n].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                 else:
                     var_list[n].append(props.read_at_amax(var))
 
@@ -560,7 +563,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
     "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
     "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]"]
+    "Area [R$_{e}^{2}$]",
+    "r$_{v,max}$ at time of death [R$_{e}$]"]
 
     xmax_list=[120,
     3.5,3.5,7,
@@ -572,7 +576,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     25,25,25,
     25,25,25,
     25,25,25,
-    5]
+    5,
+    18]
 
     step_list = [5,
     0.25,0.25,0.2,
@@ -584,7 +589,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     1,1,1,
     1,1,1,
     1,1,1,
-    0.2]
+    0.2,
+    0.5]
 
     plt.ioff()
     #plt.ion()
@@ -606,6 +612,9 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
             hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        if var == "death_distance":
+            ax.set_xlim(8,xmax_list[var_dict[var]])
+            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         for n in xrange(len(runids)):
             hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
 
@@ -650,7 +659,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     "T_avg","T_med","T_max",
     "TPar_avg","TPar_med","TPar_max",
     "TPerp_avg","TPerp_med","TPerp_max",
-    "A"]
+    "A",
+    "death_distance"]
 
     n_list = list(xrange(len(key_list)))
     var_dict = dict(zip(key_list,n_list))
@@ -675,6 +685,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                     var_list.append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var == "pdyn_vmax":
                     var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var == "death_distance":
+                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                 else:
                     var_list.append(props.read_at_amax(var))
 
@@ -690,7 +702,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
     "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
     "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]"]
+    "Area [R$_{e}^{2}$]",
+    "r$_{v,max}$ at time of death [R$_{e}$]"]
 
     xmax_list=[120,
     3.5,3.5,7,
@@ -702,7 +715,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     25,25,25,
     25,25,25,
     25,25,25,
-    5]
+    5,
+    18]
 
     step_list = [5,
     0.25,0.25,0.2,
@@ -714,6 +728,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     1,1,1,
     1,1,1,
     1,1,1,
+    0.2,
     0.5]
 
     plt.ioff()
@@ -735,6 +750,9 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
         hist = ax.hist(var_list,weights=weights,bins=bins)
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        if var == "death_distance":
+            ax.set_xlim(8,xmax_list[var_dict[var]])
+            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         hist = ax.hist(var_list,bins=bins,weights=weights)
 
     plt.title(",".join(runids),fontsize=20)
@@ -1642,7 +1660,7 @@ def jethist_paper_script():
     "T_avg","T_med","T_max",
     "TPar_avg","TPar_med","TPar_max",
     "TPerp_avg","TPerp_med","TPerp_max",
-    "A"]
+    "A","death_distance"]
 
     for var in var_list:
         jet_paper_all_hist(runids,var,time_thresh=10)
@@ -1661,7 +1679,7 @@ def jethist_paper_script_vs(runids):
     "T_avg","T_med","T_max",
     "TPar_avg","TPar_med","TPar_max",
     "TPerp_avg","TPerp_med","TPerp_max",
-    "A"]
+    "A","death_distance"]
 
     for var in var_list:
         jet_paper_vs_hist(runids,var,time_thresh=10)
