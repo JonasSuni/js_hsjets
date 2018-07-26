@@ -496,6 +496,135 @@ def jet_paper_pos():
 
     return None
 
+def jet_paper_vs_hist(runids,var,time_thresh=10):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_colors_dict = dict(zip([runids[0],runids[1]],["red","green"]))
+
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip(key_list,n_list))
+
+    # Initialise var list
+    var_list = [[],[]]
+
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                if var == "duration":
+                    var_list[n].append(props.read("time")[-1]-props.read("time")[0])
+                elif var == "size_ratio":
+                    var_list[n].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
+                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[0])
+                elif var in ["v_max","v_avg","v_med"]:
+                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[1])
+                elif var in ["B_max","B_avg","B_med"]:
+                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[2])
+                elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[4])
+                elif var == "pdyn_vmax":
+                    var_list[n].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                else:
+                    var_list[n].append(props.read_at_amax(var))
+
+    label_list = ["Duration [s]",
+    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
+    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
+    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
+    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
+    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
+    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
+    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
+    "Area [R$_{e}^{2}$]"]
+
+    xmax_list=[120,
+    3.5,3.5,7,
+    5,
+    10,10,10,10,
+    1.5,1.5,1.5,
+    8,8,8,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    5]
+
+    step_list = [5,
+    0.25,0.25,0.2,
+    0.2,
+    0.5,0.5,0.5,0.5,
+    0.1,0.1,0.1,
+    0.5,0.5,0.5,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.2]
+
+    plt.ioff()
+    #plt.ion()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
+    ax.set_ylabel("Fraction of jets",fontsize=20)
+    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_ylim(0,1)
+    weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(runids))]
+
+    if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+        bins = np.arange(0,3.25,0.25)
+        bins = 10**bins
+        plt.xscale("log")
+        ax.set_xlim(1,xmax_list[var_dict[var]])
+        for n in xrange(len(runids)):
+            hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+    else:
+        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        for n in xrange(len(runids)):
+            hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+
+    plt.title(",".join(runids),fontsize=20)
+    plt.legend()
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/paper/histograms/"+"_vs_".join(runids)+"/"):
+        try:
+            os.makedirs("Figures/paper/histograms/"+"_vs_".join(runids)+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/paper/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("Figures/paper/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+
+    plt.close(fig)
+
+    return None
 
 def jet_paper_all_hist(runids,var,time_thresh=10):
 
@@ -564,11 +693,11 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     "Area [R$_{e}^{2}$]"]
 
     xmax_list=[120,
-    4,3,8,
-    10,
-    15,15,15,15,
+    3.5,3.5,7,
+    5,
+    10,10,10,10,
     1.5,1.5,1.5,
-    10,10,10,
+    8,8,8,
     1000,1000,1000,1000,
     25,25,25,
     25,25,25,
@@ -576,8 +705,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     5]
 
     step_list = [5,
-    0.2,0.2,0.2,
-    0.5,
+    0.25,0.25,0.2,
+    0.2,
     0.5,0.5,0.5,0.5,
     0.1,0.1,0.1,
     0.5,0.5,0.5,
@@ -609,7 +738,6 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
         hist = ax.hist(var_list,bins=bins,weights=weights)
 
     plt.title(",".join(runids),fontsize=20)
-    #plt.title(",".join(runids)+"\nN = "+str(var_list.size),fontsize=20)
     plt.tight_layout()
 
     if not os.path.exists("Figures/paper/histograms/"+"_".join(runids)+"/"):
@@ -1518,5 +1646,24 @@ def jethist_paper_script():
 
     for var in var_list:
         jet_paper_all_hist(runids,var,time_thresh=10)
+
+    return None
+
+def jethist_paper_script_vs(runids):
+
+    var_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A"]
+
+    for var in var_list:
+        jet_paper_vs_hist(runids,var,time_thresh=10)
 
     return None
