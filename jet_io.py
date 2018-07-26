@@ -10,6 +10,7 @@ import jet_scripts as js
 import copy
 import matplotlib.pyplot as plt
 import plot_contours as pc
+import scipy.constants as sc
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -25,6 +26,14 @@ class PropReader:
         self.sw_pars = list(ja.sw_par_dict()[runid])
         self.sw_pars[0] /= 1.0e+6
         self.sw_pars[1] /= 1.0e+3
+        if runid in ["ABA","ABC"]:
+            self.sw_pars.append(5)
+        elif runid in ["AEA","AEC"]:
+            self.sw_pars.append(10)
+        else:
+            pass
+        self.sw_pars.append(m_p*self.sw_pars[0]*(self.sw_pars[1]**2))
+        self.sw_pars.append(2*sc.mu_0*self.sw_pars[0]*1.0e+6*sc.k*500e+3/((self.sw_pars[2]*1.0e-9)**2))
 
         if type(fname) is not str:
             self.fname = str(start)+"."+ID+".props"
