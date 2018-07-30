@@ -215,7 +215,7 @@ def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
             continue
 
         # number of times to search for more neighbors
-        it_range = xrange(100)
+        it_range = xrange(200)
 
         # initialise current event
         curr_event = np.array([cell])

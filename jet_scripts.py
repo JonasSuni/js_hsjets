@@ -20,6 +20,38 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def ext_mask(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    rho = extmaps[0]
+    CI = extmaps[2]
+
+    msk = np.loadtxt("Masks/BFD/611.mask").astype(int)
+
+    msk = np.in1d(CI,msk).astype(int)
+
+    msk = msk.reshape(rho.shape)
+
+    contour = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0, colors="black")
+
+    return None
+
+def ext_test(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    rho = extmaps[0]
+    v = extmaps[1]
+
+    pdynx = m_p*rho*(v[:,:,0]**2)
+    pdyn_sw = m_p*1.0e+6*((750e+3)**2)
+
+    jet = np.ma.masked_greater(pdynx,0.25*pdyn_sw)
+    jet.mask[rho < 3.5*1.0e+6] = False
+    jet.fill_value = 0
+    jet[jet.mask == False] = 1
+
+    contour = ax.contour(XmeshXY,YmeshXY,jet.filled(),[0.5],linewidths=1.0, colors="black")
+
+    return None
+
 def ext_bs(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     # extmaps is rho,v
 
