@@ -496,6 +496,131 @@ def jet_paper_pos():
 
     return None
 
+def jet_2d_hist(runids,var1,var2,time_thresh=10):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip(key_list,n_list))
+
+    inp_var_list = [var1,var2]
+    var_list = [[],[]]
+
+    for ind in xrange(len(inp_var_list)):
+        for n in xrange(len(runids)):
+            for fname in file_list_list[n]:
+                props = jio.PropReader("",runids[n],fname=fname)
+                if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                    if inp_var_list[ind] == "duration":
+                        var_list[ind].append(props.read("time")[-1]-props.read("time")[0])
+                    elif inp_var_list[ind] == "size_ratio":
+                        var_list[ind].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                    elif inp_var_list[ind] in ["n_max","n_avg","n_med","rho_vmax"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[0])
+                    elif inp_var_list[ind] in ["v_max","v_avg","v_med"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[1])
+                    elif inp_var_list[ind] in ["B_max","B_avg","B_med"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[2])
+                    elif inp_var_list[ind] in ["beta_max","beta_avg","beta_med","b_vmax"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[4])
+                    elif inp_var_list[ind] == "pdyn_vmax":
+                        var_list[ind].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    elif inp_var_list[ind] == "death_distance":
+                        var_list[ind].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    else:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind]))
+
+    label_list = ["Duration [s]",
+    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
+    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
+    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
+    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
+    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
+    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
+    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
+    "Area [R$_{e}^{2}$]",
+    "r$_{v,max}$ at time of death [R$_{e}$]"]
+
+    xmax_list=[120,
+    3.5,3.5,7,
+    5,
+    10,10,10,10,
+    1.5,1.5,1.5,
+    8,8,8,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    4,
+    18]
+
+    step_list = [5,
+    0.25,0.25,0.2,
+    0.2,
+    0.5,0.5,0.5,0.5,
+    0.1,0.1,0.1,
+    0.5,0.5,0.5,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.2,
+    0.5]
+
+    plt.ioff()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var1]],fontsize=20)
+    ax.set_ylabel(label_list[var_dict[var2]],fontsize=20)
+    #weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(var_list))]
+    weights = [1/float(len(var_list[0]))]*len(var_list[0])
+    bins = [np.linspace(0,xmax_list[var_dict[var]],21).tolist() for var in inp_var_list]
+
+    hist = ax.hist2d(var_list[0],var_list[1],bins=bins,weights=weights)
+
+    plt.title(",".join(runids),fontsize=20)
+    plt.colorbar(hist[3], ax=ax)
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/paper/histograms/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("Figures/paper/histograms/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/paper/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+    print("Figures/paper/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+
+    plt.close(fig)
+
+    return None
+
 def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     # Get all filenames in folder
