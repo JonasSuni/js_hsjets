@@ -529,6 +529,7 @@ def jet_paper_pos():
     return None
 
 def jet_2d_hist(runids,var1,var2,time_thresh=10):
+    # Create 2D histogram of var1 and var2
 
     # Get all filenames in folder
     filenames_list = []
@@ -540,8 +541,10 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Cutoff dictionary for eliminating false positives
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
 
+    # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
     "pdyn_vmax",
@@ -558,9 +561,11 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     n_list = list(xrange(len(key_list)))
     var_dict = dict(zip(key_list,n_list))
 
+    # Initialise input variable list and variable list
     inp_var_list = [var1,var2]
     var_list = [[],[]]
 
+    # Append variable values to var lists
     for ind in xrange(len(inp_var_list)):
         for n in xrange(len(runids)):
             for fname in file_list_list[n]:
@@ -585,6 +590,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
                     else:
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind]))
 
+    # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
     "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
@@ -598,6 +604,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     "Area [R$_{e}^{2}$]",
     "r$_{v,max}$ at time of death [R$_{e}$]"]
 
+    # X limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
     5,
@@ -624,6 +631,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     0.2,
     0.5]
 
+    # Create figure
     plt.ioff()
 
     fig = plt.figure()
@@ -631,7 +639,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     ax.set_xlabel(label_list[var_dict[var1]],fontsize=20)
     ax.set_ylabel(label_list[var_dict[var2]],fontsize=20)
     #weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(var_list))]
-    weights = [1/float(len(var_list[0]))]*len(var_list[0])
+    weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
     bins = [np.linspace(0,xmax_list[var_dict[var]],21).tolist() for var in inp_var_list]
 
     hist = ax.hist2d(var_list[0],var_list[1],bins=bins,weights=weights)
@@ -640,12 +648,14 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
 
+    # Create output directory
     if not os.path.exists("Figures/paper/histograms/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
+    # Save figure
     fig.savefig("Figures/paper/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
     print("Figures/paper/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
 
@@ -665,9 +675,13 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Cutoff dictionary for eliminating false positives
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+
+    # Different colors for different runs
     run_colors_dict = dict(zip([runids[0],runids[1]],["red","green"]))
 
+    # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
     "pdyn_vmax",
@@ -687,6 +701,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Initialise var list
     var_list = [[],[]]
 
+    # Append variable values to var lists
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
@@ -710,6 +725,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                 else:
                     var_list[n].append(props.read_at_amax(var))
 
+    # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
     "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
@@ -723,6 +739,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     "Area [R$_{e}^{2}$]",
     "r$_{v,max}$ at time of death [R$_{e}$]"]
 
+    # X limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
     5,
@@ -749,6 +766,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     0.2,
     0.5]
 
+    # Create figure
     plt.ioff()
     #plt.ion()
 
@@ -758,8 +776,9 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     ax.set_ylabel("Fraction of jets",fontsize=20)
     ax.set_xlim(0,xmax_list[var_dict[var]])
     ax.set_ylim(0,1)
-    weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(runids))]
+    weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(runids))] # Normalise by total number of jets
 
+    # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
@@ -779,12 +798,14 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     plt.legend()
     plt.tight_layout()
 
+    # Create output directory
     if not os.path.exists("Figures/paper/histograms/"+"_vs_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/histograms/"+"_vs_".join(runids)+"/")
         except OSError:
             pass
 
+    # Save figure
     fig.savefig("Figures/paper/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
     print("Figures/paper/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
 
@@ -793,6 +814,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     return None
 
 def jet_paper_all_hist(runids,var,time_thresh=10):
+    # Creates histogram specified var
 
     # Get all filenames in folder
     filenames_list = []
@@ -804,8 +826,10 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Cutoff values for elimination of false positives
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
 
+    # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
     "pdyn_vmax",
@@ -824,6 +848,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     # Initialise var list
     var_list = []
+
+    # Append variable values to var list
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
@@ -849,6 +875,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     var_list = np.asarray(var_list)
 
+    # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
     "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
@@ -862,6 +889,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     "Area [R$_{e}^{2}$]",
     "r$_{v,max}$ at time of death [R$_{e}$]"]
 
+    # X-limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
     5,
@@ -888,6 +916,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     0.2,
     0.5]
 
+    # Create figure
     plt.ioff()
     #plt.ion()
 
@@ -897,8 +926,9 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     ax.set_ylabel("Fraction of jets",fontsize=20)
     ax.set_xlim(0,xmax_list[var_dict[var]])
     ax.set_ylim(0,1)
-    weights = np.ones(var_list.shape)/float(var_list.size)
+    weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
 
+    # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
@@ -915,12 +945,14 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
+    # Create output directory
     if not os.path.exists("Figures/paper/histograms/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
+    # Save figure
     fig.savefig("Figures/paper/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
     print("Figures/paper/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
 
@@ -928,10 +960,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     return None
 
-
-
-
 def jet_cust_hist(runids,var,time_thresh=10):
+    # Creates histogram for specified var
 
     # Get all filenames in folder
     filenames_list = []
@@ -943,6 +973,7 @@ def jet_cust_hist(runids,var,time_thresh=10):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Dictionary for mapping input variables to parameters
     key_list = ["duration","size_ratio"]
 
     n_list = list(xrange(len(key_list)))
@@ -950,6 +981,8 @@ def jet_cust_hist(runids,var,time_thresh=10):
 
     # Initialise var list
     var_list = []
+
+    # Append variable values to var list
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
@@ -963,9 +996,13 @@ def jet_cust_hist(runids,var,time_thresh=10):
 
     var_list = np.asarray(var_list)
 
+    # Labels for figure
     label_list = ["Duration [s]","Radial size/Tangential size"]
+
+    # X limits for figure
     xlim_max_list = [100,10]
 
+    # Create figure
     plt.ioff()
 
     fig = plt.figure()
@@ -979,12 +1016,14 @@ def jet_cust_hist(runids,var,time_thresh=10):
     plt.title(",".join(runids)+"\nN = "+str(var_list.size),fontsize=20)
     plt.tight_layout()
 
+    # Create output directory
     if not os.path.exists("Figures/jets/histograms/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/jets/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
+    # Save figure
     fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
     print("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
 
@@ -993,6 +1032,7 @@ def jet_cust_hist(runids,var,time_thresh=10):
     return None
 
 def jet_var_hist(runids,var,time_thresh=10):
+    # Creates histogram for specified var
 
     # Get all filenames in folder
     filenames_list = []
@@ -1004,6 +1044,7 @@ def jet_var_hist(runids,var,time_thresh=10):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Dictionary for mapping input variables to parameters
     key_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
     n_list = list(xrange(38))
     var_dict = dict(zip(key_list,n_list))
@@ -1011,6 +1052,7 @@ def jet_var_hist(runids,var,time_thresh=10):
     # Initialise var list
     var_list = []
 
+    # Append variable values to var list
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
@@ -1024,10 +1066,13 @@ def jet_var_hist(runids,var,time_thresh=10):
 
     var_list = np.asarray(var_list)
 
+    # Labels for figure
     label_list = ["Time [s]","x$_{mean}$ [R$_{e}$]","y$_{mean}$ [R$_{e}$]","z$_{mean}$ [R$_{e}$]","Area [R$_{e}^{2}$]","Number of cells","r$_{mean}$ [R$_{e}$]","$\\theta _{mean}$ [deg]","$\\phi _{mean}$ [deg]","Radial size [R$_{e}$]","Tangential size [R$_{e}$]","x$_{v,max}$ [R$_{e}$]","y$_{v,max}$ [R$_{e}$]","z$_{v,max}$ [R$_{e}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{max}$ [n$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]","v$_{max}$ [v$_{sw}$]","B$_{avg}$ [nT]","B$_{med}$ [nT]","B$_{max}$ [nT]","T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]","T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]","T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]","$\\beta _{avg}$","$\\beta _{med}$","$\\beta _{max}$","x$_{min}$ [R$_{e}$]","n$_{v,max}$ [n$_{sw}$]","$\\beta _{v,max}$"]
 
+    # X limits for figure
     xlim_max_list = [1000,20,10,10,4,2500,20,90,90,4,4,20,10,10,10,10,10,2,2,2,50,50,50,25,25,25,25,25,25,25,25,25,50,50,50,20,10,50]
 
+    # Create figure
     plt.ioff()
 
     fig = plt.figure()
@@ -1043,452 +1088,16 @@ def jet_var_hist(runids,var,time_thresh=10):
     plt.title(",".join(runids)+"\nN = "+str(var_list.size),fontsize=20)
     plt.tight_layout()
 
+    # Create output directory
     if not os.path.exists("Figures/jets/histograms/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/jets/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
+    # Save figure
     fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
     print("Figures/jets/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
-
-    plt.close(fig)
-
-    return None
-
-def jet_all_hist(runids,time_thresh=30):
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise var lists
-    A = []
-    vmax = []
-    rhomax = []
-    Bmax = []
-
-    Tmax = []
-    TPar_max = []
-    TPerp_max = []
-    beta_max = []
-
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = jio.PropReader("",runids[n],fname=fname)
-            if props.read("A").size > time_thresh:
-                A.append(props.read_at_amax("A"))
-                vmax.append(props.read_at_amax("v_max")/props.sw_pars[1])
-                rhomax.append(props.read_at_amax("n_max")/props.sw_pars[0])
-                Bmax.append(props.read_at_amax("B_max"))
-                Tmax.append(props.read_at_amax("T_max"))
-                TPar_max.append(props.read_at_amax("TPar_max"))
-                TPerp_max.append(props.read_at_amax("TPerp_max"))
-                beta_max.append(props.read_at_amax("beta_max"))
-
-    variables = [A,vmax,rhomax,Bmax,Tmax,TPar_max,TPerp_max,beta_max]
-    A,vmax,rhomax,Bmax,Tmax,TPar_max,TPerp_max,beta_max = [np.asarray(l) for l in variables]
-
-    plt.ioff()
-
-    vrs = variables[0:4]
-
-    fig = plt.figure(figsize=(15,15))
-    ax = []
-    for n in xrange(len(vrs)):
-        ax.append(fig.add_subplot(2,2,n+1))
-
-    labels = ["Area [R$_{e}^{2}$]","v$_{max}$ [v$_{sw]$]","$\\rho _{max}$ [$\\rho _{sw}$]","B$_{max}$ [nT]"]
-    xlim_max = [4,1,10,50]
-    bins = [19,19,19,19]
-    for n in xrange(len(vrs)):
-        ax[n].set_xlabel(labels[n],fontsize=20)
-        #ax[n].set_ylabel("Number of jets",fontsize=20)
-        ax[n].set_xlim(0,xlim_max[n])
-
-        ax[n].hist(vrs[n],np.linspace(0,xlim_max[n],bins[n]).tolist())
-
-    plt.tight_layout()
-    fig.suptitle(",".join(runids),fontsize=20)
-    fig.subplots_adjust(top=0.95)
-
-    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"_AvnB.png")
-    print("Saved figure to "+"Figures/jets/histograms/"+"_".join(runids)+"_AvnB.png")
-
-    plt.close(fig)
-
-    vrs = variables[4:8]
-
-    fig = plt.figure(figsize=(15,15))
-    ax = []
-    for n in xrange(len(vrs)):
-        ax.append(fig.add_subplot(2,2,n+1))
-
-    labels = ["T$_{max}$ [MK]","T$_{par,max}$ [MK]","T$_{perp,max}$ [MK]","$\\beta _{max}$"]
-    xlim_max = [25,25,25,40]
-    bins = [19,19,19,19]
-    for n in xrange(len(vrs)):
-        ax[n].set_xlabel(labels[n],fontsize=20)
-        #ax[n].set_ylabel("Number of jets",fontsize=20)
-        ax[n].set_xlim(0,xlim_max[n])
-
-        ax[n].hist(vrs[n],np.linspace(0,xlim_max[n],bins[n]).tolist())
-
-    plt.tight_layout()
-    fig.suptitle(",".join(runids),fontsize=20)
-    fig.subplots_adjust(top=0.95)
-
-    fig.savefig("Figures/jets/histograms/"+"_".join(runids)+"_Tbeta.png")
-    print("Saved figure to "+"Figures/jets/histograms/"+"_".join(runids)+"_Tbeta.png")
-
-    plt.close(fig)
-
-    return None
-
-def jet_mult_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
-
-    sw_pars = ja.sw_par_dict()
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise area list
-    TPar_max_list = []
-    TPerp_max_list = []
-    rho_vmax_list = []
-    b_vmax_list = []
-    size_list = []
-
-    # Append max area of every jet to area list
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
-            area = props[:,4]
-            Tpar_max = props[area==max(area)][0][28]
-            TPerp_max = props[area==max(area)][0][31]
-            rho_vmax = props[area==max(area)][0][36]
-            b_vmax = props[area==max(area)][0][37]
-            TPar_max_list.append(Tpar_max)
-            TPerp_max_list.append(TPerp_max)
-            rho_vmax_list.append(rho_vmax)
-            b_vmax_list.append(b_vmax)
-            size_list.append(area.size)
-
-    TPar = np.asarray(TPar_max_list)
-    TPerp = np.asarray(TPerp_max_list)
-    rho = np.asarray(rho_vmax_list)
-    b = np.asarray(b_vmax_list)
-    size_list = np.asarray(size_list)
-
-    TPar = TPar[size_list > time_thresh]
-    TPerp = TPerp[size_list > time_thresh]
-    rho = rho[size_list > time_thresh]
-    b = b[size_list > time_thresh]
-
-    # Create figures
-    plt.ioff()
-
-    # FIG 1
-    fig = plt.figure()
-    ax_TPar = fig.add_subplot(111)
-    ax_TPar.set_xlabel("T$_{par,max}$ [MK]",fontsize=20)
-    ax_TPar.set_ylabel("Number of jets",fontsize=20)
-    ax_TPar.set_xlim(0,25)
-
-
-    TPar_hist = ax_TPar.hist(TPar,bins=np.linspace(0,25,24).tolist())
-
-    plt.title(",".join(runids),fontsize=20)
-    plt.tight_layout()
-
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_TPar_max_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_TPar_max_hist.png")
-
-    plt.close(fig)
-
-    # FIG 2
-    fig = plt.figure()
-    ax_TPerp = fig.add_subplot(111)
-    ax_TPerp.set_xlabel("T$_{perp,max}$ [MK]",fontsize=20)
-    ax_TPerp.set_ylabel("Number of jets",fontsize=20)
-    ax_TPerp.set_xlim(0,25)
-
-    TPerp_hist = ax_TPerp.hist(TPerp,bins=np.linspace(0,25,24).tolist())
-
-    plt.title(",".join(runids),fontsize=20)
-    plt.tight_layout()
-
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_TPerp_max_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_TPerp_max_hist.png")
-
-    plt.close(fig)
-
-    # FIG 3
-    fig = plt.figure()
-    ax_rho = fig.add_subplot(111)
-    ax_rho.set_xlabel("$\\rho _{vmax}$ [cm$^{-3}$]",fontsize=20)
-    ax_rho.set_ylabel("Number of jets",fontsize=20)
-    ax_rho.set_xlim(0,20)
-
-    rho_hist = ax_rho.hist(rho,bins=np.linspace(0,20,19).tolist())
-
-    plt.title(",".join(runids),fontsize=20)
-    plt.tight_layout()
-
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_rho_vmax_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_rho_vmax_hist.png")
-
-    plt.close(fig)
-
-    # FIG 4
-    fig = plt.figure()
-    ax_b = fig.add_subplot(111)
-    ax_b.set_xlabel("$\\beta _{vmax}$",fontsize=20)
-    ax_b.set_ylabel("Number of jets",fontsize=20)
-    ax_b.set_xlim(0,40)
-
-    b_hist = ax_b.hist(b,bins=np.linspace(0,40,19).tolist())
-
-    plt.title(",".join(runids),fontsize=20)
-    plt.tight_layout()
-
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_b_vmax_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_b_vmax_hist.png")
-
-    plt.close(fig)
-
-    plt.close("all")
-
-    return None
-
-def jet_area_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise area list
-    area_list = []
-    size_list = []
-
-    # Append max area of every jet to area list
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
-            area = props[:,4]
-            area_list.append(max(area))
-            size_list.append(area.size)
-
-    area_list = np.asarray(area_list)
-    size_list = np.asarray(size_list)
-
-    area_list = area_list[size_list > time_thresh]
-    area_list = area_list[area_list > size_thresh]
-
-    # Create figure
-    plt.ioff()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("Area [R$_{e}^{2}$]",fontsize=20)
-    ax.set_ylabel("Number of jets",fontsize=20)
-    plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,4)
-
-    # draw histogram
-    area_hist = ax.hist(area_list,bins=bins)
-
-    plt.tight_layout()
-
-    # save figure
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_area_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_area_hist.png")
-
-    plt.close(fig)
-
-    return None
-
-def jet_vmax_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
-
-    sw_pars = ja.sw_par_dict()
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise area list
-    var_list = []
-    size_list = []
-
-    # Append max area of every jet to area list
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
-            area = props[:,4]
-            v_sw = sw_pars[runids[n]][1]/1.0e+3
-            var = props[area==max(area)][0][19]/v_sw #vmax
-            var_list.append(var)
-            size_list.append(area.size)
-
-    var_list = np.asarray(var_list)
-    size_list = np.asarray(size_list)
-
-    var_list = var_list[size_list > time_thresh]
-    var_list = var_list[var_list > size_thresh]
-
-    # Create figure
-    plt.ioff()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{max}$ [v$_{sw}$]",fontsize=20)
-    ax.set_ylabel("Number of jets",fontsize=20)
-    plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,1)
-
-    # draw histogram
-    area_hist = ax.hist(var_list,bins=bins)
-
-    plt.tight_layout()
-
-    # save figure
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_vmax_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_vmax_hist.png")
-
-    plt.close(fig)
-
-    return None
-
-def jet_vavg_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
-
-    sw_pars = ja.sw_par_dict()
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise area list
-    var_list = []
-    size_list = []
-
-    # Append max area of every jet to area list
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
-            area = props[:,4]
-            v_sw = sw_pars[runids[n]][1]/1.0e+3
-            var = props[area==max(area)][0][17]/v_sw #vavg
-            var_list.append(var)
-            size_list.append(area.size)
-
-    var_list = np.asarray(var_list)
-    size_list = np.asarray(size_list)
-
-    var_list = var_list[size_list > time_thresh]
-    var_list = var_list[var_list > size_thresh]
-
-    # Create figure
-    plt.ioff()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{avg}$ [v$_{sw}$]",fontsize=20)
-    ax.set_ylabel("Number of jets",fontsize=20)
-    plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,1)
-
-    # draw histogram
-    area_hist = ax.hist(var_list,bins=bins)
-
-    plt.tight_layout()
-
-    # save figure
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_vavg_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_vavg_hist.png")
-
-    plt.close(fig)
-
-    return None
-
-def jet_vmed_hist(runids,size_thresh=0.0,time_thresh=30,bins=10):
-
-    sw_pars = ja.sw_par_dict()
-
-    # Get all filenames in folder
-    filenames_list = []
-    for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
-
-    # Filter for property files
-    file_list_list = []
-    for filenames in filenames_list:
-        file_list_list.append([filename for filename in filenames if ".props" in filename])
-
-    # Initialise area list
-    var_list = []
-    size_list = []
-
-    # Append max area of every jet to area list
-    for n in xrange(len(runids)):
-        for fname in file_list_list[n]:
-            props = pd.read_csv("jets/"+runids[n]+"/"+fname).as_matrix()
-            area = props[:,4]
-            v_sw = sw_pars[runids[n]][1]/1.0e+3
-            var = props[area==max(area)][0][18]/v_sw #vmed
-            var_list.append(var)
-            size_list.append(area.size)
-
-    var_list = np.asarray(var_list)
-    size_list = np.asarray(size_list)
-
-    var_list = var_list[size_list > time_thresh]
-    var_list = var_list[var_list > size_thresh]
-
-    # Create figure
-    plt.ioff()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_xlabel("V$_{med}$ [v$_{sw}$]",fontsize=20)
-    ax.set_ylabel("Number of jets",fontsize=20)
-    plt.title(",".join(runids),fontsize=20)
-    ax.set_xlim(0,1)
-
-    # draw histogram
-    area_hist = ax.hist(var_list,bins=bins)
-
-    plt.tight_layout()
-
-    # save figure
-    plt.savefig("Figures/jets/"+"_".join(runids)+"_vmed_hist.png")
-    print("Saved figure to "+"Figures/jets/"+"_".join(runids)+"_vmed_hist.png")
 
     plt.close(fig)
 
