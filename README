@@ -18,15 +18,6 @@ extresult=external(ax1, XmeshXY,YmeshXY, pass_maps)
 # To
 extresult=external(ax1, XmeshXY,YmeshXY, pass_maps, ext_pars)
 
-# change
-cb.ax.tick_params(labelsize=fontsize3)
-# to
-cb.ax.tick_params(labelsize=16)
-
-### Modify pytools.py
-
-# comment out the "else" statement leading to "import grid"
-
 ### Modify pyVlsv/reduction.py
 
 # add the following to the end of the file
@@ -36,6 +27,7 @@ datareducers["proton/vms"] =                    DataReducerVariable(["proton/Pre
 datareducers["proton/va"] =                     DataReducerVariable(["proton/rho", "B"], va, "m/s")
 datareducers["proton/PTensor"] =                DataReducerVariable(["proton/PTensorDiagonal", "proton/PTensorOffDiagonal"], PTensor, "Pa")
 datareducers["proton/Pressure"] =               DataReducerVariable(["proton/PTensorDiagonal"], Pressure, "Pa")
+datareducers["proton/beta"] =                   DataReducerVariable(["proton/Pressure", "B"], beta ,"")
 
 datareducers["proton/TTensor"] =                DataReducerVariable(["proton/PTensor", "proton/rho"], TTensor, "K")
 datareducers["proton/TTensorRotated"] =         DataReducerVariable(["proton/TTensor", "B"], TTensorRotated, "K")
