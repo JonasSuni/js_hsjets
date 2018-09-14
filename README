@@ -20,17 +20,9 @@ extresult=external(ax1, XmeshXY,YmeshXY, pass_maps, ext_pars)
 
 ### Modify pyVlsv/reduction.py
 
-# add the following to the end of the file
 
-#reducers for proton population
-datareducers["proton/vms"] =                    DataReducerVariable(["proton/Pressure", "proton/rho", "B"], vms, "m/s")
-datareducers["proton/va"] =                     DataReducerVariable(["proton/rho", "B"], va, "m/s")
-datareducers["proton/PTensor"] =                DataReducerVariable(["proton/PTensorDiagonal", "proton/PTensorOffDiagonal"], PTensor, "Pa")
-datareducers["proton/Pressure"] =               DataReducerVariable(["proton/PTensorDiagonal"], Pressure, "Pa")
-datareducers["proton/beta"] =                   DataReducerVariable(["proton/Pressure", "B"], beta ,"")
+#Uncomment the following lines:
 
-datareducers["proton/TTensor"] =                DataReducerVariable(["proton/PTensor", "proton/rho"], TTensor, "K")
-datareducers["proton/TTensorRotated"] =         DataReducerVariable(["proton/TTensor", "B"], TTensorRotated, "K")
-datareducers["proton/Temperature"] =            DataReducerVariable(["proton/Pressure", "proton/rho"], Temperature, "K")
-datareducers["proton/TParallel"] =              DataReducerVariable(["proton/TTensorRotated"], TParallel, "K")
-datareducers["proton/TPerpendicular"] =         DataReducerVariable(["proton/TTensorRotated"], TPerpendicular, "K")
+#multipopdatareducers["pop/vms"] =                    DataReducerVariable(["pop/Pressure", "pop/rho", "B"], vms, "m/s")
+#multipopdatareducers["pop/vs"] =                     DataReducerVariable(["pop/Pressure", "pop/rho"], vs, "m/s")
+#multipopdatareducers["pop/va"] =                     DataReducerVariable(["pop/rho", "B"], va, "m/s")
