@@ -679,7 +679,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
 
     # Different colors for different runs
-    run_colors_dict = dict(zip([runids[0],runids[1]],["red","green"]))
+    run_colors_dict = dict(zip([runids[0],runids[1]],["red","blue"]))
 
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
@@ -701,29 +701,31 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Initialise var list
     var_list = [[],[]]
 
+    val_dict = dict(zip(runids,var_list))
+
     # Append variable values to var lists
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
-                    var_list[n].append(props.read("time")[-1]-props.read("time")[0])
+                    val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
                 elif var == "size_ratio":
-                    var_list[n].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                    val_dict[runids[n]].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
                 elif var in ["n_max","n_avg","n_med","rho_vmax"]:
-                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[0])
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[0])
                 elif var in ["v_max","v_avg","v_med"]:
-                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[1])
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[1])
                 elif var in ["B_max","B_avg","B_med"]:
-                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[2])
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[2])
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
-                    var_list[n].append(props.read_at_amax(var)/props.sw_pars[4])
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var == "pdyn_vmax":
-                    var_list[n].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
                 elif var == "death_distance":
-                    var_list[n].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                 else:
-                    var_list[n].append(props.read_at_amax(var))
+                    val_dict[runids[n]].append(props.read_at_amax(var))
 
     # Labels for figure
     label_list = ["Duration [s]",
@@ -776,7 +778,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     ax.set_ylabel("Fraction of jets",fontsize=20)
     ax.set_xlim(0,xmax_list[var_dict[var]])
     ax.set_ylim(0,1)
-    weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(runids))] # Normalise by total number of jets
+    weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
@@ -784,15 +786,25 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         bins = 10**bins
         plt.xscale("log")
         ax.set_xlim(1,xmax_list[var_dict[var]])
-        for n in xrange(len(runids)):
-            hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        
+        #for n in xrange(len(runids)):
+        #    hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         if var == "death_distance":
             ax.set_xlim(8,xmax_list[var_dict[var]])
+        
             bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        for n in xrange(len(runids)):
-            hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        #for n in xrange(len(runids)):
+        #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+
+    for n in xrange(len(runids)):
+        ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
 
     plt.title(",".join(runids),fontsize=20)
     plt.legend()
@@ -941,6 +953,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
             ax.set_xlim(8,xmax_list[var_dict[var]])
             bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         hist = ax.hist(var_list,bins=bins,weights=weights)
+
+    ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
 
     plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
