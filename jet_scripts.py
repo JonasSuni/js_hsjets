@@ -20,18 +20,28 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def BFD_comp():
+
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/BFD/bulk/bulk.0000611.vlsv",draw=1,usesci=0,lin=1,cbtitle="",var="rho",boxre=[4,20,-10,4],colormap="parula",external=ext_mask,pass_vars=["rho","CellID"])
+
 def ext_mask(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
     rho = extmaps[0]
-    CI = extmaps[2]
+    CI = extmaps[1]
 
     msk = np.loadtxt("Masks/BFD/611.mask").astype(int)
-
     msk = np.in1d(CI,msk).astype(int)
-
     msk = msk.reshape(rho.shape)
 
+    f = open("events/BFD/611.events")
+    msk2 = f.read()
+    f.close()
+    msk2 = map(int,msk2.replace("\n",",").split(",")[:-1])
+    msk2 = np.in1d(CI,msk2).astype(int)
+    msk2 = msk2.reshape(rho.shape)
+
     contour = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0, colors="black")
+    contour2 = ax.contour(XmeshXY,YmeshXY,msk2,[0.5],linewidths=1.0, colors="magenta")
 
     return None
 
