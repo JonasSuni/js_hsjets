@@ -14,9 +14,9 @@ echo "export PYTHONPATH=$PYTHONPATH:/homeappl/home/<username>/js_hsjets" >> $HOM
 # Add to the input vars of plot_colormap the new var
 ext_pars = []
 # Change
-extresult=external(ax1, XmeshXY,YmeshXY, pass_maps)
+extresult=external(ax1, XmeshPass,YmeshPass, pass_maps)
 # To
-extresult=external(ax1, XmeshXY,YmeshXY, pass_maps, ext_pars)
+extresult=external(ax1, XmeshPass,YmeshPass, pass_maps, ext_pars)
 
 ### Modify pyVlsv/reduction.py
 
