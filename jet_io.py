@@ -390,6 +390,9 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
     y_ax.set_ylabel("Y [R$_{e}$]",fontsize=20)
     y_ax.set_xlabel("Time [s]",fontsize=20)
 
+    if runid == "BFD":
+        y_ax.set_ylabel("Z [R$_{e}$]",fontsize=20)
+
     # Set tick label sizes
     area_ax.tick_params(labelsize=16)
     rad_size_ax.tick_params(labelsize=16)
