@@ -275,6 +275,8 @@ def give_file():
 def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
     # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
 
+    simsize = vlsvobj.get_spatial_mesh_size()
+
     # initialise array of neighbors
     neighbors = np.array([],dtype=int)
 
@@ -287,7 +289,10 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
         # append cellids of neighbors, cast as int, to array of neighbors
         for a in x_r:
             for b in y_r:
-                neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,0],periodic=[0,0,0])))
+                if simsize[1] == 1:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,0,b],periodic=[0,0,0])))
+                else:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,0],periodic=[0,0,0])))
 
     # discard invalid cellids
     neighbors = neighbors[neighbors != 0]

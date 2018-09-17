@@ -552,7 +552,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff dictionary for eliminating false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
 
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
@@ -686,7 +686,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff dictionary for eliminating false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
 
     # Different colors for different runs
     run_colors_dict = dict(zip([runids[0],runids[1]],["red","blue"]))
@@ -849,7 +849,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff values for elimination of false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
 
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
