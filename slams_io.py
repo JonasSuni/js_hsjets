@@ -44,7 +44,7 @@ def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0
     else:
         pass_vars=["rho","v","CellID","B"]
 
-    pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,usesci=0,lin=1,cbtitle="",boxre=boxre,colormap="parula",vmin=0,vmax=vmax,expression=pc.expr_pdyn,external=ext_slams,pass_vars=["rho","v","CellID","B"],ext_pars=[runid,filenumber,plaschke,sw,B_sw])
+    pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,usesci=0,lin=1,cbtitle="",boxre=boxre,colormap="parula",vmin=0,vmax=vmax,expression=pc.expr_pdyn,external=ext_slams,pass_vars=pass_vars,ext_pars=[runid,filenumber,plaschke,sw,B_sw])
 
 def ext_slams(ax,XmeshPass,YmeshPass,extmaps,ext_pars):
 
