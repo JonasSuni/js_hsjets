@@ -1438,7 +1438,8 @@ def jethist_script2(time_thresh=10):
 
 def jethist_paper_script():
 
-    runids = ["ABA","ABC","AEA","AEC"]
+    #runids = ["ABA","ABC","AEA","AEC"]
+    runids = ["BFD"]
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
