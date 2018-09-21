@@ -510,8 +510,8 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
             dA = ja.get_cell_area(vlsvobj)
 
         # If file has more than one population, choose proton population
-        var_list = ["rho","v","B","Temperature","va","vms","CellID","beta","TParallel","TPerpendicular"]
-        var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/va","proton/vms","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
+        var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
+        var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
         if not vlsvobj.check_variable("rho"):
             var_list = var_list_alt
 
@@ -520,7 +520,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
 
             var_list = var_list[:-2]
 
-            rho,v,B,T,va,vms,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
+            rho,v,B,T,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
             cellids = cellids[cellids.argsort()]
             TParallel = tpar_reader(runid,nr_list[n],cellids,curr_list)
             TPerpendicular = tperp_reader(runid,nr_list[n],cellids,curr_list)
@@ -529,26 +529,22 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
             v = v[origid.argsort()]
             B = B[origid.argsort()]
             T = T[origid.argsort()]
-            va = va[origid.argsort()]
-            vms = vms[origid.argsort()]
             beta = beta[origid.argsort()]
 
-            rho,v,B,T,va,vms,beta = ja.ci2vars_nofile([rho,v,B,T,va,vms,beta],sorigid,curr_list)
+            rho,v,B,T,beta = ja.ci2vars_nofile([rho,v,B,T,beta],sorigid,curr_list)
 
         else:
 
-            rho,v,B,T,va,vms,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
+            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
             rho = rho[origid.argsort()]
             v = v[origid.argsort()]
             B = B[origid.argsort()]
             T = T[origid.argsort()]
-            va = va[origid.argsort()]
-            vms = vms[origid.argsort()]
             beta = beta[origid.argsort()]
             TParallel = TParallel[origid.argsort()]
             TPerpendicular = TPerpendicular[origid.argsort()]
 
-            rho,v,B,T,va,vms,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,va,vms,beta,TParallel,TPerpendicular],sorigid,curr_list)
+            rho,v,B,T,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,beta,TParallel,TPerpendicular],sorigid,curr_list)
 
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
@@ -558,8 +554,6 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         v /= 1.0e+3
         B /= 1.0e-9
         T /= 1.0e+6
-        va /= 1.0e+3
-        vms /= 1.0e+3
         TParallel /= 1.0e+6
         TPerpendicular /= 1.0e+6
 
