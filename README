@@ -17,12 +17,3 @@ ext_pars = []
 extresult=external(ax1, XmeshPass,YmeshPass, pass_maps)
 # To
 extresult=external(ax1, XmeshPass,YmeshPass, pass_maps, ext_pars)
-
-### Modify pyVlsv/reduction.py
-
-
-#Uncomment the following lines:
-
-#multipopdatareducers["pop/vms"] =                    DataReducerVariable(["pop/Pressure", "pop/rho", "B"], vms, "m/s")
-#multipopdatareducers["pop/vs"] =                     DataReducerVariable(["pop/Pressure", "pop/rho"], vs, "m/s")
-#multipopdatareducers["pop/va"] =                     DataReducerVariable(["pop/rho", "B"], va, "m/s")
