@@ -11,6 +11,7 @@ import copy
 import matplotlib.pyplot as plt
 import plot_contours as pc
 import scipy.constants as sc
+import jet_io as jio
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -93,7 +94,7 @@ def ext_slams(ax,XmeshPass,YmeshPass,extmaps,ext_pars):
 
     return None
 
-def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6],avgfile=False):
+def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits
 
@@ -128,8 +129,8 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6],avgfile=False):
         rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("v")[np.argsort(origid)]
 
-    # x-directional dynamic pressure
-    spdynx = m_p*rho*(v[:,0]**2)
+    B = vlsvreader.read_variable("B")[np.argsort(origid)]
+    Bmag = np.linalg.norm(B,axis=-1)
 
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
@@ -138,79 +139,18 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6],avgfile=False):
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
     pdyn_sw = m_p*rho_sw*(v_sw**2)
-
-    npdynx = spdynx/pdyn_sw
-    nrho = rho/rho_sw
-
-    # initialise time average of dynamic pressure
-    tpdynavg = np.zeros(pdyn.shape)
-
-    # range of timesteps to calculate average of
-    timerange = xrange(filenumber-180,filenumber+180+1)
-
-    missing_file_counter = 0
-
-    for n_t in timerange:
-
-        if avgfile:
-            continue
-
-        # exclude the main timestep
-        if n_t == filenumber:
-            continue
-
-        # find correct file path for current time step
-        if runid == "AED":
-            tfile_name = "bulk.old."+str(n_t).zfill(7)+".vlsv"
-        else:
-            tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
-
-        if tfile_name not in os.listdir(bulkpath):
-            missing_file_counter += 1
-            print("Bulk file "+str(n_t)+" not found, continuing")
-            continue
-
-        # open file for current time step
-        f = pt.vlsvfile.VlsvReader(bulkpath+tfile_name)
-        
-        # if file has separate populations, read proton population
-        if type(f.read_variable("rho")) is not np.ndarray:
-            trho = f.read_variable("proton/rho")
-            tv = f.read_variable("proton/V")
-        else:
-            trho = f.read_variable("rho")
-            tv = f.read_variable("v")
-
-        # read cellids for current time step
-        cellids = f.read_variable("CellID")
-        
-        # dynamic pressure for current time step
-        tpdyn = m_p*trho*(np.linalg.norm(tv,axis=-1)**2)
-
-        # sort dynamic pressures
-        otpdyn = tpdyn[cellids.argsort()]
-        
-        tpdynavg = np.add(tpdynavg,otpdyn)
-
-    # calculate time average of dynamic pressure
-    tpdynavg /= len(timerange)-1-missing_file_counter
-
-    # prevent divide by zero errors
-    tpdynavg[tpdynavg == 0.0] = 1.0e-27
-
-    if avgfile:
-        tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
-
-    # ratio of dynamic pressure to its time average
-    tapdyn = pdyn/tpdynavg
+    if runid in ["AEA","AEC"]:
+        B_sw = 10.0e-9
+    else:
+        B_sw = 5.0e-9
 
     # make custom SLAMS mask
-    jet = np.ma.masked_greater(npdynx,0.25)
-    jet.mask[nrho < 3.5] = False
-    jet.mask[tapdyn > 2] = True
+    slams = np.ma.masked_greater(Bmag,1.25*B_sw)
+    slams.mask[pdyn < 1.25*pdyn_sw] = False
+    slams.mask[rho > 3*rho_sw] = False
 
     # discard unmasked cellids
-    masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
+    masked_ci = np.ma.array(sorigid,mask=~slams.mask).compressed()
 
     if not os.path.exists("SLAMS/masks/"+runid+"/"):
         try:
@@ -226,3 +166,317 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6],avgfile=False):
     else:
         np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
+
+def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
+    # sort masked cells into events based on proximity in X,Y-space
+
+    # initialise list of events and current event
+    events = []
+    curr_event = np.array([],dtype=int)
+
+    for cell in cells:
+
+        # check if cell already in list of events
+        bl_a = False
+        for event in events:
+            if cell in event:
+                bl_a = True
+        if bl_a:
+            continue
+
+        # number of times to search for more neighbors
+        it_range = xrange(200)
+
+        # initialise current event
+        curr_event = np.array([cell])
+
+        for n in it_range:
+
+            curr_event_size = curr_event.size
+
+            # find neighbors within the confines of the mask
+            curr_event = np.unique(np.append(curr_event,np.intersect1d(cells,ja.get_neighbors(vlsvobj,curr_event,neighborhood_reach))))
+
+            # exit loop if all valid neighbors found
+            if curr_event_size == curr_event.size:
+                break
+
+        # cast cellids of current event to int and append to list of events
+        curr_event = curr_event.astype(int)
+        events.append(curr_event)
+
+    # remove events smaller than the minimum size and larger than maximum size
+    events_culled = [slams for slams in events if slams.size >= min_size and slams.size <= max_size]
+
+    return events_culled
+
+def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
+
+    outputdir = "/homeappl/home/sunijona/SLAMS/events/"+runid+"/"
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    for file_nr in xrange(start,stop+1):
+
+        # find correct file based on file number and run id
+        if runid in ["AEC","AEF","BEA","BEB"]:
+            bulkpath = "/proj/vlasov/2D/"+runid+"/"
+        elif runid == "AEA":
+            bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+        else:
+            bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+        if runid == "AED":
+            bulkname = "bulk.old."+str(file_nr).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(file_nr)+" not found, continuing")
+            continue
+
+        # open vlsv file for reading
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+        # create mask
+        if maskfile:
+            msk = np.loadtxt("SLAMS/masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+        else:
+            msk = make_slams_mask(file_nr,runid,boxre)
+
+        print(len(msk))
+        print("Current file number is " + str(file_nr))
+
+        # sort jets
+        slams = sort_slams(vlsvobj,msk,10,1000,[2,2])
+
+        # erase contents of output file
+        open(outputdir+str(file_nr)+".events","w").close()
+
+        # open output file
+        fileobj = open(outputdir+str(file_nr)+".events","a")
+
+        # write jets to outputfile
+        for slam in slams:
+
+            fileobj.write(",".join(map(str,slam))+"\n")
+
+        fileobj.close()
+
+    return None
+
+def track_slams(runid,start,stop,threshold=0.5):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(start).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(start).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(start)+" not found, exiting")
+        return 1
+
+    # Create outputdir if it doesn't already exist
+    if not os.path.exists("/homeappl/home/sunijona/SLAMS/slams/"+runid):
+        try:
+            os.makedirs("/homeappl/home/sunijona/SLAMS/slams/"+runid)
+        except OSError:
+            pass
+
+    # Get solar wind parameters
+    sw_pars = ja.sw_par_dict()[runid]
+    rho_sw = sw_pars[0]
+    v_sw = sw_pars[1]
+
+    # Open file, get Cell IDs and sort them
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    sorigid = vlsvobj.read_variable("CellID")
+    sorigid = sorigid[sorigid.argsort()]
+    
+    # Find bow shock cells and area of one cell
+    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
+    dA = ja.get_cell_area(vlsvobj)
+
+    # Read initial event files
+    events_old = eventfile_read(runid,start)
+    events = eventfile_read(runid,start+1)
+
+    # do nothing
+    bs_events = []
+    for old_event in events_old:
+        bs_events.append(old_event)
+
+    # Initialise list of jet objects
+    jetobj_list = []
+    dead_jetobj_list = []
+
+    # Initialise unique ID counter
+    counter = 1
+
+    # Print current time
+    print("t = "+str(float(start+1)/2)+"s")
+
+    # Look for slams
+    for event in events:
+
+        for bs_event in bs_events:
+
+            if np.intersect1d(bs_event,event).size > threshold*len(event):
+
+                # Create unique ID
+                curr_id = str(counter).zfill(5)
+
+                # Create new jet object
+                jetobj_list.append(jio.Jet(curr_id,runid,float(start)/2))
+
+                # Append current events to jet object properties
+                jetobj_list[-1].cellids.append(bs_event)
+                jetobj_list[-1].cellids.append(event)
+                jetobj_list[-1].times.append(float(start+1)/2)
+
+                # Iterate counter
+                counter += 1
+
+                break
+
+    # Track jets
+    for n in xrange(start+2,stop+1):
+
+        for jetobj in jetobj_list:
+            if float(n)/2 - jetobj.times[-1] > 5:
+                dead_jetobj_list.append(jetobj)
+                jetobj_list.remove(jetobj)
+
+        # Print  current time
+        print("t = "+str(float(n)/2)+"s")
+
+        # Find correct bulkname
+        if runid == "AED":
+            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(n)+" not found, continuing")
+            events = []
+            continue
+
+        # Open bulkfile and get bow shock cells
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
+
+        # List of old events
+        bs_events = []
+        for old_event in events:
+            bs_events.append(old_event)
+
+        # Initialise flags for finding splintering jets
+        flags = []
+
+        # Read event file for current time step
+        events = eventfile_read(runid,n)
+        events.sort(key=len)
+        events = events[::-1]
+
+        # Iniatilise list of cells currently being tracked
+        curr_jet_temp_list = []
+
+        # Update existing jets
+        for event in events:
+
+            for jetobj in jetobj_list:
+
+                if jetobj.ID in flags:
+                    
+                    if np.intersect1d(jetobj.cellids[-2],event).size > threshold*len(event):
+
+                        curr_id = str(counter).zfill(5)
+
+                        # Create new jet
+                        jetobj_new = jio.Jet(curr_id,runid,float(n)/2)
+                        jetobj_new.cellids.append(event)
+                        jetobj_list.append(jetobj_new)
+                        curr_jet_temp_list.append(event)
+
+                        #Clone jet
+                        #jetobj_new = copy.deepcopy(jetobj)
+                        #jetobj_new.ID = str(counter).zfill(5)
+                        #print("Cloned jet to new one with ID "+jetobj_new.ID)
+                        #jetobj_new.cellids = jetobj_new.cellids[:-1]
+                        #jetobj_new.cellids.append(event)
+                        #jetobj_list.append(jetobj_new)
+                        #curr_jet_temp_list.append(event)
+
+                        # Iterate counter
+                        counter += 1
+
+                        break
+
+                else:
+
+                    if np.intersect1d(jetobj.cellids[-1],event).size > threshold*len(event):
+
+                        # Append event to jet object properties
+                        jetobj.cellids.append(event)
+                        jetobj.times.append(float(n)/2)
+                        print("Updated jet with ID "+jetobj.ID)
+
+                        # Flag jet object
+                        flags.append(jetobj.ID)
+                        curr_jet_temp_list.append(event)
+
+                        break
+
+        # Look for new jets at bow shock
+        for event in events:
+
+            if event not in curr_jet_temp_list:
+
+                for bs_event in bs_events:
+
+                    if np.intersect1d(bs_event,event).size > threshold*len(event):
+
+                        # Create unique ID
+                        curr_id = str(counter).zfill(5)
+
+                        # Create new jet object
+                        jetobj_list.append(jio.Jet(curr_id,runid,float(n-1)/2))
+
+                        # Append current events to jet object properties
+                        jetobj_list[-1].cellids.append(bs_event)
+                        jetobj_list[-1].cellids.append(event)
+                        jetobj_list[-1].times.append(float(n)/2)
+
+                        # Iterate counter
+                        counter += 1
+
+                        break
+
+    jetobj_list = jetobj_list + dead_jetobj_list
+
+    for jetobj in jetobj_list:
+
+        # Write jet object cellids and times to files
+        jetfile = open("/homeappl/home/sunijona/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".slams","w")
+        timefile = open("/homeappl/home/sunijona/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+
+        jetfile.write(jetobj.return_cellid_string())
+        timefile.write(jetobj.return_time_string())
+
+        jetfile.close()
+        timefile.close()
+
+    return None
