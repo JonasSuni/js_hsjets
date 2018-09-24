@@ -26,7 +26,7 @@ class PropReader:
         self.sw_pars = list(ja.sw_par_dict()[runid])
         self.sw_pars[0] /= 1.0e+6
         self.sw_pars[1] /= 1.0e+3
-        if runid in ["ABA","ABC"]:
+        if runid in ["ABA","ABC","BFD"]:
             self.sw_pars.append(5)
         elif runid in ["AEA","AEC"]:
             self.sw_pars.append(10)
