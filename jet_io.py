@@ -234,6 +234,9 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
         Y=props[:,2]
         xmax=props[:,11]
         ymax=props[:,12]
+        if runid == "BFD":
+            Y=props[:,3]
+            ymax=props[:,13]
         tpos_dict_list.append(dict(zip(t,np.array([X,Y,xmax,ymax]).T)))
 
     # Find names of event files
