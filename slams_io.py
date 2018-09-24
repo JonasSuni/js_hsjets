@@ -135,7 +135,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
-    sw_pars = sw_par_dict()[runid]
+    sw_pars = ja.sw_par_dict()[runid]
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
     pdyn_sw = m_p*rho_sw*(v_sw**2)
@@ -160,7 +160,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
-        masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
+        masked_ci = np.intersect1d(masked_ci,ja.restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
         np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
@@ -269,6 +269,23 @@ def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
         fileobj.close()
 
     return None
+
+def eventfile_read(runid,filenr):
+    # Read array of arrays of cellids from file
+
+    outputlist = []
+
+    ef = open("/homeappl/home/sunijona/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    contents = ef.read().strip("\n")
+    if contents == "":
+        return []
+    lines = contents.split("\n")
+
+    for line in lines:
+
+        outputlist.append(map(int,line.split(",")))
+
+    return outputlist
 
 def track_slams(runid,start,stop,threshold=0.5):
 
