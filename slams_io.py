@@ -253,7 +253,7 @@ def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        slams = sort_slams(vlsvobj,msk,10,1000,[2,2])
+        slams = sort_slams(vlsvobj,msk,10,4500,[2,2])
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -868,7 +868,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff dictionary for eliminating false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6,6,6,6,6]))
 
     # Different colors for different runs
     run_colors_dict = dict(zip([runids[0],runids[1]],["red","blue"]))
@@ -934,30 +934,43 @@ def slams_vs_hist(runids,var,time_thresh=10):
     "r$_{v,max}$ at time of death [R$_{e}$]"]
 
     # X limits and bin widths for figure
-    xmax_list=[120,
-    3.5,3.5,7,
-    5,
-    10,10,10,10,
-    1.5,1.5,1.5,
-    8,8,8,
+    xmin_list=[10,
+    0,0,0,
+    1.25,
+    1,1,1,1,
+    0.6,0.6,0.6,
+    1.25,1.25,1.25,
+    1,1,1,1,
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,
+    8]
+
+    xmax_list=[60,
+    3,1,7,
+    3,
+    3,3,3,3,
+    1.2,1.2,1.2,
+    6,6,6,
     1000,1000,1000,1000,
     25,25,25,
     25,25,25,
     25,25,25,
-    5,
+    1.5,
     18]
 
-    step_list = [5,
-    0.25,0.25,0.2,
-    0.2,
-    0.5,0.5,0.5,0.5,
-    0.1,0.1,0.1,
-    0.5,0.5,0.5,
+    step_list = [2,
+    0.25,0.05,0.2,
+    0.05,
+    0.1,0.1,0.1,0.1,
+    0.05,0.05,0.05,
+    0.25,0.25,0.25,
     100,100,100,100,
     1,1,1,
     1,1,1,
     1,1,1,
-    0.2,
+    0.05,
     0.5]
 
     # Create figure
@@ -967,8 +980,8 @@ def slams_vs_hist(runids,var,time_thresh=10):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of jets",fontsize=20)
-    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_ylabel("Fraction of SLAMS",fontsize=20)
+    ax.set_xlim(xmin_list[var_dict[var]],xmax_list[var_dict[var]])
     ax.set_ylim(0,1)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
 
@@ -985,7 +998,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
 
     else:
-        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        bins = np.arange(xmin_list[var_dict[var]],xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         if var == "death_distance":
             ax.set_xlim(8,xmax_list[var_dict[var]])
         
@@ -1031,7 +1044,7 @@ def slams_all_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff values for elimination of false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6,6,6,6,6]))
 
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
@@ -1094,31 +1107,45 @@ def slams_all_hist(runids,var,time_thresh=10):
     "r$_{v,max}$ at time of death [R$_{e}$]"]
 
     # X-limits and bin widths for figure
-    xmax_list=[120,
-    3.5,3.5,7,
-    5,
-    10,10,10,10,
-    1.5,1.5,1.5,
-    8,8,8,
+    xmin_list=[10,
+    0,0,0,
+    1.25,
+    1,1,1,1,
+    0.6,0.6,0.6,
+    1.25,1.25,1.25,
+    1,1,1,1,
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,
+    8]
+
+    xmax_list=[60,
+    3,1,7,
+    3,
+    3,3,3,3,
+    1.2,1.2,1.2,
+    6,6,6,
     1000,1000,1000,1000,
     25,25,25,
     25,25,25,
     25,25,25,
-    5,
+    1.5,
     18]
 
-    step_list = [5,
-    0.25,0.25,0.2,
-    0.2,
-    0.5,0.5,0.5,0.5,
-    0.1,0.1,0.1,
-    0.5,0.5,0.5,
+    step_list = [2,
+    0.25,0.05,0.2,
+    0.05,
+    0.1,0.1,0.1,0.1,
+    0.05,0.05,0.05,
+    0.25,0.25,0.25,
     100,100,100,100,
     1,1,1,
     1,1,1,
     1,1,1,
-    0.2,
+    0.05,
     0.5]
+
 
     # Create figure
     plt.ioff()
@@ -1127,8 +1154,8 @@ def slams_all_hist(runids,var,time_thresh=10):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of jets",fontsize=20)
-    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_ylabel("Fraction of SLAMS",fontsize=20)
+    ax.set_xlim(xmin_list[var_dict[var]],xmax_list[var_dict[var]])
     ax.set_ylim(0,1)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
 
@@ -1140,7 +1167,7 @@ def slams_all_hist(runids,var,time_thresh=10):
         ax.set_xlim(1,xmax_list[var_dict[var]])
         hist = ax.hist(var_list,weights=weights,bins=bins)
     else:
-        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        bins = np.arange(xmin_list[var_dict[var]],xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         if var == "death_distance":
             ax.set_xlim(8,xmax_list[var_dict[var]])
             bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
@@ -1251,5 +1278,13 @@ def slams_hist_script_vs(runids):
 
     for var in var_list:
         slams_vs_hist(runids,var,time_thresh=10)
+
+    return None
+
+def hist_script_script():
+
+    slams_hist_script()
+    slams_hist_script_vs(["ABA","AEA"])
+    slams_hist_script_vs(["ABC","AEC"])
 
     return None
