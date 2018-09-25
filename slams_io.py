@@ -532,7 +532,7 @@ def propfile_write(runid,filenr,key,props):
     pf.close()
     print("Wrote to /homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props")
 
-def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
+def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,18,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
 
     if not os.path.exists("SLAMS/contours/"+runid):
@@ -568,7 +568,7 @@ def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     cells_list = []
     for filename in filenames:
 
-        fileobj = open("SLAMS/slams/"+runid+"/"+filename,"r")
+        fileobj = open("SLAMS/events/"+runid+"/"+filename,"r")
         contents = fileobj.read()
         cells = map(int,contents.replace("\n",",").split(",")[:-1])
         cells_list.append(cells)
@@ -854,3 +854,402 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
     propfile_write(runid,start,jetid,prop_arr)
 
     return prop_arr
+
+def slams_vs_hist(runids,var,time_thresh=10):
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Cutoff dictionary for eliminating false positives
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+
+    # Different colors for different runs
+    run_colors_dict = dict(zip([runids[0],runids[1]],["red","blue"]))
+
+    # Dictionary for mapping input variables to parameters
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip(key_list,n_list))
+
+    # Initialise var list
+    var_list = [[],[]]
+
+    val_dict = dict(zip(runids,var_list))
+
+    # Append variable values to var lists
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                if var == "duration":
+                    val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
+                elif var == "size_ratio":
+                    val_dict[runids[n]].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[0])
+                elif var in ["v_max","v_avg","v_med"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[1])
+                elif var in ["B_max","B_avg","B_med"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[2])
+                elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
+                elif var == "pdyn_vmax":
+                    val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var == "death_distance":
+                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                else:
+                    val_dict[runids[n]].append(props.read_at_amax(var))
+
+    # Labels for figure
+    label_list = ["Duration [s]",
+    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
+    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
+    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
+    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
+    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
+    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
+    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
+    "Area [R$_{e}^{2}$]",
+    "r$_{v,max}$ at time of death [R$_{e}$]"]
+
+    # X limits and bin widths for figure
+    xmax_list=[120,
+    3.5,3.5,7,
+    5,
+    10,10,10,10,
+    1.5,1.5,1.5,
+    8,8,8,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    5,
+    18]
+
+    step_list = [5,
+    0.25,0.25,0.2,
+    0.2,
+    0.5,0.5,0.5,0.5,
+    0.1,0.1,0.1,
+    0.5,0.5,0.5,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.2,
+    0.5]
+
+    # Create figure
+    plt.ioff()
+    #plt.ion()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
+    ax.set_ylabel("Fraction of jets",fontsize=20)
+    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_ylim(0,1)
+    weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
+
+    # Logarithmic scale for plasma beta
+    if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+        bins = np.arange(0,3.25,0.25)
+        bins = 10**bins
+        plt.xscale("log")
+        ax.set_xlim(1,xmax_list[var_dict[var]])
+        
+        #for n in xrange(len(runids)):
+        #    hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+
+    else:
+        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        if var == "death_distance":
+            ax.set_xlim(8,xmax_list[var_dict[var]])
+        
+            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        #for n in xrange(len(runids)):
+        #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+
+    for n in xrange(len(runids)):
+        ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
+
+    plt.title(",".join(runids),fontsize=20)
+    plt.legend()
+    plt.tight_layout()
+
+    # Create output directory
+    if not os.path.exists("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"):
+        try:
+            os.makedirs("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/")
+        except OSError:
+            pass
+
+    # Save figure
+    fig.savefig("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+
+    plt.close(fig)
+
+    return None
+
+def slams_all_hist(runids,var,time_thresh=10):
+    # Creates histogram specified var
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Cutoff values for elimination of false positives
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+
+    # Dictionary for mapping input variables to parameters
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip(key_list,n_list))
+
+    # Initialise var list
+    var_list = []
+
+    # Append variable values to var list
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                if var == "duration":
+                    var_list.append(props.read("time")[-1]-props.read("time")[0])
+                elif var == "size_ratio":
+                    var_list.append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[0])
+                elif var in ["v_max","v_avg","v_med"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[1])
+                elif var in ["B_max","B_avg","B_med"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[2])
+                elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[4])
+                elif var == "pdyn_vmax":
+                    var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var == "death_distance":
+                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                else:
+                    var_list.append(props.read_at_amax(var))
+
+    var_list = np.asarray(var_list)
+
+    # Labels for figure
+    label_list = ["Duration [s]",
+    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
+    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
+    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
+    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
+    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
+    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
+    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
+    "Area [R$_{e}^{2}$]",
+    "r$_{v,max}$ at time of death [R$_{e}$]"]
+
+    # X-limits and bin widths for figure
+    xmax_list=[120,
+    3.5,3.5,7,
+    5,
+    10,10,10,10,
+    1.5,1.5,1.5,
+    8,8,8,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    5,
+    18]
+
+    step_list = [5,
+    0.25,0.25,0.2,
+    0.2,
+    0.5,0.5,0.5,0.5,
+    0.1,0.1,0.1,
+    0.5,0.5,0.5,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.2,
+    0.5]
+
+    # Create figure
+    plt.ioff()
+    #plt.ion()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
+    ax.set_ylabel("Fraction of jets",fontsize=20)
+    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_ylim(0,1)
+    weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
+
+    # Logarithmic scale for plasma beta
+    if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+        bins = np.arange(0,3.25,0.25)
+        bins = 10**bins
+        plt.xscale("log")
+        ax.set_xlim(1,xmax_list[var_dict[var]])
+        hist = ax.hist(var_list,weights=weights,bins=bins)
+    else:
+        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        if var == "death_distance":
+            ax.set_xlim(8,xmax_list[var_dict[var]])
+            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        hist = ax.hist(var_list,bins=bins,weights=weights)
+
+    ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
+
+    plt.title(",".join(runids),fontsize=20)
+    plt.tight_layout()
+
+    # Create output directory
+    if not os.path.exists("SLAMS/figures/histograms/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("SLAMS/figures/histograms/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    # Save figure
+    fig.savefig("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+
+    plt.close(fig)
+
+    return None
+
+class PropReader:
+    # Class for reading jet property files
+
+    def __init__(self,ID,runid,start=580,fname=None):
+
+        self.ID = ID
+        self.runid = runid
+        self.start = start
+        self.sw_pars = list(ja.sw_par_dict()[runid])
+        self.sw_pars[0] /= 1.0e+6
+        self.sw_pars[1] /= 1.0e+3
+        if runid in ["ABA","ABC","BFD"]:
+            self.sw_pars.append(5)
+        elif runid in ["AEA","AEC"]:
+            self.sw_pars.append(10)
+        else:
+            pass
+        self.sw_pars.append(m_p*self.sw_pars[0]*(self.sw_pars[1]**2))
+        self.sw_pars.append(2*sc.mu_0*self.sw_pars[0]*1.0e+6*sc.k*500e+3/((self.sw_pars[2]*1.0e-9)**2))
+
+        if type(fname) is not str:
+            self.fname = str(start)+"."+ID+".props"
+        else:
+            self.fname = fname
+
+        try:
+            self.props = pd.read_csv("SLAMS/slams/"+runid+"/"+self.fname).as_matrix()
+        except IOError:
+            raise IOError("File not found!")
+
+        var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
+        n_list = list(xrange(38))
+        self.var_dict = dict(zip(var_list,n_list))
+
+    def read(self,name):
+        if name not in self.var_dict:
+            print("Variable not found!")
+            return None
+        else:
+            return self.props[:,self.var_dict[name]]
+
+    def amax_index(self):
+        return self.read("A").argmax()
+
+    def read_at_amax(self,name):
+        return self.read(name)[self.amax_index()]
+
+def slams_hist_script():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    #runids = ["BFD"]
+
+    var_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A","death_distance"]
+
+    for var in var_list:
+        slams_all_hist(runids,var,time_thresh=10)
+
+    return None
+
+def slams_hist_script_vs(runids):
+
+    var_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A","death_distance"]
+
+    for var in var_list:
+        slams_vs_hist(runids,var,time_thresh=10)
+
+    return None
