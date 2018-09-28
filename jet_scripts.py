@@ -733,7 +733,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                 elif var == "pdyn_vmax":
                     val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
                 elif var == "death_distance":
-                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     val_dict[runids[n]].append(props.read_at_amax(var))
 
@@ -749,7 +749,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
     "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
     "Area [R$_{e}^{2}$]",
-    "r$_{v,max}$ at time of death [R$_{e}$]"]
+    "$r_{v,max}-r_{BS}$ at time of death [R$_{e}$]"]
 
     # X limits and bin widths for figure
     xmax_list=[120,
@@ -763,7 +763,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     25,25,25,
     25,25,25,
     5,
-    18]
+    5]
 
     step_list = [5,
     0.25,0.25,0.2,
@@ -805,16 +805,15 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         if var == "death_distance":
-            ax.set_xlim(8,xmax_list[var_dict[var]])
-        
-            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+            ax.set_xlim(-5,xmax_list[var_dict[var]])
+            bins = np.arange(-5,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         #for n in xrange(len(runids)):
         #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
 
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.5f\nstd: %.5f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.5f\nstd: %.5f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
-    for n in xrange(len(runids)):
-        ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
+    #for n in xrange(len(runids)):
+    #    ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
 
     plt.title(",".join(runids),fontsize=20)
     plt.legend()
@@ -891,7 +890,10 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                 elif var == "pdyn_vmax":
                     var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
                 elif var == "death_distance":
-                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    if runids[n] == "BFD":
+                        var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    else:
+                        var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     var_list.append(props.read_at_amax(var))
 
@@ -909,7 +911,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
     "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
     "Area [R$_{e}^{2}$]",
-    "r$_{v,max}$ at time of death [R$_{e}$]"]
+    "$r_{v,max}-r_{BS}$ at time of death [R$_{e}$]"]
 
     # X-limits and bin widths for figure
     xmax_list=[120,
@@ -923,7 +925,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     25,25,25,
     25,25,25,
     5,
-    18]
+    5]
 
     step_list = [5,
     0.25,0.25,0.2,
@@ -960,11 +962,12 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         if var == "death_distance":
-            ax.set_xlim(8,xmax_list[var_dict[var]])
-            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+            ax.set_xlim(-5,xmax_list[var_dict[var]])
+            bins = np.arange(-5,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
         hist = ax.hist(var_list,bins=bins,weights=weights)
 
-    ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
+    #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
+    ax.annotate("med: %.5f\nstd: %.5f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.9), xycoords='axes fraction', fontsize=14)
 
     plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
@@ -1438,8 +1441,8 @@ def jethist_script2(time_thresh=10):
 
 def jethist_paper_script():
 
-    #runids = ["ABA","ABC","AEA","AEC"]
-    runids = ["BFD"]
+    runids = ["ABA","ABC","AEA","AEC"]
+    #runids = ["BFD"]
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
@@ -1474,5 +1477,17 @@ def jethist_paper_script_vs(runids):
 
     for var in var_list:
         jet_paper_vs_hist(runids,var,time_thresh=10)
+
+    return None
+
+def jethist_paper_script_2d():
+
+    runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC","AEA","AEC"]]
+
+    var_list = [["v_max","rho_vmax"],["v_max","n_max"],["pdyn_vmax","n_max"],["pdyn_vmax","rho_vmax"]]
+
+    for runids in runids_list:
+        for var_pair in var_list:
+            jet_2d_hist(runids,var_pair[0],var_pair[1])
 
     return None

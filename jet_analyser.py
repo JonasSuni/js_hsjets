@@ -7,6 +7,13 @@ import os
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def bow_shock_r(runid,t):
+
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC"],[11.7851239669,10.3130434783,11.9669421488,9.9652173913]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC"],[0.0089345544,0.0044131524,0.0089722231,0.0054675004]))
+
+    return r0_dict[runid]+v_dict[runid]*(t-290)
+
 def bow_shock_finder(vlsvobj,rho_sw,v_sw):
     # returns cells outside the bow shock
 
