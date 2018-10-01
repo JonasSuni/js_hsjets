@@ -646,8 +646,9 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var1]],fontsize=20)
-    ax.set_ylabel(label_list[var_dict[var2]],fontsize=20)
+    ax.set_xlabel(label_list[var_dict[var1]],fontsize=24)
+    ax.set_ylabel(label_list[var_dict[var2]],fontsize=24)
+    ax.tick_params(labelsize=20)
     #weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(var_list))]
     weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
     bins = [np.linspace(0,xmax_list[var_dict[var]],21).tolist() for var in inp_var_list]
@@ -784,10 +785,11 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of jets",fontsize=20)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=24)
+    ax.set_ylabel("Fraction of jets",fontsize=24)
     ax.set_xlim(0,xmax_list[var_dict[var]])
-    ax.set_ylim(0,1)
+    ax.set_ylim(0,0.75)
+    ax.tick_params(labelsize=20)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
 
     # Logarithmic scale for plasma beta
@@ -800,7 +802,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         #for n in xrange(len(runids)):
         #    hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
         
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
     else:
         bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
@@ -810,13 +812,13 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         #for n in xrange(len(runids)):
         #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
 
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.5f\nstd: %.5f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.5f\nstd: %.5f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
     #for n in xrange(len(runids)):
     #    ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
 
     plt.title(",".join(runids),fontsize=20)
-    plt.legend()
+    plt.legend(fontsize=20)
     plt.tight_layout()
 
     # Create output directory
@@ -946,10 +948,11 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of jets",fontsize=20)
+    ax.set_xlabel(label_list[var_dict[var]],fontsize=24)
+    ax.set_ylabel("Fraction of jets",fontsize=24)
     ax.set_xlim(0,xmax_list[var_dict[var]])
-    ax.set_ylim(0,1)
+    ax.set_ylim(0,0.6)
+    ax.tick_params(labelsize=20)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
 
     # Logarithmic scale for plasma beta
@@ -967,7 +970,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
         hist = ax.hist(var_list,bins=bins,weights=weights)
 
     #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
-    ax.annotate("med: %.5f\nstd: %.5f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.9), xycoords='axes fraction', fontsize=14)
+    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.85), xycoords='axes fraction', fontsize=20)
 
     plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
