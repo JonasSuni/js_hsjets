@@ -9,7 +9,6 @@ import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
-import matplotlib.patches as mp
 
 from matplotlib import rc
 
@@ -892,10 +891,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                 elif var == "pdyn_vmax":
                     var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
                 elif var == "death_distance":
-                    if runids[n] == "BFD":
-                        var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
-                    else:
-                        var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
+                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     var_list.append(props.read_at_amax(var))
 

@@ -2,7 +2,6 @@ import pytools as pt
 import numpy as np
 import jetfile_make as jfm
 import jet_contours as jc
-import jet_analyser as ja
 import pandas as pd
 import matplotlib.pyplot as plt
 import os

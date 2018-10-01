@@ -2,9 +2,7 @@ import numpy as np
 import pytools as pt
 import scipy
 import pandas as pd
-import jet_scripts as js
 import jet_analyser as ja
-import jetfile_make as jfm
 import os
 import jet_scripts as js
 import copy
@@ -208,6 +206,89 @@ def figmake_script(runid,start,ids,tp_files=False):
 
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID,tp_files=tp_files)
+
+def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
+
+    if not os.path.exists("Contours/jetfigs/"+runid):
+        try:
+            os.makedirs("Contours/jetfigs/"+runid)
+        except OSError:
+            pass
+
+    # Find names of property files
+    filenames = os.listdir("jets/"+runid)
+    prop_fns = []
+    for filename in filenames:
+        if ".props" in filename:
+            prop_fns.append(filename)
+    prop_fns.sort()
+
+    xmean_dict = dict()
+    ymean_dict = dict()
+    xmax_dict = dict()
+    ymax_dict = dict()
+
+    for fname in prop_fns:
+        jet_id = fname[4:-6]
+        props = PropReader(ID=jet_id,runid=runid)
+        time = props.read("time")
+        x_mean = props.read("x_mean")
+        y_mean = props.read("y_mean")
+        z_mean = props.read("z_mean")
+        x_vmax = props.read("x_vmax")
+        y_vmax = props.read("y_vmax")
+        z_vmax = props.read("z_vmax")
+        if runid in ["BFD"]:
+            y_mean = z_mean
+            y_vmax = z_vmax
+        for itr in xrange(time.size):
+            if time[itr] not in xmean_dict:
+                xmean_dict[time[itr]] = [x_mean[itr]]
+                ymean_dict[time[itr]] = [y_mean[itr]]
+                xmax_dict[time[itr]] = [x_vmax[itr]]
+                ymax_dict[time[itr]] = [y_vmax[itr]]
+            else:
+                xmean_dict[time[itr]].append(x_mean[itr])
+                ymean_dict[time[itr]].append(y_mean[itr])
+                xmax_dict[time[itr]].append(x_vmax[itr])
+                ymax_dict[time[itr]].append(y_vmax[itr])
+
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    for itr2 in xrange(start,stop+1):
+
+        t = float(itr2)/2
+
+        bulkname = "bulk."+str(itr2).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(itr2)+" not found, continuing")
+            continue
+
+        if runid in ["BFD"]:
+            pass_vars = ["proton/rho","proton/V","CellID"]
+        else:
+            pass_vars = ["rho","v","CellID"]
+
+        try:
+            fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
+        except IOError:
+            fullmask = np.array([])
+
+        try:
+            fileobj = open("events/"+runid+"/"+str(itr2)+".events","r")
+            contents = fileobj.read()
+            cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        except IOError:
+            cells = []
+
+        # Create plot
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="Contours/jetfigs/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
 
 def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
     # Create plots of the dynamic pressure with contours of jets as well as their geometric centers

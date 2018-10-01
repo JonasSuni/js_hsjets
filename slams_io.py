@@ -2,11 +2,8 @@ import numpy as np
 import pytools as pt
 import scipy
 import pandas as pd
-import jet_scripts as js
 import jet_analyser as ja
-import jetfile_make as jfm
 import os
-import jet_scripts as js
 import copy
 import matplotlib.pyplot as plt
 import plot_contours as pc
