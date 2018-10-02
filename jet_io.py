@@ -270,6 +270,10 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
             print("Bulk file "+str(itr2)+" not found, continuing")
             continue
 
+        if runid == "BFD" and itr2 == 961:
+            print("Broken file!")
+            continue
+
         if runid in ["BFD"]:
             pass_vars = ["proton/rho","proton/V","CellID"]
         else:
