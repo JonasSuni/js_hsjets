@@ -132,7 +132,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
-    sw_pars = ja.sw_par_dict()[runid]
+    sw_pars = ja.sw_par_dict(runid)
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
     pdyn_sw = m_p*rho_sw*(v_sw**2)
@@ -311,7 +311,7 @@ def track_slams(runid,start,stop,threshold=0.5):
             pass
 
     # Get solar wind parameters
-    sw_pars = ja.sw_par_dict()[runid]
+    sw_pars = ja.sw_par_dict(runid)
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
 
@@ -1198,17 +1198,11 @@ class PropReader:
         self.ID = ID
         self.runid = runid
         self.start = start
-        self.sw_pars = list(ja.sw_par_dict()[runid])
+        self.sw_pars = ja.sw_par_dict(runid)
         self.sw_pars[0] /= 1.0e+6
         self.sw_pars[1] /= 1.0e+3
-        if runid in ["ABA","ABC","BFD"]:
-            self.sw_pars.append(5)
-        elif runid in ["AEA","AEC"]:
-            self.sw_pars.append(10)
-        else:
-            pass
-        self.sw_pars.append(m_p*self.sw_pars[0]*(self.sw_pars[1]**2))
-        self.sw_pars.append(2*sc.mu_0*self.sw_pars[0]*1.0e+6*sc.k*500e+3/((self.sw_pars[2]*1.0e-9)**2))
+        self.sw_pars[2] /= 1.0e-9
+        self.sw_pars[3] /= 1.0e-9
 
         if type(fname) is not str:
             self.fname = str(start)+"."+ID+".props"
