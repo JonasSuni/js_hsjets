@@ -14,75 +14,9 @@ parula = pc.make_parula()
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def make_wave_figs(outputfolder,start,stop):
-    # creates colormaps with a marker on the coordinates defined in sc_pos_marker_SLAMS
+def get_pos_cellid(posre,runid,file_number=611):
 
-    # create outputfolder if it doesn't already exist
-    if not os.path.exists(outputfolder):
-        os.makedirs(outputfolder)
-
-    # path to files
-    f_path = "/proj/vlasov/2D/ABA/bulk/"
-
-    for n in xrange(start,stop+1):
-
-        # file names
-        f_name="bulk."+str(n).zfill(7)+".vlsv"
-
-        pt.plot.plot_colormap(filename=f_path+f_name,outputdir=outputfolder+"/"+str(n)+"_",colormap=parula,vmin=0,vmax=1.5,usesci=0,lin=1,cbtitle="nPa",boxre=[6,18,-10,2],expression=pc.expr_pdyn,external=sc_pos_marker_SLAMS,pass_vars=["rho","v"])
-
-    return None
-
-def make_jet_figs(outputfolder,start,stop):
-    # creates colormaps with markers on the coordinates defined in sc_pos_marker_JET
-    # and draws custom contours
-
-    # create outputfolder if it doesn't already exist
-    if not os.path.exists(outputfolder):
-        os.makedirs(outputfolder)
-
-    # path to files
-    f_path = "/proj/vlasov/2D/ABA/bulk/"
-
-    for n in xrange(start,stop+1):
-
-        # file names
-        f_name="bulk."+str(n).zfill(7)+".vlsv"
-
-        pt.plot.plot_colormap(filename=f_path+f_name,outputdir=outputfolder+"/"+str(n)+"_",colormap=parula,vmin=0,vmax=1.5,usesci=0,lin=1,cbtitle="nPa",boxre=[6,18,-10,2],expression=pc.expr_pdyn,external=sc_pos_marker_JET,pass_vars=["rho","v"])
-
-    return None
-
-def sc_pos_marker_SLAMS(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
-    # external function for make_wave_figs
-    # extmaps is [rho,v]
-
-    # draw markers
-    pos_mark = ax.plot(12,-4.4,marker="o",color="black",markersize=3)
-
-def sc_pos_marker_JET(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
-    # external function for make_jet_figs
-    # extmaps is [rho,v]
-
-    # read rho to get shape
-    rho = extmaps[0]
-
-    # read mask from file and reshape to fit rho
-    msk = np.loadtxt("Masks/ABA/611.mask")
-    msk = np.reshape(msk,rho.shape)
-
-    # draw contours
-    contour_fromfile = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=0.75,colors="black")
-
-    # draw markers
-    pos_mark1 = ax.plot(9.17,-3.69,marker="o",color="green",markersize=3)
-    pos_mark2 = ax.plot(9.98,-4.4,marker="o",color="red",markersize=3)
-    pos_mark3 = ax.plot(10.81,-5.15,marker="o",color="cyan",markersize=3)
-
-def get_pos_index(posre,runid,file_number):
-    # gets id of cell nearest to the given coordinates for specified file_number in runid
-
-    # find correct file based on file number and run id
+     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
     elif runid == "AEA":
@@ -95,24 +29,13 @@ def get_pos_index(posre,runid,file_number):
     else:
         bulkname = "bulk."+str(file_number).zfill(7)+".vlsv"
 
-    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-    # read variables
-    X = vlsvreader.read_variable("X")
-    Y = vlsvreader.read_variable("Y")
-    cellids = vlsvreader.read_variable("CellID")
+    posre = np.asarray(posre)*r_e
 
-    # indices of cells nearest to posre in x- and y-directions separately
-    x_i = np.where(abs(X-posre[0]*r_e)<120000)[0]
-    y_i = np.where(abs(Y-posre[1]*r_e)<120000)[0]
+    cellid = vlsvobj.get_cellid(posre)
 
-    # index of cell nearest to posre in both x- and y-direction
-    pos_index = np.intersect1d(x_i,y_i)
-
-    # id of said cell
-    pos_id = cellids[pos_index[0]]
-
-    return pos_id
+    return cellid
 
 def jet_sc(runid,start,jetid,font_size=20):
 

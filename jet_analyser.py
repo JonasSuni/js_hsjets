@@ -8,6 +8,54 @@ import scipy.constants as sc
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def new_bs_finder(runid,filenumber,boxre=[6,18,-8,6]):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(filenumber)+" not found, exiting.")
+        return 1
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    sw_pars = sw_par_dict(runid)
+
+    bs_cells = bow_shock_finder(vlsvobj,sw_pars[0],sw_pars[1])
+
+    cellids = vlsvobj.read_variable("CellID")
+    
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+        cellids.sort()
+
+    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
+
+    ci_restr = restrict_area(vlsvobj,boxre)
+
+    R_restr = R[np.in1d(cellids,ci_restr[~np.in1d(ci_restr,bs_cells)])]
+
+    std_r = np.std(R_restr,ddof=1)
+    med_r = np.median(R_restr)
+
+    plt.ion()
+    his = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],40))
+    hisdif = np.array([his[0][n+1]-his[0][n] for n in list(xrange(his[0].size))[0:-1]]+[0.0])
+
+    #return his[1][np.argmax(his[0]-hisdif)]
+    return his[1][np.argmax(-hisdif*his[0]/max(his[0]))+1]
+
 def bow_shock_r(runid,t):
 
     r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[11.7851239669,10.3130434783,11.9669421488,9.9652173913,12.4938271605]))
@@ -49,8 +97,8 @@ def sw_par_dict(runid):
     sw_v = [750e+3,600e+3,750e+3,600e+3,750e+3]
     sw_B = [5.0e-9,5.0e-9,10.0e-9,10.0e-9,5.0e-9]
     sw_T = [500e+3,500e+3,500e+3,500e+3,500e+3]
-    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in len(runs)]
-    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in len(runs)]
+    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in xrange(len(runs))]
+    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
 
     return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)]]
 

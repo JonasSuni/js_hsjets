@@ -38,7 +38,7 @@ class PropReader:
             raise IOError("File not found!")
 
         var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
-        n_list = list(xrange(38))
+        n_list = list(xrange(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
     def read(self,name):
@@ -288,90 +288,7 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
         # Create plot
         pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="Contours/jetfigs/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
 
-def plotmake_script(runid,start,stop,vmax=1.5,boxre=[6,16,-8,6]):
-    # Create plots of the dynamic pressure with contours of jets as well as their geometric centers
-
-    if not os.path.exists("Contours/jetfigs/"+runid):
-        try:
-            os.makedirs("Contours/jetfigs/"+runid)
-        except OSError:
-            pass
-    # Find names of property files
-    filenames = os.listdir("jets/"+runid)
-    prop_fns = []
-    for filename in filenames:
-        if ".props" in filename:
-            prop_fns.append(filename)
-    prop_fns.sort()
-
-    # Create dictionaries of jet positions with their times as keys
-    tpos_dict_list = []
-    for fname in prop_fns:
-        props = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+fname,index_col=False).as_matrix()
-        t=props[:,0]
-        X=props[:,1]
-        Y=props[:,2]
-        xmax=props[:,11]
-        ymax=props[:,12]
-        if runid == "BFD":
-            Y=props[:,3]
-            ymax=props[:,13]
-        tpos_dict_list.append(dict(zip(t,np.array([X,Y,xmax,ymax]).T)))
-
-    # Find names of event files
-    filenames = os.listdir("events/"+runid)
-    nrs = [int(s[:-7]) for s in filenames]
-    filenames=np.array(filenames)[np.argsort(nrs)].tolist()
-
-    # Create list of arrays of cellids to use as contour mask
-    cells_list = []
-    for filename in filenames:
-
-        fileobj = open("events/"+runid+"/"+filename,"r")
-        contents = fileobj.read()
-        cells = map(int,contents.replace("\n",",").split(",")[:-1])
-        cells_list.append(cells)
-
-    fullmask_list = []
-    for itr2 in xrange(start,stop+1):
-
-        try:
-            fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
-        except IOError:
-            fullmask = np.array([])
-        fullmask_list.append(fullmask)
-
-    # Find correct bulk path
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
-    elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
-    else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
-
-    for itr in xrange(start,stop+1):
-
-        # Find positions of all jets for current time step
-        x_list = []
-        y_list = []
-        xmax_list = []
-        ymax_list = []
-        for tpos_dict in tpos_dict_list:
-            if float(itr)/2 in tpos_dict:
-                x_list.append(tpos_dict[float(itr)/2][0])
-                y_list.append(tpos_dict[float(itr)/2][1])
-                xmax_list.append(tpos_dict[float(itr)/2][2])
-                ymax_list.append(tpos_dict[float(itr)/2][3])
-
-        bulkname = "bulk."+str(itr).zfill(7)+".vlsv"
-
-        if bulkname not in os.listdir(bulkpath):
-            print("Bulk file "+str(itr)+" not found, continuing")
-            continue
-
-        # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="Contours/jetfigs/"+runid+"/",step=itr,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=["rho","v","CellID"],ext_pars=[x_list,y_list,cells_list[itr-start],fullmask_list[itr-start],xmax_list,ymax_list])
-
+    return None
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
@@ -888,15 +805,6 @@ def track_jets(runid,start,stop,threshold=0.3):
                         jetobj_new.cellids.append(event)
                         jetobj_list.append(jetobj_new)
                         curr_jet_temp_list.append(event)
-
-                        #Clone jet
-                        #jetobj_new = copy.deepcopy(jetobj)
-                        #jetobj_new.ID = str(counter).zfill(5)
-                        #print("Cloned jet to new one with ID "+jetobj_new.ID)
-                        #jetobj_new.cellids = jetobj_new.cellids[:-1]
-                        #jetobj_new.cellids.append(event)
-                        #jetobj_list.append(jetobj_new)
-                        #curr_jet_temp_list.append(event)
 
                         # Iterate counter
                         counter += 1
