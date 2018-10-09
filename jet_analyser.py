@@ -4,9 +4,51 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import scipy.constants as sc
+import scipy.ndimage
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
+
+def bs_finder(vlsvobj,runid,boxre=[6,18,-8,6]):
+
+    sw_pars = sw_par_dict(runid)
+    cellids = vlsvobj.read_variable("CellID")
+
+    if vlsvobj.check_variable("rho"):
+        rho = vlsvobj.read_variable("rho")
+    else:
+        rho = vlsvobj.read_variable("proton/rho")
+
+    # Create mask
+    bs = np.ma.masked_less(rho,1.85*sw_pars[0])
+
+    # Find IDs of masked cells
+    bs_cells = np.ma.array(cellids,mask=~bs.mask).compressed()
+
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+        cellids.sort()
+
+    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
+
+    ci_restr = restrict_area(vlsvobj,boxre=boxre)
+    ci_restr = ci_restr[~np.in1d(ci_restr,bs_cells)]
+
+    R_restr = R[np.in1d(cellids,ci_restr)]
+
+    histogram = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],40))
+    hist_bars_smooth = scipy.ndimage.uniform_filter(histogram[0],size=3,mode="constant")
+    hist_bar_diff = np.array([hist_bars_smooth[n+1]-hist_bars_smooth[n] for n in list(xrange(hist_bars_smooth.size))[0:-1]]+[0.0])
+
+    diff_slice = -hist_bar_diff
+    diff_slice.sort()
+    diff_slice = diff_slice[-2::]
+
+    diff_max = np.array([histogram[1][n] for n in xrange(hist_bar_diff.size) if hist_bar_diff[n] in -diff_slice])
+    print(diff_max)
+    return cellids[R >= diff_max[0]]
 
 def new_bs_finder(runid,filenumber,boxre=[6,18,-8,6]):
 
@@ -30,7 +72,7 @@ def new_bs_finder(runid,filenumber,boxre=[6,18,-8,6]):
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
     sw_pars = sw_par_dict(runid)
 
-    bs_cells = bow_shock_finder(vlsvobj,sw_pars[0],sw_pars[1])
+    bs_cells = bow_shock_finder(vlsvobj,rho_sw=sw_pars[0])
 
     cellids = vlsvobj.read_variable("CellID")
     
@@ -51,10 +93,35 @@ def new_bs_finder(runid,filenumber,boxre=[6,18,-8,6]):
 
     plt.ion()
     his = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],40))
-    hisdif = np.array([his[0][n+1]-his[0][n] for n in list(xrange(his[0].size))[0:-1]]+[0.0])
+    his_s = scipy.ndimage.uniform_filter(his[0],size=3,mode="constant")
+    hisdif = np.array([his_s[n+1]-his_s[n] for n in list(xrange(his_s.size))[0:-1]]+[0.0])
 
-    #return his[1][np.argmax(his[0]-hisdif)]
-    return his[1][np.argmax(-hisdif*his[0]/max(his[0]))+1]
+    sli = -hisdif
+    sli.sort()
+    sli = sli[-2::]
+    hisnew = np.array([his[1][n] for n in xrange(hisdif.size) if hisdif[n] in -sli])
+
+    print(hisnew[0])
+    return cellids[R >= hisnew[0]]
+    #return hisnew[0]
+    #return his[1][np.argmax(-hisdif)]
+    #return his[1][np.argmax(-hisdif*his[0]/max(his[0]))+1]
+
+def bs_finder_simple(vlsvobj,runid,t):
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+        cellids.sort()
+
+    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
+
+    bs_r = bow_shock_r(runid,t)
+
+    return cellids[R >= bs_r]
 
 def bow_shock_r(runid,t):
 
@@ -63,7 +130,7 @@ def bow_shock_r(runid,t):
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 
-def bow_shock_finder(vlsvobj,rho_sw,v_sw):
+def bow_shock_finder(vlsvobj,rho_sw,v_sw=750e+3):
     # returns cells outside the bow shock
 
     # If file has separate populations, find proton population
@@ -75,10 +142,7 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw):
         v = vlsvobj.read_variable("proton/V")
 
     cellids = vlsvobj.read_variable("CellID")
-
-    # Dynamic pressures
-    pdynx = m_p*rho*(v[:,0]**2)
-    pdyn_sw = m_p*rho_sw*(v_sw**2)
+    simdim = vlsvobj.get_spatial_mesh_size()
 
     # Create mask
     bs = np.ma.masked_less(rho,1.85*rho_sw)

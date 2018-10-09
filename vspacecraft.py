@@ -9,8 +9,6 @@ from matplotlib.ticker import MaxNLocator
 
 from matplotlib import rc
 
-parula = pc.make_parula()
-
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 

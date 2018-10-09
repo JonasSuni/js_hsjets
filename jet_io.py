@@ -37,7 +37,7 @@ class PropReader:
         except IOError:
             raise IOError("File not found!")
 
-        var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax"]
+        var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max"]
         n_list = list(xrange(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
@@ -181,7 +181,7 @@ def propfile_write(runid,filenr,key,props):
 
     open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax"+"\n")
+    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -547,11 +547,13 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
 
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
+        pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
         # Scale variables
         rho /= 1.0e+6
         v /= 1.0e+3
         B /= 1.0e-9
+        pdyn /= 1.0e-9
         T /= 1.0e+6
         TParallel /= 1.0e+6
         TPerpendicular /= 1.0e+6
@@ -560,7 +562,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         vmag = np.linalg.norm(v,axis=-1)
         Bmag = np.linalg.norm(B,axis=-1)
 
-        # Calculate means, medians and maximums for rho,vmag,Bmag,T,TParallel,TPerpendicular,beta
+        # Calculate means, medians and maximums for rho,vmag,Bmag,Pdyn,T,TParallel,TPerpendicular,beta
         n_avg = np.nanmean(rho)
         n_med = np.median(rho)
         n_max = np.max(rho)
@@ -572,6 +574,10 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         B_avg = np.nanmean(Bmag)
         B_med = np.median(Bmag)
         B_max = np.max(Bmag)
+
+        pd_avg = np.nanmean(pdyn)
+        pd_med = np.median(pdyn)
+        pd_max = np.max(pdyn)
 
         T_avg = np.nanmean(T)
         T_med = np.median(T)
@@ -644,10 +650,11 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         29: TPerp_avg [MK],     30: TPerp_med [MK],     31: TPerp_max [MK],
         32: beta_avg,           33: beta_med,           34: beta_max
         35: x_min [R_e],        36: rho_vmax [1/cm^3],  37: b_vmax
+        38: pd_avg [nPa],       39: pd_med [nPa],       40: pd_max [nPa]
         '''
 
         # Create temporary property array
-        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax]
+        temp_arr = [time,x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max]
 
         # append properties to property array
         prop_arr = np.append(prop_arr,np.array(temp_arr))

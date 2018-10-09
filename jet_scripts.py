@@ -12,14 +12,18 @@ import jet_io as jio
 
 from matplotlib import rc
 
-parula = pc.make_parula()
-
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def expr_smooth(exprmaps):
 
+    rho = exprmaps[0]/1.0e+6
+
+    rho = scipy.ndimage.uniform_filter(rho,size=9,mode="nearest")
+
+    return rho
 
 ###PROP MAKER FILES HERE###
 
@@ -162,7 +166,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax",,"pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -198,8 +202,10 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[2])
                     elif inp_var_list[ind] in ["beta_max","beta_avg","beta_med","b_vmax"]:
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[4])
-                    elif inp_var_list[ind] == "pdyn_vmax":
+                    elif inp_var_list[ind] in ["pdyn_vmax"]:
                         var_list[ind].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    elif inp_var_list[ind] in ["pd_avg","pd_med","pd_max"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[3])
                     elif inp_var_list[ind] == "death_distance":
                         var_list[ind].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                     else:
@@ -208,7 +214,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
     "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
     "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
     "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
@@ -222,7 +228,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # X limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
-    5,
+    5,5,5,5,
     10,10,10,10,
     1.5,1.5,1.5,
     8,8,8,
@@ -235,7 +241,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     step_list = [5,
     0.25,0.25,0.2,
-    0.2,
+    0.2,0.2,0.2,0.2,
     0.5,0.5,0.5,0.5,
     0.1,0.1,0.1,
     0.5,0.5,0.5,
@@ -300,7 +306,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max"
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -336,8 +342,10 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[2])
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var == "pdyn_vmax":
+                elif var in ["pdyn_vmax"]:
                     val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var in ["pd_avg","pd_med","pd_max"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
@@ -346,7 +354,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
     "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
     "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
     "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
@@ -360,7 +368,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # X limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
-    5,
+    5,5,5,5,
     10,10,10,10,
     1.5,1.5,1.5,
     8,8,8,
@@ -373,7 +381,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     step_list = [5,
     0.25,0.25,0.2,
-    0.2,
+    0.2,0.2,0.2,0.2,
     0.5,0.5,0.5,0.5,
     0.1,0.1,0.1,
     0.5,0.5,0.5,
@@ -460,7 +468,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax",,"pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -494,8 +502,10 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                     var_list.append(props.read_at_amax(var)/props.sw_pars[2])
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var == "pdyn_vmax":
+                elif var in ["pdyn_vmax"]:
                     var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                elif var in ["pd_avg","pd_med","pd_max"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
@@ -506,7 +516,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
     "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
     "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
     "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
@@ -520,7 +530,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # X-limits and bin widths for figure
     xmax_list=[120,
     3.5,3.5,7,
-    5,
+    5,5,5,5,
     10,10,10,10,
     1.5,1.5,1.5,
     8,8,8,
@@ -533,7 +543,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     step_list = [5,
     0.25,0.25,0.2,
-    0.2,
+    0.2,0.2,0.2,0.2
     0.5,0.5,0.5,0.5,
     0.1,0.1,0.1,
     0.5,0.5,0.5,
@@ -685,7 +695,7 @@ def jethist_paper_script():
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max"
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -704,7 +714,7 @@ def jethist_paper_script_vs(runids):
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max"
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -723,7 +733,7 @@ def jethist_paper_script_2d():
 
     runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC","AEA","AEC"]]
 
-    var_list = [["v_max","rho_vmax"],["v_max","n_max"],["pdyn_vmax","n_max"],["pdyn_vmax","rho_vmax"]]
+    var_list = [["pd_max","pdyn_vmax"]]
 
     for runids in runids_list:
         for var_pair in var_list:
