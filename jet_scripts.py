@@ -166,7 +166,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",,"pd_avg","pd_med","pd_max",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -468,7 +468,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",,"pd_avg","pd_med","pd_max",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -543,7 +543,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     step_list = [5,
     0.25,0.25,0.2,
-    0.2,0.2,0.2,0.2
+    0.2,0.2,0.2,0.2,
     0.5,0.5,0.5,0.5,
     0.1,0.1,0.1,
     0.5,0.5,0.5,

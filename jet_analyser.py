@@ -5,11 +5,124 @@ import pandas as pd
 import os
 import scipy.constants as sc
 import scipy.ndimage
+import scipy.optimize as so
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def bs_finder(vlsvobj,runid,boxre=[6,18,-8,6]):
+def rho_step(x,*a):
+    ret = a[1]
+    for n in xrange(2,len(a)):
+        ret += a[n]*np.cos((n-1)*np.pi*x/a[0])
+    return ret
+
+def rho_r(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6],rank=10):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    if filenumber==None and vlsvobj==None:
+        print("Either filenumber or vlsvobj must be given! Exiting.")
+        return 1
+
+    if vlsvobj != None:
+        vlsvobj = vlsvobj
+    else:
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    if vlsvobj.check_variable("rho"):
+        rho = vlsvobj.read_variable("rho")
+    else:
+        rho = vlsvobj.read_variable("proton/rho")
+
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+        rho = rho[cellids.argsort()]
+        cellids.sort()
+        
+    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
+    rho /= 1.0e+6
+
+    R,rho = ci2vars_nofile([R,rho],cellids,restrict_area(vlsvobj,boxre))
+
+    plt.ion()
+    fig = plt.figure()
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212)
+    #ax3 = fig.add_subplot(223)
+    #ax4 = fig.add_subplot(224)
+
+    for ax in [ax1,ax2]:
+        ax.set_xlabel("R [R$_e$]")
+        ax.set_ylabel("$\\rho$ [cm$^{-3}$]")
+
+    rho = rho[R.argsort()]
+    R.sort()
+
+    ax1.plot(R,rho,"x")
+
+    popt,cov = so.curve_fit(rho_step,R,rho,[min(R)]+[1.0]*rank)
+
+    print(popt)
+
+    r_val = np.linspace(min(R)+0.1,max(R)-0.1,1000)
+    rho_val = rho_step(r_val,*popt)
+
+    ax2.plot(r_val,rho_val)
+
+    return None
+
+def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
+
+    fn_list = list(xrange(start,stop+1))
+    time_list = [fn/2.0 for fn in fn_list]
+    r_list = []
+
+    for n in xrange(len(fn_list)):
+        r_list.append(bs_finder(runid,filenumber=fn_list[n],boxre=boxre))
+
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(time_list,r_list,"x")
+
+def bs_finder(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6]):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    if filenumber==None and vlsvobj==None:
+        print("Either filenumber or vlsvobj must be given! Exiting.")
+        return 1
+
+    if vlsvobj != None:
+        vlsvobj = vlsvobj
+    else:
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
     sw_pars = sw_par_dict(runid)
     cellids = vlsvobj.read_variable("CellID")
@@ -38,7 +151,9 @@ def bs_finder(vlsvobj,runid,boxre=[6,18,-8,6]):
 
     R_restr = R[np.in1d(cellids,ci_restr)]
 
-    histogram = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],40))
+    plt.ioff()
+
+    histogram = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],120))
     hist_bars_smooth = scipy.ndimage.uniform_filter(histogram[0],size=3,mode="constant")
     hist_bar_diff = np.array([hist_bars_smooth[n+1]-hist_bars_smooth[n] for n in list(xrange(hist_bars_smooth.size))[0:-1]]+[0.0])
 
@@ -48,80 +163,8 @@ def bs_finder(vlsvobj,runid,boxre=[6,18,-8,6]):
 
     diff_max = np.array([histogram[1][n] for n in xrange(hist_bar_diff.size) if hist_bar_diff[n] in -diff_slice])
     print(diff_max)
-    return cellids[R >= diff_max[0]]
-
-def new_bs_finder(runid,filenumber,boxre=[6,18,-8,6]):
-
-    # find correct file based on file number and run id
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
-    elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
-    else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
-
-    if runid == "AED":
-        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
-    else:
-        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
-
-    if bulkname not in os.listdir(bulkpath):
-        print("Bulk file "+str(filenumber)+" not found, exiting.")
-        return 1
-
-    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-    sw_pars = sw_par_dict(runid)
-
-    bs_cells = bow_shock_finder(vlsvobj,rho_sw=sw_pars[0])
-
-    cellids = vlsvobj.read_variable("CellID")
-    
-    if vlsvobj.check_variable("X"):
-        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
-    else:
-        X,Y,Z = xyz_reconstruct(vlsvobj)
-        cellids.sort()
-
-    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
-
-    ci_restr = restrict_area(vlsvobj,boxre)
-
-    R_restr = R[np.in1d(cellids,ci_restr[~np.in1d(ci_restr,bs_cells)])]
-
-    std_r = np.std(R_restr,ddof=1)
-    med_r = np.median(R_restr)
-
-    plt.ion()
-    his = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],40))
-    his_s = scipy.ndimage.uniform_filter(his[0],size=3,mode="constant")
-    hisdif = np.array([his_s[n+1]-his_s[n] for n in list(xrange(his_s.size))[0:-1]]+[0.0])
-
-    sli = -hisdif
-    sli.sort()
-    sli = sli[-2::]
-    hisnew = np.array([his[1][n] for n in xrange(hisdif.size) if hisdif[n] in -sli])
-
-    print(hisnew[0])
-    return cellids[R >= hisnew[0]]
-    #return hisnew[0]
-    #return his[1][np.argmax(-hisdif)]
-    #return his[1][np.argmax(-hisdif*his[0]/max(his[0]))+1]
-
-def bs_finder_simple(vlsvobj,runid,t):
-
-    cellids = vlsvobj.read_variable("CellID")
-
-    if vlsvobj.check_variable("X"):
-        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
-    else:
-        X,Y,Z = xyz_reconstruct(vlsvobj)
-        cellids.sort()
-
-    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
-
-    bs_r = bow_shock_r(runid,t)
-
-    return cellids[R >= bs_r]
+    #return cellids[R >= diff_max[0]]
+    return diff_max[0]
 
 def bow_shock_r(runid,t):
 
@@ -136,12 +179,11 @@ def bow_shock_finder(vlsvobj,rho_sw,v_sw=750e+3):
     # If file has separate populations, find proton population
     if vlsvobj.check_variable("rho"):
         rho = vlsvobj.read_variable("rho")
-        v = vlsvobj.read_variable("v")
     else:
         rho = vlsvobj.read_variable("proton/rho")
-        v = vlsvobj.read_variable("proton/V")
-
+        
     cellids = vlsvobj.read_variable("CellID")
+
     simdim = vlsvobj.get_spatial_mesh_size()
 
     # Create mask
@@ -346,13 +388,13 @@ def restrict_area(vlsvobj,boxre):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
 
     cellids = vlsvobj.read_variable("CellID")
-    cellids = cellids[cellids.argsort()]
 
     # If X doesn't exist, reconstruct X,Y,Z, otherwise read X,Y,Z
     if vlsvobj.check_variable("X"):
         X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
     else:
         X,Y,Z = xyz_reconstruct(vlsvobj)
+        cellids.sort()
 
     # Get the simulation size
     simsize = vlsvobj.get_spatial_mesh_size()
