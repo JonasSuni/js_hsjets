@@ -203,7 +203,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
                     elif inp_var_list[ind] in ["beta_max","beta_avg","beta_med","b_vmax"]:
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[4])
                     elif inp_var_list[ind] in ["pdyn_vmax"]:
-                        var_list[ind].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                        var_list[ind].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
                     elif inp_var_list[ind] in ["pd_avg","pd_med","pd_max"]:
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[3])
                     elif inp_var_list[ind] == "death_distance":
@@ -266,6 +266,9 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     hist = ax.hist2d(var_list[0],var_list[1],bins=bins,weights=weights)
 
+    if xmax_list[var_dict[inp_var_list[0]]] == xmax_list[var_dict[inp_var_list[1]]]:
+        ax.plot([0,xmax_list[var_dict[inp_var_list[0]]]],[0,xmax_list[var_dict[inp_var_list[0]]]],"r--")
+
     plt.title(",".join(runids),fontsize=20)
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
@@ -306,7 +309,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax","pd_avg","pd_med","pd_max"
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -343,7 +346,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var in ["pdyn_vmax"]:
-                    val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    val_dict[runids[n]].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
@@ -503,7 +506,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var in ["pdyn_vmax"]:
-                    var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    var_list.append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
@@ -695,7 +698,7 @@ def jethist_paper_script():
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax","pd_avg","pd_med","pd_max"
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -714,7 +717,7 @@ def jethist_paper_script_vs(runids):
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax","pd_avg","pd_med","pd_max"
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -733,7 +736,7 @@ def jethist_paper_script_2d():
 
     runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC","AEA","AEC"]]
 
-    var_list = [["pd_max","pdyn_vmax"]]
+    var_list = [["pd_max","pdyn_vmax"],["pd_max","n_max"]]
 
     for runids in runids_list:
         for var_pair in var_list:

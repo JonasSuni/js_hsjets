@@ -59,112 +59,62 @@ def rho_r(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6],rank=10):
 
     R,rho = ci2vars_nofile([R,rho],cellids,restrict_area(vlsvobj,boxre))
 
-    plt.ion()
-    fig = plt.figure()
-    ax1 = fig.add_subplot(211)
-    ax2 = fig.add_subplot(212)
-    #ax3 = fig.add_subplot(223)
-    #ax4 = fig.add_subplot(224)
+    # plt.ion()
+    # fig = plt.figure()
+    # ax1 = fig.add_subplot(221)
+    # ax2 = fig.add_subplot(222)
+    # ax3 = fig.add_subplot(223)
+    # ax4 = fig.add_subplot(224)
 
-    for ax in [ax1,ax2]:
-        ax.set_xlabel("R [R$_e$]")
-        ax.set_ylabel("$\\rho$ [cm$^{-3}$]")
+    # for ax in [ax1,ax2]:
+    #    ax.set_xlabel("R [R$_e$]")
+    #    ax.set_ylabel("$\\rho$ [cm$^{-3}$]")
 
     rho = rho[R.argsort()]
     R.sort()
 
-    ax1.plot(R,rho,"x")
+    # ax1.plot(R,rho,"x")
 
     popt,cov = so.curve_fit(rho_step,R,rho,[min(R)]+[1.0]*rank)
 
-    print(popt)
+    # print(popt)
 
     r_val = np.linspace(min(R)+0.1,max(R)-0.1,1000)
     rho_val = rho_step(r_val,*popt)
 
-    ax2.plot(r_val,rho_val)
+    rho_der_val = np.divide(np.pad(np.diff(rho_val),(0,1),mode="edge"),np.pad(np.diff(r_val),(0,1),mode="edge"))
 
-    return None
+    # ax2.plot(r_val,rho_val)
+    # ax3.plot(r_val,rho_der_val)
+
+    return r_val[np.where(rho_der_val==min(rho_der_val[10:-10]))][0]
 
 def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
 
     fn_list = list(xrange(start,stop+1))
     time_list = [fn/2.0 for fn in fn_list]
-    r_list = []
-
-    for n in xrange(len(fn_list)):
-        r_list.append(bs_finder(runid,filenumber=fn_list[n],boxre=boxre))
+    
+    r_list = [rho_r(runid,filenumber=fn,boxre=boxre) for fn in fn_list]
 
     plt.ion()
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(time_list,r_list,"x")
 
-def bs_finder(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6]):
+    popt = np.polyfit(time_list,r_list,deg=1)
 
-    # find correct file based on file number and run id
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
-    elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
-    else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+    r_val = np.polyval(popt,time_list)
 
-    if runid == "AED":
-        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
-    else:
-        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+    ax.plot(time_list,r_val,"k--")
 
-    if filenumber==None and vlsvobj==None:
-        print("Either filenumber or vlsvobj must be given! Exiting.")
-        return 1
+    return popt
 
-    if vlsvobj != None:
-        vlsvobj = vlsvobj
-    else:
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+def bow_shock_auto_r(runid,t):
 
-    sw_pars = sw_par_dict(runid)
-    cellids = vlsvobj.read_variable("CellID")
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.3130434783,11.9669421488,9.9652173913,12.4938271605]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,0.0044131524,0.0089722231,0.0054675004,0.0053351551]))
 
-    if vlsvobj.check_variable("rho"):
-        rho = vlsvobj.read_variable("rho")
-    else:
-        rho = vlsvobj.read_variable("proton/rho")
-
-    # Create mask
-    bs = np.ma.masked_less(rho,1.85*sw_pars[0])
-
-    # Find IDs of masked cells
-    bs_cells = np.ma.array(cellids,mask=~bs.mask).compressed()
-
-    if vlsvobj.check_variable("X"):
-        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
-    else:
-        X,Y,Z = xyz_reconstruct(vlsvobj)
-        cellids.sort()
-
-    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
-
-    ci_restr = restrict_area(vlsvobj,boxre=boxre)
-    ci_restr = ci_restr[~np.in1d(ci_restr,bs_cells)]
-
-    R_restr = R[np.in1d(cellids,ci_restr)]
-
-    plt.ioff()
-
-    histogram = plt.hist(R_restr,bins=np.linspace(boxre[0],boxre[1],120))
-    hist_bars_smooth = scipy.ndimage.uniform_filter(histogram[0],size=3,mode="constant")
-    hist_bar_diff = np.array([hist_bars_smooth[n+1]-hist_bars_smooth[n] for n in list(xrange(hist_bars_smooth.size))[0:-1]]+[0.0])
-
-    diff_slice = -hist_bar_diff
-    diff_slice.sort()
-    diff_slice = diff_slice[-2::]
-
-    diff_max = np.array([histogram[1][n] for n in xrange(hist_bar_diff.size) if hist_bar_diff[n] in -diff_slice])
-    print(diff_max)
-    #return cellids[R >= diff_max[0]]
-    return diff_max[0]
+    return r0_dict[runid]+v_dict[runid]*(t-290)
 
 def bow_shock_r(runid,t):
 

@@ -878,7 +878,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -915,7 +915,9 @@ def slams_vs_hist(runids,var,time_thresh=10):
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var == "pdyn_vmax":
-                    val_dict[runids[n]].append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    val_dict[runids[n]].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
+                elif var in ["pd_avg","pd_med","pd_max"]:
+                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                 else:
@@ -924,7 +926,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
     "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
     "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
     "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
@@ -938,7 +940,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # X limits and bin widths for figure
     xmin_list=[10,
     0,0,0,
-    1.25,
+    1.25,1.25,1.25,1.25,
     1,1,1,1,
     0.6,0.6,0.6,
     1.25,1.25,1.25,
@@ -951,7 +953,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
 
     xmax_list=[60,
     3,1,7,
-    3,
+    3,3,3,3,
     3,3,3,3,
     1.2,1.2,1.2,
     6,6,6,
@@ -964,7 +966,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
 
     step_list = [2,
     0.25,0.05,0.2,
-    0.05,
+    0.05,0.05,0.05,0.05,
     0.1,0.1,0.1,0.1,
     0.05,0.05,0.05,
     0.25,0.25,0.25,
@@ -1051,7 +1053,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -1086,7 +1088,9 @@ def slams_all_hist(runids,var,time_thresh=10):
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[4])
                 elif var == "pdyn_vmax":
-                    var_list.append(m_p*props.read_at_amax("rho_vmax")*(props.read_at_amax("v_max")**2)/props.sw_pars[3])
+                    var_list.append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
+                elif var in ["pd_avg","pd_med","pd_max"]:
+                    var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                 else:
@@ -1097,7 +1101,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # Labels for figure
     label_list = ["Duration [s]",
     "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]",
+    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
     "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
     "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
     "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
@@ -1111,7 +1115,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # X-limits and bin widths for figure
     xmin_list=[10,
     0,0,0,
-    1.25,
+    1.25,1.25,1.25,1.25,
     1,1,1,1,
     0.6,0.6,0.6,
     1.25,1.25,1.25,
@@ -1124,7 +1128,7 @@ def slams_all_hist(runids,var,time_thresh=10):
 
     xmax_list=[60,
     3,1,7,
-    3,
+    3,3,3,3,
     3,3,3,3,
     1.2,1.2,1.2,
     6,6,6,
@@ -1137,7 +1141,7 @@ def slams_all_hist(runids,var,time_thresh=10):
 
     step_list = [2,
     0.25,0.05,0.2,
-    0.05,
+    0.05,0.05,0.05,0.05,
     0.1,0.1,0.1,0.1,
     0.05,0.05,0.05,
     0.25,0.25,0.25,
@@ -1243,7 +1247,7 @@ def slams_hist_script():
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
@@ -1262,7 +1266,7 @@ def slams_hist_script_vs(runids):
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
-    "pdyn_vmax",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
     "n_max","n_avg","n_med","rho_vmax",
     "v_max","v_avg","v_med",
     "B_max","B_avg","B_med",
