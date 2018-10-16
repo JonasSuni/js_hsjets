@@ -107,12 +107,13 @@ def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
 
     ax.plot(time_list,r_val,"k--")
 
+    print(popt)
     return popt
 
 def bow_shock_auto_r(runid,t):
 
-    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.3130434783,11.9669421488,9.9652173913,12.4938271605]))
-    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,0.0044131524,0.0089722231,0.0054675004,0.0053351551]))
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,0,0,10.2195045081,0]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,0,0,4.70099989e-03,0]))
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 

@@ -9,8 +9,9 @@ import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
+from matplotlib.ticker import MaxNLocator
 
-from matplotlib import rc
+from matplotlib import rcParams
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -269,6 +270,10 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     if xmax_list[var_dict[inp_var_list[0]]] == xmax_list[var_dict[inp_var_list[1]]]:
         ax.plot([0,xmax_list[var_dict[inp_var_list[0]]]],[0,xmax_list[var_dict[inp_var_list[0]]]],"r--")
 
+    if var not in ["death_distance"]:
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
+
     plt.title(",".join(runids),fontsize=20)
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
@@ -433,6 +438,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     #for n in xrange(len(runids)):
     #    ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
 
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune='lower'))
+
     plt.title(",".join(runids),fontsize=20)
     plt.legend(fontsize=20)
     plt.tight_layout()
@@ -587,6 +594,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
     ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.85), xycoords='axes fraction', fontsize=20)
 
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=6,prune='lower'))
+
     plt.title(",".join(runids),fontsize=20)
     plt.tight_layout()
 
@@ -691,10 +700,15 @@ def find_missing_jetsizes(runid):
 
     return None
 
-def jethist_paper_script():
+def jethist_paper_script(runtype="ecl"):
 
-    runids = ["ABA","ABC","AEA","AEC"]
-    #runids = ["BFD"]
+    if runtype == "ecl":
+        runids = ["ABA","ABC","AEA","AEC"]
+    elif runtype == "pol":
+        runids = ["BFD"]
+    else:
+        print("Runtype must be ecl or pol. Exiting.")
+        return 1
 
     var_list = ["duration",
     "size_rad","size_tan","size_ratio",
@@ -732,9 +746,12 @@ def jethist_paper_script_vs(runids):
 
     return None
 
-def jethist_paper_script_2d():
+def jethist_paper_script_2d(runtype="ecl"):
 
-    runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC","AEA","AEC"]]
+    if runtype == "ecl":
+        runids_list = [["ABA"],["ABC"],["AEA"],["AEC"],["ABA","ABC","AEA","AEC"]]
+    elif runtype == "pol":
+        runids_list = [["BFD"]]
 
     var_list = [["pd_max","pdyn_vmax"],["pd_max","n_max"]]
 
