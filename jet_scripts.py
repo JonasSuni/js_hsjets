@@ -11,7 +11,13 @@ import jetfile_make as jfm
 import jet_io as jio
 from matplotlib.ticker import MaxNLocator
 
-from matplotlib import rcParams
+from matplotlib import rc
+font = {'family' : 'monospace',
+        'monospace' : 'Computer Modern Typewriter',
+        'weight' : 'bold'}
+
+rc('font', **font)
+rc('mathtext', fontset='custom')
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -261,7 +267,6 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     ax.set_xlabel(label_list[var_dict[var1]],fontsize=24)
     ax.set_ylabel(label_list[var_dict[var2]],fontsize=24)
     ax.tick_params(labelsize=20)
-    #weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in xrange(len(var_list))]
     weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
     bins = [np.linspace(0,xmax_list[var_dict[var]],21).tolist() for var in inp_var_list]
 
@@ -274,7 +279,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
         ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
     ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
 
-    plt.title(",".join(runids),fontsize=20)
+    plt.title(",".join(runids),fontsize=40)
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
 

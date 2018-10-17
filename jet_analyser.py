@@ -35,6 +35,13 @@ def rho_r(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6],rank=10):
         print("Either filenumber or vlsvobj must be given! Exiting.")
         return 1
 
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(filenumber)+" not found, continuing")
+        return 10
+    elif runid == "BFD" and filenumber == 961:
+        print("Broken file")
+        return 10
+
     if vlsvobj != None:
         vlsvobj = vlsvobj
     else:
@@ -112,8 +119,8 @@ def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
 
 def bow_shock_auto_r(runid,t):
 
-    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,0,0,10.2195045081,0]))
-    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,0,0,4.70099989e-03,0]))
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.498081067,12.3991595248,10.2195045081,0]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,3.74846530e-03,8.73143012e-03,4.70099989e-03,0]))
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 
