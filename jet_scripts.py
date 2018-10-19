@@ -12,12 +12,13 @@ import jet_io as jio
 from matplotlib.ticker import MaxNLocator
 
 from matplotlib import rc
-font = {'family' : 'monospace',
-        'monospace' : 'Computer Modern Typewriter',
-        'weight' : 'bold'}
+# font = {'family' : 'monospace',
+#         'monospace' : 'Computer Modern Typewriter',
+#         'weight' : 'bold'}
 
-rc('font', **font)
+#rc('font', **font)
 rc('mathtext', fontset='custom')
+rc('mathtext', default='regular')
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -35,6 +36,90 @@ def expr_smooth(exprmaps):
 ###PROP MAKER FILES HERE###
 
 
+
+###HELPER FUNCTIONS HERE###
+
+def var_pars_list(var):
+
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    label_list = ["$Duration [s]$",
+    "$Radial size [R_{e}]$","$Tangential size [R_{e}]$","Radial size/Tangential size",
+    "$P_{dyn,vmax}~[P_{dyn,sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,med}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$",
+    "$n_{max}~[n_{sw}]$","$n_{avg}~[n_{sw}]$","$n_{med}~[n_{sw}]$","$n_{v,max}~[n_{sw}]$",
+    "$v_{max}~[v_{sw}]$","$v_{avg}~[v_{sw}]$","$v_{med}~[v_{sw}]$",
+    "$B_{max}~[B_{IMF}]$","$B_{avg}~[B_{IMF}]$","$B_{med}~[B_{IMF}]$",
+    "$\\beta _{max}~[\\beta _{sw}]$","$\\beta _{avg}~[\\beta _{sw}]$","$\\beta _{med}~[\\beta _{sw}]$","$\\beta _{v,max}~[\\beta _{sw}]$",
+    "$T_{avg}~[MK]$","$T_{med}~[MK]$","$T_{max}~[MK]$",
+    "$T_{Parallel,avg}~[MK]$","$T_{Parallel,med}~[MK]$","$T_{Parallel,max}~[MK]$",
+    "$T_{Perpendicular,avg}~[MK]$","$T_{Perpendicular,med}~[MK]$","$T_{Perpendicular,max}~[MK]$",
+    "$Area~[R_{e}^{2}]$",
+    "$(r_{v,max}-r_{BS})~at~time~of~death~[R_{e}]$"]
+
+    xmin_list=[0,
+    0,0,0,
+    0,0,0,0,
+    0,0,0,0,
+    0,0,0,
+    0,0,0,
+    0,0,0,0,
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,
+    -5]
+
+    xmax_list=[120,
+    3.5,3.5,7,
+    5,5,5,5,
+    10,10,10,10,
+    1.5,1.5,1.5,
+    8,8,8,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    4,
+    5]
+
+    step_list = [5,
+    0.25,0.25,0.2,
+    0.2,0.2,0.2,0.2,
+    0.5,0.5,0.5,0.5,
+    0.1,0.1,0.1,
+    0.5,0.5,0.5,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.2,
+    0.5]
+
+    tickstep_list = [20,
+    0.5,0.5,1,
+    1,1,1,1,
+    2,2,2,2,
+    0.2,0.2,0.2,
+    1,1,1,
+    100,100,100,100,
+    5,5,5,
+    5,5,5,
+    5,5,5,
+    1,
+    2]
+
+    return [label_list[key_list.index(var)],xmin_list[key_list.index(var)],xmax_list[key_list.index(var)],step_list[key_list.index(var)],tickstep_list[key_list.index(var)]]
 
 ###FIGURE MAKERS HERE###
 
@@ -218,68 +303,32 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
                     else:
                         var_list[ind].append(props.read_at_amax(inp_var_list[ind]))
 
-    # Labels for figure
-    label_list = ["Duration [s]",
-    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
-    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
-    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
-    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
-    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
-    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
-    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
-    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]",
-    "r$_{v,max}$ at time of death [R$_{e}$]"]
-
-    # X limits and bin widths for figure
-    xmax_list=[120,
-    3.5,3.5,7,
-    5,5,5,5,
-    10,10,10,10,
-    1.5,1.5,1.5,
-    8,8,8,
-    1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
-    4,
-    18]
-
-    step_list = [5,
-    0.25,0.25,0.2,
-    0.2,0.2,0.2,0.2,
-    0.5,0.5,0.5,0.5,
-    0.1,0.1,0.1,
-    0.5,0.5,0.5,
-    100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
-    0.2,
-    0.5]
+    v1_label,v1_xmin,v1_xmax,v1_step,v1_tickstep = var_pars_list(var1)
+    v2_label,v2_xmin,v2_xmax,v2_step,v2_tickstep = var_pars_list(var2)
 
     # Create figure
     plt.ioff()
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var1]],fontsize=24)
-    ax.set_ylabel(label_list[var_dict[var2]],fontsize=24)
+    ax.set_xlabel(v1_label,fontsize=24)
+    ax.set_ylabel(v2_label,fontsize=24)
     ax.tick_params(labelsize=20)
     weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
-    bins = [np.linspace(0,xmax_list[var_dict[var]],21).tolist() for var in inp_var_list]
+    bins = [np.linspace(xlims[0],xlims[1],21).tolist() for xlims in [[v1_xmin,v1_xmax],[v2_xmin,v2_xmax]]]
 
     hist = ax.hist2d(var_list[0],var_list[1],bins=bins,weights=weights)
 
-    if xmax_list[var_dict[inp_var_list[0]]] == xmax_list[var_dict[inp_var_list[1]]]:
-        ax.plot([0,xmax_list[var_dict[inp_var_list[0]]]],[0,xmax_list[var_dict[inp_var_list[0]]]],"r--")
+    if v1_xmax == v2_xmax:
+        ax.plot([0,v1_xmax],[0,v1_xmax],"r--")
 
-    if var not in ["death_distance"]:
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune='lower'))
+    ax.set_xticks(np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep))
+    ax.set_yticks(np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep))
 
-    plt.title(",".join(runids),fontsize=40)
+    ax.set_xticklabels(np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep).astype(str))
+    ax.set_yticklabels(np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep).astype(str))
+
+    plt.title(",".join(runids),fontsize=36)
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
 
@@ -364,46 +413,8 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                 else:
                     val_dict[runids[n]].append(props.read_at_amax(var))
 
-    # Labels for figure
-    label_list = ["Duration [s]",
-    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
-    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
-    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
-    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
-    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
-    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
-    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
-    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]",
-    "$r_{v,max}-r_{BS}$ at time of death [R$_{e}$]"]
 
-    # X limits and bin widths for figure
-    xmax_list=[120,
-    3.5,3.5,7,
-    5,5,5,5,
-    10,10,10,10,
-    1.5,1.5,1.5,
-    8,8,8,
-    1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
-    5,
-    5]
-
-    step_list = [5,
-    0.25,0.25,0.2,
-    0.2,0.2,0.2,0.2,
-    0.5,0.5,0.5,0.5,
-    0.1,0.1,0.1,
-    0.5,0.5,0.5,
-    100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
-    0.2,
-    0.5]
+    label,xmin,xmax,step,tickstep = var_pars_list(var)
 
     # Create figure
     plt.ioff()
@@ -411,39 +422,32 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=24)
-    ax.set_ylabel("Fraction of jets",fontsize=24)
-    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_xlabel(label,fontsize=24)
+    ax.set_ylabel("$Fraction~of~jets$",fontsize=24)
+    ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.75)
     ax.tick_params(labelsize=20)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
+
+    ax.set_yticks(np.arange(0.1,0.8,0.1))
+    ax.set_yticklabels(np.arange(0.1,0.8,0.1).astype(str))
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
         plt.xscale("log")
-        ax.set_xlim(1,xmax_list[var_dict[var]])
-        
-        #for n in xrange(len(runids)):
-        #    hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        ax.set_xlim(1,xmax)
         
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
     else:
-        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        if var == "death_distance":
-            ax.set_xlim(-5,xmax_list[var_dict[var]])
-            bins = np.arange(-5,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        #for n in xrange(len(runids)):
-        #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        bins = np.arange(xmin,xmax+step,step)
 
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
-    #for n in xrange(len(runids)):
-    #    ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
-
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune='lower'))
+        ax.set_xticks(np.arange(xmin+tickstep,xmax+tickstep,tickstep))
+        ax.set_xticklabels(np.arange(xmin+tickstep,xmax+tickstep,tickstep).astype(str))
 
     plt.title(",".join(runids),fontsize=20)
     plt.legend(fontsize=20)
@@ -528,46 +532,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     var_list = np.asarray(var_list)
 
-    # Labels for figure
-    label_list = ["Duration [s]",
-    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
-    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
-    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
-    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
-    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
-    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
-    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
-    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]",
-    "$r_{v,max}-r_{BS}$ at time of death [R$_{e}$]"]
-
-    # X-limits and bin widths for figure
-    xmax_list=[120,
-    3.5,3.5,7,
-    5,5,5,5,
-    10,10,10,10,
-    1.5,1.5,1.5,
-    8,8,8,
-    1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
-    5,
-    5]
-
-    step_list = [5,
-    0.25,0.25,0.2,
-    0.2,0.2,0.2,0.2,
-    0.5,0.5,0.5,0.5,
-    0.1,0.1,0.1,
-    0.5,0.5,0.5,
-    100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
-    0.2,
-    0.5]
+    label,xmin,xmax,step,tickstep = var_pars_list(var)
 
     # Create figure
     plt.ioff()
@@ -575,33 +540,33 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=24)
-    ax.set_ylabel("Fraction of jets",fontsize=24)
-    ax.set_xlim(0,xmax_list[var_dict[var]])
+    ax.set_xlabel(label,fontsize=24)
+    ax.set_ylabel("$Fraction of jets$",fontsize=24)
+    ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.6)
     ax.tick_params(labelsize=20)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
+
+    ax.set_yticks(np.arange(0.1,0.7,0.1))
+    ax.set_yticklabels(np.arange(0.1,0.7,0.1).astype(str))
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
         plt.xscale("log")
-        ax.set_xlim(1,xmax_list[var_dict[var]])
+        ax.set_xlim(1,xmax)
         hist = ax.hist(var_list,weights=weights,bins=bins)
     else:
-        bins = np.arange(0,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        if var == "death_distance":
-            ax.set_xlim(-5,xmax_list[var_dict[var]])
-            bins = np.arange(-5,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        bins = np.arange(xmin,xmax+step,step)
         hist = ax.hist(var_list,bins=bins,weights=weights)
+        ax.set_xticks(np.arange(xmin+tickstep,xmax+tickstep,tickstep))
+        ax.set_xticklabels(np.arange(xmin+tickstep,xmax+tickstep,tickstep).astype(str))
 
     #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
-    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.85), xycoords='axes fraction', fontsize=20)
+    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
 
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=6,prune='lower'))
-
-    plt.title(",".join(runids),fontsize=20)
+    plt.title(",".join(runids),fontsize=36)
     plt.tight_layout()
 
     # Create output directory

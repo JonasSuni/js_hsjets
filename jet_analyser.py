@@ -119,8 +119,8 @@ def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
 
 def bow_shock_auto_r(runid,t):
 
-    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.498081067,12.3991595248,10.2195045081,0]))
-    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,3.74846530e-03,8.73143012e-03,4.70099989e-03,0]))
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.498081067,12.3991595248,10.2195045081,12.5685172417]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,3.74846530e-03,8.73143012e-03,4.70099989e-03,3.67880773e-03]))
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 
