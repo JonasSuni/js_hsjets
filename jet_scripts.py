@@ -54,8 +54,8 @@ def var_pars_list(var):
     "A",
     "death_distance"]
 
-    label_list = ["$Duration [s]$",
-    "$Radial size [R_{e}]$","$Tangential size [R_{e}]$","Radial size/Tangential size",
+    label_list = ["$Duration~[s]$",
+    "$Radial~size~[R_{e}]$","$Tangential~size~[R_{e}]$","$Radial~size/Tangential~size$",
     "$P_{dyn,vmax}~[P_{dyn,sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,med}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$",
     "$n_{max}~[n_{sw}]$","$n_{avg}~[n_{sw}]$","$n_{med}~[n_{sw}]$","$n_{v,max}~[n_{sw}]$",
     "$v_{max}~[v_{sw}]$","$v_{avg}~[v_{sw}]$","$v_{med}~[v_{sw}]$",
@@ -311,8 +311,8 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(v1_label,fontsize=24)
-    ax.set_ylabel(v2_label,fontsize=24)
+    ax.set_xlabel("$\\mathrm{"+v1_label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{"+v2_label[1:-1]+"}$",fontsize=24)
     ax.tick_params(labelsize=20)
     weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
     bins = [np.linspace(xlims[0],xlims[1],21).tolist() for xlims in [[v1_xmin,v1_xmax],[v2_xmin,v2_xmax]]]
@@ -325,10 +325,10 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     ax.set_xticks(np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep))
     ax.set_yticks(np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep))
 
-    ax.set_xticklabels(np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep).astype(str))
-    ax.set_yticklabels(np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep).astype(str))
+    ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep).astype(str)])
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep).astype(str)])
 
-    plt.title(",".join(runids),fontsize=36)
+    plt.title(",".join(runids),fontsize=24)
     plt.colorbar(hist[3], ax=ax)
     plt.tight_layout()
 
@@ -422,15 +422,15 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label,fontsize=24)
-    ax.set_ylabel("$Fraction~of~jets$",fontsize=24)
+    ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.75)
     ax.tick_params(labelsize=20)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
 
     ax.set_yticks(np.arange(0.1,0.8,0.1))
-    ax.set_yticklabels(np.arange(0.1,0.8,0.1).astype(str))
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(0.1,0.8,0.1).astype(str)])
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
@@ -441,16 +441,28 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
+        ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
+        ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
+
     else:
         bins = np.arange(xmin,xmax+step,step)
 
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
-        ax.set_xticks(np.arange(xmin+tickstep,xmax+tickstep,tickstep))
-        ax.set_xticklabels(np.arange(xmin+tickstep,xmax+tickstep,tickstep).astype(str))
+        ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
+        ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
 
-    plt.title(",".join(runids),fontsize=20)
+    if xmin == -xmax and 0.5*(xmax-xmin)%tickstep != 0.0:
+        ax.set_xticks(np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep))
+        if tickstep%1 != 0:
+            ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep).astype(str)])
+        else:
+            ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
+
+    plt.title(" vs. ".join(runids),fontsize=24)
     plt.legend(fontsize=20)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
     plt.tight_layout()
 
     # Create output directory
@@ -540,15 +552,15 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label,fontsize=24)
-    ax.set_ylabel("$Fraction of jets$",fontsize=24)
+    ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.6)
     ax.tick_params(labelsize=20)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
 
     ax.set_yticks(np.arange(0.1,0.7,0.1))
-    ax.set_yticklabels(np.arange(0.1,0.7,0.1).astype(str))
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(0.1,0.7,0.1).astype(str)])
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
@@ -557,16 +569,26 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
         plt.xscale("log")
         ax.set_xlim(1,xmax)
         hist = ax.hist(var_list,weights=weights,bins=bins)
+        ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
+        ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
+
     else:
         bins = np.arange(xmin,xmax+step,step)
         hist = ax.hist(var_list,bins=bins,weights=weights)
-        ax.set_xticks(np.arange(xmin+tickstep,xmax+tickstep,tickstep))
-        ax.set_xticklabels(np.arange(xmin+tickstep,xmax+tickstep,tickstep).astype(str))
+        ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
+        ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
+
+    if xmin == -xmax and 0.5*(xmax-xmin)%tickstep != 0.0:
+        ax.set_xticks(np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep))
+        if tickstep%1 != 0:
+            ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep).astype(str)])
+        else:
+            ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
 
     #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
-    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.8,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
+    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.75,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
 
-    plt.title(",".join(runids),fontsize=36)
+    plt.title(",".join(runids),fontsize=24)
     plt.tight_layout()
 
     # Create output directory
