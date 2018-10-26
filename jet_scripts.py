@@ -330,6 +330,8 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     plt.title(",".join(runids),fontsize=24)
     plt.colorbar(hist[3], ax=ax)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
     plt.tight_layout()
 
     # Create output directory
@@ -589,6 +591,8 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.75,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
 
     plt.title(",".join(runids),fontsize=24)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
     plt.tight_layout()
 
     # Create output directory

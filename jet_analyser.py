@@ -10,112 +10,33 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def rho_step(x,*a):
-    ret = a[1]
-    for n in xrange(2,len(a)):
-        ret += a[n]*np.cos((n-1)*np.pi*x/a[0])
-    return ret
-
-def rho_r(runid,filenumber=None,vlsvobj=None,boxre=[6,18,-8,6],rank=10):
+def rho_r_simple(runid,filenumber,start_p,len_line):
 
     # find correct file based on file number and run id
-    if runid in ["AEC","AEF","BEA","BEB"]:
+    if runid in ["AEC"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
     elif runid == "AEA":
         bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
-    if runid == "AED":
-        bulkname = "bulk.old."+str(filenumber).zfill(7)+".vlsv"
-    else:
-        bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
 
-    if filenumber==None and vlsvobj==None:
-        print("Either filenumber or vlsvobj must be given! Exiting.")
-        return 1
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-    if bulkname not in os.listdir(bulkpath):
-        print("Bulk file "+str(filenumber)+" not found, continuing")
-        return 10
-    elif runid == "BFD" and filenumber == 961:
-        print("Broken file")
-        return 10
+    p1 = [c*r_e for c in start_p]
+    len_line = len_line*r_e
+    p2 = [c for c in p1]
+    p2[0] = p2[0]+len_line
 
-    if vlsvobj != None:
-        vlsvobj = vlsvobj
-    else:
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+    cut_thru = pt.calculations.lineout(vlsvobj,p1,p2,"rho")
 
-    cellids = vlsvobj.read_variable("CellID")
+    rho_data = cut_thru[2]
+    r_data = np.linalg.norm(cut_thru[1],axis=-1)/r_e
 
-    if vlsvobj.check_variable("rho"):
-        rho = vlsvobj.read_variable("rho")
-    else:
-        rho = vlsvobj.read_variable("proton/rho")
+    rho_der = np.gradient(rho_data)
 
-    if vlsvobj.check_variable("X"):
-        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
-    else:
-        X,Y,Z = xyz_reconstruct(vlsvobj)
-        rho = rho[cellids.argsort()]
-        cellids.sort()
-        
-    R = np.linalg.norm([X,Y,Z],axis=0)/r_e
-    rho /= 1.0e+6
-
-    R,rho = ci2vars_nofile([R,rho],cellids,restrict_area(vlsvobj,boxre))
-
-    # plt.ion()
-    # fig = plt.figure()
-    # ax1 = fig.add_subplot(221)
-    # ax2 = fig.add_subplot(222)
-    # ax3 = fig.add_subplot(223)
-    # ax4 = fig.add_subplot(224)
-
-    # for ax in [ax1,ax2]:
-    #    ax.set_xlabel("R [R$_e$]")
-    #    ax.set_ylabel("$\\rho$ [cm$^{-3}$]")
-
-    rho = rho[R.argsort()]
-    R.sort()
-
-    # ax1.plot(R,rho,"x")
-
-    popt,cov = so.curve_fit(rho_step,R,rho,[min(R)]+[1.0]*rank)
-
-    # print(popt)
-
-    r_val = np.linspace(min(R)+0.1,max(R)-0.1,1000)
-    rho_val = rho_step(r_val,*popt)
-
-    rho_der_val = np.divide(np.pad(np.diff(rho_val),(0,1),mode="edge"),np.pad(np.diff(r_val),(0,1),mode="edge"))
-
-    # ax2.plot(r_val,rho_val)
-    # ax3.plot(r_val,rho_der_val)
-
-    return r_val[np.where(rho_der_val==min(rho_der_val[10:-10]))][0]
-
-def bs_calculator(runid,start,stop,boxre=[6,18,-8,6]):
-
-    fn_list = list(xrange(start,stop+1))
-    time_list = [fn/2.0 for fn in fn_list]
-    
-    r_list = [rho_r(runid,filenumber=fn,boxre=boxre) for fn in fn_list]
-
-    plt.ion()
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.plot(time_list,r_list,"x")
-
-    popt = np.polyfit(time_list,r_list,deg=1)
-
-    r_val = np.polyval(popt,time_list)
-
-    ax.plot(time_list,r_val,"k--")
-
-    print(popt)
-    return popt
+    return r_data[rho_der == np.min(rho_der)][0]
 
 def bow_shock_auto_r(runid,t):
 
