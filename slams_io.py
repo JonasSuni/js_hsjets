@@ -647,6 +647,7 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
 
     # Discard jet if it has large gaps in the times
     dt = (np.pad(np.array(time_list),(0,1),"constant")-np.pad(np.array(time_list),(1,0),"constant"))[1:-1]
+    dt = np.ediff1d(time_list)
     if max(dt) > 5:
         print("Jet not sufficiently continuous, exiting.")
         return 1
