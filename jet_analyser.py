@@ -12,6 +12,14 @@ r_e = 6.371e+6
 
 def rho_r_simple(runid,filenumber,start_p,len_line):
 
+    if type(start_p) == list and len(start_p) == 3:
+        pass
+    elif type(start_p) in [int,float]:
+        start_p = [start_p,0,0]
+    else:
+        print("start_p has invalid format, please use float, int or list!")
+        return 1
+
     # find correct file based on file number and run id
     if runid in ["AEC"]:
         bulkpath = "/proj/vlasov/2D/"+runid+"/"
@@ -29,10 +37,23 @@ def rho_r_simple(runid,filenumber,start_p,len_line):
     p2 = [c for c in p1]
     p2[0] = p2[0]+len_line
 
-    cut_thru = pt.calculations.lineout(vlsvobj,p1,p2,"rho")
+    cut_thru = pt.calculations.cut_through(vlsvobj,p1,p2)
 
-    rho_data = cut_thru[2]
-    r_data = np.linalg.norm(cut_thru[1],axis=-1)/r_e
+    cells = cut_thru[0].data.data.astype(int)
+    cellids = vlsvobj.read_variable("CellID")
+    if vlsvobj.check_variable("rho"):
+        rho = vlsvobj.read_variable("rho")[cellids.argsort()]
+    else:
+        rho = vlsvobj.read_variable("proton/rho")[cellids.argsort()]
+
+    cellids.sort()
+
+    r_data = np.linalg.norm(cut_thru[2].data.data,axis=-1)/r_e
+    r_data = r_data[cells.argsort()]
+    
+    rho_data = rho[np.in1d(cellids,cells)]
+    rho_data = rho_data[r_data.argsort()]
+    r_data.sort()
 
     rho_der = np.gradient(rho_data)
 
@@ -52,7 +73,7 @@ def bow_shock_r(runid,t):
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 
-def bow_shock_finder(vlsvobj,rho_sw,v_sw=750e+3):
+def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
     # returns cells outside the bow shock
 
     # If file has separate populations, find proton population

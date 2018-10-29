@@ -157,7 +157,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
-        masked_ci = np.intersect1d(masked_ci,ja.restrict_area(vlsvreader,boxre[0:2],boxre[2:4]))
+        masked_ci = np.intersect1d(masked_ci,ja.restrict_area(vlsvreader,boxre))
         np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
