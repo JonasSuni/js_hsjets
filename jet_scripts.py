@@ -25,6 +25,28 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def plot_streamlines(boxre=[6,18,-8,6]):
+
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",draw=1,usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",external=B_streamline,var="rho",vmin=0,vmax=10e+6,pass_vars=["X","Y","B","CellID"])
+
+def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    X = extmaps[0]
+    Y = extmaps[1]
+    B = extmaps[2]
+    cellids = extmaps[3]
+
+    shp = cellids.shape
+    cellids = cellids.flatten()
+
+    Bx = np.reshape(B[:,:,0].flatten()[cellids.argsort()],shp)
+    By = np.reshape(B[:,:,1].flatten()[cellids.argsort()],shp)
+
+    X = np.reshape(X.flatten()[cellids.argsort()],shp)[0,:]/r_e
+    Y = np.reshape(Y.flatten()[cellids.argsort()],shp)[:,0]/r_e
+
+    ax.streamplot(X,Y,Bx,By,arrowstyle="-",linewidth=0.5,color="black",density=2)
+
 def expr_smooth(exprmaps):
 
     rho = exprmaps[0]/1.0e+6

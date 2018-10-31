@@ -10,6 +10,32 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def rho_r_script():
+
+    runids = ["ABA","ABC","AEA","AEC","BFD"]
+
+    print("r = r(290) + k*(t-290)")
+
+    for runid in runids:
+        p = rho_r_auto(runid,580,800,[8,0,0],10)
+        print(runid+": k = "+str(p[0]))
+        print(runid+": r(290) = "+str(p[1]+290*p[0]))
+
+    return 0
+
+def rho_r_auto(runid,start,stop,start_p,len_line):
+
+    n_list = np.array(xrange(start,stop+1))
+    time_list = n_list/2.0
+    r_list = np.zeros(n_list.shape)
+
+    for i in xrange(n_list.size):
+        r_list[i] = rho_r_simple(runid,n_list[i],start_p,len_line)
+
+    p = np.polyfit(time_list,r_list,deg=1)
+
+    return p
+
 def rho_r_simple(runid,filenumber,start_p,len_line):
 
     if type(start_p) == list and len(start_p) == 3:
@@ -32,14 +58,17 @@ def rho_r_simple(runid,filenumber,start_p,len_line):
 
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
-    p1 = [c*r_e for c in start_p]
-    len_line = len_line*r_e
-    p2 = [c for c in p1]
-    p2[0] = p2[0]+len_line
+    angles_dict = {"ABA":[30,0],"ABC":[5,0],"AEA":[30,0],"AEC":[5,0],"BFD":[0,45]}
 
+    a = map(np.deg2rad,angles_dict[runid])
+
+    p1 = np.array([c*r_e for c in start_p])
+    len_line = len_line*r_e
+    p2 = p1+len_line*np.array([np.cos(a[0])*np.cos(a[1]),-np.sin(a[0])*np.cos(a[1]),-np.sin(a[1])])
+    
     cut_thru = pt.calculations.cut_through(vlsvobj,p1,p2)
 
-    cells = cut_thru[0].data.data.astype(int)
+    cells = cut_thru[0].data.data.astype(int)[1:]
     cellids = vlsvobj.read_variable("CellID")
     if vlsvobj.check_variable("rho"):
         rho = vlsvobj.read_variable("rho")[cellids.argsort()]
@@ -63,6 +92,13 @@ def bow_shock_auto_r(runid,t):
 
     r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.498081067,12.3991595248,10.2195045081,12.5685172417]))
     v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6.80178857e-03,3.74846530e-03,8.73143012e-03,4.70099989e-03,3.67880773e-03]))
+
+    return r0_dict[runid]+v_dict[runid]*(t-290)
+
+def bow_shock_auto_2(runid,t):
+
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[11.7021649174,10.3497476216,11.7493270578,9.94235078718,12.2559321215]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[0.00780715908985,0.00455983873726,0.00972525860489,0.00553000332236,0.013098391388]))
 
     return r0_dict[runid]+v_dict[runid]*(t-290)
 
