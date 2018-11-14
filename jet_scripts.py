@@ -25,9 +25,67 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
-def plot_streamlines(boxre=[6,18,-8,6]):
+def lineout_plot(runid,filenumber,p1,p2,var):
 
-    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",draw=1,usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",external=B_streamline,var="rho",vmin=0,vmax=10e+6,pass_vars=["X","Y","B","CellID"])
+    # find correct file based on file number and run id
+    if runid in ["AEC"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    var_dict = {"rho":[1e+6,"$\\rho~[cm^{-3}]$",1],"v":[1e+3,"$v~[km/s]$",750]}
+
+    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    lin = pt.calculations.lineout(pt.vlsvfile.VlsvReader(bulkpath+bulkname),np.array(p1)*r_e,np.array(p2)*r_e,var,interpolation_order=1,points=100)
+
+    var_arr = lin[2]
+    if len(var_arr.shape) == 2:
+        var_arr = np.linalg.norm(var_arr,axis=-1)
+    r_arr = np.linalg.norm(lin[1],axis=-1)/r_e
+
+    if var in var_dict:
+        var_arr /= var_dict[var][0]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.plot(r_arr,var_arr)
+    ax.set_xlabel("$R~[R_e]$",labelpad=10,fontsize=20)
+    ax.tick_params(labelsize=20)
+    if var in var_dict:
+        ax.set_ylabel(var_dict[var][1],labelpad=10,fontsize=20)
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True,prune="lower"))
+
+    plt.tight_layout()
+
+    fig.show()
+
+    fig.savefig("Contours/"+"lineout_"+runid+"_"+str(filenumber)+"_"+var+".png")
+
+def find_broken_BCQ(start,stop):
+
+    bulkpath = "/proj/vlasov/2D/BCQ/bulk/"
+    time_list = np.array([])
+    n_list = np.array(xrange(start,stop+1))
+
+    for n in n_list:
+        bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        time_list = np.append(time_list,vlsvobj.read_parameter("time"))
+
+    tdiff = np.append(0.5,np.ediff1d(time_list))
+
+    plt.plot(n_list,tdiff,"x")
+    plt.show()
+
+    return n_list[tdiff==0]
+
+def plot_streamlines(boxre=[4,20,-10,10]):
+
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABC/bulk/bulk.0000611.vlsv",draw=1,usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",external=B_streamline,var="rho",vmin=0,vmax=10e+6,pass_vars=["X","Y","B","CellID"])
 
 def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
@@ -42,10 +100,13 @@ def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     Bx = np.reshape(B[:,:,0].flatten()[cellids.argsort()],shp)
     By = np.reshape(B[:,:,1].flatten()[cellids.argsort()],shp)
 
+    dx = Bx*0+1
+    dy = np.divide(By,Bx)
+
     X = np.reshape(X.flatten()[cellids.argsort()],shp)[0,:]/r_e
     Y = np.reshape(Y.flatten()[cellids.argsort()],shp)[:,0]/r_e
 
-    ax.streamplot(X,Y,Bx,By,arrowstyle="-",linewidth=0.5,color="black",density=2)
+    ax.streamplot(X,Y,dx,dy,arrowstyle="-",linewidth=0.5,color="black",density=2)
 
 def expr_smooth(exprmaps):
 
