@@ -25,6 +25,72 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def draw_all_cont():
+
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",outputdir="Contours/ALLCONT_",usesci=0,lin=1,boxre=[6,18,-8,6],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
+
+def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+
+    rho = extmaps[0].flatten()
+    vx = extmaps[1][:,:,0].flatten()
+    vy = extmaps[1][:,:,1].flatten()
+    vz = extmaps[1][:,:,2].flatten()
+    vmag = np.linalg.norm([vx,vy,vz],axis=0)
+    cellids = extmaps[2].flatten()
+    XmeshXY = XmeshXY.flatten()
+    YmeshXY = YmeshXY.flatten()
+    shp = extmaps[0].shape
+
+    pdyn = m_p*rho*(vmag**2)
+    pdyn_x = m_p*rho*(vx**2)
+
+    pdyn = pdyn[cellids.argsort()]
+    pdyn_x = pdyn_x[cellids.argsort()]
+    rho = rho[cellids.argsort()]
+    XmeshXY = XmeshXY[cellids.argsort()]
+    YmeshXY = YmeshXY[cellids.argsort()]
+
+    fullcells = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv").read_variable("CellID")
+    fullcells.sort()
+
+    trho = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/ABA/611_rho.tavg")[np.in1d(fullcells,cellids)]
+    tpdyn = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/ABA/611_pdyn.tavg")[np.in1d(fullcells,cellids)]
+
+    rho_sw = 1000000
+    v_sw = 750000
+    pdyn_sw = m_p*rho_sw*(v_sw**2)
+
+    pdyn = scipy.ndimage.zoom(np.reshape(pdyn,shp),3)
+    pdyn_x = scipy.ndimage.zoom(np.reshape(pdyn_x,shp),3)
+    rho = scipy.ndimage.zoom(np.reshape(rho,shp),3)
+    XmeshXY = scipy.ndimage.zoom(np.reshape(XmeshXY,shp),3)
+    YmeshXY = scipy.ndimage.zoom(np.reshape(YmeshXY,shp),3)
+    trho = scipy.ndimage.zoom(np.reshape(trho,shp),3)
+    tpdyn = scipy.ndimage.zoom(np.reshape(tpdyn,shp),3)
+
+    jetp = np.ma.masked_greater(pdyn_x,0.25*pdyn_sw)
+    #jetp.mask[nrho < level_sw] = False
+    jetp.fill_value = 0
+    jetp[jetp.mask == False] = 1
+
+    jetah = np.ma.masked_greater(pdyn,2*tpdyn)
+    jetah.fill_value = 0
+    jetah[jetah.mask == False] = 1
+
+    # make karlsson mask
+    jetk = np.ma.masked_greater(rho,1.5*trho)
+    jetk.fill_value = 0
+    jetk[jetk.mask == False] = 1
+
+    # draw contours
+    contour_plaschke = ax.contour(XmeshXY,YmeshXY,jetp.filled(),[0.5],linewidths=0.8, colors="black",label="Plaschke")
+
+    contour_archer = ax.contour(XmeshXY,YmeshXY,jetah.filled(),[0.5],linewidths=0.8, colors="yellow",label="ArcherHorbury")
+
+    contour_karlsson = ax.contour(XmeshXY,YmeshXY,jetk.filled(),[0.5],linewidths=0.8, colors="magenta",label="Karlsson")
+
+    return None
+
 def lineout_plot(runid,filenumber,p1,p2,var):
 
     # find correct file based on file number and run id
@@ -85,26 +151,24 @@ def find_broken_BCQ(start,stop):
 
 def plot_streamlines(boxre=[4,20,-10,10]):
 
-    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABC/bulk/bulk.0000611.vlsv",draw=1,usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",external=B_streamline,var="rho",vmin=0,vmax=10e+6,pass_vars=["X","Y","B","CellID"])
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/BFD/bulk/bulk.0000611.vlsv",outputdir="Contours/STREAMPLOT_",usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",expression=pc.expr_srho,external=B_streamline,vmin=0,vmax=10,wmark=1,pass_vars=["proton/rho","CellID","B"])
 
 def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
-    X = extmaps[0]
-    Y = extmaps[1]
     B = extmaps[2]
-    cellids = extmaps[3]
 
-    shp = cellids.shape
-    cellids = cellids.flatten()
-
-    Bx = np.reshape(B[:,:,0].flatten()[cellids.argsort()],shp)
-    By = np.reshape(B[:,:,1].flatten()[cellids.argsort()],shp)
+    Bx = B[:,:,0]
+    By = B[:,:,2]
 
     dx = Bx*0+1
     dy = np.divide(By,Bx)
 
-    X = np.reshape(X.flatten()[cellids.argsort()],shp)[0,:]/r_e
-    Y = np.reshape(Y.flatten()[cellids.argsort()],shp)[:,0]/r_e
+    dl = np.linalg.norm([dx,dy],axis=0)
+    dx /= dl
+    dy /= dl
+
+    X = XmeshXY
+    Y = YmeshXY
 
     ax.streamplot(X,Y,dx,dy,arrowstyle="-",linewidth=0.5,color="black",density=2)
 
