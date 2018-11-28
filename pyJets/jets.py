@@ -8,6 +8,5 @@ from jetfile_make import *
 from jet_io import *
 from jet_scripts import *
 from plot_contours import *
-from slams_io import *
 from tavg_maker import *
 from vspacecraft import *
