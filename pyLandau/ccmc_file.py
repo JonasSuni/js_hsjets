@@ -4,7 +4,7 @@ import scipy
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator,AutoLocator,LogLocator
 
 class ExoReader:
 
@@ -47,7 +47,7 @@ class ExoVariable:
         self.label = self.label_dict[varname]
         self.r_label = self.label_dict["R"]
 
-def plot_variable(filename,varname,rmin=0,log=None):
+def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None):
 
     var = ExoReader(filename).read(varname)
 
@@ -59,20 +59,76 @@ def plot_variable(filename,varname,rmin=0,log=None):
 
     r_data = var.r[var.r>=rmin]
     var_data = var.data[var.r>=rmin]
-
+    
     ax.set_xlim(rmin,max(r_data))
 
-    ax.plot(r_data,var_data)
+    if not not plot_fit:
+        r_data /= r_data[0]
+        var_data /= var_data[0]
+        ax.set_xlim(1,max(r_data))   
+    ax.plot(r_data,var_data,"x")
+
+    if not not plot_fit:
+        fpars = fit_variable(filename,varname,algorithm=plot_fit,rmin=rmin,p0=[-1,-1])
+        p = fpars[2]
+        if plot_fit == "power":
+            y_data = fit_powerlaw(r_data,p[0])
+        elif plot_fit == "curved":
+            y_data = fit_curved_powerlaw(r_data,p[0],p[1])
+        elif plot_fit == "double":
+            y_data = fit_double_powerlaw(r_data,p[0],p[1])
+        ax.plot(r_data,y_data,color="r")
 
     if not not log:
         plt.yscale("log")
+        ax.yaxis.set_major_locator(LogLocator())
 
-    ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+    ax.xaxis.set_major_locator(AutoLocator())
     if not log:
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=5,prune="lower"))
+        ax.yaxis.set_major_locator(AutoLocator())
 
     plt.tight_layout()
-    plt.grid()
+    plt.grid(which="major")
+    plt.grid(which="minor")
     plt.show()
 
     return None
+
+def fit_powerlaw(xdata,a1):
+
+    return (xdata**a1)
+
+def fit_curved_powerlaw(xdata,a1,a2):
+
+    return xdata**(a1+a2*xdata)
+
+def fit_double_powerlaw(xdata,a1,a2):
+
+    return xdata**(a1)+xdata**(a2)
+
+def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[1,1]):
+
+    var = ExoReader(filename).read(varname)
+
+    var_data = var.data[var.r>=rmin]
+    r_data = var.r[var.r>=rmin]
+
+    var_scaled = var_data/var_data[0]
+    r_scaled = r_data/r_data[0]
+
+    if algorithm == "power":
+        popt,pcov = scipy.optimize.curve_fit(fit_powerlaw,r_scaled,var_scaled,p0=p0[0])
+
+    elif algorithm == "curved":
+        popt,pcov = scipy.optimize.curve_fit(fit_curved_powerlaw,r_scaled,var_scaled,p0=p0)
+
+    elif algorithm == "double":
+        popt,pcov = scipy.optimize.curve_fit(fit_double_powerlaw,r_scaled,var_scaled,p0=p0)
+
+    else:
+        print("Invalid algorithm!")
+        return 1
+
+    print("r0 = %.3f"%(r_data[0]))
+    print("f0 = %.3f"%(var_data[0]))
+    return [r_data[0],var_data[0],popt,np.sqrt(np.diag(pcov))]
