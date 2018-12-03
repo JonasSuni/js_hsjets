@@ -47,7 +47,7 @@ class ExoVariable:
         self.label = self.label_dict[varname]
         self.r_label = self.label_dict["R"]
 
-def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None):
+def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None,p0=[-1,-1,20]):
 
     var = ExoReader(filename).read(varname)
 
@@ -65,11 +65,13 @@ def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None):
     if not not plot_fit:
         r_data /= r_data[0]
         var_data /= var_data[0]
-        ax.set_xlim(1,max(r_data))   
+        ax.set_xlim(1,max(r_data))
+        ax.set_xlabel("$R/R_0$")
+        ax.set_ylabel(var+"/"+var+"_0")  
     ax.plot(r_data,var_data,"x")
 
     if not not plot_fit:
-        fpars = fit_variable(filename,varname,algorithm=plot_fit,rmin=rmin,p0=[-1,-1])
+        fpars = fit_variable(filename,varname,algorithm=plot_fit,rmin=rmin,p0=p0)
         p = fpars[2]
         if plot_fit == "power":
             y_data = fit_powerlaw(r_data,p[0])
@@ -77,6 +79,10 @@ def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None):
             y_data = fit_curved_powerlaw(r_data,p[0],p[1])
         elif plot_fit == "double":
             y_data = fit_double_powerlaw(r_data,p[0],p[1])
+        elif plot_fit == "broken":
+            y_data = fit_broken_powerlaw(r_data,p[0],p[1],p[2])
+        elif plot_fit == "exp":
+            y_data = fit_exp_powerlaw(r_data,p[0],p[1])
         ax.plot(r_data,y_data,color="r")
 
     if not not log:
@@ -106,7 +112,18 @@ def fit_double_powerlaw(xdata,a1,a2):
 
     return xdata**(a1)+xdata**(a2)
 
-def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[1,1]):
+def fit_broken_powerlaw(xdata,a1,a2,x0):
+
+    res1 = xdata[xdata <= x0]**a1
+    res2 = x0**(a1-a2)*xdata[xdata > x0]**a2
+
+    return np.concatenate((res1,res2))
+
+def fit_exp_powerlaw(xdata,a1,a2):
+
+    return xdata**a1*np.exp(a2*xdata)
+
+def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[-1,-1,20]):
 
     var = ExoReader(filename).read(varname)
 
@@ -120,10 +137,16 @@ def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[1,1]):
         popt,pcov = scipy.optimize.curve_fit(fit_powerlaw,r_scaled,var_scaled,p0=p0[0])
 
     elif algorithm == "curved":
-        popt,pcov = scipy.optimize.curve_fit(fit_curved_powerlaw,r_scaled,var_scaled,p0=p0)
+        popt,pcov = scipy.optimize.curve_fit(fit_curved_powerlaw,r_scaled,var_scaled,p0=p0[:-1])
 
     elif algorithm == "double":
-        popt,pcov = scipy.optimize.curve_fit(fit_double_powerlaw,r_scaled,var_scaled,p0=p0)
+        popt,pcov = scipy.optimize.curve_fit(fit_double_powerlaw,r_scaled,var_scaled,p0=p0[:-1])
+
+    elif algorithm == "broken":
+        popt,pcov = scipy.optimize.curve_fit(fit_broken_powerlaw,r_scaled,var_scaled,p0=p0)
+
+    elif algorithm == "exp":
+        popt,pcov = scipy.optimize.curve_fit(fit_exp_powerlaw,r_scaled,var_scaled,p0=p0[:-1])
 
     else:
         print("Invalid algorithm!")
