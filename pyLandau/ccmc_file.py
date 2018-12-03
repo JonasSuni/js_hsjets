@@ -66,13 +66,12 @@ def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None,p0=[-1,-1,20]):
         r_data /= r_data[0]
         var_data /= var_data[0]
         ax.set_xlim(1,max(r_data))
-        ax.set_xlabel("$R/R_0$")
-        ax.set_ylabel(var+"/"+var+"_0")  
     ax.plot(r_data,var_data,"x")
 
     if not not plot_fit:
         fpars = fit_variable(filename,varname,algorithm=plot_fit,rmin=rmin,p0=p0)
         p = fpars[2]
+        cov = fpars[3]
         if plot_fit == "power":
             y_data = fit_powerlaw(r_data,p[0])
         elif plot_fit == "curved":
@@ -98,7 +97,7 @@ def plot_variable(filename,varname,rmin=0,log=None,plot_fit=None,p0=[-1,-1,20]):
     plt.grid(which="minor")
     plt.show()
 
-    return None
+    return [p,cov]
 
 def fit_powerlaw(xdata,a1):
 
@@ -154,4 +153,8 @@ def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[-1,-1,20]):
 
     print("r0 = %.3f"%(r_data[0]))
     print("f0 = %.3f"%(var_data[0]))
-    return [r_data[0],var_data[0],popt,np.sqrt(np.diag(pcov))]
+    if algorithm == "broken":
+        err = 0.0
+    else:
+        err = np.sqrt(np.diag(pcov))
+    return [r_data[0],var_data[0],popt,err]
