@@ -1,38 +1,92 @@
 import numpy as np
+import scipy
 import matplotlib.pyplot as plt
+import scipy.constants as sc
 
-def divr(r,f):
+def divr(r,flux):
 
-    return (r**-2)*np.gradient((r**2)*f)
+    return (2*flux-np.append(0,flux)[:-1]-np.append(flux,0)[1:])/(r**2)
 
-def sim_n(n0=100.0,v0=500.0,t=10000,dt=1):
+def divr_adv(r,f):
 
-    r = np.arange(1,216).astype(float)
+    diff_for = f*r**2 - np.append(f*r**2,0)[1:]
+    diff_back = f*r**2 - np.append(0,f*r**2)[:-1]
 
-    n = (-n0/(max(r)-min(r)))*r+n0
+    diff_for[diff_for < 0] = 0.0
+    diff_back[diff_back > 0] = 0.0
 
-    dn = -v0*divr(r,n)*dt
-    dn[np.abs(dn)>1e+3] = np.sign(dn[np.abs(dn)>1e+3])*1e+3
+    return (diff_for+diff_back)/(r**2)
+
+def grad(f):
+
+    diff_for = f-np.append(f,0)[1:]
+    diff_back = f-np.append(0,f)[:-1]
+
+    diff_for[diff_for < 0] = 0.0
+    diff_back[diff_back > 0] = 0.0
+
+    return (diff_for+diff_back)
+
+def fit_sim(r,a1,a2):
+
+    return a1*(r**a2)
+
+def sim_n(n0=100.0,v0=0.2,t=10000,dt=1,rmax=10,dr=0.01):
+
+    r = np.arange(1,rmax,dr).astype(float)
+
+    n = (-n0/(max(r)-min(r)))*(r-min(r))+n0
+    #n = np.zeros_like(r)
+    n[0] = n0
+    n[-1] = 0
+
+    dn = -v0*divr_adv(r,n)*dt
+    dn[0] = 0
 
     stop = False
 
     i = 0
 
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("R",fontsize=20,labelpad=10)
+    ax.set_ylabel("n", fontsize=20,labelpad=10)
+    ax.tick_params(labelsize=20)
+    plt.grid()
+    plt.tight_layout()
+    line1, = ax.plot(r,n,"x")
+
     while not stop:
 
-        old_n = n
+        n = n + dn
 
-        n = np.concatenate((np.array([n[0]]),n[1:-1] + dn[1:-1],np.array([n[-1]])))
-        #n += dn
+        dn = -v0*divr_adv(r,n)*dt
+        dn[0] = 0
 
-        #n[n<0] = 0
-
-        dn = -v0*divr(r,n)*dt
-        dn[np.abs(dn)>1e+3] = np.sign(dn[np.abs(dn)>1e+3])*1e+3
+        if i%100 == 0:
+            line1.set_ydata(n)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
 
         i += 1
 
-        if i>t:
+        if np.linalg.norm(dn) < 0.00001*v0:
+            line1.set_ydata(n)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
             stop = True
+
+        if i>t:
+            line1.set_ydata(n)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+            stop = True
+
+    popt,pcov = scipy.optimize.curve_fit(fit_sim,r,n,p0=[n0,-2])
+    y = fit_sim(r,popt[0],popt[1])
+    ax.plot(r,y,color="red")
+    fig.show()
+    print(popt)
 
     return n
