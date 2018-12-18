@@ -6,6 +6,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator,AutoLocator,LogLocator
 
+def divr(f,r):
+
+    return np.gradient(f*r**2,np.ediff1d(r)[0])/(r**2)
+
+def grad(f,r):
+
+    return np.gradient(f,np.ediff1d(r)[0])
+
 class ExoReader:
 
     def __init__(self,filename):
@@ -158,3 +166,13 @@ def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[-1,-1,20]):
     else:
         err = np.sqrt(np.diag(pcov))
     return [r_data[0],var_data[0],popt,err]
+
+def test_zeroth(n,U,r):
+
+    n *= 1.0e+6
+    U *= 1.0e+3
+    r *= 695.7e+6
+
+    delta = divr(n*U,r)
+
+    return np.max(np.abs(delta/n))
