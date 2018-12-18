@@ -107,12 +107,12 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     rt = r*695e+6
     
     T0 = T0*(sc.k/sc.m_p)
-    GS = sc.m_p*sc.G*1.988e+30
+    GS = sc.G*1.988e+30
 
     n = n0*((r/r[0])**-2)
     #n = (-n0/218)*(r-r[0])+n0
     v = np.zeros_like(r)+v0
-    #v = 90000*(np.log(r/r[0])**0.5)+v0
+    v = 90000*(np.log(r/r[0])**0.5)+v0
     n[0] = n0
     v[0] = v0
     
@@ -141,16 +141,16 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     while not stop:
     
         k1n = dt*(-divr(v*n*rt**2,rt))
-        k1v = dt*(-v*grad(v)-T0*grad(n)/n-GS*n/(rt**2))
+        k1v = dt*(-v*grad(v)-T0*divr(n*rt**2,rt)/n-GS/(rt**2))
         
         k2n = dt*(-divr((v+k1v/2)*(n+k1n/2)*rt**2,rt))
-        k2v = dt*(-(v+k1v/2)*grad(v+k1v/2)-T0*grad(n+k1n/2)/(n+k1n/2)-GS*(n+k1n/2)/(rt**2))
+        k2v = dt*(-(v+k1v/2)*grad(v+k1v/2)-T0*divr((n+k1n/2)*rt**2,rt)/(n+k1n/2)-GS/(rt**2))
         
         k3n = dt*(-divr((v+k2v/2)*(n+k2n/2)*rt**2,rt))
-        k3v = dt*(-(v+k2v/2)*grad(v+k2v/2)-T0*grad(n+k2n/2)/(n+k2n/2)-GS*(n+k2n/2)/(rt**2))
+        k3v = dt*(-(v+k2v/2)*grad(v+k2v/2)-T0*divr((n+k2n/2)*rt**2,rt)/(n+k2n/2)-GS/(rt**2))
         
         k4n = dt*(-divr((v+k3v)*(n+k3n)*rt**2,rt))
-        k4v = dt*(-(v+k3v)*grad(v+k3v)-T0*grad(n+k3n)/(n+k3n)-GS*(n+k3n)/(rt**2))
+        k4v = dt*(-(v+k3v)*grad(v+k3v)-T0*divr((n+k3n)*rt**2,rt)/(n+k3n)-GS/(rt**2))
         
         n = n + (k1n+2*k2n+2*k3n+k4n)/6
         n[0] = n0

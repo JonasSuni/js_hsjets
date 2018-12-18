@@ -167,7 +167,14 @@ def fit_variable(filename,varname,algorithm="power",rmin=0,p0=[-1,-1,20]):
         err = np.sqrt(np.diag(pcov))
     return [r_data[0],var_data[0],popt,err]
 
-def test_zeroth(n,U,r):
+def test_zeroth(filename,species="proton"):
+
+    reader = ExoReader(filename)
+    r = reader.read("R").data
+    if species == "proton":
+        n,U = reader.read("N_p").data,reader.read("V_p").data
+    else:
+        n,U = reader.read("N_e").data,reader.read("V_e").data
 
     n *= 1.0e+6
     U *= 1.0e+3
@@ -176,3 +183,48 @@ def test_zeroth(n,U,r):
     delta = divr(n*U,r)
 
     return np.max(np.abs(delta/n))
+
+def test_first(filename,species="proton"):
+
+    reader = ExoReader(filename)
+    r = reader.read("R").data
+    if species == "proton":
+        n,U,T = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data
+        m_s = sc.m_p
+    else:
+        n,U,T = reader.read("N_e").data,reader.read("V_e").data,reader.read("T_e_par").data
+        m_s = sc.m_e
+
+    n *= 1.0e+6
+    U *= 1.0e+3
+    r *= 695.7e+6
+
+    M = 1.988e+30
+
+    delta = -U*grad(U,r)-divr(n*sc.k*T,r)/(n*m_s)-sc.G*M/(r**2)
+
+    return np.max(np.abs(delta/U))
+
+def test_second(filename,species="proton",direction="parallel"):
+
+    reader = ExoReader(filename)
+    r = reader.read("R").data
+    if direction == "parallel":
+        n,U,T,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("Q_p").data
+    else:
+        n,U,T,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_perp").data,reader.read("Q_p").data
+
+    m_s = sc.m_p
+
+    n *= 1.0e+6
+    U *= 1.0e+3
+    r *= 695.7e+6
+
+    p = sc.k*n*T
+
+    if direction == "parallel":
+        delta = -divr(U*p,r)-divr(q,r)-2*p*grad(U,r)
+    else:
+        delta = -divr(U*p,r)-divr(q,r)-p*divr(U,r)-p*grad(U,r)
+
+    return np.max(np.abs(delta/p))
