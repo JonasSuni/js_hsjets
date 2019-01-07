@@ -180,7 +180,7 @@ def test_zeroth(filename,species="proton"):
     U *= 1.0e+3
     r *= 695.7e+6
 
-    delta = divr(n*U,r)
+    delta = n*divr(U,r)+U*grad(n,r)
 
     return np.max(np.abs(delta/n))
 
@@ -189,10 +189,10 @@ def test_first(filename,species="proton"):
     reader = ExoReader(filename)
     r = reader.read("R").data
     if species == "proton":
-        n,U,T = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data
+        n,U,Tpar,Tperp = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("T_p_perp").data
         m_s = sc.m_p
     else:
-        n,U,T = reader.read("N_e").data,reader.read("V_e").data,reader.read("T_e_par").data
+        n,U,Tpar,Tperp = reader.read("N_e").data,reader.read("V_e").data,reader.read("T_e_par").data,reader.read("T_e_perp").data
         m_s = sc.m_e
 
     n *= 1.0e+6
@@ -201,18 +201,19 @@ def test_first(filename,species="proton"):
 
     M = 1.988e+30
 
-    delta = -U*grad(U,r)-divr(n*sc.k*T,r)/(n*m_s)-sc.G*M/(r**2)
+    ppar = sc.k*n*Tpar
+    pperp = sc.k*n*Tperp
+
+    delta = -U*grad(U,r)-(ppar*divr(1,r)+grad(ppar,r))/(n*m_s)-sc.G*M/(r**2)+pperp*divr(1,r)/(n*m_s)
 
     return np.max(np.abs(delta/U))
 
-def test_second(filename,species="proton",direction="parallel"):
+def test_second(filename,species="proton"):
 
     reader = ExoReader(filename)
     r = reader.read("R").data
-    if direction == "parallel":
-        n,U,T,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("Q_p").data
-    else:
-        n,U,T,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_perp").data,reader.read("Q_p").data
+    
+    n,U,Tpar,Tperp,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("T_p_perp").data,reader.read("Q_p").data
 
     m_s = sc.m_p
 
@@ -220,11 +221,15 @@ def test_second(filename,species="proton",direction="parallel"):
     U *= 1.0e+3
     r *= 695.7e+6
 
-    p = sc.k*n*T
+    rs = r/695.7e+6
 
-    if direction == "parallel":
-        delta = -divr(U*p,r)-divr(q,r)-2*p*grad(U,r)
-    else:
-        delta = -divr(U*p,r)-divr(q,r)-p*divr(U,r)-p*grad(U,r)
+    ppar = sc.k*n*Tpar
+    pperp = sc.k*n*Tperp
 
-    return np.max(np.abs(delta/p))
+    delta_par = -divr(U*ppar,r)-0*divr(q,r)-ppar*grad(U,r)-0*q*divr(1,r)
+    delta_perp = -divr(U*pperp,r)-divr(q,r)-pperp*divr(U,r)+pperp*grad(U,r)+0*2*q*divr(1,r)
+
+    delta_par_norm = np.abs(delta_par/ppar)
+    delta_perp_norm = np.abs(delta_perp/pperp)
+
+    return [np.max(delta_par_norm),rs[delta_par_norm == max(delta_par_norm)][0],np.max(delta_perp_norm),rs[delta_perp_norm == max(delta_perp_norm)][0]]
