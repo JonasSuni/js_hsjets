@@ -17,7 +17,7 @@ r_e = 6.371e+6
 
 def expr_cone_angle(exprmaps):
 
-  B = exprmaps[0]
+  B = exprmaps["B"]
 
   Bx = B[:,:,0]
   Bmag = np.linalg.norm(B,axis=-1)
@@ -36,8 +36,8 @@ def expr_pdyn_gen(exprmaps):
   curr_step = (timewidth-1)/2
   curr_maps = exprmaps[curr_step]
 
-  rho = curr_maps[0]
-  v = curr_maps[1]
+  rho = curr_maps["rho"]
+  v = curr_maps["v"]
 
   # calculate dynamic pressure
   pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
@@ -51,8 +51,8 @@ def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
   # returns dynamic pressure in nanopascals
 
-  rho = exprmaps[0]
-  v = exprmaps[1]
+  rho = exprmaps["rho"]
+  v = exprmaps["v"]
 
   # calculate dynamic pressure
   pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
@@ -66,8 +66,8 @@ def expr_srho(exprmaps):
   # exprmaps is ["rho","CellID"]
   # returns number density in cm^-3
 
-  rho = exprmaps[0][:,:]
-  cellids = exprmaps[1][:,:]
+  rho = exprmaps["rho"][:,:]
+  cellids = exprmaps["CellID"][:,:]
 
   # rho in cm^-3
   srho = rho/1.0e+6

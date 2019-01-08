@@ -31,15 +31,15 @@ def draw_all_cont():
 
 def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
-    rho = extmaps[0].flatten()
-    vx = extmaps[1][:,:,0].flatten()
-    vy = extmaps[1][:,:,1].flatten()
-    vz = extmaps[1][:,:,2].flatten()
+    rho = extmaps["rho"].flatten()
+    vx = extmaps["v"][:,:,0].flatten()
+    vy = extmaps["v"][:,:,1].flatten()
+    vz = extmaps["v"][:,:,2].flatten()
     vmag = np.linalg.norm([vx,vy,vz],axis=0)
-    cellids = extmaps[2].flatten()
+    cellids = extmaps["CellID"].flatten()
     XmeshXY = XmeshXY.flatten()
     YmeshXY = YmeshXY.flatten()
-    shp = extmaps[0].shape
+    shp = extmaps["rho"].shape
 
     pdyn = m_p*rho*(vmag**2)
     pdyn_x = m_p*rho*(vx**2)
@@ -155,7 +155,7 @@ def plot_streamlines(boxre=[4,20,-10,10]):
 
 def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
-    B = extmaps[2]
+    B = extmaps["B"]
 
     Bx = B[:,:,0]
     By = B[:,:,2]
@@ -174,7 +174,7 @@ def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
 def expr_smooth(exprmaps):
 
-    rho = exprmaps[0]/1.0e+6
+    rho = exprmaps["rho"]/1.0e+6
 
     rho = scipy.ndimage.uniform_filter(rho,size=9,mode="nearest")
 

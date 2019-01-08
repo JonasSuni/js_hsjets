@@ -292,7 +292,7 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
 
 def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 
-    rho,v,cellids = extmaps
+    rho,v,cellids = extmaps["rho"],extmaps["v"],extmaps["CellID"]
 
     x_list,y_list,cells,fullmask,xmax_list,ymax_list = ext_pars
 

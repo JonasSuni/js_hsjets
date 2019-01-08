@@ -204,7 +204,7 @@ def test_first(filename,species="proton"):
     ppar = sc.k*n*Tpar
     pperp = sc.k*n*Tperp
 
-    delta = -U*grad(U,r)-(ppar*divr(1,r)+grad(ppar,r))/(n*m_s)-sc.G*M/(r**2)+pperp*divr(1,r)/(n*m_s)
+    delta = -U*grad(U,r)-divr(ppar,r)/(n*m_s)-sc.G*M/(r**2)+pperp*divr(1,r)/(n*m_s)
 
     return np.max(np.abs(delta/U))
 
@@ -226,8 +226,8 @@ def test_second(filename,species="proton"):
     ppar = sc.k*n*Tpar
     pperp = sc.k*n*Tperp
 
-    delta_par = -divr(U*ppar,r)-0*divr(q,r)-ppar*grad(U,r)-0*q*divr(1,r)
-    delta_perp = -divr(U*pperp,r)-divr(q,r)-pperp*divr(U,r)+pperp*grad(U,r)+0*2*q*divr(1,r)
+    delta_par = -(ppar*divr(U,r)+U*grad(ppar,r))-0*divr(q,r)-2*ppar*grad(U,r)+0*2*q*divr(1,r)
+    delta_perp = -(pperp*divr(U,r)+U*grad(pperp,r))-0*divr(q,r)-pperp*divr(U,r)+pperp*grad(U,r)-0*q*divr(1,r)
 
     delta_par_norm = np.abs(delta_par/ppar)
     delta_perp_norm = np.abs(delta_perp/pperp)
