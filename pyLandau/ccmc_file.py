@@ -193,7 +193,7 @@ def test_first(filename,species="proton"):
         m_s = sc.m_p
     else:
         n,U,Tpar,Tperp = reader.read("N_e").data,reader.read("V_e").data,reader.read("T_e_par").data,reader.read("T_e_perp").data
-        m_s = sc.m_e
+        m_s = sc.m_p
 
     n *= 1.0e+6
     U *= 1.0e+3
@@ -213,9 +213,12 @@ def test_second(filename,species="proton"):
     reader = ExoReader(filename)
     r = reader.read("R").data
     
-    n,U,Tpar,Tperp,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("T_p_perp").data,reader.read("Q_p").data
-
-    m_s = sc.m_p
+    if species == "proton":
+        n,U,Tpar,Tperp,q = reader.read("N_p").data,reader.read("V_p").data,reader.read("T_p_par").data,reader.read("T_p_perp").data,reader.read("Q_p").data
+        m_s = sc.m_p
+    else:
+        n,U,Tpar,Tperp,q = reader.read("N_e").data,reader.read("V_e").data,reader.read("T_e_par").data,reader.read("T_e_perp").data,reader.read("Q_e").data
+        m_s = sc.m_p
 
     n *= 1.0e+6
     U *= 1.0e+3
