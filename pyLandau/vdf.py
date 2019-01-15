@@ -32,7 +32,20 @@ def vdf_dM(n1,n2,T1,T2,v,species="proton"):
 
     v = v.astype(float)
 
-    vdf = vdf_M(n1,T1,v,species)+vdf_M(n2,T2,v,species)
+    vdf = vdf_M(abs(n1),T1,v,species)+vdf_M(abs(n2),T2,v,species)
+    vdf *= (float(abs(n1))/(abs(n1)+abs(n2)))
+
+    return vdf
+
+def vdf_dkM(n1,n2,T1,T2,k,v0,v,species="proton"):
+
+    v = v.astype(float)
+
+    res1 = vdf_k(n2,T2,v[v<=-v0],k,species)
+    res2 = vdf_M(n1,T1,v[(v>-v0)&(v<v0)],species)
+    res3 = vdf_k(n2,T2,v[v>=v0],k,species)
+
+    vdf = np.concatenate((res1,res2,res3))
 
     return vdf
 
@@ -44,9 +57,9 @@ def vdf_brM(n1,n2,T1,T2,v0,v,species="proton"):
     res2 = vdf_M(n1,T1,v[(v>-v0)&(v<v0)],species)
     res3 = vdf_M(n2,T2,v[v>=v0],species)
 
-    res2 /= (res1[-1]/res2[0])
+    rest = np.concatenate((res1,res2,res3))
 
-    return np.concatenate((res1,res2,res3))
+    return rest
 
 def generate_vdf(n,T,species="proton",type="maxwell",k=0.5,n2=0,T2=1):
 
@@ -64,7 +77,11 @@ def dm_fitter(xdata,a1,a2,a3,a4):
 
 def brm_fitter(xdata,a1,a2,a3,a4,a5):
 
-    return vdf_brM(a1,a2,a3,a4,a5,xdata,species="proton")    
+    return vdf_brM(a1,a2,a3,a4,a5,xdata,species="proton")
+
+def dkm_fitter(xdata,a1,a2,a3,a4,a5,a6):
+
+    return vdf_dkM(a1,a2,a3,a4,a5,a6,xdata,species="proton")    
 
 def fit_dmk(n,T,k=0.5,species="proton"):
 
@@ -74,7 +91,7 @@ def fit_dmk(n,T,k=0.5,species="proton"):
 
     kappa_vdf = vdf_k(n,T,v,k,species)
 
-    popt,pcov = scipy.optimize.curve_fit(brm_fitter,v,kappa_vdf,p0=[n,n,T,T,50000])
+    popt,pcov = scipy.optimize.curve_fit(dm_fitter,v,kappa_vdf,p0=[n,n,T,T,k,100000])
 
     dm_vdf = dm_fitter(v,popt[0],popt[1],popt[2],popt[3])
 
