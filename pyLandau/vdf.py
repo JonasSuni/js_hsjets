@@ -61,9 +61,42 @@ def vdf_brM(n1,n2,T1,T2,v0,v,species="proton"):
 
     return rest
 
+def vdf_2d_m(Tpar,Tperp,vpar,vperp):
+
+    m_s = sc.m_p
+
+    theta_par = np.sqrt(2*sc.k*Tpar/m_s)
+    theta_perp = np.sqrt(2*sc.k*Tperp/m_s)
+
+    vdf = np.exp(-(vpar**2)/(theta_par**2)-(vperp**2)/(theta_perp**2))*(np.pi**(-1.5))*(theta_par*(theta_perp**2))**(-1)
+
+    return vdf
+
+def vdf_2d_k(Tpar,Tperp,vpar,vperp,k):
+
+    m_s = sc.m_p
+
+    theta_par = np.sqrt(2*sc.k*Tpar*(k-1.5)/m_s/k)
+    theta_perp = np.sqrt(2*sc.k*Tperp*(k-1.5)/m_s/k)
+
+    vdf = (np.pi*k)**(-1.5)*(theta_par*theta_perp**2)**(-1)*(scipy.special.gamma(k+1)/scipy.special.gamma(k-0.5))*(1+vpar**2/(k*theta_par**2)+vperp**2/(k*theta_perp**2))**(-k-1)
+
+    return vdf
+
+def generate_2d_vdf(Tpar,Tperp,vmax,vstep,k):
+
+    v = np.arange(-vmax,vmax+1,vstep).astype(float)
+
+    vpar,vperp = scipy.meshgrid(v,v)
+
+    vdfm = vdf_2d_m(Tpar,Tperp,vpar,vperp)
+    vdfk = vdf_2d_k(Tpar,Tperp,vpar,vperp,k)
+
+    return [vpar,vperp,vdfm,vdfk]
+
 def generate_vdf(n,T,species="proton",type="maxwell",k=0.5,n2=0,T2=1):
 
-    v = np.arange(-1000000,1000001,10).astype(float)
+    v = np.arange(-200000,200001,100).astype(float)
 
     m_s = {"proton":sc.m_p,"electron":sc.m_e}[species]
 
@@ -85,7 +118,7 @@ def dkm_fitter(xdata,a1,a2,a3,a4,a5,a6):
 
 def fit_dmk(n,T,k=0.5,species="proton"):
 
-    v = np.arange(-1000000,1000001,10).astype(float)
+    v = np.arange(-100000,100001,100).astype(float)
 
     m_s = {"proton":sc.m_p,"electron":sc.m_e}[species]
 
