@@ -76,8 +76,8 @@ def vdf_2d_k(Tpar,Tperp,vpar,vperp,k):
 
     m_s = sc.m_p
 
-    theta_par = np.sqrt(2*sc.k*Tpar*(k-1.5)/m_s/k)
-    theta_perp = np.sqrt(2*sc.k*Tperp*(k-1.5)/m_s/k)
+    theta_par = np.sqrt(2*sc.k*Tpar*(k-1.5)/(m_s*k))
+    theta_perp = np.sqrt(2*sc.k*Tperp*(k-1.5)/(m_s*k))
 
     vdf = (np.pi*k)**(-1.5)*(theta_par*theta_perp**2)**(-1)*(scipy.special.gamma(k+1)/scipy.special.gamma(k-0.5))*(1+vpar**2/(k*theta_par**2)+vperp**2/(k*theta_perp**2))**(-k-1)
 
