@@ -3,15 +3,31 @@ import scipy
 import matplotlib.pyplot as plt
 import scipy.constants as sc
 
-def divr(flux,r):
+gS = sc.G*1.988e+30
+
+def divr(f,r=None):
+
+    if not r:
+        r = np.ones_like(f)
 
     #return divr_false(flux,r)
-    return divr_true(flux,r)
+    #return divr_true(flux,r)
 
-def grad(f):
+    return grad(f*r**2,r)/(r**2)
+
+def grad(f,r=None):
+
+    if not r:
+        r = np.ones_like(f)
+
+    dr = np.ediff1d(r)[0]
+
+    res = (-np.pad(f,(0,2),mode="edge")[2:]+8*np.pad(f,(0,1),mode="edge")[1:]-8*np.pad(f,(1,0),mode="edge")[:-1]+np.pad(f,(2,0),mode="edge")[:-2])/(12*dr)
 
     #return grad_false(f)
-    return grad_true(f)
+    #return grad_true(f)
+
+    return res.astype(float)
 
 def grad_false(f):
 
@@ -36,6 +52,14 @@ def fit_n(r,a1,a2):
 def fit_v(r,a1,a2,a3):
 
     return a1+a2*(np.log(r/2))**a3
+
+def dn(v,n,r):
+
+    return -n*divr(v,r)-v*grad(n,r)
+
+def dv(v,n,r,T):
+
+    return -v*grad(v,r)-divr(T*n*sc.k,r)/(sc.m_p*n)-gS/(r**2)
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
@@ -156,7 +180,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
         n[0] = n0
         
         v = v + (k1v+2*k2v+2*k3v+k4v)/6
-        v[0] = v0
+        #v[0] = v0
         
         i += 1
         
