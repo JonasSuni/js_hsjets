@@ -15,6 +15,8 @@ def grad(f,r):
 
     res = (-np.pad(f,(0,2),mode="edge")[2:]+8*np.pad(f,(0,1),mode="edge")[1:]-8*np.pad(f,(1,0),mode="edge")[:-1]+np.pad(f,(2,0),mode="edge")[:-2])/(12*dr)
 
+    #res = (-(25.0/12)*f+4*np.pad(f,(0,1),mode="edge")[1:]-3*np.pad(f,(0,2),mode="edge")[2:]+(4.0/3)*np.pad(f,(0,3),mode="edge")[3:]-0.25*np.pad(f,(0,4),mode="edge")[4:])/dr
+
     return res.astype(float)
 
 def dn(n,v,r):
@@ -23,7 +25,7 @@ def dn(n,v,r):
 
 def dv(n,v,T,r):
 
-    return -v*grad(v,r)-divr(T*n*sc.k,r)/(sc.m_p*n)-gS/(r**2)
+    return -v*grad(v,r)-grad(2*n*sc.k*T,r)/(sc.m_p*n)-gS/(r**2)
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
@@ -82,7 +84,8 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     r = np.arange(2,rmax,dr).astype(float)
     r = r*695e+6
 
-    n = n0*(r/r[0])**-2
+    n = n0*(r/r[0])**-3
+    #n = np.ones_like(r)
     v = np.ones_like(r)*v0
     T = np.ones_like(r)*T0
     n[0] = n0
@@ -103,13 +106,13 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     ax2.set_ylabel("v",fontsize=20,labelpad=10)
     ax1.tick_params(labelsize=15)
     ax2.tick_params(labelsize=15)
-    ax2.set_ylim(v0-1000000,v0+1000000)
+    ax2.set_ylim(0,1000000)
     if animate:
         line1, = ax1.plot(r,n,"x")
         line2, = ax2.plot(r,v,"x")
     plt.tight_layout()
     
-    while not stop:
+    for i in xrange(int(t/dt)):
     
         kn1 = dt*dn(n,v,r)
         kv1 = dt*dv(n,v,T,r)
@@ -129,26 +132,23 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
         n[0] = n0
         #v[0] = 2*v[1]-v[2]
         
-        i += 1
-        
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
             line2.set_ydata(v)
             fig.canvas.draw()
             fig.canvas.flush_events()
             
-        if i>t/dt:
-            stop = True
-            if animate:
-                line1.set_ydata(n)
-                line2.set_ydata(v)
-                ax2.set_ylim(v0,max(v))
-                ax1.set_ylim(0,n0)
-                fig.canvas.draw()
-                fig.canvas.flush_events()
-            else:
-                ax1.plot(r,n,"x")
-                ax2.plot(r,v,"x")
+
+    if animate:
+        line1.set_ydata(n)
+        line2.set_ydata(v)
+        ax2.set_ylim(min(v),max(v))
+        ax1.set_ylim(0,n0)
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    else:
+        ax1.plot(r,n,"x")
+        ax2.plot(r,v,"x")
 
     plt.tight_layout()
     
