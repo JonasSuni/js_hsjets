@@ -13,15 +13,14 @@ def grad(f,r):
 
     dr = np.ediff1d(r)[0]
 
-    res = (-np.pad(f,(0,2),mode="edge")[2:]+8*np.pad(f,(0,1),mode="edge")[1:]-8*np.pad(f,(1,0),mode="edge")[:-1]+np.pad(f,(2,0),mode="edge")[:-2])/(12*dr)
-
-    #res = (-(25.0/12)*f+4*np.pad(f,(0,1),mode="edge")[1:]-3*np.pad(f,(0,2),mode="edge")[2:]+(4.0/3)*np.pad(f,(0,3),mode="edge")[3:]-0.25*np.pad(f,(0,4),mode="edge")[4:])/dr
+    res = (-np.pad(f,(0,2),mode="reflect",reflect_type="odd")[2:]+8*np.pad(f,(0,1),mode="reflect",reflect_type="odd")[1:]-8*np.pad(f,(1,0),mode="reflect",reflect_type="odd")[:-1]+np.pad(f,(2,0),mode="reflect",reflect_type="odd")[:-2])/(12*dr)
 
     return res.astype(float)
 
 def dn(n,v,r):
 
     return -n*divr(v,r)-v*grad(n,r)
+    #return -grad(r**2*n*v,r)/(r**2)
 
 def dv(n,v,T,r):
 
@@ -29,8 +28,8 @@ def dv(n,v,T,r):
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
-    r = np.arange(2,rmax,dr).astype(float)
-    r = r*695e+6
+    r = np.arange(1,rmax,dr).astype(float)
+    r = r*1e+9
 
     n = np.ones_like(r)*n0
     v = np.ones_like(r)*v0
@@ -79,10 +78,76 @@ def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",ani
 
     return n
 
+def rk4_nv(n,v,T,r,dt):
+
+    n0 = n[0]
+
+    kn1 = dt*dn(n,v,r)
+    kn1[0] = 0
+    kn2 = dt*dn(n+kn1/2,v,r)
+    kn2[0] = 0
+    kn3 = dt*dn(n+kn2/2,v,r)
+    kn3[0] = 0
+    kn4 = dt*dn(n+kn3,v,r)
+
+    n = n + (kn1+2*kn2+2*kn3+kn4)/6
+    n[0] = n0
+
+    kv1 = dt*dv(n,v,T,r)
+    kv2 = dt*dv(n,v+kv1/2,T,r)
+    kv3 = dt*dv(n,v+kv2/2,T,r)
+    kv4 = dt*dv(n,v+kv3,T,r)
+
+    v = v + (kv1+2*kv2+2*kv3+kv4)/6
+
+    return [n,v]
+
+def ssprk3_nv(n,v,T,r,dt):
+
+    n0 = n[0]
+
+    kn1 = dt*dn(n,v,r)
+    kn1[0] = 0
+    kn2 = dt*dn(n+kn1,v,r)
+    kn2[0] = 0
+    kn3 = dt*dn(n+kn1/4+kn2/4,v,r)
+    
+    n = n + (kn1+kn2+4*kn3)/6
+    n[0] = n0
+
+    kv1 = dt*dv(n,v,T,r)
+    kv2 = dt*dv(n,v+kv1,T,r)
+    kv3 = dt*dv(n,v+kv1/4+kv2/4,T,r)
+    
+    v = v + (kv1+kv2+4*kv3)/6
+
+    return [n,v]
+
+def rk4_38_nv(n,v,T,r,dt):
+
+    n0 = n[0]
+
+    kn1 = dt*dn(n,v,r)
+    kn2 = dt*dn(n+kn1/3,v,r)
+    kn3 = dt*dn(n-kn1/3+kn2,v,r)
+    kn4 = dt*dn(n+kn1-kn2+kn3,v,r)
+
+    n = n + (kn1+3*kn2+3*kn3+kn4)/8
+    n[0] = n0
+
+    kv1 = dt*dv(n,v,T,r)
+    kv2 = dt*dv(n,v+kv1/3,T,r)
+    kv3 = dt*dv(n,v-kv1/3+kv2,T,r)
+    kv4 = dt*dv(n,v+kv1-kv2+kv3,T,r)
+    
+    v = v + (kv1+3*kv2+3*kv3+kv4)/8
+
+    return [n,v]
+
 def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
 
-    r = np.arange(2,rmax,dr).astype(float)
-    r = r*695e+6
+    r = np.arange(1,rmax,dr).astype(float)
+    r = r*1e+9
 
     n = n0*(r/r[0])**-3
     #n = np.ones_like(r)
@@ -96,6 +161,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     
     plt.ion()
     fig = plt.figure(figsize=(15,10))
+    fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
     ax1 = fig.add_subplot(121)
     ax2 = fig.add_subplot(122)
     ax1.grid(b=True)
@@ -107,31 +173,17 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     ax1.tick_params(labelsize=15)
     ax2.tick_params(labelsize=15)
     ax2.set_ylim(0,1000000)
+    ax2.set_yticks([100000,200000,300000,400000,500000,600000,700000,800000,900000])
     if animate:
         line1, = ax1.plot(r,n,"x")
         line2, = ax2.plot(r,v,"x")
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.subplots_adjust()
     
     for i in xrange(int(t/dt)):
-    
-        kn1 = dt*dn(n,v,r)
-        kv1 = dt*dv(n,v,T,r)
         
-        kn2 = dt*dn(n+kn1/2,v+kv1/2,r)
-        kv2 = dt*dv(n+kn1/2,v+kv1/2,T,r)
+        n,v = rk4_38_nv(n,v,T,r,dt)
 
-        kn3 = dt*dn(n+kn2/2,v+kv2/2,r)
-        kv3 = dt*dv(n+kn2/2,v+kv2/2,T,r)
-
-        kn4 = dt*dn(n+kn3,v+kv3,r)
-        kv4 = dt*dv(n+kn3,v+kv3,T,r)
-        
-        n = n + (kn1+2*kn2+2*kn3+kn4)/6
-        v = v + (kv1+2*kv2+2*kv3+kv4)/6
-        
-        n[0] = n0
-        #v[0] = 2*v[1]-v[2]
-        
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
             line2.set_ydata(v)
