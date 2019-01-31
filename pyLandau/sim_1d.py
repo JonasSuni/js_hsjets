@@ -20,11 +20,15 @@ def grad(f,r):
 def dn(n,v,r):
 
     return -n*divr(v,r)-v*grad(n,r)
-    #return -grad(r**2*n*v,r)/(r**2)
 
 def dv(n,v,T,r):
 
     return -v*grad(v,r)-grad(2*n*sc.k*T,r)/(sc.m_p*n)-gS/(r**2)
+
+def dp(v,p,q,r):
+
+    #return -(p*divr(v,r)+v*grad(p,r))-grad(q,r)-2*p*grad(v,r)
+    return -(p*divr(v,r)+v*grad(p,r))-2*p*grad(v,r)
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
@@ -107,9 +111,7 @@ def ssprk3_nv(n,v,T,r,dt):
     n0 = n[0]
 
     kn1 = dt*dn(n,v,r)
-    kn1[0] = 0
     kn2 = dt*dn(n+kn1,v,r)
-    kn2[0] = 0
     kn3 = dt*dn(n+kn1/4+kn2/4,v,r)
     
     n = n + (kn1+kn2+4*kn3)/6
@@ -120,6 +122,30 @@ def ssprk3_nv(n,v,T,r,dt):
     kv3 = dt*dv(n,v+kv1/4+kv2/4,T,r)
     
     v = v + (kv1+kv2+4*kv3)/6
+
+    return [n,v]
+
+def rk2_nv(n,v,T,r,dt):
+
+    n0 = n[0]
+    kn1 = dt*dn(n,v,r)
+    d_n = dt*dn(n+kn1/2,v,r)
+
+    std_dn = np.std(d_n,ddof=1)
+    mean_dn = np.mean(d_n)
+    d_n = np.sign(d_n)*np.fmin(np.abs(d_n),mean_dn+2*std_dn)
+
+    n = n + d_n
+    n[0] = n0
+
+    kv1 = dt*dv(n,v,T,r)
+    d_v = dt*dv(n,v+kv1/2,T,r)
+    
+    std_dv = np.std(d_v,ddof=1)
+    mean_dv = np.mean(d_v)
+    d_v = np.sign(d_v)*np.fmin(np.abs(d_v),mean_dv+2*std_dv)
+
+    v = v + d_v
 
     return [n,v]
 
@@ -155,6 +181,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     T = np.ones_like(r)*T0
     n[0] = n0
 
+
     stop = False
     
     i = 0
@@ -182,7 +209,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     
     for i in xrange(int(t/dt)):
         
-        n,v = rk4_38_nv(n,v,T,r,dt)
+        n,v = rk2_nv(n,v,T,r,dt)
 
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
@@ -202,16 +229,53 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
         ax1.plot(r,n,"x")
         ax2.plot(r,v,"x")
 
-    plt.tight_layout()
     
     return [n,v]
 
+def rk2_nvT(n,v,T,q,r,dt):
+    
+    p = 2*n*sc.k*T
+    p0 = p[0]
+    kp1 = dt*dp(v,p,q,r)
+    d_p = dt*dp(v,p+kp1/2,q,r)
+
+    std_dp = np.std(d_p,ddof=1)
+    mean_dp = np.mean(d_p)
+    d_p = np.sign(d_p)*np.fmin(np.abs(d_p),mean_dp+2*std_dp)
+
+    p = p + d_p
+    p[0] = p0
+
+    T = p/(2*n*sc.k)
+
+    n0 = n[0]
+    kn1 = dt*dn(n,v,r)
+    d_n = dt*dn(n+kn1/2,v,r)
+
+    std_dn = np.std(d_n,ddof=1)
+    mean_dn = np.mean(d_n)
+    d_n = np.sign(d_n)*np.fmin(np.abs(d_n),mean_dn+2*std_dn)
+
+    n = n + d_n
+    n[0] = n0
+
+    kv1 = dt*dv(n,v,T,r)
+    d_v = dt*dv(n,v+kv1/2,T,r)
+    
+    std_dv = np.std(d_v,ddof=1)
+    mean_dv = np.mean(d_v)
+    d_v = np.sign(d_v)*np.fmin(np.abs(d_v),mean_dv+2*std_dv)
+
+    v = v + d_v
+
+    return [n,v,T]
+
 def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
 
-    r = np.arange(2,rmax,dr).astype(float)
-    rr = r*695e+6
+    r = np.arange(1,rmax,dr).astype(float)
+    r = r*1e+9
 
-    n = np.zeros_like(r)*n0
+    n = n0*(r/r[0])**-3
     v = np.ones_like(r)*v0
     T = np.ones_like(r)*T0
     q = np.ones_like(r)*q0
@@ -225,78 +289,49 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     ax1 = fig.add_subplot(221)
     ax2 = fig.add_subplot(222)
     ax3 = fig.add_subplot(223)
-    ax4 = fig.add_subplot(224)
     ax1.grid(b=True)
     ax2.grid(b=True)
     ax3.grid(b=True)
-    ax4.grid(b=True)
+    ax2.set_xlabel("r",fontsize=20,labelpad=10)
     ax3.set_xlabel("r",fontsize=20,labelpad=10)
-    ax4.set_xlabel("r",fontsize=20,labelpad=10)
     ax1.set_ylabel("n",fontsize=20,labelpad=10)
     ax2.set_ylabel("v",fontsize=20,labelpad=10)
-    ax3.set_ylabel("Tpar",fontsize=20,labelpad=10)
-    ax4.set_ylabel("Tperp",fontsize=20,labelpad=10)
+    ax3.set_ylabel("T",fontsize=20,labelpad=10)
     ax1.tick_params(labelsize=15)
     ax2.tick_params(labelsize=15)
     ax3.tick_params(labelsize=15)
-    ax4.tick_params(labelsize=15)
+    ax2.set_ylim(0,1000000)
+    ax3.set_ylim(0,max(T))
     if animate:
         line1, = ax1.plot(r,n,"x")
         line2, = ax2.plot(r,v,"x")
-        line3, = ax3.plot(r,Tpar,"x")
-        line4, = ax4.plot(r,Tperp,"x")
+        line3, = ax3.plot(r,T,"x")
     plt.tight_layout()
     
-    while not stop:
-    
-        # WIP
-
-        i += 1
+    for i in xrange(int(t/dt)):    
+        
+        n,v,T = rk2_nvT(n,v,T,q,r,dt)
         
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
             line2.set_ydata(v)
-            line3.set_ydata(Tpar)
-            line2.set_ydata(Tperp)
+            line3.set_ydata(T)
             fig.canvas.draw()
             fig.canvas.flush_events()
             
-        if i>t/dt:
-            stop = True
-            if animate:
-                line1.set_ydata(n)
-                line2.set_ydata(v)
-                line3.set_ydata(Tpar)
-                line4.set_ydata(Tperp)
-                ax2.set_ylim(v0,max(v))
-                ax3.set_ylim(min(Tpar),max(Tpar))
-                ax4.set_ylim(min(Tperp),max(Tperp))
-                fig.canvas.draw()
-                fig.canvas.flush_events()
-            else:
-                ax1.plot(r,n,"x")
-                ax2.plot(r,v,"x")
-                ax3.plot(r,Tpar,"x")
-                ax4.plot(r,Tperp,"x")
 
-    plt.tight_layout()
+    if animate:
+        line1.set_ydata(n)
+        line2.set_ydata(v)
+        line3.set_ydata(T)
+        ax2.set_ylim(v0,max(v))
+        ax3.set_ylim(min(T),max(T))
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    else:
+        ax1.plot(r,n,"x")
+        ax2.plot(r,v,"x")
+        ax3.plot(r,T,"x")
 
-    popt,pcov = scipy.optimize.curve_fit(fit_n,r,n,p0=[n0,-2])
-    y = fit_n(r,popt[0],popt[1])
-    ax1.plot(r,y,color="red")
-    fig.show()
-    print(popt)
-
-    poptv,pcovv = scipy.optimize.curve_fit(fit_v,r,v,p0=[v0,0.1,0.5])
-    yv = fit_v(r,poptv[0],poptv[1],poptv[2])
-    ax2.plot(r,yv,color="red")
-    fig.show()
-    print(poptv)
-
-    fig.savefig("landau/simulations/sim_nvT_rk4_"+figname+".png")
-
-    f = open("landau/simulations/sim_nvT_rk4_pars_"+figname+".txt","w")
-    f.write(str(popt[0])+" "+str(popt[1])+"\n"+str(poptv[0])+" "+str(poptv[1])+" "+str(poptv[2]))
-    f.close()
     
     return [n,v]
