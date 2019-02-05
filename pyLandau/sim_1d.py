@@ -125,26 +125,24 @@ def ssprk3_nv(n,v,T,r,dt):
 
     return [n,v]
 
-def rk2_nv(n,v,T,r,dt):
+def rk2_nv(n,v,T,r,dt,clips=None,ret_deltas=False):
 
     n0 = n[0]
     kn1 = dt*dn(n,v,r)
     d_n = dt*dn(n+kn1/2,v,r)
 
-    std_dn = np.std(d_n,ddof=1)
-    mean_dn = np.mean(d_n)
-    d_n = np.sign(d_n)*np.fmin(np.abs(d_n),mean_dn+2*std_dn)
-
-    n = n + d_n
-    n[0] = n0
 
     kv1 = dt*dv(n,v,T,r)
     d_v = dt*dv(n,v+kv1/2,T,r)
     
-    std_dv = np.std(d_v,ddof=1)
-    mean_dv = np.mean(d_v)
-    d_v = np.sign(d_v)*np.fmin(np.abs(d_v),mean_dv+2*std_dv)
+    if ret_deltas:
+        return [d_n,d_v]
 
+    d_n = np.clip(d_n,-clips[0],clips[0])
+    d_v = np.clip(d_v,-clips[1],clips[1])
+
+    n = n + d_n
+    n[0] = n0
     v = v + d_v
 
     return [n,v]
@@ -185,6 +183,13 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     stop = False
     
     i = 0
+
+    d_n,d_v = rk2_nv(n,v,T,r,dt,ret_deltas=True)
+    std_dn = np.std(d_n,ddof=1)
+    mean_dn = np.mean(d_n)
+    std_dv = np.std(d_v,ddof=1)
+    mean_dv = np.mean(d_v)
+    clips = [mean_dn+2*std_dn,mean_dv+2*std_dv]
     
     plt.ion()
     fig = plt.figure(figsize=(15,10))
@@ -209,7 +214,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     
     for i in xrange(int(t/dt)):
         
-        n,v = rk2_nv(n,v,T,r,dt)
+        n,v = rk2_nv(n,v,T,r,dt,clips=clips)
 
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
@@ -232,42 +237,65 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     
     return [n,v]
 
-def rk2_nvT(n,v,T,q,r,dt):
+def rk2_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     
     p = 2*n*sc.k*T
     p0 = p[0]
     kp1 = dt*dp(v,p,q,r)
     d_p = dt*dp(v,p+kp1/2,q,r)
 
-    std_dp = np.std(d_p,ddof=1)
-    mean_dp = np.mean(d_p)
-    d_p = np.sign(d_p)*np.fmin(np.abs(d_p),mean_dp+2*std_dp)
+    n0 = n[0]
+    kn1 = dt*dn(n,v,r)
+    d_n = dt*dn(n+kn1/2,v,r)
+
+    kv1 = dt*dv(n,v,T,r)
+    d_v = dt*dv(n,v+kv1/2,T,r)
+    
+    if ret_deltas:
+        return [d_n,d_v,d_p]
+
+    d_p = np.clip(d_p,-clips[2],clips[2])
+    d_v = np.clip(d_v,-clips[1],clips[1])
+    d_n = np.clip(d_n,-clips[0],clips[0])
 
     p = p + d_p
     p[0] = p0
 
     T = p/(2*n*sc.k)
-
-    n0 = n[0]
-    kn1 = dt*dn(n,v,r)
-    d_n = dt*dn(n+kn1/2,v,r)
-
-    std_dn = np.std(d_n,ddof=1)
-    mean_dn = np.mean(d_n)
-    d_n = np.sign(d_n)*np.fmin(np.abs(d_n),mean_dn+2*std_dn)
+    v = v + d_v
 
     n = n + d_n
     n[0] = n0
-
-    kv1 = dt*dv(n,v,T,r)
-    d_v = dt*dv(n,v+kv1/2,T,r)
     
-    std_dv = np.std(d_v,ddof=1)
-    mean_dv = np.mean(d_v)
-    d_v = np.sign(d_v)*np.fmin(np.abs(d_v),mean_dv+2*std_dv)
+    return [n,v,T]
+
+def rk1_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
+    
+    p = 2*n*sc.k*T
+    p0 = p[0]
+    d_p = dt*dp(v,p,q,r)
+
+    n0 = n[0]
+    d_n = dt*dn(n,v,r)
+
+    d_v = dt*dv(n,v,T,r)
+    
+    if ret_deltas:
+        return [d_n,d_v,d_p]
+
+    d_p = np.clip(d_p,-clips[2],clips[2])
+    d_v = np.clip(d_v,-clips[1],clips[1])
+    d_n = np.clip(d_n,-clips[0],clips[0])
+
+    p = p + d_p
+    p[0] = p0
 
     v = v + d_v
 
+    n = n + d_n
+    n[0] = n0
+    T = p/(2*n*sc.k)
+    
     return [n,v,T]
 
 def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
@@ -275,7 +303,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     r = np.arange(1,rmax,dr).astype(float)
     r = r*1e+9
 
-    n = n0*(r/r[0])**-3
+    n = n0*(r/r[0])**-2
     v = np.ones_like(r)*v0
     T = np.ones_like(r)*T0
     q = np.ones_like(r)*q0
@@ -283,6 +311,15 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     stop = False
     
     i = 0
+
+    d_n,d_v,d_p = rk2_nvT(n,v,T,q,r,dt,ret_deltas=True)
+    std_dn = np.std(d_n,ddof=1)
+    mean_dn = np.mean(d_n)
+    std_dv = np.std(d_v,ddof=1)
+    mean_dv = np.mean(d_v)
+    std_dp = np.std(d_p,ddof=1)
+    mean_dp = np.mean(d_p)
+    clips = [mean_dn+1*std_dn,mean_dv+1*std_dv,mean_dp+1*std_dp]
     
     plt.ion()
     fig = plt.figure(figsize=(10,10))
@@ -310,7 +347,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     
     for i in xrange(int(t/dt)):    
         
-        n,v,T = rk2_nvT(n,v,T,q,r,dt)
+        n,v,T = rk1_nvT(n,v,T,q,r,dt,clips=clips)
         
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
