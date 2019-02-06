@@ -2,6 +2,7 @@ import numpy as np
 import scipy
 import matplotlib.pyplot as plt
 import scipy.constants as sc
+import scipy.signal as ssi
 
 gS = sc.G*1.988e+30
 
@@ -173,9 +174,10 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     r = np.arange(1,rmax,dr).astype(float)
     r = r*1e+9
 
-    n = n0*(r/r[0])**-3
+    n = n0*(r/r[0])**-2
     #n = np.ones_like(r)
-    v = np.ones_like(r)*v0
+    #v = np.ones_like(r)*v0
+    v = np.log(r/r[0])**0.5
     T = np.ones_like(r)*T0
     n[0] = n0
 
@@ -261,11 +263,12 @@ def rk2_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     p = p + d_p
     p[0] = p0
 
-    T = p/(2*n*sc.k)
     v = v + d_v
 
     n = n + d_n
     n[0] = n0
+    
+    T = p/(2*n*sc.k)
     
     return [n,v,T]
 
@@ -298,14 +301,17 @@ def rk1_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     
     return [n,v,T]
 
+
 def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
 
     r = np.arange(1,rmax,dr).astype(float)
     r = r*1e+9
 
     n = n0*(r/r[0])**-2
-    v = np.ones_like(r)*v0
-    T = np.ones_like(r)*T0
+    #v = np.ones_like(r)*v0
+    v = v0*np.log(r/r[0])**0.5
+    #T = np.ones_like(r)*T0
+    T = T0*(r/r[0])**-2
     q = np.ones_like(r)*q0
     
     stop = False
@@ -347,7 +353,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     
     for i in xrange(int(t/dt)):    
         
-        n,v,T = rk1_nvT(n,v,T,q,r,dt,clips=clips)
+        n,v,T = rk2_nvT(n,v,T,q,r,dt,clips=clips)
         
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
@@ -355,6 +361,9 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
             line3.set_ydata(T)
             fig.canvas.draw()
             fig.canvas.flush_events()
+
+        if np.isnan(v).any():
+            raise ValueError("Simulation destabilised!")
             
 
     if animate:
@@ -370,5 +379,9 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
         ax2.plot(r,v,"x")
         ax3.plot(r,T,"x")
 
-    
+    fig.savefig("landau/simulations/sim_nvT_{}.png".format(figname))
+    np.savetxt("landau/simulations/sim_nvT_n_{}.txt".format(figname),n)
+    np.savetxt("landau/simulations/sim_nvT_v_{}.txt".format(figname),v)
+    np.savetxt("landau/simulations/sim_nvT_T_{}.txt".format(figname),T)
+
     return [n,v]
