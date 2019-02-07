@@ -3,6 +3,7 @@ import scipy
 import matplotlib.pyplot as plt
 import scipy.constants as sc
 import scipy.signal as ssi
+import scipy.special
 
 gS = sc.G*1.988e+30
 
@@ -28,8 +29,27 @@ def dv(n,v,T,r):
 
 def dp(v,p,q,r):
 
-    #return -(p*divr(v,r)+v*grad(p,r))-grad(q,r)-2*p*grad(v,r)
-    return -(p*divr(v,r)+v*grad(p,r))-2*p*grad(v,r)
+    return -(p*divr(v,r)+v*grad(p,r))-grad(q,r)-2*p*grad(v,r)
+
+def dq(n,v,p,q,r):
+
+    return None
+
+def rk_mom(k,alpha,T,l):
+
+    theta = np.sqrt(2*sc.k*T/sc.m_p)
+    v = l + 2
+    a = (v-1)/2.0
+    b0,b1,b2,b3,b4,b5 = (2*k-v+2*np.array([0,1,2,3,4,5])-5)/2.0
+
+    C1 = alpha**2*(2*alpha**2*k+v-1)*(2-k)*k**((v+3)/2.0)
+    C2 = (4*alpha**4*k**2+((4*v-4)*alpha**2-2*v+2)*k+v**2-1)*k**((v+1)/2.0)
+    C3 = k**(k+1)*alpha**(1+2*k-v)*(alpha**2+1)
+    C4 = (v-3)*k**(k+1)*alpha**(3+2*k-v)
+
+    res = 4*np.pi*theta**(1+v)*(-C1*scipy.special.gamma(a)*scipy.special.gamma(b1)*scipy.special.hyp1f1(a,-b0,alpha**2*k)/4/scipy.special.gamma(k+1)-C2*scipy.special.gamma(a)*scipy.special.gamma(b2)*scipy.special.hyp1f1(a,-b1,alpha**2*k)/8/scipy.special.gamma(k+1)+C3*scipy.special.gamma(-b3)*scipy.special.hyp1f1(k,b4,alpha**2*k)/2-C4*scipy.special.gamma(-b4)*scipy.special.hyp1f1(k,b5,alpha**2*k)/4)
+
+    return res/np.sqrt(3)**l #This is completely unfounded, but it gives the correct result
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
@@ -329,6 +349,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     
     plt.ion()
     fig = plt.figure(figsize=(10,10))
+    fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
     ax1 = fig.add_subplot(221)
     ax2 = fig.add_subplot(222)
     ax3 = fig.add_subplot(223)
@@ -349,7 +370,8 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
         line1, = ax1.plot(r,n,"x")
         line2, = ax2.plot(r,v,"x")
         line3, = ax3.plot(r,T,"x")
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.subplots_adjust()
     
     for i in xrange(int(t/dt)):    
         
