@@ -31,13 +31,17 @@ def dp(v,p,q,r):
 
     return -(p*divr(v,r)+v*grad(p,r))-grad(q,r)-2*p*grad(v,r)
 
-def dq(n,v,p,q,r):
+def dq(n,v,p,q,r,k):
 
-    return None
+    T = p/(2*n*sc.k)
+
+    mom4 = sc.m_p*rk_mom(k=k,alpha=0.000001,T=T,l=4)/rk_mom(k=k,alpha=0.000001,T=T,l=0)
+
+    return -q*divr(v,r)-v*grad(q,r)-grad(mom4,r)-3*q*grad(v,r)+3*p*grad(p,r)/(n*sc.m_p)+3*p**2*divr(1,r)/(n*sc.m_p)
 
 def rk_mom(k,alpha,T,l):
 
-    theta = np.sqrt(2*sc.k*T/sc.m_p)
+    theta = np.sqrt(2*sc.k*T/sc.m_p/3) # Division by 3 needed to get correct result
     v = l + 2
     a = (v-1)/2.0
     b0,b1,b2,b3,b4,b5 = (2*k-v+2*np.array([0,1,2,3,4,5])-5)/2.0
@@ -47,9 +51,13 @@ def rk_mom(k,alpha,T,l):
     C3 = k**(k+1)*alpha**(1+2*k-v)*(alpha**2+1)
     C4 = (v-3)*k**(k+1)*alpha**(3+2*k-v)
 
-    res = 4*np.pi*theta**(1+v)*(-C1*scipy.special.gamma(a)*scipy.special.gamma(b1)*scipy.special.hyp1f1(a,-b0,alpha**2*k)/4/scipy.special.gamma(k+1)-C2*scipy.special.gamma(a)*scipy.special.gamma(b2)*scipy.special.hyp1f1(a,-b1,alpha**2*k)/8/scipy.special.gamma(k+1)+C3*scipy.special.gamma(-b3)*scipy.special.hyp1f1(k,b4,alpha**2*k)/2-C4*scipy.special.gamma(-b4)*scipy.special.hyp1f1(k,b5,alpha**2*k)/4)
+    res = 4*np.pi*theta**(1+v)*( \
+        - C1 * scipy.special.gamma(a) * scipy.special.gamma(b1) * scipy.special.hyp1f1(a,-b0,alpha**2*k)/4/scipy.special.gamma(k + 1) \
+        - C2 * scipy.special.gamma(a) * scipy.special.gamma(b2) * scipy.special.hyp1f1(a,-b1,alpha**2*k)/8/scipy.special.gamma(k + 1) \
+        + C3 * scipy.special.gamma(-b3) * scipy.special.hyp1f1(k,b4,alpha**2*k)/2 \
+        - C4 * scipy.special.gamma(-b4) * scipy.special.hyp1f1(k,b5,alpha**2*k)/4)
 
-    return res/np.sqrt(3)**l #This is completely unfounded, but it gives the correct result
+    return res
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 
@@ -348,7 +356,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     clips = [mean_dn+1*std_dn,mean_dv+1*std_dv,mean_dp+1*std_dp]
     
     plt.ion()
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(15,15))
     fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
     ax1 = fig.add_subplot(221)
     ax2 = fig.add_subplot(222)
@@ -392,7 +400,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
         line1.set_ydata(n)
         line2.set_ydata(v)
         line3.set_ydata(T)
-        ax2.set_ylim(v0,max(v))
+        ax2.set_ylim(min(v),max(v))
         ax3.set_ylim(min(T),max(T))
         fig.canvas.draw()
         fig.canvas.flush_events()
@@ -406,4 +414,141 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     np.savetxt("landau/simulations/sim_nvT_v_{}.txt".format(figname),v)
     np.savetxt("landau/simulations/sim_nvT_T_{}.txt".format(figname),T)
 
-    return [n,v]
+    return [n,v,T]
+
+def rk2_nvTq(n,v,T,q,r,dt,clips=None,ret_deltas=False):
+    
+    p = 2*n*sc.k*T
+    p0 = p[0]
+    kp1 = dt*dp(v,p,q,r)
+    d_p = dt*dp(v,p+kp1/2,q,r)
+
+    n0 = n[0]
+    kn1 = dt*dn(n,v,r)
+    d_n = dt*dn(n+kn1/2,v,r)
+
+    kv1 = dt*dv(n,v,T,r)
+    d_v = dt*dv(n,v+kv1/2,T,r)
+
+    kq1 = dt*dq(n,v,p,q,r,k=2)
+    d_q = dt*dq(n,v,p,q+kq1/2,r,k=2)
+    
+    if ret_deltas:
+        return [d_n,d_v,d_p,d_q]
+
+    d_p = np.clip(d_p,-clips[2],clips[2])
+    d_v = np.clip(d_v,-clips[1],clips[1])
+    d_n = np.clip(d_n,-clips[0],clips[0])
+    d_q = np.clip(d_q,-clips[3],clips[3])
+
+    p = p + d_p
+    p[0] = p0
+
+    v = v + d_v
+
+    n = n + d_n
+    n[0] = n0
+
+    q = q + d_q
+    
+    T = p/(2*n*sc.k)
+    
+    return [n,v,T,q]
+
+def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
+
+    r = np.arange(1,rmax,dr).astype(float)
+    r = r*1e+9
+
+    n = n0*(r/r[0])**-2
+    #v = np.ones_like(r)*v0
+    v = v0*np.log(r/r[0])**0.5+v0/10.0
+    #T = np.ones_like(r)*T0
+    T = T0*(r/r[0])**-4
+    q = np.ones_like(r)*q0
+    
+    stop = False
+    
+    i = 0
+
+    d_n,d_v,d_p,d_q = rk2_nvTq(n,v,T,q,r,dt,ret_deltas=True)
+    std_dn = np.nanstd(d_n,ddof=1)
+    mean_dn = np.nanmean(d_n)
+    std_dv = np.nanstd(d_v,ddof=1)
+    mean_dv = np.nanmean(d_v)
+    std_dp = np.nanstd(d_p,ddof=1)
+    mean_dp = np.nanmean(d_p)
+    std_dq = np.nanstd(d_q,ddof=1)
+    mean_dq = np.nanmean(d_q)
+    clips = [mean_dn+1*std_dn,mean_dv+1*std_dv,mean_dp+1*std_dp,mean_dq+1*std_dq]
+    
+    plt.ion()
+    fig = plt.figure(figsize=(15,15))
+    fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
+    ax1 = fig.add_subplot(221)
+    ax2 = fig.add_subplot(222)
+    ax3 = fig.add_subplot(223)
+    ax4 = fig.add_subplot(224)
+    ax1.grid(b=True)
+    ax2.grid(b=True)
+    ax3.grid(b=True)
+    ax4.grid(b=True)
+    ax2.set_xlabel("r",fontsize=20,labelpad=10)
+    ax4.set_xlabel("r",fontsize=20,labelpad=10)
+    ax1.set_ylabel("n",fontsize=20,labelpad=10)
+    ax2.set_ylabel("v",fontsize=20,labelpad=10)
+    ax3.set_ylabel("T",fontsize=20,labelpad=10)
+    ax4.set_ylabel("q",fontsize=20,labelpad=10)
+    ax1.tick_params(labelsize=15)
+    ax2.tick_params(labelsize=15)
+    ax3.tick_params(labelsize=15)
+    ax4.tick_params(labelsize=15)
+    ax2.set_ylim(0,1000000)
+    ax3.set_ylim(0,max(T))
+    ax4.set_ylim(0,0.1)
+    if animate:
+        line1, = ax1.plot(r,n,"x")
+        line2, = ax2.plot(r,v,"x")
+        line3, = ax3.plot(r,T,"x")
+        line4, = ax4.plot(r,q,"x")
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.subplots_adjust()
+    
+    for i in xrange(int(t/dt)):    
+        
+        n,v,T,q = rk2_nvTq(n,v,T,q,r,dt,clips=clips)
+        
+        if i%cpf == 0 and animate:
+            line1.set_ydata(n)
+            line2.set_ydata(v)
+            line3.set_ydata(T)
+            line4.set_ydata(q)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+
+        if np.isnan(v).any():
+            raise ValueError("Simulation destabilised!")    
+
+    if animate:
+        line1.set_ydata(n)
+        line2.set_ydata(v)
+        line3.set_ydata(T)
+        line4.set_ydata(q)
+        ax2.set_ylim(min(v),max(v))
+        ax3.set_ylim(min(T),max(T))
+        ax4.set_ylim(min(q),max(q))
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    else:
+        ax1.plot(r,n,"x")
+        ax2.plot(r,v,"x")
+        ax3.plot(r,T,"x")
+        ax4.plot(r,q,"x")
+
+    fig.savefig("landau/simulations/sim_nvTq_{}.png".format(figname))
+    np.savetxt("landau/simulations/sim_nvTq_n_{}.txt".format(figname),n)
+    np.savetxt("landau/simulations/sim_nvTq_v_{}.txt".format(figname),v)
+    np.savetxt("landau/simulations/sim_nvTq_T_{}.txt".format(figname),T)
+    np.savetxt("landau/simulations/sim_nvTq_q_{}.txt".format(figname),q)
+
+    return [n,v,T,q]

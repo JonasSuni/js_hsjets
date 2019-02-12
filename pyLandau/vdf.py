@@ -30,6 +30,26 @@ def vdf_k(n,T,v,k=2,species="proton"):
 
     return vdf
 
+def vdf_rk(n,T,v,k=2,a=0.001,species="proton"):
+
+    m_s = {"proton":sc.m_p,"electron":sc.m_e}[species]
+
+    theta = np.sqrt(2*sc.k*T/m_s/3)
+
+    vdf = n*(1+v**2/(k*theta**2))**(-k-1)*np.exp(-a**2*v**2/theta**2)
+
+    return vdf
+
+def gen_rk(n,T,k=2,a=0.001):
+
+    v = np.arange(0,1000000,1)
+    f_l = lambda x: 4*np.pi*x**2*vdf_rk(n,T,x,k,a,species="proton")
+    N = integrate.quad(f_l,0,np.inf)[0]
+
+    vdf = vdf_rk(n,T,v,k,a,species="proton")/N
+
+    return [v,vdf]
+
 def vdf_dM(n1,n2,T1,T2,v,species="proton"):
 
     v = v.astype(float)
