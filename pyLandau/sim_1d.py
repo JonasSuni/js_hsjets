@@ -6,10 +6,28 @@ import scipy.signal as ssi
 import scipy.special
 
 gS = sc.G*1.988e+30
+Rs = 695.0e+6
+f_max = 9.0
+a_s = 5.0e+10
+R1 = 1.29*Rs
 
 def divr(f,r):
 
     return grad(f*r**2,r)/(r**2)
+
+def get_a(r):
+
+    f1 = 1 - (f_max - 1)*np.exp((Rs-R1)/R1)
+    f = (f_max*np.exp((r-R1)/R1)+f1)/(np.exp((r-R1)/R1)+1)
+    a = a_s*f*(r/Rs)**2
+
+    return a
+
+def divb(r):
+
+    a = get_a(r)
+
+    return grad(a,r)/a
 
 def grad(f,r):
 
@@ -18,6 +36,39 @@ def grad(f,r):
     res = (-np.pad(f,(0,2),mode="reflect",reflect_type="odd")[2:]+8*np.pad(f,(0,1),mode="reflect",reflect_type="odd")[1:]-8*np.pad(f,(1,0),mode="reflect",reflect_type="odd")[:-1]+np.pad(f,(2,0),mode="reflect",reflect_type="odd")[:-2])/(12*dr)
 
     return res.astype(float)
+
+def dn_a(n,v,a,r):
+
+    return -n*grad(a*v,r)/a-v*grad(n,r)
+
+def dv_a(n,v,T,a,r):
+
+    return -v*grad(v,r)-sc.k*grad(2*n*T,r)/(n*sc.m_p)-sc.k*T*grad(a,r)/(a*sc.m_p)-gS/(r**2)
+
+def dB2Tpn2_a(n,v,T,q,B,a,R):
+    # Returns d/dt(B^2*T/n^2)!
+
+    return -v*grad(B**2*T/n**2)-2*B**2*grad(a*q)/(n**3*sc.k*a)
+
+def rk2_nva(n,v,T,a,r,dt):
+
+    n0 = n[0]
+    kn1 = dt*dn_a(n,v,a,r)
+    d_n = dt*dn_a(n+kn1/2,v,a,r)
+
+    kv1 = dt*dv_a(n,v,T,a,r)
+    d_v = dt*dv_a(n,v+kv1/2,T,a,r)
+
+    n += d_n
+    v += d_v
+
+    n[0] = n0
+    n[-1] = 2*n[-2]-n[-3]
+
+    v[-1] = 2*v[-2]-v[-3]
+    v[0] = 2*v[1]-v[2]
+
+    return [n,v]
 
 def dn(n,v,r):
 
@@ -64,8 +115,9 @@ def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",ani
     r = np.arange(1,rmax,dr).astype(float)
     r = r*1e+9
 
-    n = np.ones_like(r)*n0
+    n = np.ones_like(r)*n0/2.0
     v = np.ones_like(r)*v0
+    a = get_a(r)
     n[0]=n0
 
     stop = False
@@ -79,16 +131,17 @@ def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",ani
     ax.set_ylabel("n", fontsize=20,labelpad=10)
     ax.tick_params(labelsize=15)
     plt.grid()
+    ax.set_ylim(0,n0)
     if animate:
         line1, = ax.plot(r,n,"x")
     plt.tight_layout()
 
     while not stop:
 
-        k1 = dt*dn(n,v,r)
-        k2 = dt*dn(n+k1/2,v,r)
-        k3 = dt*dn(n+k2/2,v,r)
-        k4 = dt*dn(n+k3,v,r)
+        k1 = dt*dn_a(n,v,a,r)
+        k2 = dt*dn_a(n+k1/2,v,a,r)
+        k3 = dt*dn_a(n+k2/2,v,a,r)
+        k4 = dt*dn_a(n+k3,v,a,r)
 
         n = n + (k1+2*k2+2*k3+k4)/6
         n[0] = n0
@@ -110,6 +163,69 @@ def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",ani
             stop = True
 
     return n
+
+def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
+
+    r = np.arange(1,rmax,dr).astype(float)
+    r *= Rs
+    
+    Bs = 11.8e-4
+    ns = 1.0e14
+    Ts = 7.0e+5
+
+    a = get_a(r)
+
+    B = Bs*a_s/a
+    v = 655000*(1+20*(r[0]/r)**3)**-1
+    n = ns*v[0]*a_s/(v*a)
+    #T = Ts*(3-2*r[0]/r)*(r/r[0])**(-2.0/7)
+    T = np.ones_like(r)*T0
+    
+    plt.ion()
+    fig = plt.figure(figsize=(15,10))
+    fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
+    ax1 = fig.add_subplot(121)
+    ax2 = fig.add_subplot(122)
+    ax1.grid(b=True)
+    ax2.grid(b=True)
+    ax1.set_xlabel("r",fontsize=20,labelpad=10)
+    ax2.set_xlabel("r",fontsize=20,labelpad=10)
+    ax1.set_ylabel("n",fontsize=20,labelpad=10)
+    ax2.set_ylabel("v",fontsize=20,labelpad=10)
+    ax1.tick_params(labelsize=15)
+    ax2.tick_params(labelsize=15)
+    ax2.set_ylim(0,1000000)
+    ax2.set_yticks([100000,200000,300000,400000,500000,600000,700000,800000,900000])
+    if animate:
+        line1, = ax1.plot(r,n,"x")
+        line2, = ax2.plot(r,v,"x")
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.subplots_adjust()
+    
+    for i in xrange(int(t/dt)):
+        
+        n,v = rk2_nva(n,v,T,a,r,dt)
+
+        if i%cpf == 0 and animate:
+            line1.set_ydata(n)
+            line2.set_ydata(v)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+            
+
+    if animate:
+        line1.set_ydata(n)
+        line2.set_ydata(v)
+        ax2.set_ylim(0,max(v))
+        ax1.set_ylim(0,max[n])
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    else:
+        ax1.plot(r,n,"x")
+        ax2.plot(r,v,"x")
+
+    
+    return [n,v]
 
 def rk4_nv(n,v,T,r,dt):
 
