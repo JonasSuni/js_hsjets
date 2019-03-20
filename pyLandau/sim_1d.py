@@ -102,6 +102,15 @@ def rk_mom(k,alpha,T,l):
     C3 = k**(k+1)*alpha**(1+2*k-v)*(alpha**2+1)
     C4 = (v-3)*k**(k+1)*alpha**(3+2*k-v)
 
+    print(scipy.special.gamma(b1))
+    print(scipy.special.hyp1f1(a,-b0,alpha**2*k))
+    print(scipy.special.gamma(b2))
+    print(scipy.special.hyp1f1(a,-b1,alpha**2*k))
+    print(scipy.special.gamma(-b3))
+    print(scipy.special.hyp1f1(k,b4,alpha**2*k))
+    print(scipy.special.gamma(-b4))
+    print(scipy.special.hyp1f1(k,b5,alpha**2*k))
+
     res = 4*np.pi*theta**(1+v)*( \
         - C1 * scipy.special.gamma(a) * scipy.special.gamma(b1) * scipy.special.hyp1f1(a,-b0,alpha**2*k)/4/scipy.special.gamma(k + 1) \
         - C2 * scipy.special.gamma(a) * scipy.special.gamma(b2) * scipy.special.hyp1f1(a,-b1,alpha**2*k)/8/scipy.special.gamma(k + 1) \
@@ -217,7 +226,6 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
         line1.set_ydata(n)
         line2.set_ydata(v)
         ax2.set_ylim(0,max(v))
-        ax1.set_ylim(0,max[n])
         fig.canvas.draw()
         fig.canvas.flush_events()
     else:

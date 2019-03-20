@@ -6,9 +6,7 @@ import jet_analyser as ja
 import os
 import copy
 import matplotlib.pyplot as plt
-import plot_contours as pc
 import scipy.constants as sc
-import jet_io as jio
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -17,12 +15,221 @@ r_e = 6.371e+6
 This file should contain all functions and scripts related to finding, sorting, tracking and statistically analysing SLAMS.
 '''
 
-def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0,sw=1.0):
+def var_pars_list(var):
+
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    label_list = ["$Duration~[s]$",
+    "$Radial~size~[R_{e}]$","$Tangential~size~[R_{e}]$","$Radial~size/Tangential~size$",
+    "$P_{dyn,vmax}~[P_{dyn,sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,med}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$",
+    "$n_{max}~[n_{sw}]$","$n_{avg}~[n_{sw}]$","$n_{med}~[n_{sw}]$","$n_{v,max}~[n_{sw}]$",
+    "$v_{max}~[v_{sw}]$","$v_{avg}~[v_{sw}]$","$v_{med}~[v_{sw}]$",
+    "$B_{max}~[B_{IMF}]$","$B_{avg}~[B_{IMF}]$","$B_{med}~[B_{IMF}]$",
+    "$\\beta _{max}~[\\beta _{sw}]$","$\\beta _{avg}~[\\beta _{sw}]$","$\\beta _{med}~[\\beta _{sw}]$","$\\beta _{v,max}~[\\beta _{sw}]$",
+    "$T_{avg}~[MK]$","$T_{med}~[MK]$","$T_{max}~[MK]$",
+    "$T_{Parallel,avg}~[MK]$","$T_{Parallel,med}~[MK]$","$T_{Parallel,max}~[MK]$",
+    "$T_{Perpendicular,avg}~[MK]$","$T_{Perpendicular,med}~[MK]$","$T_{Perpendicular,max}~[MK]$",
+    "$Area~[R_{e}^{2}]$",
+    "$(r_{v,max}-r_{BS})~at~time~of~death~[R_{e}]$"]
+
+    xmin_list=[10,
+    0,0,0,
+    1.25,1.25,1.25,1.25,
+    1,1,1,1,
+    0.6,0.6,0.6,
+    1.25,1.25,1.25,
+    1,1,1,1,
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,
+    8]
+
+    xmax_list=[60,
+    3,1,7,
+    3,3,3,3,
+    3,3,3,3,
+    1.2,1.2,1.2,
+    6,6,6,
+    1000,1000,1000,1000,
+    25,25,25,
+    25,25,25,
+    25,25,25,
+    1.5,
+    18]
+
+    step_list = [2,
+    0.25,0.05,0.2,
+    0.05,0.05,0.05,0.05,
+    0.1,0.1,0.1,0.1,
+    0.05,0.05,0.05,
+    0.25,0.25,0.25,
+    100,100,100,100,
+    1,1,1,
+    1,1,1,
+    1,1,1,
+    0.05,
+    0.5]
+
+    tickstep_list = [20,
+    0.5,0.5,1,
+    1,1,1,1,
+    2,2,2,2,
+    0.2,0.2,0.2,
+    1,1,1,
+    100,100,100,100,
+    5,5,5,
+    5,5,5,
+    5,5,5,
+    1,
+    2]
+
+    return [label_list[key_list.index(var)],xmin_list[key_list.index(var)],xmax_list[key_list.index(var)],step_list[key_list.index(var)],tickstep_list[key_list.index(var)]]
+
+def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
+    # returns cells outside the bow shock
+
+    # If file has separate populations, find proton population
+    if vlsvobj.check_population("proton"):
+        rho = vlsvobj.read_variable("proton/rho")
+    else:
+        rho = vlsvobj.read_variable("rho")
+        
+    cellids = vlsvobj.read_variable("CellID")
+
+    simdim = vlsvobj.get_spatial_mesh_size()
+
+    # Create mask
+    bs = np.ma.masked_less(rho,1.85*rho_sw)
+
+    # Find IDs of masked cells
+    masked_ci = np.ma.array(cellids,mask=~bs.mask).compressed()
+
+    return masked_ci
+
+def xyz_reconstruct(vlsvobj):
+    # reconstructs coordinates based on spatial mesh parameters
+
+    # read UNSORTED cell ids
+    ci = vlsvobj.read_variable("CellID")
+
+    # get simulation extents and dimension sizes
+    simextent = vlsvobj.get_spatial_mesh_extent()
+    simsize = vlsvobj.get_spatial_mesh_size()
+
+    # discard 3rd dimension
+    simdim = simsize[simsize!=1]
+
+    # reconstruct SORTED X
+    X = np.linspace(simextent[0],simextent[3],simdim[0]+1)[:-1]
+    X = np.pad(X,(0,simdim[0]*(simdim[1]-1)),"wrap")
+
+    # reconstruct SORTED Y
+    Y = np.linspace(simextent[1],simextent[4],simdim[1]+1)[:-1]
+    Y = np.pad(Y,(0,simdim[1]*(simdim[0]-1)),"wrap")
+    Y = np.reshape(Y,(simdim[0],simdim[1]))
+    Y = Y.T
+    Y = Y.flatten()
+
+    # reconstruct SORTED Z
+    Z = np.linspace(simextent[2],simextent[5],simdim[1]+1)[:-1]
+    Z = np.pad(Z,(0,simdim[1]*(simdim[0]-1)),"wrap")
+    Z = np.reshape(Z,(simdim[0],simdim[1]))
+    Z = Z.T
+    Z = Z.flatten()
+
+    # UNSORT XYZ
+    X = X[ci-1]
+    Y = Y[ci-1]
+    Z = Z[ci-1]
+
+    return np.array([X,Y,Z])
+
+def restrict_area(vlsvobj,boxre):
+    # find cellids of cells that correspond to X,Y-positions within the specified limits
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    # If X doesn't exist, reconstruct X,Y,Z, otherwise read X,Y,Z
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+
+    # Get the simulation size
+    simsize = vlsvobj.get_spatial_mesh_size()
+    
+    # if polar run, replace Y with Z
+    if simsize[1] == 1:
+        Y = Z
+
+    # mask the cellids within the specified limits
+    msk = np.ma.masked_greater_equal(X,boxre[0]*r_e)
+    msk.mask[X > boxre[1]*r_e] = False
+    msk.mask[Y < boxre[2]*r_e] = False
+    msk.mask[Y > boxre[3]*r_e] = False
+
+    # discard unmasked cellids
+    masked_ci = np.ma.array(cellids,mask=~msk.mask).compressed()
+
+    return masked_ci
+
+def sw_par_dict(runid):
+    # List of runs incomplete, please add parameters for additional runs manually as needed
+
+    # Returns solar wind parameters for specified run
+    # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta
+
+    runs = ["ABA","ABC","AEA","AEC","BFD"]
+    sw_rho = [1e+6,3.3e+6,1.0e+6,3.3e+6,1.0e+6]
+    sw_v = [750e+3,600e+3,750e+3,600e+3,750e+3]
+    sw_B = [5.0e-9,5.0e-9,10.0e-9,10.0e-9,5.0e-9]
+    sw_T = [500e+3,500e+3,500e+3,500e+3,500e+3]
+    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in xrange(len(runs))]
+    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
+
+    return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)]]
+
+class Transient:
+    # Class for identifying and handling individual jets and their properties
+
+    def __init__(self,ID,runid,birthday):
+
+        self.ID = ID
+        self.runid = runid
+        self.birthday = birthday
+        self.cellids = []
+        self.times = [birthday]
+
+        print("Created jet with ID "+self.ID)
+
+    def return_cellid_string(self):
+
+        return "\n".join([",".join(map(str,l)) for l in self.cellids])
+
+    def return_time_string(self):
+
+        return "\n".join(map(str,self.times))
+
+def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0,sw=1.0,outputdir="SLAMS/contours/"):
 
     if runid in ["AEA","AEC"]:
         B_sw = 10.0e-9
     else:
         B_sw = 5.0e-9
+
+    B_sw = sw_par_dict(runid)[2]
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -42,14 +249,17 @@ def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0
     else:
         pass_vars=["rho","v","CellID","B"]
 
-    pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,usesci=0,lin=1,cbtitle="",boxre=boxre,colormap="parula",vmin=0,vmax=vmax,expression=pc.expr_pdyn,external=ext_slams,pass_vars=pass_vars,ext_pars=[runid,filenumber,plaschke,sw,B_sw])
+    global g_plaschke,g_sw,g_runid
+    g_plaschke = plaschke
+    g_sw = sw
+    g_runid = runid
 
-def ext_slams(ax,XmeshPass,YmeshPass,extmaps,ext_pars):
+    pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,outputdir=outputdir,run=runid,step=filenumber,usesci=0,lin=1,cbtitle="",boxre=boxre,colormap="parula",vmin=0,vmax=vmax,var="Pdyn",external=ext_slams,pass_vars=pass_vars)
 
-    rho = extmaps[0]
-    v = extmaps[1]
-    cellids = extmaps[2]
-    B = extmaps[3]
+def ext_slams(ax1, XmeshCentres,YmeshCentres, pass_maps):
+
+    # Using list comprehension here due to the varying nature of the pass_vars variable names
+    B,cellids,rho,v = pass_maps.values()
 
     vx = v[:,:,0]
     vmag = np.linalg.norm(v,axis=-1)
@@ -58,36 +268,18 @@ def ext_slams(ax,XmeshPass,YmeshPass,extmaps,ext_pars):
 
     shp = rho.shape
 
-    runid = ext_pars[0]
-    filenumber = ext_pars[1]
-
-    sw_pars = ja.sw_par_dict()[runid]
-
-    tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
-
-    vmag = vmag.flatten()
-    vx = vx.flatten()
-    rho = rho.flatten()
-    cellids = cellids.flatten()
-    Bmag = Bmag.flatten()
+    sw_rho,sw_v,sw_B,sw_pdyn,sw_beta = sw_par_dict(g_runid)
 
     pdyn = m_p*rho*(vmag**2)
     pdyn_x = m_p*rho*(vx**2)
 
-    spdyn = pdyn[np.argsort(cellids)]
-    spdyn_x = pdyn_x[np.argsort(cellids)]
-    srho = rho[np.argsort(cellids)]
-    sBmag = Bmag[np.argsort(cellids)]
-
-    pdyn_sw = m_p*sw_pars[0]*(sw_pars[1]**2)
-
-    slams = np.ma.masked_greater(sBmag,ext_pars[3]*ext_pars[4])
-    slams.mask[spdyn < ext_pars[2]*pdyn_sw] = False
-    slams.mask[srho > 3*sw_pars[0]] = False
+    slams = np.ma.masked_greater(Bmag,g_sw*sw_B)
+    slams.mask[pdyn < g_plaschke*sw_pdyn] = False
+    slams.mask[rho > 3*sw_rho] = False
     slams.fill_value = 0
     slams[slams.mask == False] = 1
 
-    contour = ax.contour(XmeshPass,YmeshPass,np.reshape(slams.filled(),shp),[0.5],linewidths=1.0, colors="black")
+    contour = ax1.contour(XmeshCentres,YmeshCentres,slams.filled(),[0.5],linewidths=1.0, colors="black")
 
     return None
 
@@ -119,7 +311,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     sorigid = origid[np.argsort(origid)]
 
     # if file has separate populations, read proton population
-    if type(vlsvreader.read_variable("rho")) is not np.ndarray:
+    if vlsvreader.check_population("proton"):
         rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
     else:
@@ -132,7 +324,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
-    sw_pars = ja.sw_par_dict(runid)
+    sw_pars = sw_par_dict(runid)
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
     pdyn_sw = m_p*rho_sw*(v_sw**2)
@@ -157,7 +349,7 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
-        masked_ci = np.intersect1d(masked_ci,ja.restrict_area(vlsvreader,boxre))
+        masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
         np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
@@ -181,7 +373,7 @@ def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
         if bl_a:
             continue
 
-        # number of times to search for more neighbors
+        # number of times to search for more neighbors, larger is better but possibly slower.
         it_range = xrange(200)
 
         # initialise current event
@@ -209,7 +401,7 @@ def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
 
 def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
 
-    outputdir = "/homeappl/home/sunijona/SLAMS/events/"+runid+"/"
+    outputdir = "SLAMS/events/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -272,7 +464,7 @@ def eventfile_read(runid,filenr):
 
     outputlist = []
 
-    ef = open("/homeappl/home/sunijona/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    ef = open("SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
     if contents == "":
         return []
@@ -304,14 +496,14 @@ def track_slams(runid,start,stop,threshold=0.5):
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("/homeappl/home/sunijona/SLAMS/slams/"+runid):
+    if not os.path.exists("SLAMS/slams/"+runid):
         try:
-            os.makedirs("/homeappl/home/sunijona/SLAMS/slams/"+runid)
+            os.makedirs("SLAMS/slams/"+runid)
         except OSError:
             pass
 
     # Get solar wind parameters
-    sw_pars = ja.sw_par_dict(runid)
+    sw_pars = sw_par_dict(runid)
     rho_sw = sw_pars[0]
     v_sw = sw_pars[1]
 
@@ -354,7 +546,7 @@ def track_slams(runid,start,stop,threshold=0.5):
                 curr_id = str(counter).zfill(5)
 
                 # Create new jet object
-                jetobj_list.append(jio.Jet(curr_id,runid,float(start)/2))
+                jetobj_list.append(Transient(curr_id,runid,float(start)/2))
 
                 # Append current events to jet object properties
                 jetobj_list[-1].cellids.append(bs_event)
@@ -420,7 +612,7 @@ def track_slams(runid,start,stop,threshold=0.5):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet
-                        jetobj_new = jio.Jet(curr_id,runid,float(n)/2)
+                        jetobj_new = Transient(curr_id,runid,float(n)/2)
                         jetobj_new.cellids.append(event)
                         jetobj_list.append(jetobj_new)
                         curr_jet_temp_list.append(event)
@@ -458,7 +650,7 @@ def track_slams(runid,start,stop,threshold=0.5):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet object
-                        jetobj_list.append(jio.Jet(curr_id,runid,float(n-1)/2))
+                        jetobj_list.append(Transient(curr_id,runid,float(n-1)/2))
 
                         # Append current events to jet object properties
                         jetobj_list[-1].cellids.append(bs_event)
@@ -475,8 +667,8 @@ def track_slams(runid,start,stop,threshold=0.5):
     for jetobj in jetobj_list:
 
         # Write jet object cellids and times to files
-        jetfile = open("/homeappl/home/sunijona/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".slams","w")
-        timefile = open("/homeappl/home/sunijona/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+        jetfile = open("SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".slams","w")
+        timefile = open("SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
 
         jetfile.write(jetobj.return_cellid_string())
         timefile.write(jetobj.return_time_string())
@@ -489,7 +681,7 @@ def track_slams(runid,start,stop,threshold=0.5):
 def timefile_read(runid,filenr,key):
     # Read array of times from file
 
-    tf = open("/homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".times","r")
+    tf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".times","r")
     contents = tf.read().split("\n")
     tf.close()
 
@@ -500,7 +692,7 @@ def jetfile_read(runid,filenr,key):
 
     outputlist = []
 
-    jf = open("/homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".slams","r")
+    jf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".slams","r")
     contents = jf.read()
     lines = contents.split("\n")
 
@@ -513,12 +705,12 @@ def jetfile_read(runid,filenr,key):
 def propfile_write(runid,filenr,key,props):
     # Write jet properties to file
 
-    open("/homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
-    pf = open("/homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","a")
+    open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
+    pf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","a")
     pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
-    print("Wrote to /homeappl/home/sunijona/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props")
+    print("Wrote to SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props")
 
 def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
 
@@ -605,7 +797,7 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
             cells = []
 
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="SLAMS/contours/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="SLAMS/contours/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,var="Pdyn",pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
 
     return None
 
@@ -701,39 +893,22 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
         # If file has more than one population, choose proton population
         var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
         var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
-        if not vlsvobj.check_variable("rho"):
+        if vlsvobj.check_population("proton"):
             var_list = var_list_alt
 
         # If temperature files exist, read parallel and perpendicular temperature from those instead
-        if tp_files:
+        
 
-            var_list = var_list[:-2]
+        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
+        rho = rho[origid.argsort()]
+        v = v[origid.argsort()]
+        B = B[origid.argsort()]
+        T = T[origid.argsort()]
+        beta = beta[origid.argsort()]
+        TParallel = TParallel[origid.argsort()]
+        TPerpendicular = TPerpendicular[origid.argsort()]
 
-            rho,v,B,T,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
-            cellids = cellids[cellids.argsort()]
-            TParallel = jio.tpar_reader(runid,nr_list[n],cellids,curr_list)
-            TPerpendicular = jio.tperp_reader(runid,nr_list[n],cellids,curr_list)
-            
-            rho = rho[origid.argsort()]
-            v = v[origid.argsort()]
-            B = B[origid.argsort()]
-            T = T[origid.argsort()]
-            beta = beta[origid.argsort()]
-
-            rho,v,B,T,beta = ja.ci2vars_nofile([rho,v,B,T,beta],sorigid,curr_list)
-
-        else:
-
-            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
-            rho = rho[origid.argsort()]
-            v = v[origid.argsort()]
-            B = B[origid.argsort()]
-            T = T[origid.argsort()]
-            beta = beta[origid.argsort()]
-            TParallel = TParallel[origid.argsort()]
-            TPerpendicular = TPerpendicular[origid.argsort()]
-
-            rho,v,B,T,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,beta,TParallel,TPerpendicular],sorigid,curr_list)
+        rho,v,B,T,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,beta,TParallel,TPerpendicular],sorigid,curr_list)
 
         # Q: Why are we doing this?
         #cellids = cellids[cellids.argsort()]
@@ -858,6 +1033,116 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
 
     return prop_arr
 
+def slams_2d_hist(runids,var1,var2,time_thresh=10):
+    # Create 2D histogram of var1 and var2
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    # Cutoff dictionary for eliminating false positives
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+
+    # Dictionary for mapping input variables to parameters
+    key_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A",
+    "death_distance"]
+
+    n_list = list(xrange(len(key_list)))
+    var_dict = dict(zip(key_list,n_list))
+
+    # Initialise input variable list and variable list
+    inp_var_list = [var1,var2]
+    var_list = [[],[]]
+
+    # Append variable values to var lists
+    for ind in xrange(len(inp_var_list)):
+        for n in xrange(len(runids)):
+            for fname in file_list_list[n]:
+                props = jio.PropReader("",runids[n],fname=fname)
+                if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                    if inp_var_list[ind] == "duration":
+                        var_list[ind].append(props.read("time")[-1]-props.read("time")[0])
+                    elif inp_var_list[ind] == "size_ratio":
+                        var_list[ind].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                    elif inp_var_list[ind] in ["n_max","n_avg","n_med","rho_vmax"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[0])
+                    elif inp_var_list[ind] in ["v_max","v_avg","v_med"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[1])
+                    elif inp_var_list[ind] in ["B_max","B_avg","B_med"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[2])
+                    elif inp_var_list[ind] in ["beta_max","beta_avg","beta_med","b_vmax"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[4])
+                    elif inp_var_list[ind] in ["pdyn_vmax"]:
+                        var_list[ind].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
+                    elif inp_var_list[ind] in ["pd_avg","pd_med","pd_max"]:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[3])
+                    elif inp_var_list[ind] == "death_distance":
+                        var_list[ind].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    else:
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind]))
+
+    v1_label,v1_xmin,v1_xmax,v1_step,v1_tickstep = var_pars_list(var1)
+    v2_label,v2_xmin,v2_xmax,v2_step,v2_tickstep = var_pars_list(var2)
+
+    # Create figure
+    plt.ioff()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("$\\mathrm{"+v1_label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{"+v2_label[1:-1]+"}$",fontsize=24)
+    ax.tick_params(labelsize=20)
+    weights = [1/float(len(var_list[0]))]*len(var_list[0]) # Normalise by total number of jets
+    bins = [np.linspace(xlims[0],xlims[1],21).tolist() for xlims in [[v1_xmin,v1_xmax],[v2_xmin,v2_xmax]]]
+
+    hist = ax.hist2d(var_list[0],var_list[1],bins=bins,weights=weights)
+
+    if v1_xmax == v2_xmax:
+        ax.plot([0,v1_xmax],[0,v1_xmax],"r--")
+
+    ax.set_xticks(np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep))
+    ax.set_yticks(np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep))
+
+    ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(v1_xmin+v1_tickstep,v1_xmax+v1_tickstep,v1_tickstep).astype(str)])
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(v2_xmin+v2_tickstep,v2_xmax+v2_tickstep,v2_tickstep).astype(str)])
+
+    plt.title(",".join(runids),fontsize=24)
+    plt.colorbar(hist[3], ax=ax)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
+    plt.tight_layout()
+
+    # Create output directory
+    if not os.path.exists("SLAMS/figures/histograms/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("SLAMS/figures/histograms/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    # Save figure
+    fig.savefig("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+    print("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+
+    plt.close(fig)
+
+    return None
+
 def slams_vs_hist(runids,var,time_thresh=10):
 
     # Get all filenames in folder
@@ -871,7 +1156,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff dictionary for eliminating false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6,6,6,6,6]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
 
     # Different colors for different runs
     run_colors_dict = dict(zip([runids[0],runids[1]],["red","blue"]))
@@ -901,7 +1186,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # Append variable values to var lists
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
-            props = PropReader("",runids[n],fname=fname)
+            props = jio.PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
                     val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
@@ -915,68 +1200,17 @@ def slams_vs_hist(runids,var,time_thresh=10):
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[2])
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var == "pdyn_vmax":
+                elif var in ["pdyn_vmax"]:
                     val_dict[runids[n]].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
-                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     val_dict[runids[n]].append(props.read_at_amax(var))
 
-    # Labels for figure
-    label_list = ["Duration [s]",
-    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
-    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
-    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
-    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
-    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
-    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
-    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
-    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]",
-    "r$_{v,max}$ at time of death [R$_{e}$]"]
 
-    # X limits and bin widths for figure
-    xmin_list=[10,
-    0,0,0,
-    1.25,1.25,1.25,1.25,
-    1,1,1,1,
-    0.6,0.6,0.6,
-    1.25,1.25,1.25,
-    1,1,1,1,
-    0,0,0,
-    0,0,0,
-    0,0,0,
-    0,
-    8]
-
-    xmax_list=[60,
-    3,1,7,
-    3,3,3,3,
-    3,3,3,3,
-    1.2,1.2,1.2,
-    6,6,6,
-    1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
-    1.5,
-    18]
-
-    step_list = [2,
-    0.25,0.05,0.2,
-    0.05,0.05,0.05,0.05,
-    0.1,0.1,0.1,0.1,
-    0.05,0.05,0.05,
-    0.25,0.25,0.25,
-    100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
-    0.05,
-    0.5]
+    label,xmin,xmax,step,tickstep = var_pars_list(var)
 
     # Create figure
     plt.ioff()
@@ -984,40 +1218,47 @@ def slams_vs_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of SLAMS",fontsize=20)
-    ax.set_xlim(xmin_list[var_dict[var]],xmax_list[var_dict[var]])
-    ax.set_ylim(0,1)
+    ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
+    ax.set_xlim(xmin,xmax)
+    ax.set_ylim(0,0.75)
+    ax.tick_params(labelsize=20)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
+
+    ax.set_yticks(np.arange(0.1,0.8,0.1))
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(0.1,0.8,0.1).astype(str)])
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
         plt.xscale("log")
-        ax.set_xlim(1,xmax_list[var_dict[var]])
+        ax.set_xlim(1,xmax)
         
-        #for n in xrange(len(runids)):
-        #    hist = ax.hist(var_list[n],weights=weights[n],bins=bins,color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
-        
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
+
+        ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
+        ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
 
     else:
-        bins = np.arange(xmin_list[var_dict[var]],xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        if var == "death_distance":
-            ax.set_xlim(8,xmax_list[var_dict[var]])
-        
-            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        #for n in xrange(len(runids)):
-        #    hist = ax.hist(var_list[n],bins=bins,weights=weights[n],color=run_colors_dict[runids[n]],alpha=0.5,label=runids[n])
+        bins = np.arange(xmin,xmax+step,step)
 
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=runids)
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
-    for n in xrange(len(runids)):
-        ax.axvline(np.median(val_dict[runids[n]]), linestyle="dashed", linewidth=2, color=run_colors_dict[runids[n]])
+        ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
+        ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
 
-    plt.title(",".join(runids),fontsize=20)
-    plt.legend()
+    if xmin == -xmax and 0.5*(xmax-xmin)%tickstep != 0.0:
+        ax.set_xticks(np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep))
+        if tickstep%1 != 0:
+            ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep).astype(str)])
+        else:
+            ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
+
+    plt.title(" vs. ".join(runids),fontsize=24)
+    plt.legend(fontsize=20)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
     plt.tight_layout()
 
     # Create output directory
@@ -1049,7 +1290,7 @@ def slams_all_hist(runids,var,time_thresh=10):
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff values for elimination of false positives
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[6,6,6,6,6]))
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
 
     # Dictionary for mapping input variables to parameters
     key_list = ["duration",
@@ -1074,7 +1315,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # Append variable values to var list
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
-            props = PropReader("",runids[n],fname=fname)
+            props = jio.PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
                     var_list.append(props.read("time")[-1]-props.read("time")[0])
@@ -1088,71 +1329,18 @@ def slams_all_hist(runids,var,time_thresh=10):
                     var_list.append(props.read_at_amax(var)/props.sw_pars[2])
                 elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var == "pdyn_vmax":
+                elif var in ["pdyn_vmax"]:
                     var_list.append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
-                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
+                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     var_list.append(props.read_at_amax(var))
 
     var_list = np.asarray(var_list)
 
-    # Labels for figure
-    label_list = ["Duration [s]",
-    "Radial size [R$_{e}$]","Tangential size [R$_{e}$]","Radial size/Tangential size",
-    "P$_{dyn,vmax}$ [P$_{dyn,sw}$]","P$_{dyn,avg}$ [P$_{dyn,sw}$]","P$_{dyn,med}$ [P$_{dyn,sw}$]","P$_{dyn,max}$ [P$_{dyn,sw}$]",
-    "n$_{max}$ [n$_{sw}$]","n$_{avg}$ [n$_{sw}$]","n$_{med}$ [n$_{sw}$]","n$_{v,max}$ [n$_{sw}$]",
-    "v$_{max}$ [v$_{sw}$]","v$_{avg}$ [v$_{sw}$]","v$_{med}$ [v$_{sw}$]",
-    "B$_{max}$ [B$_{IMF}$]","B$_{avg}$ [B$_{IMF}$]","B$_{med}$ [B$_{IMF}$]",
-    "$\\beta _{max}$ [$\\beta _{sw}$]","$\\beta _{avg}$ [$\\beta _{sw}$]","$\\beta _{med}$ [$\\beta _{sw}$]","$\\beta _{v,max}$ [$\\beta _{sw}$]",
-    "T$_{avg}$ [MK]","T$_{med}$ [MK]","T$_{max}$ [MK]",
-    "T$_{Parallel,avg}$ [MK]","T$_{Parallel,med}$ [MK]","T$_{Parallel,max}$ [MK]",
-    "T$_{Perpendicular,avg}$ [MK]","T$_{Perpendicular,med}$ [MK]","T$_{Perpendicular,max}$ [MK]",
-    "Area [R$_{e}^{2}$]",
-    "r$_{v,max}$ at time of death [R$_{e}$]"]
-
-    # X-limits and bin widths for figure
-    xmin_list=[10,
-    0,0,0,
-    1.25,1.25,1.25,1.25,
-    1,1,1,1,
-    0.6,0.6,0.6,
-    1.25,1.25,1.25,
-    1,1,1,1,
-    0,0,0,
-    0,0,0,
-    0,0,0,
-    0,
-    8]
-
-    xmax_list=[60,
-    3,1,7,
-    3,3,3,3,
-    3,3,3,3,
-    1.2,1.2,1.2,
-    6,6,6,
-    1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
-    1.5,
-    18]
-
-    step_list = [2,
-    0.25,0.05,0.2,
-    0.05,0.05,0.05,0.05,
-    0.1,0.1,0.1,0.1,
-    0.05,0.05,0.05,
-    0.25,0.25,0.25,
-    100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
-    0.05,
-    0.5]
-
+    label,xmin,xmax,step,tickstep = var_pars_list(var)
 
     # Create figure
     plt.ioff()
@@ -1160,29 +1348,45 @@ def slams_all_hist(runids,var,time_thresh=10):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_xlabel(label_list[var_dict[var]],fontsize=20)
-    ax.set_ylabel("Fraction of SLAMS",fontsize=20)
-    ax.set_xlim(xmin_list[var_dict[var]],xmax_list[var_dict[var]])
-    ax.set_ylim(0,1)
+    ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
+    ax.set_xlim(xmin,xmax)
+    ax.set_ylim(0,0.6)
+    ax.tick_params(labelsize=20)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
+
+    ax.set_yticks(np.arange(0.1,0.7,0.1))
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(0.1,0.7,0.1).astype(str)])
 
     # Logarithmic scale for plasma beta
     if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
         bins = np.arange(0,3.25,0.25)
         bins = 10**bins
         plt.xscale("log")
-        ax.set_xlim(1,xmax_list[var_dict[var]])
+        ax.set_xlim(1,xmax)
         hist = ax.hist(var_list,weights=weights,bins=bins)
+        ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
+        ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
+
     else:
-        bins = np.arange(xmin_list[var_dict[var]],xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
-        if var == "death_distance":
-            ax.set_xlim(8,xmax_list[var_dict[var]])
-            bins = np.arange(8,xmax_list[var_dict[var]]+step_list[var_dict[var]],step_list[var_dict[var]])
+        bins = np.arange(xmin,xmax+step,step)
         hist = ax.hist(var_list,bins=bins,weights=weights)
+        ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
+        ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
 
-    ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
+    if xmin == -xmax and 0.5*(xmax-xmin)%tickstep != 0.0:
+        ax.set_xticks(np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep))
+        if tickstep%1 != 0:
+            ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep).astype(str)])
+        else:
+            ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
 
-    plt.title(",".join(runids),fontsize=20)
+    #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
+    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.75,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
+
+    plt.title(",".join(runids),fontsize=24)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
     plt.tight_layout()
 
     # Create output directory
@@ -1208,7 +1412,7 @@ class PropReader:
         self.ID = ID
         self.runid = runid
         self.start = start
-        self.sw_pars = ja.sw_par_dict(runid)
+        self.sw_pars = sw_par_dict(runid)
         self.sw_pars[0] /= 1.0e+6
         self.sw_pars[1] /= 1.0e+3
         self.sw_pars[2] /= 1.0e-9

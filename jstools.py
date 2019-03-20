@@ -24,7 +24,7 @@ try:
 except ImportError as e:
     print("Note: Did not import landau module: ",e)
 
-# try:
-#     import slams
-# except ImportError as e:
-#     print("Note: Did not import slams module: ",e)    
+try:
+    import slams
+except ImportError as e:
+    print("Note: Did not import slams module: ",e)    
