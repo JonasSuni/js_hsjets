@@ -15,6 +15,58 @@ r_e = 6.371e+6
 This file should contain all functions and scripts related to finding, sorting, tracking and statistically analysing SLAMS.
 '''
 
+def bow_shock_r(runid,t):
+
+    r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[11.7851239669,10.3130434783,11.9669421488,9.9652173913,12.4938271605]))
+    v_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[0.0089345544,0.0044131524,0.0089722231,0.0054675004,0.0053351551]))
+
+    return r0_dict[runid]+v_dict[runid]*(t-290)
+
+def get_cell_area(vlsvobj):
+    # returns area of one cell
+
+    # get spatial extent of simulation and the number of cells in each direction
+    simextent = vlsvobj.get_spatial_mesh_extent().reshape((2,3))
+    simsize = vlsvobj.get_spatial_mesh_size()
+
+    # calculate DX,DY,DZ
+    cell_sizes = (simextent[1]-simextent[0])/simsize
+    
+    # calculate area of one cell
+    dA = cell_sizes[0]*cell_sizes[1]
+
+    return dA
+
+def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
+    # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
+
+    simsize = vlsvobj.get_spatial_mesh_size()
+
+    # initialise array of neighbors
+    neighbors = np.array([],dtype=int)
+
+    # range of offsets to take into account
+    x_r = xrange(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
+    y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
+
+    for n in c_i:
+
+        # append cellids of neighbors, cast as int, to array of neighbors
+        for a in x_r:
+            for b in y_r:
+                if simsize[1] == 1:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,0,b],periodic=[0,0,0])))
+                else:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,0],periodic=[0,0,0])))
+
+    # discard invalid cellids
+    neighbors = neighbors[neighbors != 0]
+
+    # discard duplicate cellids
+    neighbors = np.unique(neighbors)
+
+    return neighbors
+
 def var_pars_list(var):
 
     key_list = ["duration",
@@ -384,7 +436,7 @@ def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
             curr_event_size = curr_event.size
 
             # find neighbors within the confines of the mask
-            curr_event = np.unique(np.append(curr_event,np.intersect1d(cells,ja.get_neighbors(vlsvobj,curr_event,neighborhood_reach))))
+            curr_event = np.unique(np.append(curr_event,np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))))
 
             # exit loop if all valid neighbors found
             if curr_event_size == curr_event.size:
@@ -513,8 +565,8 @@ def track_slams(runid,start,stop,threshold=0.5):
     sorigid = sorigid[sorigid.argsort()]
     
     # Find bow shock cells and area of one cell
-    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
-    dA = ja.get_cell_area(vlsvobj)
+    bs_cells = bow_shock_finder(vlsvobj,rho_sw,v_sw)
+    dA = get_cell_area(vlsvobj)
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
@@ -582,7 +634,7 @@ def track_slams(runid,start,stop,threshold=0.5):
 
         # Open bulkfile and get bow shock cells
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-        bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
+        bs_cells = bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
         # List of old events
         bs_events = []
@@ -888,7 +940,7 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
         if n == 0 and vlsvobj.check_variable("DX"):
             dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
         elif n == 0 and not vlsvobj.check_variable("DX"):
-            dA = ja.get_cell_area(vlsvobj)
+            dA = get_cell_area(vlsvobj)
 
         # If file has more than one population, choose proton population
         var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
@@ -1205,7 +1257,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
-                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
+                    val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     val_dict[runids[n]].append(props.read_at_amax(var))
 
@@ -1334,7 +1386,7 @@ def slams_all_hist(runids,var,time_thresh=10):
                 elif var in ["pd_avg","pd_med","pd_max"]:
                     var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
-                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
+                    var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
                     var_list.append(props.read_at_amax(var))
 
