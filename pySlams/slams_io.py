@@ -2,7 +2,6 @@ import numpy as np
 import pytools as pt
 import scipy
 import pandas as pd
-import jet_analyser as ja
 import os
 import copy
 import matplotlib.pyplot as plt
@@ -170,7 +169,7 @@ def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
 
     return masked_ci
 
-def xyz_reconstruct(vlsvobj):
+def xyz_reconstruct_old(vlsvobj):
     # reconstructs coordinates based on spatial mesh parameters
 
     # read UNSORTED cell ids
@@ -207,6 +206,22 @@ def xyz_reconstruct(vlsvobj):
     Z = Z[ci-1]
 
     return np.array([X,Y,Z])
+
+def xyz_reconstruct(vlsvobj,cellids=-1):
+
+    if type(cellids) == int:
+        if cellids == -1:
+            ci = vlsvobj.read_variable("CellID")
+        else:
+            ci = np.asarray([cellids])
+    else:
+        ci = np.asarray(cellids)
+
+    coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in ci])
+
+    coords = coords.T
+
+    return coords
 
 def restrict_area(vlsvobj,boxre):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
@@ -875,6 +890,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     ax.plot(xmax_list,ymax_list,"o",color="white",markersize=4)
 
 def calc_slams_properties(runid,start,jetid,tp_files=False):
+    # Calculates SLAMS properties and writes them to a props file
 
     if str(start)+"."+jetid+".slams" not in os.listdir("SLAMS/slams/"+runid):
         print("SLAMS with ID "+jetid+" does not exist, exiting.")
@@ -929,12 +945,11 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
 
         # read variables
         if vlsvobj.check_variable("X"):
-            X = vlsvobj.read_variable("X")[origid.argsort()]
-            Y = vlsvobj.read_variable("Y")[origid.argsort()]
-            Z = vlsvobj.read_variable("Z")[origid.argsort()]
-            X,Y,Z = ja.ci2vars_nofile([X,Y,Z],sorigid,curr_list)
+            X = vlsvobj.read_variable("X",cellids=curr_list)
+            Y = vlsvobj.read_variable("Y",cellids=curr_list)
+            Z = vlsvobj.read_variable("Z",cellids=curr_list)
         else:
-            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,curr_list)
+            X,Y,Z = xyz_reconstruct(vlsvobj,cellids=curr_list)
 
         # Calculate area of one cell
         if n == 0 and vlsvobj.check_variable("DX"):
@@ -948,22 +963,8 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
         if vlsvobj.check_population("proton"):
             var_list = var_list_alt
 
-        # If temperature files exist, read parallel and perpendicular temperature from those instead
-        
 
-        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
-        rho = rho[origid.argsort()]
-        v = v[origid.argsort()]
-        B = B[origid.argsort()]
-        T = T[origid.argsort()]
-        beta = beta[origid.argsort()]
-        TParallel = TParallel[origid.argsort()]
-        TPerpendicular = TPerpendicular[origid.argsort()]
-
-        rho,v,B,T,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,beta,TParallel,TPerpendicular],sorigid,curr_list)
-
-        # Q: Why are we doing this?
-        #cellids = cellids[cellids.argsort()]
+        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
 
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
