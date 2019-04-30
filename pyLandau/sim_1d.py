@@ -110,14 +110,14 @@ def rk_mom(k,alpha,T,l):
     C3 = k**(k+1)*alpha**(1+2*k-v)*(alpha**2+1)
     C4 = (v-3)*k**(k+1)*alpha**(3+2*k-v)
 
-    # print(scipy.special.gamma(b1))
-    # print(scipy.special.hyp1f1(a,-b0,alpha**2*k))
-    # print(scipy.special.gamma(b2))
-    # print(scipy.special.hyp1f1(a,-b1,alpha**2*k))
-    # print(scipy.special.gamma(-b3))
-    # print(scipy.special.hyp1f1(k,b4,alpha**2*k))
-    # print(scipy.special.gamma(-b4))
-    # print(scipy.special.hyp1f1(k,b5,alpha**2*k))
+    print(scipy.special.gamma(b1))
+    print(scipy.special.hyp1f1(a,-b0,alpha**2*k))
+    print(scipy.special.gamma(b2))
+    print(scipy.special.hyp1f1(a,-b1,alpha**2*k))
+    print(scipy.special.gamma(-b3))
+    print(scipy.special.hyp1f1(k,b4,alpha**2*k))
+    print(scipy.special.gamma(-b4))
+    print(scipy.special.hyp1f1(k,b5,alpha**2*k))
 
     res = 4*np.pi*theta**(1+v)*( \
         - C1 * scipy.special.gamma(a) * scipy.special.gamma(b1) * scipy.special.hyp1f1(a,-b0,alpha**2*k)/4/scipy.special.gamma(k + 1) \
@@ -126,6 +126,10 @@ def rk_mom(k,alpha,T,l):
         - C4 * scipy.special.gamma(-b4) * scipy.special.hyp1f1(k,b5,alpha**2*k)/4)
 
     return res
+
+def mom4(k,alpha,T,l):
+
+    return sc.m_p*rk_mom(k,alpha,T,4)/rk_mom(k,alpha,T,0)
 
 def sim_n_rk4(n0=100.0,v0=1,t=10000,dt=0.1,rmax=10,dr=0.01,figname="unnamed",animate=True,cpf=1000):
 

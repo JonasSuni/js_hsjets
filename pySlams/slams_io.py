@@ -48,14 +48,20 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
     x_r = xrange(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
     y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
 
-    for n in c_i:
+    
+    if simsize[1] == 1:
+        for n in c_i:
 
-        # append cellids of neighbors, cast as int, to array of neighbors
-        for a in x_r:
-            for b in y_r:
-                if simsize[1] == 1:
+            # append cellids of neighbors, cast as int, to array of neighbors
+            for a in x_r:
+                for b in y_r:
                     neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,0,b],periodic=[0,0,0])))
-                else:
+    else:
+        for n in c_i:
+
+            # append cellids of neighbors, cast as int, to array of neighbors
+            for a in x_r:
+                for b in y_r:
                     neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,0],periodic=[0,0,0])))
 
     # discard invalid cellids
@@ -153,7 +159,10 @@ def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
 
     # If file has separate populations, find proton population
     if vlsvobj.check_population("proton"):
-        rho = vlsvobj.read_variable("proton/rho")
+        try:
+            rho = vlsvobj.read_variable("proton/rho")
+        except:
+            rho = vlsvobj.read_variable("rho")
     else:
         rho = vlsvobj.read_variable("rho")
         
@@ -379,8 +388,12 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
 
     # if file has separate populations, read proton population
     if vlsvreader.check_population("proton"):
-        rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
-        v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
+        try:
+            rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
+            v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
+        except:
+            rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
+            v = vlsvreader.read_variable("v")[np.argsort(origid)]
     else:
         rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("v")[np.argsort(origid)]
@@ -961,10 +974,10 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
         var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
         var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
         if vlsvobj.check_population("proton"):
-            var_list = var_list_alt
-
-
-        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
+            try:
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list_alt]
+            except:
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
 
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
@@ -1127,7 +1140,7 @@ def slams_2d_hist(runids,var1,var2,time_thresh=10):
     for ind in xrange(len(inp_var_list)):
         for n in xrange(len(runids)):
             for fname in file_list_list[n]:
-                props = jio.PropReader("",runids[n],fname=fname)
+                props = PropReader("",runids[n],fname=fname)
                 if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     if inp_var_list[ind] == "duration":
                         var_list[ind].append(props.read("time")[-1]-props.read("time")[0])
@@ -1239,7 +1252,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # Append variable values to var lists
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
-            props = jio.PropReader("",runids[n],fname=fname)
+            props = PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
                     val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
@@ -1368,7 +1381,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # Append variable values to var list
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
-            props = jio.PropReader("",runids[n],fname=fname)
+            props = PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
                     var_list.append(props.read("time")[-1]-props.read("time")[0])
