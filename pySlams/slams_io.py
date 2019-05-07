@@ -1,14 +1,13 @@
 import numpy as np
 import pytools as pt
-import scipy
-import pandas as pd
 import os
 import copy
 import matplotlib.pyplot as plt
-import scipy.constants as sc
 
-m_p = 1.672621898e-27
-r_e = 6.371e+6
+m_p  = 1.672621898e-27
+r_e  = 6.371e+6
+k    = 1.3806488e-23
+mu_0 = 1.2566370614359173e-06
 
 '''
 This file should contain all functions and scripts related to finding, sorting, tracking and statistically analysing SLAMS.
@@ -273,7 +272,7 @@ def sw_par_dict(runid):
     sw_B = [5.0e-9,5.0e-9,10.0e-9,10.0e-9,5.0e-9]
     sw_T = [500e+3,500e+3,500e+3,500e+3,500e+3]
     sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in xrange(len(runs))]
-    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
+    sw_beta = [2*mu_0*sw_rho[n]*k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
 
     return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)]]
 
@@ -978,6 +977,8 @@ def calc_slams_properties(runid,start,jetid,tp_files=False):
                 rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list_alt]
             except:
                 rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
+        else:
+            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
 
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
@@ -1285,7 +1286,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
-    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~SLAMS}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.75)
     ax.tick_params(labelsize=20)
@@ -1415,7 +1416,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
-    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~SLAMS}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.6)
     ax.tick_params(labelsize=20)
@@ -1490,9 +1491,14 @@ class PropReader:
             self.fname = fname
 
         try:
-            self.props = pd.read_csv("SLAMS/slams/"+runid+"/"+self.fname).as_matrix()
+            props_f = open("SLAMS/slams/"+runid+"/"+self.fname)
         except IOError:
             raise IOError("File not found!")
+
+        props = props_f.read()
+        props = props.split("\n")[1:]
+        props = [line.split(",") for line in props]
+        self.props = np.asarray(props,dtype="float")
 
         var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max"]
         n_list = list(xrange(len(var_list)))

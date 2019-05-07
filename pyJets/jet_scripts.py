@@ -386,6 +386,67 @@ def jet_paper_pos():
 
     return None
 
+def jet_lifetime_plots(var):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_marker_dict = dict(zip(["ABA","ABC","AEA","AEC"],["x","o","^","d"]))
+    run_color_dict = dict(zip(["ABA","ABC","AEA","AEC"],["black","red","blue","green"]))
+
+    x_list_list = [[],[],[],[]]
+    y_list_list = [[],[],[],[]]
+
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                    x_list_list[n].append(props.read("time")[-1]-props.read("time")[0])
+                    y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
+
+    plt.ioff()
+
+    fig = plt.figure(figsize=(10,10))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("Lifetime [s]",fontsize=20)
+    ax.set_ylabel(var_pars_list(var)[0],fontsize=20)
+    plt.grid()
+
+    lines = []
+    labs = []
+
+    for n in xrange(len(runids)):
+        line1, = ax.plot(x_list_list[n],y_list_list[n],run_marker_dict[runids[n]],markeredgecolor=run_color_dict[runids[n]],markersize=5,markerfacecolor="None",markeredgewidth=2)
+        lines.append(line1)
+        labs.append(runids[n])
+
+    plt.title(",".join(runids)+"\nN = "+str(sum([len(l) for l in x_list_list])),fontsize=20)
+    plt.legend(lines,labs,numpoints=1)
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/paper/misc/"+"_".join(runids)+"/"):
+        try:
+            os.makedirs("Figures/paper/misc/"+"_".join(runids)+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/paper/misc/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+    print("Figures/paper/misc/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+
+    plt.close(fig)
+
+    return None
+
 def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Create 2D histogram of var1 and var2
 

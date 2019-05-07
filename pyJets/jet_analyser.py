@@ -130,6 +130,43 @@ def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
 
     return masked_ci
 
+def sw_normalisation(runid,var):
+
+    sw_pars = sw_par_dict(runid)
+    key_list = ["time",
+    "x_mean","y_mean","z_mean",
+    "A","Nr_cells",
+    "r_mean","theta_mean","phi_mean",
+    "size_rad","size_tan",
+    "x_vmax","y_vmax","z_vmax",
+    "n_avg","n_med","n_max",
+    "v_avg","v_med","v_max",
+    "B_avg","B_med","B_max",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "beta_avg","beta_med","beta_max",
+    "x_min","rho_vmax","b_vmax",
+    "pd_avg","pd_med","pd_max"]
+    
+    norm_list = [1,
+    1,1,1,
+    1,1,
+    1,1,1,
+    1,1,
+    1,1,1,
+    sw_pars[0]/1.0e+6,sw_pars[0]/1.0e+6,sw_pars[0]/1.0e+6,
+    sw_pars[1]/1.0e+3,sw_pars[1]/1.0e+3,sw_pars[1]/1.0e+3,
+    sw_pars[2]/1.0e-9,sw_pars[2]/1.0e-9,sw_pars[2]/1.0e-9,
+    sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,
+    sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,
+    sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,
+    sw_pars[4],sw_pars[4],sw_pars[4],
+    1,sw_pars[0]/1.0e+6,sw_pars[4],
+    sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9]
+
+    return norm_list[key_list.index(var)]
+
 def sw_par_dict(runid):
     # Returns solar wind parameters for specified run
     # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta
@@ -142,7 +179,7 @@ def sw_par_dict(runid):
     sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in xrange(len(runs))]
     sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
 
-    return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)]]
+    return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)],sw_T[runs.index(runid)]]
 
 def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
     # sort masked cells into events based on proximity in X,Y-space
