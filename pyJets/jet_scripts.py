@@ -386,6 +386,48 @@ def jet_paper_pos():
 
     return None
 
+def jet_time_series(runid,start,jetid,var):
+
+    # Create outputdir if it doesn't already exist
+    if not os.path.exists("jet_sizes/"+runid):
+        try:
+            os.makedirs("jet_sizes/"+runid)
+        except OSError:
+            pass
+
+    props = jio.PropReader(jetid,runid,start)
+
+    time_arr = props.read("time")
+    var_arr = props.read(var)/ja.sw_normalisation(runid,var)
+
+    plt.ioff()
+    
+    fig = plt.figure(figsize=(10,5))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("Time [s]",fontsize=20)
+    ax.set_ylabel(var_pars_list(var)[0],fontsize=20)
+    plt.grid()
+    ax.plot(time_arr,var_arr,color="black")
+
+    plt.tight_layout()
+
+    fig.savefig("jet_sizes/{}/{}_time_series_{}.png".format(runid,jetid,var))
+    print("jet_sizes/{}/{}_time_series_{}.png".format(runid,jetid,var))
+
+    plt.close(fig)
+
+    return None
+
+def jts_make(runid,start,startid,stopid,var):
+
+    for n in range(startid,stopid+1):
+        try:
+            jet_time_series(runid,start,str(n).zfill(5),var)
+        except IOError:
+            pass
+
+    return None
+
 def jet_lifetime_plots(var):
 
     runids = ["ABA","ABC","AEA","AEC"]
