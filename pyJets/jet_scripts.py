@@ -186,6 +186,26 @@ def expr_smooth(exprmaps):
 
 ###HELPER FUNCTIONS HERE###
 
+def sheath_pars_list(var):
+
+    key_list = [
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med"]
+
+    label_list = [
+    "$P_{dyn,vmax}~[P_{dyn,sh}]$","$P_{dyn,avg}~[P_{dyn,sh}]$","$P_{dyn,med}~[P_{dyn,sh}]$","$P_{dyn,max}~[P_{dyn,sh}]$",
+    "$n_{max}~[n_{sh}]$","$n_{avg}~[n_{sh}]$","$n_{med}~[n_{sh}]$","$n_{v,max}~[n_{sh}]$",
+    "$v_{max}~[v_{sh}]$","$v_{avg}~[v_{sh}]$","$v_{med}~[v_{sh}]$"
+    ]
+
+    norm_list = [
+    0.25,0.25,0.25,0.25,
+    4,4,4,4,
+    0.25,0.25,0.25]
+
+    return [label_list[key_list.index(var)],norm_list[key_list.index(var)]]
+
 def var_pars_list(var):
 
     key_list = ["duration",
@@ -386,7 +406,7 @@ def jet_paper_pos():
 
     return None
 
-def jet_time_series(runid,start,jetid,var):
+def jet_time_series(runid,start,jetid,var, thresh = 0.0):
 
     # Create outputdir if it doesn't already exist
     if not os.path.exists("jet_sizes/"+runid):
@@ -400,6 +420,10 @@ def jet_time_series(runid,start,jetid,var):
     time_arr = props.read("time")
     var_arr = props.read(var)/ja.sw_normalisation(runid,var)
 
+    if np.max(var_arr) < thresh:
+        print("Jet smaller than threshold, exiting!")
+        return None
+
     plt.ioff()
     
     fig = plt.figure(figsize=(10,5))
@@ -407,6 +431,7 @@ def jet_time_series(runid,start,jetid,var):
     ax.set_xlabel("Time [s]",fontsize=20)
     ax.set_ylabel(var_pars_list(var)[0],fontsize=20)
     plt.grid()
+    plt.title("Run: {}, ID: {}".format(runid,jetid))
     ax.plot(time_arr,var_arr,color="black")
 
     plt.tight_layout()
@@ -418,15 +443,93 @@ def jet_time_series(runid,start,jetid,var):
 
     return None
 
-def jts_make(runid,start,startid,stopid,var):
+def jts_make(runid,start,startid,stopid,var, thresh = 0.0):
 
     for n in range(startid,stopid+1):
         try:
-            jet_time_series(runid,start,str(n).zfill(5),var)
+            jet_time_series(runid,start,str(n).zfill(5),var, thresh=thresh)
         except IOError:
-            pass
+            print("Could not create time series!")
 
     return None
+
+def SEA_make(runid,var,thresh=0.4):
+
+    jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
+
+    jetids = np.arange(1,1000,1)
+
+    epoch_arr = np.arange(-60.0,60.1,0.5)
+    SEA_arr = np.zeros_like(epoch_arr)
+
+    for n in jetids:
+        try:
+            props = jio.PropReader(str(n).zfill(5),runid,580)
+        except:
+            continue
+
+        time_arr = props.read("time")
+        area_arr = props.read("pd_med")/ja.sw_normalisation(runid,"pd_med")
+        if np.max(area_arr) < thresh:
+            continue
+
+        var_arr = props.read(var)/ja.sw_normalisation(runid,var)
+        try:
+            var_arr /= sheath_pars_list(var)[1]
+            var_arr -= 1
+        except:
+            pass
+
+        res_arr = np.interp(epoch_arr,time_arr-time_arr[np.argmax(area_arr)],var_arr,left=0.0,right=0.0)
+        SEA_arr = np.vstack((SEA_arr,res_arr))
+
+    SEA_arr = SEA_arr[1:]
+
+    SEA_arr_mean = np.mean(SEA_arr,axis=0)
+    SEA_arr_std = np.std(SEA_arr,ddof=1,axis=0)
+
+    plt.ioff()
+
+    fig = plt.figure(figsize=(10,5))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("Epoch time [s]",fontsize=20)
+    
+    try:
+        ax.set_ylabel("Fractional increase {}".format(sheath_pars_list(var)[0]),fontsize=20)
+    except:
+        ax.set_ylabel("Averaged {}".format(var_pars_list(var)[0]),fontsize=20)
+    
+    plt.grid()
+    plt.title("Run: {}, Epoch centering: {}".format(runid,"Pdyn$_{med}$"))
+    ax.plot(epoch_arr,SEA_arr_mean,color="black")
+    ax.fill_between(epoch_arr,SEA_arr_mean-SEA_arr_std,SEA_arr_mean+SEA_arr_std,alpha=0.3)
+
+    plt.tight_layout()
+
+    if not os.path.exists("Figures/SEA/"+runid+"/"):
+        try:
+            os.makedirs("Figures/SEA/"+runid+"/")
+        except OSError:
+            pass
+
+    fig.savefig("Figures/SEA/{}/SEA_{}.png".format(runid,var))
+    print("Figures/SEA/{}/SEA_{}.png".format(runid,var))
+
+    plt.close(fig)
+
+    return None
+
+def SEA_script():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    var = ["n_max","v_max","pd_max","n_avg","n_med","v_avg","v_med","pd_avg","pd_med"]
+
+    for runid in runids:
+        for v in var:
+            SEA_make(runid,v,thresh=0.0)
+
+    return None
+
 
 def jet_lifetime_plots(var):
 
