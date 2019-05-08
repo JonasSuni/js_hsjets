@@ -453,7 +453,7 @@ def jts_make(runid,start,startid,stopid,var, thresh = 0.0):
 
     return None
 
-def SEA_make(runid,var,thresh=0.4):
+def SEA_make(runid,var,thresh=5):
 
     jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
 
@@ -470,7 +470,7 @@ def SEA_make(runid,var,thresh=0.4):
 
         time_arr = props.read("time")
         area_arr = props.read("pd_med")/ja.sw_normalisation(runid,"pd_med")
-        if np.max(area_arr) < thresh:
+        if time_arr.size < thresh:
             continue
 
         var_arr = props.read(var)/ja.sw_normalisation(runid,var)
