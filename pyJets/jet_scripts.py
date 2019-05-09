@@ -25,6 +25,58 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
+
+    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/{}/".format(runid)
+    
+    global jet_cells
+    global slams_cells
+
+    for n in xrange(start,stop+1):
+
+        try:
+            fileobj = open("events/{}/{}.events".format(runid,n),"r")
+            contents = fileobj.read()
+            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        except IOError:
+            jet_cells = [] 
+
+        try:
+            fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
+            contents = fileobj.read()
+            slams_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        except IOError:
+            slams_cells = []
+
+
+        if runid in ["AEC","AEF","BEA","BEB"]:
+            bulkpath = "/proj/vlasov/2D/{}/".format(runid)
+        elif runid == "AEA":
+            bulkpath = "/proj/vlasov/2D/{}/round_3_boundary_sw/".format(runid)
+        else:
+            bulkpath = "/proj/vlasov/2D/{}/bulk/".format(runid)
+
+        bulkname = "bulk.{}.vlsv".format(str(n).zfill(7))
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file {} not found, continuing".format(str(n)))
+            continue
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,var="Pdyn",vmax=vmax*1.0e-9,colormap="parula",cbtitle="nPa",external=ext_slamjet,pass_vars=["CellID"])
+
+def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
+
+    cellids = pass_maps["CellID"]
+
+    jet_mask = np.in1d(cellids,jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask,cellids.shape)
+
+    slams_mask = np.in1d(cellids,slams_cells).astype(int)
+    slams_mask = np.reshape(slams_mask,cellids.shape)
+
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="magenta")
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
+
 def draw_all_cont():
 
     pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",outputdir="Contours/ALLCONT_",usesci=0,lin=1,boxre=[6,18,-8,6],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
@@ -453,9 +505,9 @@ def jts_make(runid,start,startid,stopid,var, thresh = 0.0):
 
     return None
 
-def SEA_make(runid,var,thresh=5):
+def SEA_make(runid,var,centering="pd_avg",thresh=5):
 
-    jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
+    #jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
 
     jetids = np.arange(1,1000,1)
 
@@ -469,7 +521,7 @@ def SEA_make(runid,var,thresh=5):
             continue
 
         time_arr = props.read("time")
-        area_arr = props.read("pd_med")/ja.sw_normalisation(runid,"pd_med")
+        cent_arr = props.read(centering)/ja.sw_normalisation(runid,centering)
         if time_arr.size < thresh:
             continue
 
@@ -480,7 +532,7 @@ def SEA_make(runid,var,thresh=5):
         except:
             pass
 
-        res_arr = np.interp(epoch_arr,time_arr-time_arr[np.argmax(area_arr)],var_arr,left=0.0,right=0.0)
+        res_arr = np.interp(epoch_arr,time_arr-time_arr[np.argmax(cent_arr)],var_arr,left=0.0,right=0.0)
         SEA_arr = np.vstack((SEA_arr,res_arr))
 
     SEA_arr = SEA_arr[1:]
@@ -500,7 +552,7 @@ def SEA_make(runid,var,thresh=5):
         ax.set_ylabel("Averaged {}".format(var_pars_list(var)[0]),fontsize=20)
     
     plt.grid()
-    plt.title("Run: {}, Epoch centering: {}".format(runid,"Pdyn$_{med}$"))
+    plt.title("Run: {}, Epoch centering: {}".format(runid,centering.replace("_",r"\_")))
     ax.plot(epoch_arr,SEA_arr_mean,color="black")
     ax.fill_between(epoch_arr,SEA_arr_mean-SEA_arr_std,SEA_arr_mean+SEA_arr_std,alpha=0.3)
 
@@ -519,14 +571,14 @@ def SEA_make(runid,var,thresh=5):
 
     return None
 
-def SEA_script():
+def SEA_script(centering="pd_avg",thresh=5):
 
     runids = ["ABA","ABC","AEA","AEC"]
     var = ["n_max","v_max","pd_max","n_avg","n_med","v_avg","v_med","pd_avg","pd_med"]
 
     for runid in runids:
         for v in var:
-            SEA_make(runid,v,thresh=0.0)
+            SEA_make(runid,v,centering=centering,thresh=thresh)
 
     return None
 

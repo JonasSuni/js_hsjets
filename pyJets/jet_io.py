@@ -873,3 +873,272 @@ def track_jets(runid,start,stop,threshold=0.3):
         timefile.close()
 
     return None
+
+def slams_eventfile_read(runid,filenr):
+    # Read array of arrays of cellids from file
+
+    outputlist = []
+
+    ef = open("/homeappl/home/sunijona/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    contents = ef.read().strip("\n")
+    if contents == "":
+        return []
+    lines = contents.split("\n")
+
+    for line in lines:
+
+        outputlist.append(map(int,line.split(",")))
+
+    return outputlist
+
+def track_slamsjets(runid,start,stop,threshold=0.3):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(start).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(start).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(start)+" not found, exiting")
+        return 1
+
+    # Create outputdir if it doesn't already exist
+    if not os.path.exists("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+runid):
+        try:
+            os.makedirs("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+runid)
+        except OSError:
+            pass
+
+    # Open file, get Cell IDs and sort them
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    # Read initial event files
+    events = eventfile_read(runid,start+1)
+
+    slams_events_old = slams_eventfile_read(runid,start)
+    slams_events = slams_eventfile_read(runid,start+1)
+
+    slamsobj_list = []
+    dead_slamsobj_list = []
+
+    slamsjet_list = []
+    dead_slamsjet_list = []
+
+    # Initialise unique ID counter
+    slams_counter = 1
+    slamsjet_counter = 1
+
+    # Print current time
+    print("t = "+str(float(start+1)/2)+"s")
+
+    # Look for slams
+    for slams_event in slams_events:
+
+        for slams_old_event in slams_events_old:
+
+            if np.intersect1d(slams_old_event,slams_event).size > threshold*len(slams_event):
+
+                # Create unique ID
+                curr_slams_id = str(slams_counter).zfill(5)
+
+                # Create new jet object
+                slamsobj_list.append(Jet(curr_slams_id,runid,float(start)/2))
+
+                # Append current events to jet object properties
+                slamsobj_list[-1].cellids.append(slams_old_event)
+                slamsobj_list[-1].cellids.append(slams_event)
+                slamsobj_list[-1].times.append(float(start+1)/2)
+
+                # Iterate counter
+                slams_counter += 1
+
+                break
+
+    # Look for slamsjets
+    for slamsobj in slamsobj_list:
+
+        for event in events:
+
+            if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,[3,3])).size > 0:
+
+                curr_slamsjet_id = str(slamsjet_counter).zfill(5)
+                slamsjet_obj = copy.deepcopy(slamsobj)
+                slamsjet_obj.ID = curr_slamsjet_id
+                slamsjet_obj.cellids[-1] = np.unique(slamsjet_obj.cellids[-1]+event).tolist()
+                slamsjet_list.append(slamsjet_obj)
+                slamsobj_list.remove(slamsobj)
+
+                slamsjet_counter += 1
+
+                break
+
+    # Track jets, slams and slamjets
+    for n in xrange(start+2,stop+1):
+
+        for slamsobj in slamsobj_list:
+            if float(n)/2 - slamsobj.times[-1] > 5:
+                print("Killed SLAMS {}".format(slamsobj.ID))
+                dead_slamsobj_list.append(slamsobj)
+                slamsobj_list.remove(slamsobj)
+
+        for slamsjet in slamsjet_list:
+            if float(n)/2 - slamsjet.times[-1] > 5:
+                print("Killed SLAMSJET {}".format(slamsjet.ID))
+                dead_slamsjet_list.append(slamsjet)
+                slamsjet_list.remove(slamsjet)
+
+        # Print  current time
+        print("t = "+str(float(n)/2)+"s")
+
+        # Find correct bulkname
+        if runid == "AED":
+            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+        else:
+            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(n)+" not found, continuing")
+            events = []
+            continue
+
+        # Open bulkfile and get bow shock cells
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+        # Initialise flags for finding splintering jets
+        slams_flags = []
+        slamsjet_flags = []
+
+        # Read event file for current time step
+        events = eventfile_read(runid,n)
+        events.sort(key=len)
+        events = events[::-1]
+
+        slams_events = slams_eventfile_read(runid,n)
+        slams_events.sort(key=len)
+        slams_events = slams_events[::-1]        
+
+        # Iniatilise list of cells currently being tracked
+        curr_slams_temp_list = []
+        curr_slamsjet_temp_list = []
+
+        # Update existing slams
+        for slams_event in slams_events:
+
+            for slamsobj in slamsobj_list:
+
+                if slamsobj.ID in slams_flags:
+                    
+                    if np.intersect1d(slamsobj.cellids[-2],slams_event).size > threshold*len(slams_event):
+
+                        curr_slams_id = str(slams_counter).zfill(5)
+
+                        # Create new jet
+                        slamsobj_new = Jet(curr_slams_id,runid,float(n)/2)
+                        slamsobj_new.cellids.append(slams_event)
+                        slamsobj_list.append(slamsobj_new)
+                        curr_slams_temp_list.append(slams_event)
+
+                        # Iterate counter
+                        slams_counter += 1
+
+                        break
+
+                else:
+
+                    if np.intersect1d(slamsobj.cellids[-1],slams_event).size > threshold*len(slams_event):
+
+                        # Append event to jet object properties
+                        slamsobj.cellids.append(slams_event)
+                        slamsobj.times.append(float(n)/2)
+                        print("Updated SLAMS with ID "+slamsobj.ID)
+
+                        # Flag jet object
+                        slams_flags.append(slamsobj.ID)
+                        curr_slams_temp_list.append(slams_event)
+
+                        break
+
+        # Update existing slamsjets
+        for event in events:
+
+            for slamsjet in slamsjet_list:
+
+                if slamsjet.ID in slamsjet_flags:
+                    
+                    if np.intersect1d(slamsjet.cellids[-2],event).size > threshold*len(event):
+
+                        curr_slamsjet_id = str(slamsjet_counter).zfill(5)
+
+                        # Create new jet
+                        slamsjet_new = Jet(curr_slamsjet_id,runid,float(n)/2)
+                        slamsjet_new.cellids.append(event)
+                        slamsjet_list.append(slamsjet_new)
+                        curr_slamsjet_temp_list.append(event)
+
+                        # Iterate counter
+                        slamsjet_counter += 1
+
+                        break
+
+                else:
+
+                    if np.intersect1d(slamsjet.cellids[-1],event).size > threshold*len(event):
+
+                        # Append event to jet object properties
+                        slamsjet.cellids.append(event)
+                        slamsjet.times.append(float(n)/2)
+                        print("Updated SLAMSJET with ID "+slamsjet.ID)
+
+                        # Flag jet object
+                        slamsjet_flags.append(slamsjet.ID)
+                        curr_slamsjet_temp_list.append(event)
+
+                        break
+
+        # Look for new slamsjets at bow shock
+        for slamsobj in slamsobj_list:
+
+            for event in events:
+
+                if event not in curr_slams_temp_list:
+
+                    if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,[3,3])).size > 0:
+
+                        curr_slamsjet_id = str(slamsjet_counter).zfill(5)
+
+                        slamsjet_obj = copy.deepcopy(slamsobj)
+                        slamsjet_obj.ID = curr_slamsjet_id
+                        if slamsobj.ID in slams_flags:
+                            slamsjet_obj.cellids[-1] = np.unique(slamsjet_obj.cellids[-1]+event).tolist()
+                        else:
+                            slamsjet_obj.cellids.append(event)
+                        slamsjet_list.append(slamsjet_obj)
+                        slamsobj_list.remove(slamsobj)
+
+                        slamsjet_counter += 1
+
+                        break
+
+    slamsjet_list = slamsjet_list + dead_slamsjet_list
+
+    for slamsjet in slamsjet_list:
+
+        # Write jet object cellids and times to files
+        slamsjetfile = open("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".slamsjet","w")
+        timefile = open("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".times","w")
+
+        slamsjetfile.write(slamsjet.return_cellid_string())
+        timefile.write(slamsjet.return_time_string())
+
+        slamsjetfile.close()
+        timefile.close()
+
+    return None
