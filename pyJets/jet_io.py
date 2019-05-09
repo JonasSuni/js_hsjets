@@ -1016,6 +1016,10 @@ def track_slamsjets(runid,start,stop,threshold=0.3):
         slams_flags = []
         slamsjet_flags = []
 
+        old_slams_events = []
+        for slams_event in slams_events:
+            old_slams_events.append(slams_event)
+
         # Read event file for current time step
         events = eventfile_read(runid,n)
         events.sort(key=len)
@@ -1108,7 +1112,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3):
 
             for event in events:
 
-                if event not in curr_slams_temp_list:
+                if event not in curr_slamsjet_temp_list:
 
                     if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,[3,3])).size > 0:
 
@@ -1126,6 +1130,32 @@ def track_slamsjets(runid,start,stop,threshold=0.3):
                         slamsjet_counter += 1
 
                         break
+
+        # Look for new slams
+        for slams_event in slams_events:
+
+            if slams_event not in curr_slams_temp_list:
+
+                for old_slams_event in old_slams_events:
+
+                    if np.intersect1d(old_slams_event,slams_event).size > threshold*len(slams_event):
+
+                        # Create unique ID
+                        curr_slams_id = str(slams_counter).zfill(5)
+
+                        # Create new jet object
+                        slamsobj_list.append(Jet(curr_slams_id,runid,float(n-1)/2))
+
+                        # Append current events to jet object properties
+                        slamsobj_list[-1].cellids.append(old_slams_event)
+                        slamsobj_list[-1].cellids.append(slams_event)
+                        slamsobj_list[-1].times.append(float(n)/2)
+
+                        # Iterate counter
+                        slams_counter += 1
+
+                        break
+
 
     slamsjet_list = slamsjet_list + dead_slamsjet_list
 
