@@ -16,7 +16,14 @@ r_e = 6.371e+6
 class PropReader:
     # Class for reading jet property files
 
-    def __init__(self,ID,runid,start=580,fname=None):
+    def __init__(self,ID,runid,start=580,fname=None,transient="jet"):
+
+        if transient == "jet":
+            inputdir = "jets"
+        elif transient == "slamsjet":
+            inputdir = "SLAMSJETS/slamsjets"
+        elif transient == "slams":
+            inputdir = "SLAMS/slams"
 
         self.ID = ID
         self.runid = runid
@@ -33,7 +40,7 @@ class PropReader:
             self.fname = fname
 
         try:
-            self.props = pd.read_csv("jets/"+runid+"/"+self.fname).as_matrix()
+            self.props = pd.read_csv(inputdir+"/"+runid+"/"+self.fname).as_matrix()
         except IOError:
             raise IOError("File not found!")
 
@@ -50,6 +57,17 @@ class PropReader:
 
     def amax_index(self):
         return self.read("A").argmax()
+
+    def time_index(self,time):
+        time_arr = self.read("time")
+        if time not in time_arr:
+            raise IOError("Time not found!")
+        else:
+            return time_arr.tolist().index(time)
+
+    def read_at_time(self,var,time):
+        return self.read(var)[self.time_index(time)]
+
 
     def read_at_amax(self,name):
         return self.read(name)[self.amax_index()]
@@ -135,21 +153,33 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
 
     return None
 
-def timefile_read(runid,filenr,key):
+def timefile_read(runid,filenr,key,transient="jet"):
     # Read array of times from file
 
-    tf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".times","r")
+    if transient == "jet":
+        inputdir = "jets"
+    elif transient == "slamsjet":
+        inputdir = "SLAMSJETS/slamsjets"
+
+    tf = open("{}/{}/{}.{}.times".format(inputdir,runid,str(filenr),key),"r")
     contents = tf.read().split("\n")
     tf.close()
 
     return map(float,contents)
 
-def jetfile_read(runid,filenr,key):
+def jetfile_read(runid,filenr,key,transient="jet"):
     # Read array of cellids from file
+
+    if transient == "jet":
+        inputdir = "jets"
+        extension = "jet"
+    elif transient == "slamsjet":
+        inputdir = "SLAMSJETS/slamsjets"
+        extension = "slamsjet"
 
     outputlist = []
 
-    jf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".jet","r")
+    jf = open("{}/{}/{}.{}.{}".format(inputdir,runid,str(filenr),key,extension),"r")
     contents = jf.read()
     lines = contents.split("\n")
 
@@ -159,12 +189,17 @@ def jetfile_read(runid,filenr,key):
 
     return outputlist
 
-def eventfile_read(runid,filenr):
+def eventfile_read(runid,filenr,transient="jet"):
     # Read array of arrays of cellids from file
+
+    if transient == "jet":
+        inputdir = "events"
+    elif transient == "slams":
+        inputdir = "SLAMS/events"
 
     outputlist = []
 
-    ef = open("/homeappl/home/sunijona/events/"+runid+"/"+str(filenr)+".events","r")
+    ef = open("{}/{}/{}.events".format(inputdir,runid,str(filenr)),"r")
     contents = ef.read().strip("\n")
     if contents == "":
         return []
@@ -176,15 +211,20 @@ def eventfile_read(runid,filenr):
 
     return outputlist
 
-def propfile_write(runid,filenr,key,props):
+def propfile_write(runid,filenr,key,props,transient="jet"):
     # Write jet properties to file
 
-    open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
-    pf = open("/homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props","a")
+    if transient == "jet":
+        outputdir = "jets"
+    elif transient == "slamsjet":
+        outputdir = "SLAMSJETS/slamsjets"
+
+    open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
+    pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
     pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
-    print("Wrote to /homeappl/home/sunijona/jets/"+runid+"/"+str(filenr)+"."+key+".props")
+    print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
 def jio_figmake(runid,start,jetid,figname,tp_files=False):
     # Create time series figures of specified jet
@@ -441,15 +481,22 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
     return TPerp
 
-def calc_jet_properties(runid,start,jetid,tp_files=False):
+def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
-    if str(start)+"."+jetid+".jet" not in os.listdir("jets/"+runid):
-        print("Jet with ID "+jetid+" does not exist, exiting.")
+    if transient == "jet":
+        inputdir = "jets"
+        extension = "jet"
+    elif transient == "slamsjet":
+        inputdir = "SLAMSJETS/slamsjets"
+        extension = "slamsjet"
+
+    if "{}.{}.{}".format(str(start),jetid,extension) not in os.listdir("{}/{}".format(inputdir,runid)):
+        print("Transient with ID "+jetid+" does not exist, exiting.")
         return 1
 
     # Read jet cellids and times
-    jet_list = jetfile_read(runid,start,jetid)
-    time_list = timefile_read(runid,start,jetid)
+    jet_list = jetfile_read(runid,start,jetid,transient)
+    time_list = timefile_read(runid,start,jetid,transient)
 
     # Discard jet if it's very short-lived
     if len(time_list) < 5:
@@ -495,12 +542,11 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
 
         # read variables
         if vlsvobj.check_variable("X"):
-            X = vlsvobj.read_variable("X")[origid.argsort()]
-            Y = vlsvobj.read_variable("Y")[origid.argsort()]
-            Z = vlsvobj.read_variable("Z")[origid.argsort()]
-            X,Y,Z = ja.ci2vars_nofile([X,Y,Z],sorigid,curr_list)
+            X = vlsvobj.read_variable("X",cellids=curr_list)
+            Y = vlsvobj.read_variable("Y",cellids=curr_list)
+            Z = vlsvobj.read_variable("Z",cellids=curr_list)
         else:
-            X,Y,Z = ja.ci2vars_nofile(ja.xyz_reconstruct(vlsvobj),sorigid,curr_list)
+            X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids=curr_list)
 
         # Calculate area of one cell
         if n == 0 and vlsvobj.check_variable("DX"):
@@ -511,42 +557,14 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
         # If file has more than one population, choose proton population
         var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
         var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
-        if not vlsvobj.check_variable("rho"):
-            var_list = var_list_alt
-
-        # If temperature files exist, read parallel and perpendicular temperature from those instead
-        if tp_files:
-
-            var_list = var_list[:-2]
-
-            rho,v,B,T,cellids,beta = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
-            cellids = cellids[cellids.argsort()]
-            TParallel = tpar_reader(runid,nr_list[n],cellids,curr_list)
-            TPerpendicular = tperp_reader(runid,nr_list[n],cellids,curr_list)
-            
-            rho = rho[origid.argsort()]
-            v = v[origid.argsort()]
-            B = B[origid.argsort()]
-            T = T[origid.argsort()]
-            beta = beta[origid.argsort()]
-
-            rho,v,B,T,beta = ja.ci2vars_nofile([rho,v,B,T,beta],sorigid,curr_list)
-
+        if vlsvobj.check_population("proton"):
+            try:
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list_alt]
+            except:
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
         else:
+            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
 
-            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = ja.read_mult_vars(vlsvobj,var_list,cells=-1)
-            rho = rho[origid.argsort()]
-            v = v[origid.argsort()]
-            B = B[origid.argsort()]
-            T = T[origid.argsort()]
-            beta = beta[origid.argsort()]
-            TParallel = TParallel[origid.argsort()]
-            TPerpendicular = TPerpendicular[origid.argsort()]
-
-            rho,v,B,T,beta,TParallel,TPerpendicular = ja.ci2vars_nofile([rho,v,B,T,beta,TParallel,TPerpendicular],sorigid,curr_list)
-
-        # Q: Why are we doing this?
-        #cellids = cellids[cellids.argsort()]
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
         # Scale variables
@@ -663,7 +681,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False):
     prop_arr = np.reshape(prop_arr,(len(nr_list),len(temp_arr)))
 
     # write property array to file
-    propfile_write(runid,start,jetid,prop_arr)
+    propfile_write(runid,start,jetid,prop_arr,transient)
 
     return prop_arr
 

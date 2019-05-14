@@ -327,7 +327,7 @@ def read_mult_vars(vlsvobj,input_vars,cells=-1):
 
     return output_vars
 
-def xyz_reconstruct(vlsvobj):
+def xyz_reconstruct_old(vlsvobj):
     # reconstructs coordinates based on spatial mesh parameters
 
     # get simulation extents and dimension sizes
@@ -356,6 +356,22 @@ def xyz_reconstruct(vlsvobj):
     Z = Z.flatten()
 
     return np.array([X,Y,Z])
+
+def xyz_reconstruct(vlsvobj,cellids=-1):
+
+    if type(cellids) == int:
+        if cellids == -1:
+            ci = vlsvobj.read_variable("CellID")
+        else:
+            ci = np.asarray([cellids])
+    else:
+        ci = np.asarray(cellids)
+
+    coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in ci])
+
+    coords = coords.T
+
+    return coords
 
 def restrict_area(vlsvobj,boxre):
     # find cellids of cells that correspond to X,Y-positions within the specified limits

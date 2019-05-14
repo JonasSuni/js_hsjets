@@ -31,9 +31,21 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     
     global jet_cells
     global slams_cells
+    global xmean_list
+    global ymean_list
 
     for n in xrange(start,stop+1):
 
+        xmean_list = []
+        ymean_list = []
+
+        for itr in range(500):
+            try:
+                props = jio.PropReader(str(itr).zfill(5),runid,580,transient="slamsjet")
+                xmean_list.append(props.read_at_time("x_mean",float(n)/2))
+                ymean_list.append(props.read_at_time("y_mean",float(n)/2))
+            except IOError:
+                pass
         try:
             fileobj = open("events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
@@ -76,6 +88,8 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
 
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="magenta")
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
+
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4)
 
 def draw_all_cont():
 
@@ -458,21 +472,29 @@ def jet_paper_pos():
 
     return None
 
-def jet_time_series(runid,start,jetid,var, thresh = 0.0):
+def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
+
+    if transient == "jet":
+        outputdir = "jet_sizes"
+    elif transient == "slamsjet":
+        outputdir = "SLAMSJETS/time_series"
+    elif transient == "slams":
+        outputdir = "SLAMS/time_series"
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("jet_sizes/"+runid):
+    if not os.path.exists(outputdir+"/"+runid):
         try:
-            os.makedirs("jet_sizes/"+runid)
+            os.makedirs(outputdir+"/"+runid)
         except OSError:
             pass
 
-    props = jio.PropReader(jetid,runid,start)
+    props = jio.PropReader(jetid,runid,start,transient=transient)
 
     time_arr = props.read("time")
+    area_arr = props.read("A")
     var_arr = props.read(var)/ja.sw_normalisation(runid,var)
 
-    if np.max(var_arr) < thresh:
+    if np.max(area_arr) < thresh:
         print("Jet smaller than threshold, exiting!")
         return None
 
@@ -488,18 +510,18 @@ def jet_time_series(runid,start,jetid,var, thresh = 0.0):
 
     plt.tight_layout()
 
-    fig.savefig("jet_sizes/{}/{}_time_series_{}.png".format(runid,jetid,var))
-    print("jet_sizes/{}/{}_time_series_{}.png".format(runid,jetid,var))
+    fig.savefig("{}/{}/{}_time_series_{}.png".format(outputdir,runid,jetid,var))
+    print("{}/{}/{}_time_series_{}.png".format(outputdir,runid,jetid,var))
 
     plt.close(fig)
 
     return None
 
-def jts_make(runid,start,startid,stopid,var, thresh = 0.0):
+def jts_make(runid,start,startid,stopid,var,thresh = 0.0,transient="jet"):
 
     for n in range(startid,stopid+1):
         try:
-            jet_time_series(runid,start,str(n).zfill(5),var, thresh=thresh)
+            jet_time_series(runid,start,str(n).zfill(5),var,thresh=thresh,transient=transient)
         except IOError:
             print("Could not create time series!")
 
@@ -631,14 +653,14 @@ def jet_lifetime_plots(var):
     plt.legend(lines,labs,numpoints=1)
     plt.tight_layout()
 
-    if not os.path.exists("Figures/paper/misc/"+"_".join(runids)+"/"):
+    if not os.path.exists("Figures/paper/misc/scatter/"+"_".join(runids)+"/"):
         try:
-            os.makedirs("Figures/paper/misc/"+"_".join(runids)+"/")
+            os.makedirs("Figures/paper/misc/scatter/"+"_".join(runids)+"/")
         except OSError:
             pass
 
-    fig.savefig("Figures/paper/misc/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
-    print("Figures/paper/misc/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+    fig.savefig("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+    print("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
 
     plt.close(fig)
 
