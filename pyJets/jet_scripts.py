@@ -472,6 +472,62 @@ def jet_paper_pos():
 
     return None
 
+def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
+
+    if transient == "jet":
+        outputdir = "jet_sizes"
+    elif transient == "slamsjet":
+        outputdir = "SLAMSJETS/time_series"
+    elif transient == "slams":
+        outputdir = "SLAMS/time_series"
+
+    # Create outputdir if it doesn't already exist
+    if not os.path.exists(outputdir+"/"+runid):
+        try:
+            os.makedirs(outputdir+"/"+runid)
+        except OSError:
+            pass
+
+    props = jio.PropReader(jetid,runid,start,transient=transient)
+
+    var_list = ["time","A","n_max","v_max","pd_max","r_mean"]
+
+    time_arr,area_arr,n_arr,v_arr,pd_arr,r_arr = [props.read(var)/ja.sw_normalisation(runid,var) for var in var_list]
+
+    if np.max(area_arr) < thresh or time_arr.size < 10:
+        print("Jet smaller than threshold, exiting!")
+        return None
+
+    plt.ioff()
+    
+    fig = plt.figure(figsize=(10,10))
+    ax = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212)
+    ax2.set_xlabel("Time [s]",fontsize=20)
+    ax.set_ylabel("Fraction of maximum",fontsize=20)
+    ax2.set_ylabel("Fraction of maximum",fontsize=20)
+    ax.grid()
+    ax2.grid()
+    plt.title("Run: {}, ID: {}".format(runid,jetid))
+    ax2.plot(time_arr,area_arr/np.max(area_arr),label="A\_max = {:.3g}".format(np.max(area_arr)))
+    ax.plot(time_arr,n_arr/np.max(n_arr),label="n\_max = {:.3g}".format(np.max(n_arr)))
+    ax.plot(time_arr,v_arr/np.max(v_arr),label="v\_max = {:.3g}".format(np.max(v_arr)))
+    ax.plot(time_arr,pd_arr/np.max(pd_arr),label="pd\_max = {:.3g}".format(np.max(pd_arr)))
+    ax2.plot(time_arr,r_arr/np.max(r_arr),label="r\_max = {:.3g}".format(np.max(r_arr)))
+    ax2.plot(time_arr,ja.bow_shock_r(runid,time_arr)/np.max(r_arr),label="Bow shock")
+
+    ax.legend(loc="lower right")
+    ax2.legend(loc="lower right")
+
+    plt.tight_layout()
+
+    fig.savefig("{}/{}/{}_mult_time_series.png".format(outputdir,runid,jetid))
+    print("{}/{}/{}_mult_time_series.png".format(outputdir,runid,jetid))
+
+    plt.close(fig)
+
+    return None
+
 def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
 
     if transient == "jet":
@@ -517,11 +573,11 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
 
     return None
 
-def jts_make(runid,start,startid,stopid,var,thresh = 0.0,transient="jet"):
+def jts_make(runid,start,startid,stopid,thresh = 0.0,transient="jet"):
 
     for n in range(startid,stopid+1):
         try:
-            jet_time_series(runid,start,str(n).zfill(5),var,thresh=thresh,transient=transient)
+            jet_mult_time_series(runid,start,str(n).zfill(5),thresh=thresh,transient=transient)
         except IOError:
             print("Could not create time series!")
 

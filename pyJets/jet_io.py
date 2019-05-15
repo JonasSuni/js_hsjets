@@ -49,7 +49,9 @@ class PropReader:
         self.var_dict = dict(zip(var_list,n_list))
 
     def read(self,name):
-        if name not in self.var_dict:
+        if name == "pdyn_vmax":
+            return self.props[:,self.var_dict["rho_vmax"]]*self.props[:,self.var_dict["v_max"]]**2
+        elif name not in self.var_dict:
             print("Variable not found!")
             return None
         else:
