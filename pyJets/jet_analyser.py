@@ -298,8 +298,8 @@ def ci2vars_nofile(input_vars,cellids,cells):
 
     return output_vars
 
-def get_cell_area(vlsvobj):
-    # returns area of one cell
+def get_cell_volume(vlsvobj):
+    # returns volume or area of one cell
 
     # get spatial extent of simulation and the number of cells in each direction
     simextent = vlsvobj.get_spatial_mesh_extent().reshape((2,3))
@@ -308,10 +308,13 @@ def get_cell_area(vlsvobj):
     # calculate DX,DY,DZ
     cell_sizes = (simextent[1]-simextent[0])/simsize
     
-    # calculate area of one cell
-    dA = cell_sizes[0]*cell_sizes[1]
+    # calculate volume or area of one cell
+    if (simsize==1).any():
+        dV = cell_sizes[0]*cell_sizes[1]
+    else:
+        dV = cell_sizes[0]*cell_sizes[1]*cell_sizes[2]
 
-    return dA
+    return dV
 
 def read_mult_vars(vlsvobj,input_vars,cells=-1):
     # reads multiple variables from vlsvobject
@@ -374,6 +377,38 @@ def xyz_reconstruct(vlsvobj,cellids=-1):
     return coords
 
 def restrict_area(vlsvobj,boxre):
+
+    if len(boxre) == 4:
+        boxre = [boxre[0],boxre[1],boxre[2],boxre[3],0,0]
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    # If X doesn't exist, reconstruct X,Y,Z, otherwise read X,Y,Z
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+
+    Xmin = X[np.abs(X-boxre[0]*r_e)==np.min(np.abs(X-boxre[0]*r_e))][0]
+    Xmax = X[np.abs(X-boxre[1]*r_e)==np.min(np.abs(X-boxre[1]*r_e))][0]
+
+    Ymin = Y[np.abs(Y-boxre[2]*r_e)==np.min(np.abs(Y-boxre[2]*r_e))][0]
+    Ymax = Y[np.abs(Y-boxre[3]*r_e)==np.min(np.abs(Y-boxre[3]*r_e))][0]
+
+    Zmin = Z[np.abs(Z-boxre[4]*r_e)==np.min(np.abs(Z-boxre[4]*r_e))][0]
+    Zmax = Z[np.abs(Z-boxre[5]*r_e)==np.min(np.abs(Z-boxre[5]*r_e))][0]
+
+    X_cells = cellids[np.logical_and(X>=Xmin,X<=Xmax)]
+    Y_cells = cellids[np.logical_and(Y>=Ymin,Y<=Ymax)]
+    Z_cells = cellids[np.logical_and(Z>=Zmin,Z<=Zmax)]
+
+    masked_cells = np.intersect1d(X_cells,Y_cells)
+    mesked_cells = np.intersect1d(masked_cells,Z_cells)
+
+    return masked_cells
+
+
+def restrict_area_old(vlsvobj,boxre):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
 
     cellids = vlsvobj.read_variable("CellID")
@@ -383,7 +418,6 @@ def restrict_area(vlsvobj,boxre):
         X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
     else:
         X,Y,Z = xyz_reconstruct(vlsvobj)
-        cellids.sort()
 
     # Get the simulation size
     simsize = vlsvobj.get_spatial_mesh_size()

@@ -652,7 +652,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
 def SEA_script(centering="pd_avg",thresh=5):
 
     runids = ["ABA","ABC","AEA","AEC"]
-    var = ["n_max","v_max","pd_max","n_avg","n_med","v_avg","v_med","pd_avg","pd_med"]
+    var = ["n_max","v_max","pd_max","n_avg","n_med","v_avg","v_med","pd_avg","pd_med","pdyn_vmax"]
 
     for runid in runids:
         for v in var:

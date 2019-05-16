@@ -231,7 +231,7 @@ def xyz_reconstruct(vlsvobj,cellids=-1):
 
     return coords
 
-def restrict_area(vlsvobj,boxre):
+def restrict_area_old(vlsvobj,boxre):
     # find cellids of cells that correspond to X,Y-positions within the specified limits
 
     cellids = vlsvobj.read_variable("CellID")
@@ -259,6 +259,37 @@ def restrict_area(vlsvobj,boxre):
     masked_ci = np.ma.array(cellids,mask=~msk.mask).compressed()
 
     return masked_ci
+
+def restrict_area(vlsvobj,boxre):
+
+    if len(boxre) == 4:
+        boxre = [boxre[0],boxre[1],boxre[2],boxre[3],0,0]
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    # If X doesn't exist, reconstruct X,Y,Z, otherwise read X,Y,Z
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+
+    Xmin = X[np.abs(X-boxre[0]*r_e)==np.min(np.abs(X-boxre[0]*r_e))][0]
+    Xmax = X[np.abs(X-boxre[1]*r_e)==np.min(np.abs(X-boxre[1]*r_e))][0]
+
+    Ymin = Y[np.abs(Y-boxre[2]*r_e)==np.min(np.abs(Y-boxre[2]*r_e))][0]
+    Ymax = Y[np.abs(Y-boxre[3]*r_e)==np.min(np.abs(Y-boxre[3]*r_e))][0]
+
+    Zmin = Z[np.abs(Z-boxre[4]*r_e)==np.min(np.abs(Z-boxre[4]*r_e))][0]
+    Zmax = Z[np.abs(Z-boxre[5]*r_e)==np.min(np.abs(Z-boxre[5]*r_e))][0]
+
+    X_cells = cellids[np.logical_and(X>=Xmin,X<=Xmax)]
+    Y_cells = cellids[np.logical_and(Y>=Ymin,Y<=Ymax)]
+    Z_cells = cellids[np.logical_and(Z>=Zmin,Z<=Zmax)]
+
+    masked_cells = np.intersect1d(X_cells,Y_cells)
+    mesked_cells = np.intersect1d(masked_cells,Z_cells)
+
+    return masked_cells
 
 def sw_par_dict(runid):
     # List of runs incomplete, please add parameters for additional runs manually as needed

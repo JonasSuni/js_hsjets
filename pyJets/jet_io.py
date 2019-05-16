@@ -50,7 +50,7 @@ class PropReader:
 
     def read(self,name):
         if name == "pdyn_vmax":
-            return self.props[:,self.var_dict["rho_vmax"]]*self.props[:,self.var_dict["v_max"]]**2
+            return 1.0e+21*m_p*self.props[:,self.var_dict["rho_vmax"]]*self.props[:,self.var_dict["v_max"]]**2
         elif name not in self.var_dict:
             print("Variable not found!")
             return None
@@ -554,7 +554,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         if n == 0 and vlsvobj.check_variable("DX"):
             dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
         elif n == 0 and not vlsvobj.check_variable("DX"):
-            dA = ja.get_cell_area(vlsvobj)
+            dA = ja.get_cell_volume(vlsvobj)
 
         # If file has more than one population, choose proton population
         var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
@@ -687,7 +687,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3):
+def track_jets(runid,start,stop,threshold=0.3,track_splinters = True):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -728,7 +728,7 @@ def track_jets(runid,start,stop,threshold=0.3):
     
     # Find bow shock cells and area of one cell
     bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
-    dA = ja.get_cell_area(vlsvobj)
+    dA = ja.get_cell_volume(vlsvobj)
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
@@ -825,18 +825,24 @@ def track_jets(runid,start,stop,threshold=0.3):
                     
                     if np.intersect1d(jetobj.cellids[-2],event).size > threshold*len(event):
 
-                        curr_id = str(counter).zfill(5)
+                        if track_splinters:
 
-                        # Create new jet
-                        jetobj_new = Jet(curr_id,runid,float(n)/2)
-                        jetobj_new.cellids.append(event)
-                        jetobj_list.append(jetobj_new)
-                        curr_jet_temp_list.append(event)
+                            curr_id = str(counter).zfill(5)
 
-                        # Iterate counter
-                        counter += 1
+                            # Create new jet
+                            jetobj_new = Jet(curr_id,runid,float(n)/2)
+                            jetobj_new.cellids.append(event)
+                            jetobj_list.append(jetobj_new)
+                            curr_jet_temp_list.append(event)
 
-                        break
+                            # Iterate counter
+                            counter += 1
+
+                            break
+
+                        else:
+
+                            break
 
                 else:
 
@@ -911,7 +917,7 @@ def slams_eventfile_read(runid,filenr):
 
     return outputlist
 
-def track_slamsjets(runid,start,stop,threshold=0.3):
+def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -1062,18 +1068,24 @@ def track_slamsjets(runid,start,stop,threshold=0.3):
                     
                     if np.intersect1d(slamsobj.cellids[-2],slams_event).size > threshold*len(slams_event):
 
-                        curr_slams_id = str(slams_counter).zfill(5)
+                        if track_splinters:
 
-                        # Create new jet
-                        slamsobj_new = Jet(curr_slams_id,runid,float(n)/2)
-                        slamsobj_new.cellids.append(slams_event)
-                        slamsobj_list.append(slamsobj_new)
-                        curr_slams_temp_list.append(slams_event)
+                            curr_slams_id = str(slams_counter).zfill(5)
 
-                        # Iterate counter
-                        slams_counter += 1
+                            # Create new jet
+                            slamsobj_new = Jet(curr_slams_id,runid,float(n)/2)
+                            slamsobj_new.cellids.append(slams_event)
+                            slamsobj_list.append(slamsobj_new)
+                            curr_slams_temp_list.append(slams_event)
 
-                        break
+                            # Iterate counter
+                            slams_counter += 1
+
+                            break
+
+                        else:
+
+                            break
 
                 else:
 
@@ -1099,18 +1111,23 @@ def track_slamsjets(runid,start,stop,threshold=0.3):
                     
                     if np.intersect1d(slamsjet.cellids[-2],event).size > threshold*len(event):
 
-                        curr_slamsjet_id = str(slamsjet_counter).zfill(5)
+                        if track_splinters:
+                            curr_slamsjet_id = str(slamsjet_counter).zfill(5)
 
-                        # Create new jet
-                        slamsjet_new = Jet(curr_slamsjet_id,runid,float(n)/2)
-                        slamsjet_new.cellids.append(event)
-                        slamsjet_list.append(slamsjet_new)
-                        curr_slamsjet_temp_list.append(event)
+                            # Create new jet
+                            slamsjet_new = Jet(curr_slamsjet_id,runid,float(n)/2)
+                            slamsjet_new.cellids.append(event)
+                            slamsjet_list.append(slamsjet_new)
+                            curr_slamsjet_temp_list.append(event)
 
-                        # Iterate counter
-                        slamsjet_counter += 1
+                            # Iterate counter
+                            slamsjet_counter += 1
 
-                        break
+                            break
+
+                        else:
+
+                            break
 
                 else:
 
