@@ -25,6 +25,58 @@ r_e = 6.371e+6
 
 ###TEMPORARY SCRIPTS HERE###
 
+def bs_plotter(runid,file_nr,thresh,rho_par):
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(file_nr).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(file_nr)+" not found, continuing")
+        return 1
+
+    global rho_thresh
+    global rho_sw
+    global vlsvobj
+
+    rho_thresh = thresh
+    rho_sw = rho_par
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,usesci=0,lin=1,var="rho",colormap="parula",external=ext_bsp,pass_vars=["rho","CellID"])
+
+def ext_bsp(ax,XmeshXY,YmeshXY,pass_maps):
+
+    rho = pass_maps["rho"]
+    cellids = pass_maps["CellID"].flatten()
+
+    X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids)
+
+    if vlsvobj.get_spatial_mesh_size()[2]==1:
+        r_angle = np.rad2deg(np.arctan(np.abs(Y)/X))
+    else:
+        r_angle = np.rad2deg(np.arctan(np.abs(Z)/X))
+
+    r_angle = np.reshape(r_angle,rho.shape)
+    X = np.reshape(X,rho.shape)
+
+    mask1 = (rho>=rho_thresh*rho_sw)
+    mask2 = (r_angle<=45)
+    mask3 = (X>=0)
+
+    mask = np.logical_and(np.logical_and(mask1,mask2),mask3).astype(int)
+
+    contour = ax.contour(XmeshXY,YmeshXY,mask,[0.5],linewidths=0.8, colors="black")
+
 def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     outputdir = "/wrk/sunijona/DONOTREMOVE/contours/{}/".format(runid)
@@ -661,7 +713,7 @@ def SEA_script(centering="pd_avg",thresh=5):
     return None
 
 
-def jet_lifetime_plots(var):
+def jet_lifetime_plots(var,amax=True):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
@@ -687,8 +739,10 @@ def jet_lifetime_plots(var):
             props = jio.PropReader("",runids[n],fname=fname)
             if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     x_list_list[n].append(props.read("time")[-1]-props.read("time")[0])
-                    y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
-
+                    if amax:
+                        y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
+                    else:
+                        y_list_list[n].append(np.max(props.read(var))/ja.sw_normalisation(runids[n],var))
     plt.ioff()
 
     fig = plt.figure(figsize=(10,10))
@@ -715,8 +769,12 @@ def jet_lifetime_plots(var):
         except OSError:
             pass
 
-    fig.savefig("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
-    print("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+    if amax:
+        fig.savefig("Figures/paper/misc/scatter/{}/{}_{}_amax.png".format("_".join(runids),"lifetime",var))
+        print("Figures/paper/misc/scatter/{}/{}_{}_amax.png".format("_".join(runids),"lifetime",var))
+    else:
+        fig.savefig("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
+        print("Figures/paper/misc/scatter/{}/{}_{}.png".format("_".join(runids),"lifetime",var))
 
     plt.close(fig)
 

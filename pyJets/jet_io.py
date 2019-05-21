@@ -95,7 +95,7 @@ class Jet:
 
         return "\n".join(map(str,self.times))
 
-def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
+def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
 
     outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
 
@@ -138,7 +138,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False):
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,25,4500,[2,2])
+        jets = ja.sort_jets(vlsvobj,msk,25,4500,nbrs)
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -687,7 +687,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     return prop_arr
 
-def track_jets(runid,start,stop,threshold=0.3,track_splinters = True):
+def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,3,0]):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -737,7 +737,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True):
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[3,3])).size > 0:
+        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
             bs_events.append(old_event)
 
     # Initialise list of jet objects
@@ -802,7 +802,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True):
         # Filtered list of events that are at the bow shock at the current time
         bs_events = []
         for old_event in events:
-            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,[3,3])).size > 0:
+            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
                 bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets
@@ -917,7 +917,7 @@ def slams_eventfile_read(runid,filenr):
 
     return outputlist
 
-def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True):
+def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_bs=[3,3,0]):
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -993,7 +993,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True):
 
         for event in events:
 
-            if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,[3,3])).size > 0:
+            if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
 
                 curr_slamsjet_id = str(slamsjet_counter).zfill(5)
                 slamsjet_obj = copy.deepcopy(slamsobj)
@@ -1151,7 +1151,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True):
 
                 if event not in curr_slamsjet_temp_list:
 
-                    if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,[3,3])).size > 0:
+                    if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
 
                         curr_slamsjet_id = str(slamsjet_counter).zfill(5)
 

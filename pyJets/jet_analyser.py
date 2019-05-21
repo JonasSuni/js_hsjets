@@ -181,7 +181,7 @@ def sw_par_dict(runid):
 
     return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)],sw_T[runs.index(runid)]]
 
-def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
+def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
     # sort masked cells into events based on proximity in X,Y-space
 
     # initialise list of events and current event
@@ -225,8 +225,11 @@ def sort_jets(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
     return events_culled
 
 
-def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
+def get_neighbors_old(vlsvobj,c_i,neighborhood_reach=[1,1]):
     # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
+
+    if type(c_i) is int:
+        c_i = [c_i]
 
     simsize = vlsvobj.get_spatial_mesh_size()
 
@@ -247,6 +250,32 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1]):
                 else:
                     neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,0],periodic=[0,0,0])))
 
+    # discard invalid cellids
+    neighbors = neighbors[neighbors != 0]
+
+    # discard duplicate cellids
+    neighbors = np.unique(neighbors)
+
+    return neighbors
+
+def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
+    # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
+
+    # initialise array of neighbors
+    neighbors = np.array([],dtype=int)
+
+    # range of offsets to take into account
+    x_r = xrange(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
+    y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
+    z_r = xrange(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
+
+    for n in c_i:
+
+        # append cellids of neighbors, cast as int, to array of neighbors
+        for a in x_r:
+            for b in y_r:
+                for c in z_r:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,c],periodic=[0,0,0])))
     # discard invalid cellids
     neighbors = neighbors[neighbors != 0]
 
