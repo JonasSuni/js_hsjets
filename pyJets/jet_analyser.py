@@ -10,6 +10,50 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def bs_finder_new(runid,file_nr):
+
+    rho_sw = sw_par_dict(runid)[0]
+
+    # find correct file based on file number and run id
+    if runid in ["AEC","AEF","BEA","BEB"]:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    elif runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+    else:
+        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+
+    if runid == "AED":
+        bulkname = "bulk.old."+str(file_nr).zfill(7)+".vlsv"
+    else:
+        bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(file_nr)+" not found, continuing")
+        return 1
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    rho = vlsvobj.read_variable("rho")
+    cellids = vlsvobj.read_variable("CellID")
+    X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
+
+    if vlsvobj.get_spatial_mesh_size()[2]==1:
+        r_angle = np.rad2deg(np.arctan(np.abs(Y)/X))
+    else:
+        r_angle = np.rad2deg(np.arctan(np.abs(Z)/X))
+
+    mask1 = (rho>=2*rho_sw)
+    mask2 = (r_angle<=45)
+    mask3 = (X>=0)
+
+    mask = np.logical_and(np.logical_and(mask1,mask2),mask3)
+
+    R = np.linalg.norm(np.array([X,Y,Z]),axis=0)
+
+    R_masked = R[mask]/r_e
+
+    plt.hist(R_masked,bins=range(0,20))
+
 def rho_r_script():
 
     runids = ["ABA","ABC","AEA","AEC","BFD"]
