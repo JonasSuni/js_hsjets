@@ -52,7 +52,9 @@ def bs_finder_new(runid,file_nr):
 
     R_masked = R[mask]/r_e
 
-    plt.hist(R_masked,bins=range(0,20))
+    h = plt.hist(R_masked,bins=np.arange(0.0,20.0,0.1))
+
+    print(np.gradient(h[0]))
 
 def rho_r_script():
 

@@ -763,6 +763,20 @@ def jet_lifetime_plots(var,amax=True):
     plt.legend(lines,labs,numpoints=1)
     plt.tight_layout()
 
+    x_list_full = []
+    y_list_full = []
+
+    for n in range(len(x_list_list)):
+        x_list_full+=x_list_list[n]
+        y_list_full+=y_list_list[n]
+
+    p = np.polyfit(x_list_full,y_list_full,deg=1)
+    x_arr = np.arange(np.min(x_list_full),np.max(x_list_full),1)
+    y_arr = np.polyval(p,x_arr)
+
+    ax.plot(x_arr,y_arr,linestyle="dashed")
+    ax.annotate(str(p[0])+"\n"+str(p[1]),xy=(0.1,0.9),xycoords="axes fraction")
+
     if not os.path.exists("Figures/paper/misc/scatter/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/misc/scatter/"+"_".join(runids)+"/")
