@@ -10,7 +10,7 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-def bs_finder_new(runid,file_nr):
+def bs_finder_new(runid,file_nr,angle_offset=0):
 
     rho_sw = sw_par_dict(runid)[0]
 
@@ -38,23 +38,27 @@ def bs_finder_new(runid,file_nr):
     X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
 
     if vlsvobj.get_spatial_mesh_size()[2]==1:
-        r_angle = np.rad2deg(np.arctan(np.abs(Y)/X))
+        r_angle = np.rad2deg(np.arctan(Y/X))
     else:
-        r_angle = np.rad2deg(np.arctan(np.abs(Z)/X))
+        r_angle = np.rad2deg(np.arctan(Z/X))
 
     mask1 = (rho>=2*rho_sw)
-    mask2 = (r_angle<=45)
-    mask3 = (X>=0)
+    mask2 = (X>=0)
+    mask3 = (r_angle<=45-angle_offset)
+    mask4 = (r_angle>=-45-angle_offset)
 
-    mask = np.logical_and(np.logical_and(mask1,mask2),mask3)
+    mask = np.logical_and(np.logical_and(mask1,mask2),np.logical_and(mask3,mask4))
 
-    R = np.linalg.norm(np.array([X,Y,Z]),axis=0)
+    R = np.linalg.norm(np.array([X,Y,Z]),axis=0)/r_e
 
-    R_masked = R[mask]/r_e
+    R_masked = R[mask]
 
     h = plt.hist(R_masked,bins=np.arange(0.0,20.0,0.1))
 
-    print(np.gradient(h[0]))
+    hg = np.gradient(h[0])
+
+    print(h[1][hg==np.min(hg)][-1])
+    return h[1][hg==np.min(hg)][-1]
 
 def rho_r_script():
 
@@ -437,16 +441,16 @@ def xyz_reconstruct_old(vlsvobj):
 
 def xyz_reconstruct(vlsvobj,cellids=-1):
 
-    if type(cellids) == int:
-        if cellids == -1:
-            ci = vlsvobj.read_variable("CellID")
-        else:
-            ci = np.asarray([cellids])
+    if type(cellids) == int and cellids == -1:
+        ci = vlsvobj.read_variable("CellID")
     else:
-        ci = np.asarray(cellids)
+        ci = np.asarray([cellids]).flatten()
 
-    coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in ci])
-
+    try:
+        coords = vlsvobj.get_cell_coordinates_multi(ci)
+    except:
+        coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in ci])
+        
     coords = coords.T
 
     return coords

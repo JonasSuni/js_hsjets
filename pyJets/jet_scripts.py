@@ -346,9 +346,9 @@ def var_pars_list(var):
     "$v_{max}~[v_{sw}]$","$v_{avg}~[v_{sw}]$","$v_{med}~[v_{sw}]$",
     "$B_{max}~[B_{IMF}]$","$B_{avg}~[B_{IMF}]$","$B_{med}~[B_{IMF}]$",
     "$\\beta _{max}~[\\beta _{sw}]$","$\\beta _{avg}~[\\beta _{sw}]$","$\\beta _{med}~[\\beta _{sw}]$","$\\beta _{v,max}~[\\beta _{sw}]$",
-    "$T_{avg}~[MK]$","$T_{med}~[MK]$","$T_{max}~[MK]$",
-    "$T_{Parallel,avg}~[MK]$","$T_{Parallel,med}~[MK]$","$T_{Parallel,max}~[MK]$",
-    "$T_{Perpendicular,avg}~[MK]$","$T_{Perpendicular,med}~[MK]$","$T_{Perpendicular,max}~[MK]$",
+    "$T_{avg}~[T_{sw}]$","$T_{med}~[T_{sw}]$","$T_{max}~[T_{sw}]$",
+    "$T_{Parallel,avg}~[T_{sw}]$","$T_{Parallel,med}~[T_{sw}]$","$T_{Parallel,max}~[T_{sw}]$",
+    "$T_{Perpendicular,avg}~[T_{sw}]$","$T_{Perpendicular,med}~[T_{sw}]$","$T_{Perpendicular,max}~[T_{sw}]$",
     "$Area~[R_{e}^{2}]$",
     "$(r_{v,max}-r_{BS})~at~time~of~death~[R_{e}]$"]
 
@@ -372,9 +372,9 @@ def var_pars_list(var):
     1.5,1.5,1.5,
     8,8,8,
     1000,1000,1000,1000,
-    25,25,25,
-    25,25,25,
-    25,25,25,
+    50,50,50,
+    50,50,50,
+    50,50,50,
     4,
     5]
 
@@ -385,9 +385,9 @@ def var_pars_list(var):
     0.1,0.1,0.1,
     0.5,0.5,0.5,
     100,100,100,100,
-    1,1,1,
-    1,1,1,
-    1,1,1,
+    2,2,2,
+    2,2,2,
+    2,2,2,
     0.2,
     0.5]
 
@@ -841,22 +841,10 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
                         var_list[ind].append(props.read("time")[-1]-props.read("time")[0])
                     elif inp_var_list[ind] == "size_ratio":
                         var_list[ind].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
-                    elif inp_var_list[ind] in ["n_max","n_avg","n_med","rho_vmax"]:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[0])
-                    elif inp_var_list[ind] in ["v_max","v_avg","v_med"]:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[1])
-                    elif inp_var_list[ind] in ["B_max","B_avg","B_med"]:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[2])
-                    elif inp_var_list[ind] in ["beta_max","beta_avg","beta_med","b_vmax"]:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[4])
-                    elif inp_var_list[ind] in ["pdyn_vmax"]:
-                        var_list[ind].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
-                    elif inp_var_list[ind] in ["pd_avg","pd_med","pd_max"]:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/props.sw_pars[3])
                     elif inp_var_list[ind] == "death_distance":
                         var_list[ind].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]]))
                     else:
-                        var_list[ind].append(props.read_at_amax(inp_var_list[ind]))
+                        var_list[ind].append(props.read_at_amax(inp_var_list[ind])/ja.sw_normalisation(runids[n],inp_var_list[ind]))
 
     v1_label,v1_xmin,v1_xmax,v1_step,v1_tickstep = var_pars_list(var1)
     v2_label,v2_xmin,v2_xmax,v2_step,v2_tickstep = var_pars_list(var2)
@@ -953,22 +941,10 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
                     val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
                 elif var == "size_ratio":
                     val_dict[runids[n]].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
-                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
-                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[0])
-                elif var in ["v_max","v_avg","v_med"]:
-                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[1])
-                elif var in ["B_max","B_avg","B_med"]:
-                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[2])
-                elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
-                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var in ["pdyn_vmax"]:
-                    val_dict[runids[n]].append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
-                elif var in ["pd_avg","pd_med","pd_max"]:
-                    val_dict[runids[n]].append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     val_dict[runids[n]].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
-                    val_dict[runids[n]].append(props.read_at_amax(var))
+                    val_dict[runids[n]].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
 
 
     label,xmin,xmax,step,tickstep = var_pars_list(var)
@@ -1082,22 +1058,10 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
                     var_list.append(props.read("time")[-1]-props.read("time")[0])
                 elif var == "size_ratio":
                     var_list.append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
-                elif var in ["n_max","n_avg","n_med","rho_vmax"]:
-                    var_list.append(props.read_at_amax(var)/props.sw_pars[0])
-                elif var in ["v_max","v_avg","v_med"]:
-                    var_list.append(props.read_at_amax(var)/props.sw_pars[1])
-                elif var in ["B_max","B_avg","B_med"]:
-                    var_list.append(props.read_at_amax(var)/props.sw_pars[2])
-                elif var in ["beta_max","beta_avg","beta_med","b_vmax"]:
-                    var_list.append(props.read_at_amax(var)/props.sw_pars[4])
-                elif var in ["pdyn_vmax"]:
-                    var_list.append(m_p*(1.0e+6)*props.read_at_amax("rho_vmax")*((props.read_at_amax("v_max")*1.0e+3)**2)/(props.sw_pars[3]*1.0e-9))
-                elif var in ["pd_avg","pd_med","pd_max"]:
-                    var_list.append(props.read_at_amax(var)/props.sw_pars[3])
                 elif var == "death_distance":
                     var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
-                    var_list.append(props.read_at_amax(var))
+                    var_list.append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
 
     var_list = np.asarray(var_list)
 
