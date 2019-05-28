@@ -10,6 +10,20 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+def bs_fitter_new(runid,start,stop,step,angle_offset=0):
+
+    filenr_arr = np.array(range(start,stop+1,step))
+    bsr_arr = np.zeros_like(filenr_arr).astype(float)
+
+    for n in range(filenr_arr.size):
+        bsr_arr[n] = bs_finder_new(runid,filenr_arr[n],angle_offset=angle_offset)
+
+    time_arr = filenr_arr.astype(float)/2
+
+    p = np.polyfit(time_arr,bsr_arr,deg=1)
+
+    print("bsr={:.3g} t + {:.3g}".format(p[0],p[1]))
+
 def bs_finder_new(runid,file_nr,angle_offset=0):
 
     rho_sw = sw_par_dict(runid)[0]
@@ -57,7 +71,7 @@ def bs_finder_new(runid,file_nr,angle_offset=0):
 
     hg = np.gradient(h[0])
 
-    print(h[1][hg==np.min(hg)][-1])
+    print(file_nr,h[1][hg==np.min(hg)][-1])
     return h[1][hg==np.min(hg)][-1]
 
 def rho_r_script():

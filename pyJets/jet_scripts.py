@@ -462,6 +462,34 @@ def jet_pos_graph(runid):
 
     return None
 
+def jet_paper_counter():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    # Get all filenames in folder
+    filenames_list = []
+    for runid in runids:
+        filenames_list.append(os.listdir("jets/"+runid))
+
+    # Filter for property files
+    file_list_list = []
+    for filenames in filenames_list:
+        file_list_list.append([filename for filename in filenames if ".props" in filename])
+
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
+    run_marker_dict = dict(zip(["ABA","ABC","AEA","AEC"],["x","o","^","d"]))
+    run_color_dict = dict(zip(["ABA","ABC","AEA","AEC"],["black","red","blue","green"]))
+
+    count_list_list = [0,0,0,0]
+
+    for n in xrange(len(runids)):
+        for fname in file_list_list[n]:
+            props = jio.PropReader("",runids[n],fname=fname)
+            if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                    count_list_list[n] += 1
+
+    return count_list_list
+
 def jet_paper_pos():
 
     runids = ["ABA","ABC","AEA","AEC"]
@@ -494,10 +522,11 @@ def jet_paper_pos():
 
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111)
-    ax.set_xlabel("X [R$_{e}$]",fontsize=20)
-    ax.set_ylabel("Y [R$_{e}$]",fontsize=20)
+    ax.set_xlabel("X [R$_{e}$]",fontsize=24)
+    ax.set_ylabel("Y [R$_{e}$]",fontsize=24)
     ax.set_xlim(6,18)
     ax.set_ylim(-9,7)
+    ax.tick_params(labelsize=20)
 
     lines = []
     labs = []
@@ -507,7 +536,7 @@ def jet_paper_pos():
         lines.append(line1)
         labs.append(runids[n])
 
-    plt.title(",".join(runids)+"\nN = "+str(sum([len(l) for l in x_list_list])),fontsize=20)
+    #plt.title(",".join(runids)+"\nN = "+str(sum([len(l) for l in x_list_list])),fontsize=24)
     plt.legend(lines,labs,numpoints=1)
     plt.tight_layout()
 

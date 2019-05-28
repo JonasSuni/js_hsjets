@@ -755,7 +755,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         for bs_event in bs_events:
 
-            if np.intersect1d(bs_event,event).size > threshold*len(event):
+            if np.intersect1d(bs_event,event).size > threshold*min(len(event),len(bs_event)):
 
                 # Create unique ID
                 curr_id = str(counter).zfill(5)
@@ -823,7 +823,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
                 if jetobj.ID in flags:
                     
-                    if np.intersect1d(jetobj.cellids[-2],event).size > threshold*len(event):
+                    if np.intersect1d(jetobj.cellids[-2],event).size > threshold*min(len(event),len(jetobj.cellids[-2])):
 
                         if track_splinters:
 
@@ -846,7 +846,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
                 else:
 
-                    if np.intersect1d(jetobj.cellids[-1],event).size > threshold*len(event):
+                    if np.intersect1d(jetobj.cellids[-1],event).size > threshold*min(len(event),len(bs_event)):
 
                         # Append event to jet object properties
                         jetobj.cellids.append(event)
@@ -866,7 +866,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
                 for bs_event in bs_events:
 
-                    if np.intersect1d(bs_event,event).size > threshold*len(event):
+                    if np.intersect1d(bs_event,event).size > threshold*min(len(event),len(bs_event)):
 
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
@@ -970,7 +970,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
         for slams_old_event in slams_events_old:
 
-            if np.intersect1d(slams_old_event,slams_event).size > threshold*len(slams_event):
+            if np.intersect1d(slams_old_event,slams_event).size > threshold*min(len(slams_event),len(slams_old_event)):
 
                 # Create unique ID
                 curr_slams_id = str(slams_counter).zfill(5)
@@ -1066,7 +1066,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 if slamsobj.ID in slams_flags:
                     
-                    if np.intersect1d(slamsobj.cellids[-2],slams_event).size > threshold*len(slams_event):
+                    if np.intersect1d(slamsobj.cellids[-2],slams_event).size > threshold*min(len(slams_event),len(slamsobj.cellds[-2])):
 
                         if track_splinters:
 
@@ -1089,7 +1089,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 else:
 
-                    if np.intersect1d(slamsobj.cellids[-1],slams_event).size > threshold*len(slams_event):
+                    if np.intersect1d(slamsobj.cellids[-1],slams_event).size > threshold*min(len(slams_event),len(slamsobj.cellids[-1])):
 
                         # Append event to jet object properties
                         slamsobj.cellids.append(slams_event)
@@ -1109,7 +1109,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 if slamsjet.ID in slamsjet_flags:
                     
-                    if np.intersect1d(slamsjet.cellids[-2],event).size > threshold*len(event):
+                    if np.intersect1d(slamsjet.cellids[-2],event).size > threshold*min(len(event),len(slamsjet.cellids[-2])):
 
                         if track_splinters:
                             curr_slamsjet_id = str(slamsjet_counter).zfill(5)
@@ -1131,7 +1131,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 else:
 
-                    if np.intersect1d(slamsjet.cellids[-1],event).size > threshold*len(event):
+                    if np.intersect1d(slamsjet.cellids[-1],event).size > threshold*min(len(event),len(slamsjet.cellids[-1])):
 
                         # Append event to jet object properties
                         slamsjet.cellids.append(event)
@@ -1175,7 +1175,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 for old_slams_event in old_slams_events:
 
-                    if np.intersect1d(old_slams_event,slams_event).size > threshold*len(slams_event):
+                    if np.intersect1d(old_slams_event,slams_event).size > threshold*min(len(slams_event),len(old_slams_event)):
 
                         # Create unique ID
                         curr_slams_id = str(slams_counter).zfill(5)
