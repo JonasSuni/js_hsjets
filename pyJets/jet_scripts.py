@@ -1009,7 +1009,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     else:
         bins = np.arange(xmin,xmax+step,step)
 
-        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
+        hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],bins=bins,weights=weights,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.2f\nstd: %.2f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.2f\nstd: %.2f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
         ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
         ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
@@ -1136,7 +1136,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
             ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
 
     #ax.axvline(np.median(var_list), linestyle="dashed", color="black", linewidth=2)
-    ax.annotate("med: %.1f\nstd: %.1f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.75,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
+    ax.annotate("med: %.2f\nstd: %.2f"%(np.median(var_list),np.std(var_list,ddof=1)), xy=(0.75,0.85), xycoords='axes fraction', fontsize=20, fontname="Computer Modern Typewriter")
 
     plt.title(",".join(runids),fontsize=24)
     ax.xaxis.labelpad=10
