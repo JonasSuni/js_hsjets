@@ -282,14 +282,18 @@ def restrict_area(vlsvobj,boxre):
     Zmin = Z[np.abs(Z-boxre[4]*r_e)==np.min(np.abs(Z-boxre[4]*r_e))][0]
     Zmax = Z[np.abs(Z-boxre[5]*r_e)==np.min(np.abs(Z-boxre[5]*r_e))][0]
 
-    X_cells = cellids[np.logical_and(X>=Xmin,X<=Xmax)]
-    Y_cells = cellids[np.logical_and(Y>=Ymin,Y<=Ymax)]
-    Z_cells = cellids[np.logical_and(Z>=Zmin,Z<=Zmax)]
+    # mask the cellids within the specified limits
+    msk = np.ma.masked_greater_equal(X,Xmin)
+    msk.mask[X > Xmax] = False
+    msk.mask[Y < Ymin] = False
+    msk.mask[Y > Ymax] = False
+    msk.mask[Z < Zmin] = False
+    msk.mask[Z > Zmax] = False
 
-    masked_cells = np.intersect1d(X_cells,Y_cells)
-    mesked_cells = np.intersect1d(masked_cells,Z_cells)
+    # discard unmasked cellids
+    masked_ci = np.ma.array(cellids,mask=~msk.mask).compressed()
 
-    return masked_cells
+    return masked_ci
 
 def sw_par_dict(runid):
     # List of runs incomplete, please add parameters for additional runs manually as needed

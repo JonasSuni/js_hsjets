@@ -77,9 +77,80 @@ def ext_bsp(ax,XmeshXY,YmeshXY,pass_maps):
 
     contour = ax.contour(XmeshXY,YmeshXY,mask,[0.5],linewidths=0.8, colors="black")
 
+def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
+
+    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
+    
+    global jet_cells
+    global full_cells
+    global xmean_list
+    global ymean_list
+    global xvmax_list
+    global yvmax_list
+
+    for n in range(start,stop+1):
+
+        xmean_list = []
+        ymean_list = []
+        xvmax_list = []
+        yvmax_list = []
+
+        for itr in range(700):
+            try:
+                props = jio.PropReader(str(itr).zfill(5),runid,580,transient="jet")
+                xmean_list.append(props.read_at_time("x_mean",float(n)/2))
+                ymean_list.append(props.read_at_time("y_mean",float(n)/2))
+                xvmax_list.append(props.read_at_time("x_vmax",float(n)/2))
+                yvmax_list.append(props.read_at_time("y_vmax",float(n)/2))
+            except IOError:
+                pass
+        try:
+            fileobj = open("events/{}/{}.events".format(runid,n),"r")
+            contents = fileobj.read()
+            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        except IOError:
+            jet_cells = [] 
+
+        try:
+            full_cells = np.loadtxt("Masks/{}/{}.mask".format(runid,n)).astype(int)
+        except IOError:
+            full_cells = []
+
+
+        if runid in ["AEC","AEF","BEA","BEB"]:
+            bulkpath = "/proj/vlasov/2D/{}/".format(runid)
+        elif runid == "AEA":
+            bulkpath = "/proj/vlasov/2D/{}/round_3_boundary_sw/".format(runid)
+        else:
+            bulkpath = "/proj/vlasov/2D/{}/bulk/".format(runid)
+
+        bulkname = "bulk.{}.vlsv".format(str(n).zfill(7))
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file {} not found, continuing".format(str(n)))
+            continue
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,var="Pdyn",vmax=vmax*1.0e-9,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["CellID"])
+
+def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
+
+    cellids = pass_maps["CellID"]
+
+    jet_mask = np.in1d(cellids,jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask,cellids.shape)
+
+    full_mask = np.in1d(cellids,full_cells).astype(int)
+    full_mask = np.reshape(full_mask,cellids.shape)
+
+    full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black")
+
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4)
+    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=4)
+
 def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
-    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/{}/".format(runid)
+    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/SLAMSJETS/{}/".format(runid)
     
     global jet_cells
     global slams_cells
@@ -464,7 +535,7 @@ def jet_pos_graph(runid):
 
 def jet_paper_counter():
 
-    runids = ["ABA","ABC","AEA","AEC"]
+    runids = ["ABA","ABC","AEA","AEC","BFD"]
 
     # Get all filenames in folder
     filenames_list = []
@@ -476,11 +547,9 @@ def jet_paper_counter():
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
-    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
-    run_marker_dict = dict(zip(["ABA","ABC","AEA","AEC"],["x","o","^","d"]))
-    run_color_dict = dict(zip(["ABA","ABC","AEA","AEC"],["black","red","blue","green"]))
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8,10]))
 
-    count_list_list = [0,0,0,0]
+    count_list_list = [0,0,0,0,0]
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
@@ -522,12 +591,11 @@ def jet_paper_pos():
 
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111)
-    ax.set_xlabel("X [R$_{e}$]",fontsize=24)
-    ax.set_ylabel("Y [R$_{e}$]",fontsize=24)
+    ax.set_xlabel("X [R$_{e}$]",fontsize=24,labelpad=10)
+    ax.set_ylabel("Y [R$_{e}$]",fontsize=24,labelpad=10)
     ax.set_xlim(6,18)
     ax.set_ylim(-9,7)
     ax.tick_params(labelsize=20)
-
     lines = []
     labs = []
 
@@ -537,7 +605,7 @@ def jet_paper_pos():
         labs.append(runids[n])
 
     #plt.title(",".join(runids)+"\nN = "+str(sum([len(l) for l in x_list_list])),fontsize=24)
-    plt.legend(lines,labs,numpoints=1)
+    plt.legend(lines,labs,numpoints=1,prop={"size":20})
     plt.tight_layout()
 
     if not os.path.exists("Figures/paper/misc/"+"_".join(runids)+"/"):
@@ -921,6 +989,111 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
 
     return None
 
+def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
+
+    # Cutoff dictionary for eliminating false positives
+    run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[10,8,10,8,10]))
+
+    # Different colors for different runs
+    run_colors_list = ["red","blue"]
+
+    var_list = [[],[]]
+
+    for n in range(len(runids_list)):
+        for runid in runids_list[n]:
+            for jetid_nr in range(1,700):
+                try:
+                    props = jio.PropReader(ID=str(jetid_nr).zfill(5),runid=runid,start=580,transient="jet")
+                    if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runid]:
+                        if var == "duration":
+                            var_list[n].append(props.read("time")[-1]-props.read("time")[0])
+                        elif var == "size_ratio":
+                            var_list[n].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                        elif var == "death_distance":
+                            var_list[n].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runid,props.read("time")[-1]))
+                        else:
+                            var_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runid,var))
+                except IOError:
+                    continue
+
+    label,xmin,xmax,step,tickstep = var_pars_list(var)
+
+    # Create figure
+    plt.ioff()
+    #plt.ion()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_xlabel("$\\mathrm{"+label[1:-1]+"}$",fontsize=24)
+    ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
+    ax.set_xlim(xmin,xmax)
+    ax.set_ylim(0,0.75)
+    ax.tick_params(labelsize=20)
+
+    weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in range(len(runids_list))] # Normalise by total number of jets
+
+    ax.set_yticks(np.arange(0.1,0.8,0.1))
+    ax.set_yticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(0.1,0.8,0.1).astype(str)])
+
+    var_med = map(np.median,var_list)
+
+    std_f = lambda l: np.std(l,ddof=1)
+    var_std = map(std_f,var_list)
+
+    var_labels = ["{}\nmed: {:.2f}\nstd: {:.2f}".format(",".join(runids_list[n]),var_med[n],var_std[n]) for n in range(len(runids_list))]
+
+    # Logarithmic scale for plasma beta
+    if var in ["beta_max","beta_avg","beta_med","b_vmax"]:
+        bins = np.arange(0,3.25,0.25)
+        bins = 10**bins
+        plt.xscale("log")
+        ax.set_xlim(1,xmax)
+        
+        hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+
+        ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
+        ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
+
+    else:
+        bins = np.arange(xmin,xmax+step,step)
+
+        hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+
+        ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
+        ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
+
+    if xmin == -xmax and 0.5*(xmax-xmin)%tickstep != 0.0:
+        ax.set_xticks(np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep))
+        if tickstep%1 != 0:
+            ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep).astype(str)])
+        else:
+            ax.set_xticklabels(["$\\mathtt{"+str(int(lab))+"}$" for lab in np.arange(xmin+0.5*tickstep,xmax+0.5*tickstep,tickstep)])
+
+    plt.title(" vs. ".join([",".join(runids_list[n]) for n in range(len(runids_list))]),fontsize=24)
+    plt.legend(fontsize=20)
+    ax.xaxis.labelpad=10
+    ax.yaxis.labelpad=10
+    plt.tight_layout()
+
+    outputfolder = "Figures/paper/histograms/{}/".format("_vs_".join([",".join(runids_list[n]) for n in range(len(runids_list))]))
+
+    outputfilename = "{}_{}.png".format(var,time_thresh)
+
+    # Create output directory
+    if not os.path.exists(outputfolder):
+        try:
+            os.makedirs(outputfolder)
+        except OSError:
+            pass
+
+    # Save figure
+    fig.savefig(outputfolder+outputfilename)
+    print(outputfolder+outputfilename)
+
+    plt.close(fig)
+
+    return None
+
 def jet_paper_vs_hist(runids,var,time_thresh=10):
 
     # Get all filenames in folder
@@ -1286,7 +1459,7 @@ def jethist_paper_script_vs(runids):
     "A","death_distance"]
 
     for var in var_list:
-        jet_paper_vs_hist(runids,var,time_thresh=10)
+        jet_paper_vs_hist_new(runids,var,time_thresh=10)
 
     return None
 
