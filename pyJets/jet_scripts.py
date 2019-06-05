@@ -26,6 +26,7 @@ r_e = 6.371e+6
 ###TEMPORARY SCRIPTS HERE###
 
 def bs_plotter(runid,file_nr,thresh,rho_par):
+    # Plot contour of magnetosheath cells selected by the specified criteria
 
     # find correct file based on file number and run id
     if runid in ["AEC","AEF","BEA","BEB"]:
@@ -44,6 +45,7 @@ def bs_plotter(runid,file_nr,thresh,rho_par):
         print("Bulk file "+str(file_nr)+" not found, continuing")
         return 1
 
+    # Initialise required global variabales
     global rho_thresh
     global rho_sw
     global vlsvobj
@@ -55,32 +57,37 @@ def bs_plotter(runid,file_nr,thresh,rho_par):
     pt.plot.plot_colormap(filename=bulkpath+bulkname,draw=1,usesci=0,lin=1,var="rho",colormap="parula",external=ext_bsp,pass_vars=["rho","CellID"])
 
 def ext_bsp(ax,XmeshXY,YmeshXY,pass_maps):
+    # External function for bs_plotter
 
     rho = pass_maps["rho"]
     cellids = pass_maps["CellID"].flatten()
 
-    X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids)
+    X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids) # Reconstruct coordinates
 
-    if vlsvobj.get_spatial_mesh_size()[2]==1:
-        r_angle = np.rad2deg(np.arctan(np.abs(Y)/X))
+    # Select angle based on run type
+    if vlsvobj.get_spatial_mesh_size()[2]==1: 
+        r_angle = np.rad2deg(np.arctan(np.abs(Y)/X)) # Ecliptical
     else:
-        r_angle = np.rad2deg(np.arctan(np.abs(Z)/X))
+        r_angle = np.rad2deg(np.arctan(np.abs(Z)/X)) # Polar
 
     r_angle = np.reshape(r_angle,rho.shape)
     X = np.reshape(X,rho.shape)
 
+    # Mask cells according to criteria
     mask1 = (rho>=rho_thresh*rho_sw)
     mask2 = (r_angle<=45)
     mask3 = (X>=0)
 
-    mask = np.logical_and(np.logical_and(mask1,mask2),mask3).astype(int)
+    mask = np.logical_and(np.logical_and(mask1,mask2),mask3).astype(int) # Combine masks
 
     contour = ax.contour(XmeshXY,YmeshXY,mask,[0.5],linewidths=0.8, colors="black")
 
 def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
+    # Plot jet countours and positions
 
     outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
     
+    # Initialise required global variables
     global jet_cells
     global full_cells
     global xmean_list
@@ -90,12 +97,15 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     for n in range(start,stop+1):
 
+        # Initialise lists of coordinates
         xmean_list = []
         ymean_list = []
         xvmax_list = []
         yvmax_list = []
 
         for itr in range(700):
+
+            # Try reading properties
             try:
                 props = jio.PropReader(str(itr).zfill(5),runid,580,transient="jet")
                 xmean_list.append(props.read_at_time("x_mean",float(n)/2))
@@ -104,6 +114,8 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
                 yvmax_list.append(props.read_at_time("y_vmax",float(n)/2))
             except IOError:
                 pass
+
+        # Try reading events file
         try:
             fileobj = open("events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
@@ -111,12 +123,13 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         except IOError:
             jet_cells = [] 
 
+        # Try reading mask file
         try:
             full_cells = np.loadtxt("Masks/{}/{}.mask".format(runid,n)).astype(int)
         except IOError:
             full_cells = []
 
-
+        # Find correct file path
         if runid in ["AEC","AEF","BEA","BEB"]:
             bulkpath = "/proj/vlasov/2D/{}/".format(runid)
         elif runid == "AEA":
@@ -130,28 +143,33 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             print("Bulk file {} not found, continuing".format(str(n)))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,var="Pdyn",vmax=vmax*1.0e-9,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["rho","v","CellID"])
 
 def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
+    # External function for jet_plotter
 
     cellids = pass_maps["CellID"]
 
+    # Mask jets
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
+    # Mask full mask
     full_mask = np.in1d(cellids,full_cells).astype(int)
     full_mask = np.reshape(full_mask,cellids.shape)
 
-    full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta")
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black")
+    full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
-    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4)
-    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=4)
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4) # Mean positions
+    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=4) # v_max positions
 
 def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
+    # Plot slamjets contours and positions
 
     outputdir = "/wrk/sunijona/DONOTREMOVE/contours/SLAMSJETS/{}/".format(runid)
     
+    # Initialise required global variables
     global jet_cells
     global slams_cells
     global xmean_list
@@ -159,16 +177,21 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     for n in xrange(start,stop+1):
 
+        # Initialise lists of coordinaates
         xmean_list = []
         ymean_list = []
 
         for itr in range(500):
+
+            # Try reading properties
             try:
                 props = jio.PropReader(str(itr).zfill(5),runid,580,transient="slamsjet")
                 xmean_list.append(props.read_at_time("x_mean",float(n)/2))
                 ymean_list.append(props.read_at_time("y_mean",float(n)/2))
             except IOError:
                 pass
+
+        # Try reading events file
         try:
             fileobj = open("events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
@@ -176,6 +199,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         except IOError:
             jet_cells = [] 
 
+        # Try reading SLAMS events file
         try:
             fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
@@ -183,7 +207,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         except IOError:
             slams_cells = []
 
-
+        # Find correct file path
         if runid in ["AEC","AEF","BEA","BEB"]:
             bulkpath = "/proj/vlasov/2D/{}/".format(runid)
         elif runid == "AEA":
@@ -197,28 +221,36 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             print("Bulk file {} not found, continuing".format(str(n)))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,var="Pdyn",vmax=vmax*1.0e-9,colormap="parula",cbtitle="nPa",external=ext_slamjet,pass_vars=["CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_slamjet,pass_vars=["rho","v","CellID"])
 
 def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
+    # External function for slamjet_plotter
 
     cellids = pass_maps["CellID"]
 
+    # Mask jet cells
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
+    # Mask SLAMS cells
     slams_mask = np.in1d(cellids,slams_cells).astype(int)
     slams_mask = np.reshape(slams_mask,cellids.shape)
 
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="magenta")
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of jets
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
 
-    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4)
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4) # SLAMSJET mean positions
 
 def draw_all_cont():
+    # Draw contours for all criteria
+    # NOT FUNCTIONAL
+    raise NotImplementedError("DEPRECATED")
 
     pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",outputdir="Contours/ALLCONT_",usesci=0,lin=1,boxre=[6,18,-8,6],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
 
 def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # NOT FUNCTIONAL
+    raise NotImplementedError("DEPRECATED")
 
     rho = extmaps["rho"].flatten()
     vx = extmaps["v"][:,:,0].flatten()
@@ -281,6 +313,8 @@ def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     return None
 
 def lineout_plot(runid,filenumber,p1,p2,var):
+    # DEPRECATED, new version incoming at some point
+    raise NotImplementedError("DEPRECATED, new version incoming at some point")
 
     # find correct file based on file number and run id
     if runid in ["AEC"]:
@@ -321,6 +355,7 @@ def lineout_plot(runid,filenumber,p1,p2,var):
     fig.savefig("Contours/"+"lineout_"+runid+"_"+str(filenumber)+"_"+var+".png")
 
 def find_broken_BCQ(start,stop):
+    # Find broken files in run BCQ
 
     bulkpath = "/proj/vlasov/2D/BCQ/bulk/"
     time_list = np.array([])
@@ -339,10 +374,14 @@ def find_broken_BCQ(start,stop):
     return n_list[tdiff==0]
 
 def plot_streamlines(boxre=[4,20,-10,10]):
+    # DEPRECATED
+    raise NotImplementedError("DEPRECATED")
 
     pt.plot.plot_colormap(filename="/proj/vlasov/2D/BFD/bulk/bulk.0000611.vlsv",outputdir="Contours/STREAMPLOT_",usesci=0,lin=1,boxre=boxre,colormap="parula",cbtitle="",expression=pc.expr_srho,external=B_streamline,vmin=0,vmax=10,wmark=1,pass_vars=["proton/rho","CellID","B"])
 
 def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+    # DEPRECATED, not functional
+    raise NotImplementedError("DEPRECATED")
 
     B = extmaps["B"]
 
@@ -362,6 +401,8 @@ def B_streamline(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     ax.streamplot(X,Y,dx,dy,arrowstyle="-",linewidth=0.5,color="black",density=2)
 
 def expr_smooth(exprmaps):
+    # DEPRECATED, move to plot_contours?
+    raise NotImplementedError("DEPRECATED")
 
     rho = exprmaps["rho"]/1.0e+6
 
@@ -1028,7 +1069,7 @@ def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
     ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.75)
-    ax.tick_params(labelsize=20)
+    ax.tick_params(labelsize=24)
 
     weights = [[1/float(len(var_list[n]))]*len(var_list[n]) for n in range(len(runids_list))] # Normalise by total number of jets
 
@@ -1161,7 +1202,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.75)
-    ax.tick_params(labelsize=20)
+    ax.tick_params(labelsize=24)
     weights = [[1/float(len(val_dict[runids[n]]))]*len(val_dict[runids[n]]) for n in xrange(len(runids))] # Normalise by total number of jets
 
     ax.set_yticks(np.arange(0.1,0.8,0.1))
@@ -1279,7 +1320,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     ax.set_ylabel("$\\mathrm{Fraction~of~jets}$",fontsize=24)
     ax.set_xlim(xmin,xmax)
     ax.set_ylim(0,0.6)
-    ax.tick_params(labelsize=20)
+    ax.tick_params(labelsize=24)
     weights = np.ones(var_list.shape)/float(var_list.size) # Normalise by total number of jets
 
     ax.set_yticks(np.arange(0.1,0.7,0.1))

@@ -53,8 +53,10 @@ def bs_finder_new(runid,file_nr,angle_offset=0):
 
     if vlsvobj.get_spatial_mesh_size()[2]==1:
         r_angle = np.rad2deg(np.arctan(Y/X))
-    else:
+    elif vlsvobj.get_spatial_mesh_size()[3]==1:
         r_angle = np.rad2deg(np.arctan(Z/X))
+    else:
+        r_angle = np.rad2deg(np.arctan(np.linalg.norm([Y,Z],axis=0)/X))
 
     mask1 = (rho>=2*rho_sw)
     mask2 = (X>=0)

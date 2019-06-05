@@ -18,6 +18,7 @@ class PropReader:
 
     def __init__(self,ID,runid,start=580,fname=None,transient="jet"):
 
+        # Check for transient type
         if transient == "jet":
             inputdir = "jets"
         elif transient == "slamsjet":
@@ -25,32 +26,37 @@ class PropReader:
         elif transient == "slams":
             inputdir = "SLAMS/slams"
 
-        self.ID = ID
-        self.runid = runid
-        self.start = start
-        self.sw_pars = ja.sw_par_dict(runid)
-        self.sw_pars[0] /= 1.0e+6
-        self.sw_pars[1] /= 1.0e+3
-        self.sw_pars[2] /= 1.0e-9
-        self.sw_pars[3] /= 1.0e-9
+        self.ID = ID # Should be a string of 5 digits
+        self.runid = runid # Should be a string of 3 letters
+        self.start = start # Should be a float of accuracy to half a second
+        self.sw_pars = ja.sw_par_dict(runid) # Solar wind parameters for run
+        self.sw_pars[0] /= 1.0e+6 # rho in 1/cm^3
+        self.sw_pars[1] /= 1.0e+3 # v in km/s
+        self.sw_pars[2] /= 1.0e-9 # Pdyn in nPa
+        self.sw_pars[3] /= 1.0e-9 # B in nT
 
+        # Check if passing free-form filename to function
         if type(fname) is not str:
             self.fname = str(start)+"."+ID+".props"
         else:
             self.fname = fname
 
+        # Try opening file
         try:
             self.props = pd.read_csv(inputdir+"/"+runid+"/"+self.fname).as_matrix()
         except IOError:
             raise IOError("File not found!")
 
+        # Initialise list of variable names and associated dictionary
         var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max"]
         n_list = list(xrange(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
     def read(self,name):
+        # Read data of specified variable
+
         if name == "pdyn_vmax":
-            return 1.0e+21*m_p*self.props[:,self.var_dict["rho_vmax"]]*self.props[:,self.var_dict["v_max"]]**2
+            return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
         elif name not in self.var_dict:
             print("Variable not found!")
             return None
@@ -58,9 +64,13 @@ class PropReader:
             return self.props[:,self.var_dict[name]]
 
     def amax_index(self):
+        # Return list index of time when area is largest
+
         return self.read("A").argmax()
 
     def time_index(self,time):
+        # Return list index of specified time
+
         time_arr = self.read("time")
         if time not in time_arr:
             raise IOError("Time not found!")
@@ -68,10 +78,14 @@ class PropReader:
             return time_arr.tolist().index(time)
 
     def read_at_time(self,var,time):
+        # Return variable data at specified time
+
         return self.read(var)[self.time_index(time)]
 
 
     def read_at_amax(self,name):
+        # Return variable data at time when area is largest
+
         return self.read(name)[self.amax_index()]
 
 class Jet:
@@ -79,19 +93,21 @@ class Jet:
 
     def __init__(self,ID,runid,birthday):
 
-        self.ID = ID
-        self.runid = runid
-        self.birthday = birthday
-        self.cellids = []
+        self.ID = ID # Should be a string of 5 digits
+        self.runid = runid # Should be a string of 3 letters
+        self.birthday = birthday # Should be a float of accuracy to half a second
+        self.cellids = [] 
         self.times = [birthday]
 
         print("Created jet with ID "+self.ID)
 
     def return_cellid_string(self):
+        # Return string of lists of cellids for printing to file
 
         return "\n".join([",".join(map(str,l)) for l in self.cellids])
 
     def return_time_string(self):
+        # Return string of times for printing to file
 
         return "\n".join(map(str,self.times))
 
@@ -158,6 +174,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
 def timefile_read(runid,filenr,key,transient="jet"):
     # Read array of times from file
 
+    # Check for transient type
     if transient == "jet":
         inputdir = "jets"
     elif transient == "slamsjet":
@@ -172,6 +189,7 @@ def timefile_read(runid,filenr,key,transient="jet"):
 def jetfile_read(runid,filenr,key,transient="jet"):
     # Read array of cellids from file
 
+    # Check for transient type
     if transient == "jet":
         inputdir = "jets"
         extension = "jet"
@@ -229,6 +247,7 @@ def propfile_write(runid,filenr,key,props,transient="jet"):
     print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
 def jio_figmake(runid,start,jetid,figname,tp_files=False):
+    # DEPRECATED, use jet_time_series in jet_scripts instead
     # Create time series figures of specified jet
 
     props = calc_jet_properties(runid,start,jetid,tp_files=tp_files)
@@ -244,6 +263,7 @@ def figmake_script(runid,start,ids,tp_files=False):
         jio_figmake(runid,start,ID,figname=ID,tp_files=tp_files)
 
 def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
+    # DEPRECATED and NON-FUNCTIONAL, use jet_plotter in jet_scripts instead
 
     if not os.path.exists("Contours/jetfigs/"+runid):
         try:
@@ -354,6 +374,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     ax.plot(xmax_list,ymax_list,"o",color="white",markersize=4)
 
 def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
+    # DEPRECATED, use jet_time_series in jet_scripts instead
     # script for creating time series of jet linear sizes and area
 
     # Decide whether to read properties from file or input variable
@@ -485,6 +506,7 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
 def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
+    # Check transient type
     if transient == "jet":
         inputdir = "jets"
         extension = "jet"
@@ -492,6 +514,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         inputdir = "SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
+    # Check if transient with specified ID exists 
     if "{}.{}.{}".format(str(start),jetid,extension) not in os.listdir("{}/{}".format(inputdir,runid)):
         print("Transient with ID "+jetid+" does not exist, exiting.")
         return 1
@@ -723,9 +746,6 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     sorigid = vlsvobj.read_variable("CellID")
     sorigid = sorigid[sorigid.argsort()]
 
-    # Reconstruct X,Y,Z
-    #fX,fY,fZ = ja.xyz_reconstruct(vlsvobj)
-    
     # Find bow shock cells and area of one cell
     bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
     dA = ja.get_cell_volume(vlsvobj)
