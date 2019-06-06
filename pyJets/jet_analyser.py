@@ -197,6 +197,7 @@ def bow_shock_finder(vlsvobj,rho_sw=1.0e+6,v_sw=750e+3):
     return masked_ci
 
 def sw_normalisation(runid,var):
+    # Normalisation values for specified var for specified runid
 
     sw_pars = sw_par_dict(runid)
     key_list = ["time",

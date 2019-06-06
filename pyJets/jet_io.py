@@ -55,13 +55,22 @@ class PropReader:
     def read(self,name):
         # Read data of specified variable
 
-        if name == "pdyn_vmax":
-            return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
-        elif name not in self.var_dict:
+        if name in self.var_dict:
+            return self.props[:,self.var_dict[name]]
+        elif name == "pdyn_vmax":
+            return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**
+        elif name == "duration":
+            t = self.read("time")
+            return t[-1]-t[0]
+        elif name == "size_ratio":
+            return self.read("size_rad")/self.read("size_tan")
+        elif name == "death_distance"
+            x,y,z = self.read("x_vmax")[-1],self.read("y_vmax")[-1],self.read("z_vmax")[-1]
+            t = self.read("time")[-1]
+            return np.linalg.norm([x,y,z])-ja.bow_shock_r(self.runid,t)
+        else:
             print("Variable not found!")
             return None
-        else:
-            return self.props[:,self.var_dict[name]]
 
     def amax_index(self):
         # Return list index of time when area is largest
@@ -249,6 +258,7 @@ def propfile_write(runid,filenr,key,props,transient="jet"):
 def jio_figmake(runid,start,jetid,figname,tp_files=False):
     # DEPRECATED, use jet_time_series in jet_scripts instead
     # Create time series figures of specified jet
+    raise NotImplementedError("DEPRECATED")
 
     props = calc_jet_properties(runid,start,jetid,tp_files=tp_files)
 
@@ -264,6 +274,7 @@ def figmake_script(runid,start,ids,tp_files=False):
 
 def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
     # DEPRECATED and NON-FUNCTIONAL, use jet_plotter in jet_scripts instead
+    raise NotImplementedError("DEPRECATED")
 
     if not os.path.exists("Contours/jetfigs/"+runid):
         try:
@@ -376,6 +387,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
     # DEPRECATED, use jet_time_series in jet_scripts instead
     # script for creating time series of jet linear sizes and area
+    raise NotImplementedError("DEPRECATED")
 
     # Decide whether to read properties from file or input variable
     if props_arr == None:

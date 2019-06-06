@@ -417,6 +417,7 @@ def expr_smooth(exprmaps):
 ###HELPER FUNCTIONS HERE###
 
 def sheath_pars_list(var):
+    # Returns scaling factors for variables based on the maximum compression ratio of the RH conditions
 
     key_list = [
     "pdyn_vmax","pd_avg","pd_med","pd_max",
@@ -437,7 +438,9 @@ def sheath_pars_list(var):
     return [label_list[key_list.index(var)],norm_list[key_list.index(var)]]
 
 def var_pars_list(var):
+    # Returns a list of parameters useful for plotting specified variable
 
+    # Keys of variable names
     key_list = ["duration",
     "size_rad","size_tan","size_ratio",
     "pdyn_vmax","pd_avg","pd_med","pd_max",
@@ -451,6 +454,7 @@ def var_pars_list(var):
     "A",
     "death_distance"]
 
+    # Labels for figures
     label_list = ["$Duration~[s]$",
     "$Radial~size~[R_{e}]$","$Tangential~size~[R_{e}]$","$Radial~size/Tangential~size$",
     "$P_{dyn,vmax}~[P_{dyn,sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,med}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$",
@@ -464,6 +468,7 @@ def var_pars_list(var):
     "$Area~[R_{e}^{2}]$",
     "$(r_{v,max}-r_{BS})~at~time~of~death~[R_{e}]$"]
 
+    # Minimum variable value
     xmin_list=[0,
     0,0,0,
     0,0,0,0,
@@ -477,6 +482,7 @@ def var_pars_list(var):
     0,
     -5]
 
+    # Maximum variable value
     xmax_list=[120,
     3.5,3.5,7,
     5,5,5,5,
@@ -490,6 +496,7 @@ def var_pars_list(var):
     4,
     5]
 
+    # Histogram bin widths
     step_list = [5,
     0.25,0.25,0.2,
     0.2,0.2,0.2,0.2,
@@ -503,6 +510,7 @@ def var_pars_list(var):
     0.2,
     0.5]
 
+    # Axis tick distance
     tickstep_list = [20,
     0.5,0.5,1,
     1,1,1,1,
@@ -521,6 +529,8 @@ def var_pars_list(var):
 ###FIGURE MAKERS HERE###
 
 def jet_pos_graph(runid):
+    # Draws the location of all jets in specified run on an r-phi plane and a histogram of jet r-values
+    # For easy identification of magnetopause false positive jets
 
     filenames = os.listdir("jets/"+runid)
 
@@ -575,7 +585,9 @@ def jet_pos_graph(runid):
     return None
 
 def jet_paper_counter():
+    # Counts the number of jets in each run, excluding false positives and short durations
 
+    # List of runids
     runids = ["ABA","ABC","AEA","AEC","BFD"]
 
     # Get all filenames in folder
@@ -588,20 +600,26 @@ def jet_paper_counter():
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Cutoff for false positives
     run_cutoff_dict = dict(zip(runids,[10,8,10,8,10]))
 
+    # Initialise list of counts
     count_list_list = [0,0,0,0,0]
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
+
+            # Conditions
             if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
-                    count_list_list[n] += 1
+                    count_list_list[n] += 1 # Iterate counter if conditions fulfilled
 
     return count_list_list
 
 def jet_paper_pos():
+    # Draws locations of all jets in ecliptic runs on xy-plane at time of maximum area
 
+    # List of runids
     runids = ["ABA","ABC","AEA","AEC"]
 
     # Get all filenames in folder
@@ -614,22 +632,27 @@ def jet_paper_pos():
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Dictionaries for false positive cutoff, marker shape and colour
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
     run_marker_dict = dict(zip(["ABA","ABC","AEA","AEC"],["x","o","^","d"]))
     run_color_dict = dict(zip(["ABA","ABC","AEA","AEC"],["black","red","blue","green"]))
 
+    # Initialise lists of coordinates
     x_list_list = [[],[],[],[]]
     y_list_list = [[],[],[],[]]
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
+
+            # Conditions
             if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     x_list_list[n].append(props.read_at_amax("x_mean"))
                     y_list_list[n].append(props.read_at_amax("y_mean"))
 
     plt.ioff()
 
+    # Draw figure
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111)
     ax.set_xlabel("X [R$_{e}$]",fontsize=24,labelpad=10)
@@ -649,6 +672,7 @@ def jet_paper_pos():
     plt.legend(lines,labs,numpoints=1,prop={"size":20})
     plt.tight_layout()
 
+    # Save figure
     if not os.path.exists("Figures/paper/misc/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/misc/"+"_".join(runids)+"/")
@@ -663,7 +687,9 @@ def jet_paper_pos():
     return None
 
 def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
+    # Creates multivariable time series for specified jet
 
+    # Check transient type
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
@@ -678,16 +704,17 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
         except OSError:
             pass
 
+    # Open properties file, read variable data
     props = jio.PropReader(jetid,runid,start,transient=transient)
-
     var_list = ["time","A","n_max","v_max","pd_max","r_mean"]
-
     time_arr,area_arr,n_arr,v_arr,pd_arr,r_arr = [props.read(var)/ja.sw_normalisation(runid,var) for var in var_list]
 
+    # Threshold condition
     if np.max(area_arr) < thresh or time_arr.size < 10:
         print("Jet smaller than threshold, exiting!")
         return None
 
+    # Draw figure
     plt.ioff()
     
     fig = plt.figure(figsize=(10,10))
@@ -711,6 +738,7 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
 
     plt.tight_layout()
 
+    # Save figure
     fig.savefig("{}/{}/{}_mult_time_series.png".format(outputdir,runid,jetid))
     print("{}/{}/{}_mult_time_series.png".format(outputdir,runid,jetid))
 
@@ -719,7 +747,9 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
     return None
 
 def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
+    # Creates timeseries of specified variable for specified jet
 
+    # Check transient type
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
@@ -734,16 +764,18 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
         except OSError:
             pass
 
+    # Open props file, read time, area and variable data
     props = jio.PropReader(jetid,runid,start,transient=transient)
-
     time_arr = props.read("time")
     area_arr = props.read("A")
     var_arr = props.read(var)/ja.sw_normalisation(runid,var)
 
+    # Threshold condition
     if np.max(area_arr) < thresh:
         print("Jet smaller than threshold, exiting!")
         return None
 
+    # Draw figure
     plt.ioff()
     
     fig = plt.figure(figsize=(10,5))
@@ -756,6 +788,7 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
 
     plt.tight_layout()
 
+    # Save figure
     fig.savefig("{}/{}/{}_time_series_{}.png".format(outputdir,runid,jetid,var))
     print("{}/{}/{}_time_series_{}.png".format(outputdir,runid,jetid,var))
 
@@ -764,6 +797,7 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
     return None
 
 def jts_make(runid,start,startid,stopid,thresh = 0.0,transient="jet"):
+    # Script for creating time series for multiple jets
 
     for n in range(startid,stopid+1):
         try:
@@ -774,40 +808,56 @@ def jts_make(runid,start,startid,stopid,thresh = 0.0,transient="jet"):
     return None
 
 def SEA_make(runid,var,centering="pd_avg",thresh=5):
+    # Creates Superposed Epoch Analysis of jets in specified run, centering specified var around maximum of
+    # specified centering variable
 
     #jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
 
+    # Range of jetids to attempt
     jetids = np.arange(1,1000,1)
 
+    # Define epoch time array, +- 1 minute from center
     epoch_arr = np.arange(-60.0,60.1,0.5)
-    SEA_arr = np.zeros_like(epoch_arr)
+    SEA_arr = np.zeros_like(epoch_arr) # Initialise superposed epoch array
 
     for n in jetids:
+        
+        # Try reading jet
         try:
             props = jio.PropReader(str(n).zfill(5),runid,580)
         except:
             continue
 
+        # Read time and centering
         time_arr = props.read("time")
         cent_arr = props.read(centering)/ja.sw_normalisation(runid,centering)
+        
+        # Threshold condition
         if time_arr.size < thresh:
             continue
 
+        # Read variable data
         var_arr = props.read(var)/ja.sw_normalisation(runid,var)
+        
+        # Try scaling to fractional increase
         try:
             var_arr /= sheath_pars_list(var)[1]
             var_arr -= 1
         except:
             pass
 
+        # Interpolate variable data to fit epoch time, and stack it with SEA array
         res_arr = np.interp(epoch_arr,time_arr-time_arr[np.argmax(cent_arr)],var_arr,left=0.0,right=0.0)
         SEA_arr = np.vstack((SEA_arr,res_arr))
 
+    # Remove the row of zeros from stack
     SEA_arr = SEA_arr[1:]
 
+    # Calculate mean and STD of the stack
     SEA_arr_mean = np.mean(SEA_arr,axis=0)
     SEA_arr_std = np.std(SEA_arr,ddof=1,axis=0)
 
+    # Draw figure
     plt.ioff()
 
     fig = plt.figure(figsize=(10,5))
@@ -826,6 +876,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
 
     plt.tight_layout()
 
+    # Save figure
     if not os.path.exists("Figures/SEA/"+runid+"/"):
         try:
             os.makedirs("Figures/SEA/"+runid+"/")
@@ -840,6 +891,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
     return None
 
 def SEA_script(centering="pd_avg",thresh=5):
+    # Script for making several SEA graphs for different runs
 
     runids = ["ABA","ABC","AEA","AEC"]
     var = ["n_max","v_max","pd_max","n_avg","n_med","v_avg","v_med","pd_avg","pd_med","pdyn_vmax"]
@@ -852,7 +904,10 @@ def SEA_script(centering="pd_avg",thresh=5):
 
 
 def jet_lifetime_plots(var,amax=True):
+    # Creates scatter plot of jet lifetime versus variable value either at time of maximum area or global
+    # maximum for all ecliptical runs.
 
+    # List of runids
     runids = ["ABA","ABC","AEA","AEC"]
 
     # Get all filenames in folder
@@ -865,22 +920,28 @@ def jet_lifetime_plots(var,amax=True):
     for filenames in filenames_list:
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
+    # Dictionaries for false positive cutoff, marker shape and colour
     run_cutoff_dict = dict(zip(["ABA","ABC","AEA","AEC"],[10,8,10,8]))
     run_marker_dict = dict(zip(["ABA","ABC","AEA","AEC"],["x","o","^","d"]))
     run_color_dict = dict(zip(["ABA","ABC","AEA","AEC"],["black","red","blue","green"]))
 
+    # Initialise lists of coordinates
     x_list_list = [[],[],[],[]]
     y_list_list = [[],[],[],[]]
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
+
+            # Condition
             if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     x_list_list[n].append(props.read("time")[-1]-props.read("time")[0])
                     if amax:
                         y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
                     else:
                         y_list_list[n].append(np.max(props.read(var))/ja.sw_normalisation(runids[n],var))
+    
+    # Draw figure
     plt.ioff()
 
     fig = plt.figure(figsize=(10,10))
@@ -901,6 +962,7 @@ def jet_lifetime_plots(var,amax=True):
     plt.legend(lines,labs,numpoints=1)
     plt.tight_layout()
 
+    # Fit line to data and draw it
     x_list_full = []
     y_list_full = []
 
@@ -913,8 +975,11 @@ def jet_lifetime_plots(var,amax=True):
     y_arr = np.polyval(p,x_arr)
 
     ax.plot(x_arr,y_arr,linestyle="dashed")
+
+    # TO DO: Make annotation look nice
     ax.annotate(str(p[0])+"\n"+str(p[1]),xy=(0.1,0.9),xycoords="axes fraction")
 
+    # Save figure
     if not os.path.exists("Figures/paper/misc/scatter/"+"_".join(runids)+"/"):
         try:
             os.makedirs("Figures/paper/misc/scatter/"+"_".join(runids)+"/")
