@@ -58,13 +58,13 @@ class PropReader:
         if name in self.var_dict:
             return self.props[:,self.var_dict[name]]
         elif name == "pdyn_vmax":
-            return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**
+            return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
         elif name == "duration":
             t = self.read("time")
             return t[-1]-t[0]
         elif name == "size_ratio":
             return self.read("size_rad")/self.read("size_tan")
-        elif name == "death_distance"
+        elif name == "death_distance":
             x,y,z = self.read("x_vmax")[-1],self.read("y_vmax")[-1],self.read("z_vmax")[-1]
             t = self.read("time")[-1]
             return np.linalg.norm([x,y,z])-ja.bow_shock_r(self.runid,t)

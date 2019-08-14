@@ -873,7 +873,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
     plt.title("Run: {}, Epoch centering: {}".format(runid,centering.replace("_",r"\_")))
     ax.plot(epoch_arr,SEA_arr_mean,color="black")
     ax.fill_between(epoch_arr,SEA_arr_mean-SEA_arr_std,SEA_arr_mean+SEA_arr_std,alpha=0.3)
-
+    
     plt.tight_layout()
 
     # Save figure
@@ -976,8 +976,8 @@ def jet_lifetime_plots(var,amax=True):
 
     ax.plot(x_arr,y_arr,linestyle="dashed")
 
-    # TO DO: Make annotation look nice
-    ax.annotate(str(p[0])+"\n"+str(p[1]),xy=(0.1,0.9),xycoords="axes fraction")
+    # TO DO: Make annotation look nice DONE
+    ax.annotate("y = {:5.3f}x + {:5.3f}".format(p[0],p[1]),xy=(0.1,0.9),xycoords="axes fraction")
 
     # Save figure
     if not os.path.exists("Figures/paper/misc/scatter/"+"_".join(runids)+"/"):
@@ -1155,7 +1155,8 @@ def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
         plt.xscale("log")
         ax.set_xlim(1,xmax)
         
-        hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+        #hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+        hist = [ax.hist(var_list[n],weights=weights[n],bins=bins,fc="None",linewidth=1.2,edgecolor=run_colors_list[n],label=var_labels[n],histtype="step") for n in range(len(var_list))]
 
         ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
         ax.set_xticklabels(np.array(["$\\mathtt{10^0}$","$\\mathtt{10^1}$","$\\mathtt{10^2}$","$\\mathtt{10^3}$"]))
@@ -1163,7 +1164,8 @@ def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
     else:
         bins = np.arange(xmin,xmax+step,step)
 
-        hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+        #hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
+        hist = [ax.hist(var_list[n],weights=weights[n],bins=bins,fc="None",linewidth=1.2,edgecolor=run_colors_list[n],label=var_labels[n],histtype="step") for n in range(len(var_list))]
 
         ax.set_xticks(np.arange(xmin,xmax+tickstep,tickstep))
         ax.set_xticklabels(["$\\mathtt{"+lab+"}$" for lab in np.arange(xmin,xmax+tickstep,tickstep).astype(str)])
