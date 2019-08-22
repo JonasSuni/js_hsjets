@@ -33,6 +33,11 @@ def avg_maker_slow(runid,start,stop):
         # Initialise dynamic pressure and density arrays
         pdyn_arr = np.array([])
         rho_arr = np.array([])
+        B_arr = np.array([])
+        T_arr = np.array([])
+        TPar_arr = np.array([])
+        TPerp_arr = np.array([])
+        v2_arr = np.array([])
 
         # initialise correction for missing files
         missing_file_counter = 0
@@ -69,28 +74,53 @@ def avg_maker_slow(runid,start,stop):
             if vlsvobj.check_variable("rho"):
                 rho = vlsvobj.read_variable("rho")[cellids.argsort()]
                 v = vlsvobj.read_variable("v")[cellids.argsort()]
+                B = vlsvobj.read_variable("B")[cellids.argsort()]
+                T,TPar,TPerp = [vlsvobj.read_variable("Temperature")[cellids.argsort()],vlsvobj.read_variable("TParallel")[cellids.argsort()],vlsvobj.read_variable("TPerpendicular")[cellids.argsort()]]
             else:
                 rho = vlsvobj.read_variable("proton/rho")[cellids.argsort()]
                 v = vlsvobj.read_variable("proton/V")[cellids.argsort()]
+                B = vlsvobj.read_variable("B")[cellids.argsort()]
+                T,TPar,TPerp = [vlsvobj.read_variable("Temperature")[cellids.argsort()],vlsvobj.read_variable("TParallel")[cellids.argsort()],vlsvobj.read_variable("TPerpendicular")[cellids.argsort()]]
 
             # Dynamic pressure for current time step
             pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+            Bmag = np.linalg.norm(B,axis=-1)
 
             # Add to time average
             if rho_arr.size == 0:
                 rho_arr = rho
                 pdyn_arr = pdyn
+                B_arr = Bmag
+                T_arr = T
+                TPar_arr = TParallel
+                TPerp_arr = TPerpendicular
+                T_arr = np.linalg.norm(v,axis=-1)**2
             else:
                 rho_arr += rho
                 pdyn_arr += pdyn
+                B_arr += Bmag
+                T_arr += T
+                TPar_arr += TParallel
+                TPerp_arr += TPerpendicular
+                T_arr += np.linalg.norm(v,axis=-1)**2
 
         # Calculate time average
         rho_arr /= (360 - missing_file_counter)
         pdyn_arr /= (360 - missing_file_counter)
+        B_arr /= (360 - missing_file_counter)
+        T_arr /= (360 - missing_file_counter)
+        TPar_arr /= (360 - missing_file_counter)
+        TPerp_arr /= (360 - missing_file_counter)
+        v2_arr /= (360 - missing_file_counter)
 
         # Save time averages to files
         np.savetxt(outputdir+str(n)+"_rho.tavg",rho_arr)
         np.savetxt(outputdir+str(n)+"_pdyn.tavg",pdyn_arr)
+        np.savetxt(outputdir+str(n)+"_B.tavg",B_arr)
+        np.savetxt(outputdir+str(n)+"_T.tavg",T_arr)
+        np.savetxt(outputdir+str(n)+"_TPar.tavg",TPar_arr)
+        np.savetxt(outputdir+str(n)+"_TPerp.tavg",TPerp_arr)
+        np.savetxt(outputdir+str(n)+"_v2.tavg",v2_arr)
 
     return None
 

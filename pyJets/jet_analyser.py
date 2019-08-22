@@ -667,18 +667,18 @@ def make_cust_mask(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    if not os.path.exists("Masks/"+runid+"/"):
-        os.makedirs("Masks/"+runid+"/")
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"):
+        os.makedirs("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/")
 
-    print("Writing to "+"Masks/"+runid+"/"+str(filenumber)+".mask")
+    print("Writing to "+"/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask")
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
 
 def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False):
@@ -801,23 +801,24 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     tapdyn = pdyn/tpdynavg
 
     # make custom jet mask
-    jet = np.ma.masked_greater(npdynx,0.25)
-    jet.mask[nrho < 3.5] = False
-    jet.mask[tapdyn > 2] = True
+    #jet = np.ma.masked_greater(npdynx,0.25)
+    #jet.mask[nrho < 3.5] = False
+    #jet.mask[tapdyn > 2] = True
+    jet = np.ma.masked_greater(tapdyn,2.0)
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    if not os.path.exists("Masks/"+runid+"/"):
-        os.makedirs("Masks/"+runid+"/")
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"):
+        os.makedirs("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/")
 
-    print("Writing to "+"Masks/"+runid+"/"+str(filenumber)+".mask")
+    print("Writing to "+"/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask")
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci

@@ -122,7 +122,7 @@ class Jet:
 
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
 
-    outputdir = "/homeappl/home/sunijona/events/"+runid+"/"
+    outputdir = "/wrk/sunijona/DONOTREMOVE/working/events/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -157,13 +157,13 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         if maskfile:
             msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
         else:
-            msk = ja.make_cust_mask(file_nr,runid,180,boxre,avgfile)
+            msk = ja.make_cust_mask_opt(file_nr,runid,180,boxre,avgfile)
 
         print(len(msk))
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,25,4500,nbrs)
+        jets = ja.sort_jets(vlsvobj,msk,1,4500,nbrs)
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -283,7 +283,7 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
             pass
 
     # Find names of property files
-    filenames = os.listdir("jets/"+runid)
+    filenames = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
     prop_fns = []
     for filename in filenames:
         if ".props" in filename:
@@ -352,7 +352,7 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
             fullmask = np.array([])
 
         try:
-            fileobj = open("events/"+runid+"/"+str(itr2)+".events","r")
+            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/"+runid+"/"+str(itr2)+".events","r")
             contents = fileobj.read()
             cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
@@ -391,7 +391,7 @@ def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=No
 
     # Decide whether to read properties from file or input variable
     if props_arr == None:
-        linsizes = pd.read_csv("/homeappl/home/sunijona/jets/"+runid+"/"+str(start)+"."+jetid+".props").as_matrix()
+        linsizes = pd.read_csv("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+str(start)+"."+jetid+".props").as_matrix()
     else:
         linsizes = props_arr
 
@@ -520,7 +520,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     # Check transient type
     if transient == "jet":
-        inputdir = "jets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
         extension = "jet"
     elif transient == "slamsjet":
         inputdir = "SLAMSJETS/slamsjets"
@@ -536,13 +536,13 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
     time_list = timefile_read(runid,start,jetid,transient)
 
     # Discard jet if it's very short-lived
-    if len(time_list) < 5:
+    if len(time_list) < 10:
         print("Jet not sufficiently long-lived, exiting.")
         return 1
 
     # Discard jet if it has large gaps in the times
     dt = np.ediff1d(time_list)
-    if max(dt) > 5:
+    if max(dt) > 10:
         print("Jet not sufficiently continuous, exiting.")
         return 1
 
@@ -579,11 +579,14 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
         # read variables
         if vlsvobj.check_variable("X"):
-            X = vlsvobj.read_variable("X",cellids=curr_list)
-            Y = vlsvobj.read_variable("Y",cellids=curr_list)
-            Z = vlsvobj.read_variable("Z",cellids=curr_list)
+            X = np.array(vlsvobj.read_variable("X",cellids=curr_list),ndmin=1)
+            Y = np.array(vlsvobj.read_variable("Y",cellids=curr_list),ndmin=1)
+            Z = np.array(vlsvobj.read_variable("Z",cellids=curr_list),ndmin=1)
         else:
             X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids=curr_list)
+            X = np.array(X,ndmin=1)
+            Y = np.array(Y,ndmin=1)
+            Z = np.array(Z,ndmin=1)
 
         # Calculate area of one cell
         if n == 0 and vlsvobj.check_variable("DX"):
@@ -596,11 +599,11 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
         if vlsvobj.check_population("proton"):
             try:
-                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list_alt]
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=curr_list),ndmin=1) for s in var_list_alt]
             except:
-                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
+                rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=curr_list),ndmin=1) for s in var_list]
         else:
-            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [vlsvobj.read_variable(s,cellids=curr_list) for s in var_list]
+            rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=curr_list),ndmin=1) for s in var_list]
 
         pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
@@ -742,9 +745,9 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("/homeappl/home/sunijona/jets/"+runid):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid):
         try:
-            os.makedirs("/homeappl/home/sunijona/jets/"+runid)
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
         except OSError:
             pass
 
@@ -759,7 +762,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     sorigid = sorigid[sorigid.argsort()]
 
     # Find bow shock cells and area of one cell
-    bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
+    #bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
     dA = ja.get_cell_volume(vlsvobj)
 
     # Read initial event files
@@ -769,8 +772,9 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
-            bs_events.append(old_event)
+        #if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
+            #bs_events.append(old_event)
+        bs_events.append(old_event)
 
     # Initialise list of jet objects
     jetobj_list = []
@@ -809,7 +813,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     for n in xrange(start+2,stop+1):
 
         for jetobj in jetobj_list:
-            if float(n)/2 - jetobj.times[-1] > 5:
+            if float(n)/2 - jetobj.times[-1] > 10:
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
 
@@ -829,13 +833,14 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         # Open bulkfile and get bow shock cells
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-        bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
+        #bs_cells = ja.bow_shock_finder(vlsvobj,rho_sw,v_sw)
 
         # Filtered list of events that are at the bow shock at the current time
         bs_events = []
         for old_event in events:
-            if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
-                bs_events.append(old_event)
+            #if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
+            #    bs_events.append(old_event)
+            bs_events.append(old_event)
 
         # Initialise flags for finding splintering jets
         flags = []
@@ -921,8 +926,8 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     for jetobj in jetobj_list:
 
         # Write jet object cellids and times to files
-        jetfile = open("/homeappl/home/sunijona/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".jet","w")
-        timefile = open("/homeappl/home/sunijona/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+        jetfile = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".jet","w")
+        timefile = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
 
         jetfile.write(jetobj.return_cellid_string())
         timefile.write(jetobj.return_time_string())

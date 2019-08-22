@@ -117,7 +117,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open("events/{}/{}.events".format(runid,n),"r")
+            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
@@ -125,7 +125,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading mask file
         try:
-            full_cells = np.loadtxt("Masks/{}/{}.mask".format(runid,n)).astype(int)
+            full_cells = np.loadtxt("/wrk/sunijona/DONOTREMOVE/working/Masks/{}/{}.mask".format(runid,n)).astype(int)
         except IOError:
             full_cells = []
 
@@ -193,7 +193,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open("events/{}/{}.events".format(runid,n),"r")
+            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
@@ -244,13 +244,13 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
 def draw_all_cont():
     # Draw contours for all criteria
     # NOT FUNCTIONAL
-    raise NotImplementedError("DEPRECATED")
+    #raise NotImplementedError("DEPRECATED")
 
-    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv",outputdir="Contours/ALLCONT_",usesci=0,lin=1,boxre=[6,18,-8,6],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
+    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000595.vlsv",outputdir="Contours/ALLCONT_",usesci=0,draw=1,lin=1,boxre=[4,18,-12,12],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
 
-def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
+def ext_crit(ax,XmeshXY,YmeshXY,extmaps):
     # NOT FUNCTIONAL
-    raise NotImplementedError("DEPRECATED")
+    #raise NotImplementedError("DEPRECATED")
 
     rho = extmaps["rho"].flatten()
     vx = extmaps["v"][:,:,0].flatten()
@@ -304,17 +304,17 @@ def ext_crit(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
     jetk[jetk.mask == False] = 1
 
     # draw contours
-    contour_plaschke = ax.contour(XmeshXY,YmeshXY,jetp.filled(),[0.5],linewidths=0.8, colors="black",label="Plaschke")
+    #contour_plaschke = ax.contour(XmeshXY,YmeshXY,jetp.filled(),[0.5],linewidths=0.8, colors="black",label="Plaschke")
 
-    contour_archer = ax.contour(XmeshXY,YmeshXY,jetah.filled(),[0.5],linewidths=0.8, colors="yellow",label="ArcherHorbury")
+    contour_archer = ax.contour(XmeshXY,YmeshXY,jetah.filled(),[0.5],linewidths=0.8, colors="black",label="ArcherHorbury")
 
-    contour_karlsson = ax.contour(XmeshXY,YmeshXY,jetk.filled(),[0.5],linewidths=0.8, colors="magenta",label="Karlsson")
+    #contour_karlsson = ax.contour(XmeshXY,YmeshXY,jetk.filled(),[0.5],linewidths=0.8, colors="magenta",label="Karlsson")
 
     return None
 
 def lineout_plot(runid,filenumber,p1,p2,var):
     # DEPRECATED, new version incoming at some point
-    raise NotImplementedError("DEPRECATED, new version incoming at some point")
+    #raise NotImplementedError("DEPRECATED, new version incoming at some point")
 
     # find correct file based on file number and run id
     if runid in ["AEC"]:
@@ -340,13 +340,14 @@ def lineout_plot(runid,filenumber,p1,p2,var):
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(r_arr,var_arr)
-    ax.set_xlabel("$R~[R_e]$",labelpad=10,fontsize=20)
+    ax.plot(var_arr)
+    #ax.plot(r_arr,var_arr)
+    #ax.set_xlabel("$R~[R_e]$",labelpad=10,fontsize=20)
     ax.tick_params(labelsize=20)
     if var in var_dict:
         ax.set_ylabel(var_dict[var][1],labelpad=10,fontsize=20)
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
-    ax.xaxis.set_major_locator(MaxNLocator(integer=True,prune="lower"))
+    #ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+    #ax.xaxis.set_major_locator(MaxNLocator(integer=True,prune="lower"))
 
     plt.tight_layout()
 
@@ -455,7 +456,7 @@ def var_pars_list(var):
     "death_distance"]
 
     # Labels for figures
-    label_list = ["$Duration~[s]$",
+    label_list = ["$Lifetime~[s]$",
     "$Radial~size~[R_{e}]$","$Tangential~size~[R_{e}]$","$Radial~size/Tangential~size$",
     "$P_{dyn,vmax}~[P_{dyn,sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,med}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$",
     "$n_{max}~[n_{sw}]$","$n_{avg}~[n_{sw}]$","$n_{med}~[n_{sw}]$","$n_{v,max}~[n_{sw}]$",
@@ -532,7 +533,7 @@ def jet_pos_graph(runid):
     # Draws the location of all jets in specified run on an r-phi plane and a histogram of jet r-values
     # For easy identification of magnetopause false positive jets
 
-    filenames = os.listdir("jets/"+runid)
+    filenames = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
 
     propfiles = [filename for filename in filenames if ".props" in filename]
 
@@ -541,7 +542,7 @@ def jet_pos_graph(runid):
     size_list = []
 
     for fname in propfiles:
-        props = pd.read_csv("jets/"+runid+"/"+fname).as_matrix()
+        props = pd.read_csv("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+fname).as_matrix()
         r = props[:,6]
         phi = props[r==max(r)][0][8]
         r_list.append(max(r))
@@ -588,12 +589,13 @@ def jet_paper_counter():
     # Counts the number of jets in each run, excluding false positives and short durations
 
     # List of runids
-    runids = ["ABA","ABC","AEA","AEC","BFD"]
+    runids = ["ABA","ABC","AEA","AEC"]
+    #runids = ["ABA"]
 
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -601,10 +603,12 @@ def jet_paper_counter():
         file_list_list.append([filename for filename in filenames if ".props" in filename])
 
     # Cutoff for false positives
-    run_cutoff_dict = dict(zip(runids,[10,8,10,8,10]))
+    #run_cutoff_dict = dict(zip(runids,[10]))
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
 
     # Initialise list of counts
-    count_list_list = [0,0,0,0,0]
+    count_list_list = [0,0,0,0]
+    #count_list_list = [0]
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
@@ -625,7 +629,7 @@ def jet_paper_pos():
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -913,7 +917,7 @@ def jet_lifetime_plots(var,amax=True):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1003,7 +1007,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1207,7 +1211,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1329,7 +1333,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("jets/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1511,7 +1515,7 @@ def find_missing_bulk(inputfolder):
 
 def find_missing_jetsizes(runid):
 
-    jetfile_names = os.listdir("jets/"+runid)
+    jetfile_names = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
 
     propfile_list = [int(s[4:-6]) for s in jetfile_names if ".props" in s]
 
@@ -1551,6 +1555,49 @@ def jethist_paper_script(runtype="ecl"):
         jet_paper_all_hist(runids,var,time_thresh=10)
 
     return None
+
+def jethist_paper_script_2019():
+
+    var_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A","death_distance"]
+
+    runids_list = [["ABA","ABC","AEA","AEC"],["ABA"],["ABC"],["AEA"],["AEC"]]
+
+    runids_list_vs = [[["ABA"],["ABC"]],[["AEA"],["AEC"]],[["ABA","ABC"],["AEA","AEC"]],[["ABA","AEA"],["ABC","AEC"]]]
+
+    for var in var_list:
+        for runid in runids_list:
+            jet_paper_all_hist(runid,var,time_thresh=5)
+        for runids in runids_list_vs:
+            jet_paper_vs_hist_new(runids,var,time_thresh=5)
+
+    return None
+
+def jethist_paper_script_ABA(thresh=10):
+
+    var_list = ["duration",
+    "size_rad","size_tan","size_ratio",
+    "pdyn_vmax","pd_avg","pd_med","pd_max",
+    "n_max","n_avg","n_med","rho_vmax",
+    "v_max","v_avg","v_med",
+    "B_max","B_avg","B_med",
+    "beta_max","beta_avg","beta_med","b_vmax",
+    "T_avg","T_med","T_max",
+    "TPar_avg","TPar_med","TPar_max",
+    "TPerp_avg","TPerp_med","TPerp_max",
+    "A","death_distance"]
+
+    for var in var_list:
+        jet_paper_all_hist(["ABA","ABC","AEA","AEC"],var,time_thresh=thresh)
 
 def jethist_paper_script_vs(runids):
 
