@@ -170,7 +170,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,1,4500,nbrs)
+        jets = ja.sort_jets(vlsvobj,msk,2,4500,nbrs)
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
