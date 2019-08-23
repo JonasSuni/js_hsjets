@@ -9,6 +9,7 @@ import copy
 import matplotlib.pyplot as plt
 import plot_contours as pc
 import scipy.constants as sc
+import random
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -61,7 +62,7 @@ class PropReader:
             return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
         elif name == "duration":
             t = self.read("time")
-            return t[-1]-t[0]
+            return t[-1]-t[0] + 0.5
         elif name == "size_ratio":
             return self.read("size_rad")/self.read("size_tan")
         elif name == "death_distance":
@@ -91,6 +92,12 @@ class PropReader:
 
         return self.read(var)[self.time_index(time)]
 
+    def read_at_randt(self,var):
+
+        time_arr = self.read("time")
+        randt = random.choice(time_arr)
+
+        return self.read_at_time(var,randt)
 
     def read_at_amax(self,name):
         # Return variable data at time when area is largest
@@ -536,14 +543,8 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
     time_list = timefile_read(runid,start,jetid,transient)
 
     # Discard jet if it's very short-lived
-    if len(time_list) < 10:
+    if time_list[-1] - time_list[0] + 0.5 < 5:
         print("Jet not sufficiently long-lived, exiting.")
-        return 1
-
-    # Discard jet if it has large gaps in the times
-    dt = np.ediff1d(time_list)
-    if max(dt) > 10:
-        print("Jet not sufficiently continuous, exiting.")
         return 1
 
     # Find correct bulk path
@@ -619,6 +620,11 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         # Calculate magnitudes of v and B
         vmag = np.linalg.norm(v,axis=-1)
         Bmag = np.linalg.norm(B,axis=-1)
+
+        if type(vmag) == float:
+            vmag = np.array(vmag)
+        if type(Bmag) == float:
+            Bmag = np.array(Bmag)
 
         # Calculate means, medians and maximums for rho,vmag,Bmag,Pdyn,T,TParallel,TPerpendicular,beta
         n_avg = np.nanmean(rho)
@@ -813,7 +819,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     for n in xrange(start+2,stop+1):
 
         for jetobj in jetobj_list:
-            if float(n)/2 - jetobj.times[-1] > 10:
+            if float(n)/2 - jetobj.times[-1] + 0.5 > 10:
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
 

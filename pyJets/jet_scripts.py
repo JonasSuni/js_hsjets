@@ -417,6 +417,40 @@ def expr_smooth(exprmaps):
 
 ###HELPER FUNCTIONS HERE###
 
+class MMSReader:
+
+    def __init__(self,filepath):
+
+        f = open(filepath,"r+")
+        contents = f.read()
+        contents_list = f.split("\r\n")[:-1]
+        contents_matrix = [line.split(",") for line in contents_list]
+
+        self.data_arr = np.asarray(contents_matrix,dtype="float")
+
+        '''
+        0 Mean |B| (SW)
+        1 Mean beta (SW)
+        2 Extend (R_e)
+        3 Mean Density (SW)
+        4 Max Density (SW)
+        5 Mean Dynamic Pressure (SW)
+        6 Max Dynamic Pressure (SW)
+        7 Mean T_par (MK)
+        8 Mean T_Perp (MK)
+        9 Mean Temperature (SW)
+        10 Mean |V| (SW)
+        11 Max |V| (SW)
+        '''
+
+        var_list = ["B_avg","beta_avg","extent","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max"]
+
+        n_list = range()
+
+        self.label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$"]
+
+
+
 def sheath_pars_list(var):
     # Returns scaling factors for variables based on the maximum compression ratio of the RH conditions
 
@@ -609,16 +643,19 @@ def jet_paper_counter():
     # Initialise list of counts
     count_list_list = [0,0,0,0]
     #count_list_list = [0]
+    time_per_run = np.array([839-580,1179-580,1339-580,879-580])/2.0
 
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
 
             # Conditions
-            if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     count_list_list[n] += 1 # Iterate counter if conditions fulfilled
 
-    return count_list_list
+
+    print(count_list_list)
+    return np.array(count_list_list)/time_per_run
 
 def jet_paper_pos():
     # Draws locations of all jets in ecliptic runs on xy-plane at time of maximum area
@@ -650,7 +687,7 @@ def jet_paper_pos():
             props = jio.PropReader("",runids[n],fname=fname)
 
             # Conditions
-            if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     x_list_list[n].append(props.read_at_amax("x_mean"))
                     y_list_list[n].append(props.read_at_amax("y_mean"))
 
@@ -938,7 +975,7 @@ def jet_lifetime_plots(var,amax=True):
             props = jio.PropReader("",runids[n],fname=fname)
 
             # Condition
-            if props.read("time")[-1]-props.read("time")[0] > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     x_list_list[n].append(props.read("time")[-1]-props.read("time")[0])
                     if amax:
                         y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
@@ -1043,9 +1080,9 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
         for n in xrange(len(runids)):
             for fname in file_list_list[n]:
                 props = jio.PropReader("",runids[n],fname=fname)
-                if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+                if props.read("time")[-1]-props.read("time")[0] + 0.5 > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     if inp_var_list[ind] == "duration":
-                        var_list[ind].append(props.read("time")[-1]-props.read("time")[0])
+                        var_list[ind].append(props.read("time")[-1]-props.read("time")[0] + 0.5)
                     elif inp_var_list[ind] == "size_ratio":
                         var_list[ind].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
                     elif inp_var_list[ind] == "death_distance":
@@ -1116,13 +1153,13 @@ def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
                     props = jio.PropReader(ID=str(jetid_nr).zfill(5),runid=runid,start=580,transient="jet")
                     if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runid]:
                         if var == "duration":
-                            var_list[n].append(props.read("time")[-1]-props.read("time")[0])
+                            var_list[n].append(props.read("time")[-1]-props.read("time")[0] + 0.5)
                         elif var == "size_ratio":
-                            var_list[n].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                            var_list[n].append(props.read_at_randt("size_rad")/props.read_at_randt("size_tan"))
                         elif var == "death_distance":
                             var_list[n].append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runid,props.read("time")[-1]))
                         else:
-                            var_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runid,var))
+                            var_list[n].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var))
                 except IOError:
                     continue
 
@@ -1250,9 +1287,9 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
-            if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
-                    val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0])
+                    val_dict[runids[n]].append(props.read("time")[-1]-props.read("time")[0] + 0.5)
                 elif var == "size_ratio":
                     val_dict[runids[n]].append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
                 elif var == "death_distance":
@@ -1367,15 +1404,15 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     for n in xrange(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
-            if props.read("time")[-1]-props.read("time")[0] > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > time_thresh and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                 if var == "duration":
-                    var_list.append(props.read("time")[-1]-props.read("time")[0])
+                    var_list.append(props.read("time")[-1]-props.read("time")[0] + 0.5)
                 elif var == "size_ratio":
-                    var_list.append(props.read_at_amax("size_rad")/props.read_at_amax("size_tan"))
+                    var_list.append(props.read_at_randt("size_rad")/props.read_at_randt("size_tan"))
                 elif var == "death_distance":
                     var_list.append(np.linalg.norm([props.read("x_vmax")[-1],props.read("y_vmax")[-1],props.read("z_vmax")[-1]])-ja.bow_shock_r(runids[n],props.read("time")[-1]))
                 else:
-                    var_list.append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
+                    var_list.append(props.read_at_randt(var)/ja.sw_normalisation(runids[n],var))
 
     var_list = np.asarray(var_list)
 
