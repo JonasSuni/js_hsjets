@@ -423,7 +423,7 @@ class MMSReader:
 
         f = open(filepath,"r+")
         contents = f.read()
-        contents_list = f.split("\r\n")[:-1]
+        contents_list = contents.split("\r\n")[:-1]
         contents_matrix = [line.split(",") for line in contents_list]
 
         self.data_arr = np.asarray(contents_matrix,dtype="float")
@@ -445,11 +445,17 @@ class MMSReader:
 
         var_list = ["B_avg","beta_avg","extent","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max"]
 
-        n_list = range()
+        n_list = range(len(var_list))
 
-        self.label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$"]
+        self.var_dict = dict(zip(var_list,n_list))
 
+        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$"]
 
+        self.label_dict = dict(zip(var_list,label_list))
+
+    def read(self,name):
+        if name in self.var_dict:
+            return self.data_arr[:,self.var_dict[name]]
 
 def sheath_pars_list(var):
     # Returns scaling factors for variables based on the maximum compression ratio of the RH conditions
