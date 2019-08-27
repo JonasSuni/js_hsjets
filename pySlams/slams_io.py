@@ -332,7 +332,7 @@ class Transient:
 
         return "\n".join(map(str,self.times))
 
-def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0,sw=1.0,outputdir="SLAMS/contours/"):
+def visual_slams_finder(runid,filenumber,boxre=[6,18,-8,6],vmax=1.5,plaschke=1.0,sw=1.0,outputdir="/wrk/sunijona/DONOTREMOVE/working/SLAMS/contours/"):
 
     if runid in ["AEA","AEC"]:
         B_sw = 10.0e-9
@@ -455,19 +455,19 @@ def make_slams_mask(filenumber,runid,boxre=[6,18,-8,6]):
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~slams.mask).compressed()
 
-    if not os.path.exists("SLAMS/masks/"+runid+"/"):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/"):
         try:
-            os.makedirs("SLAMS/masks/"+runid+"/")
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/")
         except OSError:
             pass
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
 
 def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
@@ -515,7 +515,7 @@ def sort_slams(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1]):
 
 def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
 
-    outputdir = "SLAMS/events/"+runid+"/"
+    outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMS/events/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -548,7 +548,7 @@ def slams_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False):
 
         # create mask
         if maskfile:
-            msk = np.loadtxt("SLAMS/masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+            msk = np.loadtxt("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
         else:
             msk = make_slams_mask(file_nr,runid,boxre)
 
@@ -578,7 +578,7 @@ def eventfile_read(runid,filenr):
 
     outputlist = []
 
-    ef = open("SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    ef = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
     if contents == "":
         return []
@@ -610,9 +610,9 @@ def track_slams(runid,start,stop,threshold=0.5):
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("SLAMS/slams/"+runid):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid):
         try:
-            os.makedirs("SLAMS/slams/"+runid)
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid)
         except OSError:
             pass
 
@@ -781,8 +781,8 @@ def track_slams(runid,start,stop,threshold=0.5):
     for jetobj in jetobj_list:
 
         # Write jet object cellids and times to files
-        jetfile = open("SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".slams","w")
-        timefile = open("SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+        jetfile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".slams","w")
+        timefile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
 
         jetfile.write(jetobj.return_cellid_string())
         timefile.write(jetobj.return_time_string())
@@ -795,7 +795,7 @@ def track_slams(runid,start,stop,threshold=0.5):
 def timefile_read(runid,filenr,key):
     # Read array of times from file
 
-    tf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".times","r")
+    tf = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".times","r")
     contents = tf.read().split("\n")
     tf.close()
 
@@ -806,7 +806,7 @@ def jetfile_read(runid,filenr,key):
 
     outputlist = []
 
-    jf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".slams","r")
+    jf = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".slams","r")
     contents = jf.read()
     lines = contents.split("\n")
 
@@ -819,23 +819,23 @@ def jetfile_read(runid,filenr,key):
 def propfile_write(runid,filenr,key,props):
     # Write jet properties to file
 
-    open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
-    pf = open("SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","a")
+    open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
+    pf = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props","a")
     pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
-    print("Wrote to SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props")
+    print("Wrote to /wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+str(filenr)+"."+key+".props")
 
 def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
 
-    if not os.path.exists("SLAMS/contours/"+runid):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/contours/"+runid):
         try:
-            os.makedirs("SLAMS/contours/"+runid)
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/contours/"+runid)
         except OSError:
             pass
 
     # Find names of property files
-    filenames = os.listdir("SLAMS/slams/"+runid)
+    filenames = os.listdir("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid)
     prop_fns = []
     for filename in filenames:
         if ".props" in filename:
@@ -899,19 +899,19 @@ def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
             pass_vars = ["rho","v","CellID"]
 
         try:
-            fullmask = np.loadtxt("SLAMS/masks/"+runid+"/"+str(itr2)+".mask").astype(int)
+            fullmask = np.loadtxt("/wrk/sunijona/DONOTREMOVE/working/SLAMS/masks/"+runid+"/"+str(itr2)+".mask").astype(int)
         except IOError:
             fullmask = np.array([])
 
         try:
-            fileobj = open("SLAMS/events/"+runid+"/"+str(itr2)+".events","r")
+            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/events/"+runid+"/"+str(itr2)+".events","r")
             contents = fileobj.read()
             cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
             cells = []
 
         # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="SLAMS/contours/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,var="Pdyn",pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="/wrk/sunijona/DONOTREMOVE/working/SLAMS/contours/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,var="Pdyn",pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
 
     return None
 
@@ -939,7 +939,7 @@ def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
 def calc_slams_properties(runid,start,jetid,tp_files=False):
     # Calculates SLAMS properties and writes them to a props file
 
-    if str(start)+"."+jetid+".slams" not in os.listdir("SLAMS/slams/"+runid):
+    if str(start)+"."+jetid+".slams" not in os.listdir("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid):
         print("SLAMS with ID "+jetid+" does not exist, exiting.")
         return 1
 
@@ -1141,7 +1141,7 @@ def slams_2d_hist(runids,var1,var2,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1231,15 +1231,15 @@ def slams_2d_hist(runids,var1,var2,time_thresh=10):
     plt.tight_layout()
 
     # Create output directory
-    if not os.path.exists("SLAMS/figures/histograms/"+"_".join(runids)+"/"):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"):
         try:
-            os.makedirs("SLAMS/figures/histograms/"+"_".join(runids)+"/")
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
     # Save figure
-    fig.savefig("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
-    print("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+    fig.savefig("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
+    print("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"+var1+"_"+var2+"_"+str(time_thresh)+"_2d.png")
 
     plt.close(fig)
 
@@ -1250,7 +1250,7 @@ def slams_vs_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1364,15 +1364,15 @@ def slams_vs_hist(runids,var,time_thresh=10):
     plt.tight_layout()
 
     # Create output directory
-    if not os.path.exists("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"):
         try:
-            os.makedirs("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/")
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_vs_".join(runids)+"/")
         except OSError:
             pass
 
     # Save figure
-    fig.savefig("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
-    print("SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    fig.savefig("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_vs_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
 
     plt.close(fig)
 
@@ -1384,7 +1384,7 @@ def slams_all_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("SLAMS/slams/"+runid))
+        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1492,15 +1492,15 @@ def slams_all_hist(runids,var,time_thresh=10):
     plt.tight_layout()
 
     # Create output directory
-    if not os.path.exists("SLAMS/figures/histograms/"+"_".join(runids)+"/"):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"):
         try:
-            os.makedirs("SLAMS/figures/histograms/"+"_".join(runids)+"/")
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/")
         except OSError:
             pass
 
     # Save figure
-    fig.savefig("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
-    print("SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    fig.savefig("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
+    print("/wrk/sunijona/DONOTREMOVE/working/SLAMS/figures/histograms/"+"_".join(runids)+"/"+var+"_"+str(time_thresh)+".png")
 
     plt.close(fig)
 
@@ -1526,7 +1526,7 @@ class PropReader:
             self.fname = fname
 
         try:
-            props_f = open("SLAMS/slams/"+runid+"/"+self.fname)
+            props_f = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams/"+runid+"/"+self.fname)
         except IOError:
             raise IOError("File not found!")
 

@@ -21,11 +21,11 @@ class PropReader:
 
         # Check for transient type
         if transient == "jet":
-            inputdir = "jets"
+            inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
         elif transient == "slamsjet":
-            inputdir = "SLAMSJETS/slamsjets"
+            inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
         elif transient == "slams":
-            inputdir = "SLAMS/slams"
+            inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams"
 
         self.ID = ID # Should be a string of 5 digits
         self.runid = runid # Should be a string of 3 letters
@@ -44,9 +44,14 @@ class PropReader:
 
         # Try opening file
         try:
-            self.props = pd.read_csv(inputdir+"/"+runid+"/"+self.fname).as_matrix()
+            props_f = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+self.fname)
         except IOError:
             raise IOError("File not found!")
+
+        props = props_f.read()
+        props = props.split("\n")[1:]
+        props = [line.split(",") for line in props]
+        self.props = np.asarray(props,dtype="float")
 
         # Initialise list of variable names and associated dictionary
         var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max"]
@@ -170,7 +175,9 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets = ja.sort_jets(vlsvobj,msk,2,4500,nbrs)
+        jets,props = sort_jets_new(vlsvobj,msk,2,4500,nbrs)
+
+        eventprop_write(runid,file_nr,props)
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -192,9 +199,9 @@ def timefile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = "jets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
     elif transient == "slamsjet":
-        inputdir = "SLAMSJETS/slamsjets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
 
     tf = open("{}/{}/{}.{}.times".format(inputdir,runid,str(filenr),key),"r")
     contents = tf.read().split("\n")
@@ -207,10 +214,10 @@ def jetfile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = "jets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
         extension = "jet"
     elif transient == "slamsjet":
-        inputdir = "SLAMSJETS/slamsjets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
     outputlist = []
@@ -229,9 +236,9 @@ def eventfile_read(runid,filenr,transient="jet"):
     # Read array of arrays of cellids from file
 
     if transient == "jet":
-        inputdir = "events"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/events"
     elif transient == "slams":
-        inputdir = "SLAMS/events"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMS/events"
 
     outputlist = []
 
@@ -247,13 +254,41 @@ def eventfile_read(runid,filenr,transient="jet"):
 
     return outputlist
 
+def eventprop_write(runid,filenr,props):
+
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/event_props/{}".format(runid)):
+        try:
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/event_props/{}".format(runid))
+        except OSError:
+            pass
+
+    open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
+    epf = open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
+
+    epf.write("x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
+
+    epf.write("\n".join([",".join(map(str,line)) for line in props]))
+    epf.close()
+    print("Wrote to "+"./wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
+
+def eventprop_read(runid,filenr):
+
+    try:
+            props_f = open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
+    except IOError:
+        raise IOError("File not found!")
+
+    props = props_f.read()
+    props = props.split("\n")[1:]
+    props = [map(float,line.split(",")) for line in props]
+
 def propfile_write(runid,filenr,key,props,transient="jet"):
     # Write jet properties to file
 
     if transient == "jet":
         outputdir = "jets"
     elif transient == "slamsjet":
-        outputdir = "SLAMSJETS/slamsjets"
+        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
 
     open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
@@ -279,234 +314,6 @@ def figmake_script(runid,start,ids,tp_files=False):
     for ID in ids:
         jio_figmake(runid,start,ID,figname=ID,tp_files=tp_files)
 
-def plotmake_script_BFD(start,stop,runid="BFD",vmax=1.5,boxre=[4,20,-10,4]):
-    # DEPRECATED and NON-FUNCTIONAL, use jet_plotter in jet_scripts instead
-    raise NotImplementedError("DEPRECATED")
-
-    if not os.path.exists("Contours/jetfigs/"+runid):
-        try:
-            os.makedirs("Contours/jetfigs/"+runid)
-        except OSError:
-            pass
-
-    # Find names of property files
-    filenames = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
-    prop_fns = []
-    for filename in filenames:
-        if ".props" in filename:
-            prop_fns.append(filename)
-    prop_fns.sort()
-
-    xmean_dict = dict()
-    ymean_dict = dict()
-    xmax_dict = dict()
-    ymax_dict = dict()
-
-    for fname in prop_fns:
-        jet_id = fname[4:-6]
-        props = PropReader(ID=jet_id,runid=runid)
-        time = props.read("time")
-        x_mean = props.read("x_mean")
-        y_mean = props.read("y_mean")
-        z_mean = props.read("z_mean")
-        x_vmax = props.read("x_vmax")
-        y_vmax = props.read("y_vmax")
-        z_vmax = props.read("z_vmax")
-        if runid in ["BFD"]:
-            y_mean = z_mean
-            y_vmax = z_vmax
-        for itr in xrange(time.size):
-            if time[itr] not in xmean_dict:
-                xmean_dict[time[itr]] = [x_mean[itr]]
-                ymean_dict[time[itr]] = [y_mean[itr]]
-                xmax_dict[time[itr]] = [x_vmax[itr]]
-                ymax_dict[time[itr]] = [y_vmax[itr]]
-            else:
-                xmean_dict[time[itr]].append(x_mean[itr])
-                ymean_dict[time[itr]].append(y_mean[itr])
-                xmax_dict[time[itr]].append(x_vmax[itr])
-                ymax_dict[time[itr]].append(y_vmax[itr])
-
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
-    elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
-    else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
-
-    for itr2 in xrange(start,stop+1):
-
-        t = float(itr2)/2
-
-        bulkname = "bulk."+str(itr2).zfill(7)+".vlsv"
-
-        if bulkname not in os.listdir(bulkpath):
-            print("Bulk file "+str(itr2)+" not found, continuing")
-            continue
-
-        if runid == "BFD" and itr2 == 961:
-            print("Broken file!")
-            continue
-
-        if runid in ["BFD"]:
-            pass_vars = ["proton/rho","proton/V","CellID"]
-        else:
-            pass_vars = ["rho","v","CellID"]
-
-        try:
-            fullmask = np.loadtxt("Masks/"+runid+"/"+str(itr2)+".mask").astype(int)
-        except IOError:
-            fullmask = np.array([])
-
-        try:
-            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/"+runid+"/"+str(itr2)+".events","r")
-            contents = fileobj.read()
-            cells = map(int,contents.replace("\n",",").split(",")[:-1])
-        except IOError:
-            cells = []
-
-        # Create plot
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir="Contours/jetfigs/"+runid+"/",step=itr2,run=runid,usesci=0,lin=1,boxre=boxre,vmin=0,vmax=vmax,colormap="parula",cbtitle="",external=pms_ext,expression=pc.expr_pdyn,pass_vars=pass_vars,ext_pars=[xmean_dict[t],ymean_dict[t],cells,fullmask,xmax_dict[t],ymax_dict[t]])
-
-    return None
-
-def pms_ext(ax,XmeshXY,YmeshXY,extmaps,ext_pars):
-
-    rho,v,cellids = extmaps["rho"],extmaps["v"],extmaps["CellID"]
-
-    x_list,y_list,cells,fullmask,xmax_list,ymax_list = ext_pars
-
-    # Create mask
-    msk = np.in1d(cellids,cells).astype(int)
-    msk = np.reshape(msk,rho.shape)
-
-    fullmsk = np.in1d(cellids,fullmask).astype(int)
-    fullmsk = np.reshape(fullmsk,rho.shape)
-
-    # Draw contours
-    fullcont = ax.contour(XmeshXY,YmeshXY,fullmsk,[0.5],linewidths=1.0,colors="magenta")
-    cont = ax.contour(XmeshXY,YmeshXY,msk,[0.5],linewidths=1.0,colors="black")
-
-    # Plot jet positions
-    ax.plot(x_list,y_list,"o",color="red",markersize=4)
-    ax.plot(xmax_list,ymax_list,"o",color="white",markersize=4)
-
-def jetsize_fig(runid,start,jetid,figsize=(15,10),figname="sizefig",props_arr=None):
-    # DEPRECATED, use jet_time_series in jet_scripts instead
-    # script for creating time series of jet linear sizes and area
-    raise NotImplementedError("DEPRECATED")
-
-    # Decide whether to read properties from file or input variable
-    if props_arr == None:
-        linsizes = pd.read_csv("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+str(start)+"."+jetid+".props").as_matrix()
-    else:
-        linsizes = props_arr
-
-    # Create variable value arrays
-    time_arr = linsizes[:,0]
-    area_arr = linsizes[:,4]
-    rad_size_arr = linsizes[:,9]
-    tan_size_arr = linsizes[:,10]
-    x_arr = linsizes[:,1]
-    y_arr = linsizes[:,2]
-    z_arr = linsizes[:,3]
-
-    if runid == "BFD":
-        y_arr = z_arr
-
-    # Minimum and maximum values
-    minmax_list = [min(time_arr),max(time_arr),min(area_arr),max(area_arr),min(rad_size_arr),max(rad_size_arr),min(tan_size_arr),max(tan_size_arr),min(x_arr),max(x_arr),min(y_arr),max(y_arr)]
-
-    for n in xrange(0,len(minmax_list),2):
-        if np.abs((minmax_list[n]-minmax_list[n+1])/float(minmax_list[n])) < 1.0e-5:
-            minmax_list[n+1] += 1
-            minmax_list[n] -= 1
-
-    tmin,tmax,Amin,Amax,rsmin,rsmax,psmin,psmax,xmin,xmax,ymin,ymax = minmax_list
-
-    # Create figure
-    plt.ioff()
-    fig = plt.figure(figsize=figsize)
-
-    # Add subplots
-    area_ax = fig.add_subplot(321)
-    rad_size_ax = fig.add_subplot(323)
-    tan_size_ax = fig.add_subplot(325)
-    x_ax = fig.add_subplot(322)
-    y_ax = fig.add_subplot(324)
-
-    # Draw grids
-    area_ax.grid()
-    rad_size_ax.grid()
-    tan_size_ax.grid()
-    x_ax.grid()
-    y_ax.grid()
-
-    # Set x-limits
-    area_ax.set_xlim(tmin,tmax)
-    rad_size_ax.set_xlim(tmin,tmax)
-    tan_size_ax.set_xlim(tmin,tmax)
-    x_ax.set_xlim(tmin,tmax)
-    y_ax.set_xlim(tmin,tmax)
-
-    # Set y-limits
-    area_ax.set_ylim(Amin,Amax)
-    rad_size_ax.set_ylim(rsmin,rsmax)
-    tan_size_ax.set_ylim(psmin,psmax)
-    x_ax.set_ylim(xmin,xmax)
-    y_ax.set_ylim(ymin,ymax)
-
-    # Set x-ticklabels
-    area_ax.set_xticklabels([])
-    rad_size_ax.set_xticklabels([])
-    x_ax.set_xticklabels([])
-    y_ax.set_xticklabels([])
-
-    # Set y-labels
-    area_ax.set_ylabel("Area [R$_{e}^{2}$]",fontsize=20)
-    rad_size_ax.set_ylabel("Radial size [R$_{e}$]",fontsize=20)
-    tan_size_ax.set_ylabel("Tangential size [R$_{e}$]",fontsize=20)
-    tan_size_ax.set_xlabel("Time [s]",fontsize=20)
-    x_ax.set_ylabel("X [R$_{e}$]",fontsize=20)
-    y_ax.set_ylabel("Y [R$_{e}$]",fontsize=20)
-    y_ax.set_xlabel("Time [s]",fontsize=20)
-
-    if runid == "BFD":
-        y_ax.set_ylabel("Z [R$_{e}$]",fontsize=20)
-
-    # Set tick label sizes
-    area_ax.tick_params(labelsize=16)
-    rad_size_ax.tick_params(labelsize=16)
-    tan_size_ax.tick_params(labelsize=16)
-    x_ax.tick_params(labelsize=16)
-    y_ax.tick_params(labelsize=16)
-
-    # Plot variables
-    area_ax.plot(time_arr,area_arr,color="black",linewidth=2)
-    rad_size_ax.plot(time_arr,rad_size_arr,color="black",linewidth=2)
-    tan_size_ax.plot(time_arr,tan_size_arr,color="black",linewidth=2)
-    x_ax.plot(time_arr,x_arr,color="black",linewidth=2)
-    y_ax.plot(time_arr,y_arr,color="black",linewidth=2)
-
-    plt.tight_layout()
-
-    fig.show()
-
-    # Create outputdir if it doesn't already exist
-    if not os.path.exists("jet_sizes/"+runid):
-        try:
-            os.makedirs("jet_sizes/"+runid)
-        except OSError:
-            pass
-
-    # Save figure
-    plt.savefig("jet_sizes/"+runid+"/"+figname+".png")
-    print("jet_sizes/"+runid+"/"+figname+".png")
-
-    plt.close(fig)
-
-    return None
-
 def tpar_reader(runid,filenumber,cellids,cells):
     # Read parallel temperatures of specific cells
 
@@ -523,6 +330,181 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
     return TPerp
 
+def calc_event_props(vlsvobj,cells):
+
+    # read variables
+    if vlsvobj.check_variable("X"):
+        X = np.array(vlsvobj.read_variable("X",cellids=cells),ndmin=1)
+        Y = np.array(vlsvobj.read_variable("Y",cellids=cells),ndmin=1)
+        Z = np.array(vlsvobj.read_variable("Z",cellids=cells),ndmin=1)
+        dA = vlsvobj.read_variable("DX")[0]*vlsvobj.read_variable("DY")[0]
+    else:
+        X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids=cells)
+        X = np.array(X,ndmin=1)
+        Y = np.array(Y,ndmin=1)
+        Z = np.array(Z,ndmin=1)
+        dA = ja.get_cell_volume(vlsvobj)
+
+    var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
+    var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
+
+    try:
+        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list_alt]
+    except:
+        rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
+
+    pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+
+    # Scale variables
+    rho /= 1.0e+6
+    v /= 1.0e+3
+    B /= 1.0e-9
+    pdyn /= 1.0e-9
+    T /= 1.0e+6
+    TParallel /= 1.0e+6
+    TPerpendicular /= 1.0e+6
+
+    # Calculate magnitudes of v and B
+    vmag = np.linalg.norm(v,axis=-1)
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    if type(vmag) == float:
+        vmag = np.array(vmag)
+    if type(Bmag) == float:
+        Bmag = np.array(Bmag)
+
+    n_avg,n_med,n_max = mean_med_max(rho)
+
+    v_avg,v_med,v_max = mean_med_max(vmag)
+
+    B_avg,B_med,B_max = mean_med_max(Bmag)
+
+    pd_avg,pd_med,pd_max = mean_med_max(pdyn)
+
+    T_avg,T_med,T_max = mean_med_max(T)
+
+    TPar_avg,TPar_med,TPar_max = mean_med_max(TParallel)
+
+    TPerp_avg,TPerp_med,TPerp_max = mean_med_max(TPerpendicular)
+
+    beta_avg,beta_med,beta_max = mean_med_max(beta)
+
+    # Convert X,Y,Z to spherical coordinates
+    r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
+    theta = np.rad2deg(np.arccos(Z/r))
+    phi = np.rad2deg(np.arctan(Y/X))
+
+    # calculate geometric center of jet
+    r_mean = np.mean(r)/r_e
+    theta_mean = np.mean(theta)
+    phi_mean = np.mean(phi)
+
+    # Geometric center of jet in cartesian coordinates
+    x_mean = np.nanmean(X)/r_e
+    y_mean = np.nanmean(Y)/r_e
+    z_mean = np.nanmean(Z)/r_e
+
+    # Position of maximum velocity in cartesian coordinates
+    x_max = X[vmag==max(vmag)][0]/r_e
+    y_max = Y[vmag==max(vmag)][0]/r_e
+    z_max = Z[vmag==max(vmag)][0]/r_e
+
+    # Minimum x and density at maximum velocity
+    x_min = min(X)/r_e
+    rho_vmax = rho[vmag==max(vmag)][0]
+    b_vmax = beta[vmag==max(vmag)][0]
+
+    # calculate jet size
+    A = dA*len(cells)/(r_e**2)
+    Nr_cells = len(cells)
+
+    # calculate linear sizes of jet
+    size_rad = (max(X)-min(X))/r_e
+    size_tan = A/size_rad
+
+    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max]
+
+    return temp_arr
+
+def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
+    # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
+
+    # initialise array of neighbors
+    neighbors = np.array([],dtype=int)
+
+    # range of offsets to take into account
+    x_r = xrange(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
+    y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
+    z_r = xrange(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
+
+    for n in c_i:
+
+        # append cellids of neighbors, cast as int, to array of neighbors
+        for a in x_r:
+            for b in y_r:
+                for c in z_r:
+                    neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,c],periodic=[0,0,0])))
+    # discard invalid cellids
+    neighbors = neighbors[neighbors != 0]
+
+    # discard duplicate cellids
+    neighbors = np.unique(neighbors)
+
+    return neighbors
+
+def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
+    # sort masked cells into events based on proximity in X,Y-space
+
+    # initialise list of events and current event
+    events = []
+    curr_event = np.array([],dtype=int)
+
+    for cell in cells:
+
+        # check if cell already in list of events
+        bl_a = False
+        for event in events:
+            if cell in event:
+                bl_a = True
+        if bl_a:
+            continue
+
+        # number of times to search for more neighbors
+        it_range = xrange(200)
+
+        # initialise current event
+        curr_event = np.array([cell])
+
+        for n in it_range:
+
+            curr_event_size = curr_event.size
+
+            # find neighbors within the confines of the mask
+            curr_event = np.unique(np.append(curr_event,np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))))
+
+            # exit loop if all valid neighbors found
+            if curr_event_size == curr_event.size:
+                break
+
+        # cast cellids of current event to int and append to list of events
+        curr_event = curr_event.astype(int)
+        events.append(curr_event)
+
+    # remove events smaller than the minimum size and larger than maximum size
+    events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
+
+    props = [calc_event_props(vlsvobj,event) for event in events_culled]
+
+    return [events_culled,props]
+
+def mean_med_max(var):
+
+    var_mean = np.nanmean(var)
+    var_med = np.median(var)
+    var_max = np.max(var)
+
+    return [var_mean,var_med,var_max]
+
 def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     # Check transient type
@@ -530,7 +512,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
         extension = "jet"
     elif transient == "slamsjet":
-        inputdir = "SLAMSJETS/slamsjets"
+        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
     # Check if transient with specified ID exists 
@@ -948,7 +930,7 @@ def slams_eventfile_read(runid,filenr):
 
     outputlist = []
 
-    ef = open("/homeappl/home/sunijona/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    ef = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
     if contents == "":
         return []
@@ -980,9 +962,9 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+runid):
+    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+runid):
         try:
-            os.makedirs("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+runid)
+            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+runid)
         except OSError:
             pass
 
@@ -1242,8 +1224,8 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
     for slamsjet in slamsjet_list:
 
         # Write jet object cellids and times to files
-        slamsjetfile = open("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".slamsjet","w")
-        timefile = open("/homeappl/home/sunijona/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".times","w")
+        slamsjetfile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".slamsjet","w")
+        timefile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".times","w")
 
         slamsjetfile.write(slamsjet.return_cellid_string())
         timefile.write(slamsjet.return_time_string())

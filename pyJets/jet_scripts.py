@@ -740,7 +740,7 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
-        outputdir = "SLAMSJETS/time_series"
+        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/time_series"
     elif transient == "slams":
         outputdir = "SLAMS/time_series"
 
@@ -800,7 +800,7 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
-        outputdir = "SLAMSJETS/time_series"
+        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/time_series"
     elif transient == "slams":
         outputdir = "SLAMS/time_series"
 
