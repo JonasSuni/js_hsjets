@@ -119,6 +119,7 @@ class Jet:
         self.birthday = birthday # Should be a float of accuracy to half a second
         self.cellids = [] 
         self.times = [birthday]
+        self.props = []
 
         print("Created jet with ID "+self.ID)
 
@@ -131,6 +132,15 @@ class Jet:
         # Return string of times for printing to file
 
         return "\n".join(map(str,self.times))
+
+    def jetprops_write(self,start):
+
+        if self.times[-1]-self.times[0] >= 4.5:
+            propfile_write(self.runid,start,self.ID,self.props)
+        else:
+            print("Jet {} too short-lived, propfile not written!".format(self.ID))
+            
+        return None
 
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
 
@@ -175,7 +185,9 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets,props = sort_jets_new(vlsvobj,msk,2,4500,nbrs)
+        jets,props_inc = sort_jets_new(vlsvobj,msk,2,4500,nbrs)
+
+        props = [[float(file_nr)/2.0]+line for line in props_inc]
 
         eventprop_write(runid,file_nr,props)
 
@@ -265,7 +277,7 @@ def eventprop_write(runid,filenr,props):
     open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
     epf = open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
 
-    epf.write("x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
+    epf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
 
     epf.write("\n".join([",".join(map(str,line)) for line in props]))
     epf.close()
@@ -282,11 +294,13 @@ def eventprop_read(runid,filenr):
     props = props.split("\n")[1:]
     props = [map(float,line.split(",")) for line in props]
 
+    return props
+
 def propfile_write(runid,filenr,key,props,transient="jet"):
     # Write jet properties to file
 
     if transient == "jet":
-        outputdir = "jets"
+        outputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
     elif transient == "slamsjet":
         outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
 
@@ -755,7 +769,9 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
     # Read initial event files
     events_old = eventfile_read(runid,start)
-    events = eventfile_read(runid,start+1)
+    bs_props = eventprop_read(runid,start)
+    events_unsrt = eventfile_read(runid,start+1)
+    props_unsrt = eventprop_read(runid,start+1)
 
     # remove events that are not initially at the bow shock
     bs_events = []
@@ -775,7 +791,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     print("t = "+str(float(start+1)/2)+"s")
 
     # Look for jets at bow shock
-    for event in events:
+    for event in events_unsrt:
 
         for bs_event in bs_events:
 
@@ -790,6 +806,8 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
                 # Append current events to jet object properties
                 jetobj_list[-1].cellids.append(bs_event)
                 jetobj_list[-1].cellids.append(event)
+                jetobj_list[-1].props.append(bs_props[bs_events.index(bs_event)])
+                jetobj_list[-1].props.append(props_unsrt[events_unsrt.index(event)])
                 jetobj_list[-1].times.append(float(start+1)/2)
 
                 # Iterate counter
@@ -825,7 +843,8 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         # Filtered list of events that are at the bow shock at the current time
         bs_events = []
-        for old_event in events:
+        bs_props = props_unsrt
+        for old_event in events_unsrt:
             #if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
             #    bs_events.append(old_event)
             bs_events.append(old_event)
@@ -834,8 +853,9 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
         flags = []
 
         # Read event file for current time step
-        events = eventfile_read(runid,n)
-        events.sort(key=len)
+        events_unsrt = eventfile_read(runid,n)
+        props_unsrt = eventprop_read(runid,n)
+        events = sorted(events_unsrt,key=len)
         events = events[::-1]
 
         # Iniatilise list of cells currently being tracked
@@ -857,6 +877,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
                             # Create new jet
                             jetobj_new = Jet(curr_id,runid,float(n)/2)
                             jetobj_new.cellids.append(event)
+                            jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
                             jetobj_list.append(jetobj_new)
                             curr_jet_temp_list.append(event)
 
@@ -875,6 +896,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
                         # Append event to jet object properties
                         jetobj.cellids.append(event)
+                        jetobj.props.append(props_unsrt[events_unsrt.index(event)])
                         jetobj.times.append(float(n)/2)
                         print("Updated jet with ID "+jetobj.ID)
 
@@ -902,6 +924,8 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
                         # Append current events to jet object properties
                         jetobj_list[-1].cellids.append(bs_event)
                         jetobj_list[-1].cellids.append(event)
+                        jetobj_list[-1].props.append(bs_props[bs_events.index(bs_event)])
+                        jetobj_list[-1].props.append(props_unsrt[events_unsrt.index(event)])
                         jetobj_list[-1].times.append(float(n)/2)
 
                         # Iterate counter
@@ -919,6 +943,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         jetfile.write(jetobj.return_cellid_string())
         timefile.write(jetobj.return_time_string())
+        jetobj.jetprops_write(start)
 
         jetfile.close()
         timefile.close()

@@ -103,17 +103,24 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         xvmax_list = []
         yvmax_list = []
 
-        for itr in range(700):
+        # for itr in range(3000):
 
-            # Try reading properties
-            try:
-                props = jio.PropReader(str(itr).zfill(5),runid,580,transient="jet")
-                xmean_list.append(props.read_at_time("x_mean",float(n)/2))
-                ymean_list.append(props.read_at_time("y_mean",float(n)/2))
-                xvmax_list.append(props.read_at_time("x_vmax",float(n)/2))
-                yvmax_list.append(props.read_at_time("y_vmax",float(n)/2))
-            except IOError:
-                pass
+        #     # Try reading properties
+        #     try:
+        #         props = jio.PropReader(str(itr).zfill(5),runid,580,transient="jet")
+        #         xmean_list.append(props.read_at_time("x_mean",float(n)/2))
+        #         ymean_list.append(props.read_at_time("y_mean",float(n)/2))
+        #         xvmax_list.append(props.read_at_time("x_vmax",float(n)/2))
+        #         yvmax_list.append(props.read_at_time("y_vmax",float(n)/2))
+        #     except IOError:
+        #         pass
+
+        event_props = np.array(jio.eventprop_read(runid,n))
+        xmean_list = event_props[:,1]
+        ymean_list = event_props[:,2]
+        xvmax_list = event_props[:,11]
+        yvmax_list = event_props[:,12]
+
 
         # Try reading events file
         try:
@@ -158,11 +165,11 @@ def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
     full_mask = np.in1d(cellids,full_cells).astype(int)
     full_mask = np.reshape(full_mask,cellids.shape)
 
-    full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
+    #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
-    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4) # Mean positions
-    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=4) # v_max positions
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
+    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
 
 def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     # Plot slamjets contours and positions
