@@ -805,6 +805,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     #jet.mask[nrho < 3.5] = False
     #jet.mask[tapdyn > 2] = True
     jet = np.ma.masked_greater(tapdyn,2.0)
+    jet.mask[nrho < 2.0] = False
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
