@@ -716,6 +716,17 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("v")[np.argsort(origid)]
 
+    if vlsvreader.check_variable("X"):
+        X,Y,Z = [vlsvreader.read_variable("X"),vlsvreader.read_variable("Y"),vlsvreader.read_variable("Z")]
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvreader)
+
+    X,Y,Z = [X[np.argsort(origid)],Y[np.argsort(origid)],Z[np.argsort(origid)]]
+
+    p = [100,100,100] #PLACEHOLDER
+
+    bs_cond = X-p[0]*(Y**2)-p[1]*Y-p[2]
+
     # x-directional dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
 
@@ -789,7 +800,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         f.optimize_close_file()
 
     # calculate time average of dynamic pressure
-    tpdynavg /= len(timerange)-1-missing_file_counter
+    tpdynavg /= (len(timerange)-1-missing_file_counter)
 
     # prevent divide by zero errors
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
@@ -804,8 +815,9 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     #jet = np.ma.masked_greater(npdynx,0.25)
     #jet.mask[nrho < 3.5] = False
     #jet.mask[tapdyn > 2] = True
-    jet = np.ma.masked_greater(tapdyn,2.0)
-    jet.mask[nrho < 2.0] = False
+    jet = np.ma.masked_greater_equal(tapdyn,2.0)
+    #jet.mask[nrho < 2.0] = False
+    jet.mask[bs_cond > 0] = False
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
