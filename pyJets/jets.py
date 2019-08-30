@@ -2,7 +2,7 @@
 Imports all the modules in the pyJets folder
 '''
 
-from jet_analyser import get_neighbors,ci2vars,ci2vars_nofile,read_mult_vars,xyz_reconstruct,restrict_area,restrict_area_old,get_neighbors_old,bs_finder_new,bs_fitter_new
+from jet_analyser import get_neighbors,ci2vars,ci2vars_nofile,read_mult_vars,xyz_reconstruct,restrict_area,restrict_area_old,get_neighbors_old,bs_finder_new,bs_fitter_new,bow_shock_markus
 #from jet_contours import *
 from jetfile_make import pahkmake
 from jet_io import PropReader,jet_maker,calc_jet_properties,track_jets,track_slamsjets,calc_event_props

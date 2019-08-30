@@ -154,6 +154,21 @@ def rho_r_simple(runid,filenumber,start_p,len_line):
 
     return r_data[rho_der == np.min(rho_der)][0]
 
+def bow_shock_markus(runid,filenr):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    start_time = [580,580,580,580]
+    stop_time = [839,1179,1339,879]
+    poly_start = [np.array([1.18421784e+01,5.63644824e-02,-1.89766867e-02,-1.32058567e-05,-4.77323693e-05]),np.array([1.04110415e+01,3.32422851e-02,-3.37451899e-02,-1.98441704e-03,-1.70630123e-04]),np.array([1.20355620e+01,4.61446000e-02,-1.93338601e-02,7.60320584e-04,2.53691977e-05]),np.array([1.01305160e+01,1.25696460e-02,-3.92416704e-02,-3.34828851e-04,3.52869359e-05])]
+    poly_stop = [np.array([1.31328718e+01,2.34156918e-02,-4.52496795e-02,7.14611033e-04,4.41093590e-04]),np.array([1.16623972e+01,6.90177048e-03,-2.39601957e-02,-4.66990093e-04,-1.54057259e-04]),np.array([1.54588619e+01,6.45523782e-02,-1.60969129e-02,1.28774254e-04,-7.24487366e-05]),np.array([1.08577750e+01,6.67598389e-02,-3.11619040e-02,-7.65761773e-04,1.44480631e-05])]
+
+
+    runid_index = runids.index(runid)
+    interp_dist = (filenr-start_time[runid_index])/float(stop_time[runid_index] - start_time[runid_index])
+    bs_fit_array = (1.-interp_dist)*poly_start[runid_index] + interp_dist*poly_stop[runid_index]
+
+    return bs_fit_array
+
 def bow_shock_auto_r(runid,t):
 
     r0_dict = dict(zip(["ABA","ABC","AEA","AEC","BFD"],[12.0050199853,10.498081067,12.3991595248,10.2195045081,12.5685172417]))
@@ -721,11 +736,11 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     else:
         X,Y,Z = xyz_reconstruct(vlsvreader)
 
-    X,Y,Z = [X[np.argsort(origid)],Y[np.argsort(origid)],Z[np.argsort(origid)]]
+    X,Y,Z = [X[np.argsort(origid)]/r_e,Y[np.argsort(origid)]/r_e,Z[np.argsort(origid)]/r_e]
 
-    p = [100,100,100] #PLACEHOLDER
+    p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
 
-    bs_cond = X-p[0]*(Y**2)-p[1]*Y-p[2]
+    bs_cond = X-p[0]-p[1]*Y-p[2]*(Y**2)-p[3]*(Y**3)-p[4]*(Y**4)
 
     # x-directional dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)

@@ -1,7 +1,6 @@
 import numpy as np
 import pytools as pt
 import scipy
-import pandas as pd
 import jet_analyser as ja
 import os
 import jet_scripts as js

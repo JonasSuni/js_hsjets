@@ -86,7 +86,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     # Plot jet countours and positions
 
     #outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
-    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/debug/{}/".format(runid)
+    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
     
     # Initialise required global variables
     global jet_cells
@@ -151,7 +151,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             print("Bulk file {} not found, continuing".format(str(n)))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,fsaved=1,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["rho","v","CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["rho","v","CellID"])
 
 def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
     # External function for jet_plotter
