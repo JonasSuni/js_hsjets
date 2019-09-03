@@ -13,6 +13,8 @@ import random
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+
 class PropReader:
     # Class for reading jet property files
 
@@ -20,11 +22,11 @@ class PropReader:
 
         # Check for transient type
         if transient == "jet":
-            inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
+            inputdir = wrkdir_DNR+"working/jets"
         elif transient == "slamsjet":
-            inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
+            inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         elif transient == "slams":
-            inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMS/slams"
+            inputdir = wrkdir_DNR+"working/SLAMS/slams"
 
         self.ID = ID # Should be a string of 5 digits
         self.runid = runid # Should be a string of 3 letters
@@ -43,7 +45,7 @@ class PropReader:
 
         # Try opening file
         try:
-            props_f = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+self.fname)
+            props_f = open(wrkdir_DNR+"working/jets/"+runid+"/"+self.fname)
         except IOError:
             raise IOError("File not found!")
 
@@ -143,7 +145,7 @@ class Jet:
 
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
 
-    outputdir = "/wrk/sunijona/DONOTREMOVE/working/events/"+runid+"/"
+    outputdir = wrkdir_DNR+"working/events/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -210,9 +212,9 @@ def timefile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
+        inputdir = wrkdir_DNR+"working/jets"
     elif transient == "slamsjet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
+        inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
 
     tf = open("{}/{}/{}.{}.times".format(inputdir,runid,str(filenr),key),"r")
     contents = tf.read().split("\n")
@@ -225,10 +227,10 @@ def jetfile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
+        inputdir = wrkdir_DNR+"working/jets"
         extension = "jet"
     elif transient == "slamsjet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
+        inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
     outputlist = []
@@ -247,9 +249,9 @@ def eventfile_read(runid,filenr,transient="jet"):
     # Read array of arrays of cellids from file
 
     if transient == "jet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/events"
+        inputdir = wrkdir_DNR+"working/events"
     elif transient == "slams":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMS/events"
+        inputdir = wrkdir_DNR+"working/SLAMS/events"
 
     outputlist = []
 
@@ -267,14 +269,14 @@ def eventfile_read(runid,filenr,transient="jet"):
 
 def eventprop_write(runid,filenr,props):
 
-    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/event_props/{}".format(runid)):
+    if not os.path.exists(wrkdir_DNR+"working/event_props/{}".format(runid)):
         try:
-            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/event_props/{}".format(runid))
+            os.makedirs(wrkdir_DNR+"working/event_props/{}".format(runid))
         except OSError:
             pass
 
-    open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
-    epf = open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
+    open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
+    epf = open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
 
     epf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa]"+"\n")
 
@@ -285,7 +287,7 @@ def eventprop_write(runid,filenr,props):
 def eventprop_read(runid,filenr):
 
     try:
-            props_f = open("/wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
+            props_f = open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
     except IOError:
         raise IOError("File not found!")
 
@@ -299,9 +301,9 @@ def propfile_write(runid,filenr,key,props,transient="jet"):
     # Write jet properties to file
 
     if transient == "jet":
-        outputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
+        outputdir = wrkdir_DNR+"working/jets"
     elif transient == "slamsjet":
-        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
 
     open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
@@ -330,7 +332,7 @@ def figmake_script(runid,start,ids,tp_files=False):
 def tpar_reader(runid,filenumber,cellids,cells):
     # Read parallel temperatures of specific cells
 
-    TPar = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tpar")
+    TPar = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tpar")
     TPar = TPar[np.in1d(cellids,cells)]
 
     return TPar
@@ -338,7 +340,7 @@ def tpar_reader(runid,filenumber,cellids,cells):
 def tperp_reader(runid,filenumber,cellids,cells):
     # Read perpendicular temperatures of specific cells
 
-    TPerp = np.loadtxt("/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"+str(filenumber)+".tperp")
+    TPerp = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tperp")
     TPerp = TPerp[np.in1d(cellids,cells)]
 
     return TPerp
@@ -522,10 +524,10 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     # Check transient type
     if transient == "jet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/jets"
+        inputdir = wrkdir_DNR+"working/jets"
         extension = "jet"
     elif transient == "slamsjet":
-        inputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets"
+        inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
     # Check if transient with specified ID exists 
@@ -746,9 +748,9 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid):
+    if not os.path.exists(wrkdir_DNR+"working/jets/"+runid):
         try:
-            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
+            os.makedirs(wrkdir_DNR+"working/jets/"+runid)
         except OSError:
             pass
 
@@ -937,8 +939,8 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     for jetobj in jetobj_list:
 
         # Write jet object cellids and times to files
-        jetfile = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".jet","w")
-        timefile = open("/wrk/sunijona/DONOTREMOVE/working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
+        jetfile = open(wrkdir_DNR+"working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".jet","w")
+        timefile = open(wrkdir_DNR+"working/jets/"+jetobj.runid+"/"+str(start)+"."+jetobj.ID+".times","w")
 
         jetfile.write(jetobj.return_cellid_string())
         timefile.write(jetobj.return_time_string())
@@ -954,7 +956,7 @@ def slams_eventfile_read(runid,filenr):
 
     outputlist = []
 
-    ef = open("/wrk/sunijona/DONOTREMOVE/working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    ef = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
     if contents == "":
         return []
@@ -986,9 +988,9 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
         return 1
 
     # Create outputdir if it doesn't already exist
-    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+runid):
+    if not os.path.exists(wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid):
         try:
-            os.makedirs("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+runid)
+            os.makedirs(wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid)
         except OSError:
             pass
 
@@ -1248,8 +1250,8 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
     for slamsjet in slamsjet_list:
 
         # Write jet object cellids and times to files
-        slamsjetfile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".slamsjet","w")
-        timefile = open("/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".times","w")
+        slamsjetfile = open(wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".slamsjet","w")
+        timefile = open(wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+slamsjet.runid+"/"+str(start)+"."+slamsjet.ID+".times","w")
 
         slamsjetfile.write(slamsjet.return_cellid_string())
         timefile.write(slamsjet.return_time_string())

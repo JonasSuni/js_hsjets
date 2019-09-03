@@ -10,6 +10,8 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+
 def bs_fitter_new(runid,start,stop,step,angle_offset=0):
 
     filenr_arr = np.array(range(start,stop+1,step))
@@ -669,7 +671,7 @@ def make_cust_mask(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
     if avgfile:
-        tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.loadtxt(wrkdir_DNR+"tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
 
     # ratio of dynamic pressure to its time average
     tapdyn = pdyn/tpdynavg
@@ -682,18 +684,18 @@ def make_cust_mask(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"):
-        os.makedirs("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/")
+    if not os.path.exists(wrkdir_DNR+"working/Masks/"+runid+"/"):
+        os.makedirs(wrkdir_DNR+"working/Masks/"+runid+"/")
 
-    print("Writing to "+"/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask")
+    print("Writing to "+wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask")
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt(wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt(wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
 
 def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False):
@@ -821,7 +823,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
     if avgfile:
-        tpdynavg = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.loadtxt(wrkdir_DNR+"tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
 
     # ratio of dynamic pressure to its time average
     tapdyn = pdyn/tpdynavg
@@ -837,16 +839,16 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    if not os.path.exists("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"):
-        os.makedirs("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/")
+    if not os.path.exists(wrkdir_DNR+"working/Masks/"+runid+"/"):
+        os.makedirs(wrkdir_DNR+"working/Masks/"+runid+"/")
 
-    print("Writing to "+"/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask")
+    print("Writing to "+wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask")
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt(wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("/wrk/sunijona/DONOTREMOVE/working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
+        np.savetxt(wrkdir_DNR+"working/Masks/"+runid+"/"+str(filenumber)+".mask",masked_ci)
         return masked_ci

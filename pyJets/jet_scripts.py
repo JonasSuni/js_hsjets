@@ -23,6 +23,9 @@ rc('mathtext', default='regular')
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+
+
 ###TEMPORARY SCRIPTS HERE###
 
 def bs_plotter(runid,file_nr,thresh,rho_par):
@@ -85,8 +88,8 @@ def ext_bsp(ax,XmeshXY,YmeshXY,pass_maps):
 def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     # Plot jet countours and positions
 
-    #outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
-    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/JETS/{}/".format(runid)
+    #outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
+    outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
     
     # Initialise required global variables
     global jet_cells
@@ -125,7 +128,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/{}/{}.events".format(runid,n),"r")
+            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
@@ -133,7 +136,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading mask file
         try:
-            full_cells = np.loadtxt("/wrk/sunijona/DONOTREMOVE/working/Masks/{}/{}.mask".format(runid,n)).astype(int)
+            full_cells = np.loadtxt(wrkdir_DNR+"working/Masks/{}/{}.mask".format(runid,n)).astype(int)
         except IOError:
             full_cells = []
 
@@ -175,7 +178,7 @@ def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
 def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     # Plot slamjets contours and positions
 
-    outputdir = "/wrk/sunijona/DONOTREMOVE/contours/SLAMSJETS/{}/".format(runid)
+    outputdir = wrkdir_DNR+"contours/SLAMSJETS/{}/".format(runid)
     
     # Initialise required global variables
     global jet_cells
@@ -201,7 +204,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open("/wrk/sunijona/DONOTREMOVE/working/events/{}/{}.events".format(runid,n),"r")
+            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
@@ -282,8 +285,8 @@ def ext_crit(ax,XmeshXY,YmeshXY,extmaps):
     fullcells = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv").read_variable("CellID")
     fullcells.sort()
 
-    trho = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/ABA/611_rho.tavg")[np.in1d(fullcells,cellids)]
-    tpdyn = np.loadtxt("/wrk/sunijona/DONOTREMOVE/tavg/ABA/611_pdyn.tavg")[np.in1d(fullcells,cellids)]
+    trho = np.loadtxt(wrkdir_DNR+"tavg/ABA/611_rho.tavg")[np.in1d(fullcells,cellids)]
+    tpdyn = np.loadtxt(wrkdir_DNR+"tavg/ABA/611_pdyn.tavg")[np.in1d(fullcells,cellids)]
 
     rho_sw = 1000000
     v_sw = 750000
@@ -431,7 +434,7 @@ class MMSReader:
 
         f = open(filepath,"r+")
         contents = f.read()
-        contents_list = contents.split("\r\n")[:-1]
+        contents_list = contents.split("\r\n")[1:-1]
         contents_matrix = [line.split(",") for line in contents_list]
 
         self.data_arr = np.asarray(contents_matrix,dtype="float")
@@ -451,13 +454,13 @@ class MMSReader:
         11 Max |V| (SW)
         '''
 
-        var_list = ["B_avg","beta_avg","extent","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max"]
+        var_list = ["B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW"]
 
         n_list = range(len(var_list))
 
         self.var_dict = dict(zip(var_list,n_list))
 
-        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$"]
+        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$","$\\Delta T~[K]$","$\\Delta T~[T_{sw}]$"]
 
         self.label_dict = dict(zip(var_list,label_list))
 
@@ -581,7 +584,7 @@ def jet_pos_graph(runid):
     # Draws the location of all jets in specified run on an r-phi plane and a histogram of jet r-values
     # For easy identification of magnetopause false positive jets
 
-    filenames = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
+    filenames = os.listdir(wrkdir_DNR+"working/jets/"+runid)
 
     propfiles = [filename for filename in filenames if ".props" in filename]
 
@@ -590,7 +593,7 @@ def jet_pos_graph(runid):
     size_list = []
 
     for fname in propfiles:
-        props = pd.read_csv("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid+"/"+fname).as_matrix()
+        props = pd.read_csv(wrkdir_DNR+"working/jets/"+runid+"/"+fname).as_matrix()
         r = props[:,6]
         phi = props[r==max(r)][0][8]
         r_list.append(max(r))
@@ -643,7 +646,7 @@ def jet_paper_counter():
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -680,7 +683,7 @@ def jet_paper_pos():
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -748,7 +751,7 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
-        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/time_series"
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/time_series"
     elif transient == "slams":
         outputdir = "SLAMS/time_series"
 
@@ -808,7 +811,7 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
     if transient == "jet":
         outputdir = "jet_sizes"
     elif transient == "slamsjet":
-        outputdir = "/wrk/sunijona/DONOTREMOVE/working/SLAMSJETS/time_series"
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/time_series"
     elif transient == "slams":
         outputdir = "SLAMS/time_series"
 
@@ -968,7 +971,7 @@ def jet_lifetime_plots(var,amax=True):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1058,7 +1061,7 @@ def jet_2d_hist(runids,var1,var2,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1262,7 +1265,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1384,7 +1387,7 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1494,6 +1497,44 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
     return None
 
+### HACKATHON 2019 SCRIPTS HERE ###
+
+def hack_2019_fig4(time_thresh):
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    cutoff_dict = dict(zip(runids_list,cutoff_list))
+    mms_norm = [1,1,1,1,1,1.0/500e+3,1.0/500e+3]
+    vlas_norm = []
+
+    var_list = ["size_rad","n_avg","v_avg","pdyn_avg","B_avg","TPerp_avg","TPar_avg"]
+    vlhigh_list = [[]]*len(var_list)
+    vlrand_list = [[]]*len(var_list)
+    mms_list = [[]]*len(var_list)
+
+    mms_reader = MMSReader(wrkdir_DNR+"working/Newer_Data/StableJets.txt")
+
+    for var in var_list:
+        mms_list[var_list.index(var)] = (mms_reader.read(var)/mms_norm[var_list.index(var)]).tolist()
+
+
+    for n in range(1,2500):
+        for runid in runids_list:
+                try:
+                    props = jio.PropReader(str(n).zfill(5),runid,580)
+                except:
+                    continue
+
+                if props.read("duration") < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                    continue
+
+                for var in var_list:
+                    vlhigh_list[var_list.index(var)].append(props.read_at_amax(var)/ja.sw_normalisation(var))
+                    vlrand_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(var))
+
+
+
+
 ###PLOT MAKER HERE###
 
 
@@ -1566,7 +1607,7 @@ def find_missing_bulk(inputfolder):
 
 def find_missing_jetsizes(runid):
 
-    jetfile_names = os.listdir("/wrk/sunijona/DONOTREMOVE/working/jets/"+runid)
+    jetfile_names = os.listdir(wrkdir_DNR+"working/jets/"+runid)
 
     propfile_list = [int(s[4:-6]) for s in jetfile_names if ".props" in s]
 

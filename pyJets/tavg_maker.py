@@ -6,11 +6,13 @@ import os
 
 m_p = 1.672621898e-27
 
+wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+
 def avg_maker_slow(runid,start,stop):
 
     # Creates files for 3-minute time averages of dynamic pressure and density
 
-    outputdir = "/wrk/sunijona/DONOTREMOVE/tavg/"+runid+"/"
+    outputdir = wrkdir_DNR+"tavg/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -127,7 +129,7 @@ def avg_maker_slow(runid,start,stop):
 def TP_maker(runid,start,stop):
     # Create files for parallel and perpendicular temperature
 
-    outputdir = "/wrk/sunijona/DONOTREMOVE/TP/"+runid+"/"
+    outputdir = wrkdir_DNR+"TP/"+runid+"/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
