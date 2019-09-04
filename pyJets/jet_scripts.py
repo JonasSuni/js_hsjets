@@ -466,7 +466,8 @@ class MMSReader:
 
     def read(self,name):
         if name in self.var_dict:
-            return self.data_arr[:,self.var_dict[name]]
+            outp = self.data_arr[:,self.var_dict[name]]
+            return outp[~np.isnan(outp)]
 
 def sheath_pars_list(var):
     # Returns scaling factors for variables based on the maximum compression ratio of the RH conditions
@@ -1499,18 +1500,20 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
 ### HACKATHON 2019 SCRIPTS HERE ###
 
-def hack_2019_fig4(time_thresh):
+def hack_2019_fig4(time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
-    mms_norm = [1,1,1,1,1,1.0/500e+3,1.0/500e+3]
-    vlas_norm = []
+    vlas_norm = [1,1,1,1,1,1/0.5,1/0.5]
+    mms_norm = [1,1,1,1,1,1.0e+6,1.0e+6]
 
-    var_list = ["size_rad","n_avg","v_avg","pdyn_avg","B_avg","TPerp_avg","TPar_avg"]
-    vlhigh_list = [[]]*len(var_list)
-    vlrand_list = [[]]*len(var_list)
-    mms_list = [[]]*len(var_list)
+    var_list = ["size_rad","n_avg","v_avg","pd_avg","B_avg","TPerp_avg","TPar_avg"]
+    label_list = ["$Extent~[R_e]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$","$P_{dyn,mean}~[P_{dyn,sw}]$","$|B|_{mean}~[B_{IMF}]$","$Temperatures~[MK]$"]
+
+    vlhigh_list = [[] for var in var_list]
+    vlrand_list = [[] for var in var_list]
+    mms_list = [[] for var in var_list]
 
     mms_reader = MMSReader(wrkdir_DNR+"working/Newer_Data/StableJets.txt")
 
@@ -1529,11 +1532,55 @@ def hack_2019_fig4(time_thresh):
                     continue
 
                 for var in var_list:
-                    vlhigh_list[var_list.index(var)].append(props.read_at_amax(var)/ja.sw_normalisation(var))
-                    vlrand_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(var))
+                    vlhigh_list[var_list.index(var)].append(props.read_at_amax(var)/ja.sw_normalisation(runid,var)/vlas_norm[var_list.index(var)])
+                    vlrand_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var)/vlas_norm[var_list.index(var)])
 
+    mms_weights = [[1.0/len(mms_var)]*len(mms_var) for mms_var in mms_list]
+    vlhigh_weights = [[1.0/len(vlhigh_var)]*len(vlhigh_var) for vlhigh_var in vlhigh_list]
+    vlrand_weights = [[1.0/len(vlrand_var)]*len(vlrand_var) for vlrand_var in vlrand_list]
 
+    fig,ax_list = plt.subplots(6,3,figsize=(10,15),sharey=True)
 
+    for itr in range(len(ax_list[:,0])):
+        ax_list[:,0][itr].hist(vlhigh_list[itr],weights=vlhigh_weights[itr],histtype="step")
+        ax_list[:,1][itr].hist(vlrand_list[itr],weights=vlrand_weights[itr],histtype="step")
+        ax_list[:,2][itr].hist(mms_list[itr],weights=mms_weights[itr],histtype="step")
+        ax_list[:,0][itr].set_ylabel(label_list[itr],labelpad=10)
+
+    ax_list[-1][0].hist(vlhigh_list[-1],weights=vlhigh_weights[-1],histtype="step")
+    ax_list[-1][1].hist(vlrand_list[-1],weights=vlrand_weights[-1],histtype="step")
+    ax_list[-1][2].hist(mms_list[-1],weights=mms_weights[-1],histtype="step")
+
+    ax_list[-1][0].set_xlabel("VLHigh",labelpad=10)
+    ax_list[-1][1].set_xlabel("VLRand",labelpad=10)
+    ax_list[-1][2].set_xlabel("MMS",labelpad=10)
+
+    for ax in [subax for sublist in ax_list for subax in sublist]:
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax.set_ylim(0,0.75)
+
+    plt.show()
+
+def jetcand_vdf(runid):
+
+    outputdir = "/homeappl/home/sunijona/Figures/paper/vdfs/"
+    title_list = ["{} t0-30".format(runid),"{} t0".format(runid),"{} t0+30".format(runid)]
+
+    if runid == "AEA":
+        bulkpath = "/proj/vlasov/2D/AEA/round_3_boundary_sw/"
+        fn_list = [760,820,880]
+        cellid = 1301051
+    else:
+        bulkpath = "/proj/vlasov/2D/AEC/"
+        fn_list = [700,760,820]
+        cellid = 1700451
+
+    vlsvobj_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(fn).zfill(7))) for fn in fn_list]
+
+    for fn in fn_list:
+
+        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],slicethick=0,title=title_list[fn_list.index(fn)])
 
 ###PLOT MAKER HERE###
 
