@@ -24,6 +24,7 @@ m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+homedir = "/homeappl/home/sunijona/"
 
 
 ###TEMPORARY SCRIPTS HERE###
@@ -873,7 +874,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
     #jetids = dict(zip(["ABA","ABC","AEA","AEC"],[[2,29,79,120,123,129],[6,12,45,55,60,97,111,141,146,156,162,179,196,213,223,235,259,271],[57,62,80,167,182,210,252,282,302,401,408,465,496],[2,3,8,72,78,109,117,127,130]]))[runid]
 
     # Range of jetids to attempt
-    jetids = np.arange(1,1000,1)
+    jetids = np.arange(1,2500,1)
 
     # Define epoch time array, +- 1 minute from center
     epoch_arr = np.arange(-60.0,60.1,0.5)
@@ -1528,7 +1529,7 @@ def hack_2019_fig4(time_thresh=5):
                 except:
                     continue
 
-                if props.read("duration") < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
                     continue
 
                 for var in var_list:
@@ -1542,25 +1543,72 @@ def hack_2019_fig4(time_thresh=5):
     fig,ax_list = plt.subplots(6,3,figsize=(10,15),sharey=True)
 
     for itr in range(len(ax_list[:,0])):
-        ax_list[:,0][itr].hist(vlhigh_list[itr],weights=vlhigh_weights[itr],histtype="step")
-        ax_list[:,1][itr].hist(vlrand_list[itr],weights=vlrand_weights[itr],histtype="step")
-        ax_list[:,2][itr].hist(mms_list[itr],weights=mms_weights[itr],histtype="step")
-        ax_list[:,0][itr].set_ylabel(label_list[itr],labelpad=10)
+        ax_list[:,0][itr].hist(vlhigh_list[itr],weights=vlhigh_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlhigh_list[itr]),np.std(vlhigh_list[itr],ddof=1)))
+        ax_list[:,1][itr].hist(vlrand_list[itr],weights=vlrand_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlrand_list[itr]),np.std(vlrand_list[itr],ddof=1)))
+        ax_list[:,2][itr].hist(mms_list[itr],weights=mms_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(mms_list[itr]),np.std(mms_list[itr],ddof=1)))
+        ax_list[:,0][itr].set_ylabel(label_list[itr],labelpad=10,fontsize=15)
 
-    ax_list[-1][0].hist(vlhigh_list[-1],weights=vlhigh_weights[-1],histtype="step")
-    ax_list[-1][1].hist(vlrand_list[-1],weights=vlrand_weights[-1],histtype="step")
-    ax_list[-1][2].hist(mms_list[-1],weights=mms_weights[-1],histtype="step")
+    ax_list[-1][0].hist(vlhigh_list[-1],weights=vlhigh_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlhigh_list[-1]),np.std(vlhigh_list[-1],ddof=1)))
+    ax_list[-1][1].hist(vlrand_list[-1],weights=vlrand_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlrand_list[-1]),np.std(vlrand_list[-1],ddof=1)))
+    ax_list[-1][2].hist(mms_list[-1],weights=mms_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(mms_list[-1]),np.std(mms_list[-1],ddof=1)))
 
-    ax_list[-1][0].set_xlabel("VLHigh",labelpad=10)
-    ax_list[-1][1].set_xlabel("VLRand",labelpad=10)
-    ax_list[-1][2].set_xlabel("MMS",labelpad=10)
+    ax_list[-1][0].set_xlabel("VLHigh",labelpad=10,fontsize=15)
+    ax_list[-1][1].set_xlabel("VLRand",labelpad=10,fontsize=15)
+    ax_list[-1][2].set_xlabel("MMS",labelpad=10,fontsize=15)
 
     for ax in [subax for sublist in ax_list for subax in sublist]:
         ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
         ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-        ax.set_ylim(0,0.75)
+        ax.set_ylim(0,0.8)
+        ax.legend(fontsize=10)
 
-    plt.show()
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig4.png")
+    plt.close(fig)
+
+def hack_2019_fig6(time_thresh=5):
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    cutoff_dict = dict(zip(runids_list,cutoff_list))
+
+    var_list = ["duration","size_tan","size_ratio"]
+    label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
+
+    data_list = [[] for var in var_list]
+
+    for n in range(1,2500):
+        for runid in runids_list:
+                try:
+                    props = jio.PropReader(str(n).zfill(5),runid,580)
+                except:
+                    continue
+
+                if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                    continue
+
+                for var in var_list:
+                    data_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var))
+
+    data_weights = [[1.0/len(data_var)]*len(data_var) for data_var in data_list]
+
+    fig,ax_list = plt.subplots(1,3,figsize=(10,5),sharey=True)
+
+    for itr in range(len(ax_list)):
+        ax_list[itr].hist(data_list[itr],weights=data_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_list[itr]),np.nanstd(data_list[itr],ddof=1)))
+        ax_list[itr].legend(fontsize=10)
+        ax_list[itr].set_xlabel(label_list[itr],fontsize=15,labelpad=10)
+        ax_list[itr].yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
+        ax_list[itr].xaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax_list[itr].set_ylim(0,1)
+
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig6.png")
+    plt.close(fig)
 
 def jetcand_vdf(runid):
 
@@ -1580,7 +1628,11 @@ def jetcand_vdf(runid):
 
     for fn in fn_list:
 
-        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],slicethick=0,title=title_list[fn_list.index(fn)])
+        v = vlsvobj_list[fn_list.index(fn)].read_variable("v",cellids=cellid)
+        perp1 = [1,0,0]
+        perp2 = np.cross(v,perp1)
+
+        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,normal=perp2,normalx=v,slicethick=0,title=title_list[fn_list.index(fn)])
 
 ###PLOT MAKER HERE###
 

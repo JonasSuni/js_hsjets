@@ -231,7 +231,8 @@ def sw_normalisation(runid,var):
     "TPerp_avg","TPerp_med","TPerp_max",
     "beta_avg","beta_med","beta_max",
     "x_min","rho_vmax","b_vmax",
-    "pd_avg","pd_med","pd_max","pdyn_vmax"]
+    "pd_avg","pd_med","pd_max","pdyn_vmax",
+    "duration","size_ratio"]
     
     norm_list = [1,
     1,1,1,
@@ -247,9 +248,13 @@ def sw_normalisation(runid,var):
     sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,sw_pars[5]/1.0e+6,
     sw_pars[4],sw_pars[4],sw_pars[4],
     1,sw_pars[0]/1.0e+6,sw_pars[4],
-    sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9]
+    sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,
+    1,1]
 
-    return norm_list[key_list.index(var)]
+    if var not in key_list:
+        return 1
+    else:
+        return norm_list[key_list.index(var)]
 
 def sw_par_dict(runid):
     # Returns solar wind parameters for specified run

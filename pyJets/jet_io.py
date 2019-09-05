@@ -68,13 +68,13 @@ class PropReader:
             return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
         elif name == "duration":
             t = self.read("time")
-            return t[-1]-t[0] + 0.5
+            return np.ones(t.shape)*(t[-1]-t[0] + 0.5)
         elif name == "size_ratio":
             return self.read("size_rad")/self.read("size_tan")
         elif name == "death_distance":
             x,y,z = self.read("x_vmax")[-1],self.read("y_vmax")[-1],self.read("z_vmax")[-1]
             t = self.read("time")[-1]
-            return np.linalg.norm([x,y,z])-ja.bow_shock_r(self.runid,t)
+            return np.ones(t.shape)*(np.linalg.norm([x,y,z])-ja.bow_shock_r(self.runid,t))
         else:
             print("Variable not found!")
             return None
@@ -434,7 +434,7 @@ def calc_event_props(vlsvobj,cells):
     Nr_cells = len(cells)
 
     # calculate linear sizes of jet
-    size_rad = (max(X)-min(X))/r_e
+    size_rad = (max(X)-min(X))/r_e+np.sqrt(dA)/r_e
     size_tan = A/size_rad
 
     temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max]
