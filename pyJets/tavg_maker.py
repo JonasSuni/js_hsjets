@@ -94,16 +94,16 @@ def avg_maker_slow(runid,start,stop):
                 pdyn_arr = pdyn
                 B_arr = Bmag
                 T_arr = T
-                TPar_arr = TParallel
-                TPerp_arr = TPerpendicular
+                TPar_arr = TPar
+                TPerp_arr = TPerp
                 T_arr = np.linalg.norm(v,axis=-1)**2
             else:
                 rho_arr += rho
                 pdyn_arr += pdyn
                 B_arr += Bmag
                 T_arr += T
-                TPar_arr += TParallel
-                TPerp_arr += TPerpendicular
+                TPar_arr += TPar
+                TPerp_arr += TPerp
                 T_arr += np.linalg.norm(v,axis=-1)**2
 
         # Calculate time average
