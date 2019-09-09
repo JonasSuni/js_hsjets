@@ -453,6 +453,8 @@ class MMSReader:
         9 Mean Temperature (SW)
         10 Mean |V| (SW)
         11 Max |V| (SW)
+        12 DT (K)
+        13 DT (SW)
         '''
 
         var_list = ["B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW"]

@@ -234,6 +234,9 @@ def sw_normalisation(runid,var):
     "pd_avg","pd_med","pd_max","pdyn_vmax",
     "duration","size_ratio"]
     
+    if var not in key_list:
+        return 1
+    
     norm_list = [1,
     1,1,1,
     1,1,
@@ -250,11 +253,6 @@ def sw_normalisation(runid,var):
     1,sw_pars[0]/1.0e+6,sw_pars[4],
     sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,
     1,1]
-
-    if var not in key_list:
-        return 1
-    else:
-        return norm_list[key_list.index(var)]
 
 def sw_par_dict(runid):
     # Returns solar wind parameters for specified run
