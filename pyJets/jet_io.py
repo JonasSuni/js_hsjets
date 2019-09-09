@@ -387,7 +387,7 @@ def calc_event_props(vlsvobj,cells):
         B_sheath = np.array(vlsvobj.read_variable("B",cellids=sheath_cells),ndmin=1)
         TPar_sheath = np.array(vlsvobj.read_variable("TParallel",cellids=sheath_cells),ndmin=1)
         TPerp_sheath = np.array(vlsvobj.read_variable("TPerpendicular",cellids=sheath_cells),ndmin=1)
-        T_sheath = np.array(vlsvobj.read_variable("proton/Temperature",cellids=sheath_cells),ndmin=1)
+        T_sheath = np.array(vlsvobj.read_variable("Temperature",cellids=sheath_cells),ndmin=1)
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 

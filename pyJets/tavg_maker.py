@@ -31,6 +31,7 @@ def avg_maker_slow(runid,start,stop):
 
     # range from first filenumber to last
     for n in xrange(start,stop+1):
+        print("n = {}".format(n))
 
         # Initialise dynamic pressure and density arrays
         pdyn_arr = np.array([])
