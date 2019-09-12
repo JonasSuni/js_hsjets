@@ -254,6 +254,8 @@ def sw_normalisation(runid,var):
     sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,
     1,1]
 
+    return norm_list[key_list.index(var)]
+
 def sw_par_dict(runid):
     # Returns solar wind parameters for specified run
     # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta

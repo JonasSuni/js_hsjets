@@ -1,24 +1,35 @@
+# import matplotlib
+# #matplotlib.use('ps')
+# from matplotlib import rc
+
+# rc('text',usetex=True)
+# rc('text.latex', preamble=r'\usepackage{color}')
+import matplotlib as mpl
+#mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
+mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
+
 import plot_contours as pc
 import pytools as pt
 import os
 import scipy
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
-from matplotlib.ticker import MaxNLocator
 
-from matplotlib import rc
+#from matplotlib import rc
 # font = {'family' : 'monospace',
 #         'monospace' : 'Computer Modern Typewriter',
 #         'weight' : 'bold'}
 
 #rc('font', **font)
-rc('mathtext', fontset='custom')
-rc('mathtext', default='regular')
+#rc('mathtext', fontset='custom')
+#rc('mathtext', default='regular')
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -429,9 +440,22 @@ def expr_smooth(exprmaps):
 
 ###HELPER FUNCTIONS HERE###
 
+def find_bulkpath(runid):
+
+    runid_list = ["ABA","ABC","AEA","AEC","BFD"]
+    path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
+
+    vlpath = "/proj/vlasov/2D/{}/".format(runid)
+
+    bulkpath = vlpath+path_list[runid_list.index(runid)]
+
+    return bulkpath
+
 class MMSReader:
 
-    def __init__(self,filepath):
+    def __init__(self,filename):
+
+        filepath = wrkdir_DNR+"working/MMS_data/"+filename
 
         f = open(filepath,"r+")
         contents = f.read()
@@ -471,6 +495,12 @@ class MMSReader:
         if name in self.var_dict:
             outp = self.data_arr[:,self.var_dict[name]]
             return outp[~np.isnan(outp)]
+
+    def read_mult(self,name_list):
+
+        outp_list = [self.read(name) for name in name_list]
+
+        return np.array(outp_list,dtype=object)
 
 def sheath_pars_list(var):
     # Returns scaling factors for variables based on the maximum compression ratio of the RH conditions
@@ -1505,64 +1535,50 @@ def jet_paper_all_hist(runids,var,time_thresh=10):
 
 def hack_2019_fig4(time_thresh=5):
 
-    runids_list = ["ABA","ABC","AEA","AEC"]
-    cutoff_list = [10,8,10,8]
-    cutoff_dict = dict(zip(runids_list,cutoff_list))
-    vlas_norm = [1,1,1,1,1,1/0.5,1/0.5]
-    mms_norm = [1,1,1,1,1,1.0e+6,1.0e+6]
+    vlas_norm = np.array([1,1,1,1,1,1/0.5,1/0.5])
+    mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
 
     var_list = ["size_rad","n_avg","v_avg","pd_avg","B_avg","TPerp_avg","TPar_avg"]
-    label_list = ["$Extent~[R_e]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$","$P_{dyn,mean}~[P_{dyn,sw}]$","$|B|_{mean}~[B_{IMF}]$","$Temperatures~[MK]$"]
+    ylabel_list = ["$Extent~[R_e]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$","$P_{dyn,mean}~[P_{dyn,sw}]$","$|B|_{mean}~[B_{IMF}]$","$Temperatures~[MK]$"]
+    xlabel_list = ["VLHigh","VLRand","MMS"]
 
-    vlhigh_list = [[] for var in var_list]
-    vlrand_list = [[] for var in var_list]
-    mms_list = [[] for var in var_list]
+    mms_reader = MMSReader("StableJets.txt")
 
-    mms_reader = MMSReader(wrkdir_DNR+"working/Newer_Data/StableJets.txt")
+    MMS_ext,MMS_n,MMS_v,MMS_pd,MMS_B,MMS_TPerp,MMS_TPar = mms_reader.read_mult(var_list)
+    VLH_ext,VLH_n,VLH_v,VLH_pd,VLH_B,VLH_TPerp,VLH_TPar = read_mult_runs(var_list,time_thresh,amax=True)
+    VLR_ext,VLR_n,VLR_v,VLR_pd,VLR_B,VLR_TPerp,VLR_TPar = read_mult_runs(var_list,time_thresh)
 
-    for var in var_list:
-        mms_list[var_list.index(var)] = (mms_reader.read(var)/mms_norm[var_list.index(var)]).tolist()
-
-
-    for n in range(1,2500):
-        for runid in runids_list:
-                try:
-                    props = jio.PropReader(str(n).zfill(5),runid,580)
-                except:
-                    continue
-
-                if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
-                    continue
-
-                for var in var_list:
-                    vlhigh_list[var_list.index(var)].append(props.read_at_amax(var)/ja.sw_normalisation(runid,var)/vlas_norm[var_list.index(var)])
-                    vlrand_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var)/vlas_norm[var_list.index(var)])
-
-    mms_weights = [[1.0/len(mms_var)]*len(mms_var) for mms_var in mms_list]
-    vlhigh_weights = [[1.0/len(vlhigh_var)]*len(vlhigh_var) for vlhigh_var in vlhigh_list]
-    vlrand_weights = [[1.0/len(vlrand_var)]*len(vlrand_var) for vlrand_var in vlrand_list]
+    darr_list = [[VLH_ext,VLR_ext,MMS_ext],[VLH_n,VLR_n,MMS_n],[VLH_v,VLR_v,MMS_v],[VLH_pd,VLR_pd,MMS_pd],[VLH_B,VLR_B,MMS_B],[VLH_TPerp,VLR_TPerp,MMS_TPerp],[VLH_TPar,VLR_TPar,MMS_TPar]]
 
     fig,ax_list = plt.subplots(6,3,figsize=(10,15),sharey=True)
 
-    for itr in range(len(ax_list[:,0])):
-        ax_list[:,0][itr].hist(vlhigh_list[itr],weights=vlhigh_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlhigh_list[itr]),np.std(vlhigh_list[itr],ddof=1)))
-        ax_list[:,1][itr].hist(vlrand_list[itr],weights=vlrand_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlrand_list[itr]),np.std(vlrand_list[itr],ddof=1)))
-        ax_list[:,2][itr].hist(mms_list[itr],weights=mms_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(mms_list[itr]),np.std(mms_list[itr],ddof=1)))
-        ax_list[:,0][itr].set_ylabel(label_list[itr],labelpad=10,fontsize=15)
+    for row in range(6):
+        for col in range(3):
+            if col != 2:
+                norm = vlas_norm[row]
+            else:
+                norm = mms_norm[row]
+            ax = ax_list[row][col]
+            data_arr = darr_list[row][col]/norm
+            weights = np.ones(data_arr.shape,dtype=float)/data_arr.size
 
-    ax_list[-1][0].hist(vlhigh_list[-1],weights=vlhigh_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlhigh_list[-1]),np.std(vlhigh_list[-1],ddof=1)))
-    ax_list[-1][1].hist(vlrand_list[-1],weights=vlrand_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(vlrand_list[-1]),np.std(vlrand_list[-1],ddof=1)))
-    ax_list[-1][2].hist(mms_list[-1],weights=mms_weights[-1],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(mms_list[-1]),np.std(mms_list[-1],ddof=1)))
+            ax.hist(data_arr,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1)),histtype="step")
 
-    ax_list[-1][0].set_xlabel("VLHigh",labelpad=10,fontsize=15)
-    ax_list[-1][1].set_xlabel("VLRand",labelpad=10,fontsize=15)
-    ax_list[-1][2].set_xlabel("MMS",labelpad=10,fontsize=15)
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            ax.set_ylim(0,0.8)
+            ax.legend(fontsize=10)
 
-    for ax in [subax for sublist in ax_list for subax in sublist]:
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-        ax.set_ylim(0,0.8)
-        ax.legend(fontsize=10)
+            if row == 5:
+                data_arr_2 = darr_list[6][col]/norm
+                weights_2 = np.ones(data_arr_2.shape,dtype=float)/data_arr_2.size
+
+                ax.hist(data_arr_2,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1)),histtype="step")
+
+                ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
+                ax.legend(fontsize=10)
+            if col == 0:
+                ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=15)
 
     plt.tight_layout()
 
@@ -1630,11 +1646,253 @@ def jetcand_vdf(runid):
 
     for fn in fn_list:
 
-        v = vlsvobj_list[fn_list.index(fn)].read_variable("v",cellids=cellid)
-        perp1 = [1,0,0]
-        perp2 = np.cross(v,perp1)
+        #v = vlsvobj_list[fn_list.index(fn)].read_variable("v",cellids=cellid)
+        #perp1 = [1,0,0]
+        #perp2 = np.cross(v,perp1)
 
-        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,normal=perp2,normalx=v,slicethick=0,title=title_list[fn_list.index(fn)])
+        #pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,normal=perp2,normalx=v,slicethick=0,title=title_list[fn_list.index(fn)])
+
+        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bpara=True,slicethick=0,title=title_list[fn_list.index(fn)])
+
+        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bpara1=True,slicethick=0,title=title_list[fn_list.index(fn)])
+
+        pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
+
+def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False):
+
+    if type(var_list) == str:
+        var_list = [var_list]
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    cutoff_dict = dict(zip(runids_list,cutoff_list))
+
+    data_list = [[] for var in var_list]
+
+    for n in range(1,2500):
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                continue
+
+            for var in var_list:
+                if amax:
+                    data_list[var_list.index(var)].append(props.read_at_amax(var)/ja.sw_normalisation(runid,var))
+                else:
+                    data_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var))
+
+    return np.array(data_list)
+
+def DT_comparison(time_thresh):
+
+    xlabel_list = ["VLHigh","VLRand","MMS"]
+    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta T_{sw}$"]
+
+    mms_props = MMSReader("StableJets.txt")
+
+    DT_MMS = mms_props.read("DT")/1.0e+6
+    DT_SW_MMS = mms_props.read("DT_SW")
+
+    DT_SW_vlas_amax = read_mult_runs("DT",time_thresh,amax=True)[0]
+    DT_SW_vlas_randt = read_mult_runs("DT",time_thresh)[0]
+
+    DT_vlas_amax = DT_SW_vlas_amax/2.0
+    DT_vlas_randt = DT_SW_vlas_randt/2.0
+
+    var_list = [[DT_vlas_amax,DT_vlas_randt,DT_MMS],[DT_SW_vlas_amax,DT_SW_vlas_randt,DT_SW_MMS]]
+
+    fig,ax_list = plt.subplots(2,3,figsize=(10,10),sharey=True)
+
+    for row in range(2):
+        for col in range(3):
+            ax = ax_list[row][col]
+            var = var_list[row][col]
+            weights = np.ones(var.shape,dtype=float)/var.size
+
+            ax.hist(var,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var,ddof=1)),histtype="step")
+            ax.legend()
+            ax.set_ylim(0,1)
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            if row == 1:
+                ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
+            if col == 0:
+                ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
+    plt.close(fig)
+
+def hack_2019_fig2(runid):
+
+    runids = ["AEA","AEC"]
+    r_id = runids.index(runid)
+
+    filenr = [820,760][r_id]
+    cellid = [1301051,1700451][r_id]
+    outputfolder = homedir+"Figures/hackathon_paper/"
+    outpfn = ["fig2_AEA.png","fig2_AEC.png"][r_id]
+
+    var_list = ["Pdyn","V","B","rho","TParallel","TPerpendicular"]
+    norm_list = [1.0e-9,1.0e+3,1.0e-9,1.0e+6,1.0e+6]
+    ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
+    label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
+
+    bulkpath = find_bulkpath(runid)
+
+    vo_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))) for n in range(filenr-60,filenr+61)]
+
+    #plt.gca().set_color_cycle(['black', 'blue', 'red', 'green'])
+    print("good")
+
+    var_arr = np.array([np.array([vo.read_variable("Pdyn",cellids=cellid),np.array(vo.read_variable("v",cellids=cellid)),np.array(vo.read_variable("B",cellids=cellid)),vo.read_variable("rho",cellids=cellid),vo.read_variable("TParallel",cellids=cellid),vo.read_variable("TPerpendicular",cellids=cellid)],dtype=object) for vo in vo_list],dtype=object)
+
+    #var_arr_list = [[np.array(vo.read_variable(var,cellids=cellid)) for var in var_list] for vo in vo_list]
+
+    #return var_arr_list[:,1]
+
+    pdyn = var_arr[:,0].astype(float)
+    v = np.array(map(np.array,var_arr[:,1])).astype(float)
+    B = np.array(map(np.array,var_arr[:,2])).astype(float)
+    n = var_arr[:,3].astype(float)
+    TPar = var_arr[:,4].astype(float)
+    TPerp = var_arr[:,5].astype(float)
+
+    #return [pdyn,v]
+    
+    t = np.array(range(filenr-60,filenr+61),dtype=float)/2.0
+    v = np.array([v[:,0],v[:,1],v[:,2],np.linalg.norm(v,axis=-1)])
+    B = np.array([B[:,0],B[:,1],B[:,2],np.linalg.norm(B,axis=-1)])
+    T = np.array([TPar,TPerp])
+
+    data_list = [pdyn,v.T,B.T,n,T.T]
+    time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,np.array([t,t]).T]
+
+
+    fig,ax_list = plt.subplots(5,1,figsize=(5,10),sharex=True)
+
+    for row in range(5):
+        print(row)
+        ax = ax_list[row]
+        data = data_list[row]/norm_list[row]
+        time = time_list[row]
+
+        ax.plot(time,data,linewidth=1.0)
+        ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+        #ax.legend(label_list[row],fontsize=10,frameon=False)
+        #ax.annotate(label_list[row],xy=(90,5),xycoords="axes fraction",fontsize=10)
+
+        ax.set_ylabel(ylabels[row],labelpad=10,fontsize=10)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+        if row == 4:
+            ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
+
+
+    plt.tight_layout()
+
+    fig.savefig(outputfolder+outpfn)
+    plt.close(fig)
+
+
+def hack_2019_fig1():
+
+    outputdir = homedir+"Figures/hackathon_paper/"
+    
+    # Initialise required global variables
+    global jet_cells,full_cells
+    global xmean_list,ymean_list
+    global xvmax_list,yvmax_list
+    global vl_xy,mms_xy
+    global runid_g,filenr_g,boxre_g
+
+    runids = ["AEA","AEC"]
+    outpfn = ["fig1_AEA.png","fig1_AEC.png"]
+    cellid = [1301051,1700451]
+    filenr = [820,760]
+    boxre = [[6,18,-8,6],[6,18,-6,6]]
+    vmax = [1.5,4.5]
+    pos_mms = [np.array([11.8709 , -0.8539, -0.9172]),np.array([ 9.1060, -0.9715,   -0.8508])]
+    pos_vl = [np.array([ 11.81803436,  -0.87607214, 0]),np.array([8.24222971, -0.87607214, 0])]
+
+    for n in range(len(runids)):
+
+        runid_g = runids[n]
+        filenr_g = filenr[n]
+        boxre_g = boxre[n]
+
+        vl_xy = pos_vl[n][:-1]
+        mms_xy = pos_mms[n][:-1]
+
+        # Initialise lists of coordinates
+        xmean_list = []
+        ymean_list = []
+        xvmax_list = []
+        yvmax_list = []
+
+        event_props = np.array(jio.eventprop_read(runids[n],filenr[n]))
+        xmean_list = event_props[:,1]
+        ymean_list = event_props[:,2]
+        xvmax_list = event_props[:,11]
+        yvmax_list = event_props[:,12]
+
+
+        # Try reading events file
+        try:
+            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runids[n],filenr[n]),"r")
+            contents = fileobj.read()
+            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        except IOError:
+            jet_cells = [] 
+
+        # Try reading mask file
+        try:
+            full_cells = np.loadtxt(wrkdir_DNR+"working/Masks/{}/{}.mask".format(runids[n],filenr[n])).astype(int)
+        except IOError:
+            full_cells = []
+
+        # Find correct file path
+        bulkpath = find_bulkpath(runids[n])
+
+        bulkname = "bulk.{}.vlsv".format(str(filenr[n]).zfill(7))
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file {} not found, continuing".format(str(filenr[n])))
+            continue
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,fsaved="black",vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
+
+
+def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
+
+    # External function for jet_plotter
+
+    cellids = pass_maps["CellID"]
+
+    bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
+    bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    bs_x = np.polyval(bs_p,bs_y)
+
+    # Mask jets
+    jet_mask = np.in1d(cellids,jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask,cellids.shape)
+
+    # Mask full mask
+    full_mask = np.in1d(cellids,full_cells).astype(int)
+    full_mask = np.reshape(full_mask,cellids.shape)
+
+    #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
+
+    #line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
+    #line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
+
+    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color="red")
+    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="white")
+    bs_cont = ax.plot(bs_x,bs_y,color="red")
 
 ###PLOT MAKER HERE###
 
