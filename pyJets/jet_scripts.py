@@ -465,29 +465,33 @@ class MMSReader:
         self.data_arr = np.asarray(contents_matrix,dtype="float")
 
         '''
-        0 Mean |B| (SW)
-        1 Mean beta (SW)
-        2 Extend (R_e)
-        3 Mean Density (SW)
-        4 Max Density (SW)
-        5 Mean Dynamic Pressure (SW)
-        6 Max Dynamic Pressure (SW)
-        7 Mean T_par (MK)
-        8 Mean T_Perp (MK)
-        9 Mean Temperature (SW)
-        10 Mean |V| (SW)
-        11 Max |V| (SW)
-        12 DT (K)
-        13 DT (SW)
+        1 Mean |B| (SW)
+        2 Mean beta (SW)
+        3 Extend (Km)
+        4 Mean Density (SW)
+        5 Max Density (SW)
+        6 Mean Dynamic Pressure (SW)
+        7 Max Dynamic Pressure (SW)
+        8 Mean T_par (K)
+        9 Mean T_Perp (K)
+        10 Mean Temperature (SW)
+        11 Mean |V| (SW)
+        12 Max |V| (SW)
+        13 Delta T (K)
+        14 Delta T (SW)
+        15 Delta Mean Density (SW)
+        16 Delta Mean |V| (SW)
+        17 Delta Mean Dynamic Pressure (SW)
+        18 Delta Mean |B| (SW)
         '''
 
-        var_list = ["B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW"]
+        var_list = ["B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
 
         n_list = range(len(var_list))
 
         self.var_dict = dict(zip(var_list,n_list))
 
-        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$","$\\Delta T~[K]$","$\\Delta T~[T_{sw}]$"]
+        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$","$\\Delta T~[K]$","$\\Delta T~[T_{sw}]$","\\Delta n~[n_{sw}]","\\Delta v~[v_{sw}]","\\Delta P_{dyn}~[P_{dyn,sw}]","\\Delta B~[B_{IMF}]"]
 
         self.label_dict = dict(zip(var_list,label_list))
 

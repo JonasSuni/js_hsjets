@@ -14,6 +14,8 @@ m_p = 1.672621898e-27
 r_e = 6.371e+6
 
 wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath"]
+propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],B_sheath [nT]"
 
 class PropReader:
     # Class for reading jet property files
@@ -55,7 +57,7 @@ class PropReader:
         self.props = np.asarray(props,dtype="float")
 
         # Initialise list of variable names and associated dictionary
-        var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath"]
+        var_list = propfile_var_list
         n_list = list(xrange(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
@@ -286,7 +288,7 @@ def eventprop_write(runid,filenr,props):
     open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
     epf = open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
 
-    epf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK]"+"\n")
+    epf.write(propfile_header_list+"\n")
 
     epf.write("\n".join([",".join(map(str,line)) for line in props]))
     epf.close()
@@ -315,7 +317,7 @@ def propfile_write(runid,filenr,key,props,transient="jet"):
 
     open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
-    pf.write("time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK]"+"\n")
+    pf.write(propfile_header_list+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
@@ -375,19 +377,15 @@ def calc_event_props(vlsvobj,cells):
 
     var_list = ["rho","v","B","Temperature","CellID","beta","TParallel","TPerpendicular"]
     var_list_alt = ["proton/rho","proton/V","B","proton/Temperature","CellID","proton/beta","proton/TParallel","proton/TPerpendicular"]
+    sheath_list = ["rho","v","B","Temperature","TParallel","TPerpendicular","Pdyn"]
+    sheath_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/TParallel","proton/TPerpendicular","proton/Pdyn"]
 
     try:
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list_alt]
-        B_sheath = np.array(vlsvobj.read_variable("B",cellids=sheath_cells),ndmin=1)
-        TPar_sheath = np.array(vlsvobj.read_variable("proton/TParallel",cellids=sheath_cells),ndmin=1)
-        TPerp_sheath = np.array(vlsvobj.read_variable("proton/TPerpendicular",cellids=sheath_cells),ndmin=1)
-        T_sheath = np.array(vlsvobj.read_variable("proton/Temperature",cellids=sheath_cells),ndmin=1)
+        rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list_alt]
     except:
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
-        B_sheath = np.array(vlsvobj.read_variable("B",cellids=sheath_cells),ndmin=1)
-        TPar_sheath = np.array(vlsvobj.read_variable("TParallel",cellids=sheath_cells),ndmin=1)
-        TPerp_sheath = np.array(vlsvobj.read_variable("TPerpendicular",cellids=sheath_cells),ndmin=1)
-        T_sheath = np.array(vlsvobj.read_variable("Temperature",cellids=sheath_cells),ndmin=1)
+        rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list]
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
@@ -395,7 +393,7 @@ def calc_event_props(vlsvobj,cells):
     rho /= 1.0e+6
     v /= 1.0e+3
     B /= 1.0e-9
-    B_sheath /= 10e-9
+    B_sheath /= 1.0e-9
     pdyn /= 1.0e-9
     T /= 1.0e+6
     TParallel /= 1.0e+6
@@ -403,11 +401,15 @@ def calc_event_props(vlsvobj,cells):
     TPar_sheath /= 1.0e+6
     TPerp_sheath /= 1.0e+6
     T_sheath /= 1.0e+6
+    rho_sheath /= 1.0e+6
+    v_sheath /= 1.0e+3
+    pd_sheath /= 1.0e-9
 
     # Calculate magnitudes of v and B
     vmag = np.linalg.norm(v,axis=-1)
     Bmag = np.linalg.norm(B,axis=-1)
     B_sheath_mag = np.linalg.norm(B_sheath,axis=-1)
+    v_sheath_mag = np.linalg.norm(v_sheath,axis=-1)
 
     if type(vmag) == float:
         vmag = np.array(vmag)
@@ -465,9 +467,9 @@ def calc_event_props(vlsvobj,cells):
     size_rad = (max(X)-min(X))/r_e+np.sqrt(dA)/r_e
     size_tan = A/size_rad
 
-    B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg = [np.nanmean(B_sheath_mag),np.nanmean(TPar_sheath),np.nanmean(TPerp_sheath),np.nanmean(T_sheath)]
+    [B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg] = [np.nanmean(v) for v in [B_sheath_mag,TPar_sheath,TPerp_sheath,T_sheath,rho_sheath,v_sheath_mag,pd_sheath]]
 
-    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg]
+    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg]
 
     return temp_arr
 
