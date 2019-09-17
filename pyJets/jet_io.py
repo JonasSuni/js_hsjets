@@ -61,19 +61,17 @@ class PropReader:
         n_list = list(xrange(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
+        self.delta_list = ["DT","Dn","Dv","Dpd","DB","DTPar","DTPerp"]
+        self.davg_list = ["T_avg","n_avg","v_avg","pd_avg","B_avg","TPar_avg","TPerp_avg"]
+        self.sheath_list = ["T_sheath","n_sheath","v_sheath","pd_sheath","B_sheath","TPar_sheath","TPerp_sheath"]
+
     def read(self,name):
         # Read data of specified variable
 
         if name in self.var_dict:
             return self.props[:,self.var_dict[name]]
-        elif name == "DB":
-            return self.read("B_avg")-self.read("B_sheath")
-        elif name == "DTPar":
-            return self.read("TPar_avg")-self.read("TPar_sheath")
-        elif name == "DTPerp":
-            return self.read("TPerp_avg")-self.read("TPerp_sheath")
-        elif name == "DT":
-            return self.read("T_avg")-self.read("T_sheath")
+        elif name in self.delta_list:
+            return self.read(self.davg_list[self.delta_list.index(name)])-self.read(self.sheath_list[self.delta_list.index(name)])
         elif name == "pdyn_vmax":
             return 1.0e+21*m_p*self.read("rho_vmax")*self.read("v_max")**2
         elif name == "duration":

@@ -1693,25 +1693,37 @@ def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=Fa
 
 def DT_comparison(time_thresh):
 
-    xlabel_list = ["VLHigh","VLRand","MMS"]
-    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta T_{sw}$"]
+    xlabel_list = ["VLMax","VLRand","MMS"]
+    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
 
     mms_props = MMSReader("StableJets.txt")
 
     DT_MMS = mms_props.read("DT")/1.0e+6
-    DT_SW_MMS = mms_props.read("DT_SW")
+    Dn_MMS = mms_props.read("Dn_SW")
+    Dv_MMS = mms_props.read("Dv_SW")
+    Dpd_MMS = mms_props.read("Dpd_SW")
+    DB_MMS = mms_props.read("DB_SW")
 
-    DT_SW_vlas_amax = read_mult_runs("DT",time_thresh,amax=True)[0]
-    DT_SW_vlas_randt = read_mult_runs("DT",time_thresh)[0]
+    DT_vlas_amax = read_mult_runs("DT",time_thresh,amax=True)[0]/2.0
+    DT_vlas_randt = read_mult_runs("DT",time_thresh)[0]/2.0
 
-    DT_vlas_amax = DT_SW_vlas_amax/2.0
-    DT_vlas_randt = DT_SW_vlas_randt/2.0
+    Dn_vlas_amax = read_mult_runs("Dn",time_thresh,amax=True)[0]
+    Dn_vlas_randt = read_mult_runs("Dn",time_thresh)[0]
 
-    var_list = [[DT_vlas_amax,DT_vlas_randt,DT_MMS],[DT_SW_vlas_amax,DT_SW_vlas_randt,DT_SW_MMS]]
+    Dv_vlas_amax = read_mult_runs("Dv",time_thresh,amax=True)[0]
+    Dv_vlas_randt = read_mult_runs("Dv",time_thresh)[0]
 
-    fig,ax_list = plt.subplots(2,3,figsize=(10,10),sharey=True)
+    Dpd_vlas_amax = read_mult_runs("Dpd",time_thresh,amax=True)[0]
+    Dpd_vlas_randt = read_mult_runs("Dpd",time_thresh)[0]
 
-    for row in range(2):
+    DB_vlas_amax = read_mult_runs("DB",time_thresh,amax=True)[0]
+    DB_vlas_randt = read_mult_runs("DB",time_thresh)[0]
+
+    var_list = [[DT_vlas_amax,DT_vlas_randt,DT_MMS],[Dn_vlas_amax,Dn_vlas_randt,Dn_MMS],[Dv_vlas_amax,Dv_vlas_randt,Dv_MMS],[Dpd_vlas_amax,Dpd_vlas_randt,Dpd_MMS],[DB_vlas_amax,DB_vlas_randt,DB_MMS]]
+
+    fig,ax_list = plt.subplots(5,3,figsize=(10,12),sharey=True)
+
+    for row in range(5):
         for col in range(3):
             ax = ax_list[row][col]
             var = var_list[row][col]
@@ -1721,7 +1733,7 @@ def DT_comparison(time_thresh):
             ax.legend()
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-            if row == 1:
+            if row == 4:
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
@@ -1731,7 +1743,54 @@ def DT_comparison(time_thresh):
     fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
     plt.close(fig)
 
-def hack_2019_fig2(runid):
+def DT_mach_comparison(time_thresh):
+
+    xlabel_list = ["VLMax","VLRand","MMS"]
+    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
+
+    mms_var_list = ["DT","Dn_Sw","Dv_SW","Dpd_SW","DB_SW"]
+    mms_norm_list = [1.0e+6,1,1,1,1]
+
+    vlas_var_list = ["DT","Dn","Dv","Dpd","DB"]
+    vlas_norm_list = [2.0,1,1,1,1]
+
+    mms_props_low = MMSReader("LowMachJets.txt")
+    mms_props_high = MMSReader("HighMachJets.txt")
+
+    MMS_low = [mms_props_low.read(var)/mms_norm_list[mms_var_list.index(var)] for var in mms_var_list]
+    MMS_high = [mms_props_low.read(var)/mms_norm_list[mms_var_list.index(var)] for var in mms_var_list]
+
+    VLMax_low = [read_mult_runs(var,time_thresh,amax=True,runids=["AEA","AEC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
+    VLMax_high = [read_mult_runs(var,time_thresh,amax=True,runids=["ABA","ABC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
+
+    VLRand_low = [read_mult_runs(var,time_thresh,runids=["AEA","AEC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
+    VLRand_high = [read_mult_runs(var,time_thresh,runids=["ABA","ABC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
+
+    var_list = [[DT_vlas_amax,DT_vlas_randt,DT_MMS],[Dn_vlas_amax,Dn_vlas_randt,Dn_MMS],[Dv_vlas_amax,Dv_vlas_randt,Dv_MMS],[Dpd_vlas_amax,Dpd_vlas_randt,Dpd_MMS],[DB_vlas_amax,DB_vlas_randt,DB_MMS]]
+
+    fig,ax_list = plt.subplots(5,3,figsize=(10,12),sharey=True)
+
+    for row in range(5):
+        for col in range(3):
+            ax = ax_list[row][col]
+            var = var_list[row][col]
+            weights = np.ones(var.shape,dtype=float)/var.size
+
+            ax.hist(var,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var,ddof=1)),histtype="step")
+            ax.legend()
+            ax.set_ylim(0,1)
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            if row == 4:
+                ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
+            if col == 0:
+                ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
+    plt.close(fig)
+
+def hack_2019_fig2(runid,htw = 60):
 
     runids = ["AEA","AEC"]
     r_id = runids.index(runid)
@@ -1748,27 +1807,29 @@ def hack_2019_fig2(runid):
 
     bulkpath = find_bulkpath(runid)
 
-    vo_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))) for n in range(filenr-60,filenr+61)]
+    vo_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))) for n in range(filenr-htw,filenr+htw+1)]
 
-    #plt.gca().set_color_cycle(['black', 'blue', 'red', 'green'])
     print("good")
 
-    var_arr = np.array([np.array([vo.read_variable("Pdyn",cellids=cellid),np.array(vo.read_variable("v",cellids=cellid)),np.array(vo.read_variable("B",cellids=cellid)),vo.read_variable("rho",cellids=cellid),vo.read_variable("TParallel",cellids=cellid),vo.read_variable("TPerpendicular",cellids=cellid)],dtype=object) for vo in vo_list],dtype=object)
+    pdyn = np.array([],dtype=float)
+    v = np.array([0,0,0],dtype=float)
+    B = np.array([0,0,0],dtype=float)
+    n = np.array([],dtype=float)
+    TPar = np.array([],dtype=float)
+    TPerp = np.array([],dtype=float)
 
-    #var_arr_list = [[np.array(vo.read_variable(var,cellids=cellid)) for var in var_list] for vo in vo_list]
+    for vo in vo_list:
+        pdyn = np.append(pdyn,vo.read_variable("Pdyn",cellids=cellid))
+        n = np.append(n,vo.read_variable("rho",cellids=cellid))
+        TPar = np.append(TPar,vo.read_variable("TParallel",cellids=cellid))
+        TPerp = np.append(TPerp,vo.read_variable("TPerpendicular",cellids=cellid))
+        v = np.vstack((v,np.array(vo.read_variable("v",cellids=cellid))))
+        B = np.vstack((B,np.array(vo.read_variable("B",cellids=cellid))))
 
-    #return var_arr_list[:,1]
-
-    pdyn = var_arr[:,0].astype(float)
-    v = np.array(map(np.array,var_arr[:,1])).astype(float)
-    B = np.array(map(np.array,var_arr[:,2])).astype(float)
-    n = var_arr[:,3].astype(float)
-    TPar = var_arr[:,4].astype(float)
-    TPerp = var_arr[:,5].astype(float)
-
-    #return [pdyn,v]
+    v = v[1:,:]
+    B = B[1:,:]
     
-    t = np.array(range(filenr-60,filenr+61),dtype=float)/2.0
+    t = np.array(range(filenr-htw,filenr+htw+1),dtype=float)/2.0
     v = np.array([v[:,0],v[:,1],v[:,2],np.linalg.norm(v,axis=-1)])
     B = np.array([B[:,0],B[:,1],B[:,2],np.linalg.norm(B,axis=-1)])
     T = np.array([TPar,TPerp])
@@ -1777,7 +1838,7 @@ def hack_2019_fig2(runid):
     time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,np.array([t,t]).T]
 
 
-    fig,ax_list = plt.subplots(5,1,figsize=(5,10),sharex=True)
+    fig,ax_list = plt.subplots(5,1,figsize=(10,10),sharex=True)
 
     for row in range(5):
         print(row)
@@ -1790,12 +1851,13 @@ def hack_2019_fig2(runid):
         #ax.legend(label_list[row],fontsize=10,frameon=False)
         #ax.annotate(label_list[row],xy=(90,5),xycoords="axes fraction",fontsize=10)
 
-        ax.set_ylabel(ylabels[row],labelpad=10,fontsize=10)
+        ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
         if row == 4:
             ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
 
 
+    ax_list[0].set_title("Run {}, X,Y,Z = {}$R_e$".format(runid,vo_list[0].get_cell_coordinates(cellid)/r_e),fontsize=20)
     plt.tight_layout()
 
     fig.savefig(outputfolder+outpfn)
