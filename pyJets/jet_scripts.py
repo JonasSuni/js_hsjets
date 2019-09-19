@@ -32,7 +32,10 @@ import jet_io as jio
 #rc('mathtext', default='regular')
 
 m_p = 1.672621898e-27
+q_e = 1.602176565e-19
 r_e = 6.371e+6
+
+EkinBinEdges = np.logspace(np.log10(10),np.log10(2e4),66)
 
 wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 homedir = "/homeappl/home/sunijona/"
@@ -1691,10 +1694,40 @@ def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=Fa
 
     return np.array(data_list)
 
-def DT_comparison(time_thresh):
+def read_energy_spectrogram(vlsvobj,cid):
+
+    fMin = 1e-15
+    
+    velcells = vlsvobj.read_velocity_cells(cid)
+    V = vlsvobj.get_velocity_cell_coordinates(velcells.keys())
+    V2 = np.sum(np.square(V),1)
+    Ekin = 0.5*m_p*V2/q_e
+    f_v = np.asarray(velcells.values())
+     
+    ii_f = np.where(f_v >= fMin)
+    f_v = f_v[ii_f]
+    Ekin = Ekin[ii_f]
+    V2 = V2[ii_f]
+
+    Ekin[Ekin < min(EkinBinEdges)] = min(EkinBinEdges)
+    Ekin[Ekin > max(EkinBinEdges)] = max(EkinBinEdges)
+
+    # normalization
+    fn = f_v*np.sqrt(V2) # use energy flux as weighting
+    # compute histogram
+    (nhist,edges) = np.histogram(Ekin,bins=EkinBinEdges,weights=fn,normed=0)
+    # normalization
+    dE = EkinBinEdges[1:] - EkinBinEdges[0:-1]
+    nhist = np.divide(nhist,(dE*4*np.pi*0.5*1.0e-4))
+
+    return (nhist,edges)
+
+
+def DT_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
     ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
+    hist_bins = [np.linspace(-5,5,10+1),np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1)]
 
     mms_props = MMSReader("StableJets.txt")
 
@@ -1729,8 +1762,8 @@ def DT_comparison(time_thresh):
             var = var_list[row][col]
             weights = np.ones(var.shape,dtype=float)/var.size
 
-            ax.hist(var,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var,ddof=1)),histtype="step")
-            ax.legend()
+            ax.hist(var,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var,ddof=1)),histtype="step",bins=hist_bins[row])
+            ax.legend(handlelength=0,frameon=False)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
             if row == 4:
@@ -1743,12 +1776,13 @@ def DT_comparison(time_thresh):
     fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
     plt.close(fig)
 
-def DT_mach_comparison(time_thresh):
+def DT_mach_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
     ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
+    hist_bins = [np.linspace(-5,5,10+1),np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1)]
 
-    mms_var_list = ["DT","Dn_Sw","Dv_SW","Dpd_SW","DB_SW"]
+    mms_var_list = ["DT","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
     mms_norm_list = [1.0e+6,1,1,1,1]
 
     vlas_var_list = ["DT","Dn","Dv","Dpd","DB"]
@@ -1758,7 +1792,7 @@ def DT_mach_comparison(time_thresh):
     mms_props_high = MMSReader("HighMachJets.txt")
 
     MMS_low = [mms_props_low.read(var)/mms_norm_list[mms_var_list.index(var)] for var in mms_var_list]
-    MMS_high = [mms_props_low.read(var)/mms_norm_list[mms_var_list.index(var)] for var in mms_var_list]
+    MMS_high = [mms_props_high.read(var)/mms_norm_list[mms_var_list.index(var)] for var in mms_var_list]
 
     VLMax_low = [read_mult_runs(var,time_thresh,amax=True,runids=["AEA","AEC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
     VLMax_high = [read_mult_runs(var,time_thresh,amax=True,runids=["ABA","ABC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
@@ -1766,18 +1800,21 @@ def DT_mach_comparison(time_thresh):
     VLRand_low = [read_mult_runs(var,time_thresh,runids=["AEA","AEC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
     VLRand_high = [read_mult_runs(var,time_thresh,runids=["ABA","ABC"])[0]/vlas_norm_list[vlas_var_list.index(var)] for var in vlas_var_list]
 
-    var_list = [[DT_vlas_amax,DT_vlas_randt,DT_MMS],[Dn_vlas_amax,Dn_vlas_randt,Dn_MMS],[Dv_vlas_amax,Dv_vlas_randt,Dv_MMS],[Dpd_vlas_amax,Dpd_vlas_randt,Dpd_MMS],[DB_vlas_amax,DB_vlas_randt,DB_MMS]]
+    var_list_low = [VLMax_low,VLRand_low,MMS_low]
+    var_list_high = [VLMax_high,VLRand_high,MMS_high]
 
     fig,ax_list = plt.subplots(5,3,figsize=(10,12),sharey=True)
 
     for row in range(5):
         for col in range(3):
             ax = ax_list[row][col]
-            var = var_list[row][col]
-            weights = np.ones(var.shape,dtype=float)/var.size
+            var_low = var_list_low[col][row]
+            var_high = var_list_high[col][row]
+            weights_low = np.ones(var_low.shape,dtype=float)/var_low.size
+            weights_high = np.ones(var_high.shape,dtype=float)/var_high.size
 
-            ax.hist(var,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var,ddof=1)),histtype="step")
-            ax.legend()
+            ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))],color=["blue","red"],histtype="step",bins=hist_bins[row])
+            ax.legend(fontsize=10,frameon=False)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
             if row == 4:
@@ -1787,7 +1824,7 @@ def DT_mach_comparison(time_thresh):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/DT_mach_comp.png")
     plt.close(fig)
 
 def hack_2019_fig2(runid,htw = 60):
