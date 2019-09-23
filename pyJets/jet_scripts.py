@@ -1594,6 +1594,33 @@ def hack_2019_fig4(time_thresh=5):
 
 def hack_2019_fig6(time_thresh=5):
 
+    var_list = ["duration","size_tan","size_ratio"]
+    label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
+
+    data_list = read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False)
+
+    fig,ax_list = plt.subplots(1,3,figsize=(10,5),sharey=True)
+
+    for col in range(3):
+        ax = ax_list[col]
+        var = data_list[col]
+        weights = np.ones(var.shape,dtype=float)/var.size
+        lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var))
+
+        ax.hist(var,weights=weights,label=lab,histtype="step")
+        ax.legend(fontsize=10,frameon=False)
+        ax.set_xlabel(label_list[col],fontsize=15)
+        ax.set_ylim(0,1)
+
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig6.png")
+    plt.close(fig)
+
+def hack_2019_fig6_alt(time_thresh=5):
+
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
@@ -1601,38 +1628,33 @@ def hack_2019_fig6(time_thresh=5):
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
 
-    data_list = [[] for var in var_list]
-
-    for n in range(1,2500):
-        for runid in runids_list:
-                try:
-                    props = jio.PropReader(str(n).zfill(5),runid,580)
-                except:
-                    continue
-
-                if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
-                    continue
-
-                for var in var_list:
-                    data_list[var_list.index(var)].append(props.read_at_randt(var)/ja.sw_normalisation(runid,var))
-
-    data_weights = [[1.0/len(data_var)]*len(data_var) for data_var in data_list]
+    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
+    ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
+    AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=False)
+    AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=False)
 
     fig,ax_list = plt.subplots(1,3,figsize=(10,5),sharey=True)
 
-    for itr in range(len(ax_list)):
-        ax_list[itr].hist(data_list[itr],weights=data_weights[itr],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_list[itr]),np.nanstd(data_list[itr],ddof=1)))
-        ax_list[itr].legend(fontsize=10)
-        ax_list[itr].set_xlabel(label_list[itr],fontsize=15,labelpad=10)
-        ax_list[itr].yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
-        ax_list[itr].xaxis.set_major_locator(MaxNLocator(nbins=5))
-        ax_list[itr].set_ylim(0,1)
+    for col in range(3):
+        ax = ax_list[col]
+        var_arr = [ABA_vars[col],ABC_vars[col],AEA_vars[col],AEC_vars[col]]
+        weights_arr = [np.ones(var.shape,dtype=float)/var.size for var in var_arr]
+        med_arr = [np.median(var) for var in var_arr]
+        std_arr = [np.std(var,ddof=1) for var in var_arr]
+        labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
+        color_arr = ["black","blue","red","green"]
+
+        ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step")
+        ax.legend(fontsize=10,frameon=False)
+        ax.set_xlabel(label_list[col],fontsize=15)
+        ax.set_ylim(0,1)
+
 
     ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig6.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig6_alt.png")
     plt.close(fig)
 
 def jetcand_vdf(runid):
