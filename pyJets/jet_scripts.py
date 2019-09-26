@@ -1740,7 +1740,8 @@ def read_energy_spectrogram(vlsvobj,cid):
     (nhist,edges) = np.histogram(Ekin,bins=EkinBinEdges,weights=fn,normed=0)
     # normalization
     dE = EkinBinEdges[1:] - EkinBinEdges[0:-1]
-    nhist = np.divide(nhist,(dE*4*np.pi*0.5*1.0e-4))
+    #E_mid = 
+    nhist = np.divide(nhist,(dE*4*np.pi*1.0e-4))
 
     return (nhist,edges)
 
@@ -1860,8 +1861,8 @@ def hack_2019_fig2(runid,htw = 60):
     outpfn = ["fig2_AEA.png","fig2_AEC.png"][r_id]
 
     var_list = ["Pdyn","V","B","rho","TParallel","TPerpendicular"]
-    norm_list = [1.0e-9,1.0e+3,1.0e-9,1.0e+6,1.0e+6]
-    ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
+    norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
+    ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Energy~[eV]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
     label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
 
     bulkpath = find_bulkpath(runid)
@@ -1876,6 +1877,8 @@ def hack_2019_fig2(runid,htw = 60):
     n = np.array([],dtype=float)
     TPar = np.array([],dtype=float)
     TPerp = np.array([],dtype=float)
+
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=40,fluxout=True,numproc=8)
 
     for vo in vo_list:
         pdyn = np.append(pdyn,vo.read_variable("Pdyn",cellids=cellid))
@@ -1893,26 +1896,35 @@ def hack_2019_fig2(runid,htw = 60):
     B = np.array([B[:,0],B[:,1],B[:,2],np.linalg.norm(B,axis=-1)])
     T = np.array([TPar,TPerp])
 
-    data_list = [pdyn,v.T,B.T,n,T.T]
-    time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,np.array([t,t]).T]
+    data_list = [pdyn,v.T,B.T,n,n,T.T]
+    time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,t,np.array([t,t]).T]
 
 
-    fig,ax_list = plt.subplots(5,1,figsize=(10,10),sharex=True)
+    fig,ax_list = plt.subplots(6,1,figsize=(10,12))
 
-    for row in range(5):
+    for row in range(6):
         print(row)
         ax = ax_list[row]
-        data = data_list[row]/norm_list[row]
-        time = time_list[row]
+        if row == 3:
+            im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap))
+            ax.set_yscale("log")
+            #cbar = fig.colorbar(im,ax=ax_list.tolist(),ticks=[5,6,7])
+            #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+            ax.set_ylim(50,20000)
+        else:
+            data = data_list[row]/norm_list[row]
+            time = time_list[row]
 
-        ax.plot(time,data,linewidth=1.0)
+            ax.plot(time,data,linewidth=1.0)
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+
         ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
         #ax.legend(label_list[row],fontsize=10,frameon=False)
         #ax.annotate(label_list[row],xy=(90,5),xycoords="axes fraction",fontsize=10)
 
         ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
-        if row == 4:
+        ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
+        if row == 5:
             ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
 
 
@@ -2012,12 +2024,110 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
-    #line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
-    #line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
+    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
 
-    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color="red")
-    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="white")
+    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color="black")
+    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="green")
     bs_cont = ax.plot(bs_x,bs_y,color="red")
+
+def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
+
+    var_list = np.array(var_list,ndmin=1).tolist()
+
+    epoch_arr = np.arange(-60.0,60.1,0.5)
+    SEA_arr_list = [np.zeros_like(epoch_arr) for var in var_list]
+    SEA_mean_list = [np.zeros_like(epoch_arr) for var in var_list]
+    SEA_std_list = [np.zeros_like(epoch_arr) for var in var_list]
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    cutoff_dict = dict(zip(runids_list,cutoff_list))
+
+    data_list = [[] for var in var_list]
+
+    for n in range(1,2500):
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                continue
+
+            time_arr = props.read("time")
+            cent_arr = props.read(centering)
+
+            for var in var_list:
+                idx = var_list.index(var)
+                var_arr = props.read(var)
+                if var not in ["TPar_avg","TPerp_avg"]:
+                    var_arr /= ja.sw_normalisation(runid,var)
+                res_arr = np.interp(epoch_arr,time_arr-time_arr[np.argmax(cent_arr)],var_arr,left=0.0,right=0.0)
+                SEA_arr_list[idx] = np.vstack((SEA_arr_list[idx],res_arr))
+
+    SEA_arr_list = [SEA_arr[1:] for SEA_arr in SEA_arr_list]
+
+    SEA_mean_list = [np.mean(SEA_arr,axis=0) for SEA_arr in SEA_arr_list]
+    SEA_std_list = [np.std(SEA_arr,ddof=1,axis=0) for SEA_arr in SEA_arr_list]
+
+    return (epoch_arr,SEA_mean_list,SEA_std_list)
+
+
+def hack_2019_fig78(time_thresh=5):
+    # Creates Superposed Epoch Analysis of jets in specified run, centering specified var around maximum of
+    # specified centering variable
+
+    var_list_7 = ["size_tan","size_ratio"]
+    var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
+
+    lab_list_7 = ["$Tangential~Size~[R_e]$","$Size~Ratio$"]
+    lab_list_8 = ["$\\Delta n~[n_{sw}]$","$\\Delta |v|~[v_{sw}]$","$\\Delta P_{dyn}~[P_{dyn,sw}]$","$\\Delta |B|~[B_{IMF}]$","$\\Delta T_{perp}~[MK]$","$\\Delta T_{par}~[MK]$"]
+
+    epoch_arr,SEA_mean_list_7,SEA_std_list_7 = get_SEA(var_list_7,time_thresh=time_thresh)
+    epoch_arr,SEA_mean_list_8,SEA_std_list_8 = get_SEA(var_list_8,time_thresh=time_thresh)
+
+    fig_7,ax_list_7 = plt.subplots(2,1,figsize=(10,5),sharex=True)
+
+    for col in range(2):
+        ax = ax_list_7[col]
+        SEA_mean = SEA_mean_list_7[col]
+        SEA_std = SEA_std_list_7[col]
+        ax.plot(epoch_arr,SEA_mean,color="black")
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
+        ax.set_ylabel(lab_list_7[col],fontsize=15)
+        ax.set_xlim(-60,60)
+        ax.set_ylim(bottom=0)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+        if col == 1:
+            ax.set_xlabel("Epoch Time [s]",fontsize=20)
+
+    plt.tight_layout()
+
+    fig_7.savefig(homedir+"Figures/hackathon_paper/fig7.png")
+    plt.close(fig_7)
+
+    fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,10),sharex=True)
+
+    for col in range(6):
+        ax = ax_list_8[col]
+        SEA_mean = SEA_mean_list_8[col]
+        SEA_std = SEA_std_list_8[col]
+        ax.plot(epoch_arr,SEA_mean,color="black")
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
+        ax.set_ylabel(lab_list_8[col],fontsize=15)
+        ax.set_xlim(-60,60)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        if col == 5:
+            ax.set_xlabel("Epoch Time [s]",fontsize=20)
+
+    plt.tight_layout()
+
+    fig_8.savefig(homedir+"Figures/hackathon_paper/fig8.png")
+    plt.close(fig_8)
+
+    return None
 
 ###PLOT MAKER HERE###
 
