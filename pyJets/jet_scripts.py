@@ -9,6 +9,7 @@ import matplotlib as mpl
 mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import plot_contours as pc
 import pytools as pt
@@ -442,17 +443,6 @@ def expr_smooth(exprmaps):
 
 
 ###HELPER FUNCTIONS HERE###
-
-def find_bulkpath(runid):
-
-    runid_list = ["ABA","ABC","AEA","AEC","BFD"]
-    path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
-
-    vlpath = "/proj/vlasov/2D/{}/".format(runid)
-
-    bulkpath = vlpath+path_list[runid_list.index(runid)]
-
-    return bulkpath
 
 class MMSReader:
 
@@ -1850,6 +1840,18 @@ def DT_mach_comparison(time_thresh=5):
     fig.savefig(homedir+"Figures/hackathon_paper/DT_mach_comp.png")
     plt.close(fig)
 
+def colorbar(mappable,ax_list):
+    ax = mappable.axes
+    fig = ax.figure
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    
+    div_list = [make_axes_locatable(a) for a in ax_list if a!=ax]
+    cax_list = [divider.append_axes("right",size="5%",pad=0.05) for divider in div_list]
+    [cx.set_axis_off() for cx in cax_list]
+
+    return fig.colorbar(mappable, cax=cax)
+
 def hack_2019_fig2(runid,htw = 60):
 
     runids = ["AEA","AEC"]
@@ -1865,7 +1867,7 @@ def hack_2019_fig2(runid,htw = 60):
     ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Energy~[eV]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
     label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
 
-    bulkpath = find_bulkpath(runid)
+    bulkpath = ja.find_bulkpath(runid)
 
     vo_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))) for n in range(filenr-htw,filenr+htw+1)]
 
@@ -1908,8 +1910,9 @@ def hack_2019_fig2(runid,htw = 60):
         if row == 3:
             im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap))
             ax.set_yscale("log")
-            #cbar = fig.colorbar(im,ax=ax_list.tolist(),ticks=[5,6,7])
-            #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+            cbar = colorbar(im,ax_list.tolist())
+            cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+            cbar.set_ticks([4,5,6,7])
             ax.set_ylim(50,20000)
         else:
             data = data_list[row]/norm_list[row]
@@ -1992,7 +1995,7 @@ def hack_2019_fig1():
             full_cells = []
 
         # Find correct file path
-        bulkpath = find_bulkpath(runids[n])
+        bulkpath = ja.find_bulkpath(runids[n])
 
         bulkname = "bulk.{}.vlsv".format(str(filenr[n]).zfill(7))
 
@@ -2010,8 +2013,10 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     cellids = pass_maps["CellID"]
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
-    bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    #bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
     bs_x = np.polyval(bs_p,bs_y)
+    mp_x = np.polyval(mp_p,bs_y)+2
 
     # Mask jets
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
@@ -2030,6 +2035,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color="black")
     mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="green")
     bs_cont = ax.plot(bs_x,bs_y,color="red")
+    mp_cont = ax.plot(mp_x,bs_y,color="red")
 
 def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
 
@@ -2126,6 +2132,53 @@ def hack_2019_fig78(time_thresh=5):
 
     fig_8.savefig(homedir+"Figures/hackathon_paper/fig8.png")
     plt.close(fig_8)
+
+    return None
+
+def hack_2019_fig9(time_thresh=5,nbins=10):
+
+    var_list = ["B_avg","n_avg","v_avg"]
+    xlabels = ["$|B|_{mean}~[B_{IMF}]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$"]
+    ylabels = ["Vlasiator\nFraction of jets","MMS\nFraction of jets"]
+    bin_list = [np.linspace(0,8,nbins+1),np.linspace(0,7,nbins+1),np.linspace(0,1,nbins+1)]
+
+    vlas_high = [read_mult_runs(var,time_thresh,runids=["ABA","ABC"],amax=False) for var in var_list]
+    vlas_low = [read_mult_runs(var,time_thresh,runids=["AEA","AEC"],amax=False) for var in var_list]
+
+    mms_props_low = MMSReader("LowMachJets.txt")
+    mms_props_high = MMSReader("HighMachJets.txt")
+
+    MMS_low = [mms_props_low.read(var) for var in var_list]
+    MMS_high = [mms_props_high.read(var) for var in var_list]
+
+    data_low = [vlas_low,MMS_low]
+    data_high = [vlas_high,MMS_high]
+
+    fig,ax_list = plt.subplots(2,3,figsize=(10,10),sharey=True)
+
+    for row in range(2):
+        for col in range(3):
+            ax = ax_list[row][col]
+            var_low = data_low[row][col]
+            var_high = data_high[row][col]
+            weights_low = np.ones(var_low.shape,dtype=float)/var_low.size
+            weights_high = np.ones(var_high.shape,dtype=float)/var_high.size
+            if row == 0 and col == 0:
+                label = ["Low\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"High\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
+            else:
+                label = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
+
+            ax.hist([var_low,var_high],weights=[weights_low,weights_high],color=["blue","red"],label=label,histtype="step",bins=bin_list[col])
+            ax.legend(fontsize=15,frameon=False)
+            ax.set_ylim(0,1)
+            if col == 0:
+                ax.set_ylabel(ylabels[row],fontsize=20,labelpad=10)
+            if row == 1:
+                ax.set_xlabel(xlabels[col],fontsize=20,labelpad=10)
+
+    plt.tight_layout()
+    fig.savefig(homedir+"Figures/hackathon_paper/fig9.png")
+    plt.close(fig)
 
     return None
 

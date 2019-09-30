@@ -12,6 +12,20 @@ r_e = 6.371e+6
 
 wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 
+def find_bulkpath(runid):
+
+    runid_list = ["ABA","ABC","AEA","AEC","BFD"]
+    path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
+
+    vlpath = "/proj/vlasov/2D/{}/".format(runid)
+
+    if runid in runid_list:
+        bulkpath = vlpath+path_list[runid_list.index(runid)]
+    else:
+        bulkpath = vlpath+"bulk/"
+
+    return bulkpath
+
 def bs_fitter_new(runid,start,stop,step,angle_offset=0):
 
     filenr_arr = np.array(range(start,stop+1,step))
@@ -25,6 +39,33 @@ def bs_fitter_new(runid,start,stop,step,angle_offset=0):
     p = np.polyfit(time_arr,bsr_arr,deg=1)
 
     print("bsr={:.3g} t + {:.3g}".format(p[0],p[1]))
+
+def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
+
+    rho_sw = sw_par_dict(runid)[0]
+
+    bulkpath = find_bulkpath(runid)
+    bulkname = "bulk.{}.vlsv".format(str(file_nr).zfill(7))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    cellids = restrict_area(vlsvobj,boxre)
+    rho = vlsvobj.read_variable("rho",cellids=cellids)
+    X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
+
+    mask = (rho>=2*rho_sw)
+
+    X_masked = X[mask]
+    Y_masked = Y[mask]
+
+    Y_unique = np.unique(Y_masked)
+    X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Y_unique])
+    X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
+
+    bs_fit = np.polyfit(Y_unique/r_e,X_max/r_e,deg=5)
+    mp_fit = np.polyfit(Y_unique/r_e,X_min/r_e,deg=3)
+
+    return (mp_fit,bs_fit)
 
 def bs_finder_new(runid,file_nr,angle_offset=0):
 
