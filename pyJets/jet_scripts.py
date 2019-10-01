@@ -444,6 +444,21 @@ def expr_smooth(exprmaps):
 
 ###HELPER FUNCTIONS HERE###
 
+class MMSJet:
+
+    def __init__(self):
+
+        filepath = wrkdir_DNR+"working/MMS_jet/"
+
+        ebins_f = open(filepath+"EnergyBins.txt","r+")
+        ebins_c = ebins_f.read()
+        ebins_cl = ebins_c.split("\r\n")[2:]
+        self.energy_bins = np.asarray(ebins_cl,dtype=float)
+
+        
+
+
+
 class MMSReader:
 
     def __init__(self,filename):
@@ -455,7 +470,7 @@ class MMSReader:
         contents_list = contents.split("\r\n")[1:-1]
         contents_matrix = [line.split(",") for line in contents_list]
 
-        self.data_arr = np.asarray(contents_matrix,dtype="float")
+        self.data_arr = np.asarray(contents_matrix,dtype=float)
 
         '''
         1 Mean |B| (SW)
@@ -2016,7 +2031,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     #bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
     mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
     bs_x = np.polyval(bs_p,bs_y)
-    mp_x = np.polyval(mp_p,bs_y)+2
+    mp_x = np.polyval(mp_p,bs_y)+1
 
     # Mask jets
     jet_mask = np.in1d(cellids,jet_cells).astype(int)

@@ -59,11 +59,12 @@ def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
     Y_masked = Y[mask]
 
     Y_unique = np.unique(Y_masked)
-    X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Y_unique])
+    Yun2 = Y_unique[np.logical_and(Y_unique>=-2*r_e,Y_unique<=2*r_e)]
+    X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Yun2])
     X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
 
     bs_fit = np.polyfit(Y_unique/r_e,X_max/r_e,deg=5)
-    mp_fit = np.polyfit(Y_unique/r_e,X_min/r_e,deg=3)
+    mp_fit = np.polyfit(Yun2/r_e,X_min/r_e,deg=2)
 
     return (mp_fit,bs_fit)
 
