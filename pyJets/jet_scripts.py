@@ -35,6 +35,8 @@ import jet_io as jio
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
 r_e = 6.371e+6
+k_b = 1.3806488e-23
+eVtoK = q_e/k_b
 
 EkinBinEdges = np.logspace(np.log10(10),np.log10(2e4),66)
 
@@ -146,6 +148,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         try:
             fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
+            fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
             jet_cells = [] 
@@ -222,6 +225,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         try:
             fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
+            fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
             jet_cells = [] 
@@ -230,6 +234,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         try:
             fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
+            fileobj.close()
             slams_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
             slams_cells = []
@@ -452,12 +457,53 @@ class MMSJet:
 
         ebins_f = open(filepath+"EnergyBins.txt","r+")
         ebins_c = ebins_f.read()
+        ebins_f.close()
         ebins_cl = ebins_c.split("\r\n")[2:]
         self.energy_bins = np.asarray(ebins_cl,dtype=float)
 
-        
+        mfdata_f = open(filepath+"MagneticFieldData.txt","r+")
+        mfdata_c = mfdata_f.read()
+        mfdata_f.close()
+        mfdata_cl = mfdata_c.split("\r\n")[1:-1]
+        mfdata_mat = [line.split(",") for line in mfdata_cl]
 
+        self.mfdata = np.asarray(mfdata_mat,dtype=float)
 
+        jetdata_f = open(filepath+"TimeseriesData_Jet.txt","r+")
+        jetdata_c = jetdata_f.read()
+        jetdata_f.close()
+        jetdata_cl = jetdata_c.split("\r\n")[1:-1]
+        jetdata_mat = [line.split(",") for line in jetdata_cl]
+
+        self.jetdata = np.asarray(jetdata_mat,dtype=float)
+
+        self.mfvar_list = ["Year","Month","Day","Hour","Minute","Second","Bx","By","Bz","B"]
+        self.jetvar_list = ["Year","Month","Day","Hour","Minute","Second","Pdyn","pdr","vx","vy","vz","v","rho","TParallel","TPerpendicular"]
+
+    def read_mftime(self):
+        time = self.mfdata[:,self.mfvar_list.index("Hour")]+self.mfdata[:,self.mfvar_list.index("Minute")]/60.0+self.mfdata[:,self.mfvar_list.index("Second")]/3600.0
+        return time
+
+    def read(self,name):
+        if name == "time":
+            time = self.jetdata[:,self.jetvar_list.index("Hour")]+self.jetdata[:,self.jetvar_list.index("Minute")]/60.0+self.jetdata[:,self.jetvar_list.index("Second")]/3600.0
+            return time
+        elif name == "flux":
+            flux = self.jetdata[:,15:]
+            return flux
+        elif name in self.jetvar_list:
+            if name in ["TParallel","TPerpendicular"]:
+                return self.jetdata[:,self.jetvar_list.index(name)]*eVtoK*1e-6
+            else:
+                return self.jetdata[:,self.jetvar_list.index(name)]
+        elif name in self.mfvar_list:
+            in_data = self.mfdata[:,self.mfvar_list.index(name)]
+            intpol_data = np.interp(self.read("time"),self.read_mftime(),in_data)
+            return intpol_data
+
+    def read_mult(self,name_list):
+        outm = np.array([self.read(name) for name in name_list])
+        return outm
 
 class MMSReader:
 
@@ -467,6 +513,7 @@ class MMSReader:
 
         f = open(filepath,"r+")
         contents = f.read()
+        f.close()
         contents_list = contents.split("\r\n")[1:-1]
         contents_matrix = [line.split(",") for line in contents_list]
 
@@ -1877,7 +1924,7 @@ def hack_2019_fig2(runid,htw = 60):
     outputfolder = homedir+"Figures/hackathon_paper/"
     outpfn = ["fig2_AEA.png","fig2_AEC.png"][r_id]
 
-    var_list = ["Pdyn","V","B","rho","TParallel","TPerpendicular"]
+    var_list = ["Pdyn","v","B","rho","TParallel","TPerpendicular"]
     norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
     ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Energy~[eV]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
     label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
@@ -1895,7 +1942,7 @@ def hack_2019_fig2(runid,htw = 60):
     TPar = np.array([],dtype=float)
     TPerp = np.array([],dtype=float)
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=40,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
 
     for vo in vo_list:
         pdyn = np.append(pdyn,vo.read_variable("Pdyn",cellids=cellid))
@@ -1913,40 +1960,81 @@ def hack_2019_fig2(runid,htw = 60):
     B = np.array([B[:,0],B[:,1],B[:,2],np.linalg.norm(B,axis=-1)])
     T = np.array([TPar,TPerp])
 
+    mmsjr = MMSJet()
+
+    t_mms = mmsjr.read("time")
+    v_mms = mmsjr.read_mult(["vx","vy","vz","v"])
+    B_mms = mmsjr.read_mult(["Bx","By","Bz","B"])
+    T_mms = mmsjr.read_mult(["TParallel","TPerpendicular"])
+    n_mms = mmsjr.read("rho")
+    pdyn_mms = mmsjr.read("Pdyn")
+    ebins_mms = mmsjr.energy_bins
+    flux_mms = mmsjr.read("flux").T
+
+    data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
+    time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
+
     data_list = [pdyn,v.T,B.T,n,n,T.T]
     time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,t,np.array([t,t]).T]
 
 
-    fig,ax_list = plt.subplots(6,1,figsize=(10,12))
+    fig,ax_list = plt.subplots(6,2,figsize=(10,12))
 
-    for row in range(6):
-        print(row)
-        ax = ax_list[row]
-        if row == 3:
-            im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap))
-            ax.set_yscale("log")
-            cbar = colorbar(im,ax_list.tolist())
-            cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-            cbar.set_ticks([4,5,6,7])
-            ax.set_ylim(50,20000)
-        else:
-            data = data_list[row]/norm_list[row]
-            time = time_list[row]
+    for col in range(2):
+        for row in range(6):
+            if col == 0:
+                print(row)
+                ax = ax_list[row][col]
+                if row == 3:
+                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet")
+                    ax.set_yscale("log")
+                    cbar = colorbar(im,ax_list[:,0].tolist())
+                    #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+                    cbar.set_ticks([4,5,6,7])
+                    ax.set_ylim(energy_ar[0],energy_ar[-1])
+                else:
+                    data = data_list[row]/norm_list[row]
+                    time = time_list[row]
 
-            ax.plot(time,data,linewidth=1.0)
-            ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+                    ax.plot(time,data,linewidth=1.0)
+                    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+                ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+                ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
+                ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
+                if row == 5:
+                    ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
+            if col == 1:
+                print(row)
+                ax = ax_list[row][col]
+                if row == 3:
+                    im_mms = ax.pcolormesh(t_mms,ebins_mms,np.log10(flux_mms),cmap="jet",vmin=np.min(np.log10(flux_mms)),vmax=np.max(np.log10(flux_mms)))
+                    ax.set_yscale("log")
+                    cbar_mms = colorbar(im_mms,ax_list[:,1].tolist())
+                    cbar_mms.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+                    #cbar_mms.set_ticks([5,6,7])
+                    ax.set_yticks([1e2,1e3,1e4])
+                    ax.set_ylim(ebins_mms[0],ebins_mms[-1])
 
-        ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+                else:
+                    data = data_mms[row]
+                    time = time_mms[row]
+
+                    ax.plot(time,data,linewidth=1.0)
+                    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+                ax.set_xlim(5+27.5/60,5+41.0/60)
+                ax.set_xticks(5+np.arange(28,42,1)/60.0)
+                ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
+                if row == 5:
+                    ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
+
+
         #ax.legend(label_list[row],fontsize=10,frameon=False)
         #ax.annotate(label_list[row],xy=(90,5),xycoords="axes fraction",fontsize=10)
 
-        ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
-        ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
-        if row == 5:
-            ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
 
 
-    ax_list[0].set_title("Run {}, X,Y,Z = {}$R_e$".format(runid,vo_list[0].get_cell_coordinates(cellid)/r_e),fontsize=20)
+    ax_list[0][0].set_title("Run {}\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
+    ax_list[0][1].set_title("MMS\nX,Y,Z = [11.9, -0.9, -0.9]$R_e$",fontsize=20)
     plt.tight_layout()
 
     fig.savefig(outputfolder+outpfn)
@@ -1999,6 +2087,7 @@ def hack_2019_fig1():
         try:
             fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runids[n],filenr[n]),"r")
             contents = fileobj.read()
+            fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
             jet_cells = [] 

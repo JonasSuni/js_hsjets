@@ -52,6 +52,7 @@ class PropReader:
             raise IOError("File not found!")
 
         props = props_f.read()
+        props_f.close()
         props = props.split("\n")[1:]
         props = [line.split(",") for line in props]
         self.props = np.asarray(props,dtype="float")
@@ -245,6 +246,7 @@ def jetfile_read(runid,filenr,key,transient="jet"):
 
     jf = open("{}/{}/{}.{}.{}".format(inputdir,runid,str(filenr),key,extension),"r")
     contents = jf.read()
+    jf.close()
     lines = contents.split("\n")
 
     for line in lines:
@@ -265,6 +267,7 @@ def eventfile_read(runid,filenr,transient="jet"):
 
     ef = open("{}/{}/{}.events".format(inputdir,runid,str(filenr)),"r")
     contents = ef.read().strip("\n")
+    ef.close()
     if contents == "":
         return []
     lines = contents.split("\n")
@@ -300,6 +303,7 @@ def eventprop_read(runid,filenr):
         raise IOError("File not found!")
 
     props = props_f.read()
+    props_f.close()
     props = props.split("\n")[1:]
     props = [map(float,line.split(",")) for line in props]
 
@@ -994,6 +998,7 @@ def slams_eventfile_read(runid,filenr):
 
     ef = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
     contents = ef.read().strip("\n")
+    ef.close()
     if contents == "":
         return []
     lines = contents.split("\n")
