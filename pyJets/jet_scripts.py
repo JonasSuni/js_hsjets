@@ -2034,7 +2034,7 @@ def hack_2019_fig2(runid,htw = 60):
 
 
 
-    ax_list[0][0].set_title("Run {}\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
+    ax_list[0][0].set_title("Run AEA\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
     ax_list[0][1].set_title("MMS\nX,Y,Z = [11.9, -0.9, -0.9]$R_e$",fontsize=20)
     plt.tight_layout()
 
