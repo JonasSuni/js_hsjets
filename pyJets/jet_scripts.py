@@ -490,6 +490,7 @@ class MMSJet:
             return time
         elif name == "flux":
             flux = self.jetdata[:,15:]
+            flux[flux==0] = 1e-31
             return flux
         elif name in self.jetvar_list:
             if name in ["TParallel","TPerpendicular"]:
