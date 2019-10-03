@@ -2008,11 +2008,11 @@ def hack_2019_fig2(runid,htw = 60):
                 print(row)
                 ax = ax_list[row][col]
                 if row == 3:
-                    im_mms = ax.pcolormesh(t_mms,ebins_mms,np.log10(flux_mms),cmap="jet",vmin=np.min(np.log10(flux_mms)),vmax=np.max(np.log10(flux_mms)))
+                    im_mms = ax.pcolormesh(t_mms,ebins_mms,np.log10(flux_mms),cmap="jet",vmin=4.5,vmax=7.5)
                     ax.set_yscale("log")
                     cbar_mms = colorbar(im_mms,ax_list[:,1].tolist())
                     cbar_mms.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-                    #cbar_mms.set_ticks([5,6,7])
+                    cbar_mms.set_ticks([5,6,7])
                     ax.set_yticks([1e2,1e3,1e4])
                     ax.set_ylim(ebins_mms[0],ebins_mms[-1])
 
