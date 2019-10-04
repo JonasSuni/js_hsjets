@@ -1915,6 +1915,57 @@ def colorbar(mappable,ax_list):
 
     return fig.colorbar(mappable, cax=cax)
 
+def get_timeseries(runid,start,stop,var_list,cellids):
+
+    if type(var_list) == str:
+        var_list = [var_list]
+
+    norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
+    all_vars = ["Pdyn","v","B","rho","TParallel","TPerpendicular"]
+    v_vars = ["vx","vy","vz"]
+    B_vars = ["Bx","By","Bz"]
+    coord_vars = ["x","y","z"]
+
+    if len(var_list) == 1:
+        data_arr = np.zeros(stop-start+1)
+    else:
+        data_arr = np.zeros((len(var_list),stop-start+1),dtype=float)
+
+    time_arr = np.zeros_like(data_arr)
+
+    bulkpath = ja.find_bulkpath(runid)
+    itr = 0
+
+    for n in range(start,stop+1):
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7)))
+        for var in var_list:
+            if var in v_vars:
+                if len(var_list) == 1:
+                    data_arr[itr] = vlsvobj.read_variable("v",operator=coord_vars[v_vars.index(var)],cellids=cellids)/norm_list[all_vars.index("v")]
+                    time_arr[itr] = vlsvobj.read_parameter("t")
+                else:
+                    data_arr[var_list.index(var),itr] = vlsvobj.read_variable("v",operator=coord_vars[v_vars.index(var)],cellids=cellids)/norm_list[all_vars.index("v")]
+                    time_arr[var_list.index(var),itr] = vlsvobj.read_parameter("t")
+            elif var in B_vars:
+                if len(var_list) == 1:
+                    data_arr[itr] = vlsvobj.read_variable("B",operator=coord_vars[v_vars.index(var)],cellids=cellids)/norm_list[all_vars.index("B")]
+                    time_arr[itr] = vlsvobj.read_parameter("t")
+                else:
+                    data_arr[var_list.index(var),itr] = vlsvobj.read_variable("B",operator=coord_vars[B_vars.index(var)],cellids=cellids)/norm_list[all_vars.index("B")]
+                    time_arr[var_list.index(var),itr] = vlsvobj.read_parameter("t")
+            else:
+                if len(var_list) == 1:
+                    data_arr[itr] = vlsvobj.read_variable(var,operator="magnitude",cellids=cellids)/norm_list[all_vars.index(var)]
+                    time_arr[itr] = vlsvobj.read_parameter("t")
+                else:
+                    data_arr[var_list.index(var),itr] = vlsvobj.read_variable(var,operator="magnitude",cellids=cellids)/norm_list[all_vars.index(var)]
+                    time_arr[var_list.index(var),itr] = vlsvobj.read_parameter("t")
+
+        itr += 1
+
+    return (time_arr,data_arr)
+
+
 def hack_2019_fig2(runid,htw = 60):
 
     runids = ["AEA","AEC"]
@@ -1925,41 +1976,13 @@ def hack_2019_fig2(runid,htw = 60):
     outputfolder = homedir+"Figures/hackathon_paper/"
     outpfn = ["fig2_AEA.png","fig2_AEC.png"][r_id]
 
-    var_list = ["Pdyn","v","B","rho","TParallel","TPerpendicular"]
+    var_list_list = ["Pdyn",["vx","vy","vz","v"],["Bx","By","Bz","B"],"","rho",["TParallel","TPerpendicular"]]
     norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
     ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Energy~[eV]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
     label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
 
+
     bulkpath = ja.find_bulkpath(runid)
-
-    vo_list = [pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))) for n in range(filenr-htw,filenr+htw+1)]
-
-    print("good")
-
-    pdyn = np.array([],dtype=float)
-    v = np.array([0,0,0],dtype=float)
-    B = np.array([0,0,0],dtype=float)
-    n = np.array([],dtype=float)
-    TPar = np.array([],dtype=float)
-    TPerp = np.array([],dtype=float)
-
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
-
-    for vo in vo_list:
-        pdyn = np.append(pdyn,vo.read_variable("Pdyn",cellids=cellid))
-        n = np.append(n,vo.read_variable("rho",cellids=cellid))
-        TPar = np.append(TPar,vo.read_variable("TParallel",cellids=cellid))
-        TPerp = np.append(TPerp,vo.read_variable("TPerpendicular",cellids=cellid))
-        v = np.vstack((v,np.array(vo.read_variable("v",cellids=cellid))))
-        B = np.vstack((B,np.array(vo.read_variable("B",cellids=cellid))))
-
-    v = v[1:,:]
-    B = B[1:,:]
-    
-    t = np.array(range(filenr-htw,filenr+htw+1),dtype=float)/2.0
-    v = np.array([v[:,0],v[:,1],v[:,2],np.linalg.norm(v,axis=-1)])
-    B = np.array([B[:,0],B[:,1],B[:,2],np.linalg.norm(B,axis=-1)])
-    T = np.array([TPar,TPerp])
 
     mmsjr = MMSJet()
 
@@ -1972,12 +1995,10 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
+
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
-
-    data_list = [pdyn,v.T,B.T,n,n,T.T]
-    time_list = [t,np.array([t,t,t,t]).T,np.array([t,t,t,t]).T,t,t,np.array([t,t]).T]
-
 
     fig,ax_list = plt.subplots(6,2,figsize=(10,12))
 
@@ -1987,15 +2008,16 @@ def hack_2019_fig2(runid,htw = 60):
                 print(row)
                 ax = ax_list[row][col]
                 if row == 3:
-                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet")
+                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet",vmin=4.5,vmax=7.5)
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
                     cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
-                    data = data_list[row]/norm_list[row]
-                    time = time_list[row]
+                    time,data = get_timeseries(runid,filenr-htw,filenr+htw+1,var_list_list[row],cellids=cellid)
+                    data = data.T
+                    time = time.T
 
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
