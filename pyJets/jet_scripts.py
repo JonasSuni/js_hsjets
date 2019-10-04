@@ -86,7 +86,7 @@ def ext_bsp(ax,XmeshXY,YmeshXY,pass_maps):
     X,Y,Z = ja.xyz_reconstruct(vlsvobj,cellids) # Reconstruct coordinates
 
     # Select angle based on run type
-    if vlsvobj.get_spatial_mesh_size()[2]==1: 
+    if vlsvobj.get_spatial_mesh_size()[2]==1:
         r_angle = np.rad2deg(np.arctan(np.abs(Y)/X)) # Ecliptical
     else:
         r_angle = np.rad2deg(np.arctan(np.abs(Z)/X)) # Polar
@@ -108,7 +108,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     #outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
     outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
-    
+
     # Initialise required global variables
     global jet_cells
     global full_cells
@@ -151,7 +151,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
-            jet_cells = [] 
+            jet_cells = []
 
         # Try reading mask file
         try:
@@ -198,7 +198,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     # Plot slamjets contours and positions
 
     outputdir = wrkdir_DNR+"contours/SLAMSJETS/{}/".format(runid)
-    
+
     # Initialise required global variables
     global jet_cells
     global slams_cells
@@ -228,7 +228,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
-            jet_cells = [] 
+            jet_cells = []
 
         # Try reading SLAMS events file
         try:
@@ -495,6 +495,8 @@ class MMSJet:
         elif name in self.jetvar_list:
             if name in ["TParallel","TPerpendicular"]:
                 return self.jetdata[:,self.jetvar_list.index(name)]*eVtoK*1e-6
+            elif name == "Pdyn":
+                return self.jetdata[:,self.jetvar_list.index(name)]*1.0e9
             else:
                 return self.jetdata[:,self.jetvar_list.index(name)]
         elif name in self.mfvar_list:
@@ -868,7 +870,7 @@ def jet_mult_time_series(runid,start,jetid,thresh = 0.0,transient="jet"):
 
     # Draw figure
     plt.ioff()
-    
+
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(211)
     ax2 = fig.add_subplot(212)
@@ -929,7 +931,7 @@ def jet_time_series(runid,start,jetid,var,thresh = 0.0,transient="jet"):
 
     # Draw figure
     plt.ioff()
-    
+
     fig = plt.figure(figsize=(10,5))
     ax = fig.add_subplot(111)
     ax.set_xlabel("Time [s]",fontsize=20)
@@ -973,7 +975,7 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
     SEA_arr = np.zeros_like(epoch_arr) # Initialise superposed epoch array
 
     for n in jetids:
-        
+
         # Try reading jet
         try:
             props = jio.PropReader(str(n).zfill(5),runid,580)
@@ -983,14 +985,14 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
         # Read time and centering
         time_arr = props.read("time")
         cent_arr = props.read(centering)/ja.sw_normalisation(runid,centering)
-        
+
         # Threshold condition
         if time_arr.size < thresh:
             continue
 
         # Read variable data
         var_arr = props.read(var)/ja.sw_normalisation(runid,var)
-        
+
         # Try scaling to fractional increase
         try:
             var_arr /= sheath_pars_list(var)[1]
@@ -1015,17 +1017,17 @@ def SEA_make(runid,var,centering="pd_avg",thresh=5):
     fig = plt.figure(figsize=(10,5))
     ax = fig.add_subplot(111)
     ax.set_xlabel("Epoch time [s]",fontsize=20)
-    
+
     try:
         ax.set_ylabel("Fractional increase {}".format(sheath_pars_list(var)[0]),fontsize=20)
     except:
         ax.set_ylabel("Averaged {}".format(var_pars_list(var)[0]),fontsize=20)
-    
+
     plt.grid()
     plt.title("Run: {}, Epoch centering: {}".format(runid,centering.replace("_",r"\_")))
     ax.plot(epoch_arr,SEA_arr_mean,color="black")
     ax.fill_between(epoch_arr,SEA_arr_mean-SEA_arr_std,SEA_arr_mean+SEA_arr_std,alpha=0.3)
-    
+
     plt.tight_layout()
 
     # Save figure
@@ -1092,7 +1094,7 @@ def jet_lifetime_plots(var,amax=True):
                         y_list_list[n].append(props.read_at_amax(var)/ja.sw_normalisation(runids[n],var))
                     else:
                         y_list_list[n].append(np.max(props.read(var))/ja.sw_normalisation(runids[n],var))
-    
+
     # Draw figure
     plt.ioff()
 
@@ -1306,7 +1308,7 @@ def jet_paper_vs_hist_new(runids_list,var,time_thresh=10):
         bins = 10**bins
         plt.xscale("log")
         ax.set_xlim(1,xmax)
-        
+
         #hist = ax.hist(var_list,weights=weights,bins=bins,color=run_colors_list,label=var_labels)
         hist = [ax.hist(var_list[n],weights=weights[n],bins=bins,fc="None",linewidth=1.2,edgecolor=run_colors_list[n],label=var_labels[n],histtype="step") for n in range(len(var_list))]
 
@@ -1433,7 +1435,7 @@ def jet_paper_vs_hist(runids,var,time_thresh=10):
         bins = 10**bins
         plt.xscale("log")
         ax.set_xlim(1,xmax)
-        
+
         hist = ax.hist([val_dict[runids[0]],val_dict[runids[1]]],weights=weights,bins=bins,color=[run_colors_dict[runids[0]],run_colors_dict[runids[1]]],label=[runids[0]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[0]]),np.std(val_dict[runids[0]],ddof=1)),runids[1]+"\nmed: %.1f\nstd: %.1f"%(np.median(val_dict[runids[1]]),np.std(val_dict[runids[1]],ddof=1))])
 
         ax.set_xticks(np.array([10**0,10**1,10**2,10**3]))
@@ -1772,13 +1774,13 @@ def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=Fa
 def read_energy_spectrogram(vlsvobj,cid):
 
     fMin = 1e-15
-    
+
     velcells = vlsvobj.read_velocity_cells(cid)
     V = vlsvobj.get_velocity_cell_coordinates(velcells.keys())
     V2 = np.sum(np.square(V),1)
     Ekin = 0.5*m_p*V2/q_e
     f_v = np.asarray(velcells.values())
-     
+
     ii_f = np.where(f_v >= fMin)
     f_v = f_v[ii_f]
     Ekin = Ekin[ii_f]
@@ -1793,7 +1795,7 @@ def read_energy_spectrogram(vlsvobj,cid):
     (nhist,edges) = np.histogram(Ekin,bins=EkinBinEdges,weights=fn,normed=0)
     # normalization
     dE = EkinBinEdges[1:] - EkinBinEdges[0:-1]
-    #E_mid = 
+    #E_mid =
     nhist = np.divide(nhist,(dE*4*np.pi*1.0e-4))
 
     return (nhist,edges)
@@ -1908,7 +1910,7 @@ def colorbar(mappable,ax_list):
     fig = ax.figure
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
-    
+
     div_list = [make_axes_locatable(a) for a in ax_list if a!=ax]
     cax_list = [divider.append_axes("right",size="5%",pad=0.05) for divider in div_list]
     [cx.set_axis_off() for cx in cax_list]
@@ -1920,7 +1922,7 @@ def get_timeseries(runid,start,stop,var_list,cellids):
     if type(var_list) == str:
         var_list = [var_list]
 
-    norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
+    norm_list = [1.0e-9,1.0e+3,1.0e-9,1.0e+6,1.0e+6,1.0e+6]
     all_vars = ["Pdyn","v","B","rho","TParallel","TPerpendicular"]
     v_vars = ["vx","vy","vz"]
     B_vars = ["Bx","By","Bz"]
@@ -1970,6 +1972,7 @@ def hack_2019_fig2(runid,htw = 60):
 
     runids = ["AEA","AEC"]
     r_id = runids.index(runid)
+    color_list = ["black","blue","red","green"]
 
     filenr = [820,760][r_id]
     cellid = [1301051,1700451][r_id]
@@ -1978,8 +1981,8 @@ def hack_2019_fig2(runid,htw = 60):
 
     var_list_list = ["Pdyn",["vx","vy","vz","v"],["Bx","By","Bz","B"],"","rho",["TParallel","TPerpendicular"]]
     norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
-    ylabels = ["$P_{dyn}~[nPa]$","$Velocity~[kms^{-1}]$","$Magnetic~field~[nT]$","$Energy~[eV]$","$Density~[cm^{-3}]$","$Temperature~[MK]$"]
-    label_list = [r"",r"\textcolor{black}{$v_x$}\textcolor{blue}{$v_y$}\textcolor{red}{$v_z$}\textcolor{green}{|v|}",r"\textcolor{black}{$B_x$}\textcolor{blue}{$B_y$}\textcolor{red}{$B_z$}\textcolor{green}{|B|}",r"",r"\textcolor{black}{$T_{par}$}\textcolor{blue}{$T_{perp}$}"]
+    ylabels = ["$P_{dyn}~[nPa]$","$v~[kms^{-1}]$","$B~[nT]$","$W~[eV]$","$n~[cm^{-3}]$","$T~[MK]$"]
+    annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],[""],["TPar","TPerp"]]
 
 
     bulkpath = ja.find_bulkpath(runid)
@@ -2000,6 +2003,8 @@ def hack_2019_fig2(runid,htw = 60):
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
 
+    mms_max_time = t_mms[np.argmax(pdyn_mms)]
+
     fig,ax_list = plt.subplots(6,2,figsize=(10,12))
 
     for col in range(2):
@@ -2008,11 +2013,11 @@ def hack_2019_fig2(runid,htw = 60):
                 print(row)
                 ax = ax_list[row][col]
                 if row == 3:
-                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet",vmin=4.5,vmax=7.5)
+                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet")
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-                    cbar.set_ticks([4,5,6,7])
+                    cbar.set_ticks([5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
                     time,data = get_timeseries(runid,filenr-htw,filenr+htw+1,var_list_list[row],cellids=cellid)
@@ -2020,12 +2025,15 @@ def hack_2019_fig2(runid,htw = 60):
                     time = time.T
 
                     ax.plot(time,data,linewidth=1.0)
-                    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+                    ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
                 ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
                 ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
                 if row == 5:
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
+                ann_list = annot_list_list[row]
+                for m in range(len(ann_list)):
+                    ax.annotate(ann_list[m],xy=(0.6+m*0.4/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
             if col == 1:
                 print(row)
                 ax = ax_list[row][col]
@@ -2043,21 +2051,20 @@ def hack_2019_fig2(runid,htw = 60):
                     time = time_mms[row]
 
                     ax.plot(time,data,linewidth=1.0)
-                    ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+                    ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
                 ax.set_xlim(5+27.5/60,5+41.0/60)
                 ax.set_xticks(5+np.arange(28,42,1)/60.0)
                 ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
                 if row == 5:
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
-
-
-        #ax.legend(label_list[row],fontsize=10,frameon=False)
-        #ax.annotate(label_list[row],xy=(90,5),xycoords="axes fraction",fontsize=10)
-
-
+                ann_list = annot_list_list[row]
+                for m in range(len(ann_list)):
+                    ax.annotate(ann_list[m],xy=(0.6+m*0.4/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
     ax_list[0][0].set_title("Run AEA\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
     ax_list[0][1].set_title("MMS\nX,Y,Z = [11.9, -0.9, -0.9]$R_e$",fontsize=20)
+    ax_list[2][0].set_ylim(bottom=-20)
+    ax_list[5][0].set_ylim(bottom=2)
     plt.tight_layout()
 
     fig.savefig(outputfolder+outpfn)
@@ -2067,7 +2074,7 @@ def hack_2019_fig2(runid,htw = 60):
 def hack_2019_fig1():
 
     outputdir = homedir+"Figures/hackathon_paper/"
-    
+
     # Initialise required global variables
     global jet_cells,full_cells
     global xmean_list,ymean_list
@@ -2113,7 +2120,7 @@ def hack_2019_fig1():
             fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
         except IOError:
-            jet_cells = [] 
+            jet_cells = []
 
         # Try reading mask file
         try:
