@@ -2033,7 +2033,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
                 for m in range(len(ann_list)):
-                    ax.annotate(ann_list[m],xy=(0.7+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
+                    ax.annotate(ann_list[m],xy=(0.7+m*0.3/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
             if col == 1:
                 print(row)
                 ax = ax_list[row][col]
@@ -2059,7 +2059,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
                 for m in range(len(ann_list)):
-                    ax.annotate(ann_list[m],xy=(0.7+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
+                    ax.annotate(ann_list[m],xy=(0.7+m*0.3/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
     ax_list[0][0].set_title("Run AEA\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
     ax_list[0][1].set_title("MMS\nX,Y,Z = [11.9, -0.9, -0.9]$R_e$",fontsize=20)
