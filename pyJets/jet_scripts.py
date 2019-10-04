@@ -2052,6 +2052,7 @@ def hack_2019_fig2(runid,htw = 60):
 
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+                ax.axvline(mms_max_time,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_xlim(5+27.5/60,5+41.0/60)
                 ax.set_xticks(5+np.arange(28,42,1)/60.0)
                 ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
