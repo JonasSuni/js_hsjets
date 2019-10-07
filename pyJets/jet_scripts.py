@@ -1694,7 +1694,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
 
-    ABA_vars = read_mult_runs(var_list,timbins_mmse_thresh,runids=["ABA"],amax=False)
+    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
     AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=False)
     AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=False)
