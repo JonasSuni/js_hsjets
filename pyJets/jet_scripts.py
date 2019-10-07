@@ -1599,6 +1599,7 @@ def hack_2019_fig4(time_thresh=5):
 
     vlas_norm = np.array([1,1,1,1,1,1/0.5,1/0.5])
     mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
+    bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,6,10+1),np.linspace(0,15,10+1)])
 
     var_list = ["size_rad","n_avg","v_avg","pd_avg","B_avg","TPerp_avg","TPar_avg"]
     ylabel_list = ["$Extent~[R_e]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$","$P_{dyn,mean}~[P_{dyn,sw}]$","$|B|_{mean}~[B_{IMF}]$","$Temperatures~[MK]$"]
@@ -1628,7 +1629,7 @@ def hack_2019_fig4(time_thresh=5):
                 lab = "TPerp\nmed:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1))
             else:
                 lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1))
-            ax.hist(data_arr,weights=weights,label=lab,histtype="step")
+            ax.hist(data_arr,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
             ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
@@ -1643,7 +1644,7 @@ def hack_2019_fig4(time_thresh=5):
                     lab = "TPar\nmed:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1))
                 else:
                     lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1))
-                ax.hist(data_arr_2,weights=weights,label=lab,histtype="step")
+                ax.hist(data_arr_2,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
                 ax.legend(fontsize=10)
@@ -1691,7 +1692,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
 
-    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
+    ABA_vars = read_mult_runs(var_list,timbins_mmse_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
     AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=False)
     AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=False)
@@ -2029,7 +2030,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-                    cbar.set_ticks([5,6,7])
+                    cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
                     time,data = get_timeseries(runid,filenr-htw,filenr+htw+1,var_list_list[row],cellids=cellid)
