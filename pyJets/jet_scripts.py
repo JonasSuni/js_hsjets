@@ -1660,7 +1660,7 @@ def hack_2019_fig6(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
-    bins_list = np.array([np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
+    bins_list = np.array([np.linspace(time_thresh,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     data_list = read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False)
 
@@ -1689,7 +1689,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
-    bins_list = np.array([np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
+    bins_list = np.array([np.linspace(time_thresh,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
