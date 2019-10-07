@@ -1660,6 +1660,7 @@ def hack_2019_fig6(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
+    bins_list = np.array([np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     data_list = read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False)
 
@@ -1671,7 +1672,7 @@ def hack_2019_fig6(time_thresh=5):
         weights = np.ones(var.shape,dtype=float)/var.size
         lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(var),np.std(var))
 
-        ax.hist(var,weights=weights,label=lab,histtype="step")
+        ax.hist(var,weights=weights,label=lab,histtype="step",bins=bins_list[col])
         ax.legend(fontsize=10,frameon=False)
         ax.set_xlabel(label_list[col],fontsize=15)
         ax.set_ylim(0,1)
@@ -1688,6 +1689,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
+    bins_list = np.array([np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
@@ -1708,7 +1710,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
         color_arr = ["black","blue","red","green"]
 
-        ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step")
+        ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
         ax.legend(fontsize=10,frameon=False)
         ax.set_xlabel(label_list[col],fontsize=15)
         ax.set_ylim(0,1)
