@@ -1622,7 +1622,11 @@ def hack_2019_fig4(time_thresh=5):
             data_arr = darr_list[row][col]/norm
             weights = np.ones(data_arr.shape,dtype=float)/data_arr.size
 
-            ax.hist(data_arr,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1)),histtype="step")
+            if col == 0 and row == 5:
+                lab = "TPerp\nmed:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1))
+            else:
+                lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1))
+            ax.hist(data_arr,weights=weights,label=lab,histtype="step")
 
             ax.yaxis.set_major_locator(MaxNLocator(nbins=7,prune="lower"))
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
@@ -1633,7 +1637,11 @@ def hack_2019_fig4(time_thresh=5):
                 data_arr_2 = darr_list[6][col]/norm
                 weights_2 = np.ones(data_arr_2.shape,dtype=float)/data_arr_2.size
 
-                ax.hist(data_arr_2,weights=weights,label="med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1)),histtype="step")
+                if col == 0:
+                    lab = "TPar\nmed:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1))
+                else:
+                    lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr_2),np.std(data_arr_2,ddof=1))
+                ax.hist(data_arr_2,weights=weights,label=lab,histtype="step")
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
                 ax.legend(fontsize=10)
@@ -1888,8 +1896,12 @@ def DT_mach_comparison(time_thresh=5):
             var_high = var_list_high[col][row]
             weights_low = np.ones(var_low.shape,dtype=float)/var_low.size
             weights_high = np.ones(var_high.shape,dtype=float)/var_high.size
+            if row == 0 and col == 0:
+                lab = ["Low\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"High\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
+            else:
+                lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
-            ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))],color=["blue","red"],histtype="step",bins=hist_bins[row])
+            ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.legend(fontsize=10,frameon=False)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
