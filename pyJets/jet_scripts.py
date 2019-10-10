@@ -2158,7 +2158,7 @@ def hack_2019_fig1():
 
         pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
 
 
 def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
@@ -2166,7 +2166,9 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     # External function for jet_plotter
 
     cellids = pass_maps["CellID"]
-    pdyn = pass_maps["Pdyn"]
+    rho = pass_maps["rho"]
+    vx = pass_maps["v"][:,:,0]
+    pdyn = m_p*rho*vx*vx
     sw_pars = ja.sw_par_dict(runid_g)
     pd_sw = sw_pars[3]
 
