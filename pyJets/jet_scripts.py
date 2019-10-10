@@ -2168,9 +2168,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     cellids = pass_maps["CellID"]
     pdyn = pass_maps["Pdyn"]
     sw_pars = ja.sw_par_dict(runid_g)
-    rho_sw = sw_pars[0]
-    v_sw = sw_pars[1]
-    pd_sw = m_p*rho_sw*v_sw*v_sw
+    pd_sw = sw_pars[3]
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
     #bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
@@ -2184,7 +2182,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     # Mask Plaschke
 
-    plas_mask = (pdyn >= 0.5*pd_sw).astype(int)
+    plas_mask = (pdyn >= 0.25*pd_sw).astype(int)
     plas_mask = np.reshape(plas_mask,cellids.shape)
 
     # Mask full mask
@@ -2192,7 +2190,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     full_mask = np.reshape(full_mask,cellids.shape)
 
     #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
-    p_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors="magenta")
+    p_cont = ax.contour(XmeshXY,YmeshXY,plas_mask_mask,[0.5],linewidths=0.6,colors="magenta")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
