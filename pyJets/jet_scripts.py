@@ -2041,6 +2041,7 @@ def hack_2019_fig2(runid,htw = 60):
 
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+                    ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
                 ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
                 ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
@@ -2100,9 +2101,11 @@ def hack_2019_fig1():
 
     runids = ["AEA","AEC"]
     outpfn = ["fig1_AEA.png","fig1_AEC.png"]
+    outpfn_2 = ["fig1_AEA_zoom.png","fig1_AEC_zoom.png"]
     cellid = [1301051,1700451]
     filenr = [820,760]
     boxre = [[6,18,-8,6],[6,18,-6,6]]
+    boxre_2 = [[10,14,-3,1],[7,11,-3,1]]
     vmax = [1.5,4.5]
     pos_mms = [np.array([11.8709 , -0.8539, -0.9172]),np.array([ 9.1060, -0.9715,   -0.8508])]
     pos_vl = [np.array([ 11.81803436,  -0.87607214, 0]),np.array([8.24222971, -0.87607214, 0])]
@@ -2153,7 +2156,9 @@ def hack_2019_fig1():
             print("Bulk file {} not found, continuing".format(str(filenr[n])))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,fsaved="black",vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
 
 
 def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
@@ -2161,6 +2166,11 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     # External function for jet_plotter
 
     cellids = pass_maps["CellID"]
+    pdyn = pass_maps["Pdyn"]
+    sw_pars = ja.sw_par_dict(runid_g)
+    rho_sw = sw_pars[0]
+    v_sw = sw_pars[1]
+    pd_sw = m_p*rho_sw*v_sw*v_sw
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
     #bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
@@ -2172,11 +2182,17 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
+    # Mask Plaschke
+
+    plas_mask = (pdyn >= 0.5*pd_sw).astype(int)
+    plas_mask = np.reshape(plas_mask,cellids.shape)
+
     # Mask full mask
     full_mask = np.in1d(cellids,full_cells).astype(int)
     full_mask = np.reshape(full_mask,cellids.shape)
 
     #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
+    p_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors="magenta")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
