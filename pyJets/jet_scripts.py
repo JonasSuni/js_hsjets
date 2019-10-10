@@ -2190,7 +2190,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     full_mask = np.reshape(full_mask,cellids.shape)
 
     #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
-    p_cont = ax.contour(XmeshXY,YmeshXY,plas_mask_mask,[0.5],linewidths=0.6,colors="magenta")
+    p_cont = ax.contour(XmeshXY,YmeshXY,plas_mask,[0.5],linewidths=0.6,colors="magenta")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
