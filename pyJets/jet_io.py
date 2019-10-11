@@ -63,7 +63,7 @@ class PropReader:
         self.var_dict = dict(zip(var_list,n_list))
 
         self.delta_list = ["DT","Dn","Dv","Dpd","DB","DTPar","DTPerp"]
-        self.davg_list = ["T_avg","n_avg","v_avg","pd_avg","B_avg","TPar_avg","TPerp_avg"]
+        self.davg_list = ["T_avg","n_max","v_max","pd_max","B_max","TPar_avg","TPerp_avg"]
         self.sheath_list = ["T_sheath","n_sheath","v_sheath","pd_sheath","B_sheath","TPar_sheath","TPerp_sheath"]
 
     def read(self,name):
@@ -127,7 +127,7 @@ class Jet:
         self.ID = ID # Should be a string of 5 digits
         self.runid = runid # Should be a string of 3 letters
         self.birthday = birthday # Should be a float of accuracy to half a second
-        self.cellids = [] 
+        self.cellids = []
         self.times = [birthday]
         self.props = []
 
@@ -149,7 +149,7 @@ class Jet:
             propfile_write(self.runid,start,self.ID,self.props)
         else:
             print("Jet {} too short-lived, propfile not written!".format(self.ID))
-            
+
         return None
 
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
@@ -570,7 +570,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
 
-    # Check if transient with specified ID exists 
+    # Check if transient with specified ID exists
     if "{}.{}.{}".format(str(start),jetid,extension) not in os.listdir("{}/{}".format(inputdir,runid)):
         print("Transient with ID "+jetid+" does not exist, exiting.")
         return 1
@@ -736,7 +736,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
         # current time
         time = time_list[n]
 
-        ''' 
+        '''
         0: time [s],
         1: x_mean [R_e],        2: y_mean [R_e],        3: z_mean [R_e],
         4: A [R_e^2],           5: Nr_cells,
@@ -908,7 +908,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
             for jetobj in jetobj_list:
 
                 if jetobj.ID in flags:
-                    
+
                     if np.intersect1d(jetobj.cellids[-2],event).size > threshold*min(len(event),len(jetobj.cellids[-2])):
 
                         if track_splinters:
@@ -1145,7 +1145,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
         slams_events = slams_eventfile_read(runid,n)
         slams_events.sort(key=len)
-        slams_events = slams_events[::-1]        
+        slams_events = slams_events[::-1]
 
         # Iniatilise list of cells currently being tracked
         curr_slams_temp_list = []
@@ -1157,7 +1157,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
             for slamsobj in slamsobj_list:
 
                 if slamsobj.ID in slams_flags:
-                    
+
                     if np.intersect1d(slamsobj.cellids[-2],slams_event).size > threshold*min(len(slams_event),len(slamsobj.cellds[-2])):
 
                         if track_splinters:
@@ -1200,7 +1200,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
             for slamsjet in slamsjet_list:
 
                 if slamsjet.ID in slamsjet_flags:
-                    
+
                     if np.intersect1d(slamsjet.cellids[-2],event).size > threshold*min(len(event),len(slamsjet.cellids[-2])):
 
                         if track_splinters:

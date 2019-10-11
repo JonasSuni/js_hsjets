@@ -763,7 +763,7 @@ def jet_paper_counter():
             props = jio.PropReader("",runids[n],fname=fname)
 
             # Conditions
-            if props.read("time")[-1]-props.read("time")[0] + 0.5 > 10 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
+            if props.read("time")[-1]-props.read("time")[0] + 0.5 > 5 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     count_list_list[n] += 1 # Iterate counter if conditions fulfilled
 
 
@@ -1601,8 +1601,8 @@ def hack_2019_fig4(time_thresh=5):
     mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
     bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,6,10+1),np.linspace(0,15,10+1)])
 
-    var_list = ["size_rad","n_avg","v_avg","pd_avg","B_avg","TPerp_avg","TPar_avg"]
-    ylabel_list = ["$Extent~[R_e]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$","$P_{dyn,mean}~[P_{dyn,sw}]$","$|B|_{mean}~[B_{IMF}]$","$Temperatures~[MK]$"]
+    var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_max","TPar_max"]
+    ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T~[MK]$"]
     xlabel_list = ["VLHigh","VLRand","MMS"]
 
     mms_reader = MMSReader("StableJets.txt")
@@ -2251,18 +2251,18 @@ def hack_2019_fig78(time_thresh=5):
     # Creates Superposed Epoch Analysis of jets in specified run, centering specified var around maximum of
     # specified centering variable
 
-    var_list_7 = ["size_tan","size_ratio"]
+    var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
 
-    lab_list_7 = ["$Tangential~Size~[R_e]$","$Size~Ratio$"]
+    lab_list_7 = ["Extent~[R_e]","$Tangential~Size~[R_e]$","$Size~Ratio$"]
     lab_list_8 = ["$\\Delta n~[n_{sw}]$","$\\Delta |v|~[v_{sw}]$","$\\Delta P_{dyn}~[P_{dyn,sw}]$","$\\Delta |B|~[B_{IMF}]$","$\\Delta T_{perp}~[MK]$","$\\Delta T_{par}~[MK]$"]
 
     epoch_arr,SEA_mean_list_7,SEA_std_list_7 = get_SEA(var_list_7,time_thresh=time_thresh)
     epoch_arr,SEA_mean_list_8,SEA_std_list_8 = get_SEA(var_list_8,time_thresh=time_thresh)
 
-    fig_7,ax_list_7 = plt.subplots(2,1,figsize=(10,5),sharex=True)
+    fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,5),sharex=True)
 
-    for col in range(2):
+    for col in range(3):
         ax = ax_list_7[col]
         SEA_mean = SEA_mean_list_7[col]
         SEA_std = SEA_std_list_7[col]
