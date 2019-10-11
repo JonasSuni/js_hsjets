@@ -522,34 +522,13 @@ class MMSReader:
 
         self.data_arr = np.asarray(contents_matrix,dtype=float)
 
-        '''
-        1 Mean |B| (SW)
-        2 Mean beta (SW)
-        3 Extend (Km)
-        4 Mean Density (SW)
-        5 Max Density (SW)
-        6 Mean Dynamic Pressure (SW)
-        7 Max Dynamic Pressure (SW)
-        8 Mean T_par (K)
-        9 Mean T_Perp (K)
-        10 Mean Temperature (SW)
-        11 Mean |V| (SW)
-        12 Max |V| (SW)
-        13 Delta T (K)
-        14 Delta T (SW)
-        15 Delta Mean Density (SW)
-        16 Delta Mean |V| (SW)
-        17 Delta Mean Dynamic Pressure (SW)
-        18 Delta Mean |B| (SW)
-        '''
-
-        var_list = ["B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
+        var_list = ["B_max","B_avg","beta_avg","size_rad","n_avg","n_max","pd_avg","pd_max","TPar_avg","TPerp_avg","T_avg","v_avg","v_max","DT","DT_SW","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
 
         n_list = range(len(var_list))
 
         self.var_dict = dict(zip(var_list,n_list))
 
-        label_list = ["$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$","$\\Delta T~[K]$","$\\Delta T~[T_{sw}]$","\\Delta n~[n_{sw}]","\\Delta v~[v_{sw}]","\\Delta P_{dyn}~[P_{dyn,sw}]","\\Delta B~[B_{IMF}]"]
+        label_list = ["$|B|_{max}~[|B|_{IMF}]$","$|B|_{avg}~[|B|_{IMF}]$","$\\beta_{avg}~[\\beta_{sw}]$","$Extent~[R_e]$","$n_{avg}~[n_{sw}]$","$n_{max}~[n_{sw}]$","$P_{dyn,avg}~[P_{dyn,sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$T_{\\parallel,avg}~[T_{sw}]$","$T_{\\perp,avg}~[T_{sw}]$","$T_{avg}~[T_{sw}]$","$|V|_{avg}~[V_{sw}]$","$|V|_{avg}~[V_{sw}]$","$\\Delta T~[K]$","$\\Delta T~[T_{sw}]$","\\Delta n~[n_{sw}]","\\Delta v~[v_{sw}]","\\Delta P_{dyn}~[P_{dyn,sw}]","\\Delta B~[B_{IMF}]"]
 
         self.label_dict = dict(zip(var_list,label_list))
 
@@ -1901,10 +1880,8 @@ def DT_mach_comparison(time_thresh=5):
             var_high = var_list_high[col][row]
             weights_low = np.ones(var_low.shape,dtype=float)/var_low.size
             weights_high = np.ones(var_high.shape,dtype=float)/var_high.size
-            if row == 0 and col == 0:
-                lab = ["Low\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"High\nmed:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
-            else:
-                lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
+
+            lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.legend(fontsize=10,frameon=False)
@@ -1914,6 +1891,9 @@ def DT_mach_comparison(time_thresh=5):
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=20)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
+
+    ax_list[0][0].set_title("Low Mach Jets",color="blue")
+    ax_list[0][1].set_title("High Mach Jets",color="red")
 
     plt.tight_layout()
 
