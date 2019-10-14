@@ -484,28 +484,33 @@ class MMSJet:
         time = self.mfdata[:,self.mfvar_list.index("Hour")]+self.mfdata[:,self.mfvar_list.index("Minute")]/60.0+self.mfdata[:,self.mfvar_list.index("Second")]/3600.0
         return time
 
-    def read(self,name):
+    def read(self,name,tmin=0,tmax=999):
         if name == "time":
             time = self.jetdata[:,self.jetvar_list.index("Hour")]+self.jetdata[:,self.jetvar_list.index("Minute")]/60.0+self.jetdata[:,self.jetvar_list.index("Second")]/3600.0
-            return time
+            b_arr = np.logical_and(time>=tmin,time<=tmax)
+            return time[b_arr]
         elif name == "flux":
+            time = self.read("time")
+            b_arr = np.logical_and(time>=tmin,time<=tmax)
             flux = self.jetdata[:,15:]
             flux[flux==0] = 1e-31
-            return flux
+            return flux[b_arr]
         elif name in self.jetvar_list:
+            time = self.read("time")
+            b_arr = np.logical_and(time>=tmin,time<=tmax)
             if name in ["TParallel","TPerpendicular"]:
-                return self.jetdata[:,self.jetvar_list.index(name)]*eVtoK*1e-6
+                return self.jetdata[:,self.jetvar_list.index(name)][b_arr]*eVtoK*1e-6
             elif name == "Pdyn":
-                return self.jetdata[:,self.jetvar_list.index(name)]*1.0e9
+                return self.jetdata[:,self.jetvar_list.index(name)][b_arr]*1.0e9
             else:
-                return self.jetdata[:,self.jetvar_list.index(name)]
+                return self.jetdata[:,self.jetvar_list.index(name)][b_arr]
         elif name in self.mfvar_list:
             in_data = self.mfdata[:,self.mfvar_list.index(name)]
-            intpol_data = np.interp(self.read("time"),self.read_mftime(),in_data)
+            intpol_data = np.interp(self.read("time",tmin=tmin,tmax=tmax),self.read_mftime(),in_data)
             return intpol_data
 
-    def read_mult(self,name_list):
-        outm = np.array([self.read(name) for name in name_list])
+    def read_mult(self,name_list,tmin=0,tmax=999):
+        outm = np.array([self.read(name,tmin=tmin,tmax=tmax) for name in name_list])
         return outm
 
 class MMSReader:
