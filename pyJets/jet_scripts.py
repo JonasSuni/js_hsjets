@@ -1585,7 +1585,7 @@ def hack_2019_fig4(time_thresh=5):
     mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
     bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,6,10+1),np.linspace(0,15,10+1)])
 
-    var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_max","TPar_max"]
+    var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_avg","TPar_avg"]
     ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T~[MK]$"]
     xlabel_list = ["VLHigh","VLRand","MMS"]
 
@@ -2029,7 +2029,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
                 ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
-                ax.set_xlim(float(filenr-htw)/2.0,float(filenr+htw)/2.0)
+                ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw)/2.0)
                 if row == 5:
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
