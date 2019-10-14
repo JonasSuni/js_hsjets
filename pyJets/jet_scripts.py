@@ -1993,7 +1993,7 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
 
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
@@ -2015,7 +2015,7 @@ def hack_2019_fig2(runid,htw = 60):
                     cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
-                    time,data = get_timeseries(runid,filenr-htw,filenr+htw+1,var_list_list[row],cellids=cellid)
+                    time,data = get_timeseries(runid,filenr-htw-100,filenr+htw+1,var_list_list[row],cellids=cellid)
                     data = data.T
                     time = time.T
 
@@ -2058,7 +2058,7 @@ def hack_2019_fig2(runid,htw = 60):
                 for m in range(len(ann_list)):
                     ax.annotate(ann_list[m],xy=(0.7+m*0.3/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
-    ax_list[0][0].set_title("Run AEA\nX,Y,Z = [11.8,-0.9,0]$R_e$",fontsize=20)
+    ax_list[0][0].set_title("Run AEA\nX,Y,Z = [11.8, -0.9, 0.0]$R_e$",fontsize=20)
     ax_list[0][1].set_title("MMS\nX,Y,Z = [11.9, -0.9, -0.9]$R_e$",fontsize=20)
     ax_list[2][0].set_ylim(bottom=-20)
     ax_list[5][0].set_ylim(bottom=2)
