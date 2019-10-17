@@ -2012,6 +2012,7 @@ def hack_2019_fig2(runid,htw = 60):
             if col == 0:
                 print(row)
                 ax = ax_list[row][col]
+                ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw)/2.0)
                 if row == 3:
                     im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet")
                     ax.set_yscale("log")
@@ -2029,7 +2030,6 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
                 ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
-                ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw)/2.0)
                 if row == 5:
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
