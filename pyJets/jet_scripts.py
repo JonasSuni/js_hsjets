@@ -2308,7 +2308,7 @@ def hack_2019_fig78(time_thresh=5):
     epoch_arr,SEA_mean_list_8_AEA,SEA_std_list_8_AEA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEA"])
     epoch_arr,SEA_mean_list_8_AEC,SEA_std_list_8_AEC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEC"])
 
-    fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,5),sharex=True)
+    fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,10),sharex=True)
 
     for col in range(3):
         ax = ax_list_7[col]
@@ -2322,7 +2322,7 @@ def hack_2019_fig78(time_thresh=5):
         SEA_mean_AEC = SEA_mean_list_7_AEC[col]
 
         ax.plot(epoch_arr,SEA_mean_ABA,color="black",label="ABA")
-        ax.plot(epoch_arr,SEA_mean_AEC,color="blue",label="ABC")
+        ax.plot(epoch_arr,SEA_mean_ABC,color="blue",label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
@@ -2330,7 +2330,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.set_ylim(bottom=0)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if col == 1:
             ax.set_xlabel("Epoch Time [s]",fontsize=20)
 
@@ -2352,7 +2352,7 @@ def hack_2019_fig78(time_thresh=5):
         SEA_mean_AEC = SEA_mean_list_8_AEC[col]
 
         ax.plot(epoch_arr,SEA_mean_ABA,color="black",label="ABA")
-        ax.plot(epoch_arr,SEA_mean_AEC,color="blue",label="ABC")
+        ax.plot(epoch_arr,SEA_mean_ABC,color="blue",label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
