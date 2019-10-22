@@ -1992,7 +1992,7 @@ def hack_2019_fig35():
     mms_low = MMS_pos("LowMachJetsPosition.txt")
 
     bs_y = np.arange(-10,10,0.01)
-    mp_p,bs_p = ja.bs_mp_fit("AEA",820,[5,20,-10,10])
+    mp_p,bs_p = ja.bs_mp_fit("AEA",1339,[5,20,-10,10])
     bs_x = np.polyval(bs_p,bs_y)
     mp_x = np.polyval(mp_p,bs_y)+1
 
