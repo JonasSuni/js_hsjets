@@ -1994,7 +1994,7 @@ def hack_2019_fig35():
     bs_y = np.arange(-10,10,0.01)
     mp_p,bs_p = ja.bs_mp_fit("AEA",1320,[5,20,-10,10])
     bs_x = np.polyval(bs_p,bs_y)
-    mp_x = np.polyval(mp_p,bs_y)+2
+    mp_x = np.polyval(mp_p,bs_y)+1.5
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
 
@@ -2008,7 +2008,7 @@ def hack_2019_fig35():
 
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
-    ax.legend(frameon=False,numpoints=1)
+    ax.legend(frameon=False,numpoints=1,markerscale=3)
     ax.set_xlabel("X [$R_e$]",fontsize=20,labelpad=10)
     ax.set_ylabel("Y [$R_e$]",fontsize=20,labelpad=10)
     plt.tight_layout()
@@ -2021,6 +2021,8 @@ def hack_2019_fig2(runid,htw = 60):
     runids = ["AEA","AEC"]
     r_id = runids.index(runid)
     color_list = ["black","blue","red","green"]
+    mms_min = 5+34.2/60-200.0/3600
+    mms_max = 5+34.2/60+100.0/3600
 
     filenr = [820,760][r_id]
     cellid = [1301051,1700451][r_id]
@@ -2046,7 +2048,7 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,0.05,20,enum=32,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,ebins_mms[0]*1.0e-3,ebins_mms[-1]*1.0e-3,enum=32,fluxout=True,numproc=8)
 
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
@@ -2066,7 +2068,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-                    cbar.set_ticks([4,5,6,7])
+                    #cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
                     time,data = get_timeseries(runid,filenr-htw-100,filenr+htw+1,var_list_list[row],cellids=cellid)
@@ -2102,9 +2104,12 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
                 ax.axvline(mms_max_time,linestyle="dashed",linewidth=0.8,color="black")
-                ax.set_xlim(5+27.5/60,5+41.0/60)
-                ax.set_xticks(5+np.arange(28,42,1)/60.0)
-                ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
+                #ax.set_xlim(5+27.5/60,5+41.0/60)
+                ax.set_xlim(mms_min,mms_max)
+                #ax.set_xticks(5+np.arange(28,42,1)/60.0)
+                #ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
+                ax.set_xticks(5+np.arange(31,36,1)/60.0)
+                ax.set_xticklabels(["05:31","","05:33","","05:35"])
                 if row == 5:
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
