@@ -2048,7 +2048,7 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,ebins_mms[0]*1.0e-3,ebins_mms[-1]*1.0e-3,enum=32,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,30*1.0e-3,ebins_mms[-1]*1.0e-3,enum=32,fluxout=True,numproc=8)
 
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
@@ -2095,7 +2095,7 @@ def hack_2019_fig2(runid,htw = 60):
                     cbar_mms.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
                     cbar_mms.set_ticks([5,6,7])
                     ax.set_yticks([1e2,1e3,1e4])
-                    ax.set_ylim(ebins_mms[0],ebins_mms[-1])
+                    ax.set_ylim(30,ebins_mms[-1])
 
                 else:
                     data = data_mms[row]
