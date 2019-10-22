@@ -2000,13 +2000,17 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=2)
-    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=2)
-    ax.plot(coords_low[0],coords_low[1],"x",color="blue",markersize=4)
-    ax.plot(coords_high[0],coords_high[1],"x",color="red",markersize=4)
+    ax.plot(mms_high[0],mms_high[1],"o",color="red",mec="red",markersize=2,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"o",color="blue",mec="blue",markersize=2,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"*",color="blue",mec="blue",markersize=2,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"*",color="red",mec="red",markersize=2,label="Vlas High Mach")
+
 
     ax.set_xlim(5,20)
     ax.set_ylim(-10,10)
+    ax.legend(frameon=False)
+    ax.set_xlabel("X [$R_e$]",fontsize=20,labelpad=10)
+    ax.set_ylabel("Y [$R_e$]",fontsize=20,labelpad=10)
     plt.tight_layout()
 
     fig.savefig(homedir+"Figures/hackathon_paper/fig35.png")
