@@ -2000,8 +2000,8 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=2)
     ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=2)
+    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=2)
     ax.plot(coords_low[0],coords_low[1],"x",color="blue",markersize=4)
     ax.plot(coords_high[0],coords_high[1],"x",color="red",markersize=4)
 
