@@ -1967,6 +1967,39 @@ def get_timeseries(runid,start,stop,var_list,cellids):
 
     return (time_arr,data_arr)
 
+def MMS_pos(filename):
+
+    filepath = wrkdir_DNR+"working/MMS_data/"+filename
+
+    f = open(filepath,"r+")
+    contents = f.read()
+    f.close()
+    contents_list = contents.split("\r\n")[0:-1]
+    contents_matrix = [line.split(",") for line in contents_list]
+
+    coords = np.array(contents_matrix)[:,:-1].T
+
+    return coords
+
+def hack_2019_fig35():
+
+    var_list = ["x_mean","y_mean"]
+
+    coords_high = read_mult_runs(var_list,5,["ABA","ABC"],amax=True)
+    coords_low = read_mult_runs(var_list,5,["AEA","AEC"],amax=True)
+
+    mms_high = MMS_pos("HighMachJetsPosition.txt")
+    mms_low = MMS_pos("LowMachJetsPosition.txt")
+
+    fig,ax = plt.subplots(1,1,figsize=(10,10))
+
+    ax.plot(coords_low[0],coords_low[1],"x",color="blue",markersize=4)
+    ax.plot(coords_high[0],coords_high[1],"x",color="red",markersize=4)
+    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=4)
+    ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=4)
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig35.png")
+    plt.close(fig)
 
 def hack_2019_fig2(runid,htw = 60):
 
