@@ -2292,7 +2292,7 @@ def hack_2019_fig78(time_thresh=5):
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
 
-    lab_list_7 = ["Extent~[R_e]","$Tangential~Size~[R_e]$","$Size~Ratio$"]
+    lab_list_7 = ["$Extent~[R_e]$","$Tangential~Size~[R_e]$","$Size~Ratio$"]
     lab_list_8 = ["$\\Delta n~[n_{sw}]$","$\\Delta |v|~[v_{sw}]$","$\\Delta P_{dyn}~[P_{dyn,sw}]$","$\\Delta |B|~[B_{IMF}]$","$\\Delta T_{perp}~[MK]$","$\\Delta T_{par}~[MK]$"]
 
     epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
