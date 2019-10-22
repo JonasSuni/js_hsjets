@@ -2021,8 +2021,8 @@ def hack_2019_fig2(runid,htw = 60):
     runids = ["AEA","AEC"]
     r_id = runids.index(runid)
     color_list = ["black","blue","red","green"]
-    mms_min = 5+34.2/60-200.0/3600
-    mms_max = 5+34.2/60+100.0/3600
+    mms_min = 5+34.2/60-100.0/3600
+    mms_max = 5+34.2/60+50.0/3600
 
     filenr = [820,760][r_id]
     cellid = [1301051,1700451][r_id]
@@ -2068,7 +2068,7 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
-                    #cbar.set_ticks([4,5,6,7])
+                    cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
                     time,data = get_timeseries(runid,filenr-htw-100,filenr+htw+1,var_list_list[row],cellids=cellid)
@@ -2108,8 +2108,8 @@ def hack_2019_fig2(runid,htw = 60):
                 ax.set_xlim(mms_min,mms_max)
                 #ax.set_xticks(5+np.arange(28,42,1)/60.0)
                 #ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
-                ax.set_xticks(5+np.arange(31,36,1)/60.0)
-                ax.set_xticklabels(["05:31","","05:33","","05:35"])
+                ax.set_xticks(5+np.arange(33,35.5,0.5)/60.0)
+                ax.set_xticklabels(["05:33","","05:34","","05:35"])
                 if row == 5:
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
