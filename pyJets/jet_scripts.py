@@ -1,4 +1,4 @@
-# import matplotlib
+8# import matplotlib
 # #matplotlib.use('ps')
 # from matplotlib import rc
 
@@ -2048,7 +2048,7 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,30*1.0e-3,ebins_mms[-1]*1.0e-3,enum=32,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,0.03,20,enum=32,fluxout=True,numproc=8)
 
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
@@ -2064,7 +2064,7 @@ def hack_2019_fig2(runid,htw = 60):
                 ax = ax_list[row][col]
                 ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw)/2.0)
                 if row == 3:
-                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet")
+                    im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet",vmin=3.5,vmax=7.5)
                     ax.set_yscale("log")
                     cbar = colorbar(im,ax_list[:,0].tolist())
                     #cbar.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
@@ -2095,7 +2095,7 @@ def hack_2019_fig2(runid,htw = 60):
                     cbar_mms.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
                     cbar_mms.set_ticks([5,6,7])
                     ax.set_yticks([1e2,1e3,1e4])
-                    ax.set_ylim(30,ebins_mms[-1])
+                    ax.set_ylim(30,20000)
 
                 else:
                     data = data_mms[row]
@@ -2295,16 +2295,37 @@ def hack_2019_fig78(time_thresh=5):
     lab_list_7 = ["Extent~[R_e]","$Tangential~Size~[R_e]$","$Size~Ratio$"]
     lab_list_8 = ["$\\Delta n~[n_{sw}]$","$\\Delta |v|~[v_{sw}]$","$\\Delta P_{dyn}~[P_{dyn,sw}]$","$\\Delta |B|~[B_{IMF}]$","$\\Delta T_{perp}~[MK]$","$\\Delta T_{par}~[MK]$"]
 
-    epoch_arr,SEA_mean_list_7,SEA_std_list_7 = get_SEA(var_list_7,time_thresh=time_thresh)
-    epoch_arr,SEA_mean_list_8,SEA_std_list_8 = get_SEA(var_list_8,time_thresh=time_thresh)
+    epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
+    epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
+
+    epoch_arr,SEA_mean_list_7_ABA,SEA_std_list_7_ABA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABA"])
+    epoch_arr,SEA_mean_list_7_ABC,SEA_std_list_7_ABC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABC"])
+    epoch_arr,SEA_mean_list_7_AEA,SEA_std_list_7_AEA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEA"])
+    epoch_arr,SEA_mean_list_7_AEC,SEA_std_list_7_AEC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEC"])
+
+    epoch_arr,SEA_mean_list_8_ABA,SEA_std_list_8_ABA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABA"])
+    epoch_arr,SEA_mean_list_8_ABC,SEA_std_list_8_ABC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABC"])
+    epoch_arr,SEA_mean_list_8_AEA,SEA_std_list_8_AEA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEA"])
+    epoch_arr,SEA_mean_list_8_AEC,SEA_std_list_8_AEC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEC"])
 
     fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,5),sharex=True)
 
     for col in range(3):
         ax = ax_list_7[col]
-        SEA_mean = SEA_mean_list_7[col]
-        SEA_std = SEA_std_list_7[col]
-        ax.plot(epoch_arr,SEA_mean,color="black")
+
+        SEA_mean = SEA_mean_list_7_all[col]
+        SEA_std = SEA_std_list_7_all[col]
+
+        SEA_mean_ABA = SEA_mean_list_7_ABA[col]
+        SEA_mean_ABC = SEA_mean_list_7_ABC[col]
+        SEA_mean_AEA = SEA_mean_list_7_AEA[col]
+        SEA_mean_AEC = SEA_mean_list_7_AEC[col]
+
+        ax.plot(epoch_arr,SEA_mean_ABA,color="black",label="ABA")
+        ax.plot(epoch_arr,SEA_mean_AEC,color="blue",label="ABC")
+        ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
+        ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
+
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-60,60)
@@ -2322,9 +2343,19 @@ def hack_2019_fig78(time_thresh=5):
 
     for col in range(6):
         ax = ax_list_8[col]
-        SEA_mean = SEA_mean_list_8[col]
-        SEA_std = SEA_std_list_8[col]
-        ax.plot(epoch_arr,SEA_mean,color="black")
+        SEA_mean = SEA_mean_list_8_all[col]
+        SEA_std = SEA_std_list_8_all[col]
+
+        SEA_mean_ABA = SEA_mean_list_8_ABA[col]
+        SEA_mean_ABC = SEA_mean_list_8_ABC[col]
+        SEA_mean_AEA = SEA_mean_list_8_AEA[col]
+        SEA_mean_AEC = SEA_mean_list_8_AEC[col]
+
+        ax.plot(epoch_arr,SEA_mean_ABA,color="black",label="ABA")
+        ax.plot(epoch_arr,SEA_mean_AEC,color="blue",label="ABC")
+        ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
+        ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
+
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
         ax.set_xlim(-60,60)
