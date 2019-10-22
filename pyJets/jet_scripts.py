@@ -1998,6 +1998,10 @@ def hack_2019_fig35():
     ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=4)
     ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=4)
 
+    ax.set_xlim(5,20)
+    ax.set_ylim(-10,10)
+    plt.tight_layout()
+
     fig.savefig(homedir+"Figures/hackathon_paper/fig35.png")
     plt.close(fig)
 
