@@ -2339,7 +2339,7 @@ def hack_2019_fig78(time_thresh=5):
     ax_list_7[0].annotate("AEA",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="red",fontsize=20)
     ax_list_7[0].annotate("AEC",xy=(0.5+0.2,1.1),xycoords="axes fraction",color="green",fontsize=20)
 
-    plt.tight_layout()
+    #plt.tight_layout()
 
     fig_7.savefig(homedir+"Figures/hackathon_paper/fig7.png")
     plt.close(fig_7)
@@ -2373,7 +2373,7 @@ def hack_2019_fig78(time_thresh=5):
     ax_list_8[0].annotate("AEA",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="red",fontsize=20)
     ax_list_8[0].annotate("AEC",xy=(0.5+0.2,1.1),xycoords="axes fraction",color="green",fontsize=20)
 
-    plt.tight_layout()
+    #plt.tight_layout()
 
     fig_8.savefig(homedir+"Figures/hackathon_paper/fig8.png")
     plt.close(fig_8)
