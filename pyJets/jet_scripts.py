@@ -2000,10 +2000,10 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"o",color="red",mec="red",markersize=2,label="MMS High Mach")
-    ax.plot(mms_low[0],mms_low[1],"o",color="blue",mec="blue",markersize=2,label="MMS Low Mach")
-    ax.plot(coords_low[0],coords_low[1],"x",color="blue",mec="blue",markersize=6,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"x",color="red",mec="red",markersize=6,label="Vlas High Mach")
+    ax.plot(mms_high[0],mms_high[1],"x",color="red",mec="red",markersize=5,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"x",color="blue",mec="blue",markersize=5,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"o",color="blue",mec="blue",markersize=2,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color="red",mec="red",markersize=2,label="Vlas High Mach")
 
 
     ax.set_xlim(6,18)
