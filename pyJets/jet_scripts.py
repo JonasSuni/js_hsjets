@@ -1991,12 +1991,19 @@ def hack_2019_fig35():
     mms_high = MMS_pos("HighMachJetsPosition.txt")
     mms_low = MMS_pos("LowMachJetsPosition.txt")
 
+    bs_y = np.arange(-10,10,0.01)
+    mp_p,bs_p = ja.bs_mp_fit("AEA",820,[5,20,-10,10])
+    bs_x = np.polyval(bs_p,bs_y)
+    mp_x = np.polyval(mp_p,bs_y)+1
+
     fig,ax = plt.subplots(1,1,figsize=(10,10))
 
+    ax.plot(mp_x,bs_y,color="black")
+    ax.plot(bs_x,bs_y,color="black")
+    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=2)
+    ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=2)
     ax.plot(coords_low[0],coords_low[1],"x",color="blue",markersize=4)
     ax.plot(coords_high[0],coords_high[1],"x",color="red",markersize=4)
-    ax.plot(mms_low[0],mms_low[1],"o",color="blue",markersize=4)
-    ax.plot(mms_high[0],mms_high[1],"o",color="red",markersize=4)
 
     ax.set_xlim(5,20)
     ax.set_ylim(-10,10)
