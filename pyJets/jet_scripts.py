@@ -1991,8 +1991,8 @@ def hack_2019_fig35():
     mms_high = MMS_pos("HighMachJetsPosition.txt")
     mms_low = MMS_pos("LowMachJetsPosition.txt")
 
-    bs_y = np.arange(-10,10,0.01)
-    mp_p,bs_p = ja.bs_mp_fit("AEA",1339,[5,20,-10,10])
+    bs_y = np.arange(-8,6,0.01)
+    mp_p,bs_p = ja.bs_mp_fit("AEA",1339,[6,18,-8,6])
     bs_x = np.polyval(bs_p,bs_y)
     mp_x = np.polyval(mp_p,bs_y)+1
 
@@ -2006,8 +2006,8 @@ def hack_2019_fig35():
     ax.plot(coords_high[0],coords_high[1],"x",color="red",mec="red",markersize=6,label="Vlas High Mach")
 
 
-    ax.set_xlim(5,20)
-    ax.set_ylim(-10,10)
+    ax.set_xlim(6,18)
+    ax.set_ylim(-8,6)
     ax.legend(frameon=False,numpoints=1)
     ax.set_xlabel("X [$R_e$]",fontsize=20,labelpad=10)
     ax.set_ylabel("Y [$R_e$]",fontsize=20,labelpad=10)
