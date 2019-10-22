@@ -2331,15 +2331,20 @@ def hack_2019_fig78(time_thresh=5):
         ax.set_xlim(-60,60)
         ax.set_ylim(bottom=0)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
-        if col == 1:
+        if col == 2:
             ax.set_xlabel("Epoch Time [s]",fontsize=20)
+
+    ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color="blue",fontsize=20)
+    ax_list_7[0].annotate("AEA",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="red",fontsize=20)
+    ax_list_7[0].annotate("AEC",xy=(0.5+0.2,1.1),xycoords="axes fraction",color="green",fontsize=20)
 
     plt.tight_layout()
 
     fig_7.savefig(homedir+"Figures/hackathon_paper/fig7.png")
     plt.close(fig_7)
 
-    fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,10),sharex=True)
+    fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,12),sharex=True)
 
     for col in range(6):
         ax = ax_list_8[col]
@@ -2362,6 +2367,11 @@ def hack_2019_fig78(time_thresh=5):
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if col == 5:
             ax.set_xlabel("Epoch Time [s]",fontsize=20)
+
+    ax_list_8[0].annotate("ABA",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list_8[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color="blue",fontsize=20)
+    ax_list_8[0].annotate("AEA",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="red",fontsize=20)
+    ax_list_8[0].annotate("AEC",xy=(0.5+0.2,1.1),xycoords="axes fraction",color="green",fontsize=20)
 
     plt.tight_layout()
 
