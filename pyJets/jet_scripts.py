@@ -2022,7 +2022,7 @@ def hack_2019_fig2(runid,htw = 60):
     r_id = runids.index(runid)
     color_list = ["black","blue","red","green"]
     mms_min = 5+34.2/60-100.0/3600
-    mms_max = 5+34.2/60+50.0/3600
+    mms_max = 5+34.2/60+100.0/3600
 
     filenr = [820,760][r_id]
     cellid = [1301051,1700451][r_id]
@@ -2048,7 +2048,7 @@ def hack_2019_fig2(runid,htw = 60):
     ebins_mms = mmsjr.energy_bins
     flux_mms = mmsjr.read("flux").T
 
-    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw,cellid,0.03,20,enum=32,fluxout=True,numproc=8)
+    time_ar,energy_ar,datamap = pt.plot.get_energy_spectrum(bulkpath,"bulk","proton",filenr-htw-100,filenr+htw+100,cellid,0.03,20,enum=32,fluxout=True,numproc=8)
 
     data_mms = [pdyn_mms,v_mms.T,B_mms.T,n_mms,n_mms,T_mms.T]
     time_mms = [t_mms,np.array([t_mms,t_mms,t_mms,t_mms]).T,np.array([t_mms,t_mms,t_mms,t_mms]).T,t_mms,t_mms,np.array([t_mms,t_mms]).T]
@@ -2062,7 +2062,7 @@ def hack_2019_fig2(runid,htw = 60):
             if col == 0:
                 print(row)
                 ax = ax_list[row][col]
-                ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw)/2.0)
+                ax.set_xlim(float(filenr-htw-100)/2.0,float(filenr+htw+100)/2.0)
                 if row == 3:
                     im = ax.pcolormesh(time_ar,energy_ar,np.log10(datamap),cmap="jet",vmin=3.5,vmax=7.5)
                     ax.set_yscale("log")
@@ -2071,7 +2071,7 @@ def hack_2019_fig2(runid,htw = 60):
                     cbar.set_ticks([4,5,6,7])
                     ax.set_ylim(energy_ar[0],energy_ar[-1])
                 else:
-                    time,data = get_timeseries(runid,filenr-htw-100,filenr+htw+1,var_list_list[row],cellids=cellid)
+                    time,data = get_timeseries(runid,filenr-htw-100,filenr+htw+1+100,var_list_list[row],cellids=cellid)
                     data = data.T
                     time = time.T
 
@@ -2108,8 +2108,8 @@ def hack_2019_fig2(runid,htw = 60):
                 ax.set_xlim(mms_min,mms_max)
                 #ax.set_xticks(5+np.arange(28,42,1)/60.0)
                 #ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
-                ax.set_xticks(5+np.arange(33,35.5,0.5)/60.0)
-                ax.set_xticklabels(["05:33","","05:34","","05:35"])
+                ax.set_xticks(5+np.arange(33,36,0.5)/60.0)
+                ax.set_xticklabels(["05:33","","05:34","","05:35",""])
                 if row == 5:
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
@@ -2142,7 +2142,7 @@ def hack_2019_fig1():
     outpfn = ["fig1_AEA.png","fig1_AEC.png"]
     outpfn_2 = ["fig1_AEA_zoom.png","fig1_AEC_zoom.png"]
     cellid = [1301051,1700451]
-    filenr = [760,760]
+    filenr = [820,760]
     boxre = [[6,18,-8,6],[6,18,-6,6]]
     boxre_2 = [[10,14,-3,1],[7,11,-3,1]]
     vmax = [1.5,4.5]
