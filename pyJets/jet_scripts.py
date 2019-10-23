@@ -2142,7 +2142,7 @@ def hack_2019_fig1():
     outpfn = ["fig1_AEA.png","fig1_AEC.png"]
     outpfn_2 = ["fig1_AEA_zoom.png","fig1_AEC_zoom.png"]
     cellid = [1301051,1700451]
-    filenr = [720,760]
+    filenr = [770,760]
     boxre = [[6,18,-8,6],[6,18,-6,6]]
     boxre_2 = [[10,14,-3,1],[7,11,-3,1]]
     vmax = [1.5,4.5]
