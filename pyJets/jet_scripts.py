@@ -2450,6 +2450,14 @@ def hack_2019_fig9(time_thresh=5,nbins=10):
 
 ### MISC SCRIPTS ###
 
+def test_ABA():
+
+    var_list = ["x_mean","y_mean"]
+    x_arr,y_arr = read_mult_runs(var_list,5,runids=["ABA"],amax=True)
+
+    plt.plot(x_arr,y_arr,"x")
+    plt.show()
+
 def find_missing(inputfolder,start,stop):
 
     filenames = os.listdir(inputfolder)
