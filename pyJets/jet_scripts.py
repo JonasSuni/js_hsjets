@@ -1587,7 +1587,7 @@ def hack_2019_fig4(time_thresh=5):
 
     var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_avg","TPar_avg"]
     ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T~[MK]$"]
-    xlabel_list = ["VLHigh","VLRand","MMS"]
+    xlabel_list = ["VLMax","VLRand","MMS"]
 
     mms_reader = MMSReader("StableJets.txt")
 
