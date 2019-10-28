@@ -2078,8 +2078,8 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
                     ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
-                #ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
-                ax.axvline(380,linestyle="dashed",linewidth=0.8,color="black")
+                ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+                #ax.axvline(380,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
                 if row == 5:
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
