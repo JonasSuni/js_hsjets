@@ -2021,8 +2021,8 @@ def hack_2019_fig2(runid,htw = 60):
     runids = ["AEA","AEC"]
     r_id = runids.index(runid)
     color_list = ["black","blue","red","green"]
-    mms_min = 5+34.2/60-100.0/3600
-    mms_max = 5+34.2/60+100.0/3600
+    mms_min = 5+34.2/60-240.0/3600
+    mms_max = 5+34.2/60+240.0/3600
 
     filenr = [820,760][r_id]
     cellid = [1301051,1700451][r_id]
@@ -2078,7 +2078,8 @@ def hack_2019_fig2(runid,htw = 60):
                     ax.plot(time,data,linewidth=1.0)
                     ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
                     ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
-                ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+                #ax.axvline(float(filenr)/2.0,linestyle="dashed",linewidth=0.8,color="black")
+                ax.axvline(380,linestyle="dashed",linewidth=0.8,color="black")
                 ax.set_ylabel(ylabels[row],labelpad=10,fontsize=12)
                 if row == 5:
                     ax.set_xlabel("Simulation time [s]",labelpad=10,fontsize=15)
@@ -2108,8 +2109,8 @@ def hack_2019_fig2(runid,htw = 60):
                 ax.set_xlim(mms_min,mms_max)
                 #ax.set_xticks(5+np.arange(28,42,1)/60.0)
                 #ax.set_xticklabels(['', '', '05:30', '', '', '', '', '05:35', '', '', '', '', '05:40',''])
-                ax.set_xticks(5+np.arange(33,36,0.5)/60.0)
-                ax.set_xticklabels(["05:33","","05:34","","05:35",""])
+                ax.set_xticks(5+np.arange(31,39,1)/60.0)
+                ax.set_xticklabels(["05:31","","05:33","","05:35","","05:37",""])
                 if row == 5:
                     ax.set_xlabel("2015-12-03 UTC",labelpad=10,fontsize=15)
                 ann_list = annot_list_list[row]
