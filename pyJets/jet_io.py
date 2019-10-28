@@ -33,6 +33,7 @@ class PropReader:
         self.ID = ID # Should be a string of 5 digits
         self.runid = runid # Should be a string of 3 letters
         self.start = start # Should be a float of accuracy to half a second
+        self.meta = []
         self.sw_pars = ja.sw_par_dict(runid) # Solar wind parameters for run
         self.sw_pars[0] /= 1.0e+6 # rho in 1/cm^3
         self.sw_pars[1] /= 1.0e+3 # v in km/s
@@ -53,7 +54,12 @@ class PropReader:
 
         props = props_f.read()
         props_f.close()
-        props = props.split("\n")[1:]
+        props = props.split("\n")
+        if "META" in props[0]:
+            self.meta = props[0].split(",")[1:]
+            props = props[2:]
+        else:
+            props = props[1:]
         props = [line.split(",") for line in props]
         self.props = np.asarray(props,dtype="float")
 
@@ -130,6 +136,7 @@ class Jet:
         self.cellids = []
         self.times = [birthday]
         self.props = []
+        self.meta = ["META"]
 
         print("Created jet with ID "+self.ID)
 
@@ -146,7 +153,7 @@ class Jet:
     def jetprops_write(self,start):
 
         if self.times[-1]-self.times[0] >= 4.5:
-            propfile_write(self.runid,start,self.ID,self.props)
+            propfile_write(self.runid,start,self.ID,self.props,self.meta)
         else:
             print("Jet {} too short-lived, propfile not written!".format(self.ID))
 
@@ -309,7 +316,7 @@ def eventprop_read(runid,filenr):
 
     return props
 
-def propfile_write(runid,filenr,key,props,transient="jet"):
+def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     # Write jet properties to file
 
     if transient == "jet":
@@ -319,6 +326,7 @@ def propfile_write(runid,filenr,key,props,transient="jet"):
 
     open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","w").close()
     pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
+    pf.write(",".join(meta)+"\n")
     pf.write(propfile_header_list+"\n")
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
@@ -768,6 +776,10 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     return prop_arr
 
+def check_threshold(A,B,thresh):
+
+    return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
+
 def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,3,0]):
 
     # find correct file based on file number and run id
@@ -836,7 +848,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         for bs_event in bs_events:
 
-            if np.intersect1d(bs_event,event).size > threshold*min(len(event),len(bs_event)):
+            if check_threshold(bs_event,event,threshold):
 
                 # Create unique ID
                 curr_id = str(counter).zfill(5)
@@ -861,6 +873,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
         for jetobj in jetobj_list:
             if float(n)/2 - jetobj.times[-1] + 0.5 > 10:
+                print("Killing jet {}".format(jetobj.ID))
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
 
@@ -907,16 +920,44 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
             for jetobj in jetobj_list:
 
-                if jetobj.ID in flags:
+                if jetobj.ID not in flags:
 
-                    if np.intersect1d(jetobj.cellids[-2],event).size > threshold*min(len(event),len(jetobj.cellids[-2])):
+                    if event not in curr_jet_temp_list:
 
-                        if track_splinters:
+                        if check_threshold(jetobj.cellids[-1],event,threshold):
+
+                            # Append event to jet object properties
+                            jetobj.cellids.append(event)
+                            jetobj.props.append(props_unsrt[events_unsrt.index(event)])
+                            jetobj.times.append(float(n)/2)
+                            print("Updated jet "+jetobj.ID)
+
+                            # Flag jet object
+                            flags.append(jetobj.ID)
+                            curr_jet_temp_list.append(event)
+
+                        else:
+                            continue
+
+                    else:
+                        if check_threshold(jetobj.cellids[-1],event,threshold):
+                            jetobj.meta.append("merger")
+                            print("Killing jet {}".format(jetobj.ID))
+                            dead_jetobj_list.append(jetobj)
+                            jetobj_list.remove(jetobj)
+                        else:
+                            continue
+
+                else:
+                    if event not in curr_jet_temp_list:
+
+                        if check_threshold(jetobj.cellids[-2],event,threshold):
 
                             curr_id = str(counter).zfill(5)
 
                             # Create new jet
                             jetobj_new = Jet(curr_id,runid,float(n)/2)
+                            jetobj_new.meta.append("splinter")
                             jetobj_new.cellids.append(event)
                             jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
                             jetobj_list.append(jetobj_new)
@@ -926,26 +967,11 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
                             counter += 1
 
                             break
-
                         else:
+                            continue
 
-                            break
-
-                else:
-
-                    if np.intersect1d(jetobj.cellids[-1],event).size > threshold*min(len(event),len(bs_event)):
-
-                        # Append event to jet object properties
-                        jetobj.cellids.append(event)
-                        jetobj.props.append(props_unsrt[events_unsrt.index(event)])
-                        jetobj.times.append(float(n)/2)
-                        print("Updated jet with ID "+jetobj.ID)
-
-                        # Flag jet object
-                        flags.append(jetobj.ID)
-                        curr_jet_temp_list.append(event)
-
-                        break
+                    else:
+                        continue
 
         # Look for new jets at bow shock
         for event in events:
@@ -954,7 +980,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
 
                 for bs_event in bs_events:
 
-                    if np.intersect1d(bs_event,event).size > threshold*min(len(event),len(bs_event)):
+                    if check_threshold(bs_event,event,threshold):
 
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
