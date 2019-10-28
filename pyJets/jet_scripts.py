@@ -173,7 +173,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             print("Bulk file {} not found, continuing".format(str(n)))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["rho","v","CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputdir=outputdir,usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmin=0,vmax=vmax,colormap="parula",cbtitle="nPa",external=ext_jet,pass_vars=["rho","v","CellID"])
 
 def ext_jet(ax,XmeshXY,YmeshXY,pass_maps):
     # External function for jet_plotter
@@ -2195,9 +2195,9 @@ def hack_2019_fig1():
             print("Bulk file {} not found, continuing".format(str(filenr[n])))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn[n],usesci=0,lin=1,boxre=boxre[n],expression=pc.expr_pdyn,vmin=0,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmin=0,vmax=vmax[n],colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
 
 
 def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
