@@ -89,7 +89,10 @@ class PropReader:
         elif name == "death_distance":
             x,y,z = self.read("x_vmax")[-1],self.read("y_vmax")[-1],self.read("z_vmax")[-1]
             t = self.read("time")[-1]
-            return np.ones(t.shape)*(np.linalg.norm([x,y,z])-ja.bow_shock_r(self.runid,t))
+            outp = np.ones(t.shape)
+            pfit = ja.bow_shock_markus(self.runid,int(t*2))[::-1]
+            x_bs = np.polyval(pfit,np.linalg.norm([y,z]))
+            return outp*(x-x_bs)
         else:
             print("Variable not found!")
             return None
@@ -829,7 +832,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
     # remove events that are not initially at the bow shock
     bs_events = []
     for old_event in events_old:
-        #if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
+        #if np.intersect1d(bs_cells,get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
             #bs_events.append(old_event)
         bs_events.append(old_event)
 
@@ -899,7 +902,7 @@ def track_jets(runid,start,stop,threshold=0.3,track_splinters = True,nbrs_bs=[3,
         bs_events = []
         bs_props = props_unsrt
         for old_event in events_unsrt:
-            #if np.intersect1d(bs_cells,ja.get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
+            #if np.intersect1d(bs_cells,get_neighbors(vlsvobj,old_event,nbrs_bs)).size > 0:
             #    bs_events.append(old_event)
             bs_events.append(old_event)
 
@@ -1111,7 +1114,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
         for event in events:
 
-            if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
+            if np.intersect1d(slamsobj.cellids[-1],get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
 
                 curr_slamsjet_id = str(slamsjet_counter).zfill(5)
                 slamsjet_obj = copy.deepcopy(slamsobj)
@@ -1269,7 +1272,7 @@ def track_slamsjets(runid,start,stop,threshold=0.3, track_splinters = True,nbrs_
 
                 if event not in curr_slamsjet_temp_list:
 
-                    if np.intersect1d(slamsobj.cellids[-1],ja.get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
+                    if np.intersect1d(slamsobj.cellids[-1],get_neighbors(vlsvobj,event,nbrs_bs)).size > 0:
 
                         curr_slamsjet_id = str(slamsjet_counter).zfill(5)
 
