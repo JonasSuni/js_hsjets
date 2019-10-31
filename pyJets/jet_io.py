@@ -185,7 +185,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
     for file_nr in xrange(start,stop+1):
 
         # find correct file based on file number and run id
-        bulkpath = ja.bulkpath(runid)
+        bulkpath = ja.find_bulkpath(runid)
 
         bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
 
