@@ -48,7 +48,7 @@ class PropReader:
 
         # Try opening file
         try:
-            props_f = open(wrkdir_DNR+"working/jets/"+runid+"/"+self.fname)
+            props_f = open(inputdir+"/"+runid+"/"+self.fname)
         except IOError:
             raise IOError("File not found!")
 
@@ -128,7 +128,7 @@ class PropReader:
 
         return self.read(name)[self.amax_index()]
 
-class Jet:
+class Transient:
     # Class for identifying and handling individual jets and their properties
 
     def __init__(self,ID,runid,birthday):
@@ -158,13 +158,22 @@ class Jet:
         if self.times[-1]-self.times[0] >= 4.5:
             propfile_write(self.runid,start,self.ID,self.props,self.meta)
         else:
-            print("Jet {} too short-lived, propfile not written!".format(self.ID))
+            print("Transient {} too short-lived, propfile not written!".format(self.ID))
 
         return None
 
-def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0]):
+def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0],transient="jet"):
 
-    outputdir = wrkdir_DNR+"working/events/"+runid+"/"
+    if transient == "jet":
+        outputdir = wrkdir_DNR+"working/events/"+runid+"/"
+        maskdir = wrkdir_DNR+"working/Masks/"+runid+"/"
+        nmin=2
+        nmax=4500
+    elif transient == "slams":
+        outputdir = wrkdir_DNR+"working/SLAMS/events/"+runid+"/"
+        maskdir = wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/"
+        nmin=2
+        nmax=6000
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -176,17 +185,9 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
     for file_nr in xrange(start,stop+1):
 
         # find correct file based on file number and run id
-        if runid in ["AEC","AEF","BEA","BEB"]:
-            bulkpath = "/proj/vlasov/2D/"+runid+"/"
-        elif runid == "AEA":
-            bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
-        else:
-            bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+        bulkpath = ja.bulkpath(runid)
 
-        if runid == "AED":
-            bulkname = "bulk.old."+str(file_nr).zfill(7)+".vlsv"
-        else:
-            bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
+        bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
 
         if bulkname not in os.listdir(bulkpath):
             print("Bulk file "+str(file_nr)+" not found, continuing")
@@ -197,19 +198,19 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
 
         # create mask
         if maskfile:
-            msk = np.loadtxt("Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+            msk = np.loadtxt(maskdir+str(file_nr)+".mask").astype(int)
         else:
-            msk = ja.make_cust_mask_opt(file_nr,runid,180,boxre,avgfile)
+            msk = ja.make_cust_mask_opt(file_nr,runid,180,boxre,avgfile,transient=transient)
 
         print(len(msk))
         print("Current file number is " + str(file_nr))
 
         # sort jets
-        jets,props_inc = sort_jets_new(vlsvobj,msk,2,4500,nbrs)
+        jets,props_inc = sort_jets_new(vlsvobj,msk,nmin,nmax,nbrs)
 
         props = [[float(file_nr)/2.0]+line for line in props_inc]
 
-        eventprop_write(runid,file_nr,props)
+        eventprop_write(runid,file_nr,props,transient=transient)
 
         # erase contents of output file
         open(outputdir+str(file_nr)+".events","w").close()
@@ -288,27 +289,37 @@ def eventfile_read(runid,filenr,transient="jet"):
 
     return outputlist
 
-def eventprop_write(runid,filenr,props):
+def eventprop_write(runid,filenr,props,transient="jet"):
 
-    if not os.path.exists(wrkdir_DNR+"working/event_props/{}".format(runid)):
+    if transient == "jet":
+        outputdir = wrkdir_DNR+"working/event_props/"+runid
+    elif transient == "slams":
+        outputdir = wrkdir_DNR+"working/SLAMS/event_props"+runid
+
+    if not os.path.exists(outputdir):
         try:
-            os.makedirs(wrkdir_DNR+"working/event_props/{}".format(runid))
+            os.makedirs(outputdir)
         except OSError:
             pass
 
-    open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w").close()
-    epf = open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)),"w")
+    open(outputdir+"/{}.eventprops".format(str(filenr)),"w").close()
+    epf = open(outputdir+"/{}.eventprops".format(str(filenr)),"w")
 
     epf.write(propfile_header_list+"\n")
 
     epf.write("\n".join([",".join(map(str,line)) for line in props]))
     epf.close()
-    print("Wrote to "+"./wrk/sunijona/DONOTREMOVE/working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
+    print("Wrote to "+outputdir+"/{}.eventprops".format(str(filenr).format(runid,str(filenr)))
 
-def eventprop_read(runid,filenr):
+def eventprop_read(runid,filenr,transient="jet"):
+
+    if transient == "jet":
+        inputname = wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr))
+    elif transient == "slams":
+        inputname = wrkdir_DNR+"working/SLAMS/event_props/{}/{}.eventprops".format(runid,str(filenr))
 
     try:
-            props_f = open(wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr)))
+        props_f = open(inputname)
     except IOError:
         raise IOError("File not found!")
 
@@ -324,6 +335,8 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
 
     if transient == "jet":
         outputdir = wrkdir_DNR+"working/jets"
+    elif transient == "slams":
+        outputdir = wrkdir_DNR+"working/SLAMS/slams"
     elif transient == "slamsjet":
         outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
 
@@ -334,23 +347,6 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     pf.write("\n".join([",".join(map(str,line)) for line in props]))
     pf.close()
     print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
-
-def jio_figmake(runid,start,jetid,figname,tp_files=False):
-    # DEPRECATED, use jet_time_series in jet_scripts instead
-    # Create time series figures of specified jet
-    raise NotImplementedError("DEPRECATED")
-
-    props = calc_jet_properties(runid,start,jetid,tp_files=tp_files)
-
-    if type(props) is not np.ndarray:
-        return 1
-    else:
-        jetsize_fig(runid,start,jetid,figname=figname,props_arr=props)
-
-def figmake_script(runid,start,ids,tp_files=False):
-
-    for ID in ids:
-        jio_figmake(runid,start,ID,figname=ID,tp_files=tp_files)
 
 def tpar_reader(runid,filenumber,cellids,cells):
     # Read parallel temperatures of specific cells
@@ -592,7 +588,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
 
     # Discard jet if it's very short-lived
     if time_list[-1] - time_list[0] + 0.5 < 5:
-        print("Jet not sufficiently long-lived, exiting.")
+        print("Transient not sufficiently long-lived, exiting.")
         return 1
 
     # Find correct bulk path
@@ -793,10 +789,9 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0]):
     else:
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
-    if runid == "AED":
-        bulkname = "bulk.old."+str(start).zfill(7)+".vlsv"
-    else:
-        bulkname = "bulk."+str(start).zfill(7)+".vlsv"
+    bulkpath = ja.find_bulkpath(runid)
+
+    bulkname = "bulk."+str(start).zfill(7)+".vlsv"
 
     if bulkname not in os.listdir(bulkpath):
         print("Bulk file "+str(start)+" not found, exiting")
@@ -857,7 +852,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0]):
                 curr_id = str(counter).zfill(5)
 
                 # Create new jet object
-                jetobj_list.append(Jet(curr_id,runid,float(start)/2))
+                jetobj_list.append(Transient(curr_id,runid,float(start)/2))
 
                 # Append current events to jet object properties
                 jetobj_list[-1].cellids.append(bs_event)
@@ -959,7 +954,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0]):
                             curr_id = str(counter).zfill(5)
 
                             # Create new jet
-                            jetobj_new = Jet(curr_id,runid,float(n)/2)
+                            jetobj_new = Transient(curr_id,runid,float(n)/2)
                             jetobj_new.meta.append("splinter")
                             jetobj_new.cellids.append(event)
                             jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
@@ -989,7 +984,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0]):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet object
-                        jetobj_list.append(Jet(curr_id,runid,float(n-1)/2))
+                        jetobj_list.append(Transient(curr_id,runid,float(n-1)/2))
 
                         # Append current events to jet object properties
                         jetobj_list[-1].cellids.append(bs_event)
