@@ -309,7 +309,7 @@ def eventprop_write(runid,filenr,props,transient="jet"):
 
     epf.write("\n".join([",".join(map(str,line)) for line in props]))
     epf.close()
-    print("Wrote to "+outputdir+"/{}.eventprops".format(str(filenr).format(runid,str(filenr)))
+    print("Wrote to "+outputdir+"/{}.eventprops".format(str(filenr)))
 
 def eventprop_read(runid,filenr,transient="jet"):
 
