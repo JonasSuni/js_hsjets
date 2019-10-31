@@ -1356,6 +1356,7 @@ def get_timeseries(runid,start,stop,var_list,cellids):
 
     for n in range(start,stop+1):
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7)))
+        vlsvobj.optimize_open_file()
         for var in var_list:
             if var in v_vars:
                 if len(var_list) == 1:
@@ -1380,6 +1381,8 @@ def get_timeseries(runid,start,stop,var_list,cellids):
                     time_arr[var_list.index(var),itr] = vlsvobj.read_parameter("t")
 
         itr += 1
+        vlsvobj.optimize_clear_fileindex_for_cellid()
+        vlsvobj.optimize_close_file()
 
     return (time_arr,data_arr)
 

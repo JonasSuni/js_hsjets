@@ -2,7 +2,7 @@
 Imports all the modules in the pyJets folder
 '''
 
-from jet_analyser import ci2vars,ci2vars_nofile,read_mult_vars,xyz_reconstruct,restrict_area,bow_shock_markus,sw_normalisation,bs_mp_fit
+from jet_analyser import ci2vars,ci2vars_nofile,read_mult_vars,xyz_reconstruct,restrict_area,bow_shock_markus,sw_normalisation,bs_mp_fit,make_cust_mask_opt
 #from jet_contours import *
 from jetfile_make import pahkmake
 from jet_io import PropReader,jet_maker,calc_jet_properties,track_jets,track_slamsjets,calc_event_props
