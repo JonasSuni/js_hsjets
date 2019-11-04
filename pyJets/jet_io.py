@@ -514,6 +514,35 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
 
     return neighbors
 
+def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
+
+    cells = np.array(cells,ndmin=1)
+
+    events = []
+    curr_event = np.array([],dtype=int)
+
+    while cells.size != 0:
+        curr_event = np.array([cells[0]],dtype=int)
+        curr_event_size = curr_event.size
+
+        curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+
+        while curr_event.size != curr_event_size:
+
+            curr_event_size = curr_event.size
+
+            curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+
+        events.append(curr_event)
+        cells = cells[~np.in1d(cells,curr_event)]
+
+    events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
+
+    #props = [calc_event_props(vlsvobj,event) for event in events_culled]
+
+    #return [events_culled,props]
+    return events_culled
+
 def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
     # sort masked cells into events based on proximity in X,Y-space
 
@@ -555,9 +584,10 @@ def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1
     # remove events smaller than the minimum size and larger than maximum size
     events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
 
-    props = [calc_event_props(vlsvobj,event) for event in events_culled]
+    #props = [calc_event_props(vlsvobj,event) for event in events_culled]
 
-    return [events_culled,props]
+    #return [events_culled,props]
+    return events_culled
 
 def mean_med_max(var):
 
