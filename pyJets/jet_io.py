@@ -197,6 +197,8 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         # open vlsv file for reading
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
 
+        vlsvobj.optimize_open_file()
+
         # create mask
         if maskfile:
             msk = np.loadtxt(maskdir+str(file_nr)+".mask").astype(int)
@@ -225,6 +227,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
             fileobj.write(",".join(map(str,jet))+"\n")
 
         fileobj.close()
+        vlsvobj.optimize_close_file()
 
     return None
 
@@ -372,7 +375,6 @@ def calc_event_props(vlsvobj,cells):
     else:
         sheath_cells = get_sheath_cells(vlsvobj,cells)
 
-    vlsvobj.optimize_open_file()
 
     # read variables
     if vlsvobj.check_variable("X"):
@@ -399,7 +401,6 @@ def calc_event_props(vlsvobj,cells):
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list]
 
-    vlsvobj.optimize_close_file()
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
@@ -489,12 +490,8 @@ def calc_event_props(vlsvobj,cells):
 
 def get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,2,0]):
 
-    vlsvobj.optimize_open_file()
-
     plus_sheath_cells = get_neighbors(vlsvobj,cells,neighborhood_reach)
     sheath_cells = plus_sheath_cells[~np.in1d(plus_sheath_cells,cells)]
-
-    vlsvobj.optimize_close_file()
 
     return sheath_cells
 
@@ -509,8 +506,6 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
     y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
     z_r = xrange(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
 
-    vlsvobj.optimize_open_file()
-
     for n in c_i:
 
         # append cellids of neighbors, cast as int, to array of neighbors
@@ -518,8 +513,6 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
             for b in y_r:
                 for c in z_r:
                     neighbors = np.append(neighbors,int(vlsvobj.get_cell_neighbor(cellid=n,offset=[a,b,c],periodic=[0,0,0])))
-
-    vlsvobj.optimize_close_file()
 
     # discard invalid cellids
     neighbors = neighbors[neighbors != 0]
