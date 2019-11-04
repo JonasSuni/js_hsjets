@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import plot_contours as pc
 import scipy.constants as sc
 import random
+import time
 
 m_p = 1.672621898e-27
 r_e = 6.371e+6
@@ -516,6 +517,8 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
 
 def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
 
+    t = time.time()
+
     cells = np.array(cells,ndmin=1,dtype=int)
 
     events = []
@@ -541,10 +544,13 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
     #props = [calc_event_props(vlsvobj,event) for event in events_culled]
 
     #return [events_culled,props]
+    print(time.time()-t)
     return events_culled
 
 def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
     # sort masked cells into events based on proximity in X,Y-space
+
+    t = time.time()
 
     # initialise list of events and current event
     events = []
@@ -585,6 +591,8 @@ def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1
     events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
 
     #props = [calc_event_props(vlsvobj,event) for event in events_culled]
+
+    print(time.time()-t)
 
     #return [events_culled,props]
     return events_culled
