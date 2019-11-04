@@ -18,7 +18,7 @@ def pahkmake(file_number,runid,halftimewidth):
     # open vlsv files for reading and writing
     vlsvreader = pt.vlsvfile.VlsvReader(file_path)
     vlsvwriter = pt.vlsvfile.VlsvWriter(vlsvReader=vlsvreader,file_name="VLSV/temp_all.vlsv")
-    
+
     rho = vlsvreader.read_variable("rho")
     v = vlsvreader.read_variable("v")
 
@@ -30,7 +30,7 @@ def pahkmake(file_number,runid,halftimewidth):
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
     pdynx = m_p*rho*(v[:,0]**2)
 
-    timerange = xrange(file_number-halftimewidth,file_number+halftimewidth+1)
+    timerange = range(file_number-halftimewidth,file_number+halftimewidth+1)
 
     # initialise the time average of the dynamic pressures and densities
     tpdynavg = np.zeros(len(pdyn))
@@ -47,21 +47,21 @@ def pahkmake(file_number,runid,halftimewidth):
         trho = 0
         tv = 0
         tpdyn = 0
-        
+
         # find correct file for current time step
         tfile_nr = str(n).zfill(7)
         tfile_p = "/proj/vlasov/2D/"+runid+"/bulk/bulk."+tfile_nr+".vlsv"
 
         # open file for current time step
         f = pt.vlsvfile.VlsvReader(tfile_p)
-        
+
         trho = f.read_variable("rho")
         #tv = f.read_variable("v").transpose()
         tv = f.read_variable("v")
 
         # read cellids for current time step
         cellids = f.read_variable("CellID")
-        
+
         # dynamic pressure for current time step
         tpdyn = m_p*trho*(np.linalg.norm(tv,axis=-1)**2)
         tpdynx = m_p*trho*(tv[:,0]**2)
@@ -102,7 +102,7 @@ def pahkmake(file_number,runid,halftimewidth):
     tarho = srho/trhoavg
     tapdynx = spdynx/tpdynxavg
 
-    # write the new variables to the writer file 
+    # write the new variables to the writer file
     vlsvwriter.write(data=sorigid,name="CellID",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=srho,name="srho",tag="VARIABLE",mesh="SpatialGrid")
     vlsvwriter.write(data=spdyn,name="spdyn",tag="VARIABLE",mesh="SpatialGrid")
@@ -112,7 +112,7 @@ def pahkmake(file_number,runid,halftimewidth):
 
     # copy variables from reader file to writer file
     vlsvwriter.copy_variables(vlsvreader)
-    
+
     vlsvwriter.close()
-    
+
     return None

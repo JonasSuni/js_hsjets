@@ -65,7 +65,7 @@ class PropReader:
 
         # Initialise list of variable names and associated dictionary
         var_list = propfile_var_list
-        n_list = list(xrange(len(var_list)))
+        n_list = list(range(len(var_list)))
         self.var_dict = dict(zip(var_list,n_list))
 
         self.delta_list = ["DT","Dn","Dv","Dpd","DB","DTPar","DTPerp"]
@@ -184,7 +184,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
 
     bulkpath = ja.find_bulkpath(runid)
 
-    for file_nr in xrange(start,stop+1):
+    for file_nr in range(start,stop+1):
 
         # find correct file based on file number and run id
 
@@ -502,9 +502,9 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
     neighbors = np.array([],dtype=int)
 
     # range of offsets to take into account
-    x_r = xrange(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
-    y_r = xrange(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
-    z_r = xrange(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
+    x_r = range(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
+    y_r = range(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
+    z_r = range(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
 
     for n in c_i:
 
@@ -568,7 +568,7 @@ def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1
             continue
 
         # number of times to search for more neighbors
-        it_range = xrange(200)
+        it_range = range(200)
 
         # initialise current event
         curr_event = np.array([cell])
@@ -641,7 +641,7 @@ def calc_jet_properties(runid,start,jetid,tp_files=False,transient="jet"):
     # Initialise property array
     prop_arr = np.array([])
 
-    for n in xrange(len(nr_list)):
+    for n in range(len(nr_list)):
 
         curr_list = jet_list[n]
         curr_list.sort()
@@ -903,7 +903,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0]):
                 break
 
     # Track jets
-    for n in xrange(start+2,stop+1):
+    for n in range(start+2,stop+1):
 
         for jetobj in jetobj_list:
             if float(n)/2 - jetobj.times[-1] + 0.5 > 10:

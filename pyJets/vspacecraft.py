@@ -82,7 +82,7 @@ def jet_sc(runid,start,jetid,font_size=20):
     pdyn_arr = np.array([])
 
     # time series +-30 seconds of time of t0
-    for t_n in xrange(t_n0-60,t_n0+60+1):
+    for t_n in range(t_n0-60,t_n0+60+1):
 
         if runid == "AED":
             bulkname = "bulk.old."+str(t_n).zfill(7)+".vlsv"
@@ -116,7 +116,7 @@ def jet_sc(runid,start,jetid,font_size=20):
         rho_arr = np.append(rho_arr,rho)
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
-    time_arr = np.array(xrange(t_n0-60,t_n0+60+1)).astype(float)/2
+    time_arr = np.array(range(t_n0-60,t_n0+60+1)).astype(float)/2
 
     # scale variable values
     Bx_arr /= 1.0e-9 # nanotesla
@@ -153,7 +153,7 @@ def jet_sc(runid,start,jetid,font_size=20):
     for var_ax in ax_list:
         var_ax.grid()
         var_ax.set_xlim(int(min(time_arr))+1,int(max(time_arr)))
-        var_ax.set_xticks(list(xrange(int(t0-30),int(t0+30)+1,5)))
+        var_ax.set_xticks(list(range(int(t0-30),int(t0+30)+1,5)))
         var_ax.set_xticklabels([])
         var_ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
 
@@ -162,7 +162,7 @@ def jet_sc(runid,start,jetid,font_size=20):
         var_ax.yaxis.set_ticks_position('both')
         var_ax.yaxis.set_label_position("right")
 
-    pdyn_ax.set_xticklabels(list(xrange(int(t0-30),int(t0+30)+1,5))[:-1])
+    pdyn_ax.set_xticklabels(list(range(int(t0-30),int(t0+30)+1,5))[:-1])
 
     # set y-labels
     Bx_ax.set_ylabel("$B_x$ [nT]",fontsize=font_size)
@@ -211,7 +211,7 @@ def jet_sc(runid,start,jetid,font_size=20):
 
 def jet_spacecrafts(start,stop,figname="",font_size=20):
     # draws time series of Bx,By,Bz,Bmag,vx,vy,vz,vmag,rho,pdyn at
-    # the specified 3 sets of coordinates for files in range 
+    # the specified 3 sets of coordinates for files in range
     # start-stop (inclusive)
 
     # open file to get cellids, X and Y
@@ -279,7 +279,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     sc2_file.write("t [s],Bx [nT],By [nT],Bz [nT],|B| [nT],vx [km/s],vy [km/s],vz [km/s],|v| [km/s],rho [cm^-3],Pdyn [nPa]")
     sc3_file.write("t [s],Bx [nT],By [nT],Bz [nT],|B| [nT],vx [km/s],vy [km/s],vz [km/s],|v| [km/s],rho [cm^-3],Pdyn [nPa]")
 
-    for n in xrange(start,stop+1):
+    for n in range(start,stop+1):
 
         # write newline
         sc1_file.write("\n")
@@ -338,7 +338,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
         sc3_file.write(",".join(map(str,sc3_arr)))
 
     # define time array
-    time_arr = np.array(xrange(start,stop+1)).astype(float)/2
+    time_arr = np.array(range(start,stop+1)).astype(float)/2
 
     # scale variable values
     Bx_arr /= 1.0e-9 # nanotesla
@@ -353,16 +353,16 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
     pdyn_arr /= 1.0e-9 # nanopascal
 
     # reshape variable arrays according to the 3 sets of coordinates
-    Bx_arr = np.reshape(Bx_arr,(len(xrange(start,stop+1)),3))
-    By_arr = np.reshape(By_arr,(len(xrange(start,stop+1)),3))
-    Bz_arr = np.reshape(Bz_arr,(len(xrange(start,stop+1)),3))
-    Bmag_arr = np.reshape(Bmag_arr,(len(xrange(start,stop+1)),3))
-    vx_arr = np.reshape(vx_arr,(len(xrange(start,stop+1)),3))
-    vy_arr = np.reshape(vy_arr,(len(xrange(start,stop+1)),3))
-    vz_arr = np.reshape(vz_arr,(len(xrange(start,stop+1)),3))
-    vmag_arr = np.reshape(vmag_arr,(len(xrange(start,stop+1)),3))
-    rho_arr = np.reshape(rho_arr,(len(xrange(start,stop+1)),3))
-    pdyn_arr = np.reshape(pdyn_arr,(len(xrange(start,stop+1)),3))
+    Bx_arr = np.reshape(Bx_arr,(len(range(start,stop+1)),3))
+    By_arr = np.reshape(By_arr,(len(range(start,stop+1)),3))
+    Bz_arr = np.reshape(Bz_arr,(len(range(start,stop+1)),3))
+    Bmag_arr = np.reshape(Bmag_arr,(len(range(start,stop+1)),3))
+    vx_arr = np.reshape(vx_arr,(len(range(start,stop+1)),3))
+    vy_arr = np.reshape(vy_arr,(len(range(start,stop+1)),3))
+    vz_arr = np.reshape(vz_arr,(len(range(start,stop+1)),3))
+    vmag_arr = np.reshape(vmag_arr,(len(range(start,stop+1)),3))
+    rho_arr = np.reshape(rho_arr,(len(range(start,stop+1)),3))
+    pdyn_arr = np.reshape(pdyn_arr,(len(range(start,stop+1)),3))
 
     # initialise figure
     plt.ion()
@@ -566,7 +566,7 @@ def jet_spacecrafts(start,stop,figname="",font_size=20):
 
 def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),figname="",cols2=False,alt_labels=False):
     # draws time series of Bx,By,Bz,Bmag,vmag,rho,pdyn at
-    # the specified coordinates for files in range 
+    # the specified coordinates for files in range
     # start-stop (inclusive)
 
     # open file to get cellids, X, Y
@@ -602,7 +602,7 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
     vmag_arr = np.array([])
     pdyn_arr = np.array([])
 
-    for n in xrange(start,stop+1):
+    for n in range(start,stop+1):
 
         # file name
         f_name="bulk."+str(n).zfill(7)+".vlsv"
@@ -612,7 +612,7 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
 
         # read B
         B = f.read_variable("B",cellids=pos_id)
-        
+
         # calculate angle between B and B_imf
         phi = np.rad2deg(np.arccos(np.dot(B,B_imf)/(np.linalg.norm(B)*np.linalg.norm(B_imf))))
 
@@ -638,7 +638,7 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
     # define time array
-    time_arr = np.array(xrange(start,stop+1)).astype(float)/2
+    time_arr = np.array(range(start,stop+1)).astype(float)/2
 
     # scale variable values
     Bx_arr /= 1.0e-9 # nanotesla
@@ -799,7 +799,7 @@ def slams_spacecraft(start,stop,pos=[12,-4.4],font_size=16,fig_size=(16,16),fign
 
 def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16)):
     # draws time series of Bmag,vmag,rho,pdyn at
-    # the specified coordinates for files in range 
+    # the specified coordinates for files in range
     # start-stop (inclusive)
 
     # defined coordinates
@@ -824,7 +824,7 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
 
     # cellid corresponding to index
     pos_id = cellids[pos_index[0]]
-    
+
     # path to files
     f_path = "/proj/vlasov/2D/ABA/bulk/"
 
@@ -834,7 +834,7 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
     rho_arr = np.array([])
     pdyn_arr = np.array([])
 
-    for n in xrange(start,stop+1,step):
+    for n in range(start,stop+1,step):
 
         # file name
         f_name="bulk."+str(n).zfill(7)+".vlsv"
@@ -857,7 +857,7 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
         pdyn_arr = np.append(pdyn_arr,pdyn)
 
     # define time array
-    time_arr = np.array(xrange(start,stop+1,step)).astype(float)/2
+    time_arr = np.array(range(start,stop+1,step)).astype(float)/2
 
     # scale variable values
     B_arr /= 1.0e-9 # nanotesla
@@ -891,7 +891,7 @@ def wave_spacecraft(start,stop,step,pos=[12,-4.4],font_size=20,fig_size=(16,16))
     #v_ax.set_ylabel("v [km/s]",fontsize=font_size)
     #rho_ax.set_ylabel("$\\rho$ [cm$^{-3}$]",fontsize=font_size)
     #pdyn_ax.set_ylabel("$P_{dyn}$ [nPa]",fontsize=font_size)
-    
+
     # set x-labels
     pdyn_ax.set_xlabel("Time [s]",fontsize=font_size)
 

@@ -149,7 +149,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     global xmean_list
     global ymean_list
 
-    for n in xrange(start,stop+1):
+    for n in range(start,stop+1):
 
         # Initialise lists of coordinaates
         xmean_list = []
@@ -588,7 +588,7 @@ def jet_pos_graph(runid):
     plt.title(runid+"\nN = "+str(r_list.size),fontsize=20)
 
     rphi_graph = ax.plot(r_list,phi_list,"x",color="black")
-    r_hist = ax2.hist(r_list,bins=list(xrange(0,19)))
+    r_hist = ax2.hist(r_list,bins=list(range(0,19)))
 
     plt.tight_layout()
 
@@ -630,7 +630,7 @@ def jet_paper_counter():
     #count_list_list = [0]
     time_per_run = np.array([839-580,1179-580,1339-580,879-580])/2.0
 
-    for n in xrange(len(runids)):
+    for n in range(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
 
@@ -667,7 +667,7 @@ def jet_paper_pos():
     x_list_list = [[],[],[],[]]
     y_list_list = [[],[],[],[]]
 
-    for n in xrange(len(runids)):
+    for n in range(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
 
@@ -689,7 +689,7 @@ def jet_paper_pos():
     lines = []
     labs = []
 
-    for n in xrange(len(runids)):
+    for n in range(len(runids)):
         line1, = ax.plot(x_list_list[n],y_list_list[n],run_marker_dict[runids[n]],markeredgecolor=run_color_dict[runids[n]],markersize=10,markerfacecolor="None",markeredgewidth=2)
         lines.append(line1)
         labs.append(runids[n])
@@ -955,7 +955,7 @@ def jet_lifetime_plots(var,amax=True):
     x_list_list = [[],[],[],[]]
     y_list_list = [[],[],[],[]]
 
-    for n in xrange(len(runids)):
+    for n in range(len(runids)):
         for fname in file_list_list[n]:
             props = jio.PropReader("",runids[n],fname=fname)
 
@@ -979,7 +979,7 @@ def jet_lifetime_plots(var,amax=True):
     lines = []
     labs = []
 
-    for n in xrange(len(runids)):
+    for n in range(len(runids)):
         line1, = ax.plot(x_list_list[n],y_list_list[n],run_marker_dict[runids[n]],markeredgecolor=run_color_dict[runids[n]],markersize=5,markerfacecolor="None",markeredgewidth=2)
         lines.append(line1)
         labs.append(runids[n])

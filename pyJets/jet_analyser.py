@@ -123,8 +123,8 @@ def sw_par_dict(runid):
     sw_v = [750e+3,600e+3,750e+3,600e+3,750e+3]
     sw_B = [5.0e-9,5.0e-9,10.0e-9,10.0e-9,5.0e-9]
     sw_T = [500e+3,500e+3,500e+3,500e+3,500e+3]
-    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in xrange(len(runs))]
-    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in xrange(len(runs))]
+    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in range(len(runs))]
+    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in range(len(runs))]
 
     return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)],sw_T[runs.index(runid)]]
 
@@ -326,7 +326,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     tpdynavg = np.zeros(pdyn.shape)
 
     # range of timesteps to calculate average of
-    timerange = xrange(filenumber-halftimewidth,filenumber+halftimewidth+1)
+    timerange = range(filenumber-halftimewidth,filenumber+halftimewidth+1)
 
     missing_file_counter = 0
 

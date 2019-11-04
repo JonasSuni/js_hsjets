@@ -189,7 +189,7 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
 
     r = np.arange(1,rmax,dr).astype(float)
     r *= Rs
-    
+
     Bs = 11.8e-4
     ns = 1.0e14
     Ts = 7.0e+5
@@ -201,7 +201,7 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
     n = ns*v[0]*a_s/(v*a)
     #T = Ts*(3-2*r[0]/r)*(r/r[0])**(-2.0/7)
     T = np.ones_like(r)*T0
-    
+
     plt.ion()
     fig = plt.figure(figsize=(15,10))
     fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
@@ -222,9 +222,9 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
         line2, = ax2.plot(r,v,"x")
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.subplots_adjust()
-    
-    for i in xrange(int(t/dt)):
-        
+
+    for i in range(int(t/dt)):
+
         n,v = rk2_nva(n,v,T,a,r,dt)
 
         if i%cpf == 0 and animate:
@@ -232,7 +232,7 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
             line2.set_ydata(v)
             fig.canvas.draw()
             fig.canvas.flush_events()
-            
+
 
     if animate:
         line1.set_ydata(n)
@@ -244,7 +244,7 @@ def sim_nva(T0=4000000,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=Tru
         ax1.plot(r,n,"x")
         ax2.plot(r,v,"x")
 
-    
+
     return [n,v]
 
 def rk4_nv(n,v,T,r,dt):
@@ -278,14 +278,14 @@ def ssprk3_nv(n,v,T,r,dt):
     kn1 = dt*dn(n,v,r)
     kn2 = dt*dn(n+kn1,v,r)
     kn3 = dt*dn(n+kn1/4+kn2/4,v,r)
-    
+
     n = n + (kn1+kn2+4*kn3)/6
     n[0] = n0
 
     kv1 = dt*dv(n,v,T,r)
     kv2 = dt*dv(n,v+kv1,T,r)
     kv3 = dt*dv(n,v+kv1/4+kv2/4,T,r)
-    
+
     v = v + (kv1+kv2+4*kv3)/6
 
     return [n,v]
@@ -299,7 +299,7 @@ def rk2_nv(n,v,T,r,dt,clips=None,ret_deltas=False):
 
     kv1 = dt*dv(n,v,T,r)
     d_v = dt*dv(n,v+kv1/2,T,r)
-    
+
     if ret_deltas:
         return [d_n,d_v]
 
@@ -328,7 +328,7 @@ def rk4_38_nv(n,v,T,r,dt):
     kv2 = dt*dv(n,v+kv1/3,T,r)
     kv3 = dt*dv(n,v-kv1/3+kv2,T,r)
     kv4 = dt*dv(n,v+kv1-kv2+kv3,T,r)
-    
+
     v = v + (kv1+3*kv2+3*kv3+kv4)/8
 
     return [n,v]
@@ -347,7 +347,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
 
 
     stop = False
-    
+
     i = 0
 
     d_n,d_v = rk2_nv(n,v,T,r,dt,ret_deltas=True)
@@ -356,7 +356,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
     std_dv = np.std(d_v,ddof=1)
     mean_dv = np.mean(d_v)
     clips = [mean_dn+2*std_dn,mean_dv+2*std_dv]
-    
+
     plt.ion()
     fig = plt.figure(figsize=(15,10))
     fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
@@ -377,9 +377,9 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
         line2, = ax2.plot(r,v,"x")
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.subplots_adjust()
-    
-    for i in xrange(int(t/dt)):
-        
+
+    for i in range(int(t/dt)):
+
         n,v = rk2_nv(n,v,T,r,dt,clips=clips)
 
         if i%cpf == 0 and animate:
@@ -387,7 +387,7 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
             line2.set_ydata(v)
             fig.canvas.draw()
             fig.canvas.flush_events()
-            
+
 
     if animate:
         line1.set_ydata(n)
@@ -400,11 +400,11 @@ def sim_nv_rk4(n0=100,v0=100,T0=1,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",
         ax1.plot(r,n,"x")
         ax2.plot(r,v,"x")
 
-    
+
     return [n,v]
 
 def rk2_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
-    
+
     p = 2*n*sc.k*T
     p0 = p[0]
     kp1 = dt*dp(v,p,q,r)
@@ -416,7 +416,7 @@ def rk2_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
 
     kv1 = dt*dv(n,v,T,r)
     d_v = dt*dv(n,v+kv1/2,T,r)
-    
+
     if ret_deltas:
         return [d_n,d_v,d_p]
 
@@ -431,13 +431,13 @@ def rk2_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
 
     n = n + d_n
     n[0] = n0
-    
+
     T = p/(2*n*sc.k)
-    
+
     return [n,v,T]
 
 def rk1_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
-    
+
     p = 2*n*sc.k*T
     p0 = p[0]
     d_p = dt*dp(v,p,q,r)
@@ -446,7 +446,7 @@ def rk1_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     d_n = dt*dn(n,v,r)
 
     d_v = dt*dv(n,v,T,r)
-    
+
     if ret_deltas:
         return [d_n,d_v,d_p]
 
@@ -462,7 +462,7 @@ def rk1_nvT(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     n = n + d_n
     n[0] = n0
     T = p/(2*n*sc.k)
-    
+
     return [n,v,T]
 
 
@@ -477,9 +477,9 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     #T = np.ones_like(r)*T0
     T = T0*(r/r[0])**-2
     q = np.ones_like(r)*q0
-    
+
     stop = False
-    
+
     i = 0
 
     d_n,d_v,d_p = rk2_nvT(n,v,T,q,r,dt,ret_deltas=True)
@@ -490,7 +490,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     std_dp = np.std(d_p,ddof=1)
     mean_dp = np.mean(d_p)
     clips = [mean_dn+1*std_dn,mean_dv+1*std_dv,mean_dp+1*std_dp]
-    
+
     plt.ion()
     fig = plt.figure(figsize=(15,15))
     fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
@@ -516,11 +516,11 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
         line3, = ax3.plot(r,T,"x")
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.subplots_adjust()
-    
-    for i in xrange(int(t/dt)):    
-        
+
+    for i in range(int(t/dt)):
+
         n,v,T = rk2_nvT(n,v,T,q,r,dt,clips=clips)
-        
+
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
             line2.set_ydata(v)
@@ -530,7 +530,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
 
         if np.isnan(v).any():
             raise ValueError("Simulation destabilised!")
-            
+
 
     if animate:
         line1.set_ydata(n)
@@ -553,7 +553,7 @@ def sim_nvT_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="u
     return [n,v,T]
 
 def rk2_nvTq(n,v,T,q,r,dt,clips=None,ret_deltas=False):
-    
+
     p = 2*n*sc.k*T
     p0 = p[0]
     kp1 = dt*dp(v,p,q,r)
@@ -568,7 +568,7 @@ def rk2_nvTq(n,v,T,q,r,dt,clips=None,ret_deltas=False):
 
     kq1 = dt*dq(n,v,p,q,r,k=2)
     d_q = dt*dq(n,v,p,q+kq1/2,r,k=2)
-    
+
     if ret_deltas:
         return [d_n,d_v,d_p,d_q]
 
@@ -586,9 +586,9 @@ def rk2_nvTq(n,v,T,q,r,dt,clips=None,ret_deltas=False):
     n[0] = n0
 
     q = q + d_q
-    
+
     T = p/(2*n*sc.k)
-    
+
     return [n,v,T,q]
 
 def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="unnamed",animate=True,cpf=1000):
@@ -602,9 +602,9 @@ def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="
     #T = np.ones_like(r)*T0
     T = T0*(r/r[0])**-4
     q = np.ones_like(r)*q0
-    
+
     stop = False
-    
+
     i = 0
 
     d_n,d_v,d_p,d_q = rk2_nvTq(n,v,T,q,r,dt,ret_deltas=True)
@@ -617,7 +617,7 @@ def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="
     std_dq = np.nanstd(d_q,ddof=1)
     mean_dq = np.nanmean(d_q)
     clips = [mean_dn+1*std_dn,mean_dv+1*std_dv,mean_dp+1*std_dp,mean_dq+1*std_dq]
-    
+
     plt.ion()
     fig = plt.figure(figsize=(15,15))
     fig.suptitle("$T_0$ = {} K".format(T0),fontsize=20)
@@ -649,11 +649,11 @@ def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="
         line4, = ax4.plot(r,q,"x")
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
     plt.subplots_adjust()
-    
-    for i in xrange(int(t/dt)):    
-        
+
+    for i in range(int(t/dt)):
+
         n,v,T,q = rk2_nvTq(n,v,T,q,r,dt,clips=clips)
-        
+
         if i%cpf == 0 and animate:
             line1.set_ydata(n)
             line2.set_ydata(v)
@@ -663,7 +663,7 @@ def sim_nvTq_rk4(n0=100,v0=100,T0=0.1,q0=0,t=10000,dt=1,rmax=10,dr=0.1,figname="
             fig.canvas.flush_events()
 
         if np.isnan(v).any():
-            raise ValueError("Simulation destabilised!")    
+            raise ValueError("Simulation destabilised!")
 
     if animate:
         line1.set_ydata(n)

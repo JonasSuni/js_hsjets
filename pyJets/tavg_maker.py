@@ -30,7 +30,7 @@ def avg_maker_slow(runid,start,stop):
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
     # range from first filenumber to last
-    for n in xrange(start,stop+1):
+    for n in range(start,stop+1):
         print("n = {}".format(n))
 
         # Initialise dynamic pressure and density arrays
@@ -51,7 +51,7 @@ def avg_maker_slow(runid,start,stop):
             continue
 
         # range from current filenumber-180 to current filenumber+180
-        for t in xrange(n-180,n+180+1):
+        for t in range(n-180,n+180+1):
 
             # exclude current filenumber from time average
             if t == n:
@@ -148,7 +148,7 @@ def TP_maker(runid,start,stop):
         bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
 
     # range from first filenumber to last
-    for n in xrange(start,stop+1):
+    for n in range(start,stop+1):
 
         # find correct file for current time step
         if runid == "AED":
