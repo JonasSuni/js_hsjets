@@ -516,7 +516,7 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
 
 def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
 
-    cells = np.array(cells,ndmin=1)
+    cells = np.array(cells,ndmin=1,dtype=int)
 
     events = []
     curr_event = np.array([],dtype=int)
@@ -533,7 +533,7 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
 
             curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
 
-        events.append(curr_event)
+        events.append(curr_event.astype(int))
         cells = cells[~np.in1d(cells,curr_event)]
 
     events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
