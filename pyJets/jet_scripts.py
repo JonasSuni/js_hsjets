@@ -1032,7 +1032,7 @@ def hack_2019_fig4(time_thresh=5):
     bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,12,10+1),np.linspace(0,15,10+1)])
 
     var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_avg","TPar_avg"]
-    ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T~[MK]$"]
+    ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T_{mean}~[MK]$"]
     xlabel_list = ["VLMax","VLRand","MMS"]
 
     mms_reader = MMSReader("StableJets.txt")
@@ -1124,10 +1124,10 @@ def hack_2019_fig6_alt(time_thresh=5):
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
 
-    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
-    ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
-    AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=False)
-    AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=False)
+    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=True)
+    ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=True)
+    AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=True)
+    AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=True)
 
     fig,ax_list = plt.subplots(1,3,figsize=(10,5),sharey=True)
 
@@ -1748,7 +1748,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.set_ylim(bottom=0)
@@ -1783,7 +1783,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
