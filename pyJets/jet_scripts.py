@@ -1,4 +1,4 @@
-8# import matplotlib
+# import matplotlib
 # #matplotlib.use('ps')
 # from matplotlib import rc
 
@@ -22,6 +22,7 @@ import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
+import jet_aux as jx
 
 #from matplotlib import rc
 # font = {'family' : 'monospace',
@@ -1420,10 +1421,10 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"x",color="magenta",mec="magenta",markersize=3,label="MMS High Mach")
-    ax.plot(mms_low[0],mms_low[1],"x",color="cyan",mec="cyan",markersize=3,label="MMS Low Mach")
-    ax.plot(coords_low[0],coords_low[1],"o",color="blue",mec="blue",markersize=3,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"o",color="red",mec="red",markersize=3,label="Vlas High Mach")
+    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=3,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=3,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=3,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color=jx.crimson,mec=jx.crimson,markersize=3,label="Vlas High Mach")
 
 
     ax.set_xlim(6,20)
