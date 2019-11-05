@@ -1029,7 +1029,7 @@ def hack_2019_fig4(time_thresh=5):
 
     vlas_norm = np.array([1,1,1,1,1,1/0.5,1/0.5])
     mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
-    bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,6,10+1),np.linspace(0,15,10+1)])
+    bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,12,10+1),np.linspace(0,15,10+1)])
 
     var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_avg","TPar_avg"]
     ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T~[MK]$"]
@@ -1119,7 +1119,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
-    bins_list = np.array([np.linspace(time_thresh,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
+    bins_list = np.array([np.linspace(time_thresh,60,20+1),np.linspace(0,0.5,20+1),np.linspace(0,5,20+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
@@ -1137,7 +1137,8 @@ def hack_2019_fig6_alt(time_thresh=5):
         weights_arr = [np.ones(var.shape,dtype=float)/var.size for var in var_arr]
         med_arr = [np.median(var) for var in var_arr]
         std_arr = [np.std(var,ddof=1) for var in var_arr]
-        labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
+        #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
+        labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
         color_arr = ["black","blue","red","green"]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
@@ -1747,7 +1748,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.5)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.set_ylim(bottom=0)
@@ -1782,7 +1783,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.3)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.5)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
