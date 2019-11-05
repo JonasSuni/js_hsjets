@@ -1119,7 +1119,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
-    bins_list = np.array([np.linspace(time_thresh,60,20+1),np.linspace(0,0.5,20+1),np.linspace(0,5,20+1)])
+    bins_list = np.array([np.linspace(time_thresh,60,20+1),np.linspace(0,0.5,25+1),np.linspace(0,5,25+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
@@ -1748,7 +1748,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.5)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.set_ylim(bottom=0)
@@ -1783,7 +1783,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,color="red",label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color="green",label="AEC")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.5)
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
         ax.set_xlim(-60,60)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
