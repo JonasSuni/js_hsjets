@@ -1412,10 +1412,12 @@ def hack_2019_fig35():
     mms_high = MMS_pos("HighMachJetsPosition.txt")
     mms_low = MMS_pos("LowMachJetsPosition.txt")
 
-    bs_y = np.arange(-10,10,0.01)
-    mp_p,bs_p = ja.bs_mp_fit("AEA",1320,[5,20,-10,10])
-    bs_x = np.polyval(bs_p,bs_y)
-    mp_x = np.polyval(mp_p,bs_y)+1.5
+    # bs_y = np.arange(-10,10,0.01)
+    # mp_p,bs_p = ja.bs_mp_fit("AEA",1320,[5,20,-10,10])
+    # bs_x = np.polyval(bs_p,bs_y)
+    # mp_x = np.polyval(mp_p,bs_y)+1.5
+    bs_x,bs_y=jx.BS_xy()
+    mp_x,mp_y=jx.MP_xy()
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
 
