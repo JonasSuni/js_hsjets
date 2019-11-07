@@ -14,7 +14,7 @@ def BS_xy():
     R_bs = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta==a)[0][0]
-        R_bs[index] = BS_distance_Merka2005(a,0,6,400,8,[])
+        R_bs[index] = BS_distance_Merka2005(0,a,6,400,8,[])
 
     #x_bs = R_bs*np.cos(np.deg2rad(theta))
     #y_bs = R_bs*np.sin(np.deg2rad(theta))
