@@ -10,3 +10,4 @@ from jet_scripts import draw_all_cont,lineout_plot,jet_pos_graph,jet_paper_pos,j
 from plot_contours import expr_pdyn_gen,expr_pdyn,expr_srho
 from tavg_maker import avg_maker_slow,TP_maker
 from vspacecraft import jet_sc,jet_spacecrafts,slams_spacecraft,wave_spacecraft
+from jet_aux import BS_xy, MP_xy

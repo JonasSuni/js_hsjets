@@ -1125,10 +1125,10 @@ def hack_2019_fig6_alt(time_thresh=5):
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
 
-    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=True)
-    ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=True)
-    AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=True)
-    AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=True)
+    ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
+    ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
+    AEA_vars = read_mult_runs(var_list,time_thresh,runids=["AEA"],amax=False)
+    AEC_vars = read_mult_runs(var_list,time_thresh,runids=["AEC"],amax=False)
 
     fig,ax_list = plt.subplots(1,3,figsize=(10,5),sharey=True)
 
@@ -1421,10 +1421,10 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=3,label="MMS High Mach")
-    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=3,label="MMS Low Mach")
-    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=3,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"o",color=jx.crimson,mec=jx.crimson,markersize=3,label="Vlas High Mach")
+    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=4,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=4,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=5,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color=jx.crimson,mec=jx.crimson,markersize=5,label="Vlas High Mach")
 
 
     ax.set_xlim(6,20)
