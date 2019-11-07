@@ -30,7 +30,7 @@ def MP_xy():
     R_mp = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta==a)[0][0]
-        R_mp[index] = Shue_Mpause_model(m_p*400e3*400e3*6e6*1.e-9,0.0,[a],[0])
+        R_mp[index] = Shue_Mpause_model(m_p*400e3*400e3*6e6*1.e9,0.0,[a],[0])
 
     #x_mp = R_mp*np.cos(np.deg2rad(theta))
     #y_mp = R_mp*np.sin(np.deg2rad(theta))
