@@ -14,7 +14,7 @@ def BS_xy():
     R_bs = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta==a)[0][0]
-        R_bs[index] = BS_distance_Merka2005(0,a,6,400,8,[])
+        R_bs[index] = BS_distance_Merka2005(np.pi/2,a,6,400,8,[])
 
     #x_bs = R_bs*np.cos(np.deg2rad(theta))
     #y_bs = R_bs*np.sin(np.deg2rad(theta))
@@ -30,7 +30,7 @@ def MP_xy():
     R_mp = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta==a)[0][0]
-        R_mp[index] = Shue_Mpause_model(m_p*400*400*6,0.0,[a],[0])
+        R_mp[index] = Shue_Mpause_model(m_p*400e3*400e3*6e6,0.0,[a],[0])
 
     #x_mp = R_mp*np.cos(np.deg2rad(theta))
     #y_mp = R_mp*np.sin(np.deg2rad(theta))
