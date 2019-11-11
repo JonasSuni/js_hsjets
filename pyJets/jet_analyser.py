@@ -10,7 +10,8 @@ import scipy.optimize as so
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
-wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+#wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+wrkdir_DNR = os.environ["WRK"]+"/"
 
 def find_bulkpath(runid):
 

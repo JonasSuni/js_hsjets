@@ -41,8 +41,10 @@ eVtoK = q_e/k_b
 
 EkinBinEdges = np.logspace(np.log10(10),np.log10(2e4),66)
 
-wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
-homedir = "/homeappl/home/sunijona/"
+# wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+# homedir = "/homeappl/home/sunijona/"
+wrkdir_DNR = os.environ["WRK"]+"/"
+homedir = os.environ["HOME"]+"/"
 
 
 ###TEMPORARY SCRIPTS HERE###
