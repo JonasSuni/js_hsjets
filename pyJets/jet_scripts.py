@@ -48,11 +48,16 @@ homedir = "/homeappl/home/sunijona/"
 ###TEMPORARY SCRIPTS HERE###
 
 
-def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
+def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
     # Plot jet countours and positions
 
     #outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
-    outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
+    if transient == "jet":
+        outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
+        inputpath = wrkdir_DNR+"working/"
+    elif transient == "slams":
+        outputdir = wrkdir_DNR+"contours/SLAMS/{}/".format(runid)
+        inputpath = wrkdir_DNR+"working/SLAMS/"
 
     # Initialise required global variables
     global jet_cells
@@ -74,7 +79,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
             # Try reading properties
             try:
-                props = jio.PropReader(str(itr).zfill(5),runid,580,transient="jet")
+                props = jio.PropReader(str(itr).zfill(5),runid,580,transient=transient)
                 xmean_list.append(props.read_at_time("x_mean",float(n)/2))
                 ymean_list.append(props.read_at_time("y_mean",float(n)/2))
                 xvmax_list.append(props.read_at_time("x_vmax",float(n)/2))
@@ -91,7 +96,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
+            fileobj = open(inputpath+"events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
@@ -100,7 +105,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading mask file
         try:
-            full_cells = np.loadtxt(wrkdir_DNR+"working/Masks/{}/{}.mask".format(runid,n)).astype(int)
+            full_cells = np.loadtxt(inputpath+"Masks/{}/{}.mask".format(runid,n)).astype(int)
         except IOError:
             full_cells = []
 
