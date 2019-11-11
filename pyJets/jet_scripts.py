@@ -1038,7 +1038,7 @@ def hack_2019_fig4(time_thresh=5):
     bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,12,10+1),np.linspace(0,15,10+1)])
 
     var_list = ["size_rad","n_max","v_max","pd_max","B_max","TPerp_avg","TPar_avg"]
-    ylabel_list = ["$Extent~[R_e]$","$n_{max}~[n_{sw}]$","$|v|_{max}~[v_{sw}]$","$P_{dyn,max}~[P_{dyn,sw}]$","$|B|_{max}~[B_{IMF}]$","$T_{mean}~[MK]$"]
+    ylabel_list = ["$\mathrm{Extent~[R_e]}$","$\mathrm{n_{max}~[n_{sw}]}$","$\mathrm{|v|_{max}~[v_{sw}]}$","$\mathrm{P_{dyn,max}~[P_{dyn,sw}]}$","$\mathrm{|B|_{max}~[B_{IMF}]}$","$\mathrm{T_{mean}~[MK]}$"]
     xlabel_list = ["VLMax","VLRand","MMS"]
 
     mms_reader = MMSReader("StableJets.txt")
@@ -1095,7 +1095,7 @@ def hack_2019_fig4(time_thresh=5):
 def hack_2019_fig6(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
-    label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
+    label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
     bins_list = np.array([np.linspace(time_thresh,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     data_list = read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False)
@@ -1128,7 +1128,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     bins_list = np.array([np.linspace(time_thresh,60,20+1),np.linspace(0,0.5,25+1),np.linspace(0,5,25+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
-    label_list = ["$Lifetime~[s]$","$Tangential~size~[R_e]$","$Size~ratio$"]
+    label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
 
     ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
@@ -1222,7 +1222,7 @@ def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=Fa
 def DT_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
-    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
+    ylabel_list = ["$\mathrm{\\Delta T~[MK]}$","$\mathrm{\\Delta n~[n_{SW}]}$","$\mathrm{\\Delta |v|~[v_{SW}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,SW}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$"]
     hist_bins = [np.linspace(-5,5,10+1),np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1)]
 
     mms_props = MMSReader("StableJets.txt")
@@ -1275,7 +1275,7 @@ def DT_comparison(time_thresh=5):
 def DT_mach_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
-    ylabel_list = ["$\\Delta T~[MK]$","$\\Delta n~[n_{SW}]$","$\\Delta |v|~[v_{SW}]$","$\\Delta P_{dyn}~[P_{dyn,SW}]$","$\\Delta |B|~[B_{IMF}]$"]
+    ylabel_list = ["$\mathrm{\\Delta T~[MK]}$","$\mathrm{\\Delta n~[n_{SW}]}$","$\mathrm{\\Delta |v|~[v_{SW}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,SW}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$"]
     hist_bins = [np.linspace(-5,5,10+1),np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1)]
 
     mms_var_list = ["DT","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
@@ -1437,8 +1437,8 @@ def hack_2019_fig35():
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
-    ax.set_xlabel("X [$R_e$]",fontsize=20,labelpad=10)
-    ax.set_ylabel("Y [$R_e$]",fontsize=20,labelpad=10)
+    ax.set_xlabel("X [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
+    ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
     plt.tight_layout()
 
     fig.savefig(homedir+"Figures/hackathon_paper/fig35.png")
@@ -1459,7 +1459,7 @@ def hack_2019_fig2(runid,htw = 60):
 
     var_list_list = ["Pdyn",["vx","vy","vz","v"],["Bx","By","Bz","B"],"","rho",["TParallel","TPerpendicular"]]
     norm_list = [1.0e-9,1.0e+3,1.0e-9,1,1.0e+6,1.0e+6]
-    ylabels = ["$P_{dyn}~[nPa]$","$v~[kms^{-1}]$","$B~[nT]$","$W~[eV]$","$n~[cm^{-3}]$","$T~[MK]$"]
+    ylabels = ["$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{B~[nT]}$","$\mathrm{W~[eV]}$","$\mathrm{n~[cm^{-3}]}$","$\mathrm{T~[MK]}$"]
     annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],[""],["TPar","TPerp"]]
 
 
@@ -1521,7 +1521,7 @@ def hack_2019_fig2(runid,htw = 60):
                     im_mms = ax.pcolormesh(t_mms,ebins_mms,np.log10(flux_mms),cmap="jet",vmin=4.5,vmax=7.5)
                     ax.set_yscale("log")
                     cbar_mms = colorbar(im_mms,ax_list[:,1].tolist())
-                    cbar_mms.set_label("log Diff. energy flux\n$keV / (cm^2~s~sr~keV)$")
+                    cbar_mms.set_label("log Diff. energy flux\n$\mathrm{keV / (cm^2~s~sr~keV)}$")
                     cbar_mms.set_ticks([5,6,7])
                     ax.set_yticks([1e2,1e3,1e4])
                     ax.set_ylim(30,20000)
@@ -1722,8 +1722,8 @@ def hack_2019_fig78(time_thresh=5):
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
 
-    lab_list_7 = ["$Extent~[R_e]$","$Tangential~Size~[R_e]$","$Size~Ratio$"]
-    lab_list_8 = ["$\\Delta n~[n_{sw}]$","$\\Delta |v|~[v_{sw}]$","$\\Delta P_{dyn}~[P_{dyn,sw}]$","$\\Delta |B|~[B_{IMF}]$","$\\Delta T_{perp}~[MK]$","$\\Delta T_{par}~[MK]$"]
+    lab_list_7 = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$"]
+    lab_list_8 = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]$}"]
 
     epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
     epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
@@ -1813,7 +1813,7 @@ def hack_2019_fig78(time_thresh=5):
 def hack_2019_fig9(time_thresh=5,nbins=10):
 
     var_list = ["B_avg","n_avg","v_avg"]
-    xlabels = ["$|B|_{mean}~[B_{IMF}]$","$n_{mean}~[n_{sw}]$","$|v|_{mean}~[v_{sw}]$"]
+    xlabels = ["$\mathrm{|B|_{mean}~[B_{IMF}]}$","$\mathrm{n_{mean}~[n_{sw}]}$","$\mathrm{|v|_{mean}~[v_{sw}]}$"]
     ylabels = ["Vlasiator\nFraction of jets","MMS\nFraction of jets"]
     bin_list = [np.linspace(0,8,nbins+1),np.linspace(0,7,nbins+1),np.linspace(0,1,nbins+1)]
 
