@@ -1723,7 +1723,7 @@ def hack_2019_fig78(time_thresh=5):
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
 
     lab_list_7 = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$"]
-    lab_list_8 = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]$}"]
+    lab_list_8 = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
 
     epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
     epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
