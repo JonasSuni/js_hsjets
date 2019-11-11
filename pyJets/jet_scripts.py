@@ -1275,7 +1275,7 @@ def DT_comparison(time_thresh=5):
 def DT_mach_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
-    ylabel_list = ["$\mathrm{\\Delta T~[MK]}$","$\mathrm{\\Delta n~[n_{SW}]}$","$\mathrm{\\Delta |v|~[v_{SW}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,SW}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$"]
+    ylabel_list = ["$\mathrm{\\Delta T~[MK]}$","$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$"]
     hist_bins = [np.linspace(-5,5,10+1),np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1)]
 
     mms_var_list = ["DT","Dn_SW","Dv_SW","Dpd_SW","DB_SW"]
