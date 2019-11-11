@@ -6,6 +6,7 @@ medium_blue = '#006DDB'
 crimson = '#920000'
 violet = '#B66DFF'
 dark_blue = '#490092'
+orange = '#DBD100'
 m_p = 1.672621898e-27
 
 def BS_xy():
