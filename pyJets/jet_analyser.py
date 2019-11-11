@@ -398,6 +398,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     elif transient == "slams":
         jet = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
         jet.mask[bs_cond < 0] = False
+        jet.mask[nrho < 1.5] = False
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
