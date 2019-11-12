@@ -268,8 +268,6 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits
 
-    t = time.time()
-
     if transient == "jet":
         trans_folder = ""
     elif transient == "slams":
@@ -409,18 +407,16 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
 
-    print(time.time()-t)
+    if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)):
+        os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
 
-    # if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)):
-    #     os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
-    #
-    # print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask")
-    #
-    # # if boundaries have been set, discard cellids outside boundaries
-    # if not not boxre:
-    #     masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-    #     np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
-    #     return masked_ci
-    # else:
-    #     np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
-    #     return masked_ci
+    print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask")
+
+    # if boundaries have been set, discard cellids outside boundaries
+    if not not boxre:
+        masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
+        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        return masked_ci
+    else:
+        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        return masked_ci
