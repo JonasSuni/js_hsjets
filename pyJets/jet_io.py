@@ -922,10 +922,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
         print("t = "+str(float(n)/2)+"s")
 
         # Find correct bulkname
-        if runid == "AED":
-            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
-        else:
-            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+        bulkname = "bulk."+str(n).zfill(7)+".vlsv"
 
         if bulkname not in os.listdir(bulkpath):
             print("Bulk file "+str(n)+" not found, continuing")
@@ -1027,7 +1024,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet object
-                        jetobj_list.append(Transient(curr_id,runid,float(n-1)/2),transient=transient)
+                        jetobj_list.append(Transient(curr_id,runid,float(n-1)/2,transient=transient))
 
                         # Append current events to jet object properties
                         jetobj_list[-1].cellids.append(bs_event)
