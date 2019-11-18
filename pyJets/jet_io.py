@@ -260,6 +260,9 @@ def jetfile_read(runid,filenr,key,transient="jet"):
     elif transient == "slamsjet":
         inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         extension = "slamsjet"
+    elif transient == "slams":
+        inputdir = wrkdir_DNR+"working/SLAMS/slams"
+        extension = "slams"
 
     outputlist = []
 
