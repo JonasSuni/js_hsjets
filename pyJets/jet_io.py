@@ -18,6 +18,29 @@ wrkdir_DNR = os.environ["WRK"]+"/"
 propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath"]
 propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa]"
 
+def slamsjet_finder(runid,start,stop):
+
+    slams_id_list = []
+    jet_id_list = []
+
+    for n in range(1,3000):
+        try:
+            slams_props = PropReader(str(n).zfill(5),runid,580,transient="slams")
+            if "splinter" not in slams_props.meta and "merger" not in slams_props.meta:
+                slams_id_list.append(n)
+        except:
+            pass
+        
+        try:
+            jet_props = PropReader(str(n).zfill(5),runid,580,transient="jet")
+            if "splinter" not in jet_props.meta and "merger" not in jet_props.meta:
+                jet_id_list.append(n)
+        except:
+            pass
+
+
+    return [slams_id_list,jet_id_list]
+
 class PropReader:
     # Class for reading jet property files
 
