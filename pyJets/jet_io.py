@@ -19,18 +19,22 @@ propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","
 propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa]"
 
 def slamsjet_finder(runid,start,stop):
+    # WIP
+    runids = ["ABA","ABC","AEA","AEC"]
+    slams_maxid = [90,276,428,263]
+    jets_maxid = [723,806,2216,376]
 
     slams_id_list = []
     jet_id_list = []
 
-    for n in range(1,3000):
+    for n in range(1,slams_maxid[runids.index(runid)]+1):
         try:
             slams_props = PropReader(str(n).zfill(5),runid,580,transient="slams")
             if "splinter" not in slams_props.meta and "merger" not in slams_props.meta:
                 slams_id_list.append(n)
         except:
             pass
-
+    for n in range(1,jets_maxid[runids.index(runid)]+1)
         try:
             jet_props = PropReader(str(n).zfill(5),runid,580,transient="jet")
             if "splinter" not in jet_props.meta and "merger" not in jet_props.meta:
@@ -57,6 +61,7 @@ class PropReader:
         self.ID = ID # Should be a string of 5 digits
         self.runid = runid # Should be a string of 3 letters
         self.start = start # Should be a float of accuracy to half a second
+        self.transient = transient
         self.meta = []
         self.sw_pars = ja.sw_par_dict(runid) # Solar wind parameters for run
         self.sw_pars[0] /= 1.0e+6 # rho in 1/cm^3
@@ -86,6 +91,8 @@ class PropReader:
             props = props[1:]
         props = [line.split(",") for line in props]
         self.props = np.asarray(props,dtype="float")
+        self.times = timefile_read(self.runid,self.start,self.ID,transient=self.transient)
+        self.cells = jetfile_read(self.runid,self.start,self.ID,transient=self.transient)
 
         # Initialise list of variable names and associated dictionary
         var_list = propfile_var_list
