@@ -30,7 +30,7 @@ def slamsjet_finder(runid,start,stop):
                 slams_id_list.append(n)
         except:
             pass
-        
+
         try:
             jet_props = PropReader(str(n).zfill(5),runid,580,transient="jet")
             if "splinter" not in jet_props.meta and "merger" not in jet_props.meta:
@@ -39,7 +39,7 @@ def slamsjet_finder(runid,start,stop):
             pass
 
 
-    return [slams_id_list,jet_id_list]
+    return [len(slams_id_list),len(jet_id_list)]
 
 class PropReader:
     # Class for reading jet property files
