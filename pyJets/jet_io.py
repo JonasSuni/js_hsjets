@@ -34,7 +34,8 @@ def slamsjet_finder(runid,start,stop):
                 slams_id_list.append(n)
         except:
             pass
-    for n in range(1,jets_maxid[runids.index(runid)]+1)
+            
+    for n in range(1,jets_maxid[runids.index(runid)]+1):
         try:
             jet_props = PropReader(str(n).zfill(5),runid,580,transient="jet")
             if "splinter" not in jet_props.meta and "merger" not in jet_props.meta:
