@@ -34,7 +34,7 @@ def slamsjet_finder(runid,start,stop):
                 slams_id_list.append(n)
         except:
             pass
-            
+
     for n in range(1,jets_maxid[runids.index(runid)]+1):
         try:
             jet_props = PropReader(str(n).zfill(5),runid,580,transient="jet")
@@ -92,8 +92,8 @@ class PropReader:
             props = props[1:]
         props = [line.split(",") for line in props]
         self.props = np.asarray(props,dtype="float")
-        self.times = timefile_read(self.runid,self.start,self.ID,transient=self.transient)
-        self.cells = jetfile_read(self.runid,self.start,self.ID,transient=self.transient)
+        #self.times = timefile_read(self.runid,self.start,self.ID,transient=self.transient)
+        #self.cells = jetfile_read(self.runid,self.start,self.ID,transient=self.transient)
 
         # Initialise list of variable names and associated dictionary
         var_list = propfile_var_list
@@ -103,6 +103,12 @@ class PropReader:
         self.delta_list = ["DT","Dn","Dv","Dpd","DB","DTPar","DTPerp"]
         self.davg_list = ["T_avg","n_max","v_max","pd_max","B_max","TPar_avg","TPerp_avg"]
         self.sheath_list = ["T_sheath","n_sheath","v_sheath","pd_sheath","B_sheath","TPar_sheath","TPerp_sheath"]
+
+    def get_times(self):
+        return timefile_read(self.runid,self.start,self.ID,transient=self.transient)
+
+    def get_cells(self):
+        return jetfile_read(self.runid,self.start,self.ID,transient=self.transient)
 
     def read(self,name):
         # Read data of specified variable
