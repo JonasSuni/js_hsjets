@@ -272,6 +272,8 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         trans_folder = ""
     elif transient == "slams":
         trans_folder = "SLAMS/"
+    elif transient == "slamsjet":
+        trans_folder = "SLAMSJETS/"
 
     bulkpath = find_bulkpath(runid)
 
@@ -403,6 +405,14 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         jet.mask[bs_cond < 0] = False
         jet.mask[nrho < 1.5] = False
         jet.mask[npdyn < 1.25] = False
+    elif transient == "slamsjet":
+        jet1 = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
+        jet1.mask[bs_cond < 0] = False
+        jet1.mask[nrho < 1.5] = False
+        jet1.mask[npdyn < 1.25] = False
+        jet2 = np.ma.masked_greater_equal(tapdyn,2.0)
+        jet2.mask[bs_cond > 0] = False
+        jet = np.logical_and(jet1,jet2)
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()

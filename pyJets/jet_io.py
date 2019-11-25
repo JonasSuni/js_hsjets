@@ -185,6 +185,11 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         maskdir = wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/"
         nmin=2
         nmax=6000
+    elif transient == "slamsjet":
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"
+        maskdir = wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/"
+        nmin=2
+        nmax=6000
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -315,6 +320,8 @@ def eventprop_write(runid,filenr,props,transient="jet"):
         outputdir = wrkdir_DNR+"working/event_props/"+runid
     elif transient == "slams":
         outputdir = wrkdir_DNR+"working/SLAMS/event_props/"+runid
+    elif transient == "slamsjet":
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/event_props/"+runid
 
     if not os.path.exists(outputdir):
         try:
@@ -337,6 +344,8 @@ def eventprop_read(runid,filenr,transient="jet"):
         inputname = wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr))
     elif transient == "slams":
         inputname = wrkdir_DNR+"working/SLAMS/event_props/{}/{}.eventprops".format(runid,str(filenr))
+    elif transient == "slamsjet":
+        inputname = wrkdir_DNR+"working/SLAMSJETS/event_props/{}/{}.eventprops".format(runid,str(filenr))
 
     try:
         props_f = open(inputname)
