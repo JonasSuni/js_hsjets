@@ -851,7 +851,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
         outputdir = wrkdir_DNR+"working/SLAMS/slams/"+runid
         extension = ".slams"
     elif transient == "slamsjet":
-        outputdir = wrkdir_DNR+"working/SLAMSJETS/slams/"+runid
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
         extension = ".slamsjet"
 
 
