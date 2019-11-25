@@ -166,10 +166,21 @@ class Transient:
 
     def jetprops_write(self,start):
 
-        if self.times[-1]-self.times[0] >= 4.5:
-            propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
+        if self.transient != "slamsjet":
+            if self.times[-1]-self.times[0] >= 4.5:
+                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
+            else:
+                print("Transient {} too short-lived, propfile not written!".format(self.ID))
         else:
-            print("Transient {} too short-lived, propfile not written!".format(self.ID))
+            x_birth,y_birth = self.props[0][1:3]
+            x_death,y_death = self.props[-1][1:3]
+            bsp_birth,bsp_death = [ja.bow_shock_markus(self.runid,int(self.times[0]*2))[::-1],ja.bow_shock_markus(self.runid,int(self.times[-1]*2))[::-1]]
+            bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
+            if self.times[-1]-self.times[0] >= 4.5 and x_birth > bsx_birth and x_death < bsx_death:
+                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
+            else:
+                print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
+
 
         return None
 

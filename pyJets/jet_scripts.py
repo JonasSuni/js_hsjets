@@ -151,7 +151,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     outputdir = wrkdir_DNR+"contours/SLAMSJETS/{}/".format(runid)
     rid_list = ["ABA","ABC","AEA","AEC"]
-    maxrange = [3000,3000,3000,3000]
+    maxrange = [787,3000,3000,3000]
 
     # Initialise required global variables
     global jet_cells
@@ -165,7 +165,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         xmean_list = []
         ymean_list = []
 
-        for itr in range(500):
+        for itr in range(1,maxrange+1):
 
             # Try reading properties
             try:
@@ -220,7 +220,7 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
     # slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
 
-    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4) # SLAMSJET mean positions
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # SLAMSJET mean positions
 
 def draw_all_cont():
     # Draw contours for all criteria
