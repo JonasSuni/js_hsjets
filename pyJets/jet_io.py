@@ -26,7 +26,7 @@ def slamsjet_finder(runid,start,stop):
 
     slams_id_list = []
     jet_id_list = []
-    slamsjet_pairs_list []
+    slamsjet_pairs_list = []
 
     for n in range(1,slams_maxid[runids.index(runid)]+1):
         try:
