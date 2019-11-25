@@ -412,7 +412,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         jet1.mask[npdyn < 1.25] = False
         jet2 = np.ma.masked_greater_equal(tapdyn,2.0)
         jet2.mask[bs_cond > 0] = False
-        jet = np.logical_and(jet1,jet2)
+        jet = np.logical_or(jet1,jet2)
 
     # discard unmasked cellids
     masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()

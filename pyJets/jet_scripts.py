@@ -175,7 +175,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
         # Try reading events file
         try:
-            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runid,n),"r")
+            fileobj = open(wrkdir_DNR+"working/SLAMSJETS/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             fileobj.close()
             jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
@@ -183,21 +183,16 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             jet_cells = []
 
         # Try reading SLAMS events file
-        try:
-            fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
-            contents = fileobj.read()
-            fileobj.close()
-            slams_cells = map(int,contents.replace("\n",",").split(",")[:-1])
-        except IOError:
-            slams_cells = []
+        # try:
+        #     fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
+        #     contents = fileobj.read()
+        #     fileobj.close()
+        #     slams_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        # except IOError:
+        #     slams_cells = []
 
         # Find correct file path
-        if runid in ["AEC","AEF","BEA","BEB"]:
-            bulkpath = "/proj/vlasov/2D/{}/".format(runid)
-        elif runid == "AEA":
-            bulkpath = "/proj/vlasov/2D/{}/round_3_boundary_sw/".format(runid)
-        else:
-            bulkpath = "/proj/vlasov/2D/{}/bulk/".format(runid)
+        bulkpath = ja.find_bulkpath(runid)
 
         bulkname = "bulk.{}.vlsv".format(str(n).zfill(7))
 
@@ -217,11 +212,11 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
     # Mask SLAMS cells
-    slams_mask = np.in1d(cellids,slams_cells).astype(int)
-    slams_mask = np.reshape(slams_mask,cellids.shape)
+    # slams_mask = np.in1d(cellids,slams_cells).astype(int)
+    # slams_mask = np.reshape(slams_mask,cellids.shape)
 
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of jets
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
+    # slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
 
     #line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=4) # SLAMSJET mean positions
 
