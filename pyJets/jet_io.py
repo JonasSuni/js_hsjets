@@ -298,6 +298,8 @@ def eventfile_read(runid,filenr,transient="jet"):
         inputdir = wrkdir_DNR+"working/events"
     elif transient == "slams":
         inputdir = wrkdir_DNR+"working/SLAMS/events"
+    elif transient == "slamsjet":
+        inputdir = wrkdir_DNR+"working/SLAMSJETS/events"
 
     outputlist = []
 
@@ -848,6 +850,9 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
     elif transient == "slams":
         outputdir = wrkdir_DNR+"working/SLAMS/slams/"+runid
         extension = ".slams"
+    elif transient == "slamsjet":
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/slams/"+runid
+        extension = ".slamsjet"
 
 
     bulkpath = ja.find_bulkpath(runid)
