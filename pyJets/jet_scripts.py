@@ -151,7 +151,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     outputdir = wrkdir_DNR+"contours/SLAMSJETS/{}/".format(runid)
     rid_list = ["ABA","ABC","AEA","AEC"]
-    maxrange = [,3000,3000,3000]
+    maxrange = [3000,3000,3000,3000]
 
     # Initialise required global variables
     global jet_cells
