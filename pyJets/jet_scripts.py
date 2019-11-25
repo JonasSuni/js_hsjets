@@ -161,7 +161,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 
     for n in range(start,stop+1):
 
-        Initialise lists of coordinaates
+        #Initialise lists of coordinaates
         xmean_list = []
         ymean_list = []
 
