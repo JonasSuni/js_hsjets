@@ -26,6 +26,7 @@ def slamsjet_finder(runid,start,stop):
 
     slams_id_list = []
     jet_id_list = []
+    slamsjet_pairs_list []
 
     for n in range(1,slams_maxid[runids.index(runid)]+1):
         try:
@@ -42,9 +43,18 @@ def slamsjet_finder(runid,start,stop):
                 jet_id_list.append(n)
         except:
             pass
+    print([len(slams_id_list),len(jet_id_list)])
 
+    jet_first_cells = [PropReader(str(jetid).zfill(5),runid,580,transient="jet").get_cells()[0] for jetid in jet_id_list]
+    slams_last_cells = [PropReader(str(slamsid).zfill(5),runid,580,transient="slams").get_cells()[-1] for slamsid in slams_id_list]
 
-    return [len(slams_id_list),len(jet_id_list)]
+    for jetid in jet_id_list:
+        for slamsid in slams_id_list:
+            if np.intersect1d(jet_first_cells[jet_id_list.index(jetid)],slams_last_cells[slams_id_list.index(slamsid)]).size > 0:
+                slamsjet_pairs_list.append((slamsid,jetid))
+
+    print(slamsjet_pairs_list)
+    return None
 
 class PropReader:
     # Class for reading jet property files
