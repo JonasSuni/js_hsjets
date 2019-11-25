@@ -165,7 +165,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         xmean_list = []
         ymean_list = []
 
-        for itr in range(1,maxrange+1):
+        for itr in range(1,maxrange[rid_list.index(runid)]+1):
 
             # Try reading properties
             try:
