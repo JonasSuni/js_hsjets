@@ -641,19 +641,19 @@ def slams_jet_counter():
             except:
                 pass
 
-    print("Runs:      ABA ABC AEA AEC\n")
-    print("Jets:      {}\n".format(jet_counter))
-    print("Freq:      {}\n".format(jet_counter/time_per_run))
+    print("Runs:       ABA ABC AEA AEC\n")
+    print("Jets:       {}\n".format(jet_counter))
+    print("Freq [1/s]: {}\n".format(jet_counter/time_per_run))
     print("\n")
-    print("SLAMS:     {}\n".format(slams_counter))
-    print("Freq:      {}\n".format(slams_counter/time_per_run))
+    print("SLAMS:      {}\n".format(slams_counter))
+    print("Freq [1/s]: {}\n".format(slams_counter/time_per_run))
     print("\n")
-    print("SLAMSJETS: {}\n".format(slamsjet_counter))
-    print("Freq:      {}\n".format(slamsjet_counter/time_per_run))
+    print("SLAMSJETS:  {}\n".format(slamsjet_counter))
+    print("Freq [1/s]: {}\n".format(slamsjet_counter/time_per_run))
     print("SLAMSJETS per SLAMS:\n")
-    print("           {}\n".format(slamsjet_counter/slams_counter.astype(float)))
+    print("            {}\n".format(slamsjet_counter/slams_counter.astype(float)))
     print("SLAMSJETS per jets:\n")
-    print("           {}\n".format(slamsjet_counter/jet_counter.astype(float)))
+    print("            {}\n".format(slamsjet_counter/jet_counter.astype(float)))
 
     return None
 
