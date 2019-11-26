@@ -609,17 +609,6 @@ def jet_pos_graph(runid):
 
     return None
 
-def try_test():
-    c=1
-    try:
-        a="b"+1
-        print("Hello")
-        c+=1
-    except:
-        print("No")
-
-    return c
-
 def slams_jet_counter():
 
     runids = ["ABA","ABC","AEA","AEC"]
@@ -631,7 +620,40 @@ def slams_jet_counter():
     slamsjet_counter = np.array([0,0,0,0],dtype=int)
 
     for n in range(0,3000):
-        pass
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
+                jet_counter[runids.index(runid)] += 1
+            except:
+                pass
+
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580,transient="slams")
+                slams_counter[runids.index(runid)] += 1
+            except:
+                pass
+
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580,transient="slamsjet")
+                slamsjet_counter[runids.index(runid)] += 1
+            except:
+                pass
+
+    print("Runs: ABA ABC AEA AEC\n")
+    print("Jets: {}\n".format(jet_counter))
+    print("Freq: {}\n".format(jet_counter/time_per_run))
+    print("\n")
+    print("SLAMS: {}\n".format(slams_counter))
+    print("Freq:  {}\n".format(slams_counter/time_per_run))
+    print("\n")
+    print("SLAMSJETS: {}\n".format(slamsjet_counter))
+    print("Freq:      {}\n".format(slamsjet_counter/time_per_run))
+    print("SLAMSJETS per SLAMS:\n")
+    print("{}\n".format(slamsjet_counter/slams_counter))
+    print("SLAMSJETS per jets:\n")
+    print("{}\n".format(slamsjet_counter/jet_counter))
+
+    return None
 
 def jet_paper_counter():
     # Counts the number of jets in each run, excluding false positives and short durations
