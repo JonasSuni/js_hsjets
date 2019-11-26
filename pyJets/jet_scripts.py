@@ -610,13 +610,15 @@ def jet_pos_graph(runid):
     return None
 
 def try_test():
+    c=1
     try:
         a="b"+1
         print("Hello")
+        c+=1
     except:
         print("No")
 
-    return None
+    return c
 
 def slams_jet_counter():
 
