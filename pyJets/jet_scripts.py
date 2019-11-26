@@ -609,6 +609,28 @@ def jet_pos_graph(runid):
 
     return None
 
+def try_test():
+    try:
+        a="b"+1
+        print("Hello")
+    except:
+        print("No")
+
+    return None
+
+def slams_jet_counter():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    time_per_run = np.array([839-580,1179-580,1339-580,879-580])/2.0
+
+    slams_counter = np.array([0,0,0,0],dtype=int)
+    jet_counter = np.array([0,0,0,0],dtype=int)
+    slamsjet_counter = np.array([0,0,0,0],dtype=int)
+
+    for n in range(0,3000):
+        pass
+
 def jet_paper_counter():
     # Counts the number of jets in each run, excluding false positives and short durations
 
