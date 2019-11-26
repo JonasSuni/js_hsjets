@@ -651,7 +651,7 @@ def slams_jet_counter():
     print("SLAMSJETS per SLAMS:\n")
     print("           {}\n".format(slamsjet_counter/slams_counter.astype(float)))
     print("SLAMSJETS per jets:\n")
-    print("           {}\n".format(slamsjet_counter/jet_counter.atype(float)))
+    print("           {}\n".format(slamsjet_counter/jet_counter.astype(float)))
 
     return None
 
