@@ -572,7 +572,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
         jet = np.logical_or(jet1,jet2)
 
     # discard unmasked cellids
-    masked_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
+    masked_ci = np.ma.array(cells,mask=~jet.mask).compressed()
 
     if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)):
         os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
