@@ -426,9 +426,11 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
         #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        print(masked_ci[69])
         return masked_ci
     else:
         #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        print(masked_ci[69])
         return masked_ci
 
 def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False,transient="jet"):
@@ -478,7 +480,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
 
     p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
 
-    bs_cont = X-np.polyval(p[::-1],Y)
+    bs_cond = X-np.polyval(p[::-1],Y)
 
     # x-directional dynamic pressure
     spdynx = m_p*rho*(v[:,0]**2)
@@ -576,6 +578,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
         os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
 
     print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask")
+    print(masked_ci[69])
 
     #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
     return masked_ci
