@@ -508,6 +508,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
 
     if avgfile:
         tpdynavg = np.loadtxt(wrkdir_DNR+"tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = tpdynavg[cells-1]
     else:
 
         for n_t in timerange:
