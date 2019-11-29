@@ -425,10 +425,10 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         return masked_ci
     else:
-        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         return masked_ci
 
 def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False,transient="jet"):
