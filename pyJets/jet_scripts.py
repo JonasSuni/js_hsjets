@@ -1931,7 +1931,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
 
     var_list = ["n_avg","pd_avg","v_avg","B_avg"]
     label_list = ["$\mathrm{n_{mean}~[cm^{-3}]}$","$\mathrm{P_{dyn,mean}~[nPa]}$","$\mathrm{|v|_{mean}~[kms^{-1}]}$","$\mathrm{|B|_{mean}~[nT]}$","$\mathrm{T_{mean}~[MK]}$","$\mathrm{x_{mean}~[R_e]}$"]
-    color_list = [jx.dark_blue,jx.dark_blue,jx.dark_blue,jx.dark_blue,[jx.dark_blue,jx.orange]]
+    color_list = [jx.dark_blue,jx.dark_blue,jx.dark_blue,jx.dark_blue,[jx.dark_blue,jx.orange],[jx.dark_blue,jx.orange]]
 
     n_arr,pd_arr,v_arr,B_arr = [props.read(var) for var in var_list]
     T_arr = np.array([props.read("TPar_avg"),props.read("TPerp_avg")]).T
