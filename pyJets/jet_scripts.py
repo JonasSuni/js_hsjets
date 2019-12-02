@@ -1950,7 +1950,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
         ax = ax_list[row]
         data = data_arr[row]
         time = time_arr[row]
-        if row < len(data_arr)-1:
+        if row < len(data_arr)-2:
             ax.plot(time,data,color=color_list[row])
         ax.set_xlim(t_arr[0],t_arr[-1])
         ax.set_ylabel(label_list[row],fontsize=15)
