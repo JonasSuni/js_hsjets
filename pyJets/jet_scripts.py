@@ -1963,7 +1963,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
             ax.set_xlabel("Simulation time [s]",fontsize=20)
             ax.plot(time[:,0],data[:,0],color=color_list[row][0])
             ax.plot(time[:,1],data[:,1],color=color_list[row][1])
-            ax.annotate("Bow shock",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+            ax.annotate("Bow shock",xy=(0.05,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
 
     fig.savefig("Figures/timeseries/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
