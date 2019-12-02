@@ -1904,6 +1904,53 @@ def hack_2019_fig9(time_thresh=5,nbins=10):
 
     return None
 
+###SLAMSJET SCRIPTS HERE###
+
+def make_transient_timeseries(runid,jetid,transient="jet"):
+
+    if transient == "jet":
+        outputdir = "JETS"
+    elif transient == "slams":
+        outputdir = "SLAMS"
+    elif transient == "slamsjet":
+        outputdir = "SLAMSJETS"
+
+    if type(jetid) is not str:
+        jetid = str(jetid).zfill(5)
+
+    try:
+        props = jio.PropReader(jetid,runid,transient=transient)
+    except:
+        return 1
+
+    var_list = ["n_avg","pd_avg","v_avg","B_avg"]
+    label_list = ["$\mathrm{n_{mean}~[cm^{-3}]}$","$\mathrm{P_{dyn,mean}~[nPa]}$","$\mathrm{|v|_{mean}~[kms^{-1}]}$","$\mathrm{|B|_{mean}~[nT]}$","$\mathrm{T_{mean}~[MK]}$"]
+    color_list = [jx.dark_blue,jx.dark_blue,jx.dark_blue,jx.dark_blue,[jx.dark_blue,jx.orange]]
+
+    n_arr,pd_arr,v_arr,B_arr = [props.read(var) for var in var_list]
+    T_arr = np.array([props.read("TPar_avg"),props.read("TPerp_avg")]).T
+    t_arr = props.read("time")
+
+    data_arr = [n_arr,pd_arr,v_arr,B_arr,T_arr]
+    time_arr = [t_arr,t_arr,t_arr,t_arr,np.array([t_arr,t_arr]).T]
+
+    fig,ax_list = plt.subplots(len(data_arr),1,figsize=(7,10),sharex=True)
+
+    for row in range(len(data_arr)):
+        ax = ax_list[row]
+        data = data_arr[row]
+        time = time_arr[row]
+        ax.plot(time,data,color=color_list[row])
+        ax.set_xlim(time[0],time[-1])
+        ax.set_ylabel(label_list[row],fontsize=20)
+        if row == len(data_arr)-1:
+            ax.set_xlabel("Simulation time [s]",fontsize=20)
+            ax.annotate("TPar",xy=(0.8,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
+            ax.annotate("TPerp",xy=(0.9,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+
+    fig.savefig("Figures/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
+    plt.close(fig)
+
 ###PLOT MAKER HERE###
 
 
