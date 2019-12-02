@@ -1915,9 +1915,9 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
     elif transient == "slamsjet":
         outputdir = "SLAMSJETS"
 
-    if not os.path.exists("Figures/timeseries/{}/{}".format(outputdir,runid,jetid)):
+    if not os.path.exists("Figures/timeseries/{}/{}".format(outputdir,runid)):
         try:
-            os.makedirs("Figures/timeseries/{}/{}".format(outputdir,runid,jetid))
+            os.makedirs("Figures/timeseries/{}/{}".format(outputdir,runid))
         except OSError:
             pass
 
