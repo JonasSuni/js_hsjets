@@ -1940,10 +1940,13 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
         ax = ax_list[row]
         data = data_arr[row]
         time = time_arr[row]
-        ax.plot(time,data,color=color_list[row])
+        if row != len(data_arr)-1:
+            ax.plot(time,data,color=color_list[row])
         ax.set_xlim(t_arr[0],t_arr[-1])
         ax.set_ylabel(label_list[row],fontsize=20)
         if row == len(data_arr)-1:
+            ax.plot(time[:,0],data[:,0],color=color_list[row][0])
+            ax.plot(time[:,1],data[:,1],color=color_list[row][1])
             ax.set_xlabel("Simulation time [s]",fontsize=20)
             ax.annotate("TPar",xy=(0.8,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
             ax.annotate("TPerp",xy=(0.9,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
