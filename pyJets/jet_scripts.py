@@ -1942,7 +1942,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
 
     fig,ax_list = plt.subplots(len(data_arr),1,figsize=(7,10),sharex=True)
 
-    ax[0].set_title("Run: {} ID: {} Type: {}".format(runid,jetid,transient),fontsize=20)
+    ax_list[0].set_title("Run: {} ID: {} Type: {}".format(runid,jetid,transient),fontsize=20)
 
     for row in range(len(data_arr)):
         ax = ax_list[row]
