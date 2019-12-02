@@ -1957,7 +1957,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
             ax.annotate("TPar",xy=(0.7,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
             ax.annotate("TPerp",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
 
-    fig.savefig("Figures/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
+    fig.savefig("Figures/timeseries/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
     plt.close(fig)
 
 ###PLOT MAKER HERE###
