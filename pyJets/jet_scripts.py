@@ -1942,6 +1942,8 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
 
     fig,ax_list = plt.subplots(len(data_arr),1,figsize=(7,10),sharex=True)
 
+    ax[0].set_title("Run: {} ID: {} Type: {}".format(runid,jetid,transient),fontsize=20)
+
     for row in range(len(data_arr)):
         ax = ax_list[row]
         data = data_arr[row]
@@ -1949,13 +1951,14 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
         if row != len(data_arr)-1:
             ax.plot(time,data,color=color_list[row])
         ax.set_xlim(t_arr[0],t_arr[-1])
-        ax.set_ylabel(label_list[row],fontsize=10)
+        ax.set_ylabel(label_list[row],fontsize=15)
         if row == len(data_arr)-1:
             ax.plot(time[:,0],data[:,0],color=color_list[row][0])
             ax.plot(time[:,1],data[:,1],color=color_list[row][1])
             ax.set_xlabel("Simulation time [s]",fontsize=20)
             ax.annotate("TPar",xy=(0.7,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
             ax.annotate("TPerp",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
 
     fig.savefig("Figures/timeseries/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
     plt.close(fig)
