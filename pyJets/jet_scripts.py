@@ -1915,6 +1915,12 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
     elif transient == "slamsjet":
         outputdir = "SLAMSJETS"
 
+    if not os.path.exists("Figures/{}/{}/{}_ts.png".format(outputdir,runid,jetid)):
+        try:
+            os.makedirs("Figures/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
+        except OSError:
+            pass
+
     if type(jetid) is not str:
         jetid = str(jetid).zfill(5)
 
