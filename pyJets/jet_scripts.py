@@ -1930,17 +1930,19 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
         return 1
 
     var_list = ["n_avg","pd_avg","v_avg","B_avg"]
-    label_list = ["$\mathrm{n_{mean}~[cm^{-3}]}$","$\mathrm{P_{dyn,mean}~[nPa]}$","$\mathrm{|v|_{mean}~[kms^{-1}]}$","$\mathrm{|B|_{mean}~[nT]}$","$\mathrm{T_{mean}~[MK]}$"]
+    label_list = ["$\mathrm{n_{mean}~[cm^{-3}]}$","$\mathrm{P_{dyn,mean}~[nPa]}$","$\mathrm{|v|_{mean}~[kms^{-1}]}$","$\mathrm{|B|_{mean}~[nT]}$","$\mathrm{T_{mean}~[MK]}$","$\mathrm{x_{mean}~[R_e]}$"]
     color_list = [jx.dark_blue,jx.dark_blue,jx.dark_blue,jx.dark_blue,[jx.dark_blue,jx.orange]]
 
     n_arr,pd_arr,v_arr,B_arr = [props.read(var) for var in var_list]
     T_arr = np.array([props.read("TPar_avg"),props.read("TPerp_avg")]).T
     t_arr = props.read("time")
+    x_arr = props.read("x_mean")
+    bs_arr = props.read("bs_distance")
 
-    data_arr = [n_arr,pd_arr,v_arr,B_arr,T_arr]
-    time_arr = [t_arr,t_arr,t_arr,t_arr,np.array([t_arr,t_arr]).T]
+    data_arr = [n_arr,pd_arr,v_arr,B_arr,T_arr,np.array([x_arr,bs_arr]).T]
+    time_arr = [t_arr,t_arr,t_arr,t_arr,np.array([t_arr,t_arr]).T,np.array([t_arr,t_arr]).T]
 
-    fig,ax_list = plt.subplots(len(data_arr),1,figsize=(7,10),sharex=True)
+    fig,ax_list = plt.subplots(len(data_arr),1,figsize=(6,12),sharex=True)
 
     ax_list[0].set_title("Run: {} ID: {} Type: {}".format(runid,jetid,transient),fontsize=20)
 
@@ -1952,13 +1954,17 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
             ax.plot(time,data,color=color_list[row])
         ax.set_xlim(t_arr[0],t_arr[-1])
         ax.set_ylabel(label_list[row],fontsize=15)
-        if row == len(data_arr)-1:
+        if row == len(data_arr)-2:
             ax.plot(time[:,0],data[:,0],color=color_list[row][0])
             ax.plot(time[:,1],data[:,1],color=color_list[row][1])
-            ax.set_xlabel("Simulation time [s]",fontsize=20)
             ax.annotate("TPar",xy=(0.7,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
             ax.annotate("TPerp",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=7))
+        if row == len(data_arr)-1:
+            ax.set_xlabel("Simulation time [s]",fontsize=20)
+            ax.plot(time[:,0],data[:,0],color=color_list[row][0])
+            ax.plot(time[:,1],data[:,1],color=color_list[row][1])
+            ax.annotate("Bow shock",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
 
     fig.savefig("Figures/timeseries/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
     plt.close(fig)

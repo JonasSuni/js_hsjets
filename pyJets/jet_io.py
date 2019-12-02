@@ -103,6 +103,13 @@ class PropReader:
             pfit = ja.bow_shock_markus(self.runid,int(t*2))[::-1]
             x_bs = np.polyval(pfit,np.linalg.norm([y,z]))
             return outp*(x-x_bs)
+        elif name == "bs_distance":
+            y,t = self.read("y_mean"),self.read("time")
+            x_mp = np.zeros_like(y)
+            for n in range(y.size):
+                p = ja.bow_shock_markus(self.runid,int(t[n]*2))[::-1]
+                x_mp[n] = np.polyval(p,y[n])
+            return x_mp
         else:
             print("Variable not found!")
             return None
