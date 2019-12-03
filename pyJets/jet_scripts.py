@@ -1964,7 +1964,7 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
             ax.plot(time[:,0],data[:,0],color=color_list[row][0])
             ax.plot(time[:,1],data[:,1],color=color_list[row][1])
             ax.annotate("TPar",xy=(0.7,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
-            ax.annotate("TPerp",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+            ax.annotate("TPerp",xy=(0.85,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
         # if row == len(data_arr)-1:
         #     ax.set_xlabel("Simulation time [s]",fontsize=20)
         #     ax.plot(time[:,0],data[:,0],color=color_list[row][0])
