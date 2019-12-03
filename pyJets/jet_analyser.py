@@ -116,6 +116,13 @@ def sw_normalisation(runid,var):
 
     return norm_list[key_list.index(var)]
 
+def spat_res(runid):
+
+    runs = ["ABA","ABC","AEA","AEC","BFD"]
+    res = [227000/r_e,227000/r_e,227000/r_e,227000/r_e,300000/r_e]
+
+    return res[runs.index(runid)]
+
 def sw_par_dict(runid):
     # Returns solar wind parameters for specified run
     # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta
@@ -308,6 +315,8 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
 
+    x_res = spat_res(runid)
+
     bs_cond = X-p[0]-p[1]*Y-p[2]*(Y**2)-p[3]*(Y**3)-p[4]*(Y**4)
 
     # x-directional dynamic pressure
@@ -399,19 +408,19 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # make custom jet mask
     if transient == "jet":
         jet = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet.mask[bs_cond > 0] = False
+        jet.mask[bs_cond-2*x_res > 0] = False
     elif transient == "slams":
         jet = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet.mask[bs_cond < 0] = False
+        jet.mask[bs_cond+2*x_res < 0] = False
         jet.mask[nrho < 1.5] = False
         jet.mask[npdyn < 1.25] = False
     elif transient == "slamsjet":
         jet1 = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet1.mask[bs_cond < 0] = False
+        jet1.mask[bs_cond+2*x_res < 0] = False
         jet1.mask[nrho < 1.5] = False
         jet1.mask[npdyn < 1.25] = False
         jet2 = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet2.mask[bs_cond > 0] = False
+        jet2.mask[bs_cond-2*x_res > 0] = False
         jet = np.logical_or(jet1,jet2)
 
     # discard unmasked cellids
@@ -425,12 +434,12 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
-        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
-        #print(masked_ci[69])
+        #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        print(masked_ci[69])
         return masked_ci
     else:
-        np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
-        #print(masked_ci[69])
+        #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+        print(masked_ci[69])
         return masked_ci
 
 def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False,transient="jet"):
@@ -477,6 +486,10 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
         X,Y,Z = [vlsvreader.read_variable("X",cellids=cells),vlsvreader.read_variable("Y",cellids=cells),vlsvreader.read_variable("Z",cellids=cells)]
     else:
         X,Y,Z = xyz_reconstruct(vlsvreader,cellids=cells)
+
+    X,Y,Z = [X/r_e,Y/r_e,Z/r_e]
+
+    x_res = spat_res(runid)
 
     p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
 
@@ -556,19 +569,19 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     # make custom jet mask
     if transient == "jet":
         jet = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet.mask[bs_cond > 0] = False
+        jet.mask[bs_cond-2*x_res > 0] = False
     elif transient == "slams":
         jet = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet.mask[bs_cond < 0] = False
+        jet.mask[bs_cond+2*x_res < 0] = False
         jet.mask[nrho < 1.5] = False
         jet.mask[npdyn < 1.25] = False
     elif transient == "slamsjet":
         jet1 = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet1.mask[bs_cond < 0] = False
+        jet1.mask[bs_cond+2*x_res < 0] = False
         jet1.mask[nrho < 1.5] = False
         jet1.mask[npdyn < 1.25] = False
         jet2 = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet2.mask[bs_cond > 0] = False
+        jet2.mask[bs_cond-2*x_res > 0] = False
         jet = np.logical_or(jet1,jet2)
 
     # discard unmasked cellids
@@ -578,7 +591,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
         os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
 
     print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask")
-    #print(masked_ci[69])
+    print(masked_ci[69])
 
-    np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
+    #np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
     return masked_ci
