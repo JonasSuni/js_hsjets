@@ -1940,8 +1940,8 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
     bs_arr = props.read("bs_distance")
     extent_arr = props.read("size_rad")
 
-    start_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr-extent_arr))]
-    end_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr+extent_arr))]
+    start_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr-extent_arr/2.0))]
+    end_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr+extent_arr/2.0))]
 
     data_arr = [n_arr,pd_arr,v_arr,B_arr,T_arr,np.array([x_arr,bs_arr]).T]
     time_arr = [t_arr,t_arr,t_arr,t_arr,np.array([t_arr,t_arr]).T,np.array([t_arr,t_arr]).T]
