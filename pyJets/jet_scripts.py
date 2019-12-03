@@ -1938,32 +1938,38 @@ def make_transient_timeseries(runid,jetid,transient="jet"):
     t_arr = props.read("time")
     x_arr = props.read("x_mean")
     bs_arr = props.read("bs_distance")
+    extent_arr = props.read("size_rad")
+
+    start_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr-extent_arr))]
+    end_crossing = t_arr[np.argmin(np.abs(x_arr-bs_arr+extent_arr))]
 
     data_arr = [n_arr,pd_arr,v_arr,B_arr,T_arr,np.array([x_arr,bs_arr]).T]
     time_arr = [t_arr,t_arr,t_arr,t_arr,np.array([t_arr,t_arr]).T,np.array([t_arr,t_arr]).T]
 
-    fig,ax_list = plt.subplots(len(data_arr),1,figsize=(6,12),sharex=True)
+    fig,ax_list = plt.subplots(len(data_arr)-1,1,figsize=(6,12),sharex=True)
 
     ax_list[0].set_title("Run: {} ID: {} Type: {}".format(runid,jetid,transient),fontsize=20)
 
-    for row in range(len(data_arr)):
+    for row in range(len(data_arr)-1):
         ax = ax_list[row]
         data = data_arr[row]
         time = time_arr[row]
         if row < len(data_arr)-2:
             ax.plot(time,data,color=color_list[row])
         ax.set_xlim(t_arr[0],t_arr[-1])
+        ax.axvline(start_crossing,linestyle="dashed",color="black")
+        ax.axvline(end_crossing,linestyle="dashed",color="red")
         ax.set_ylabel(label_list[row],fontsize=15)
         if row == len(data_arr)-2:
             ax.plot(time[:,0],data[:,0],color=color_list[row][0])
             ax.plot(time[:,1],data[:,1],color=color_list[row][1])
             ax.annotate("TPar",xy=(0.7,0.05),xycoords="axes fraction",color=jx.dark_blue,fontsize=15)
             ax.annotate("TPerp",xy=(0.8,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
-        if row == len(data_arr)-1:
-            ax.set_xlabel("Simulation time [s]",fontsize=20)
-            ax.plot(time[:,0],data[:,0],color=color_list[row][0])
-            ax.plot(time[:,1],data[:,1],color=color_list[row][1])
-            ax.annotate("Bow shock",xy=(0.05,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
+        # if row == len(data_arr)-1:
+        #     ax.set_xlabel("Simulation time [s]",fontsize=20)
+        #     ax.plot(time[:,0],data[:,0],color=color_list[row][0])
+        #     ax.plot(time[:,1],data[:,1],color=color_list[row][1])
+        #     ax.annotate("Bow shock",xy=(0.05,0.05),xycoords="axes fraction",color=jx.orange,fontsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
 
     fig.savefig("Figures/timeseries/{}/{}/{}_ts.png".format(outputdir,runid,jetid))
