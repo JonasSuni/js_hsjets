@@ -179,11 +179,16 @@ class Transient:
             else:
                 print("Transient {} too short-lived, propfile not written!".format(self.ID))
         else:
-            x_birth,y_birth = self.props[0][1:3]
-            x_death,y_death = self.props[-1][1:3]
-            bsp_birth,bsp_death = [ja.bow_shock_markus(self.runid,int(self.times[0]*2))[::-1],ja.bow_shock_markus(self.runid,int(self.times[-1]*2))[::-1]]
+            x = self.props[:][1]
+            y = self.props[:][2]
+            t = self.times
+            x_birth,y_birth = x[0],y[0]
+            x_death,y_death = x[-1],y[-1]
+            bsp_birth,bsp_death = [ja.bow_shock_markus(self.runid,int(t[0]*2))[::-1],ja.bow_shock_markus(self.runid,int(t[-1]*2))[::-1]]
+            x_bs = [np.polyval(ja.bow_shock_markus(self.runid,int(t[n]*2))[::-1],y[n]) for n in range(len(y))]
+            t_crossing = t[np.argmin(np.abs(np.array(x)-np.array(x_bs)))]
             bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
-            if self.times[-1]-self.times[0] >= 4.5 and x_birth > bsx_birth and x_death < bsx_death:
+            if t_crossing-t[0] >= 4.5 and t[-1]-t_crossing >= 4.5 and x_birth > bsx_birth and x_death < bsx_death:
                 propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
             else:
                 print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
