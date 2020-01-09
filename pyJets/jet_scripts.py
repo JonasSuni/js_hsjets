@@ -232,8 +232,8 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
     # slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
 
+    bs_curve, = ax.plot(bs_x,bs_y,color="black")
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # SLAMSJET mean positions
-    bs_curve = ax.plot(bs_x,bs_y,color="black")
 
 def draw_all_cont():
     # Draw contours for all criteria
