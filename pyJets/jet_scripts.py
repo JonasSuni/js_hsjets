@@ -158,8 +158,16 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
     global slams_cells
     global xmean_list
     global ymean_list
+    global boxre_g
+    global filenr_g
+    global runid_g
+
+    runid_g = runid
+    boxre_g = boxre
 
     for n in range(start,stop+1):
+
+        filenr_g = n
 
         #Initialise lists of coordinaates
         xmean_list = []
@@ -207,6 +215,10 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
 def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
     # External function for slamjet_plotter
 
+    bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
+    bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    bs_x = np.polyval(bs_p,bs_y)
+
     cellids = pass_maps["CellID"]
 
     # Mask jet cells
@@ -221,6 +233,7 @@ def ext_slamjet(ax,XmeshXY,YmeshXY,pass_maps):
     # slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black") # Contour of SLAMS
 
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # SLAMSJET mean positions
+    bs_curve = ax.plot(bs_x,bs_y,color="black")
 
 def draw_all_cont():
     # Draw contours for all criteria

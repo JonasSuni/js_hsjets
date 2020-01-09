@@ -13,13 +13,17 @@ r_e = 6.371e+6
 
 #wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 wrkdir_DNR = os.environ["WRK"]+"/"
+try:
+    vlasdir = os.environ["VLAS"]+"/"
+except:
+    vlasdir="/proj/vlasov"
 
 def find_bulkpath(runid):
 
     runid_list = ["ABA","ABC","AEA","AEC","BFD"]
     path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
 
-    vlpath = "/proj/vlasov/2D/{}/".format(runid)
+    vlpath = "{}/2D/{}/".format(vlasdir,runid)
 
     if runid in runid_list:
         bulkpath = vlpath+path_list[runid_list.index(runid)]
