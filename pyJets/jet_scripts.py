@@ -188,7 +188,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
             fileobj = open(wrkdir_DNR+"working/SLAMSJETS/events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             fileobj.close()
-            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+            jet_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
         except IOError:
             jet_cells = []
 
