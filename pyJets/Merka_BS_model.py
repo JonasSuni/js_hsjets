@@ -207,3 +207,5 @@ def Merka_BS_normal(Xbs,Ybs,Zbs,n,V,Ma,BS_normal):
     normal_GSE = np.dot(rotation_matrix_GPE2GSE,normal_gpe)
 
     BS_normal.append(normal_GSE)
+
+    return BS_normal[0]

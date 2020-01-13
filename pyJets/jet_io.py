@@ -164,12 +164,12 @@ class Transient:
     def return_cellid_string(self):
         # Return string of lists of cellids for printing to file
 
-        return "\n".join([",".join(map(str,l)) for l in self.cellids])
+        return "\n".join([",".join(list(map(str,l))) for l in self.cellids])
 
     def return_time_string(self):
         # Return string of times for printing to file
 
-        return "\n".join(map(str,self.times))
+        return "\n".join(list(map(str,self.times)))
 
     def jetprops_write(self,start):
 
@@ -263,7 +263,7 @@ def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nb
         # write jets to outputfile
         for jet in jets:
 
-            fileobj.write(",".join(map(str,jet))+"\n")
+            fileobj.write(",".join(list(map(str,jet)))+"\n")
 
         fileobj.close()
         vlsvobj.optimize_close_file()
@@ -285,7 +285,7 @@ def timefile_read(runid,filenr,key,transient="jet"):
     contents = tf.read().split("\n")
     tf.close()
 
-    return map(float,contents)
+    return list(map(float,contents))
 
 def jetfile_read(runid,filenr,key,transient="jet"):
     # Read array of cellids from file
@@ -310,7 +310,7 @@ def jetfile_read(runid,filenr,key,transient="jet"):
 
     for line in lines:
 
-        outputlist.append(map(int,line.split(",")))
+        outputlist.append(list(map(int,line.split(","))))
 
     return outputlist
 
@@ -335,7 +335,7 @@ def eventfile_read(runid,filenr,transient="jet"):
 
     for line in lines:
 
-        outputlist.append(map(int,line.split(",")))
+        outputlist.append(list(map(int,line.split(","))))
 
     return outputlist
 
@@ -359,7 +359,7 @@ def eventprop_write(runid,filenr,props,transient="jet"):
 
     epf.write(propfile_header_list+"\n")
 
-    epf.write("\n".join([",".join(map(str,line)) for line in props]))
+    epf.write("\n".join([",".join(list(map(str,line))) for line in props]))
     epf.close()
     print("Wrote to "+outputdir+"/{}.eventprops".format(str(filenr)))
 
@@ -380,7 +380,7 @@ def eventprop_read(runid,filenr,transient="jet"):
     props = props_f.read()
     props_f.close()
     props = props.split("\n")[1:]
-    props = [map(float,line.split(",")) for line in props]
+    props = [list(map(float,line.split(","))) for line in props]
 
     return props
 
@@ -398,7 +398,7 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     pf = open(outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props","a")
     pf.write(",".join(meta)+"\n")
     pf.write(propfile_header_list+"\n")
-    pf.write("\n".join([",".join(map(str,line)) for line in props]))
+    pf.write("\n".join([",".join(list(map(str,line))) for line in props]))
     pf.close()
     print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
@@ -1115,6 +1115,6 @@ def slams_eventfile_read(runid,filenr):
 
     for line in lines:
 
-        outputlist.append(map(int,line.split(",")))
+        outputlist.append(list(map(int,line.split(","))))
 
     return outputlist

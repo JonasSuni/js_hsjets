@@ -101,7 +101,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
             fileobj = open(inputpath+"events/{}/{}.events".format(runid,n),"r")
             contents = fileobj.read()
             fileobj.close()
-            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+            jet_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
         except IOError:
             jet_cells = []
 
@@ -197,7 +197,7 @@ def slamjet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6]):
         #     fileobj = open("SLAMS/events/{}/{}.events".format(runid,n),"r")
         #     contents = fileobj.read()
         #     fileobj.close()
-        #     slams_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+        #     slams_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
         # except IOError:
         #     slams_cells = []
 
@@ -1665,7 +1665,7 @@ def hack_2019_fig1():
             fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runids[n],filenr[n]),"r")
             contents = fileobj.read()
             fileobj.close()
-            jet_cells = map(int,contents.replace("\n",",").split(",")[:-1])
+            jet_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
         except IOError:
             jet_cells = []
 
