@@ -45,6 +45,10 @@ EkinBinEdges = np.logspace(np.log10(10),np.log10(2e4),66)
 # homedir = "/homeappl/home/sunijona/"
 wrkdir_DNR = os.environ["WRK"]+"/"
 homedir = os.environ["HOME"]+"/"
+try:
+    vlasdir = os.environ["VLAS"]
+except:
+    vlasdir="/proj/vlasov"
 
 
 ###TEMPORARY SCRIPTS HERE###
@@ -113,11 +117,11 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
 
         # Find correct file path
         if runid in ["AEC","AEF","BEA","BEB"]:
-            bulkpath = "/proj/vlasov/2D/{}/".format(runid)
+            bulkpath = vlasdir+"/2D/{}/".format(runid)
         elif runid == "AEA":
-            bulkpath = "/proj/vlasov/2D/{}/round_3_boundary_sw/".format(runid)
+            bulkpath = vlasdir+"/2D/{}/round_3_boundary_sw/".format(runid)
         else:
-            bulkpath = "/proj/vlasov/2D/{}/bulk/".format(runid)
+            bulkpath = vlasdir+"/2D/{}/bulk/".format(runid)
 
         bulkname = "bulk.{}.vlsv".format(str(n).zfill(7))
 
@@ -240,7 +244,7 @@ def draw_all_cont():
     # NOT FUNCTIONAL
     #raise NotImplementedError("DEPRECATED")
 
-    pt.plot.plot_colormap(filename="/proj/vlasov/2D/ABA/bulk/bulk.0000595.vlsv",outputdir="Contours/ALLCONT_",usesci=0,draw=1,lin=1,boxre=[4,18,-12,12],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
+    pt.plot.plot_colormap(filename=vlasdir+"/2D/ABA/bulk/bulk.0000595.vlsv",outputdir="Contours/ALLCONT_",usesci=0,draw=1,lin=1,boxre=[4,18,-12,12],colormap="parula",cbtitle="nPa",scale=1,expression=pc.expr_pdyn,external=ext_crit,var="rho",vmin=0,vmax=1.5,wmark=1,pass_vars=["rho","v","CellID"])
 
 def ext_crit(ax,XmeshXY,YmeshXY,extmaps):
     # NOT FUNCTIONAL
@@ -265,7 +269,7 @@ def ext_crit(ax,XmeshXY,YmeshXY,extmaps):
     XmeshXY = XmeshXY[cellids.argsort()]
     YmeshXY = YmeshXY[cellids.argsort()]
 
-    fullcells = pt.vlsvfile.VlsvReader("/proj/vlasov/2D/ABA/bulk/bulk.0000611.vlsv").read_variable("CellID")
+    fullcells = pt.vlsvfile.VlsvReader(vlasdir+"/2D/ABA/bulk/bulk.0000611.vlsv").read_variable("CellID")
     fullcells.sort()
 
     trho = np.loadtxt(wrkdir_DNR+"tavg/ABA/611_rho.tavg")[np.in1d(fullcells,cellids)]
@@ -312,11 +316,11 @@ def lineout_plot(runid,filenumber,p1,p2,var):
 
     # find correct file based on file number and run id
     if runid in ["AEC"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+        bulkpath = vlasdir+"/2D/"+runid+"/"
     elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+        bulkpath = vlasdir+"/2D/"+runid+"/round_3_boundary_sw/"
     else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+        bulkpath = vlasdir+"/2D/"+runid+"/bulk/"
 
     var_dict = {"rho":[1e+6,"$\\rho~[cm^{-3}]$",1],"v":[1e+3,"$v~[km/s]$",750]}
 
@@ -1222,15 +1226,15 @@ def hack_2019_fig6_alt(time_thresh=5):
 
 def jetcand_vdf(runid):
 
-    outputdir = "/homeappl/home/sunijona/Figures/paper/vdfs/"
+    outputdir = homedir+"Figures/paper/vdfs/"
     title_list = ["{} t0-30".format(runid),"{} t0".format(runid),"{} t0+30".format(runid)]
 
     if runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/AEA/round_3_boundary_sw/"
+        bulkpath = vlasdir+"/2D/AEA/round_3_boundary_sw/"
         fn_list = [760,820,880]
         cellid = 1301051
     else:
-        bulkpath = "/proj/vlasov/2D/AEC/"
+        bulkpath = vlasdir+"/2D/AEC/"
         fn_list = [700,760,820]
         cellid = 1700451
 
