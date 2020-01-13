@@ -1,4 +1,4 @@
-import numpy as np
+timport numpy as np
 from Merka_BS_model import BS_distance_Merka2005
 from Shue_Mpause_model import Shue_Mpause_model
 
