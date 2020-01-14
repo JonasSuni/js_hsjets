@@ -573,19 +573,19 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     # make custom jet mask
     if transient == "jet":
         jet = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet.mask[bs_cond-2*x_res > 0] = False
+        jet.mask[bs_cond-2*x_res-0.5 > 0] = False
     elif transient == "slams":
         jet = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet.mask[bs_cond+2*x_res < 0] = False
+        jet.mask[bs_cond+2*x_res+0.5 < 0] = False
         jet.mask[nrho < 1.5] = False
         jet.mask[npdyn < 1.25] = False
     elif transient == "slamsjet":
         jet1 = np.ma.masked_greater_equal(Bmag,1.5*B_sw)
-        jet1.mask[bs_cond+2*x_res < 0] = False
+        jet1.mask[bs_cond+2*x_res+0.5 < 0] = False
         jet1.mask[nrho < 1.5] = False
         jet1.mask[npdyn < 1.25] = False
         jet2 = np.ma.masked_greater_equal(tapdyn,2.0)
-        jet2.mask[bs_cond-2*x_res > 0] = False
+        jet2.mask[bs_cond-2*x_res-0.5 > 0] = False
         jet = np.logical_or(jet1,jet2)
 
     # discard unmasked cellids
