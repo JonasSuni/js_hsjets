@@ -1,4 +1,5 @@
 import matplotlib as mpl
+import jet_aux as jx
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
 
 import pytools as pt
@@ -12,7 +13,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import plot_contours as pc
 import jet_analyser as ja
 import jet_io as jio
-import jet_aux as jx
 
 wrkdir_DNR = os.environ["WRK"]+"/"
 homedir = os.environ["HOME"]+"/"
