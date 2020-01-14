@@ -148,7 +148,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     bs_cont, = ax.plot(x_bs,y_bs,color="black")
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.7,colors=jx.violet)
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.7,colors=jx.dark_blue)
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)
 
     xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
