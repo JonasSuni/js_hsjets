@@ -116,3 +116,35 @@ def jh2020_fig1():
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     cellids = pass_maps["CellID"]
+
+    slams_cells = jio.eventfile_read("ABC",677,transient="slams")
+    jet_cells = jio.eventfile_read("ABC",677,transient="jet")
+
+    slams_mask = np.in1d(cellids,slams_cells).astype(int)
+    slams_mask = np.reshape(slams_mask,cellids.shape)
+
+    jet_mask = np.in1d(cellids,jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask,cellids.shape)
+
+    x_list = []
+    y_list = []
+
+    for n in range(3000):
+        try:
+            props = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
+        except:
+            continue
+        if 338.5 in props.read("time"):
+            x_list.append(props.read_at_time("x_mean",338.5))
+            y_list.append(props.read_at_time("y_mean",338.5))
+
+    bs_fit = bow_shock_markus("ABC",677)[::-1]
+    y_bs = np.arange(-6,6.01,0.05)
+    x_bs = np.polyval(bs_fit,y_bs)
+
+    bs_cont, = ax.plot(x_bs,y_bs,color="black")
+
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.7,colors=jx.violet)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.7,colors=jx.dark_blue)
+
+    xy_pos, = ax.plot(x_list,y_list,"o",color="orange",markersize=2)
