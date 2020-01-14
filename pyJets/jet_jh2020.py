@@ -100,3 +100,19 @@ def jh2020_fig3():
 
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
+
+def find_slams_of_jet(runid):
+
+    return None
+
+def jh2020_fig1():
+
+    outputdir = homedir+"Figures/jh2020/"
+
+    filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
+
+    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a.png",usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn"],Earth=1)
+
+def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
+
+    cellids = pass_maps["CellID"]
