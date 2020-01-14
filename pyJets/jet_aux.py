@@ -68,3 +68,31 @@ def bs_dist_markus(runid,time_arr,x_arr,y_arr):
         bs_x_arr[n] = X_bs
 
     return x_arr - bs_x_arr
+
+def find_bulkpath(runid):
+
+    runid_list = ["ABA","ABC","AEA","AEC","BFD"]
+    path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
+
+    vlpath = "{}/2D/{}/".format(vlasdir,runid)
+
+    if runid in runid_list:
+        bulkpath = vlpath+path_list[runid_list.index(runid)]
+    else:
+        bulkpath = vlpath+"bulk/"
+
+    return bulkpath
+
+def sw_par_dict(runid):
+    # Returns solar wind parameters for specified run
+    # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta
+
+    runs = ["ABA","ABC","AEA","AEC","BFD"]
+    sw_rho = [1e+6,3.3e+6,1.0e+6,3.3e+6,1.0e+6]
+    sw_v = [750e+3,600e+3,750e+3,600e+3,750e+3]
+    sw_B = [5.0e-9,5.0e-9,10.0e-9,10.0e-9,5.0e-9]
+    sw_T = [500e+3,500e+3,500e+3,500e+3,500e+3]
+    sw_pdyn = [m_p*sw_rho[n]*(sw_v[n]**2) for n in range(len(runs))]
+    sw_beta = [2*sc.mu_0*sw_rho[n]*sc.k*sw_T[n]/(sw_B[n]**2) for n in range(len(runs))]
+
+    return [sw_rho[runs.index(runid)],sw_v[runs.index(runid)],sw_B[runs.index(runid)],sw_pdyn[runs.index(runid)],sw_beta[runs.index(runid)],sw_T[runs.index(runid)]]
