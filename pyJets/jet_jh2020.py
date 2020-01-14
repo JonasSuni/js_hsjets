@@ -140,7 +140,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             x_list.append(props.read_at_time("x_mean",338.5))
             y_list.append(props.read_at_time("y_mean",338.5))
 
-    bs_fit = bow_shock_markus("ABC",677)[::-1]
+    bs_fit = jx.bow_shock_markus("ABC",677)[::-1]
     y_bs = np.arange(-6,6.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
 
