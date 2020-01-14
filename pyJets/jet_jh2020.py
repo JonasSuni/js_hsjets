@@ -60,7 +60,7 @@ def jh2020_SEA(runid,transient="slamsjet"):
             continue
 
         bs_dist,pd_arr = get_transient_xseries(runid,jetid,transient=transient)
-        pd_arr = pd_arr[np.argsort(bs_dist)]
+        pd_arr = pd_arr[np.argsort(bs_dist)]/pd_sw
         bs_dist.sort()
 
         pd_epoch = np.interp(epoch_arr,bs_dist,pd_arr,left=0.0,right=0.0)
@@ -81,8 +81,8 @@ def jh2020_fig3():
 
     fig,ax = plt.subplots(1,1,figsize=(10,7))
 
-    ax.set_xlabel("$\mathrm{X-X_{bs}~[R_e]}$",labelpad=10)
-    ax.set_ylabel("$\mathrm{P_{dyn,mean}~[nPa]}$",labelpad=10)
+    ax.set_xlabel("$\mathrm{X-X_{bs}~[R_e]}$",labelpad=10,fontsize=20)
+    ax.set_ylabel("$\mathrm{P_{dyn,mean}~[nPa]}$",labelpad=10,fontsize=20)
     ax.set_xlim(-2.0,2.0)
 
     ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
