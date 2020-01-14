@@ -92,5 +92,11 @@ def jh2020_fig3():
 
     ax.legend(frameon=False,numpoints=1,markerscale=3)
 
+    if not os.path.exists(homedir+"Figures/jh2020"):
+        try:
+            os.makedirs(homedir+"Figures/jh2020")
+        except OSError:
+            pass
+
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
