@@ -1,6 +1,7 @@
 import numpy as np
 from Merka_BS_model import BS_distance_Merka2005
 from Shue_Mpause_model import Shue_Mpause_model
+import scipy.constants as sc
 
 medium_blue = '#006DDB'
 crimson = '#920000'
@@ -8,6 +9,7 @@ violet = '#B66DFF'
 dark_blue = '#490092'
 orange = '#db6d00'
 m_p = 1.672621898e-27
+r_e = 6.371e+6
 
 def BS_xy():
     #theta = np.arange(-60.25,60,0.5)
