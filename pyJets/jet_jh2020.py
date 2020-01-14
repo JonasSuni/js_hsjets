@@ -82,7 +82,7 @@ def jh2020_fig3():
     fig,ax = plt.subplots(1,1,figsize=(10,7))
 
     ax.set_xlabel("$\mathrm{X-X_{bs}~[R_e]}$",labelpad=10,fontsize=20)
-    ax.set_ylabel("$\mathrm{P_{dyn,mean}~[nPa]}$",labelpad=10,fontsize=20)
+    ax.set_ylabel("$\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
     ax.set_xlim(-2.0,2.0)
 
     ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
