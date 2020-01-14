@@ -39,3 +39,32 @@ def MP_xy():
     y_mp = R_mp*np.sin(theta)
 
     return [x_mp,y_mp]
+
+def bow_shock_markus(runid,filenr):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    start_time = [580,580,580,580]
+    stop_time = [839,1179,1339,879]
+    poly_start = [np.array([1.18421784e+01,5.63644824e-02,-1.89766867e-02,-1.32058567e-05,-4.77323693e-05]),np.array([1.04110415e+01,3.32422851e-02,-3.37451899e-02,-1.98441704e-03,-1.70630123e-04]),np.array([1.20355620e+01,4.61446000e-02,-1.93338601e-02,7.60320584e-04,2.53691977e-05]),np.array([1.01305160e+01,1.25696460e-02,-3.92416704e-02,-3.34828851e-04,3.52869359e-05])]
+    poly_stop = [np.array([1.31328718e+01,2.34156918e-02,-4.52496795e-02,7.14611033e-04,4.41093590e-04]),np.array([1.16623972e+01,6.90177048e-03,-2.39601957e-02,-4.66990093e-04,-1.54057259e-04]),np.array([1.54588619e+01,6.45523782e-02,-1.60969129e-02,1.28774254e-04,-7.24487366e-05]),np.array([1.08577750e+01,6.67598389e-02,-3.11619040e-02,-7.65761773e-04,1.44480631e-05])]
+
+
+    runid_index = runids.index(runid)
+    interp_dist = (filenr-start_time[runid_index])/float(stop_time[runid_index] - start_time[runid_index])
+    bs_fit_array = (1.-interp_dist)*poly_start[runid_index] + interp_dist*poly_stop[runid_index]
+
+    return bs_fit_array
+
+def bs_dist_markus(runid,time_arr,x_arr,y_arr):
+
+    filenr_arr = (time_arr*2).astype(int)
+
+    bs_x_arr = np.zeros_like(time_arr)
+
+    for n in range(filenr_arr.size):
+        bs_fit = bow_shock_markus(runid,filenr_arr[n])[::-1]
+        Y = y_arr[n]
+        X_bs = np.polyval(bs_fit,Y)
+        bs_x_arr[n] = X_bs
+
+    return x_arr - bs_x_arr
