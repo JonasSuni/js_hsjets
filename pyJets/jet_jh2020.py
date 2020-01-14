@@ -120,7 +120,9 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     cellids = pass_maps["CellID"]
 
     slams_cells = jio.eventfile_read("ABC",677,transient="slams")
+    slams_cells = np.array([item for sublist in slams_cells for item in sublist])
     jet_cells = jio.eventfile_read("ABC",677,transient="jet")
+    jet_cells = np.array([item for sublist in jet_cells for item in sublist])
 
     slams_mask = np.in1d(cellids,slams_cells).astype(int)
     slams_mask = np.reshape(slams_mask,cellids.shape)
