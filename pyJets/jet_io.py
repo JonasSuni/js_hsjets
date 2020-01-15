@@ -189,8 +189,8 @@ class Transient:
             if self.times[-1]-self.times[0] < 4.5:
                 print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
                 return None
-            x = self.props[:][1]
-            y = self.props[:][2]
+            x = np.array(self.props)[:,1]
+            y = np.array(self.props)[:,2]
             t = self.times
             x_birth,y_birth = x[0],y[0]
             x_death,y_death = x[-1],y[-1]
