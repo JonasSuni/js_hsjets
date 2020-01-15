@@ -101,7 +101,7 @@ def spatmesh_get(runid):
     runids = ["ABA","ABC","AEA","AEC"]
 
     spat_extent = [np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  2.98437013e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  4.05509835e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  2.98437013e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  4.05509835e+08,  1.99337700e+08,  1.13907257e+05])]
-    spat_size = [np.array([1530, 1750,    1],dtype=uint64),np.array([2000, 1750,    1], dtype=uint64),np.array([1530, 1750,    1], dtype=uint64),np.array([2000, 1750,    1], dtype=uint64)]
+    spat_size = [np.array([1530, 1750,    1],dtype=np.uint64),np.array([2000, 1750,    1], dtype=np.uint64),np.array([1530, 1750,    1], dtype=np.uint64),np.array([2000, 1750,    1], dtype=np.uint64)]
 
     return (spat_extent[runids.index(runid)],spat_size[runids.index(runid)])
 
