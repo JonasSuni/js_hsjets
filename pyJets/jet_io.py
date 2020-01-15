@@ -184,8 +184,6 @@ class Transient:
             else:
                 print("Transient {} too short-lived, propfile not written!".format(self.ID))
         else:
-            print(self.times)
-            print(self.props)
             if self.times[-1]-self.times[0] < 4.5:
                 print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
                 return None
