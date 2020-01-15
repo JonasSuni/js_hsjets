@@ -18,6 +18,11 @@ try:
 except:
     vlasdir="/proj/vlasov"
 
+try:
+    tavgdir = os.environ["TAVG"]
+except:
+    tavgdir = wrkdir_DNR
+
 def find_bulkpath(runid):
 
     runid_list = ["ABA","ABC","AEA","AEC","BFD"]
@@ -351,7 +356,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.loadtxt(wrkdir_DNR+"tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.loadtxt(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
     else:
 
         for n_t in timerange:
@@ -526,7 +531,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.loadtxt(wrkdir_DNR+"tavg/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.loadtxt(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
         tpdynavg = tpdynavg[cells-1]
     else:
 
