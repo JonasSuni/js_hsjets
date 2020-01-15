@@ -1262,7 +1262,7 @@ def hack_2019_fig1():
 
         # Find correct file path
         bulkpath = ja.find_bulkpath(runids[n])
-        bulkpath = "/scratch/project_2000203/sunijona/vlasiator/2D/AEA/round_3_boundary_sw/""
+        bulkpath = "/scratch/project_2000203/sunijona/vlasiator/2D/AEA/round_3_boundary_sw/"
 
         bulkname = "bulk.{}.vlsv".format(str(filenr[n]).zfill(7))
 
