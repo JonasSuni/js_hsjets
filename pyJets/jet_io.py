@@ -429,7 +429,9 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
 def calc_event_props(vlsvobj,cells):
 
-    if np.argmin(vlsvobj.get_spatial_mesh_size()==1):
+    print(len(cells))
+
+    if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
         sheath_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,0,2])
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,0,1])
     else:
