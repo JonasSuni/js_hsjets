@@ -184,12 +184,14 @@ class Transient:
             else:
                 print("Transient {} too short-lived, propfile not written!".format(self.ID))
         else:
+            print(self.times)
+            print(self.props)
             if self.times[-1]-self.times[0] < 4.5:
                 print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
                 return None
             x = self.props[:][1]
             y = self.props[:][2]
-            t = self.props[:][0]
+            t = self.times
             x_birth,y_birth = x[0],y[0]
             x_death,y_death = x[-1],y[-1]
             bsp_birth,bsp_death = [ja.bow_shock_markus(self.runid,int(t[0]*2))[::-1],ja.bow_shock_markus(self.runid,int(t[-1]*2))[::-1]]
