@@ -1198,6 +1198,12 @@ def hack_2019_fig1():
 
     outputdir = homedir+"Figures/hackathon_paper/"
 
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
     # Initialise required global variables
     global jet_cells,full_cells
     global xmean_list,ymean_list
@@ -1256,6 +1262,7 @@ def hack_2019_fig1():
 
         # Find correct file path
         bulkpath = ja.find_bulkpath(runids[n])
+        bulkpath = "/scratch/project_2000203/sunijona/vlasiator/2D/AEA/round_3_boundary_sw/""
 
         bulkname = "bulk.{}.vlsv".format(str(filenr[n]).zfill(7))
 
