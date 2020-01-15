@@ -436,8 +436,6 @@ def calc_event_props(vlsvobj,cells):
         sheath_cells = get_sheath_cells(vlsvobj,cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,1,0])
 
-
-
     # read variables
     if vlsvobj.check_variable("X"):
         X = np.array(vlsvobj.read_variable("X",cellids=cells),ndmin=1)
