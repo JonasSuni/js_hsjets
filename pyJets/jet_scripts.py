@@ -1280,10 +1280,10 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     pd_sw = sw_pars[3]
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
-    #bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
-    mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
+    bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    #mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
     bs_x = np.polyval(bs_p,bs_y)
-    mp_x = np.polyval(mp_p,bs_y)+1
+    #mp_x = np.polyval(mp_p,bs_y)+1
 
     # Mask jets
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
@@ -1298,6 +1298,9 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     full_mask = np.in1d(cellids,full_cells).astype(int)
     full_mask = np.reshape(full_mask,cellids.shape)
 
+    bs_cont = ax.plot(bs_x,bs_y,color="red")
+    #mp_cont = ax.plot(mp_x,bs_y,color="red")
+
     #full_cont = ax.contour(XmeshXY,YmeshXY,full_mask,[0.5],linewidths=0.8,colors="magenta") # Contour of full mask
     p_cont = ax.contour(XmeshXY,YmeshXY,plas_mask,[0.5],linewidths=0.6,colors="magenta")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
@@ -1307,8 +1310,6 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color="black")
     mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="green")
-    bs_cont = ax.plot(bs_x,bs_y,color="red")
-    mp_cont = ax.plot(mp_x,bs_y,color="red")
 
 def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
 
