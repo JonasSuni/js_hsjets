@@ -429,16 +429,12 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
 def calc_event_props(vlsvobj,cells):
 
-    print(len(cells))
-
     if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
         sheath_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,0,2])
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,0,1])
     else:
         sheath_cells = get_sheath_cells(vlsvobj,cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,1,0])
-
-        print(len(ssh_cells))
 
     # read variables
     if vlsvobj.check_variable("X"):
@@ -466,8 +462,6 @@ def calc_event_props(vlsvobj,cells):
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list]
         rho_ssh = np.array(vlsvobj.read_variable("rho",cellids=ssh_cells),ndmin=1)
-
-    print(rho_ssh)
 
     rho_sw = rho_sw_g
 
