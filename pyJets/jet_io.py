@@ -438,6 +438,8 @@ def calc_event_props(vlsvobj,cells):
         sheath_cells = get_sheath_cells(vlsvobj,cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,1,0])
 
+        print(len(ssh_cells))
+
     # read variables
     if vlsvobj.check_variable("X"):
         X = np.array(vlsvobj.read_variable("X",cellids=cells),ndmin=1)
@@ -467,6 +469,8 @@ def calc_event_props(vlsvobj,cells):
         rho_ssh = np.array(vlsvobj.read_variable("proton/rho",cellids=ssh_cells),ndmin=1)
     except:
         rho_ssh = np.array(vlsvobj.read_variable("rho",cellids=ssh_cells),ndmin=1)
+
+    print(rho_ssh)
 
     rho_sw = rho_sw_g
 
