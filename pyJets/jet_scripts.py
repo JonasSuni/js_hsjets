@@ -1326,7 +1326,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=1) # v_max positions
 
     vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=3,color=jx.orange)
-    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=3,color=jx.violet)
+    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=3,color="green")
 
 def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
 
