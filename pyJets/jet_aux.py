@@ -71,10 +71,44 @@ def bs_dist_markus(runid,time_arr,x_arr,y_arr):
 
     return x_arr - bs_x_arr
 
+
+def get_cell_coordinates(runid,cellid):
+
+    spatmesh = spatmesh_get(runid)
+
+    xmin,ymin,zmin,xmax,ymax,zmax = spatmesh[0]
+    xcells,ycells,zcells = spatmesh[1]
+
+    # Get cell lengths:
+    cell_lengths = np.array([(xmax - xmin)/xcells, (ymax - ymin)/ycells, (zmax - zmin)/zcells])
+    # Get cell indices:
+    cellid = cellid - 1
+    cellindices = np.zeros(3)
+    cellindices[0] = cellid%xcells
+    cellindices[1] = (cellid//xcells)%ycells
+    cellindices[2] = cellid//(xcells*ycells)
+
+    # Get cell coordinates:
+    cellcoordinates = np.zeros(3)
+    cellcoordinates[0] = xmin + (cellindices[0] + 0.5) * cell_lengths[0]
+    cellcoordinates[1] = ymin + (cellindices[1] + 0.5) * cell_lengths[1]
+    cellcoordinates[2] = zmin + (cellindices[2] + 0.5) * cell_lengths[2]
+    # Return the coordinates:
+    return np.array(cellcoordinates)
+
+def spatmesh_get(runid):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    spat_extent = [np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  2.98437013e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  4.05509835e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  2.98437013e+08,  1.99337700e+08,  1.13907257e+05]),np.array([-5.01191931e+07, -1.99337700e+08, -1.13907257e+05,  4.05509835e+08,  1.99337700e+08,  1.13907257e+05])]
+    spat_size = [np.array([1530, 1750,    1],dtype=uint64),np.array([2000, 1750,    1], dtype=uint64),np.array([1530, 1750,    1], dtype=uint64),np.array([2000, 1750,    1], dtype=uint64)]
+
+    return (spat_extent[runids.index(runid)],spat_size[runids.index(runid)])
+
 def find_bulkpath(runid):
 
     runid_list = ["ABA","ABC","AEA","AEC","BFD"]
-    path_list = ["bulk/","bulk/","round_3_boundary_sw/","","bulk/"]
+    path_list = ["bulk/","bulk/","round_3_boundary_sw/","bulk/","bulk/"]
 
     vlpath = "{}/2D/{}/".format(vlasdir,runid)
 
