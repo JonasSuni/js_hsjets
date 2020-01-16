@@ -161,6 +161,27 @@ def get_indent_depth(runid):
 
     return [np.array(depths),np.array(indents)]
 
+def jh2020_fig4():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    fig,ax = plt.subplots(1,1,figsize=(10,10))
+    for runid in runids:
+        depths,indents = get_indent_depth(runid)
+        ax.plot(depths,indents,"x",label=runid)
+
+    ax.set_xlabel("$\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
+    ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
+    ax.legend(frameon=False,numpoints=1,markerscale=5)
+
+    if not os.path.exists(homedir+"Figures/jh2020"):
+        try:
+            os.makedirs(homedir+"Figures/jh2020")
+        except OSError:
+            pass
+
+    fig.savefig(homedir+"Figures/jh2020/fig4.png")
+    plt.close(fig)
 
 def jh2020_fig1():
 
