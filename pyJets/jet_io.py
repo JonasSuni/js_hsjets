@@ -461,13 +461,13 @@ def calc_event_props(vlsvobj,cells):
     if vlsvobj.check_variable("proton/rho"):
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list_alt]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list_alt]
-        rho_ssh = np.array(vlsvobj.read_variable("proton/rho",cellids=ssh_cells),ndmin=1)
+        #rho_ssh = np.array(vlsvobj.read_variable("proton/rho",cellids=ssh_cells),ndmin=1)
         pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
         pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
     else:
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list]
-        rho_ssh = np.array(vlsvobj.read_variable("rho",cellids=ssh_cells),ndmin=1)
+        #rho_ssh = np.array(vlsvobj.read_variable("rho",cellids=ssh_cells),ndmin=1)
         pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
         pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
 
@@ -481,7 +481,7 @@ def calc_event_props(vlsvobj,cells):
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     #is_upstream = int(np.all(rho_ssh < 2*rho_sw))
-    is_upstream = int(np.all(pr_TNBS < 3*T_sw))
+    is_upstream = int(np.all(pr_TNBS < 4*T_sw))
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
