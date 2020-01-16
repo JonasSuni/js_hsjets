@@ -458,7 +458,7 @@ def calc_event_props(vlsvobj,cells):
     sheath_list = ["rho","v","B","Temperature","TParallel","TPerpendicular","Pdyn"]
     sheath_list_alt = ["proton/rho","proton/V","B","proton/Temperature","proton/TParallel","proton/TPerpendicular","proton/Pdyn"]
 
-    if vlsvobj.check_population("proton"):
+    if vlsvobj.check_variable("proton/rho"):
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list_alt]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list_alt]
         rho_ssh = np.array(vlsvobj.read_variable("proton/rho",cellids=ssh_cells),ndmin=1)
