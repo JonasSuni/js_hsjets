@@ -180,7 +180,7 @@ def jh2020_fig4():
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/fig4.png")
+    fig.savefig(homedir+"Figures/jh2020/fig4_old.png")
     plt.close(fig)
 
 def jh2020_fig1():
