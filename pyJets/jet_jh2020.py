@@ -122,6 +122,7 @@ def find_slams_of_jet(runid):
             if np.intersect1d(slams_first_cells,sj_first_cells).size > 0.75*len(slams_first_cells):
                 sj_ids.append(n1)
                 slams_ids.append(n2)
+                break
 
     return [np.array(sj_ids),np.array(slams_ids)]
 
