@@ -14,6 +14,8 @@ import plot_contours as pc
 import jet_analyser as ja
 import jet_io as jio
 
+r_e = 6.371e+6
+
 wrkdir_DNR = os.environ["WRK"]+"/"
 homedir = os.environ["HOME"]+"/"
 try:
@@ -148,10 +150,12 @@ def get_indent_depth(runid):
         last_upstream_time_index = np.argmax(t_slams[is_upstream_slams>0])
         slams_cells = slams_props.get_cells()
         last_cells = slams_cells[last_upstream_time_index]
-        cell_pos = np.array([jx.get_cell_coordinates(runid,cellid) for cellid in last_cells])
+        cell_pos = np.array([jx.get_cell_coordinates(runid,cellid)/r_e for cellid in last_cells])
+        print(cell_pos)
         cell_x = cell_pos[:,0]
         cell_y = cell_pos[:,1]
         cell_t_arr = np.ones_like(cell_x)*t_slams[is_upstream_slams>0][last_upstream_time_index]
+        print(cell_t_arr)
         slams_bs_dist = jx.bs_dist_markus(runid,cell_t_arr,cell_x,cell_y)
         upstream_dist_min = np.min(slams_bs_dist)
 
