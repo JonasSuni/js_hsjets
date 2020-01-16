@@ -103,7 +103,27 @@ def jh2020_fig3():
 
 def find_slams_of_jet(runid):
 
-    return None
+    sj_ids=[]
+    slams_ids=[]
+
+    for n1 in range(3000):
+        try:
+            props_sj = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
+        except:
+            continue
+
+        sj_first_cells = props_sj.get_cells()[0]
+        for n2 in range(3000):
+            try:
+                props_slams = jio.PropReader(str(n2).zfill(5),runid,transient="slams")
+            except:
+                continue
+            slams_first_cells = props_slams.get_cells[0]
+            if np.intersect1d(slams_first_cells,sj_first_cells).size > 0.75*len(slams_first_cells):
+                sj_ids.append(n1)
+                slams_ids.append(n2)
+
+    return [np.array(sj_ids),np.array(slams_ids)]
 
 def jh2020_fig1():
 
