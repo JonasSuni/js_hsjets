@@ -108,7 +108,7 @@ def spatmesh_get(runid):
 def find_bulkpath(runid):
 
     runid_list = ["ABA","ABC","AEA","AEC","BFD"]
-    path_list = ["bulk/","bulk/","round_3_boundary_sw/","/bulk","bulk/"]
+    path_list = ["bulk/","bulk/","round_3_boundary_sw/","bulk/","bulk/"]
 
     vlpath = "{}/2D/{}/".format(vlasdir,runid)
 
