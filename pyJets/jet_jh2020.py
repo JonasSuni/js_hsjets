@@ -118,7 +118,7 @@ def find_slams_of_jet(runid):
                 props_slams = jio.PropReader(str(n2).zfill(5),runid,transient="slams")
             except:
                 continue
-            slams_first_cells = props_slams.get_cells[0]
+            slams_first_cells = props_slams.get_cells()[0]
             if np.intersect1d(slams_first_cells,sj_first_cells).size > 0.75*len(slams_first_cells):
                 sj_ids.append(n1)
                 slams_ids.append(n2)
