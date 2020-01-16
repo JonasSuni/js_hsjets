@@ -173,6 +173,7 @@ def jh2020_fig4():
     ax.set_xlabel("$\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
     ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
+    ax.tick_params(labelsize=20)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
