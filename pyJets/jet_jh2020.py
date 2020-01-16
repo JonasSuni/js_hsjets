@@ -126,6 +126,41 @@ def find_slams_of_jet(runid):
 
     return [np.array(sj_ids),np.array(slams_ids)]
 
+def get_indent_depth(runid):
+
+    sj_ids,slams_ids=find_slams_of_jet(runid)
+    indents = []
+    depths = []
+
+    for n in range(sj_ids.size):
+        sj_props = jio.PropReader(str(sj_ids[n]).zfill(5),runid,transient="slamsjet")
+        x_sj = sj_props.read("x_mean")
+        y_sj = sj_props.read("y_mean")
+        t_sj = sj_props.read("time")
+        sj_dist = jx.bs_dist_markus(runid,t_sj,x_sj,y_sj)
+        sj_dist_min = np.min(sj_dist)
+
+        slams_props = jio.PropReader(str(slams_ids[n]).zfill(5),runid,transient="slams")
+        is_upstream_slams = slams_props.read("is_upstream")
+        if np.all(is_upstream_slams==0.0):
+            continue
+        t_slams = slams_props.read("time")
+        last_upstream_time_index = np.argmax(t_slams[is_upstream_slams>0])
+        slams_cells = slams_props.get_cells()
+        last_cells = slams_cells[last_upstream_time_index]
+        cell_pos = np.array([jx.get_cell_coordinates(runid,cellid) for cellid in last_cells])
+        cell_x = cell_pos[:,0]
+        cell_y = cell_pos[:,1]
+        cell_t_arr = np.ones_like(cell_x)*t_slams[is_upstream_slams>0][last_upstream_time_index]
+        slams_bs_dist = jx.bs_dist_markus(runid,cell_t_arr,cell_x,cell_y)
+        upstream_dist_min = np.min(slams_bs_dist)
+
+        depths.append(sj_dist_min)
+        indents.append(upstream_dist_min)
+
+    return [np.array(depths),np.array(indents)]
+
+
 def jh2020_fig1():
 
     outputdir = homedir+"Figures/jh2020/"
