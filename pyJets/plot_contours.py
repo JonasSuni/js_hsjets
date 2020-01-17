@@ -51,7 +51,7 @@ def expr_coreheating(exprmaps):
 
     T_sw = 0.5e+6
 
-    r_rhonbs = exprmaps["RhoNonBackstream"]
+    pr_rhonbs = exprmaps["RhoNonBackstream"]
     pr_PTDNBS = exprmaps["PTensorNonBackstreamDiagonal"]
 
     epsilon = 1.e-10
