@@ -69,7 +69,7 @@ def bs_rd_markus(runid,time_arr,x_arr,y_arr):
         X = x_arr[n]
         #X_bs = np.polyval(bs_fit,Y)
         rv_fit = np.polyfit([0,X],[0,Y],deg=1)
-        x_range = np.arange(X,X+1.0,0.01)
+        x_range = np.arange(X,X+2.0,0.01)
         y_range = np.polyval(rv_fit,x_range)
         x_bs_range = np.polyval(bs_fit,y_range)
         x_bs,y_bs = x_range[np.argmin(np.abs(x_range-x_bs_range))],y_range[np.argmin(np.abs(x_range-x_bs_range))]
