@@ -11,6 +11,17 @@ orange = '#db6d00'
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
+wrkdir_DNR = os.environ["WRK"]+"/"
+try:
+    vlasdir = os.environ["VLAS"]
+except:
+    vlasdir="/proj/vlasov"
+
+try:
+    tavgdir = os.environ["TAVG"]
+except:
+    tavgdir = wrkdir_DNR
+
 def BS_xy():
     #theta = np.arange(-60.25,60,0.5)
     theta = np.deg2rad(np.arange(-60.25,60,0.5))
