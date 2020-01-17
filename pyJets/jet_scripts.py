@@ -5,10 +5,10 @@
 # rc('text',usetex=True)
 # rc('text.latex', preamble=r'\usepackage{color}')
 import matplotlib as mpl
-mpl.use("Agg")
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
 #mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
 import matplotlib.pyplot as plt
+plt.style.use("classic")
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
