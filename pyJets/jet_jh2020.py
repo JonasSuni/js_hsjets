@@ -130,6 +130,8 @@ def find_slams_of_jet(runid):
 
 def get_indent_depth(runid):
 
+    x_res = 227000/r_e
+
     sj_ids,slams_ids=find_slams_of_jet(runid)
     indents = []
     depths = []
@@ -157,7 +159,7 @@ def get_indent_depth(runid):
         upstream_dist_min = np.min(slams_bs_dist)
 
         depths.append(sj_dist_min)
-        indents.append(upstream_dist_min)
+        indents.append(upstream_dist_min-x_res)
 
     return [np.array(depths),np.array(indents)]
 

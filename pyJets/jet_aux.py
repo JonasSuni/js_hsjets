@@ -137,7 +137,7 @@ def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
     pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
-    mask = (pr_TNBS>=3*rho_sw)
+    mask = (pr_TNBS>=3*T_sw)
 
     X_masked = X[mask]
     Y_masked = Y[mask]
@@ -170,7 +170,7 @@ def bow_shock_jonas(runid,filenr):
     maxtime_list = [839,1179,1339,879]
     bs_fit_arr = np.loadtxt(wrkdir_DNR+"bsfit/{}/580_{}".format(runid,maxtime_list[r_id]))
 
-    return bs_fit_arr[filenr-580]
+    return bs_fit_arr[filenr-580][::-1]
 
 def bow_shock_markus(runid,filenr):
 
