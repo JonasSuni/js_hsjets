@@ -57,6 +57,17 @@ def bow_shock_markus(runid,filenr):
 
     return bs_fit_array
 
+def bs_nd_markus(runid,time_arr,x_arr,y_arr):
+
+    filenr_arr = (time_arr*2).astype(int)
+
+    bs_nd_arr = np.zeros_like(time_arr)
+
+    for n in range(filenr_arr.size):
+        bs_fit = bow_shock_markus(runid,filenr_arr[n])[::-1]
+        Y = y_arr[n]
+        X_bs = np.polyval(bs_fit,Y)
+
 def bs_dist_markus(runid,time_arr,x_arr,y_arr):
 
     filenr_arr = (time_arr*2).astype(int)
