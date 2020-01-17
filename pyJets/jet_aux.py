@@ -161,6 +161,12 @@ def make_bs_fit(runid,start,stop):
 
     bs_fit_arr = bs_fit_arr[1:]
 
+    if not os.path.exists(wrkdir_DNR+"bsfit/{}".format(runid)):
+        try:
+            os.makedirs(wrkdir_DNR+"bsfit/{}".format(runid))
+        except OSError:
+            pass
+
     np.savetxt(wrkdir_DNR+"bsfit/{}/{}_{}".format(runid,start,stop),bs_fit_arr)
 
 def bow_shock_jonas(runid,filenr):
