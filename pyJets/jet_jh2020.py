@@ -192,21 +192,43 @@ def jh2020_fig4():
 
 def jh2020_fig1():
 
+    global filenr_g
+
     outputdir = homedir+"Figures/jh2020/"
 
     filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
+
+    filenr_g = 677
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a.png",usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",pass_vars=["rho","v","CellID","Pdyn"],Earth=1)
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b.png",boxre=[6,18,-6,6],usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn"])
 
+def jh2020_movie(start,stop):
+
+    global filenr_g
+
+    outputdir = wrkdir_DNR+"jh2020_movie/"
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    bulkpath = jx.find_bulkpath("ABC")
+    for itr in range(start,stop+1):
+        filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
+        filenr_g = itr
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     cellids = pass_maps["CellID"]
 
-    slams_cells = jio.eventfile_read("ABC",677,transient="slams")
+    slams_cells = jio.eventfile_read("ABC",filenr_g,transient="slams")
     slams_cells = np.array([item for sublist in slams_cells for item in sublist])
-    jet_cells = jio.eventfile_read("ABC",677,transient="jet")
+    jet_cells = jio.eventfile_read("ABC",filenr_g,transient="jet")
     jet_cells = np.array([item for sublist in jet_cells for item in sublist])
 
     slams_mask = np.in1d(cellids,slams_cells).astype(int)
@@ -223,15 +245,15 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             props = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
         except:
             continue
-        if 338.5 in props.read("time"):
-            x_list.append(props.read_at_time("x_mean",338.5))
-            y_list.append(props.read_at_time("y_mean",338.5))
+        if filenr_g/2.0 in props.read("time"):
+            x_list.append(props.read_at_time("x_mean",filenr_g/2.0))
+            y_list.append(props.read_at_time("y_mean",filenr_g/2.0))
 
-    bs_fit = jx.bow_shock_markus("ABC",677)[::-1]
+    bs_fit = jx.bow_shock_markus("ABC",filenr_g)[::-1]
     y_bs = np.arange(-6,6.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
 
-    bs_cont, = ax.plot(x_bs,y_bs,color="black")
+    bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)
