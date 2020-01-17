@@ -1325,11 +1325,11 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     p_cont = ax.contour(XmeshXY,YmeshXY,plas_mask,[0.5],linewidths=0.6,colors="magenta")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black") # Contour of jets
 
-    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=1) # Mean positions
-    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=1) # v_max positions
+    line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=3) # Mean positions
+    line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=3) # v_max positions
 
-    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=3,color=jx.orange)
-    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=3,color="green")
+    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=5,color=jx.orange)
+    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=5,color="green")
     #vlas = ax.annotate("Vlas",color=jx.orange,xy=(mms_xy[0],mms_xy[1]),xytext=(mms_xy[0]-2,mms_xy[1]-1),arrowprops={"arrowstyle":"->"},fontsize=5)
     #MMS = ax.annotate("MMS",color="black",xy=(vl_xy[0],vl_xy[1]),xytext=(vl_xy[0]-2,vl_xy[1]+1),arrowprops={"arrowstyle":"->"},fontsize=5)
 
