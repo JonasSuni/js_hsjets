@@ -164,11 +164,12 @@ def get_indent_depth(runid):
 def jh2020_fig4():
 
     runids = ["ABA","ABC","AEA","AEC"]
+    marker_list = ["x","o","^","v"]
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
     for runid in runids:
         depths,indents = get_indent_depth(runid)
-        ax.plot(depths,indents,"x",label=runid)
+        ax.plot(depths,indents,marker_list[runids.index(runid)],label=runid)
 
     ax.set_xlabel("$\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
     ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
