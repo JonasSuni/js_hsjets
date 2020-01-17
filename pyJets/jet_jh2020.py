@@ -195,7 +195,7 @@ def jh2020_fig1(var="pdyn"):
     vars_list = ["pdyn","core_heating","rho"]
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$"]
-    vmax_list = [4.5,4.0,12.0]
+    vmax_list = [4.5,4.0,6.6]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho]
 
     global filenr_g
@@ -215,7 +215,7 @@ def jh2020_movie(start,stop,var="pdyn"):
     vars_list = ["pdyn","core_heating","rho"]
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$"]
-    vmax_list = [4.5,4.0,12.0]
+    vmax_list = [4.5,4.0,6.6]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho]
 
     global filenr_g

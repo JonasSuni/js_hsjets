@@ -23,6 +23,66 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
+def xyz_reconstruct(vlsvobj,cellids=-1):
+
+    if type(cellids) == int and cellids == -1:
+        ci = vlsvobj.read_variable("CellID")
+    else:
+        ci = np.asarray([cellids]).flatten()
+
+    try:
+        coords = vlsvobj.get_cell_coordinates_multi(ci)
+    except:
+        coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in ci])
+
+    coords = coords.T
+
+    return coords
+
+def restrict_area(vlsvobj,boxre):
+
+    if len(boxre) == 4:
+        boxre = [boxre[0],boxre[1],boxre[2],boxre[3],0,0]
+
+    cellids = vlsvobj.read_variable("CellID")
+
+    # If X doesn't exist, reconstruct X,Y,Z, otherwise read X,Y,Z
+    if vlsvobj.check_variable("X"):
+        X,Y,Z = vlsvobj.read_variable("X"),vlsvobj.read_variable("Y"),vlsvobj.read_variable("Z")
+    else:
+        X,Y,Z = xyz_reconstruct(vlsvobj)
+
+    Xmin = X[np.abs(X-boxre[0]*r_e)==np.min(np.abs(X-boxre[0]*r_e))][0]
+    Xmax = X[np.abs(X-boxre[1]*r_e)==np.min(np.abs(X-boxre[1]*r_e))][0]
+
+    Ymin = Y[np.abs(Y-boxre[2]*r_e)==np.min(np.abs(Y-boxre[2]*r_e))][0]
+    Ymax = Y[np.abs(Y-boxre[3]*r_e)==np.min(np.abs(Y-boxre[3]*r_e))][0]
+
+    Zmin = Z[np.abs(Z-boxre[4]*r_e)==np.min(np.abs(Z-boxre[4]*r_e))][0]
+    Zmax = Z[np.abs(Z-boxre[5]*r_e)==np.min(np.abs(Z-boxre[5]*r_e))][0]
+
+    # X_cells = cellids[np.logical_and(X>=Xmin,X<=Xmax)]
+    # Y_cells = cellids[np.logical_and(Y>=Ymin,Y<=Ymax)]
+    # Z_cells = cellids[np.logical_and(Z>=Zmin,Z<=Zmax)]
+
+    # masked_cells = np.intersect1d(X_cells,Y_cells)
+    # mesked_cells = np.intersect1d(masked_cells,Z_cells)
+
+    # return masked_cells
+
+    # mask the cellids within the specified limits
+    msk = np.ma.masked_greater_equal(X,Xmin)
+    msk.mask[X > Xmax] = False
+    msk.mask[Y < Ymin] = False
+    msk.mask[Y > Ymax] = False
+    msk.mask[Z < Zmin] = False
+    msk.mask[Z > Zmax] = False
+
+    # discard unmasked cellids
+    masked_ci = np.ma.array(cellids,mask=~msk.mask).compressed()
+
+    return masked_ci
+
 def BS_xy():
     #theta = np.arange(-60.25,60,0.5)
     theta = np.deg2rad(np.arange(-60.25,60,0.5))
@@ -53,6 +113,63 @@ def MP_xy():
     y_mp = R_mp*np.sin(theta)
 
     return [x_mp,y_mp]
+
+def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
+
+    bulkpath = find_bulkpath(runid)
+    bulkname = "bulk.{}.vlsv".format(str(file_nr).zfill(7))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    cellids = restrict_area(vlsvobj,boxre)
+    rho = vlsvobj.read_variable("rho",cellids=cellids)
+    X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
+
+    T_sw = 0.5e+6
+
+    pr_rhonbs = vlsvobj.read_variable("RhoNonBackstream",cellids=cellids)
+    pr_PTDNBS = vlsvobj.read_variable("PTensorNonBackstreamDiagonal",cellids=cellids)
+
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    mask = (pr_TNBS>=3*rho_sw)
+
+    X_masked = X[mask]
+    Y_masked = Y[mask]
+
+    Y_unique = np.unique(Y_masked)
+    Yun2 = Y_unique[np.logical_and(Y_unique>=-2*r_e,Y_unique<=2*r_e)]
+    X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Yun2])
+    X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
+
+    bs_fit = np.polyfit(Y_unique/r_e,X_max/r_e,deg=5)
+    mp_fit = np.polyfit(Yun2/r_e,X_min/r_e,deg=2)
+
+    return (mp_fit,bs_fit)
+
+def make_bs_fit(runid,start,stop):
+
+    bs_fit_arr = np.zeros(6)
+    for n in range(start,stop+1):
+        mp_fit,bs_fit = bs_mp_fit(runid,n,boxre=[6,18,-8,6])
+        bs_fit_arr = np.vstack((bs_fit_arr,bs_fit))
+
+    bs_fit_arr = bs_fit_arr[1:]
+
+    np.savetxt(wrkdir_DNR+"bsfit/{}/{}_{}".format(runid,start,stop),bs_fit_arr)
+
+def bow_shock_jonas(runid,filenr):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    r_id = runids.index(runid)
+    maxtime_list = [839,1179,1339,879]
+    bs_fit_arr = np.loadtxt(wrkdir_DNR+"bsfit/{}/580_{}".format(runid,maxtime_list[r_id]))
+
+    return bs_fit_arr[filenr-580]
 
 def bow_shock_markus(runid,filenr):
 
