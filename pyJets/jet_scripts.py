@@ -5,6 +5,8 @@
 # rc('text',usetex=True)
 # rc('text.latex', preamble=r'\usepackage{color}')
 import matplotlib as mpl
+mpl.rcParams['text.usetex'] = True
+mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
 #mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
 import matplotlib.pyplot as plt
