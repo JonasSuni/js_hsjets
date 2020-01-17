@@ -190,7 +190,13 @@ def jh2020_fig4():
     fig.savefig(homedir+"Figures/jh2020/fig4.png")
     plt.close(fig)
 
-def jh2020_fig1():
+def jh2020_fig1(var="pdyn"):
+
+    vars_list = ["pdyn","core_heating","rho"]
+    var_index = vars_list.index(var)
+    label_list = ["nPa","$T_{sw}$","$cm^{-3}$"]
+    vmax_list = [4.5,4.0,12.0]
+    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho]
 
     global filenr_g
 
@@ -200,15 +206,21 @@ def jh2020_fig1():
 
     filenr_g = 677
 
-    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a.png",usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",pass_vars=["rho","v","CellID","Pdyn"],Earth=1)
+    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal"],Earth=1)
 
-    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b.png",boxre=[6,18,-6,6],usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
-def jh2020_movie(start,stop):
+def jh2020_movie(start,stop,var="pdyn"):
+
+    vars_list = ["pdyn","core_heating","rho"]
+    var_index = vars_list.index(var)
+    label_list = ["nPa","$T_{sw}$","$cm^{-3}$"]
+    vmax_list = [4.5,4.0,12.0]
+    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho]
 
     global filenr_g
 
-    outputdir = wrkdir_DNR+"jh2020_movie/"
+    outputdir = wrkdir_DNR+"jh2020_movie/{}/".format(var)
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
@@ -220,7 +232,7 @@ def jh2020_movie(start,stop):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=pc.expr_pdyn,vmin=0,vmax=4.5,colormap="parula",cbtitle="nPa",external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 

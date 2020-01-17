@@ -47,6 +47,21 @@ def expr_pdyn_gen(exprmaps):
 
   return pdyn
 
+def expr_coreheating(exprmaps):
+
+    T_sw = 0.5e+6
+
+    r_rhonbs = exprmaps["RhoNonBackstream"]
+    pr_PTDNBS = exprmaps["PTensorNonBackstreamDiagonal"]
+
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    return pr_TNBS/T_sw
+
 def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
   # returns dynamic pressure in nanopascals
@@ -66,12 +81,12 @@ def expr_srho(exprmaps):
   # exprmaps is ["rho","CellID"]
   # returns number density in cm^-3
 
-  rho = exprmaps["rho"][:,:]
-  cellids = exprmaps["CellID"][:,:]
+  rho = exprmaps["rho"]
+  cellids = exprmaps["CellID"]
 
   # rho in cm^-3
   srho = rho/1.0e+6
 
   return srho
-    
+
 ###PLOTTERS###
