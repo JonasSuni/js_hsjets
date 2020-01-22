@@ -8,9 +8,9 @@ import matplotlib as mpl
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
 #mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
 import matplotlib.pyplot as plt
-plt.style.use("classic")
-mpl.rcParams['text.usetex'] = True
-mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+# plt.style.use("classic")
+# mpl.rcParams['text.usetex'] = True
+# mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -1198,6 +1198,10 @@ def hack_2019_fig2(runid,htw = 60):
 
 
 def hack_2019_fig1():
+
+    plt.style.use("classic")
+    mpl.rcParams['text.usetex'] = True
+    mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 
     outputdir = homedir+"Figures/hackathon_paper/"
 

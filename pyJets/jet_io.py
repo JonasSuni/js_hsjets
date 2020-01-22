@@ -3,7 +3,6 @@ import pytools as pt
 import scipy
 import jet_analyser as ja
 import os
-import jet_scripts as js
 import copy
 import matplotlib.pyplot as plt
 import plot_contours as pc
