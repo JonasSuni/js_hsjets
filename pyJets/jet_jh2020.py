@@ -87,6 +87,7 @@ def jh2020_fig3():
     ax.set_ylabel("$\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
     ax.set_xlim(-2.0,2.0)
     ax.axvline(0,linestyle="dashed",linewidth="0.5")
+    ax.tick_params(labelsize=20)
 
     ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
     ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
