@@ -155,7 +155,7 @@ def get_indent_depth(runid):
         cell_x = cell_pos[:,0]
         cell_y = cell_pos[:,1]
         cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
-        slams_bs_dist = jx.bs_rd_markus(runid,cell_t_arr,cell_x,cell_y)
+        slams_bs_dist = jx.bs_rd_jonas(runid,cell_t_arr,cell_x,cell_y)
         upstream_dist_min = np.min(slams_bs_dist)
 
         depths.append(sj_dist_min)

@@ -310,10 +310,14 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         rho = vlsvreader.read_variable("proton/rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("proton/V")[np.argsort(origid)]
         B = vlsvreader.read_variable("B")[np.argsort(origid)]
+        pr_rhonbs = vlsvreader.read_variable("RhoNonBackstream")[np.argsort(origid)]
+        pr_PTDNBS = vlsvreader.read_variable("PTensorNonBackstreamDiagonal")[np.argsort(origid)]
     else:
         rho = vlsvreader.read_variable("rho")[np.argsort(origid)]
         v = vlsvreader.read_variable("v")[np.argsort(origid)]
         B = vlsvreader.read_variable("B")[np.argsort(origid)]
+        pr_rhonbs = vlsvreader.read_variable("RhoNonBackstream")[np.argsort(origid)]
+        pr_PTDNBS = vlsvreader.read_variable("PTensorNonBackstreamDiagonal")[np.argsort(origid)]
 
     if vlsvreader.check_variable("X"):
         X,Y,Z = [vlsvreader.read_variable("X"),vlsvreader.read_variable("Y"),vlsvreader.read_variable("Z")]
@@ -322,7 +326,25 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     X,Y,Z = [X[np.argsort(origid)]/r_e,Y[np.argsort(origid)]/r_e,Z[np.argsort(origid)]/r_e]
 
-    p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
+    T_sw = 0.5e+6
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    mask = (pr_TNBS>=3*T_sw)
+
+    X_masked = X[mask]
+    Y_masked = Y[mask]
+
+    Y_unique = np.unique(Y_masked)
+    X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
+    bs_fit = np.polyfit(Y_unique/r_e,X_max/r_e,deg=5)
+
+    p = bs_fit[::-1]
+
+    #p = bow_shock_markus(runid,filenumber) #PLACEHOLDER
 
     x_res = spat_res(runid)
 
@@ -437,6 +459,14 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)):
         os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
+    if transient == "slamsjet":
+        if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid)):
+            os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid))
+        if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)):
+            os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid))
+        masked_ci_jet = np.ma.array(sorigid,mask=~jet2.mask).compressed()
+        masked_ci_slams = np.ma.array(sorigid,mask=~jet1.mask).compressed()
+
 
     print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask")
 
@@ -446,6 +476,11 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         #print(masked_ci[69])
         return masked_ci
+        if transient == "slamsjet":
+            masked_ci_jet = np.intersect1d(masked_ci_jet,restrict_area(vlsvreader,boxre))
+            masked_ci_slams = np.intersect1d(masked_ci_slams,restrict_area(vlsvreader,boxre))
+            np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid)+str(filenumber)+".mask",masked_ci_jet)
+            np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask",masked_ci_slams)
     else:
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         #print(masked_ci[69])
