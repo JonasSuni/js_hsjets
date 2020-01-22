@@ -38,7 +38,7 @@ def get_transient_xseries(runid,jetid,transient="jet"):
     y_arr = props.read("y_mean")
     pd_arr = props.read("pd_avg")
 
-    bs_dist_arr = jx.bs_dist_markus(runid,time_arr,x_arr,y_arr)
+    bs_dist_arr = jx.bs_dist(runid,time_arr,x_arr,y_arr)
 
     pd_arr = pd_arr[np.argsort(bs_dist_arr)]
     bs_dist_arr.sort()
@@ -141,7 +141,7 @@ def get_indent_depth(runid):
         x_sj = sj_props.read("x_mean")
         y_sj = sj_props.read("y_mean")
         t_sj = sj_props.read("time")
-        sj_dist = jx.bs_dist_markus(runid,t_sj,x_sj,y_sj)
+        sj_dist = jx.bs_rd(runid,t_sj,x_sj,y_sj)
         sj_dist_min = np.min(sj_dist)
 
         slams_props = jio.PropReader(str(slams_ids[n]).zfill(5),runid,transient="slams")
@@ -155,7 +155,7 @@ def get_indent_depth(runid):
         cell_x = cell_pos[:,0]
         cell_y = cell_pos[:,1]
         cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
-        slams_bs_dist = jx.bs_rd_jonas(runid,cell_t_arr,cell_x,cell_y)
+        slams_bs_dist = jx.bs_rd(runid,cell_t_arr,cell_x,cell_y)
         upstream_dist_min = np.min(slams_bs_dist)
 
         depths.append(sj_dist_min)
