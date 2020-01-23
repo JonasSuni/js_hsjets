@@ -62,6 +62,12 @@ def expr_coreheating(exprmaps):
 
     return pr_TNBS/T_sw
 
+def expr_mms(exprmaps):
+
+    Mms = exprmaps["Mms"]
+
+    return Mms
+
 def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
   # returns dynamic pressure in nanopascals
