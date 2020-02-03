@@ -1349,15 +1349,16 @@ def h19_extra_1(runid,jetid):
 
     xdist_arr = props.read("x_mean")-props.read("bs_distance")
     sorted_args = np.argsort(xdist_arr)
-    xdist_arr.sort()
+    #xdist_arr.sort()
 
     fig,ax_list = plt.subplots(6,1,figsize=(10,12),sharex=True)
 
     for var in var_list:
         idx = var_list.index(var)
-        var_data = props.read(var)[sorted_args]
+        #var_data = props.read(var)[sorted_args]
+        var_data = props.read(var)
         ax = ax_list[idx]
-        ax.plot(epoch_arr,var_data,color="black")
+        ax.plot(xdist_arr,var_data,color="black")
         ax.axvline(0,linestyle="dashed")
         ax.set_ylabel(lab_list[idx],fontsize=15)
         ax.set_xlim(-2.1,0.5)
