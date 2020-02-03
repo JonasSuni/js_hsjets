@@ -100,7 +100,8 @@ def sw_normalisation(runid,var):
     "x_min","rho_vmax","b_vmax",
     "pd_avg","pd_med","pd_max","pdyn_vmax",
     "duration","size_ratio",
-    "DT","Dn","Dv","Dpd","DB"]
+    "DT","Dn","Dv","Dpd","DB",
+    "DTPar","DTPerp"]
 
     if var not in key_list:
         return 1
@@ -121,7 +122,8 @@ def sw_normalisation(runid,var):
     1,sw_pars[0]/1.0e+6,sw_pars[4],
     sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,sw_pars[3]/1.0e-9,
     1,1,
-    sw_pars[5]/1.0e+6,sw_pars[0]/1.0e+6,sw_pars[1]/1.0e+3,sw_pars[3]/1.0e-9,sw_pars[2]/1.0e-9]
+    sw_pars[5]/1.0e+6,sw_pars[0]/1.0e+6,sw_pars[1]/1.0e+3,sw_pars[3]/1.0e-9,sw_pars[2]/1.0e-9,
+    1,1]
 
     return norm_list[key_list.index(var)]
 

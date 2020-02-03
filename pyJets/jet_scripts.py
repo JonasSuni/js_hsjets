@@ -1357,7 +1357,7 @@ def h19_extra_1(runid,jetid):
     for var in var_list:
         idx = var_list.index(var)
         #var_data = props.read(var)[sorted_args]
-        var_data = props.read(var)
+        var_data = props.read(var)/ja.sw_normalisation(runid,var)
         ax = ax_list[idx]
         ax.tick_params(labelsize=15)
         ax.grid()
