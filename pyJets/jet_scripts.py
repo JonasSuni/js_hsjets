@@ -1344,33 +1344,78 @@ def h19_extra_1(runid,jetid):
     var_list = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
     lab_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
 
-    epoch_arr = np.arange(0.5,-2.1,-0.05)
     props = jio.PropReader(jetid,runid,580)
 
     xdist_arr = props.read("x_mean")-props.read("bs_distance")
+    time_arr = props.read("time")
     sorted_args = np.argsort(xdist_arr)
     #xdist_arr.sort()
 
     fig,ax_list = plt.subplots(6,1,figsize=(10,12),sharex=True)
-    ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
+    fig2,ax_list2 = plt.subplots(6,1,figsize=(10,12),sharex=True)
+
+    ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
+    ax2_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
 
     for var in var_list:
         idx = var_list.index(var)
         #var_data = props.read(var)[sorted_args]
         var_data = props.read(var)/ja.sw_normalisation(runid,var)
         ax = ax_list[idx]
+        ax2 = ax_list2[idx]
         ax.tick_params(labelsize=15)
+        ax2.tick_params(labelsize=15)
         ax.grid()
+        ax2.grid()
         ax.plot(xdist_arr,var_data,color="black")
-        #ax.axvline(0,linestyle="dashed")
+        ax2.plot(time_arr,var_data,color="black")
         ax.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
-        #ax.set_xlim(-2.1,0.5)
+        ax2.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax2.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15,labelpad=10)
+            ax2.set_xlabel("$\mathrm{Simulation~time~[s]}$",fontsize=15,labelpad=10)
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1_{}{}.png".format(runid,jetid))
+    fig.savefig(homedir+"Figures/hackathon_timeseries/{}_{}_x.png".format(runid,jetid))
+    fig2.savefig(homedir+"Figures/hackathon_timeseries/{}_{}_time.png".format(runid,jetid))
     plt.close(fig)
+    plt.close(fig2)
+
+    var_list = ["size_rad","size_tan","size_ratio"]
+
+    lab_list = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$"]
+
+    fig,ax_list = plt.subplots(3,1,figsize=(10,12),sharex=True)
+    fig2,ax_list2 = plt.subplots(3,1,figsize=(10,12),sharex=True)
+
+    ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
+    ax2_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
+
+    for var in var_list:
+        idx = var_list.index(var)
+        #var_data = props.read(var)[sorted_args]
+        var_data = props.read(var)/ja.sw_normalisation(runid,var)
+        ax = ax_list[idx]
+        ax2 = ax_list2[idx]
+        ax.tick_params(labelsize=15)
+        ax2.tick_params(labelsize=15)
+        ax.grid()
+        ax2.grid()
+        ax.plot(xdist_arr,var_data,color="black")
+        ax2.plot(time_arr,var_data,color="black")
+        ax.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
+        ax2.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax2.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        if idx == len(var_list)-1:
+            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15,labelpad=10)
+            ax2.set_xlabel("$\mathrm{Simulation~time~[s]}$",fontsize=15,labelpad=10)
+
+    fig.savefig(homedir+"Figures/hackathon_timeseries/{}_{}_size_x.png".format(runid,jetid))
+    fig2.savefig(homedir+"Figures/hackathon_timeseries/{}_{}_size_time.png".format(runid,jetid))
+    plt.close(fig)
+    plt.close(fig2)
 
     return None
 
