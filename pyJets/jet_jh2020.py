@@ -211,7 +211,7 @@ def jh2020_fig1(var="pdyn"):
     filenr_g = 677
 
     colmap = "parula"
-    if var="Mms":
+    if var == "Mms":
         colmap = "parula_r"
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"],Earth=1)
@@ -241,7 +241,7 @@ def jh2020_movie(start,stop,var="pdyn"):
         filenr_g = itr
 
         colmap = "parula"
-        if var="Mms":
+        if var == "Mms":
             colmap = "parula_r"
 
         pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
