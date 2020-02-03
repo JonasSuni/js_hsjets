@@ -1352,7 +1352,7 @@ def h19_extra_1(runid,jetid):
     #xdist_arr.sort()
 
     fig,ax_list = plt.subplots(6,1,figsize=(10,12),sharex=True)
-    fig.title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
+    ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
 
     for var in var_list:
         idx = var_list.index(var)
