@@ -68,6 +68,15 @@ def expr_mms(exprmaps):
 
     return Mms
 
+def expr_B(exprmaps):
+
+    B = exprmaps["B"]
+    B = np.linalg.norm(B,axis=-1)
+
+    B /= 1.0e-9
+
+    return B
+
 def expr_pdyn(exprmaps):
   # exprmaps is ["rho","v"]
   # returns dynamic pressure in nanopascals

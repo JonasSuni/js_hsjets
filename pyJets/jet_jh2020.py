@@ -196,11 +196,11 @@ def jh2020_fig4():
 
 def jh2020_fig1(var="pdyn"):
 
-    vars_list = ["pdyn","core_heating","rho","Mms"]
+    vars_list = ["pdyn","core_heating","rho","Mms","B"]
     var_index = vars_list.index(var)
-    label_list = ["nPa","$T_{sw}$","$cm^{-3}$",""]
-    vmax_list = [4.5,3.0,6.6,5]
-    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms]
+    label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
+    vmax_list = [4.5,3.0,6.6,1,7.5]
+    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
 
     global filenr_g
 
@@ -210,17 +210,17 @@ def jh2020_fig1(var="pdyn"):
 
     filenr_g = 677
 
-    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms"],Earth=1)
+    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"],Earth=1)
 
-    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms"])
+    pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
 def jh2020_movie(start,stop,var="pdyn"):
 
-    vars_list = ["pdyn","core_heating","rho","Mms"]
+    vars_list = ["pdyn","core_heating","rho","Mms","B"]
     var_index = vars_list.index(var)
-    label_list = ["nPa","$T_{sw}$","$cm^{-3}$",""]
-    vmax_list = [4.5,3.0,6.6,5]
-    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms]
+    label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
+    vmax_list = [4.5,3.0,6.6,1,7.5]
+    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
 
     global filenr_g
 
@@ -236,7 +236,7 @@ def jh2020_movie(start,stop,var="pdyn"):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap="parula",cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 

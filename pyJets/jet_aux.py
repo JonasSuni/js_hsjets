@@ -143,7 +143,7 @@ def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
     Y_masked = Y[mask]
 
     Y_unique = np.unique(Y_masked)
-    Yun2 = Y_unique[np.logical_and(Y_unique>=-2*r_e,Y_unique<=2*r_e)]
+    Yun2 = Y_unique[np.logical_and(Y_unique>=-4*r_e,Y_unique<=4*r_e)]
     X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Yun2])
     X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
 
@@ -155,11 +155,14 @@ def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
 def make_bs_fit(runid,start,stop):
 
     bs_fit_arr = np.zeros(6)
+    mp_fit_arr = np.zeros(2)
     for n in range(start,stop+1):
         mp_fit,bs_fit = bs_mp_fit(runid,n,boxre=[6,18,-8,6])
         bs_fit_arr = np.vstack((bs_fit_arr,bs_fit))
+        mp_fit_arr = np.vstack((mp_fit_arr,mp_fit))
 
     bs_fit_arr = bs_fit_arr[1:]
+    mp_fit_arr = mp_fit_arr[1:]
 
     if not os.path.exists(wrkdir_DNR+"bsfit/{}".format(runid)):
         try:
@@ -167,7 +170,14 @@ def make_bs_fit(runid,start,stop):
         except OSError:
             pass
 
+    if not os.path.exists(wrkdir_DNR+"mpfit/{}".format(runid)):
+        try:
+            os.makedirs(wrkdir_DNR+"mpfit/{}".format(runid))
+        except OSError:
+            pass
+
     np.savetxt(wrkdir_DNR+"bsfit/{}/{}_{}".format(runid,start,stop),bs_fit_arr)
+    np.savetxt(wrkdir_DNR+"mpfit/{}/{}_{}".format(runid,start,stop),mp_fit_arr)
 
 def bow_shock_jonas(runid,filenr):
 
@@ -177,6 +187,15 @@ def bow_shock_jonas(runid,filenr):
     bs_fit_arr = np.loadtxt(wrkdir_DNR+"bsfit/{}/580_{}".format(runid,maxtime_list[r_id]))
 
     return bs_fit_arr[filenr-580][::-1]
+
+def mag_pause_jonas(runid,filenr):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    r_id = runids.index(runid)
+    maxtime_list = [839,1179,1339,879]
+    bs_fit_arr = np.loadtxt(wrkdir_DNR+"mpfit/{}/580_{}".format(runid,maxtime_list[r_id]))
+
+    return mp_fit_arr[filenr-580][::-1]
 
 def bow_shock_markus(runid,filenr):
 
