@@ -1339,6 +1339,40 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     #vlas = ax.annotate("Vlas",color=jx.orange,xy=(mms_xy[0],mms_xy[1]),xytext=(mms_xy[0]-2,mms_xy[1]-1),arrowprops={"arrowstyle":"->"},fontsize=5)
     #MMS = ax.annotate("MMS",color="black",xy=(vl_xy[0],vl_xy[1]),xytext=(vl_xy[0]-2,vl_xy[1]+1),arrowprops={"arrowstyle":"->"},fontsize=5)
 
+def h19_extra_1(runid,jetid):
+
+    var_list = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
+    lab_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
+
+    epoch_arr = np.arange(0.5,-2.1,-0.05)
+    props = jio.PropReader(jetid,runid,580)
+
+    xdist_arr = props.read("x_mean")-props.read("bs_distance")
+    sorted_args = np.argsort(xdist_arr)
+    xdist_arr.sort()
+
+    fig,ax_list = plt.subplots(6,1,figsize=(10,12),sharex=True)
+
+    for var in var_list:
+        idx = var_list.index(var)
+        var_data = props.read(var)[sorted_args]
+        ax = ax_list[idx]
+        ax.plot(epoch_arr,var_data,color="black")
+        ax.axvline(0,linestyle="dashed")
+        ax.set_ylabel(lab_list[idx],fontsize=15)
+        ax.set_xlim(-2.1,0.5)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        if idx == len(var_list)-1:
+            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15)
+
+    plt.title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1.png")
+    plt.close(fig)
+
+    return None
+
+
 def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
 
     var_list = np.array(var_list,ndmin=1).tolist()
@@ -1432,6 +1466,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_ABC,color=jx.medium_blue,label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,color=jx.dark_blue,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color=jx.orange,label="AEC")
+        ax.axvline(0,linestyle="dashed")
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
@@ -1467,6 +1502,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_ABC,color=jx.medium_blue,label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,color=jx.dark_blue,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,color=jx.orange,label="AEC")
+        ax.axvline(0,linestyle="dashed")
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
