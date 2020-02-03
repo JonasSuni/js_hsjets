@@ -1352,6 +1352,7 @@ def h19_extra_1(runid,jetid):
     #xdist_arr.sort()
 
     fig,ax_list = plt.subplots(6,1,figsize=(10,12),sharex=True)
+    fig.title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
 
     for var in var_list:
         idx = var_list.index(var)
@@ -1365,8 +1366,6 @@ def h19_extra_1(runid,jetid):
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15)
-
-    plt.title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20)
 
     fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1.png")
     plt.close(fig)
