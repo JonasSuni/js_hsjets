@@ -1355,7 +1355,7 @@ def h19_extra_1(runid,jetid):
     fig2,ax_list2 = plt.subplots(6,1,figsize=(10,12),sharex=True)
 
     ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
-    ax2_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
+    ax_list2[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
 
     for var in var_list:
         idx = var_list.index(var)
@@ -1390,7 +1390,7 @@ def h19_extra_1(runid,jetid):
     fig2,ax_list2 = plt.subplots(3,1,figsize=(10,12),sharex=True)
 
     ax_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
-    ax2_list[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
+    ax_list2[0].set_title("Runid: {},  Jetid: {}".format(runid,jetid),fontsize=20,pad=10)
 
     for var in var_list:
         idx = var_list.index(var)
