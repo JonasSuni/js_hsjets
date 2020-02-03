@@ -155,7 +155,7 @@ def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
 def make_bs_fit(runid,start,stop):
 
     bs_fit_arr = np.zeros(6)
-    mp_fit_arr = np.zeros(2)
+    mp_fit_arr = np.zeros(3)
     for n in range(start,stop+1):
         mp_fit,bs_fit = bs_mp_fit(runid,n,boxre=[6,18,-8,6])
         bs_fit_arr = np.vstack((bs_fit_arr,bs_fit))
