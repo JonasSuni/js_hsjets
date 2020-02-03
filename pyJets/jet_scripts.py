@@ -1361,7 +1361,7 @@ def h19_extra_1(runid,jetid):
         ax.plot(xdist_arr,var_data,color="black")
         ax.axvline(0,linestyle="dashed")
         ax.set_ylabel(lab_list[idx],fontsize=15)
-        ax.set_xlim(-2.1,0.5)
+        #ax.set_xlim(-2.1,0.5)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15)
