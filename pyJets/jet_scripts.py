@@ -1359,13 +1359,15 @@ def h19_extra_1(runid,jetid):
         #var_data = props.read(var)[sorted_args]
         var_data = props.read(var)
         ax = ax_list[idx]
+        ax.tick_params(labelsize=15)
+        ax.grid()
         ax.plot(xdist_arr,var_data,color="black")
         #ax.axvline(0,linestyle="dashed")
-        ax.set_ylabel(lab_list[idx],fontsize=15)
+        ax.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         #ax.set_xlim(-2.1,0.5)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list)-1:
-            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15)
+            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15,labelpad=10)
 
     fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1.png")
     plt.close(fig)
