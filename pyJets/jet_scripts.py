@@ -1369,7 +1369,7 @@ def h19_extra_1(runid,jetid):
         if idx == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=15,labelpad=10)
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig_ex_1_{}{}.png".format(runid,jetid))
     plt.close(fig)
 
     return None
