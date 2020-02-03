@@ -1341,6 +1341,8 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
 def h19_extra_1(runid,jetid):
 
+    plt.ioff()
+
     var_list = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
     lab_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
 
@@ -1367,8 +1369,8 @@ def h19_extra_1(runid,jetid):
         ax2.tick_params(labelsize=15)
         ax.grid()
         ax2.grid()
-        ax.plot(xdist_arr,var_data,color="black")
-        ax2.plot(time_arr,var_data,color="black")
+        line1, = ax.plot(xdist_arr,var_data,color="black")
+        line2, = ax2.plot(time_arr,var_data,color="black")
         ax.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         ax2.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
@@ -1402,8 +1404,8 @@ def h19_extra_1(runid,jetid):
         ax2.tick_params(labelsize=15)
         ax.grid()
         ax2.grid()
-        ax.plot(xdist_arr,var_data,color="black")
-        ax2.plot(time_arr,var_data,color="black")
+        line1, = ax.plot(xdist_arr,var_data,color="black")
+        line2, = ax2.plot(time_arr,var_data,color="black")
         ax.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         ax2.set_ylabel(lab_list[idx],fontsize=15,labelpad=10)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
