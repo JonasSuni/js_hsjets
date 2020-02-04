@@ -212,7 +212,7 @@ def jh2020_fig1(var="pdyn"):
 
     colmap = "parula"
     if var == "Mms":
-        colmap = "parula_r"
+        colmap = "parula"
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"],Earth=1)
 
@@ -242,7 +242,7 @@ def jh2020_movie(start,stop,var="pdyn"):
 
         colmap = "parula"
         if var == "Mms":
-            colmap = "parula_r"
+            colmap = "parula"
 
         pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
@@ -274,10 +274,13 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             y_list.append(props.read_at_time("y_mean",filenr_g/2.0))
 
     bs_fit = jx.bow_shock_jonas("ABC",filenr_g)[::-1]
+    mp_fit = jx.mag_pause_jonas("ABC",filenr_g)[::-1]
     y_bs = np.arange(-6,6.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
+    x_mp = np.polyval(bs_fit,y_bs)
 
     bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
+    mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)

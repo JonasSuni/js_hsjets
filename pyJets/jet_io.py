@@ -114,6 +114,13 @@ class PropReader:
                 p = jx.bow_shock_jonas(self.runid,int(t[n]*2))[::-1]
                 x_bs[n] = np.polyval(p,y[n])
             return x_bs
+        elif name == "mp_distance":
+            y,t = self.read("y_mean"),self.read("time")
+            x_mp = np.zeros_like(y)
+            for n in range(y.size):
+                p = jx.mag_pause_jonas(self.runid,int(t[n]*2))[::-1]
+                x_mp[n] = np.polyval(p,y[n])
+            return x_mp
         else:
             print("Variable not found!")
             return None
