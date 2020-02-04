@@ -277,7 +277,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     mp_fit = jx.mag_pause_jonas("ABC",filenr_g)[::-1]
     y_bs = np.arange(-6,6.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
-    x_mp = np.polyval(bs_fit,y_bs)
+    x_mp = np.polyval(mp_fit,y_bs)
 
     bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
