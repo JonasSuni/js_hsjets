@@ -193,7 +193,7 @@ def mag_pause_jonas(runid,filenr):
     runids = ["ABA","ABC","AEA","AEC"]
     r_id = runids.index(runid)
     maxtime_list = [839,1179,1339,879]
-    bs_fit_arr = np.loadtxt(wrkdir_DNR+"mpfit/{}/580_{}".format(runid,maxtime_list[r_id]))
+    mp_fit_arr = np.loadtxt(wrkdir_DNR+"mpfit/{}/580_{}".format(runid,maxtime_list[r_id]))
 
     return mp_fit_arr[filenr-580][::-1]
 
