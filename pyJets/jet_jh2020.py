@@ -116,8 +116,8 @@ def get_timeseries_data(runid,start,stop,cellid):
             pass
 
     bulkpath = jx.find_bulkpath(runid)
-    var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular"]
-    op_list = ["pass","x","y","z","magnitude",,"x","y","z","magnitude","pass","pass","pass"]
+    var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
+    op_list = ["pass","x","y","z","magnitude",,"x","y","z","magnitude","pass","pass","pass","pass"]
     output_arr = np.zeros((stop-start+1,len(var_list)))
     for filenr in range(start,stop+1):
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
