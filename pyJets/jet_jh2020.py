@@ -105,6 +105,31 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
+def get_timeseries_data(runid,start,stop,cellid):
+
+    outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,cellid)
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    bulkpath = jx.find_bulkpath(runid)
+    var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular"]
+    op_list = ["pass","x","y","z","magnitude",,"x","y","z","magnitude","pass","pass","pass"]
+    output_arr = np.zeros((stop-start+1,len(var_list)))
+    for filenr in range(start,stop+1):
+        bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        for n in len(var_list):
+            data = vlsvobj.read_variable(var_list[n],operator=op_list[n],cellids=cellid)
+            output_arr[filenr-start][n] = data
+
+    np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
+
+    return None
+
 def find_slams_of_jet(runid):
 
     sj_ids=[]
