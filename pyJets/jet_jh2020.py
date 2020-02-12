@@ -191,7 +191,7 @@ def get_indent_depth(runid,crit="ew_pd"):
             bs_ch = slams_props.read_at_time("xbs_ch",last_time)
             bs_rho = slams_props.read_at_time("xbs_rho",last_time)
             bs_mms = slams_props.read_at_time("xbs_mms",last_time)
-            bow_shock_value = np.linalg.norm([bs_ch,bs_rho,bs_mms])
+            bow_shock_value = np.linalg.norm([bs_ch-bs_rho,bs_rho-bs_mms,bs_mms-bs_ch])
 
         depths.append(sj_dist_min)
         #indents.append(upstream_dist_min-x_res)
