@@ -122,7 +122,7 @@ def get_timeseries_data(runid,start,stop,cellid):
     for filenr in range(start,stop+1):
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-        for n in len(var_list):
+        for n in range(len(var_list)):
             data = vlsvobj.read_variable(var_list[n],operator=op_list[n],cellids=cellid)
             output_arr[filenr-start][n] = data
 
