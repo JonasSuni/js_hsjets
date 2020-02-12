@@ -115,6 +115,46 @@ def MP_xy():
 
     return [x_mp,y_mp]
 
+def bs_nonloc(vlsvobj,rho_sw,boxre=[6,18,-8,8]):
+
+    cellids = restrict_area(vlsvobj,boxre)
+    rho = vlsvobj.read_variable("rho",cellids=cellids)
+    pr_rhonbs = vlsvobj.read_variable("RhoNonBackstream",cellids=cellids)
+    pr_PTDNBS = vlsvobj.read_variable("PTensorNonBackstreamDiagonal",cellids=cellids)
+    mms = vlsvobj.read_variable("Mms",cellids=cellids)
+    X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
+
+    T_sw = 0.5e+6
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    mask_ch = (pr_TNBS>=3*T_sw)
+    mask_rho = (rho>=2*rho_sw)
+    mask_mms = (mms<=1)
+
+    X_ch = X[mask_ch]
+    Y_ch = Y[mask_ch]
+    Y_un_ch = np.unique(Y_ch)
+    X_max_ch = np.array([np.max(X_ch[Y_ch == y]) for y in Y_un_ch])
+    bs_ch = np.polyfit(Y_un_ch/r_e,X_max_ch/r_e,deg=5)
+
+    X_rho = X[mask_rho]
+    Y_rho = Y[mask_rho]
+    Y_un_rho = np.unique(Y_rho)
+    X_max_rho = np.array([np.max(X_rho[Y_rho == y]) for y in Y_un_rho])
+    bs_rho = np.polyfit(Y_un_rho/r_e,X_max_rho/r_e,deg=5)
+
+    X_mms = X[mask_mms]
+    Y_mms = Y[mask_mms]
+    Y_un_mms = np.unique(Y_mms)
+    X_max_mms = np.array([np.max(X_mms[Y_mms == y]) for y in Y_un_mms])
+    bs_mms = np.polyfit(Y_un_mms/r_e,X_max_mms/r_e,deg=5)
+
+    return (bs_ch,bs_rho,bs_mms)
+
 def bs_mp_fit(runid,file_nr,boxre=[6,18,-8,6]):
 
     bulkpath = find_bulkpath(runid)

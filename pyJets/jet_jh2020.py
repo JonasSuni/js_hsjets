@@ -155,7 +155,7 @@ def find_slams_of_jet(runid):
 
     return [np.array(sj_ids),np.array(slams_ids)]
 
-def get_indent_depth(runid):
+def get_indent_depth(runid,crit="ew_pd"):
 
     x_res = 227000/r_e
 
@@ -176,39 +176,52 @@ def get_indent_depth(runid):
         if np.all(is_upstream_slams==0.0):
             continue
         t_slams = slams_props.read("time")
-        slams_cells = slams_props.get_cells()
-        last_cells = np.array(slams_cells)[is_upstream_slams>0][-1]
-        cell_pos = np.array([jx.get_cell_coordinates(runid,cellid)/r_e for cellid in last_cells])
-        cell_x = cell_pos[:,0]
-        cell_y = cell_pos[:,1]
-        cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
-        slams_bs_dist = jx.bs_rd(runid,cell_t_arr,cell_x,cell_y)
-        upstream_dist_min = np.min(slams_bs_dist)
+        last_time = t_slams[is_upstream_slams>0][-1]
+        # slams_cells = slams_props.get_cells()
+        # last_cells = np.array(slams_cells)[is_upstream_slams>0][-1]
+        # cell_pos = np.array([jx.get_cell_coordinates(runid,cellid)/r_e for cellid in last_cells])
+        # cell_x = cell_pos[:,0]
+        # cell_y = cell_pos[:,1]
+        # cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
+        # slams_bs_dist = jx.bs_rd(runid,cell_t_arr,cell_x,cell_y)
+        # upstream_dist_min = np.min(slams_bs_dist)
+        if crit == "ew_pd":
+            bow_shock_value = slams_props.read_at_time("ew_pd_enh",last_time)/ja.sw_normalisation(runid,"pd_avg")
+        elif crit == "nonloc":
+            bs_ch = slams_props.read_at_time("xbs_ch",last_time)
+            bs_rho = slams_props.read_at_time("xbs_rho",last_time)
+            bs_mms = slams_props.read_at_time("xbs_mms",last_time)
+            bow_shock_value = np.linalg.norm([bs_ch,bs_rho,bs_mms])
 
         depths.append(sj_dist_min)
-        indents.append(upstream_dist_min-x_res)
+        #indents.append(upstream_dist_min-x_res)
+        indents.append(bow_shock_value)
 
     return [np.array(depths),np.array(indents)]
 
-def jh2020_fig4():
+def jh2020_fig4(crit="ew_pd"):
 
     runids = ["ABA","ABC","AEA","AEC"]
     marker_list = ["x","o","^","v"]
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
     for runid in runids:
-        depths,indents = get_indent_depth(runid)
+        depths,indents = get_indent_depth(runid,crit=crit)
         ax.plot(depths,indents,marker_list[runids.index(runid)],label=runid)
 
     ax.set_xlabel("$\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
-    ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
+    #ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
+    if crit == "ew_pd":
+        ax.set_ylabel("$\mathrm{Mean~earthward~P_{dyn}~[P_{dyn,sw}]}$",fontsize=20,labelpad=10)
+    elif crit == "nonloc":
+        ax.set_ylabel("$\mathrm{Bow~shock~nonlocality~[R_e]}$",fontsize=20,labelpad=10)
     ax.legend(frameon=False,numpoints=1,markerscale=2)
     ax.tick_params(labelsize=20)
     ax.axvline(0,linestyle="dashed",linewidth=0.6,color="black")
-    ax.axhline(0,linestyle="dashed",linewidth=0.6,color="black")
-    ax.plot([-3.0,3.0],[-3.0,3.0],linestyle="dashed",linewidth=0.6,color="black")
+    #ax.axhline(0,linestyle="dashed",linewidth=0.6,color="black")
+    #ax.plot([-3.0,3.0],[-3.0,3.0],linestyle="dashed",linewidth=0.6,color="black")
     ax.set_xlim(-2.5,0.5)
-    ax.set_ylim(-0.3,0.6)
+    #ax.set_ylim(-0.3,0.6)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
@@ -216,7 +229,7 @@ def jh2020_fig4():
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/fig4.png")
+    fig.savefig(homedir+"Figures/jh2020/fig4_{}.png".format(crit))
     plt.close(fig)
 
 def jh2020_fig1(var="pdyn"):

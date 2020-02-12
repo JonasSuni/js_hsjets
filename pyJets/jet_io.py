@@ -15,8 +15,8 @@ r_e = 6.371e+6
 
 #wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 wrkdir_DNR = os.environ["WRK"]+"/"
-propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","r_mean","theta_mean","phi_mean","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream"]
-propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,r_mean [R_e],theta_mean [deg],phi_mean [deg],size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],bool"
+propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream","ew_pd_enh","xbs_ch","xbs_rho","xbs_mms"]
+propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],xbs_ch [R_e],xbs_rho [R_e],xbs_mms [R_e]"
 try:
     vlasdir = os.environ["VLAS"]
 except:
@@ -446,6 +446,8 @@ def calc_event_props(vlsvobj,cells):
         sheath_cells = get_sheath_cells(vlsvobj,cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,1,0])
 
+    ew_cells = get_sheath_cells_asym(vlsvobj,cells,neighborhood_reach=[-10,0,0,0,0,0])
+
     # read variables
     if vlsvobj.check_variable("X"):
         X = np.array(vlsvobj.read_variable("X",cellids=cells),ndmin=1)
@@ -467,15 +469,13 @@ def calc_event_props(vlsvobj,cells):
     if vlsvobj.check_variable("proton/rho"):
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list_alt]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list_alt]
-        #rho_ssh = np.array(vlsvobj.read_variable("proton/rho",cellids=ssh_cells),ndmin=1)
-        pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
-        pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
     else:
         rho,v,B,T,cellids,beta,TParallel,TPerpendicular = [np.array(vlsvobj.read_variable(s,cellids=cells),ndmin=1) for s in var_list]
         rho_sheath,v_sheath,B_sheath,T_sheath,TPar_sheath,TPerp_sheath,pd_sheath = [np.array(vlsvobj.read_variable(s,cellids=sheath_cells),ndmin=1) for s in sheath_list]
-        #rho_ssh = np.array(vlsvobj.read_variable("rho",cellids=ssh_cells),ndmin=1)
-        pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
-        pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
+
+    pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
+    pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
+    ew_pdyn = np.array(vlsvobj.read_variable("Pdyn",cellids=ew_cells),ndmin=1)
 
     #rho_sw = rho_sw_g
     T_sw = 0.5e+6
@@ -506,6 +506,9 @@ def calc_event_props(vlsvobj,cells):
     rho_sheath /= 1.0e+6
     v_sheath /= 1.0e+3
     pd_sheath /= 1.0e-9
+    ew_pdyn /= 1.0e-9
+
+    ew_pd_enh = np.nanmean(ew_pdyn)
 
     # Calculate magnitudes of v and B
     vmag = np.linalg.norm(v,axis=-1)
@@ -537,14 +540,14 @@ def calc_event_props(vlsvobj,cells):
     beta_avg,beta_med,beta_max = mean_med_max(beta)
 
     # Convert X,Y,Z to spherical coordinates
-    r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
-    theta = np.rad2deg(np.arccos(Z/r))
-    phi = np.rad2deg(np.arctan(Y/X))
-
-    # calculate geometric center of jet
-    r_mean = np.mean(r)/r_e
-    theta_mean = np.mean(theta)
-    phi_mean = np.mean(phi)
+    # r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
+    # theta = np.rad2deg(np.arccos(Z/r))
+    # phi = np.rad2deg(np.arctan(Y/X))
+    #
+    # # calculate geometric center of jet
+    # r_mean = np.mean(r)/r_e
+    # theta_mean = np.mean(theta)
+    # phi_mean = np.mean(phi)
 
     # Geometric center of jet in cartesian coordinates
     x_mean = np.nanmean(X)/r_e
@@ -569,9 +572,15 @@ def calc_event_props(vlsvobj,cells):
     size_rad = (max(X)-min(X))/r_e+np.sqrt(dA)/r_e
     size_tan = A/size_rad
 
+    # calculate distance of bow shock at y_mean
+    bs_ch,bs_rho,bs_mms = jx.bs_nonloc(vlsvobj,rho_sw_g)
+    xbs_ch = np.polyval(bs_ch,y_mean)
+    xbs_rho = np.polyval(bs_rho,y_mean)
+    xbs_mms = np.polyval(bs_mms,y_mean)
+
     [B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg] = [np.nanmean(v) for v in [B_sheath_mag,TPar_sheath,TPerp_sheath,T_sheath,rho_sheath,v_sheath_mag,pd_sheath]]
 
-    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,r_mean,theta_mean,phi_mean,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream]
+    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream,ew_pd_enh,xbs_ch,xbs_rho,xbs_mms]
 
     return temp_arr
 
@@ -582,16 +591,24 @@ def get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,2,0]):
 
     return sheath_cells
 
-def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
+def get_sheath_cells_asym(vlsvobj,c_i,neighborhood_reach=[-1,1,-1,1,0,0]):
+
+    plus_sheath_cells = get_neighbors_asym(vlsvobj,cells,neighborhood_reach)
+    sheath_cells = plus_sheath_cells[~np.in1d(plus_sheath_cells,cells)]
+
+    return sheath_cells
+
+def get_neighbors_asym(vlsvobj,c_i,neighborhood_reach=[-1,1,-1,1,0,0]):
+
     # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
 
     # initialise array of neighbors
     neighbors = np.array([],dtype=int)
 
     # range of offsets to take into account
-    x_r = range(-1*neighborhood_reach[0],neighborhood_reach[0]+1)
-    y_r = range(-1*neighborhood_reach[1],neighborhood_reach[1]+1)
-    z_r = range(-1*neighborhood_reach[2],neighborhood_reach[2]+1)
+    x_r = range(neighborhood_reach[0],neighborhood_reach[1]+1)
+    y_r = range(neighborhood_reach[2],neighborhood_reach[3]+1)
+    z_r = range(neighborhood_reach[4],neighborhood_reach[5]+1)
 
     for n in c_i:
 
@@ -608,6 +625,15 @@ def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
     neighbors = np.unique(neighbors)
 
     return neighbors
+
+def get_neighbors(vlsvobj,c_i,neighborhood_reach=[1,1,0]):
+    # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
+
+    xn = neighborhood_reach[0]
+    yn = neighborhood_reach[1]
+    zn = neighborhood_reach[2]
+
+    return get_neighbors_asym(vlsvobj,c_i,neighborhood_reach=[-xn,xn,-yn,yn,-zn,zn])
 
 def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0]):
 
