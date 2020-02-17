@@ -591,7 +591,7 @@ def get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,2,0]):
 
     return sheath_cells
 
-def get_sheath_cells_asym(vlsvobj,c_i,neighborhood_reach=[-1,1,-1,1,0,0]):
+def get_sheath_cells_asym(vlsvobj,cells,neighborhood_reach=[-1,1,-1,1,0,0]):
 
     plus_sheath_cells = get_neighbors_asym(vlsvobj,cells,neighborhood_reach)
     sheath_cells = plus_sheath_cells[~np.in1d(plus_sheath_cells,cells)]
