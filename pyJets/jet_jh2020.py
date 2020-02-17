@@ -118,17 +118,46 @@ def get_timeseries_data(runid,start,stop,cellid):
     bulkpath = jx.find_bulkpath(runid)
     var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
     op_list = ["pass","x","y","z","magnitude","x","y","z","magnitude","pass","pass","pass","pass"]
-    output_arr = np.zeros((stop-start+1,len(var_list)))
+    output_arr = np.zeros((stop-start+1,len(var_list)+1))
     for filenr in range(start,stop+1):
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        output_arr[filenr-start][0] = vlsvobj.read_parameter("t")
         for n in range(len(var_list)):
             data = vlsvobj.read_variable(var_list[n],operator=op_list[n],cellids=cellid)
-            output_arr[filenr-start][n] = data
+            output_arr[filenr-start][n+1] = data
 
     np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
 
     return None
+
+def separate_jets(runid):
+
+    sj_jet_ids = []
+    non_sj_ids = []
+
+    for n1 in range(3000):
+        try:
+            props_sj = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
+        except:
+            continue
+
+        sj_last_cells = props_sj.get_cells()[-1]
+        for n2 in range(3000):
+            try:
+                props_jet = jio.PropReader(str(n2).zfill(5),runid,transient="jet")
+            except:
+                continue
+            jet_last_cells = props_jet.get_cells()[-1]
+            if np.intersect1d(jet_last_cells,sj_last_cells).size > 0.75*len(jet_last_cells):
+                sj_jet_ids.append(n2)
+            else:
+                non_sj_ids.append(n2)
+
+    non_sj_ids = np.unique(non_sj_ids)
+    non_sj_ids = non_sj_ids[~np.in1d(non_sj_ids,sj_jet_ids)]
+
+    return [np.array(sj_jet_ids),non_sj_ids]
 
 def find_slams_of_jet(runid):
 
