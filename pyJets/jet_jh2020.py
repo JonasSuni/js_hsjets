@@ -148,7 +148,7 @@ def separate_jets(runid):
                 props_jet = jio.PropReader(str(n2).zfill(5),runid,transient="jet")
             except:
                 continue
-            jet_last_cells = props_jet.get_cells()[0]
+            jet_last_cells = props_jet.get_cells()[-1]
             if np.intersect1d(jet_last_cells,sj_last_cells).size > 0.75*len(jet_last_cells):
                 sj_jet_ids.append(n2)
                 break
