@@ -142,9 +142,6 @@ def separate_jets(runid):
         except:
             continue
 
-        if "splinter" in props_sj.meta or "merger" in props_sj.meta:
-            continue
-
         sj_last_cells = props_sj.get_cells()[-1]
         for n2 in range(3000):
             try:
