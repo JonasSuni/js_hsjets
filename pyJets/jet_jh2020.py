@@ -142,11 +142,16 @@ def separate_jets(runid):
         except:
             continue
 
+        if "splinter" in props_sj.meta or "merger" in props_sj.meta:
+            continue
+
         sj_last_cells = props_sj.get_cells()[-1]
         for n2 in range(3000):
             try:
                 props_jet = jio.PropReader(str(n2).zfill(5),runid,transient="jet")
             except:
+                continue
+            if "splinter" in props_jet.meta or "merger" in props_jet.meta:
                 continue
             jet_last_cells = props_jet.get_cells()[-1]
             if np.intersect1d(jet_last_cells,sj_last_cells).size > 0.75*len(jet_last_cells):
