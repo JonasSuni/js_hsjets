@@ -151,7 +151,6 @@ def separate_jets(runid):
             jet_last_cells = props_jet.get_cells()[-1]
             if np.intersect1d(jet_last_cells,sj_last_cells).size > 0.75*len(jet_last_cells):
                 sj_jet_ids.append(n2)
-                break
             else:
                 non_sj_ids.append(n2)
 
