@@ -131,6 +131,51 @@ def get_timeseries_data(runid,start,stop,cellid):
 
     return None
 
+def jh2020_fig2(xlim=[290.,589.5]):
+
+    time_arr = np.arange(580./2,1179./2+1./2,0.5)
+    time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
+    norm_list = [1.e6,1.e3,1.e3,1.e3,1.e3,1.e-9,1.e-9,1.e-9,1.e-9,1.e-9,1.e6,1.e6,1.]
+
+    data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
+    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
+
+    data_in = np.array([data_in[n]/norm_list[n] for n in range(len(data_in))])
+    data_out = np.array([data_out[n]/norm_list[n] for n in range(len(data_out))])
+
+    label_list = ["$\mathrm{\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\beta}$"]
+
+    fig,ax_list = plt.subplots(6,2,sharex=True)
+
+    for col in range(2):
+
+        data = [data_in,data_out][col]
+        xtitle = ["Inside bow shock","Outside bow shock"][col]
+        data_list = [data[0],data[1:5].T,data[5:9].T,data[9],data[10:12].T,data[12]]
+        for row in range(6):
+            var = data_list[row]
+            time = time_list[row]
+            ax = ax_list[row][col]
+            ax.tick_params(labelsize=15)
+            ax.plot(time,var)
+            ax.axvline(338.5,linestyle="dashed",linewidth=0.8)
+            if col == 0:
+                ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
+            if row == 0:
+                ax.set_title(xtitle)
+            if row == 5:
+                ax.set_xlabel("Simulation time [s]",fontsize=15,labelpad=10)
+            ax.set_xlim(xlim[0],xlim[1])
+
+    if not os.path.exists(homedir+"Figures/jh2020"):
+        try:
+            os.makedirs(homedir+"Figures/jh2020")
+        except OSError:
+            pass
+
+    fig.savefig(homedir+"Figures/jh2020/fig2.png")
+    plt.close(fig)
+
 def separate_jets(runid):
 
     sj_jet_ids = []
