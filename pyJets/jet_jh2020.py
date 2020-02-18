@@ -145,7 +145,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
 
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
-    fig,ax_list = plt.subplots(6,2,,figsize=(10,15),sharex=True)
+    fig,ax_list = plt.subplots(6,2,figsize=(10,15),sharex=True)
 
     for col in range(2):
 
