@@ -143,7 +143,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
     data_in = np.array([data_in[n]/norm_list[n] for n in range(len(data_in))])
     data_out = np.array([data_out[n]/norm_list[n] for n in range(len(data_out))])
 
-    label_list = ["$\mathrm{\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\beta}$"]
+    label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
     fig,ax_list = plt.subplots(6,2,sharex=True)
 
