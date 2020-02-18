@@ -136,6 +136,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
     time_arr = np.arange(580./2,1179./2+1./2,0.5)
     time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
     norm_list = [1.e6,1.e3,1.e3,1.e3,1.e3,1.e-9,1.e-9,1.e-9,1.e-9,1.e-9,1.e6,1.e6,1.]
+    color_list = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
     data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
     data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
@@ -145,7 +146,9 @@ def jh2020_fig2(xlim=[290.,589.5]):
 
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
-    fig,ax_list = plt.subplots(6,2,figsize=(10,15),sharex=True)
+    fig,ax_list = plt.subplots(6,2,figsize=(15,15),sharex=True)
+
+    annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],["TPar","TPerp"],[""]]
 
     for col in range(2):
 
@@ -153,6 +156,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
         xtitle = ["Inside bow shock","Outside bow shock"][col]
         data_list = [data[0],data[1:5].T,data[5:9].T,data[9],data[10:12].T,data[12]]
         for row in range(6):
+            ann_list = annot_list_list[row]
             var = data_list[row]
             time = time_list[row]
             ax = ax_list[row][col]
@@ -166,6 +170,10 @@ def jh2020_fig2(xlim=[290.,589.5]):
             if row == 5:
                 ax.set_xlabel("Simulation time [s]",fontsize=15,labelpad=10)
             ax.set_xlim(xlim[0],xlim[1])
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
+            for m in range(len(ann_list)):
+                ax.annotate(ann_list[m],xy=(0.7+m*0.3/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
