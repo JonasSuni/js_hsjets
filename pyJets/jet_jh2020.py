@@ -145,7 +145,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
 
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
-    fig,ax_list = plt.subplots(6,2,sharex=True)
+    fig,ax_list = plt.subplots(6,2,,figsize=(10,15),sharex=True)
 
     for col in range(2):
 
@@ -162,7 +162,7 @@ def jh2020_fig2(xlim=[290.,589.5]):
             if col == 0:
                 ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
             if row == 0:
-                ax.set_title(xtitle)
+                ax.set_title(xtitle,fontsize=15)
             if row == 5:
                 ax.set_xlabel("Simulation time [s]",fontsize=15,labelpad=10)
             ax.set_xlim(xlim[0],xlim[1])
