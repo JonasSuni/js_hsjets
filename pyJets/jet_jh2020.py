@@ -131,18 +131,23 @@ def get_timeseries_data(runid,start,stop,cellid):
 
     return None
 
-def jh2020_fig2(xlim=[290.,589.5]):
+def jh2020_fig2(xlim=[200.,399.5]):
 
-    time_arr = np.arange(580./2,1179./2+1./2,0.5)
-    time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
+    # time_arr = np.arange(580./2,1179./2+1./2,0.5)
+    # time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
     norm_list = [1.e6,1.e3,1.e3,1.e3,1.e3,1.e-9,1.e-9,1.e-9,1.e-9,1.e-9,1.e6,1.e6,1.]
     color_list = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
-    data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
-    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
+    # data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
+    # data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
+    data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/400_799").T
+    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/400_799").T
 
-    data_in = np.array([data_in[n]/norm_list[n] for n in range(len(data_in))])
-    data_out = np.array([data_out[n]/norm_list[n] for n in range(len(data_out))])
+    time_arr = data_in[0]
+    time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
+
+    data_in = np.array([data_in[n+1]/norm_list[n] for n in range(len(data_in)-1)])
+    data_out = np.array([data_out[n+1]/norm_list[n] for n in range(len(data_out)-1)])
 
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
