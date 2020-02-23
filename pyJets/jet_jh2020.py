@@ -140,8 +140,8 @@ def jh2020_fig2(xlim=[200.,399.5]):
 
     # data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
     # data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
-    data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/400_799").T
-    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/400_799").T
+    data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814506/400_799").T
+    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814526/400_799").T
 
     time_arr = data_in[0]
     time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
