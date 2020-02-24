@@ -1,6 +1,7 @@
 import matplotlib as mpl
 import jet_aux as jx
-mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+#mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black", jx.medium_blue, jx.dark_blue, jx.orange])
 
 import pytools as pt
 import os
@@ -136,7 +137,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     # time_arr = np.arange(580./2,1179./2+1./2,0.5)
     # time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
     norm_list = [1.e6,1.e3,1.e3,1.e3,1.e3,1.e-9,1.e-9,1.e-9,1.e-9,1.e-9,1.e6,1.e6,1.]
-    color_list = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+    color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
 
     # data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
     # data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
@@ -151,9 +152,10 @@ def jh2020_fig2(xlim=[200.,399.5]):
 
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
 
-    fig,ax_list = plt.subplots(6,2,figsize=(15,15),sharex=True)
+    fig,ax_list = plt.subplots(6,2,figsize=(15,15),sharex=True,sharey="row")
 
-    annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],["TPar","TPerp"],[""]]
+    #annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],["TPar","TPerp"],[""]]
+    annot_list_list = [[""],["v","vx","vy","vz"],["B","Bx","By","Bz"],[""],["TPar","TPerp"],[""]]
 
     for col in range(2):
 
@@ -163,11 +165,15 @@ def jh2020_fig2(xlim=[200.,399.5]):
         for row in range(6):
             ann_list = annot_list_list[row]
             var = data_list[row]
+            if len(var) == 4:
+                var = np.array([var[3],var[0],var[1],var[2]])
             time = time_list[row]
             ax = ax_list[row][col]
             ax.tick_params(labelsize=15)
             ax.plot(time,var)
             ax.axvline(338.5,linestyle="dashed",linewidth=0.8)
+            if len(var) == 4:
+                ax.axhline(0,linestyle="dashed",linewidth=0.8)
             if col == 0:
                 ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
             if row == 0:
