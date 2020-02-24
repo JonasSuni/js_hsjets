@@ -165,14 +165,14 @@ def jh2020_fig2(xlim=[200.,399.5]):
         for row in range(6):
             ann_list = annot_list_list[row]
             var = data_list[row]
-            if len(var) == 4:
-                var = np.array([var[3],var[0],var[1],var[2]])
+            if len(var.T) == 4:
+                var = np.array([var.T[3],var.T[0],var.T[1],var[2].T]).T
             time = time_list[row]
             ax = ax_list[row][col]
             ax.tick_params(labelsize=15)
             ax.plot(time,var)
             ax.axvline(338.5,linestyle="dashed",linewidth=0.8)
-            if len(var) == 4:
+            if len(var.T) == 4:
                 ax.axhline(0,linestyle="dashed",linewidth=0.8)
             if col == 0:
                 ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
