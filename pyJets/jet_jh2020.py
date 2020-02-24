@@ -169,10 +169,10 @@ def jh2020_fig2(xlim=[200.,399.5]):
             time = time_list[row]
             ax = ax_list[row][col]
             ax.tick_params(labelsize=15)
-            ax.plot(time,var)
             ax.axvline(338.5,linestyle="dashed",linewidth=0.8)
             if len(var.T) == 4:
                 ax.axhline(0,linestyle="dashed",linewidth=0.8)
+            ax.plot(time,var)
             if col == 0:
                 ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
             if row == 0:
