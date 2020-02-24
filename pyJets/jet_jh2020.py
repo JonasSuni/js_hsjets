@@ -183,7 +183,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
             ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
             ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
             for m in range(len(ann_list)):
-                ax.annotate(ann_list[m],xy=(0.7+m*0.3/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
+                ax.annotate(ann_list[m],xy=(0.8+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
