@@ -142,7 +142,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     # data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814507/580_1179").T
     # data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814525/580_1179").T
     data_in = np.loadtxt("taito_wrkdir/timeseries/ABC/1814506/400_799").T
-    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1814526/400_799").T
+    data_out = np.loadtxt("taito_wrkdir/timeseries/ABC/1794536/400_799").T
 
     time_arr = data_in[0]
     time_list = [time_arr,np.array([time_arr,time_arr,time_arr,time_arr]).T,np.array([time_arr,time_arr,time_arr,time_arr]).T,time_arr,np.array([time_arr,time_arr]).T,time_arr]
@@ -156,8 +156,8 @@ def jh2020_fig2(xlim=[200.,399.5]):
 
     #annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],["TPar","TPerp"],[""]]
     annot_list_list = [[""],["v","vx","vy","vz"],["B","Bx","By","Bz"],[""],["TPar","TPerp"],[""]]
-    re_arr_arr = np.array([3,0,1,2])
-    #re_arr_arr = np.array([0,1,2,3])
+    #re_arr_arr = np.array([3,0,1,2])
+    re_arr_arr = np.array([0,1,2,3])
 
     for col in range(2):
 
