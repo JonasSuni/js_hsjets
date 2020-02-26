@@ -202,28 +202,22 @@ def separate_jets(runid):
 
     for n1 in range(3000):
         try:
-            props_sj = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
+            props = jio.PropReader(str(n1).zfill(5),runid,transient="jet")
         except:
             continue
 
-        sj_last_cells = props_sj.get_cells()[-1]
-        for n2 in range(3000):
-            try:
-                props_jet = jio.PropReader(str(n2).zfill(5),runid,transient="jet")
-            except:
-                continue
-            if "splinter" in props_jet.meta or "merger" in props_jet.meta:
-                continue
-            jet_last_cells = props_jet.get_cells()[-1]
-            if np.intersect1d(jet_last_cells,sj_last_cells).size > 0.75*len(jet_last_cells):
-                sj_jet_ids.append(n2)
-            else:
-                non_sj_ids.append(n2)
+        if "splinter" in props.meta:
+            continue
 
-    non_sj_ids = np.unique(non_sj_ids)
-    non_sj_ids = non_sj_ids[~np.in1d(non_sj_ids,sj_jet_ids)]
+        x_0 = props.read("x_mean")[0]
+        xbs_0 = props.read("xbs_ch")[0]
 
-    return [np.array(sj_jet_ids),non_sj_ids]
+        if x_0-xbs_0 > 0:
+            sj_jet_ids.append(n1)
+        else:
+            non_sj_ids.append(n1)
+
+    return [np.array(sj_jet_ids),np.array(non_sj_ids)]
 
 def find_slams_of_jet(runid):
 
