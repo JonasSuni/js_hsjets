@@ -176,7 +176,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
             ax.plot(time,var)
             if col == 0:
                 ax.set_ylabel(label_list[row],fontsize=15,labelpad=10)
-                ax.axvspan(338.5,350,color="red",alpha=0.3)
+                ax.axvspan(338.5,350,color="red",alpha=0.3,ec="none")
             if row == 0:
                 ax.set_title(xtitle,fontsize=15)
             if row == 5:
