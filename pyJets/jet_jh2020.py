@@ -118,7 +118,7 @@ def get_timeseries_data(runid,start,stop,cellid):
 
     bulkpath = jx.find_bulkpath(runid)
     var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
-    op_list = ["pass","x","y","z","magnitude","x","y","z","magnitude","pass","pass","pass","pass"]
+    op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
     output_arr = np.zeros((stop-start+1,len(var_list)+1))
     for filenr in range(start,stop+1):
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
@@ -157,6 +157,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     #annot_list_list = [[""],["vx","vy","vz","v"],["Bx","By","Bz","B"],[""],["TPar","TPerp"],[""]]
     annot_list_list = [[""],["v","vx","vy","vz"],["B","Bx","By","Bz"],[""],["TPar","TPerp"],[""]]
     re_arr_arr = np.array([3,0,1,2])
+    #re_arr_arr = np.array([0,1,2,3])
 
     for col in range(2):
 
@@ -418,3 +419,9 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)
 
     xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
+
+    is_coords = jx.get_cell_coordinates("ABC",1814506)/r_e
+    os_coords = jx.get_cell_coordinates("ABC",1814526)/r_e
+
+    is_pos, = ax.plot(is_coords[0],is_coords[1],">",color=jx.violet,markersize=2)
+    os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color=jx.violet,markersize=2)
