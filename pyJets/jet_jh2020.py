@@ -121,6 +121,13 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,var)
 
+    var_list = ["rho","v","vx","vy","vz","B","Bx","By","Bz","Pdyn","TParallel","TPerpendicular","beta"]
+    vlsv_var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
+    op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
+
+    vlsv_var = vlsv_var_list[var_list.index(var)]
+    vlsv_op = op_list[var_list.index(var)]
+
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
@@ -136,14 +143,54 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
         for filenr in range(start,stop+1):
             bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
             vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-            output_arr[filenr-start] = vlsvobj.read_variable(var,cellids=cellid_range)
+            output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     else:
         for filenr in range(start,stop+1):
             vlsvobj = vlsvobj_list[filenr-start]
-            output_arr[filenr-start] = vlsvobj.read_variable(var,cellids=cellid_range)
+            output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
+
+    return None
+
+def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540):
+
+    var_list = ["pdyn","rho","v","B","TParallel"]
+    norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
+
+    cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
+    y = jx.get_cell_coordinates(runid,cell_arr[0])[1]
+    x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
+    time_arr = np.arange(start,stop+1)/2.0
+
+    data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}".format(runid,var,start,stop))/norm_list[var_list.index(var)] for var in var_list]
+
+    fig,ax_list = plt.subplots(1,len(var_list),figsize=(15,15),sharex=True,sharey=True)
+    im_list = []
+    cb_list = []
+
+    for n in range(len(var_list)):
+        data = data_arr[n]
+        ax = ax_list[n]
+        im_list.append(plt.pcolormesh(x_arr,time_arr,data))
+        cb_list.append(colorbar(im_list[n]))
+        ax.tick_params(labelsize=15)
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
+        ax.set_title(var_list[n],fontsize=20)
+        if n == 0:
+            ax.set_ytitle("Simulation time [s]",fontsize=20)
+            ax.set_xtitle("$\mathrm{X~[R_e]}$",fontsize=20)
+
+    if not os.path.exists(homedir+"Figures/jh2020"):
+        try:
+            os.makedirs(homedir+"Figures/jh2020")
+        except OSError:
+            pass
+
+    fig.savefig(homedir+"Figures/jh2020/fig2_mesh.png")
+    plt.close(fig)
 
     return None
 
