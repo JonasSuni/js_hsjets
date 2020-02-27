@@ -106,6 +106,47 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
+def get_vlsvobj_list(runid,start,stop):
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    output_list = []
+    for filenr in range(start,stop+1):
+        bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+        output_list.append(pt.vlsvfile.VlsvReader(bulkpath+bulkname))
+
+    return output_list
+
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None):
+
+    outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,var)
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+    cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
+
+    output_arr = np.zeros((stop-start+1,cellid_range.size))
+
+    if type(vlsvobj_list) == type(None):
+        bulkpath = jx.find_bulkpath(runid)
+
+        for filenr in range(start,stop+1):
+            bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+            vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+            output_arr[filenr-start] = vlsvobj.read_variable(var,cellids=cellid_range)
+
+    else:
+        for filenr in range(start,stop+1):
+            vlsvobj = vlsvobj_list[filenr-start]
+            output_arr[filenr-start] = vlsvobj.read_variable(var,cellids=cellid_range)
+
+    np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
+
+    return None
+
 def get_timeseries_data(runid,start,stop,cellid):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,cellid)
