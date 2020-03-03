@@ -154,6 +154,18 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
 
     return None
 
+def colorbar(mappable,ax_list):
+    ax = mappable.axes
+    fig = ax.figure
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+
+    div_list = [make_axes_locatable(a) for a in ax_list if a!=ax]
+    cax_list = [divider.append_axes("right",size="5%",pad=0.05) for divider in div_list]
+    [cx.set_axis_off() for cx in cax_list]
+
+    return fig.colorbar(mappable, cax=cax)
+
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540):
 
     var_list = ["Pdyn","rho","v","B","TParallel"]
