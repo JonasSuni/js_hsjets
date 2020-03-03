@@ -192,8 +192,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
         if n == 0:
-            ax.set_ytitle("Simulation time [s]",fontsize=20)
-            ax.set_xtitle("$\mathrm{X~[R_e]}$",fontsize=20)
+            ax.set_ylabel("Simulation time [s]",fontsize=20)
+            ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
