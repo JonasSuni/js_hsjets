@@ -178,7 +178,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
 
     data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}".format(runid,var,start,stop))/norm_list[var_list.index(var)] for var in var_list]
 
-    fig,ax_list = plt.subplots(1,len(var_list),figsize=(15,15),sharex=True,sharey=True)
+    fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
     cb_list = []
 
