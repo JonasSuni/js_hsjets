@@ -156,7 +156,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
 
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540):
 
-    var_list = ["pdyn","rho","v","B","TParallel"]
+    var_list = ["Pdyn","rho","v","B","TParallel"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
