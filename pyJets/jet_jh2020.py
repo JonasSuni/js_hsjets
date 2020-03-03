@@ -189,7 +189,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         #cb_list.append(colorbar(im_list[n]))
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
+        #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
