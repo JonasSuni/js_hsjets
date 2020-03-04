@@ -11,4 +11,4 @@ from plot_contours import expr_pdyn_gen,expr_pdyn,expr_srho
 from tavg_maker import avg_maker_slow,TP_maker
 #from vspacecraft import jet_sc,jet_spacecrafts,slams_spacecraft,wave_spacecraft
 from jet_aux import BS_xy, MP_xy,get_cell_coordinates,make_bs_fit
-from jet_jh2020 import get_transient_xseries,jh2020_fig3,jh2020_fig1,find_slams_of_jet,get_indent_depth,jh2020_fig4,jh2020_movie,get_timeseries_data,separate_jets,jh2020_fig2,get_cut_through,get_vlsvobj_list,jh2020_fig2_mesh
+from jet_jh2020 import get_transient_xseries,jh2020_fig3,jh2020_fig1,find_slams_of_jet,get_indent_depth,jh2020_fig4,jh2020_movie,get_timeseries_data,separate_jets,jh2020_fig2,get_cut_through,get_vlsvobj_list,jh2020_fig2_mesh,jh20_slams_movie

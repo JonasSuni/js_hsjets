@@ -510,3 +510,37 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
+
+def jh20_slams_movie(start,stop,var="Pdyn"):
+
+    outputdir = wrkdir_DNR+"jh20_slams_movie/{}/".format(var)
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    bulkpath = jx.find_bulkpath("ABC")
+    for itr in range(start,stop+1):
+        filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
+
+        colmap = "parula"
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],var=var,usesci=0,lin=1,vmin=0,vmax=15e-9,colormap=colmap,external=jh20_slams_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
+
+def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
+
+    cellids = pass_maps["CellID"]
+    B = pass_maps["B"]
+    X = pass_maps["X"]
+    Y = pass_maps["Y"]
+    rho = pass_maps["rho"]
+    pdyn = pass_maps["Pdyn"]
+
+    B_sw = 5.0e-9
+
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    slams = np.ma.masked_greater_equal(Bmag,3.0*B_sw)
+
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams,[0.5],linewidths=0.8,colors=jx.orange)
