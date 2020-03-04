@@ -89,7 +89,6 @@ def jh2020_hist(runid,transient="slamsjet"):
             continue
 
         bs_dist,pd_arr = get_transient_xseries(runid,jetid,transient=transient)
-        pd_arr = pd_arr[np.argsort(bs_dist)]/pd_sw
         bs_dist.sort()
 
         hist_arr = np.append(hist_arr,bs_dist)
