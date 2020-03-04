@@ -526,7 +526,7 @@ def jh20_slams_movie(start,stop,var="Pdyn"):
 
         colmap = "parula"
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],var=var,usesci=0,lin=1,vmin=0,vmax=15e-9,colormap=colmap,external=jh20_slams_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],var=var,usesci=0,lin=1,vmin=0,vmax=15e-9,colormap=colmap,external=jh20_slams_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B","X","Y"])
 
 def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
