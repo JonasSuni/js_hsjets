@@ -95,7 +95,7 @@ def jh2020_hist(runid,transient="slamsjet"):
         sj_counter += 1
 
     weight_arr = np.ones_like(hist_arr)/sj_counter
-    hist,bin_edges = np.histogram(hist_arr,bins=30,range=(-1.5,1.5),weights=weight_arr)
+    hist,bin_edges = np.histogram(hist_arr,bins=20,range=(-1.5,1.5),weights=weight_arr)
 
     return (hist,bin_edges)
 
