@@ -95,7 +95,7 @@ def jh2020_hist(runid,transient="slamsjet"):
         sj_counter += 1
 
     weight_arr = np.ones_like(hist_arr)/sj_counter
-    hist,bin_edges = np.histogram(hist_arr,bins=10,range=(-2,2),weights=weight_arr)
+    hist,bin_edges = np.histogram(hist_arr,bins=20,range=(-2,2),weights=weight_arr)
 
     return (hist,bin_edges)
 
@@ -127,10 +127,10 @@ def jh2020_fig3():
     # ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
     # ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
 
-    ax.bar(bins,hist_ABA,label="ABA",width=np.ediff1d(bins)[0],align="edge")
-    ax.bar(bins,hist_ABC,label="ABC",width=np.ediff1d(bins)[0],align="edge")
-    ax.bar(bins,hist_AEA,label="AEA",width=np.ediff1d(bins)[0],align="edge")
-    ax.bar(bins,hist_AEC,label="AEC",width=np.ediff1d(bins)[0],align="edge")
+    ax.step(bins,hist_ABA,where="post",label="ABA")
+    ax.step(bins,hist_ABC,where="post",label="ABC")
+    ax.step(bins,hist_AEA,where="post",label="AEA")
+    ax.step(bins,hist_AEC,where="post",label="AEC")
 
 
     ax.legend(frameon=False,numpoints=1,markerscale=3)
