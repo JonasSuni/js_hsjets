@@ -76,25 +76,63 @@ def jh2020_SEA(runid,transient="slamsjet"):
 
     return (epoch_arr,SEA_mean,SEA_std)
 
+def jh2020_hist(runid,transient="slamsjet"):
+
+    hist_arr = np.array([])
+
+    sj_counter = 0
+    for n in range(3000):
+        jetid = str(n).zfill(5)
+        try:
+            props = jio.PropReader(jetid,runid,transient=transient)
+        except:
+            continue
+
+        bs_dist,pd_arr = get_transient_xseries(runid,jetid,transient=transient)
+        pd_arr = pd_arr[np.argsort(bs_dist)]/pd_sw
+        bs_dist.sort()
+
+        hist_arr = np.append(hist_arr,bs_dist)
+        sj_counter += 1
+
+    weight_arr = np.ones_like(hist_arr)/sj_counter
+    hist,bin_edges = np.histogram(hist_arr,bins=10,range=(-2,2),weights=weight_arr)
+
+    return (hist,bin_edges)
+
 def jh2020_fig3():
 
-    epoch_arr,SEA_mean_ABA,SEA_std_ABA = jh2020_SEA("ABA")
-    epoch_arr,SEA_mean_ABC,SEA_std_ABC = jh2020_SEA("ABC")
-    epoch_arr,SEA_mean_AEA,SEA_std_AEA = jh2020_SEA("AEA")
-    epoch_arr,SEA_mean_AEC,SEA_std_AEC = jh2020_SEA("AEC")
+    # epoch_arr,SEA_mean_ABA,SEA_std_ABA = jh2020_SEA("ABA")
+    # epoch_arr,SEA_mean_ABC,SEA_std_ABC = jh2020_SEA("ABC")
+    # epoch_arr,SEA_mean_AEA,SEA_std_AEA = jh2020_SEA("AEA")
+    # epoch_arr,SEA_mean_AEC,SEA_std_AEC = jh2020_SEA("AEC")
+
+    hist_ABA,bin_edges = jh2020_hist("ABA")
+    hist_ABC,bin_edges = jh2020_hist("ABC")
+    hist_AEA,bin_edges = jh2020_hist("AEA")
+    hist_AEC,bin_edges = jh2020_hist("AEC")
+
+    bins = bin_edges[:-1]
 
     fig,ax = plt.subplots(1,1,figsize=(10,7))
 
     ax.set_xlabel("$\mathrm{X-X_{bs}~[R_e]}$",labelpad=10,fontsize=20)
-    ax.set_ylabel("$\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
-    ax.set_xlim(-2.0,2.0)
+    # ax.set_ylabel("$\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
+    ax.set_ylabel("Normalised count",labelpad=10,fontsize=20)
+    #ax.set_xlim(-2.0,2.0)
     ax.axvline(0,linestyle="dashed",linewidth="0.5")
     ax.tick_params(labelsize=20)
 
-    ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
-    ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
-    ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
-    ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
+    # ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
+    # ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
+    # ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
+    # ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
+
+    ax.bar(bins,hist_ABA,label="ABA",width=np.ediff1d(bins)[0],align="edge")
+    ax.bar(bins,hist_ABC,label="ABC",width=np.ediff1d(bins)[0],align="edge")
+    ax.bar(bins,hist_AEA,label="AEA",width=np.ediff1d(bins)[0],align="edge")
+    ax.bar(bins,hist_AEC,label="AEC",width=np.ediff1d(bins)[0],align="edge")
+
 
     ax.legend(frameon=False,numpoints=1,markerscale=3)
 
