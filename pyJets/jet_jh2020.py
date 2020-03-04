@@ -67,12 +67,12 @@ def jh2020_SEA(runid,transient="slamsjet"):
         pd_arr = pd_arr[np.argsort(bs_dist)]/pd_sw
         bs_dist.sort()
 
-        pd_epoch = np.interp(epoch_arr,bs_dist,pd_arr,left=0.0,right=0.0)
+        pd_epoch = np.interp(epoch_arr,bs_dist,pd_arr,left=np.nan,right=np.nan)
         SEA_arr = np.vstack((SEA_arr,pd_epoch))
 
     SEA_arr = SEA_arr[1:]
-    SEA_mean = np.mean(SEA_arr,axis=0)
-    SEA_std = np.std(SEA_arr,axis=0,ddof=1)
+    SEA_mean = np.nanmean(SEA_arr,axis=0)
+    SEA_std = np.nanstd(SEA_arr,axis=0,ddof=1)
 
     return (epoch_arr,SEA_mean,SEA_std)
 
