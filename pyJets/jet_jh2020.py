@@ -542,5 +542,6 @@ def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
     Bmag = np.linalg.norm(B,axis=-1)
 
     slams = np.ma.masked_greater_equal(Bmag,3.0*B_sw)
+    slams_mask = slams.mask.astype(int)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams,[0.5],linewidths=0.8,colors=jx.orange)
