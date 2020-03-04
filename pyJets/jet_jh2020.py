@@ -537,6 +537,15 @@ def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
     Y = pass_maps["Y"]
     rho = pass_maps["rho"]
     pdyn = pass_maps["Pdyn"]
+    pr_PTDNBS = pass_maps["PTensorNonBackstreamDiagonal"]
+    pr_rhonbs = pass_maps["RhoNonBackstream"]
+
+    T_sw = 0.5e+6
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     B_sw = 5.0e-9
     pd_sw = 3.3e6*600e3*600e3*m_p
@@ -544,7 +553,7 @@ def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
     Bmag = np.linalg.norm(B,axis=-1)
 
     slams = np.ma.masked_greater_equal(Bmag,3.0*B_sw)
-    slams.mask[pdyn<1.0*pd_sw] = False
+    slams.mask[pr_TNBS >= 3.0*T_sw] = False
     slams_mask = slams.mask.astype(int)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.orange)
