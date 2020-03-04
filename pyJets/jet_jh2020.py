@@ -212,7 +212,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     if not fromfile:
         obj_list = get_vlsvobj_list(runid,start,stop)
 
-    rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
+    rho_mask = (get_cut_through(runid,start,stop,min_cellid,max_cellid,"rho",vlsvobj_list=obj_list,save=False)/1.e6>=2*rho_sw).astype(int)
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
