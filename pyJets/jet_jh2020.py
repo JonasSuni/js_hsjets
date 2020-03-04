@@ -206,7 +206,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     cb_list = []
 
     for n in range(len(var_list)):
-        data = data_arr[n]
+        data = data_arr[n]/norm_list[n]
         ax = ax_list[n]
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
