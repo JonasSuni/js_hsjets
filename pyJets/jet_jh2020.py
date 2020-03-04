@@ -144,18 +144,7 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
-def get_vlsvobj_list(runid,start,stop):
-
-    bulkpath = jx.find_bulkpath(runid)
-
-    output_list = []
-    for filenr in range(start,stop+1):
-        bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
-        output_list.append(pt.vlsvfile.VlsvReader(bulkpath+bulkname))
-
-    return output_list
-
-def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None,save=True):
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,var)
 
@@ -163,8 +152,6 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
     vlsv_var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
-    vlsv_var = vlsv_var_list[var_list.index(var)]
-    vlsv_op = op_list[var_list.index(var)]
 
     if save:
         if not os.path.exists(outputdir):
@@ -175,20 +162,18 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
 
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
-    output_arr = np.zeros((stop-start+1,cellid_range.size))
+    output_arr = np.zeros((len(vars),stop-start+1,cellid_range.size))
 
-    if type(vlsvobj_list) == type(None):
-        bulkpath = jx.find_bulkpath(runid)
+    bulkpath = jx.find_bulkpath(runid)
 
-        for filenr in range(start,stop+1):
-            bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
-            vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
-            output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
-
-    else:
-        for filenr in range(start,stop+1):
-            vlsvobj = vlsvobj_list[filenr-start]
-            output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
+    for filenr in range(start,stop+1):
+        bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        for m in range(len(vars)):
+            var = vars[m]
+            vlsv_var = vlsv_var_list[var_list.index(var)]
+            vlsv_op = op_list[var_list.index(var)]
+            output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     if save:
         np.savetxt(outputdir+"{}_{}_{}_{}".format(min_cellid,max_cellid,start,stop),output_arr)
@@ -212,7 +197,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     if not fromfile:
         obj_list = get_vlsvobj_list(runid,start,stop)
 
-    rho_mask = (get_cut_through(runid,start,stop,min_cellid,max_cellid,"rho",vlsvobj_list=obj_list,save=False)/1.e6>=2*rho_sw).astype(int)
+    #rho_mask = (get_cut_through(runid,start,stop,min_cellid,max_cellid,"rho",vlsvobj_list=obj_list,save=False)/1.e6>=2*rho_sw).astype(int)
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
@@ -223,10 +208,12 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
             data = np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var_list[n],min_cellid,max_cellid,start,stop))/norm_list[n]
         else:
             data = get_cut_through(runid,start,stop,min_cellid,max_cellid,var_list[n],vlsvobj_list=obj_list,save=False)/norm_list[n]
+        if var_list[n] == "rho":
+            rho_mask = (data>=2*rho_sw)
         ax = ax_list[n]
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
-        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
+        #ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5),prune="lower")
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
@@ -234,6 +221,10 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
+
+    for m in range(len(var_list)):
+        ax = ax_list[m]
+        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
