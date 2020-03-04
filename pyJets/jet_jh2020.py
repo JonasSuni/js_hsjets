@@ -146,7 +146,7 @@ def jh2020_fig3():
 
 def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
 
-    outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,var)
+    outputdir = wrkdir_DNR+"timeseries/{}/{}_{}/".format(runid,min_cellid,max_cellid)
 
     var_list = ["rho","v","vx","vy","vz","B","Bx","By","Bz","Pdyn","TParallel","TPerpendicular","beta"]
     vlsv_var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
@@ -176,7 +176,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
             output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     if save:
-        np.savetxt(outputdir+"{}_{}_{}_{}".format(min_cellid,max_cellid,start,stop),output_arr)
+        np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
         return None
     else:
         return output_arr
