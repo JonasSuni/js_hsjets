@@ -512,7 +512,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
 
-    cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coord[1],os_coords[1]],color="black",linewidth=0.8)
+    cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
 
 def jh20_slams_movie(start,stop,var="Pdyn"):
 
