@@ -205,12 +205,17 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     y = jx.get_cell_coordinates(runid,cell_arr[0])[1]
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
     time_arr = np.arange(start,stop+1)/2.0
+    XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
+
+    rho_sw = 3.3
 
     if fromfile:
         data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var,min_cellid,max_cellid,start,stop))/norm_list[var_list.index(var)] for var in var_list]
     else:
         obj_list = get_vlsvobj_list(runid,start,stop)
         data_arr = [get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=obj_list,save=False)/norm_list[var_list.index(var)] for var in var_list]
+
+    rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
@@ -221,6 +226,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         ax = ax_list[n]
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
+        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5),prune="lower")
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
