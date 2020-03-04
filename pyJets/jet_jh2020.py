@@ -16,6 +16,7 @@ import jet_analyser as ja
 import jet_io as jio
 
 r_e = 6.371e+6
+m_p = 1.672621898e-27
 
 wrkdir_DNR = os.environ["WRK"]+"/"
 homedir = os.environ["HOME"]+"/"
@@ -538,10 +539,12 @@ def jh20_slams_ext(ax, XmeshXY,YmeshXY, pass_maps):
     pdyn = pass_maps["Pdyn"]
 
     B_sw = 5.0e-9
+    pd_sw = 3.3e6*600e3*600e3*m_p
 
     Bmag = np.linalg.norm(B,axis=-1)
 
     slams = np.ma.masked_greater_equal(Bmag,3.0*B_sw)
+    slams.mask[pdyn<1.0*pd_sw] = False
     slams_mask = slams.mask.astype(int)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.orange)
