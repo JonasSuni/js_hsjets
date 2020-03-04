@@ -155,7 +155,7 @@ def get_vlsvobj_list(runid,start,stop):
 
     return output_list
 
-def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None):
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None,save=True):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}/".format(runid,var)
 
@@ -166,11 +166,13 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
     vlsv_var = vlsv_var_list[var_list.index(var)]
     vlsv_op = op_list[var_list.index(var)]
 
-    if not os.path.exists(outputdir):
-        try:
-            os.makedirs(outputdir)
-        except OSError:
-            pass
+    if save:
+        if not os.path.exists(outputdir):
+            try:
+                os.makedirs(outputdir)
+            except OSError:
+                pass
+
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
     output_arr = np.zeros((stop-start+1,cellid_range.size))
@@ -188,11 +190,13 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
             vlsvobj = vlsvobj_list[filenr-start]
             output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
-    np.savetxt(outputdir+"{}_{}_{}_{}".format(min_cellid,max_cellid,start,stop),output_arr)
+    if save:
+        np.savetxt(outputdir+"{}_{}_{}_{}".format(min_cellid,max_cellid,start,stop),output_arr)
+        return None
+    else:
+        return output_arr
 
-    return None
-
-def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540):
+def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540,fromfile=True):
 
     var_list = ["Pdyn","rho","v","B","TParallel"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
@@ -202,7 +206,11 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
     time_arr = np.arange(start,stop+1)/2.0
 
-    data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var,min_cellid,max_cellid,start,stop))/norm_list[var_list.index(var)] for var in var_list]
+    if fromfile:
+        data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var,min_cellid,max_cellid,start,stop))/norm_list[var_list.index(var)] for var in var_list]
+    else:
+        obj_list = get_vlsvobj_list(runid,start,stop)
+        data_arr = [get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=obj_list,save=False)/norm_list[var_list.index(var)] for var in var_list]
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
@@ -214,7 +222,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.tick_params(labelsize=15)
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
+        ax.yaxis.set_major_locator(MaxNLocator(nbins=5),prune="lower")
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
         if n == 0:
