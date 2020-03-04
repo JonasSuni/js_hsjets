@@ -151,7 +151,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,var,vlsvobj_list=None
             vlsvobj = vlsvobj_list[filenr-start]
             output_arr[filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
-    np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
+    np.savetxt(outputdir+"{}_{}_{}_{}".format(min_cellid,max_cellid,start,stop),output_arr)
 
     return None
 
@@ -165,7 +165,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
     time_arr = np.arange(start,stop+1)/2.0
 
-    data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}".format(runid,var,start,stop))/norm_list[var_list.index(var)] for var in var_list]
+    data_arr = [np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var,min_cellid,max_cellid,start,stop))/norm_list[var_list.index(var)] for var in var_list]
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
@@ -506,11 +506,13 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
-    is_coords = jx.get_cell_coordinates("ABC",1814506)/r_e
-    os_coords = jx.get_cell_coordinates("ABC",1794536)/r_e
+    is_coords = jx.get_cell_coordinates("ABC",1814500)/r_e
+    os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
 
-    is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
-    os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
+    # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
+    # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
+
+    cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coord[1],os_coords[1]],color="black",linewidth=0.8)
 
 def jh20_slams_movie(start,stop,var="Pdyn"):
 
