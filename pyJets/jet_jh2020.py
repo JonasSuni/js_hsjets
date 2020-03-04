@@ -192,28 +192,25 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
 
-    rho_sw = 3.3
+    rho_sw = 3.3e6
 
     if not fromfile:
-        obj_list = get_vlsvobj_list(runid,start,stop)
+        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
+    else:
+        data_arr = np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}".format(runid,min_cellid,max_cellid,start,stop))
 
-    #rho_mask = (get_cut_through(runid,start,stop,min_cellid,max_cellid,"rho",vlsvobj_list=obj_list,save=False)/1.e6>=2*rho_sw).astype(int)
+    rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
     cb_list = []
 
     for n in range(len(var_list)):
-        if fromfile:
-            data = np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}/{}_{}_{}_{}".format(runid,var_list[n],min_cellid,max_cellid,start,stop))/norm_list[n]
-        else:
-            data = get_cut_through(runid,start,stop,min_cellid,max_cellid,var_list[n],vlsvobj_list=obj_list,save=False)/norm_list[n]
-        if var_list[n] == "rho":
-            rho_mask = (data>=2*rho_sw)
+        data = data_arr[n]
         ax = ax_list[n]
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
-        #ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
+        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5),prune="lower")
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
@@ -221,10 +218,6 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
-
-    for m in range(len(var_list)):
-        ax = ax_list[m]
-        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=0.8,colors="black")
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
