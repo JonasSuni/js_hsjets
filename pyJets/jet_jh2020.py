@@ -272,6 +272,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
 
     rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
 
+    plt.ioff()
+
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
     cb_list = []
