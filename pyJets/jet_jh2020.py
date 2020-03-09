@@ -194,6 +194,9 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     var_list = ["rho","pdyn","B","v","TParallel","TPerpendicular"]
     norm_list = [1.e6,1.e-9,1.e-9,1.e3,1.e6,1.e6]
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{B~[nT]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{T~[MK]}$"]
+    color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
+
+    annot_list_list = [[""],[""],["B","Bx","By","Bz"],["v","vx","vy","vz"],["TPar","TPerp"]]
 
     raw_data_list = [vlsvobj.read_variable(var,cellids=cell_range)/norm_list[var_list.index(var)] for var in var_list]
 
@@ -223,6 +226,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     fig.suptitle("Y = {:.3f} Re\nt = {} s".format(y,filenr/2),fontsize=20)
 
     for n in range(len(data_list)):
+        ann_list = annot_list_list[n]
         ax = ax_list[n]
         ax.grid()
         ax.set_xlim(x_range[0],x_range[-1])
@@ -233,6 +237,8 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
         ax.set_ylabel(label_list[n],fontsize=20)
         if n == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
+        for m in range(len(ann_list)):
+            ax.annotate(ann_list[m],xy=(0.8+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
@@ -273,6 +279,9 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     for n in range(len(var_list)):
         data = data_arr[n]/norm_list[n]
         ax = ax_list[n]
+        ax.axhline(328,color="black",linewidth=1.0)
+        ax.axhline(337,color="black",linewidth=1.0)
+        ax.axhline(345,color="black",linewidth=1.0)
         im_list.append(ax.pcolormesh(x_arr,time_arr,data))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
@@ -284,7 +293,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
 
-    fig.suptitle("Y = {:.3f} Re".format(y))
+    fig.suptitle("Y = {:.3f} Re".format(y),fontsize=20)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
