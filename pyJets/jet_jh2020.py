@@ -195,7 +195,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     norm_list = [1.e6,1.e-9,1.e-9,1.e3,1.e6,1.e6]
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{B~[nT]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{T~[MK]}$"]
 
-    raw_data_list = [vlsvobj.read(var,cellids=cell_range)/norm_list[var_list.index(var)] for var in var_list]
+    raw_data_list = [vlsvobj.read_variable(var,cellids=cell_range)/norm_list[var_list.index(var)] for var in var_list]
 
     rho = raw_data_list[0]
     pdyn = raw_data_list[1]
