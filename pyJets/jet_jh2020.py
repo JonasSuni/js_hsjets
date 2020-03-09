@@ -201,9 +201,9 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     pdyn = raw_data_list[1]
     TPar = raw_data_list[4]
     TPerp = raw_data_list[5]
-    v = raw_data_list[2]
+    v = raw_data_list[3]
     vmag = np.linalg.norm(v,axis=-1)
-    B = raw_data_list[3]
+    B = raw_data_list[2]
     Bmag = np.linalg.norm(B,axis=-1)
 
     Ttot = np.array([TPar,TPerp]).T
@@ -222,6 +222,8 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
     for n in range(len(data_list)):
         ax = ax_list[n]
+        ax.grid()
+        ax.set_xlim(x_range[0],x_range[-1])
         x = x_list[n]
         data = data_list[n]
         ax.tick_params(labelsize=15)
