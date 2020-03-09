@@ -220,7 +220,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     plt.ioff()
 
     fig,ax_list = plt.subplots(len(data_list),1,figsize=(10,15),sharex=True)
-    fig.suptitle("Y = {} Re".format(y))
+    fig.suptitle("Y = {:.3f} Re".format(y))
 
     for n in range(len(data_list)):
         ax = ax_list[n]
@@ -284,7 +284,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
 
-    fig.suptitle("Y = {} Re".format(y))
+    fig.suptitle("Y = {:.3f} Re".format(y))
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
