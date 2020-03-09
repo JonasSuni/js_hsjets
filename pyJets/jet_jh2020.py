@@ -220,7 +220,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     plt.ioff()
 
     fig,ax_list = plt.subplots(len(data_list),1,figsize=(10,15),sharex=True)
-    fig.suptitle("Y = {:.3f} Re\nt = {} s".format(y,filenr/2))
+    fig.suptitle("Y = {:.3f} Re\nt = {} s".format(y,filenr/2),fontsize=20)
 
     for n in range(len(data_list)):
         ax = ax_list[n]
