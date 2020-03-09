@@ -220,7 +220,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     plt.ioff()
 
     fig,ax_list = plt.subplots(len(data_list),1,figsize=(10,15),sharex=True)
-    fig.suptitle("Y = {:.3f} Re".format(y))
+    fig.suptitle("Y = {:.3f} Re\nt = {} s".format(y,filenr/2))
 
     for n in range(len(data_list)):
         ax = ax_list[n]
@@ -231,7 +231,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
         ax.tick_params(labelsize=15)
         ax.plot(x,data)
         ax.set_ylabel(label_list[n],fontsize=20)
-        if ax == len(var_list)-1:
+        if n == len(var_list)-1:
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
