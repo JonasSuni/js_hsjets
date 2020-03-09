@@ -193,7 +193,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     var_list = ["rho","pdyn","B","v","TParallel","TPerpendicular"]
     norm_list = [1.e6,1.e-9,1.e-9,1.e3,1.e6,1.e6]
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{B~[nT]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{T~[MK]}$"]
-    lim_list = [(0,25),(0,8),(-30,30),(-600,600),(0,20)]
+    lim_list = [(0,30),(0,8),(-35,35),(-650,650),(0,20)]
     color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
 
     annot_list_list = [[""],[""],["B","Bx","By","Bz"],["v","vx","vy","vz"],["TPar","TPerp"]]
@@ -257,6 +257,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
 
     var_list = ["Pdyn","rho","v","B","TParallel"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
+    vmax_list = [8,30,650,35,20]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
     y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
@@ -285,7 +286,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         ax.axhline(328,color="black",linewidth=1.0)
         ax.axhline(337,color="black",linewidth=1.0)
         ax.axhline(345,color="black",linewidth=1.0)
-        im_list.append(ax.pcolormesh(x_arr,time_arr,data))
+        im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=0,vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
         ax.tick_params(labelsize=15)
