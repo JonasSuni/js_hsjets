@@ -153,13 +153,6 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
 
-    if save:
-        if not os.path.exists(outputdir):
-            try:
-                os.makedirs(outputdir)
-            except OSError:
-                pass
-
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
     output_arr = np.zeros((len(vars),stop-start+1,cellid_range.size))
@@ -177,6 +170,11 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
             output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     if save:
+        if not os.path.exists(outputdir):
+            try:
+                os.makedirs(outputdir)
+            except OSError:
+                pass
         np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
         return None
     else:
