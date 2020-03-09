@@ -193,6 +193,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     var_list = ["rho","pdyn","B","v","TParallel","TPerpendicular"]
     norm_list = [1.e6,1.e-9,1.e-9,1.e3,1.e6,1.e6]
     label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{B~[nT]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{T~[MK]}$"]
+    lim_list = [(0,25),(0,8),(-30,30),(-600,600),(0,20)]
     color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
 
     annot_list_list = [[""],[""],["B","Bx","By","Bz"],["v","vx","vy","vz"],["TPar","TPerp"]]
@@ -229,6 +230,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
         ax = ax_list[n]
         ax.grid()
         ax.set_xlim(x_range[0],x_range[-1])
+        ax.ylim(lim_list[n])
         x = x_list[n]
         data = data_list[n]
         ax.tick_params(labelsize=15)
