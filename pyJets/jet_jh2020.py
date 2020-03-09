@@ -230,7 +230,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
         ax = ax_list[n]
         ax.grid()
         ax.set_xlim(x_range[0],x_range[-1])
-        ax.ylim(lim_list[n])
+        ax.set_ylim(lim_list[n])
         x = x_list[n]
         data = data_list[n]
         ax.tick_params(labelsize=15)
