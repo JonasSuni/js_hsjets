@@ -269,7 +269,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     if not fromfile:
         data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
     else:
-        data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}".format(runid,min_cellid,max_cellid,start,stop))
+        data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
 
     rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
 
