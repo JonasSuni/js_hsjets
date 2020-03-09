@@ -167,6 +167,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
     bulkpath = jx.find_bulkpath(runid)
 
     for filenr in range(start,stop+1):
+        print(filenr)
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
         for m in range(len(vars)):
