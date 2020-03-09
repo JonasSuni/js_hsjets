@@ -217,10 +217,10 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     x_list = [x_1,x_1,x_4,x_4,x_2]
     data_list = [rho,pdyn,Btot,vtot,Ttot]
 
-    fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,15),sharex=True)
+    fig,ax_list = plt.subplots(len(data_list),1,figsize=(10,15),sharex=True)
     fig.suptitle("Y = {} Re".format(y))
 
-    for n in range(len(var_list)):
+    for n in range(len(data_list)):
         ax = ax_list[n]
         x = x_list[n]
         data = data_list[n]
