@@ -4,6 +4,7 @@ from Shue_Mpause_model import Shue_Mpause_model
 import scipy.constants as sc
 import os
 import pytools as pt
+import time
 
 medium_blue = '#006DDB'
 crimson = '#920000'
@@ -26,6 +27,8 @@ except:
 
 def transfer_tavg(runid,start,stop):
 
+    time_s = time.time()
+
     inputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
     outputdir = "/scratch/project_2000506/sunijona/tavg/{}/".format(runid)
 
@@ -36,7 +39,7 @@ def transfer_tavg(runid,start,stop):
             pass
 
     for n in range(start,stop+1):
-        print(n)
+        print("Filenr: {}, Time: {}".format(n,time.time()-time_s))
 
         rho_arr = np.loadtxt(inputdir+"{}_rho.tavg".format(n))
         pdyn_arr = np.loadtxt(inputdir+"{}_pdyn.tavg".format(n))
