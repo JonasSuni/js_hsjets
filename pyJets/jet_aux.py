@@ -27,7 +27,7 @@ except:
 def transfer_tavg(runid,start,stop):
 
     inputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
-    outputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
+    outputdir = "/scratch/project_2000506/sunijona/tavg/{}/".format(runid)
 
     if not os.path.exists(outputdir):
         try:
