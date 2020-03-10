@@ -153,13 +153,6 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
 
-    if save:
-        if not os.path.exists(outputdir):
-            try:
-                os.makedirs(outputdir)
-            except OSError:
-                pass
-
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
     output_arr = np.zeros((len(vars),stop-start+1,cellid_range.size))
@@ -167,6 +160,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
     bulkpath = jx.find_bulkpath(runid)
 
     for filenr in range(start,stop+1):
+        print(filenr)
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
         for m in range(len(vars)):
@@ -176,18 +170,97 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
             output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
 
     if save:
-        np.savetxt(outputdir+"{}_{}".format(start,stop),output_arr)
+        if not os.path.exists(outputdir):
+            try:
+                os.makedirs(outputdir)
+            except OSError:
+                pass
+        np.save(outputdir+"{}_{}".format(start,stop),output_arr)
         return None
     else:
         return output_arr
+
+def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
+
+    bulkpath = jx.find_bulkpath(runid)
+    bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    cell_range = np.arange(min_cellid,max_cellid+1)
+    x_range = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_range])
+    y = jx.get_cell_coordinates(runid,cell_range[0])[1]/r_e
+
+    var_list = ["rho","pdyn","B","v","TParallel","TPerpendicular"]
+    norm_list = [1.e6,1.e-9,1.e-9,1.e3,1.e6,1.e6]
+    label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{B~[nT]}$","$\mathrm{v~[kms^{-1}]}$","$\mathrm{T~[MK]}$"]
+    lim_list = [(0,30),(0,8),(-35,35),(-650,650),(0,20)]
+    color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
+
+    annot_list_list = [[""],[""],["B","Bx","By","Bz"],["v","vx","vy","vz"],["TPar","TPerp"]]
+
+    raw_data_list = [vlsvobj.read_variable(var,cellids=cell_range)/norm_list[var_list.index(var)] for var in var_list]
+
+    rho = raw_data_list[0]
+    pdyn = raw_data_list[1]
+    TPar = raw_data_list[4]
+    TPerp = raw_data_list[5]
+    v = raw_data_list[3]
+    vmag = np.linalg.norm(v,axis=-1)
+    B = raw_data_list[2]
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    Ttot = np.array([TPar,TPerp]).T
+    vtot = np.vstack((vmag,v.T)).T
+    Btot = np.vstack((Bmag,B.T)).T
+
+    x_1 = x_range
+    x_2 = np.array((x_1,x_1)).T
+    x_4 = np.array((x_1,x_1,x_1,x_1)).T
+
+    x_list = [x_1,x_1,x_4,x_4,x_2]
+    data_list = [rho,pdyn,Btot,vtot,Ttot]
+
+    plt.ioff()
+
+    fig,ax_list = plt.subplots(len(data_list),1,figsize=(10,15),sharex=True)
+    fig.suptitle("Y = {:.3f} Re\nt = {} s".format(y,filenr/2),fontsize=20)
+
+    for n in range(len(data_list)):
+        ann_list = annot_list_list[n]
+        ax = ax_list[n]
+        ax.grid()
+        ax.set_xlim(x_range[0],x_range[-1])
+        ax.set_ylim(lim_list[n])
+        x = x_list[n]
+        data = data_list[n]
+        ax.tick_params(labelsize=15)
+        ax.plot(x,data)
+        ax.set_ylabel(label_list[n],fontsize=20)
+        if n == len(var_list)-1:
+            ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
+        for m in range(len(ann_list)):
+            ax.annotate(ann_list[m],xy=(0.8+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
+
+    if not os.path.exists(homedir+"Figures/jh2020"):
+        try:
+            os.makedirs(homedir+"Figures/jh2020")
+        except OSError:
+            pass
+
+    fig.savefig(homedir+"Figures/jh2020/cut_{}_{}_{}.png".format(filenr,min_cellid,max_cellid))
+    plt.close(fig)
+
+    return None
+
 
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540,fromfile=True):
 
     var_list = ["Pdyn","rho","v","B","TParallel"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
+    vmax_list = [8,30,650,35,20]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
-    y = jx.get_cell_coordinates(runid,cell_arr[0])[1]
+    y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
@@ -197,9 +270,11 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     if not fromfile:
         data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
     else:
-        data_arr = np.loadtxt(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}".format(runid,min_cellid,max_cellid,start,stop))
+        data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
 
     rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
+
+    plt.ioff()
 
     fig,ax_list = plt.subplots(1,len(var_list),figsize=(20,10),sharex=True,sharey=True)
     im_list = []
@@ -208,9 +283,12 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
     for n in range(len(var_list)):
         data = data_arr[n]/norm_list[n]
         ax = ax_list[n]
-        im_list.append(ax.pcolormesh(x_arr,time_arr,data))
+        ax.axhline(328,color="black",linewidth=1.0)
+        ax.axhline(337,color="black",linewidth=1.0)
+        ax.axhline(345,color="black",linewidth=1.0)
+        im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=0,vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
-        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1,colors="black")
+        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
@@ -218,6 +296,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
+
+    fig.suptitle("Y = {:.3f} Re".format(y),fontsize=20)
 
     if not os.path.exists(homedir+"Figures/jh2020"):
         try:
