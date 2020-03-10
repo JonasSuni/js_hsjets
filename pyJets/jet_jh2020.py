@@ -624,8 +624,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     is_coords = jx.get_cell_coordinates("ABC",1814480)/r_e
     os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
 
-    is2 = jx.get_cell_coordinates("ABC",1814480+2000*25)/r_e
-    os2 = jx.get_cell_coordinates("ABC",1814540+2000*25)/r_e
+    is2 = jx.get_cell_coordinates("ABC",1814480+2000*20)/r_e
+    os2 = jx.get_cell_coordinates("ABC",1814540+2000*20)/r_e
 
     # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
