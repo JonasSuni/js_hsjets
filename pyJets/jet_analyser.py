@@ -380,7 +380,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.loadtxt(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.npy")
     else:
 
         for n_t in timerange:
@@ -568,7 +568,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.loadtxt(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.tavg")
+        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.npy")
         tpdynavg = tpdynavg[cells-1]
     else:
 

@@ -24,6 +24,28 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
+def transfer_tavg(runid,start,stop):
+
+    inputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
+    outputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    for n in range(start,stop+1):
+        print(n)
+
+        rho_arr = np.loadtxt(inputdir+"{}_rho.tavg".format(n))
+        pdyn_arr = np.loadtxt(inputdir+"{}_pdyn.tavg".format(n))
+
+        np.save(outputdir+"{}_rho.npy".format(n),rho_arr)
+        np.save(outputdir+"{}_pdyn.npy".format(n),pdyn_arr)
+
+    return None
+
 def xyz_reconstruct(vlsvobj,cellids=-1):
 
     if type(cellids) == int and cellids == -1:
