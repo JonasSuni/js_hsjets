@@ -287,7 +287,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
             ax.axhline(328,color="black",linewidth=1.0)
             ax.axhline(337,color="black",linewidth=1.0)
             ax.axhline(345,color="black",linewidth=1.0)
-        elif min_cellid == 1814480+40000+20:
+        elif min_cellid == 1814480+60000+10:
             ax.axhline(347,color="black",linewidth=1.0)
             ax.axhline(355,color="black",linewidth=1.0)
             ax.axhline(360,color="black",linewidth=1.0)
