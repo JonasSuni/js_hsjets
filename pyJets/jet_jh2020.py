@@ -545,9 +545,11 @@ def jh2020_fig1(var="pdyn"):
 
     outputdir = homedir+"Figures/jh2020/"
 
-    filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
+    #filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
+    filepath = "/scratch/project_2000203/2D/ABC/bulk/bulk.0000714.vlsv"
 
-    filenr_g = 677
+    #filenr_g = 677
+    filenr_g = 714
 
     colmap = "parula"
     if var == "Mms":
