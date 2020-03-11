@@ -629,8 +629,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     is_coords = jx.get_cell_coordinates("ABC",1814480)/r_e
     os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
 
-    is2 = jx.get_cell_coordinates("ABC",1814480+2000*20+20)/r_e
-    os2 = jx.get_cell_coordinates("ABC",1814540+2000*20+20)/r_e
+    is2 = jx.get_cell_coordinates("ABC",1814480+2000*30+10)/r_e
+    os2 = jx.get_cell_coordinates("ABC",1814540+2000*30+10)/r_e
 
     # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
@@ -638,7 +638,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
     cut_through_plot2, = ax.plot([is2[0],os2[0]],[is2[1],os2[1]],color="black",linewidth=0.8)
 
-def jh20_slams_movie(start,stop,var="Pdyn"):
+def jh20_slams_movie(start,stop,var="Pdyn",vmax=15e-9):
 
     outputdir = wrkdir_DNR+"jh20_slams_movie/{}/".format(var)
     if not os.path.exists(outputdir):
