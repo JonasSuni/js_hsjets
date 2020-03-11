@@ -305,7 +305,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_celli
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/fig2_mesh.png")
+    fig.savefig(homedir+"Figures/jh2020/fig2_mesh_{}.png".format(min_cellid))
     plt.close(fig)
 
     return None
