@@ -144,7 +144,7 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
-def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars,save=True):
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v","B","TParallel"],save=True):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}_{}/".format(runid,min_cellid,max_cellid)
 
@@ -253,7 +253,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     return None
 
 
-def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814500,max_cellid=1814540,fromfile=True):
+def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True):
 
     var_list = ["Pdyn","rho","v","B","TParallel"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
