@@ -273,7 +273,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     T_sw = 0.5e6
 
     if not fromfile:
-        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list+["Mms","TNonBackstream"],save=False)
+        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
     else:
         data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
 
