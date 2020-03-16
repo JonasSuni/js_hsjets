@@ -144,7 +144,7 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
-def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v","B","TParallel"],save=True):
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v","B","Temperature"],save=True):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}_{}/".format(runid,min_cellid,max_cellid)
 
@@ -152,6 +152,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v
     vlsv_var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
+    vars = vars+["Mms","TNonBackstream"]
 
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
@@ -165,9 +166,12 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
         for m in range(len(vars)):
             var = vars[m]
-            vlsv_var = vlsv_var_list[var_list.index(var)]
-            vlsv_op = op_list[var_list.index(var)]
-            output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
+            if var in var_list:
+                vlsv_var = vlsv_var_list[var_list.index(var)]
+                vlsv_op = op_list[var_list.index(var)]
+                output_arr[m][filenr-start] = vlsvobj.read_variable(vlsv_var,operator=vlsv_op,cellids=cellid_range)
+            else:
+                output_arr[m][filenr-start] = vlsvobj.read_variable(var,cellids=cellid_range)
 
     if save:
         if not os.path.exists(outputdir):
@@ -255,7 +259,7 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True):
 
-    var_list = ["Pdyn","rho","v","B","TParallel"]
+    var_list = ["Pdyn","rho","v","B","Temperature"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
     vmax_list = [8,30,650,35,20]
 
@@ -266,13 +270,16 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
 
     rho_sw = 3.3e6
+    T_sw = 0.5e6
 
     if not fromfile:
-        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
+        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list+["Mms","TNonBackstream"],save=False)
     else:
         data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
 
     rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
+    mms_mask = (data_arr[-2]<=1).astype(int)
+    tcore_mask = (data_arr[-1]>=3*T_sw).astype(int)
 
     plt.ioff()
 
@@ -284,16 +291,18 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         data = data_arr[n]/norm_list[n]
         ax = ax_list[n]
         if min_cellid == 1814480:
-            ax.axhline(328,color="black",linewidth=1.0)
-            ax.axhline(337,color="black",linewidth=1.0)
-            ax.axhline(345,color="black",linewidth=1.0)
+            ax.axhline(328,color="black",linewidth=0.8)
+            ax.axhline(337,color="black",linewidth=0.8)
+            ax.axhline(345,color="black",linewidth=0.8)
         elif min_cellid == 1814480+60000+10:
-            ax.axhline(350,color="black",linewidth=1.0)
-            ax.axhline(355,color="black",linewidth=1.0)
-            ax.axhline(360,color="black",linewidth=1.0)
+            ax.axhline(350,color="black",linewidth=0.8)
+            ax.axhline(355,color="black",linewidth=0.8)
+            ax.axhline(360,color="black",linewidth=0.8)
         im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=0,vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
+        ax.contour(XmeshXT,TmeshXT,mms_mask,[0.5],linewidths=1.0,colors=jx.violet)
+        ax.contour(XmeshXT,TmeshXT,tcore_mask,[0.5],linewidths=1.0,colors=jx.orange)
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
