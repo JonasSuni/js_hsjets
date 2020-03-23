@@ -476,6 +476,7 @@ def calc_event_props(vlsvobj,cells):
     pr_rhonbs = np.array(vlsvobj.read_variable("RhoNonBackstream", cellids=ssh_cells),ndmin=1)
     pr_PTDNBS = np.array(vlsvobj.read_variable("PTensorNonBackstreamDiagonal", cellids=ssh_cells),ndmin=1)
     ew_pdyn = np.array(vlsvobj.read_variable("Pdyn",cellids=ew_cells),ndmin=1)
+    mmsx_ssh = np.array(vlsvobj.read_variable("Mmsx",cellids=ssh_cells),ndmin=1)
 
     #rho_sw = rho_sw_g
     T_sw = 0.5e+6
@@ -487,7 +488,8 @@ def calc_event_props(vlsvobj,cells):
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     #is_upstream = int(np.all(rho_ssh < 2*rho_sw))
-    is_upstream = int(np.all(pr_TNBS < 3*T_sw))
+    #is_upstream = int(np.all(pr_TNBS < 3*T_sw))
+    is_upsream = int(np.all(mmsx_ssh >= 1))
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 

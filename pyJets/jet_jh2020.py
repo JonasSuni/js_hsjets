@@ -496,14 +496,8 @@ def get_indent_depth(runid,crit="ew_pd"):
             continue
         t_slams = slams_props.read("time")
         last_time = t_slams[is_upstream_slams>0][-1]
-        # slams_cells = slams_props.get_cells()
-        # last_cells = np.array(slams_cells)[is_upstream_slams>0][-1]
-        # cell_pos = np.array([jx.get_cell_coordinates(runid,cellid)/r_e for cellid in last_cells])
-        # cell_x = cell_pos[:,0]
-        # cell_y = cell_pos[:,1]
-        # cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
-        # slams_bs_dist = jx.bs_rd(runid,cell_t_arr,cell_x,cell_y)
-        # upstream_dist_min = np.min(slams_bs_dist)
+
+
         if crit == "ew_pd":
             bow_shock_value = slams_props.read_at_time("ew_pd_enh",last_time)/ja.sw_normalisation(runid,"pd_avg")
         elif crit == "nonloc":
@@ -511,9 +505,18 @@ def get_indent_depth(runid,crit="ew_pd"):
             bs_rho = slams_props.read_at_time("xbs_rho",last_time)
             bs_mms = slams_props.read_at_time("xbs_mms",last_time)
             bow_shock_value = np.linalg.norm([bs_ch-bs_rho,bs_rho-bs_mms,bs_mms-bs_ch])
+        else:
+            slams_cells = slams_props.get_cells()
+            last_cells = np.array(slams_cells)[is_upstream_slams>0][-1]
+            cell_pos = np.array([jx.get_cell_coordinates(runid,cellid)/r_e for cellid in last_cells])
+            cell_x = cell_pos[:,0]
+            cell_y = cell_pos[:,1]
+            cell_t_arr = np.ones_like(cell_x)*(t_slams[is_upstream_slams>0][-1])
+            slams_bs_dist = jx.bs_rd(runid,cell_t_arr,cell_x,cell_y)
+            upstream_dist_min = np.min(slams_bs_dist)
+            bow_shock_value = upstream_dist_min-x_res
 
         depths.append(sj_dist_min)
-        #indents.append(upstream_dist_min-x_res)
         indents.append(bow_shock_value)
 
     return [np.array(depths),np.array(indents)]
@@ -534,6 +537,8 @@ def jh2020_fig4(crit="ew_pd"):
         ax.set_ylabel("$\mathrm{Mean~earthward~P_{dyn}~[P_{dyn,sw}]}$",fontsize=20,labelpad=10)
     elif crit == "nonloc":
         ax.set_ylabel("$\mathrm{Bow~shock~nonlocality~[R_e]}$",fontsize=20,labelpad=10)
+    else:
+        ax.set_ylabel("$\mathrm{Bow~shock~indentation~[R_e]}$",fontsize=20,labelpad=10)
     ax.legend(frameon=False,numpoints=1,markerscale=2)
     ax.tick_params(labelsize=20)
     ax.axvline(0,linestyle="dashed",linewidth=0.6,color="black")
