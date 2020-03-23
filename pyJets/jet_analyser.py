@@ -336,6 +336,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     mask = (pr_TNBS>=3*T_sw)
+    print(mask)
 
     X_masked = X[mask]
     Y_masked = Y[mask]
@@ -437,7 +438,6 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     # ratio of dynamic pressure to its time average
     tapdyn = pdyn/tpdynavg
-    print(tapdyn)
 
     # make custom jet mask
     if transient == "jet":
