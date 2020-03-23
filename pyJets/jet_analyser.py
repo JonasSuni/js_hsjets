@@ -336,7 +336,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     mask = (pr_TNBS>=3*T_sw)
-    print(mask)
+    print(np.all(mask))
 
     X_masked = X[mask]
     Y_masked = Y[mask]
