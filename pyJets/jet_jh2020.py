@@ -4,7 +4,7 @@ import jet_aux as jx
 if sys.version_info.major == 3:
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black", jx.medium_blue, jx.dark_blue, jx.orange])
 elif sys.version_info.major == 2:
-    mpl.rcParams['axes.prop_cycle'] = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
+    mpl.rcParams['axes.color_cycle'] = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
 import pytools as pt
 import os
 import scipy
