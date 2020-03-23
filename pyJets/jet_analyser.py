@@ -462,8 +462,8 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)):
         os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid))
     if transient == "slamsjet":
-        if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid)):
-            os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid))
+        if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,"jets/",runid)):
+            os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,"jets/",runid))
         if not os.path.exists("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)):
             os.makedirs("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid))
         masked_ci_jet = np.ma.array(sorigid,mask=~jet2.mask).compressed()
