@@ -724,7 +724,7 @@ def hack_2019_fig6(time_thresh=5):
     if sys.version_info.major == 3:
         mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
     elif sys.version_info.major == 2:
-        mpl.rcParams['axes.prop_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
@@ -1468,7 +1468,7 @@ def hack_2019_fig78(time_thresh=5):
         mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
         mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
     elif sys.version_info.major == 2:
-        mpl.rcParams['axes.prop_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
