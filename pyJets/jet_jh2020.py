@@ -257,11 +257,20 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
     return None
 
 
-def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True):
+def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none"):
 
     var_list = ["Pdyn","rho","v","B","Temperature"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
-    vmax_list = [8,30,650,35,20]
+
+    if clip == "none":
+        vmin_list = [0,0,0,0,0]
+        vmax_list = [8,30,650,35,20]
+    elif clip == "high":
+        vmin_list = [0,0,0,0,0]
+        vmax_list = [4.5,6.6,600,15,5]
+    elif clip == "low":
+        vmin_list = [1,6.6,150,5,0.5]
+        vmax_list = [8,30,650,35,20]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
     y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
@@ -298,7 +307,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
             ax.axhline(350,color="black",linewidth=0.8)
             ax.axhline(355,color="black",linewidth=0.8)
             ax.axhline(360,color="black",linewidth=0.8)
-        im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=0,vmax=vmax_list[n]))
+        im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=vmin_list[n],vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
         ax.contour(XmeshXT,TmeshXT,mms_mask,[0.5],linewidths=1.0,colors=jx.violet)
@@ -319,7 +328,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/fig2_mesh_{}.png".format(min_cellid))
+    fig.savefig(homedir+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format(min_cellid,clip))
     plt.close(fig)
 
     return None
