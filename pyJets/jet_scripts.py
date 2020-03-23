@@ -1,16 +1,11 @@
-# import matplotlib
-# #matplotlib.use('ps')
-# from matplotlib import rc
+import sys
 
-# rc('text',usetex=True)
-# rc('text.latex', preamble=r'\usepackage{color}')
 import matplotlib as mpl
-mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
-#mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
+if sys.version_info.major == 3:
+    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=['black', 'blue', 'red', 'green'])
+elif sys.version_info.major == 2:
+    mpl.rcParams['axes.color_cycle'] = ['black', 'blue', 'red', 'green']
 import matplotlib.pyplot as plt
-# plt.style.use("classic")
-# mpl.rcParams['text.usetex'] = True
-# mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
@@ -20,21 +15,11 @@ import os
 import scipy
 import numpy as np
 import pandas as pd
-#import matplotlib.pyplot as plt
 import jet_analyser as ja
 import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
 import jet_aux as jx
-
-#from matplotlib import rc
-# font = {'family' : 'monospace',
-#         'monospace' : 'Computer Modern Typewriter',
-#         'weight' : 'bold'}
-
-#rc('font', **font)
-#rc('mathtext', fontset='custom')
-#rc('mathtext', default='regular')
 
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
@@ -736,7 +721,10 @@ def hack_2019_fig4(time_thresh=5):
 
 def hack_2019_fig6(time_thresh=5):
 
-    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+    if sys.version_info.major == 3:
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+    elif sys.version_info.major == 2:
+        mpl.rcParams['axes.prop_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
@@ -1201,9 +1189,10 @@ def hack_2019_fig2(runid,htw = 60):
 
 def hack_2019_fig1():
 
-    plt.style.use("classic")
-    mpl.rcParams['text.usetex'] = True
-    mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+    if sys.version_info.major == 3:
+        plt.style.use("classic")
+        mpl.rcParams['text.usetex'] = True
+        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 
     outputdir = homedir+"Figures/hackathon_paper/"
 
@@ -1473,11 +1462,13 @@ def hack_2019_fig78(time_thresh=5):
     # Creates Superposed Epoch Analysis of jets in specified run, centering specified var around maximum of
     # specified centering variable
 
-    plt.style.use("classic")
-    mpl.rcParams['text.usetex'] = True
-    mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
-
-    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+    if sys.version_info.major == 3:
+        plt.style.use("classic")
+        mpl.rcParams['text.usetex'] = True
+        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+    elif sys.version_info.major == 2:
+        mpl.rcParams['axes.prop_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
