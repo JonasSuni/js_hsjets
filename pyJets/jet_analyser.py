@@ -482,7 +482,9 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
             masked_ci_jet = np.intersect1d(masked_ci_jet,restrict_area(vlsvreader,boxre))
             masked_ci_slams = np.intersect1d(masked_ci_slams,restrict_area(vlsvreader,boxre))
             np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"jets/",runid)+str(filenumber)+".mask",masked_ci_jet)
+            print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,"jets/",runid)+str(filenumber)+".mask")
             np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask",masked_ci_slams)
+            print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask")
     else:
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         #print(masked_ci[69])
