@@ -328,9 +328,6 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     X,Y,Z = [X[np.argsort(origid)]/r_e,Y[np.argsort(origid)]/r_e,Z[np.argsort(origid)]/r_e]
 
-    print(v)
-    print(X)
-
     T_sw = 0.5e+6
     epsilon = 1.e-10
     kb = 1.38065e-23
@@ -360,6 +357,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     # dynamic pressure
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+    print(pdyn)
 
     Bmag = np.linalg.norm(B,axis=-1)
 
@@ -437,6 +435,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     # prevent divide by zero errors
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
+    print(tpdynavg)
 
     # ratio of dynamic pressure to its time average
     tapdyn = pdyn/tpdynavg
