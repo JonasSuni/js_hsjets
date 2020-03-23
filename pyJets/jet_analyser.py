@@ -287,7 +287,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # X,Y-limits
 
     if transient == "jet":
-        trans_folder = "jets"
+        trans_folder = "jets/"
     elif transient == "slams":
         trans_folder = "SLAMS/"
     elif transient == "slamsjet":
@@ -481,7 +481,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
         if transient == "slamsjet":
             masked_ci_jet = np.intersect1d(masked_ci_jet,restrict_area(vlsvreader,boxre))
             masked_ci_slams = np.intersect1d(masked_ci_slams,restrict_area(vlsvreader,boxre))
-            np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"",runid)+str(filenumber)+".mask",masked_ci_jet)
+            np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"jets/",runid)+str(filenumber)+".mask",masked_ci_jet)
             np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask",masked_ci_slams)
     else:
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
@@ -493,7 +493,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     # X,Y-limits
 
     if transient == "jet":
-        trans_folder = "jets"
+        trans_folder = "jets/"
     elif transient == "slams":
         trans_folder = "SLAMS/"
     elif transient == "slamsjet":
