@@ -474,6 +474,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     # if boundaries have been set, discard cellids outside boundaries
     if not not boxre:
+        print(1)
         masked_ci = np.intersect1d(masked_ci,restrict_area(vlsvreader,boxre))
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         #print(masked_ci[69])
@@ -486,6 +487,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
             np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask",masked_ci_slams)
             print("Writing to "+"{}working/{}Masks/{}/".format(wrkdir_DNR,"SLAMS/",runid)+str(filenumber)+".mask")
     else:
+        print(2)
         np.savetxt("{}working/{}Masks/{}/".format(wrkdir_DNR,trans_folder,runid)+str(filenumber)+".mask",masked_ci)
         #print(masked_ci[69])
         return masked_ci
