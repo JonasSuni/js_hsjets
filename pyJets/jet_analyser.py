@@ -328,6 +328,9 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
 
     X,Y,Z = [X[np.argsort(origid)]/r_e,Y[np.argsort(origid)]/r_e,Z[np.argsort(origid)]/r_e]
 
+    print(v)
+    print(X)
+
     T_sw = 0.5e+6
     epsilon = 1.e-10
     kb = 1.38065e-23
