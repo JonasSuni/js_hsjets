@@ -287,7 +287,7 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     # X,Y-limits
 
     if transient == "jet":
-        trans_folder = ""
+        trans_folder = "jets"
     elif transient == "slams":
         trans_folder = "SLAMS/"
     elif transient == "slamsjet":
@@ -493,7 +493,7 @@ def make_cust_mask_opt_new(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],
     # X,Y-limits
 
     if transient == "jet":
-        trans_folder = ""
+        trans_folder = "jets"
     elif transient == "slams":
         trans_folder = "SLAMS/"
     elif transient == "slamsjet":

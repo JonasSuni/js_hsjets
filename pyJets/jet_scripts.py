@@ -48,7 +48,7 @@ def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
     #outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
     if transient == "jet":
         outputdir = wrkdir_DNR+"contours/JETS/{}/".format(runid)
-        inputpath = wrkdir_DNR+"working/"
+        inputpath = wrkdir_DNR+"working/jets/"
     elif transient == "slams":
         outputdir = wrkdir_DNR+"contours/SLAMS/{}/".format(runid)
         inputpath = wrkdir_DNR+"working/SLAMS/"
@@ -448,7 +448,7 @@ def jet_pos_graph(runid):
     # Draws the location of all jets in specified run on an r-phi plane and a histogram of jet r-values
     # For easy identification of magnetopause false positive jets
 
-    filenames = os.listdir(wrkdir_DNR+"working/jets/"+runid)
+    filenames = os.listdir(wrkdir_DNR+"working/jets/jets/"+runid)
 
     propfiles = [filename for filename in filenames if ".props" in filename]
 
@@ -457,7 +457,7 @@ def jet_pos_graph(runid):
     size_list = []
 
     for fname in propfiles:
-        props = pd.read_csv(wrkdir_DNR+"working/jets/"+runid+"/"+fname).as_matrix()
+        props = pd.read_csv(wrkdir_DNR+"working/jets/jets/"+runid+"/"+fname).as_matrix()
         r = props[:,6]
         phi = props[r==max(r)][0][8]
         r_list.append(max(r))
@@ -558,7 +558,7 @@ def jet_paper_counter():
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -595,7 +595,7 @@ def jet_paper_pos():
     # Get all filenames in folder
     filenames_list = []
     for runid in runids:
-        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/"+runid))
+        filenames_list.append(os.listdir(wrkdir_DNR+"working/jets/jets/"+runid))
 
     # Filter for property files
     file_list_list = []
@@ -1255,7 +1255,7 @@ def hack_2019_fig1():
 
         # Try reading events file
         try:
-            fileobj = open(wrkdir_DNR+"working/events/{}/{}.events".format(runids[n],filenr[n]),"r")
+            fileobj = open(wrkdir_DNR+"working/jets/events/{}/{}.events".format(runids[n],filenr[n]),"r")
             contents = fileobj.read()
             fileobj.close()
             jet_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
@@ -1264,7 +1264,7 @@ def hack_2019_fig1():
 
         # Try reading mask file
         try:
-            full_cells = np.loadtxt(wrkdir_DNR+"working/Masks/{}/{}.mask".format(runids[n],filenr[n])).astype(int)
+            full_cells = np.loadtxt(wrkdir_DNR+"working/jets/Masks/{}/{}.mask".format(runids[n],filenr[n])).astype(int)
         except IOError:
             full_cells = []
 

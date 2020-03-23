@@ -29,7 +29,7 @@ class PropReader:
 
         # Check for transient type
         if transient == "jet":
-            inputdir = wrkdir_DNR+"working/jets"
+            inputdir = wrkdir_DNR+"working/jets/jets"
         elif transient == "slamsjet":
             inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
         elif transient == "slams":
@@ -214,8 +214,8 @@ class Transient:
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0],transient="jet"):
 
     if transient == "jet":
-        outputdir = wrkdir_DNR+"working/events/"+runid+"/"
-        maskdir = wrkdir_DNR+"working/Masks/"+runid+"/"
+        outputdir = wrkdir_DNR+"working/jets/events/"+runid+"/"
+        maskdir = wrkdir_DNR+"working/jets/Masks/"+runid+"/"
         nmin=2
         nmax=4500
     elif transient == "slams":
@@ -294,7 +294,7 @@ def timefile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = wrkdir_DNR+"working/jets"
+        inputdir = wrkdir_DNR+"working/jets/jets"
     elif transient == "slamsjet":
         inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
     elif transient == "slams":
@@ -311,7 +311,7 @@ def jetfile_read(runid,filenr,key,transient="jet"):
 
     # Check for transient type
     if transient == "jet":
-        inputdir = wrkdir_DNR+"working/jets"
+        inputdir = wrkdir_DNR+"working/jets/jets"
         extension = "jet"
     elif transient == "slamsjet":
         inputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets"
@@ -337,7 +337,7 @@ def eventfile_read(runid,filenr,transient="jet"):
     # Read array of arrays of cellids from file
 
     if transient == "jet":
-        inputdir = wrkdir_DNR+"working/events"
+        inputdir = wrkdir_DNR+"working/jets/events"
     elif transient == "slams":
         inputdir = wrkdir_DNR+"working/SLAMS/events"
     elif transient == "slamsjet":
@@ -361,7 +361,7 @@ def eventfile_read(runid,filenr,transient="jet"):
 def eventprop_write(runid,filenr,props,transient="jet"):
 
     if transient == "jet":
-        outputdir = wrkdir_DNR+"working/event_props/"+runid
+        outputdir = wrkdir_DNR+"working/jets/event_props/"+runid
     elif transient == "slams":
         outputdir = wrkdir_DNR+"working/SLAMS/event_props/"+runid
     elif transient == "slamsjet":
@@ -385,7 +385,7 @@ def eventprop_write(runid,filenr,props,transient="jet"):
 def eventprop_read(runid,filenr,transient="jet"):
 
     if transient == "jet":
-        inputname = wrkdir_DNR+"working/event_props/{}/{}.eventprops".format(runid,str(filenr))
+        inputname = wrkdir_DNR+"working/jets/event_props/{}/{}.eventprops".format(runid,str(filenr))
     elif transient == "slams":
         inputname = wrkdir_DNR+"working/SLAMS/event_props/{}/{}.eventprops".format(runid,str(filenr))
     elif transient == "slamsjet":
@@ -407,7 +407,7 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     # Write jet properties to file
 
     if transient == "jet":
-        outputdir = wrkdir_DNR+"working/jets"
+        outputdir = wrkdir_DNR+"working/jets/jets"
     elif transient == "slams":
         outputdir = wrkdir_DNR+"working/SLAMS/slams"
     elif transient == "slamsjet":
@@ -684,7 +684,7 @@ def check_threshold(A,B,thresh):
 def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
 
     if transient == "jet":
-        outputdir = wrkdir_DNR+"working/jets/"+runid
+        outputdir = wrkdir_DNR+"working/jets/jets/"+runid
         extension = ".jet"
     elif transient == "slams":
         outputdir = wrkdir_DNR+"working/SLAMS/slams/"+runid
