@@ -336,14 +336,13 @@ def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgf
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     mask = (pr_TNBS>=3*T_sw)
-    print(np.all(mask))
 
     X_masked = X[mask]
     Y_masked = Y[mask]
 
     Y_unique = np.unique(Y_masked)
     X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
-    bs_fit = np.polyfit(Y_unique/r_e,X_max/r_e,deg=5)
+    bs_fit = np.polyfit(Y_unique,X_max,deg=5)
 
     p = bs_fit[::-1]
 
