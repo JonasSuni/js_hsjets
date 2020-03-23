@@ -152,7 +152,7 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v
     vlsv_var_list = ["rho","v","v","v","v","B","B","B","B","Pdyn","TParallel","TPerpendicular","beta"]
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
-    vars = vars+["Mms","TNonBackstream"]
+    vars = vars+["Mmsx","TNonBackstream"]
 
     cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
