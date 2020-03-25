@@ -1068,6 +1068,7 @@ def hack_2019_fig35():
 
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
+    ax.tick_params(labelsize=20)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
     ax.set_xlabel("X [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
     ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
