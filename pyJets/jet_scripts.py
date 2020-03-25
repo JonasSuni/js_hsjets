@@ -840,7 +840,7 @@ def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=Fa
             except:
                 continue
 
-            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+            if props.read("duration")[0] < time_thresh:
                 continue
 
             for var in var_list:
