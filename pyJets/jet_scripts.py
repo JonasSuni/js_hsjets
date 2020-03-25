@@ -1032,10 +1032,10 @@ def MMS_pos(filename):
     f = open(filepath,"r+")
     contents = f.read()
     f.close()
-    contents_list = contents.split("\r\n")[0:-1]
+    contents_list = contents.split("\n")[0:-1]
     contents_matrix = [line.split(",") for line in contents_list]
 
-    coords = np.array(contents_matrix)[:,:-1].T
+    coords = np.array(contents_matrix,dtype=float)[:,:-1].T
 
     return coords
 
