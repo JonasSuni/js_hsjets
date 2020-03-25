@@ -514,14 +514,14 @@ def slams_jet_counter():
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
-                if "splinter" not in props.meta and "merger" not in props.meta:
+                if "splinter" not in props.meta:
                     jet_counter[runids.index(runid)] += 1
             except:
                 pass
 
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580,transient="slams")
-                if "splinter" not in props.meta and "merger" not in props.meta:
+                if "splinter" not in props.meta:
                     slams_counter[runids.index(runid)] += 1
             except:
                 pass
