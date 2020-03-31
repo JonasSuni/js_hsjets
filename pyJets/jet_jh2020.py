@@ -449,14 +449,6 @@ def separate_jets(runid):
 
     for n1 in range(3000):
         try:
-            del jet_first_cells
-        except:
-            pass
-        try:
-            del jet_first_time
-        except:
-            pass
-        try:
             props = jio.PropReader(str(n1).zfill(5),runid,transient="jet")
         except:
             continue
@@ -468,14 +460,6 @@ def separate_jets(runid):
         jet_first_time = props.read("time")[0]
 
         for n2 in range(3000):
-            try:
-                del sj_cells
-            except:
-                pass
-            try:
-                del sj_times
-            except:
-                pass
             if n2 == 2999:
                 non_sj_ids.append(n1)
                 break
