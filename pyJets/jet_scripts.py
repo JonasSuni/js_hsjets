@@ -580,7 +580,7 @@ def jet_paper_counter():
 
             # Conditions
             if props.read("time")[-1]-props.read("time")[0] + 0.5 > 5 and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
-                    count_list_list[n] += 1 # Iterate counter if conditions fulfilled
+                count_list_list[n] += 1 # Iterate counter if conditions fulfilled
 
 
     print(count_list_list)
