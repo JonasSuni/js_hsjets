@@ -306,7 +306,7 @@ class MMSReader:
         f = open(filepath,"r+")
         contents = f.read()
         f.close()
-        contents_list = contents.split("\r\n")[1:-1]
+        contents_list = contents.split("\n")[1:-1]
         contents_matrix = [line.split(",") for line in contents_list]
 
         self.data_arr = np.asarray(contents_matrix,dtype=float)
