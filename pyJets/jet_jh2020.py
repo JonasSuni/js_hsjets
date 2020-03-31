@@ -450,8 +450,10 @@ def separate_jets(runid):
     for n1 in range(3000):
         try:
             del jet_first_cells
+        except:
+            pass
+        try:
             del jet_first_time
-            del props
         except:
             pass
         try:
@@ -467,10 +469,11 @@ def separate_jets(runid):
 
         for n2 in range(3000):
             try:
-                del props_sj
                 del sj_cells
+            except:
+                pass
+            try:
                 del sj_times
-                del matched_cells
             except:
                 pass
             if n2 == 2999:
