@@ -456,13 +456,30 @@ def separate_jets(runid):
         if "splinter" in props.meta:
             continue
 
-        x_0 = props.read("x_mean")[0]
-        xbs_0 = props.read("xbs_ch")[0]
+        jet_first_cells = props.get_cells()[0]
+        jet_first_time = props.read("time")[0]
 
-        if x_0-xbs_0 > 0:
-            sj_jet_ids.append(n1)
-        else:
-            non_sj_ids.append(n1)
+        for n2 in range(3000):
+            if n2 == 3000:
+                non_sj_ids.append(n1)
+                break
+
+            try:
+                props_sj = jio.PropReader(str(n2).zfill(5),runid,transient="slamsjet")
+            except:
+                continue
+
+            sj_cells = props_sj.get_cells()
+            sj_times = props_sj.read("time")
+            try:
+                matched_cells = sj_cells[sj_times==jet_first_time]
+            except:
+                continue
+
+            if np.intersect1d(jet_first_cells,matched_cells).size > 0.25*len(jet_first_cells):
+                sj_jet_ids.append(n1)
+                break
+
 
     return [np.array(sj_jet_ids),np.array(non_sj_ids)]
 
@@ -484,7 +501,7 @@ def find_slams_of_jet(runid):
             except:
                 continue
             slams_first_cells = props_slams.get_cells()[0]
-            if np.intersect1d(slams_first_cells,sj_first_cells).size > 0.75*len(slams_first_cells):
+            if np.intersect1d(slams_first_cells,sj_first_cells).size > 0.25*len(slams_first_cells):
                 sj_ids.append(n1)
                 slams_ids.append(n2)
                 break
