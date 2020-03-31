@@ -503,6 +503,7 @@ def jet_pos_graph(runid):
 def slams_jet_counter():
 
     runids = ["ABA","ABC","AEA","AEC"]
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
 
     time_per_run = np.array([839-580,1179-580,1339-580,879-580])/2.0
 
@@ -514,7 +515,7 @@ def slams_jet_counter():
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
-                if "splinter" not in props.meta:
+                if "splinter" not in props.meta and max(props.read("r_mean")) > run_cutoff_dict[runids[n]]:
                     jet_counter[runids.index(runid)] += 1
             except:
                 pass
