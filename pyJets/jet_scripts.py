@@ -518,7 +518,7 @@ def slams_jet_counter():
                 props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
                 if "splinter" not in props.meta and max(props.read("r_mean")) > run_cutoff_dict[runid]:
                     jet_counter[runids.index(runid)] += 1
-                    if props.read("sep_from_bs") < 0.5:
+                    if props.read("sep_from_bs")[0] < 0.5:
                         bs_jet_counter[runids.index(runid)] += 1
             except:
                 pass
