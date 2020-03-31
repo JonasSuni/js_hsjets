@@ -329,7 +329,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
-        ax.plot(eventx_arr,time_arr,"o",color="red")
+        ax.plot(eventx_arr,time_arr,"o",color="red",markersize=2)
+        ax.set_xlim(x_arr[0],x_arr[-1])
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
