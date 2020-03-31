@@ -509,6 +509,7 @@ def slams_jet_counter():
 
     slams_counter = np.array([0,0,0,0],dtype=int)
     jet_counter = np.array([0,0,0,0],dtype=int)
+    bs_jet_counter = np.array([0,0,0,0],dtype=int)
     slamsjet_counter = np.array([0,0,0,0],dtype=int)
 
     for n in range(0,3000):
@@ -517,6 +518,8 @@ def slams_jet_counter():
                 props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
                 if "splinter" not in props.meta and max(props.read("r_mean")) > run_cutoff_dict[runid]:
                     jet_counter[runids.index(runid)] += 1
+                    if props.read("sep_from_bs") < 0.5:
+                        bs_jet_counter[runids.index(runid)] += 1
             except:
                 pass
 
@@ -546,6 +549,7 @@ def slams_jet_counter():
     print("            {}\n".format(slamsjet_counter/slams_counter.astype(float)))
     print("SLAMSJETS per jets:\n")
     print("            {}\n".format(slamsjet_counter/jet_counter.astype(float)))
+    print("BS Jets:    {}\n".format(bs_jet_counter))
 
     return None
 
