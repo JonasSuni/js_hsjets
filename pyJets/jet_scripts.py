@@ -537,8 +537,8 @@ def slams_jet_counter():
                 pass
 
     print("Runs:       ABA ABC AEA AEC\n")
-    print("Jets:       {}\n".format(jet_counter))
-    print("Freq [1/s]: {}\n".format(jet_counter/time_per_run))
+    print("Jets:       {}\n".format(bs_jet_counter))
+    print("Freq [1/s]: {}\n".format(bs_jet_counter/time_per_run))
     print("\n")
     print("SLAMS:      {}\n".format(slams_counter))
     print("Freq [1/s]: {}\n".format(slams_counter/time_per_run))
@@ -548,8 +548,8 @@ def slams_jet_counter():
     print("SLAMSJETS per SLAMS:\n")
     print("            {}\n".format(slamsjet_counter/slams_counter.astype(float)))
     print("SLAMSJETS per jets:\n")
-    print("            {}\n".format(slamsjet_counter/jet_counter.astype(float)))
-    print("BS Jets:    {}\n".format(bs_jet_counter))
+    print("            {}\n".format(slamsjet_counter/bs_jet_counter.astype(float)))
+    print("All Jets:    {}\n".format(jet_counter))
 
     return None
 
