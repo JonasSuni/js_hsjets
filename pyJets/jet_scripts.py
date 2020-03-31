@@ -759,6 +759,11 @@ def hack_2019_fig6(time_thresh=5):
 
 def hack_2019_fig6_alt(time_thresh=5):
 
+    if sys.version_info.major == 3:
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+    elif sys.version_info.major == 2:
+        mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
