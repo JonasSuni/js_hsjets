@@ -263,7 +263,10 @@ def event_for_mesh(runid,filenr,y):
     event_props = np.array(jio.eventprop_read(runid,filenr,transient="slamsjet"),dtype=float)
     x_arr = event_props[:,1]
     y_arr = event_props[:,2]
-    return x_arr[np.argmin(np.abs(y_arr-y))]
+    if np.min(np.abs(y_arr-y))<0.25:
+        return x_arr[np.argmin(np.abs(y_arr-y))]
+    else:
+        return np.nan
 
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none"):
 
