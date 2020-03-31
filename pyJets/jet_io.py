@@ -121,6 +121,12 @@ class PropReader:
                 p = jx.mag_pause_jonas(self.runid,int(t[n]*2))[::-1]
                 x_mp[n] = np.polyval(p,y[n])
             return x_mp
+        elif name == "r_mean":
+            x,y,z = self.read("x_mean"),self.read("y_mean"),self.read("z_mean")
+            return np.linalg.norm([x,y,z],axis=0)
+        elif name == "sep_from_bs":
+            x,x_size,x_bs = self.read("x_mean"),self.read("size_rad"),self.read("bs_distance")
+            return np.abs(np.abs(x-x_bs)-x_size/2.0)
         else:
             print("Variable not found!")
             return None
