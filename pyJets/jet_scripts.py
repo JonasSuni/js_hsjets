@@ -767,7 +767,7 @@ def hack_2019_fig6_alt(time_thresh=5):
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
-    bins_list = np.array([np.linspace(time_thresh,60,15+1),np.linspace(0,0.5,20+1),np.linspace(0,5,20+1)])
+    bins_list = np.array([np.linspace(time_thresh,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)])
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
@@ -793,7 +793,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
         ax.legend(fontsize=10,frameon=False)
         ax.set_xlabel(label_list[col],fontsize=15)
-        ax.set_ylim(0,0.5)
+        ax.set_ylim(0,0.75)
 
 
     ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
