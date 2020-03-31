@@ -258,11 +258,13 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
     return None
 
-def event_for_mesh(runid,filenr,y):
+def event_for_mesh(runid,filenr,y,minx,maxx):
 
     event_props = np.array(jio.eventprop_read(runid,filenr,transient="slamsjet"),dtype=float)
     x_arr = event_props[:,1]
     y_arr = event_props[:,2]
+    y_arr = y_arr[np.logical_and(x_arr<maxx,x_arr>minx)]
+    x_arr = x_arr[np.logical_and(x_arr<maxx,x_arr>minx)]
     if np.min(np.abs(y_arr-y))<0.5:
         return x_arr[np.argmin(np.abs(y_arr-y))]
     else:
@@ -289,7 +291,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
 
-    eventx_arr = np.array([event_for_mesh(runid,fnr,y) for fnr in np.arange(start,stop+1,dtype=int)])
+    eventx_arr = np.array([event_for_mesh(runid,fnr,y,x_arr[0],x_arr[-1]) for fnr in np.arange(start,stop+1,dtype=int)])
 
     rho_sw = 3.3e6
     T_sw = 0.5e6
