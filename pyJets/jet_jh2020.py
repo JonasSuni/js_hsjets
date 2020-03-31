@@ -460,7 +460,7 @@ def separate_jets(runid):
         jet_first_time = props.read("time")[0]
 
         for n2 in range(3000):
-            if n2 == 3000:
+            if n2 == 2999:
                 non_sj_ids.append(n1)
                 break
 
@@ -472,7 +472,7 @@ def separate_jets(runid):
             sj_cells = props_sj.get_cells()
             sj_times = props_sj.read("time")
             try:
-                matched_cells = sj_cells[sj_times==jet_first_time]
+                matched_cells = np.array(sj_cells)[sj_times==jet_first_time]
             except:
                 continue
 
