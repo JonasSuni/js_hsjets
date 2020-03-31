@@ -258,6 +258,12 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
     return None
 
+def event_for_mesh(runid,filenr,y):
+
+    event_props = np.array(jio.eventprop_read(runid,filenr,transient="slamsjet"),dtype=float)
+    x_arr = event_props[:,1]
+    y_arr = event_props[:,2]
+    return x_arr[np.argmin(np.abs(y_arr-y))]
 
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none"):
 
@@ -279,6 +285,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
+
+    eventx_arr = np.array([event_for_mesh(runid,fnr,y) for fnr in np.arange(start,stop+1,dtype=int)])
 
     rho_sw = 3.3e6
     T_sw = 0.5e6
@@ -318,6 +326,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
+        ax.plot(eventx_arr,time_arr,"o",color="red")
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
             ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
