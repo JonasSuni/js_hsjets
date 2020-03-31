@@ -476,7 +476,7 @@ def separate_jets(runid):
             except:
                 continue
 
-            if np.intersect1d(jet_first_cells,matched_cells).size > 0.25*len(jet_first_cells):
+            if np.intersect1d(jet_first_cells,matched_cells).size > 0.05*len(jet_first_cells):
                 sj_jet_ids.append(n1)
                 break
 
