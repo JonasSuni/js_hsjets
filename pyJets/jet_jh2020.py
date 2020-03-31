@@ -444,6 +444,9 @@ def jh2020_fig2(xlim=[200.,399.5]):
 
 def separate_jets(runid):
 
+    runids = ["ABA","ABC","AEA","AEC"]
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
+
     sj_jet_ids = []
     non_sj_ids = []
 
@@ -454,6 +457,9 @@ def separate_jets(runid):
             continue
 
         if "splinter" in props.meta:
+            continue
+
+        if max(props.read("r_mean")) <= run_cutoff_dict[runid]:
             continue
 
         jet_first_cells = props.get_cells()[0]
