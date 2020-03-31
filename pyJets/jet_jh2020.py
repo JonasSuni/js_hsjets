@@ -488,7 +488,7 @@ def separate_jets(runid):
             sj_cells = props_sj.get_cells()
             sj_times = props_sj.read("time")
             try:
-                matched_cells = sj_cells[sj_times==jet_first_time]
+                matched_cells = sj_cells[np.where(sj_times==jet_first_time)[0][0]]
             except:
                 continue
 
