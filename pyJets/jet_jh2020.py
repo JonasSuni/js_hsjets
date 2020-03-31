@@ -263,7 +263,7 @@ def event_for_mesh(runid,filenr,y):
     event_props = np.array(jio.eventprop_read(runid,filenr,transient="slamsjet"),dtype=float)
     x_arr = event_props[:,1]
     y_arr = event_props[:,2]
-    if np.min(np.abs(y_arr-y))<0.25:
+    if np.min(np.abs(y_arr-y))<0.5:
         return x_arr[np.argmin(np.abs(y_arr-y))]
     else:
         return np.nan
