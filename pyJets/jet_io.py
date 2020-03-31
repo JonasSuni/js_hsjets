@@ -104,7 +104,7 @@ class PropReader:
             x,y,z = self.read("x_vmax")[-1],self.read("y_vmax")[-1],self.read("z_vmax")[-1]
             t = self.read("time")[-1]
             outp = np.ones(t.shape)
-            pfit = ja.bow_shock_markus(self.runid,int(t*2))[::-1]
+            pfit = jx.bow_shock_jonas(self.runid,int(t*2))[::-1]
             x_bs = np.polyval(pfit,np.linalg.norm([y,z]))
             return outp*(x-x_bs)
         elif name == "bs_distance":
@@ -204,7 +204,7 @@ class Transient:
             t = self.times
             x_birth,y_birth = x[0],y[0]
             x_death,y_death = x[-1],y[-1]
-            bsp_birth,bsp_death = [jx.bow_shock_jonas(self.runid,int(t[0]*2))[::-1],ja.bow_shock_jonas(self.runid,int(t[-1]*2))[::-1]]
+            bsp_birth,bsp_death = [jx.bow_shock_jonas(self.runid,int(t[0]*2))[::-1],jx.bow_shock_jonas(self.runid,int(t[-1]*2))[::-1]]
             x_bs = [np.polyval(jx.bow_shock_jonas(self.runid,int(t[n]*2))[::-1],y[n]) for n in range(len(y))]
             t_crossing = t[np.argmin(np.abs(np.array(x)-np.array(x_bs)))]
             bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
