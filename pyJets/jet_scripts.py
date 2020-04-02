@@ -1443,14 +1443,11 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
 
     for n in range(1,3000):
         print(n)
-        print(time.time()-t_init)
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580)
             except:
                 continue
-
-            print(time.time()-t_init)
 
             if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
                 continue
@@ -1463,6 +1460,8 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
             sorted_args = np.argsort(xdist_arr)
             xdist_arr.sort()
 
+            print(time.time()-t_init)
+
             for var in var_list:
                 idx = var_list.index(var)
                 var_arr = props.read(var)[sorted_args]
@@ -1471,7 +1470,6 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
                 res_arr = np.interp(epoch_arr,xdist_arr,var_arr,left=np.nan,right=np.nan)
                 SEA_arr_list[idx] = np.vstack((SEA_arr_list[idx],res_arr))
 
-                print(time.time()-t_init)
 
     SEA_arr_list = [SEA_arr[1:] for SEA_arr in SEA_arr_list]
 
@@ -1533,7 +1531,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25,ec="face")
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-2.1,0.5)
         ax.set_ylim(bottom=0)
