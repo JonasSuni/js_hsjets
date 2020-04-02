@@ -1524,7 +1524,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
-        ax.axvline(0,linestyle="dashed")
+        ax.axvline(0,linestyle="dashed",color="black")
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
@@ -1560,7 +1560,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
-        ax.axvline(0,linestyle="dashed")
+        ax.axvline(0,linestyle="dashed",color="black")
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
