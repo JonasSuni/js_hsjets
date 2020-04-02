@@ -788,7 +788,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
         labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
         color_arr = ["black","blue","red","green"]
-        color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
         ax.legend(fontsize=10,frameon=False)
@@ -1478,9 +1478,11 @@ def hack_2019_fig78(time_thresh=5):
         plt.style.use("classic")
         mpl.rcParams['text.usetex'] = True
         mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
-        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+        #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black","blue","red","green"])
     elif sys.version_info.major == 2:
-        mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        #mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        mpl.rcParams['axes.color_cycle'] = ["black","blue","red","green"]
 
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
@@ -1514,10 +1516,10 @@ def hack_2019_fig78(time_thresh=5):
         SEA_mean_AEA = SEA_mean_list_7_AEA[col]
         SEA_mean_AEC = SEA_mean_list_7_AEC[col]
 
-        ax.plot(epoch_arr,SEA_mean_ABA,color=jx.violet,label="ABA")
-        ax.plot(epoch_arr,SEA_mean_ABC,color=jx.medium_blue,label="ABC")
-        ax.plot(epoch_arr,SEA_mean_AEA,color=jx.dark_blue,label="AEA")
-        ax.plot(epoch_arr,SEA_mean_AEC,color=jx.orange,label="AEC")
+        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
+        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
+        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
+        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed")
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25,ec="face")
