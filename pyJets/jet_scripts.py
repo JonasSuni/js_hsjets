@@ -1438,15 +1438,15 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
 
     data_list = [[] for var in var_list]
 
-    for n in range(1,2500):
+    for n in range(1,3000):
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580)
             except:
                 continue
 
-            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
-                continue
+            #if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+            #    continue
 
             time_arr = props.read("time")
             xdist_arr = props.read("x_mean")-props.read("bs_distance")
