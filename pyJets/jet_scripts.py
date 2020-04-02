@@ -1562,7 +1562,7 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEC,color=jx.orange,label="AEC")
         ax.axvline(0,linestyle="dashed")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25,ec="face")
+        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
         ax.set_xlim(-2.1,0.5)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
