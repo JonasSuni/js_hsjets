@@ -666,6 +666,13 @@ def jet_paper_pos():
 
 def hack_2019_fig4(time_thresh=5):
 
+    if sys.version_info.major == 3:
+        #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black","blue","red","green"])
+    elif sys.version_info.major == 2:
+        #mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
+        mpl.rcParams['axes.color_cycle'] = ["black","blue","red","green"]
+
     vlas_norm = np.array([1,1,1,1,1,1/0.5,1/0.5])
     mms_norm = np.array([1,1,1,1,1,1.0e+6,1.0e+6])
     bins_list = np.array([np.linspace(0,1.6,10+1),np.linspace(1.5,7.5,10+1),np.linspace(0,1,10+1),np.linspace(0,3,10+1),np.linspace(0,12,10+1),np.linspace(0,15,10+1)])
@@ -1479,9 +1486,9 @@ def hack_2019_fig78(time_thresh=5):
     # specified centering variable
 
     if sys.version_info.major == 3:
-        plt.style.use("classic")
-        mpl.rcParams['text.usetex'] = True
-        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+        #plt.style.use("classic")
+        #mpl.rcParams['text.usetex'] = True
+        #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
         mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black","blue","red","green"])
     elif sys.version_info.major == 2:
