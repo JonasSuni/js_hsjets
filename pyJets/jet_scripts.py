@@ -1442,7 +1442,6 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
     data_list = [[] for var in var_list]
 
     for n in range(1,3000):
-        print(n)
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580)
