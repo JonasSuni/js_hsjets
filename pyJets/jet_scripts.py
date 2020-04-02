@@ -1452,15 +1452,11 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
             if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
                 continue
 
-            print(time.time()-t_init)
-
-            time_arr = props.read("time")
+            #time_arr = props.read("time")
             xdist_arr = props.read("x_mean")-props.read("bs_distance")
-            cent_arr = props.read(centering)
+            #cent_arr = props.read(centering)
             sorted_args = np.argsort(xdist_arr)
             xdist_arr.sort()
-
-            print(time.time()-t_init)
 
             for var in var_list:
                 idx = var_list.index(var)
