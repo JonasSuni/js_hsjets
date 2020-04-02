@@ -20,6 +20,7 @@ import jet_contours as jc
 import jetfile_make as jfm
 import jet_io as jio
 import jet_aux as jx
+import time
 
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
@@ -1425,6 +1426,8 @@ def h19_extra_1(runid,jetid):
 
 def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=5):
 
+    t_init = time.time()
+
     var_list = np.array(var_list,ndmin=1).tolist()
 
     epoch_arr = np.arange(0.5,-2.1,-0.05)
@@ -1439,14 +1442,20 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
     data_list = [[] for var in var_list]
 
     for n in range(1,3000):
+        print(n)
+        print(time.time()-t_init)
         for runid in runids:
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580)
             except:
                 continue
 
-            #if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
-            #    continue
+            print(time.time()-t_init)
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                continue
+
+            print(time.time()-t_init)
 
             time_arr = props.read("time")
             xdist_arr = props.read("x_mean")-props.read("bs_distance")
@@ -1461,6 +1470,8 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
                     var_arr /= ja.sw_normalisation(runid,var)
                 res_arr = np.interp(epoch_arr,xdist_arr,var_arr,left=np.nan,right=np.nan)
                 SEA_arr_list[idx] = np.vstack((SEA_arr_list[idx],res_arr))
+
+                print(time.time()-t_init)
 
     SEA_arr_list = [SEA_arr[1:] for SEA_arr in SEA_arr_list]
 
