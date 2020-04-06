@@ -629,8 +629,14 @@ def jh2020_movie(start,stop,var="pdyn"):
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5,3.0,6.6,1,10]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
+    sj_jet_ids,non_sj_ids = separate_jets("ABC")
 
     global filenr_g
+    global sj_jetobs
+    global non_sjobs
+
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="jet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="jet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"jh2020_movie/{}/".format(var)
     if not os.path.exists(outputdir):
@@ -665,17 +671,31 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
-    x_list = []
-    y_list = []
+    #x_list = []
+    #y_list = []
 
-    for n in range(3000):
-        try:
-            props = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
-        except:
-            continue
-        if filenr_g/2.0 in props.read("time"):
-            x_list.append(props.read_at_time("x_mean",filenr_g/2.0))
-            y_list.append(props.read_at_time("y_mean",filenr_g/2.0))
+    # for n in range(3000):
+    #     try:
+    #         props = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
+    #     except:
+    #         continue
+    #     if filenr_g/2.0 in props.read("time"):
+    #         x_list.append(props.read_at_time("x_mean",filenr_g/2.0))
+    #         y_list.append(props.read_at_time("y_mean",filenr_g/2.0))
+
+    sj_xlist = []
+    sj_ylist = []
+    non_xlist = []
+    non_ylist = []
+
+    for jetobj in sj_jetobs:
+        if filenr_g/2.0 in jetobj.read("time"):
+            sj_xlist.append(jetobj.read_at_time("x_mean",filenr_g/2.0))
+            sj_ylist.append(jetobj.read_at_time("y_mean",filenr_g/2.0))
+    for jetobj in non_sjobs:
+        if filenr_g/2.0 in jetobj.read("time"):
+            non_xlist.append(jetobj.read_at_time("x_mean",filenr_g/2.0))
+            non_ylist.append(jetobj.read_at_time("y_mean",filenr_g/2.0))
 
     bs_fit = jx.bow_shock_jonas("ABC",filenr_g)[::-1]
     mp_fit = jx.mag_pause_jonas("ABC",filenr_g)[::-1]
@@ -684,24 +704,27 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     x_mp = np.polyval(mp_fit,y_bs)
 
     bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
-    mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
+    #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)
 
-    xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=2)
+    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=2)
 
-    is_coords = jx.get_cell_coordinates("ABC",1814480)/r_e
-    os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
+    #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
-    is2 = jx.get_cell_coordinates("ABC",1814480+2000*30+10)/r_e
-    os2 = jx.get_cell_coordinates("ABC",1814540+2000*30+10)/r_e
+    #is_coords = jx.get_cell_coordinates("ABC",1814480)/r_e
+    #os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
+
+    #is2 = jx.get_cell_coordinates("ABC",1814480+2000*30+10)/r_e
+    #os2 = jx.get_cell_coordinates("ABC",1814540+2000*30+10)/r_e
 
     # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
 
-    cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
-    cut_through_plot2, = ax.plot([is2[0],os2[0]],[is2[1],os2[1]],color="black",linewidth=0.8)
+    #cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
+    #cut_through_plot2, = ax.plot([is2[0],os2[0]],[is2[1],os2[1]],color="black",linewidth=0.8)
 
 def jh20_slams_movie(start,stop,var="Pdyn",vmax=15e-9):
 
