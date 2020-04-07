@@ -456,10 +456,10 @@ def separate_jets(runid):
         except:
             continue
 
-        if "splinter" in props.meta:
-            continue
+        # if "splinter" in props.meta:
+        #     continue
 
-        if max(props.read("r_mean")) <= run_cutoff_dict[runid] or props.read("sep_from_bs")[0] > 0.5:
+        if props.read("sep_from_bs")[0] > 0.5:
             continue
 
         jet_first_cells = props.get_cells()[0]
