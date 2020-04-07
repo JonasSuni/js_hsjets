@@ -208,7 +208,7 @@ class Transient:
             x_bs = [np.polyval(jx.bow_shock_jonas(self.runid,int(t[n]*2))[::-1],y[n]) for n in range(len(y))]
             t_crossing = t[np.argmin(np.abs(np.array(x)-np.array(x_bs)))]
             bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
-            if t_crossing-t[0] >= 4.5 and t[-1]-t_crossing >= 4.5 and x_birth >= bsx_birth and x_death <= bsx_death:
+            if t_crossing-t[0] >= 1.5 and t[-1]-t_crossing >= 4.5 and x_birth >= bsx_birth and x_death <= bsx_death:
                 propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
             else:
                 print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
