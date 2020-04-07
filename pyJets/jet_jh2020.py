@@ -467,7 +467,7 @@ def separate_jets(runid):
 
         for n2 in range(3000):
             if n2 == 2999:
-                if "splinter" not in props.meta
+                if "splinter" not in props.meta:
                     non_sj_ids.append(n1)
                 break
 
