@@ -831,7 +831,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
                             jetobj.cellids.append(event)
                             jetobj.props.append(props_unsrt[events_unsrt.index(event)])
                             jetobj.times.append(float(n)/2)
-                            print("Updated jet "+jetobj.ID)
+                            #print("Updated jet "+jetobj.ID)
 
                             # Flag jet object
                             flags.append(jetobj.ID)
@@ -842,10 +842,22 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
 
                     else:
                         if check_threshold(jetobj.cellids[-1],event,threshold):
-                            jetobj.meta.append("merger")
-                            print("Killing jet {}".format(jetobj.ID))
-                            dead_jetobj_list.append(jetobj)
-                            jetobj_list.remove(jetobj)
+                            if transient != "slamsjet":
+                                jetobj.meta.append("merger")
+                                print("Killing jet {}".format(jetobj.ID))
+                                dead_jetobj_list.append(jetobj)
+                                jetobj_list.remove(jetobj)
+                            else:
+                                if "merger" not in jetobj.meta:
+                                    jetobj.meta.append("merger")
+                                # Append event to jet object properties
+                                jetobj.cellids.append(event)
+                                jetobj.props.append(props_unsrt[events_unsrt.index(event)])
+                                jetobj.times.append(float(n)/2)
+                                #print("Updated jet "+jetobj.ID)
+
+                                # Flag jet object
+                                flags.append(jetobj.ID)
                         else:
                             continue
 
@@ -855,17 +867,24 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
                         if check_threshold(jetobj.cellids[-2],event,threshold):
 
                             curr_id = str(counter).zfill(5)
-
-                            # Create new jet
-                            jetobj_new = Transient(curr_id,runid,float(n)/2,transient=transient)
-                            jetobj_new.meta.append("splinter")
-                            jetobj_new.cellids.append(event)
-                            jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
-                            jetobj_list.append(jetobj_new)
-                            curr_jet_temp_list.append(event)
-
                             # Iterate counter
                             counter += 1
+
+                            # Create new jet
+                            if transient != "slamsjet":
+                                jetobj_new = Transient(curr_id,runid,float(n)/2,transient=transient)
+                                jetobj_new.meta.append("splinter")
+                                jetobj_new.cellids.append(event)
+                                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                                jetobj_list.append(jetobj_new)
+                                curr_jet_temp_list.append(event)
+                            else:
+                                jetobj_new = copy.deepcopy(jetobj)
+                                jetobj_new.meta.append("splinter")
+                                jetobj_new.cellids[-1] = event
+                                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                                jetobj_list.append(jetobj_new)
+                                curr_jet_temp_list.append(event)
 
                             break
                         else:
