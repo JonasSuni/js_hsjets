@@ -882,7 +882,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
                                 jetobj_new = copy.deepcopy(jetobj)
                                 jetobj_new.meta.append("splinter")
                                 jetobj_new.cellids[-1] = event
-                                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                                jetobj_new.props[-1] = props_unsrt[events_unsrt.index(event)]
                                 jetobj_list.append(jetobj_new)
                                 curr_jet_temp_list.append(event)
 
