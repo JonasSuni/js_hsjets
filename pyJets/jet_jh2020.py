@@ -455,6 +455,8 @@ def sj_non_counter():
     print("Non-SJ Jets:   {}\n".format(count_arr[1]))
     print("Share:         {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
 
+    return np.reshape(data_arr,(4,2))
+
 def separate_jets(runid):
 
     runids = ["ABA","ABC","AEA","AEC"]
