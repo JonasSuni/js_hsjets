@@ -447,7 +447,7 @@ def sj_non_counter():
     runids = ["ABA","ABC","AEA","AEC"]
 
     data_arr = np.array([separate_jets(runid) for runid in runids]).flatten()
-    count_arr = np.arr([arr.size for arr in data_arr])
+    count_arr = np.array([arr.size for arr in data_arr])
     count_arr = np.reshape(count_arr,(4,2)).T
 
     print("Runs:       ABA ABC AEA AEC\n")
