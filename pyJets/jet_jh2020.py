@@ -442,6 +442,19 @@ def jh2020_fig2(xlim=[200.,399.5]):
     fig.savefig(homedir+"Figures/jh2020/fig2.png")
     plt.close(fig)
 
+def sj_non_counter():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    data_arr = np.array([separate_jets(runid) for runid in runids]).flatten()
+    count_arr = np.arr([arr.size for arr in data_arr])
+    count_arr = np.reshape(count_arr,(4,2)).T
+
+    print("Runs:       ABA ABC AEA AEC\n")
+    print("SJ Jets:       {}\n".format(count_arr[0]))
+    print("Non-SJ Jets:   {}\n".format(count_arr[1]))
+    print("Share:         {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
+
 def separate_jets(runid):
 
     runids = ["ABA","ABC","AEA","AEC"]

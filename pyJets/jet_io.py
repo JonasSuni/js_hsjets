@@ -687,7 +687,7 @@ def check_threshold(A,B,thresh):
 
     return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
 
-def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
+def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet",sj_fulltrack=False):
 
     if transient == "jet":
         outputdir = wrkdir_DNR+"working/jets/jets/"+runid
@@ -842,12 +842,7 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
 
                     else:
                         if check_threshold(jetobj.cellids[-1],event,threshold):
-                            if transient != "slamsjet":
-                                jetobj.meta.append("merger")
-                                print("Killing jet {}".format(jetobj.ID))
-                                dead_jetobj_list.append(jetobj)
-                                jetobj_list.remove(jetobj)
-                            else:
+                            if transient == "slamsjet" and sj_fulltrack:
                                 if "merger" not in jetobj.meta:
                                     jetobj.meta.append("merger")
                                 # Append event to jet object properties
@@ -858,6 +853,12 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
 
                                 # Flag jet object
                                 flags.append(jetobj.ID)
+                            else:
+                                jetobj.meta.append("merger")
+                                print("Killing jet {}".format(jetobj.ID))
+                                dead_jetobj_list.append(jetobj)
+                                jetobj_list.remove(jetobj)
+
                         else:
                             continue
 
@@ -871,19 +872,19 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet"):
                             counter += 1
 
                             # Create new jet
-                            if transient != "slamsjet":
-                                jetobj_new = Transient(curr_id,runid,float(n)/2,transient=transient)
-                                jetobj_new.meta.append("splinter")
-                                jetobj_new.cellids.append(event)
-                                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
-                                jetobj_list.append(jetobj_new)
-                                curr_jet_temp_list.append(event)
-                            else:
+                            if transient == "slamsjet" and sj_fulltrack:
                                 jetobj_new = copy.deepcopy(jetobj)
                                 jetobj_new.ID = curr_id
                                 jetobj_new.meta.append("splinter")
                                 jetobj_new.cellids[-1] = event
                                 jetobj_new.props[-1] = props_unsrt[events_unsrt.index(event)]
+                                jetobj_list.append(jetobj_new)
+                                curr_jet_temp_list.append(event)
+                            else:
+                                jetobj_new = Transient(curr_id,runid,float(n)/2,transient=transient)
+                                jetobj_new.meta.append("splinter")
+                                jetobj_new.cellids.append(event)
+                                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
                                 jetobj_list.append(jetobj_new)
                                 curr_jet_temp_list.append(event)
 
