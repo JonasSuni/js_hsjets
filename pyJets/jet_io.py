@@ -273,6 +273,44 @@ class Transient:
 
         return None
 
+def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,nbrs=[2,2,0]):
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(wrkdir_DNR+"working/jets/events/"+runid+"/"):
+        try:
+            os.makedirs(wrkdir_DNR+"working/jets/events/"+runid+"/")
+            os.makedirs(wrkdir_DNR+"working/SLAMS/events/"+runid+"/")
+            os.makedirs(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/")
+        except OSError:
+            pass
+
+    bulkpath = ja.find_bulkpath(runid)
+
+    for file_nr in range(start,stop+1):
+
+        # find correct file based on file number and run id
+
+        bulkname = "bulk."+str(file_nr).zfill(7)+".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file "+str(file_nr)+" not found, continuing")
+            continue
+
+        # open vlsv file for reading
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+        vlsvobj.optimize_open_file()
+
+        # create mask
+        if maskfile:
+            jet_msk = np.loadtxt(wrkdir_DNR+"working/jets/Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+            slams_msk = np.loadtxt(wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+            slamsjet_msk = np.loadtxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
+        else:
+            jet_msk,slams_msk,slamsjet_msk = ja.mask_maker(runid,file_nr,boxre,avgfile)
+
+        print("Current file number is " + str(file_nr))
+
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0],transient="jet"):
 
     if transient == "jet":
