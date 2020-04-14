@@ -282,6 +282,129 @@ def restrict_area(vlsvobj,boxre):
 
     return masked_ci
 
+def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
+
+    bulkpath = find_bulkpath(runid)
+    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+
+    if bulkname not in os.listdir(bulkpath):
+        print("Bulk file "+str(filenumber)+" not found, exiting.")
+        return 1
+
+    # open vlsv file for reading
+    vlsvreader = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    origid = vlsvreader.read_variable("CellID")
+    sorigid = origid[np.argsort(origid)]
+    proton_bool = False
+
+    if type(vlsvreader.read_variable("rho")) is not np.ndarray:
+        pdyn = vlsvreader.read_variable("proton/Pdyn")[np.argsort(origid)]
+        B = vlsvreader.read_variable("B")[np.argsort(origid)]
+        pr_rhonbs = vlsvreader.read_variable("RhoNonBackstream")[np.argsort(origid)]
+        pr_PTDNBS = vlsvreader.read_variable("PTensorNonBackstreamDiagonal")[np.argsort(origid)]
+        proton_bool = True
+    else:
+        pdyn = vlsvreader.read_variable("Pdyn")[np.argsort(origid)]
+        B = vlsvreader.read_variable("B")[np.argsort(origid)]
+        pr_rhonbs = vlsvreader.read_variable("RhoNonBackstream")[np.argsort(origid)]
+        pr_PTDNBS = vlsvreader.read_variable("PTensorNonBackstreamDiagonal")[np.argsort(origid)]
+
+    T_sw = 0.5e+6
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    sw_pars = sw_par_dict(runid)
+    rho_sw = sw_pars[0]
+    pdyn_sw = sw_pars[3]
+    B_sw = sw_pars[2]
+
+    # initialise time average of dynamic pressure
+    tpdynavg = np.zeros(pdyn.shape)
+
+    # range of timesteps to calculate average of
+    timerange = range(filenumber-180,filenumber+180+1)
+
+    missing_file_counter = 0
+
+    vlsvobj_list = []
+
+    if avgfile:
+        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.npy")
+    else:
+
+        for n_t in timerange:
+
+            # exclude the main timestep
+            if n_t == filenumber:
+                continue
+
+            # find correct file path for current time step
+            tfile_name = "bulk."+str(n_t).zfill(7)+".vlsv"
+
+            if tfile_name not in os.listdir(bulkpath):
+                missing_file_counter += 1
+                print("Bulk file "+str(n_t)+" not found, continuing")
+                continue
+
+            # open file for current time step
+            vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+tfile_name))
+
+        for f in vlsvobj_list:
+
+            f.optimize_open_file()
+
+            # if file has separate populations, read proton population
+            if proton_bool:
+                tpdyn = f.read_variable("proton/Pdyn")
+            else:
+                tpdyn = f.read_variable("Pdyn")
+
+            # read cellids for current time step
+            cellids = f.read_variable("CellID")
+
+            # sort dynamic pressures
+            otpdyn = tpdyn[cellids.argsort()]
+
+            tpdynavg = np.add(tpdynavg,otpdyn)
+
+            f.optimize_clear_fileindex_for_cellid()
+            f.optimize_close_file()
+
+        # calculate time average of dynamic pressure
+        tpdynavg /= (len(timerange)-1-missing_file_counter)
+
+    # prevent divide by zero errors
+    tpdynavg[tpdynavg == 0.0] = 1.0e-27
+
+    slams = np.ma.masked_greater_equal(Bmag,1.4*B_sw)
+    slams.mask[pr_TNBS>3.0*T_sw] = False
+    jet = np.ma.masked_greater_equal(pdyn,2.0*tpdynavg)
+    jet.mask[pr_TNBS<3.0*T_sw] = False
+    slamsjet = np.logical_or(slams,jet)
+
+    jet_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
+    slams_ci = np.ma.array(sorigid,mask=~slams.mask).compressed()
+    slamsjet_ci = np.ma.array(sorigid,mask=~slamsjet.mask).compressed()
+
+    restr_ci = restrict_area(vlsvreader,boxre)
+
+    if not os.path.exists(wrkdir_DNR+"working/jets/Masks/"+runid):
+        os.makedirs(wrkdir_DNR+"working/jets/Masks/"+runid)
+        os.makedirs(wrkdir_DNR+"working/SLAMS/Masks/"+runid)
+        os.makedirs(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid)
+
+    np.savetxt(wrkdir_DNR+"working/jets/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(jet_ci,restr_ci))
+    np.savetxt(wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slams_ci,restr_ci))
+    np.savetxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slamsjet_ci,restr_ci))
+
+    return (np.intersect1d(jet_ci,restr_ci),np.intersect1d(slams_ci,restr_ci),np.intersect1d(slamsjet_ci,restr_ci))
+
 def make_cust_mask_opt(filenumber,runid,halftimewidth=180,boxre=[6,18,-8,6],avgfile=False,transient="jet"):
     # finds cellids of cells that fulfill the specified criterion and the specified
     # X,Y-limits

@@ -162,6 +162,62 @@ class PropReader:
 
         return self.read(name)[self.amax_index()]
 
+class NeoTransient:
+
+    # Class for identifying and handling individual jets and their properties
+
+    def __init__(self,ID,runid,birthday,transient="jet"):
+
+        self.ID = ID # Should be a string of 5 digits
+        self.runid = runid # Should be a string of 3 letters
+        self.birthday = birthday # Should be a float of accuracy to half a second
+        self.cellids = []
+        self.times = [birthday]
+        self.props = []
+        self.meta = ["META"]
+        self.transient = transient
+
+        print("Created jet with ID "+self.ID)
+
+    def return_cellid_string(self):
+        # Return string of lists of cellids for printing to file
+
+        return "\n".join([",".join(list(map(str,l))) for l in self.cellids])
+
+    def return_time_string(self):
+        # Return string of times for printing to file
+
+        return "\n".join(list(map(str,self.times)))
+
+    def jetprops_write(self,start):
+
+        if self.transient != "slamsjet":
+            if self.times[-1]-self.times[0] >= 4.5:
+                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
+            else:
+                print("Transient {} too short-lived, propfile not written!".format(self.ID))
+        else:
+            if self.times[-1]-self.times[0] < 4.5:
+                print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
+                return None
+            x = np.array(self.props)[:,1]
+            y = np.array(self.props)[:,2]
+            t = self.times
+            x_birth,y_birth = x[0],y[0]
+            x_death,y_death = x[-1],y[-1]
+            bsp_birth,bsp_death = [jx.bow_shock_jonas(self.runid,int(t[0]*2))[::-1],jx.bow_shock_jonas(self.runid,int(t[-1]*2))[::-1]]
+            x_bs = [np.polyval(jx.bow_shock_jonas(self.runid,int(t[n]*2))[::-1],y[n]) for n in range(len(y))]
+            t_crossing = t[np.argmin(np.abs(np.array(x)-np.array(x_bs)))]
+            bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
+            if t_crossing-t[0] >= 1.5 and t[-1]-t_crossing >= 1.5 and x_birth >= bsx_birth and x_death <= bsx_death:
+                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
+            else:
+                print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
+                return None
+
+
+        return None
+
 class Transient:
     # Class for identifying and handling individual jets and their properties
 
