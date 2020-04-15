@@ -314,6 +314,29 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
 
         print("Current file number is " + str(file_nr))
 
+        # sort jets
+        jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,neighborhood_reach=nbrs)
+
+        props = [[float(file_nr)/2.0]+line for line in props_inc]
+
+        eventprop_write(runid,file_nr,props,transient="slamsjet")
+
+        # erase contents of output file
+        open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","w").close()
+
+        # open output file
+        fileobj = open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","a")
+
+        # write jets to outputfile
+        for jet in jets:
+
+            fileobj.write(",".join(list(map(str,jet)))+"\n")
+
+        fileobj.close()
+        vlsvobj.optimize_close_file()
+
+    return None
+
 def jet_maker(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=False,nbrs=[2,2,0],transient="jet"):
 
     if transient == "jet":
