@@ -285,10 +285,10 @@ def restrict_area(vlsvobj,boxre):
 def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
 
     bulkpath = find_bulkpath(runid)
-    bulkname = "bulk."+str(filenumber).zfill(7)+".vlsv"
+    bulkname = "bulk."+str(filenr).zfill(7)+".vlsv"
 
     if bulkname not in os.listdir(bulkpath):
-        print("Bulk file "+str(filenumber)+" not found, exiting.")
+        print("Bulk file "+str(filenr)+" not found, exiting.")
         return 1
 
     # open vlsv file for reading
@@ -328,14 +328,14 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
     tpdynavg = np.zeros(pdyn.shape)
 
     # range of timesteps to calculate average of
-    timerange = range(filenumber-180,filenumber+180+1)
+    timerange = range(filenr-180,filenr+180+1)
 
     missing_file_counter = 0
 
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenumber)+"_pdyn.npy")
+        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenr)+"_pdyn.npy")
     else:
 
         for n_t in timerange:
