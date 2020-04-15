@@ -357,7 +357,7 @@ def get_neighs(runid,cells,neighborhood_reach=[1,1,0]):
         for b in range(-neighborhood_reach[1],neighborhood_reach[1]+1):
             for c in range(-neighborhood_reach[2],neighborhood_reach[2]+1):
                 new_cells = cells+a
-                new_cells = new_cells[new_cells//x_size==cells//x_size]
+                new_cells = new_cells[(new_cells-1)//x_size==(cells-1)//x_size]
                 new_cells = new_cells[np.logical_and((new_cells>0),(new_cells<=x_size*y_size))]
                 new_cells = new_cells+x_size*b
                 new_cells = new_cells[np.logical_and((new_cells>0),(new_cells<=x_size*y_size))]
