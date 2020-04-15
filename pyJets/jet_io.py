@@ -278,6 +278,10 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
     global runid_g
     runid_g = runid
 
+    global rho_sw_g
+
+    rho_sw_g = jx.sw_par_dict(runid)[0]
+
     # make outputdir if it doesn't already exist
     if not os.path.exists(wrkdir_DNR+"working/jets/events/"+runid+"/"):
         try:
