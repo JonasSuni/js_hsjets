@@ -66,7 +66,7 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
     slams_mask = (Bmag > 1.4*B_sw).astype(int)
 
     ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
-    ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="red")
+    ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
 
 def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
     # Plot jet countours and positions
