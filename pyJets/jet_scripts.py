@@ -44,13 +44,15 @@ except:
 
 def plot_new_sj():
 
-    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="Mmsx",vmin=0,vmax=1,colormap="parula",external=nsj_ext,pass_vars=["B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
+    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="Mmsx",vmin=0,vmax=1,colormap="parula",external=nsj_ext,pass_vars=["Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
 def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     B = pass_maps["B"]
     pr_rhonbs = pass_maps["RhoNonBackstream"]
     pr_PTDNBS = pass_maps["PTensorNonBackstreamDiagonal"]
+    rho = pass_maps["rho"]
+    mmsx = pass_maps["Mmsx"]
 
     T_sw = 0.5e+6
     B_sw = 5.0e-9
@@ -63,7 +65,9 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
     Bmag = np.linalg.norm(B,axis=-1)
 
     ch_mask = (pr_TNBS>2*T_sw).astype(int)
-    slams_mask = (Bmag > 1.7*B_sw).astype(int)
+    slams_mask = (Bmag > 1.5*B_sw).astype(int)
+    slams_mask[rho>2*3.3e6] = 0
+    slams_mask[mmsx>1] = 0
 
     ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
     ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
