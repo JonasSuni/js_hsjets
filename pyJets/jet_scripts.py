@@ -67,7 +67,7 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
     ch_mask = (pr_TNBS>2*T_sw).astype(int)
     slams_mask = (Bmag > 1.5*B_sw).astype(int)
     slams_mask[rho>2*3.3e6] = 0
-    slams_mask[mmsx>1] = 0
+    slams_mask[mmsx<1] = 0
 
     ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
     ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
