@@ -359,7 +359,7 @@ def get_neighs(runid,cells,neighborhood_reach=[1,1,0]):
                 new_cells = cells+a
                 new_cells = new_cells[new_cells//x_size==cells//x_size]
                 new_cells = new_cells+x_size*b
-                new_cells = new_cells[np.logical_and((new_cells>=0),(new_cells<x_size*y_size))]
+                new_cells = new_cells[np.logical_and((new_cells>0),(new_cells<=x_size*y_size))]
                 out_cells = np.append(out_cells,new_cells)
 
     return np.unique(out_cells).astype(int)
