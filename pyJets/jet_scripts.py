@@ -42,6 +42,31 @@ except:
 
 ###TEMPORARY SCRIPTS HERE###
 
+def plot_new_sj():
+
+    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],draw=1,var="Mmsx",vmin=0,vmax=1,colormap="parula",external=nsj_ext,pass_vars=["B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
+
+def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
+
+    B = pass_maps["B"]
+    pr_rhonbs = pass_maps["RhoNonBackstream"]
+    pr_PTDNBS = pass_maps["PTensorNonBackstreamDiagonal"]
+
+    T_sw = 0.5e+6
+    B_sw = 5.0e-9
+    epsilon = 1.e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
+
+    Bmag = np.linalg.norm(B,axis=-1)
+
+    ch_mask = (pr_TNBS>3*T_sw).astype(int)
+    slams_mask = (Bmag > 1.4*B_sw).astype(int)
+
+    ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
+    ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="red")
 
 def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
     # Plot jet countours and positions
