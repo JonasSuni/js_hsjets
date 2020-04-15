@@ -44,7 +44,7 @@ except:
 
 def plot_new_sj():
 
-    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="Mmsx",vmin=0,vmax=1,colormap="parula",external=nsj_ext,pass_vars=["Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
+    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="Bz",vmin=-5e-9,vmax=5e-9,colormap="parula",external=nsj_ext,pass_vars=["Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
 def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
