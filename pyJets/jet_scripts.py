@@ -44,7 +44,7 @@ except:
 
 def plot_new_sj():
 
-    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="B",operator="x",vmin=-5e-9,vmax=5e-9,colormap="parula",external=nsj_ext,pass_vars=["Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
+    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="B",operator="x",vmin=-5e-9,vmax=5e-9,colormap="parula",external=nsj_ext,pass_vars=["Pdyn","Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
 def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
@@ -53,11 +53,13 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
     pr_PTDNBS = pass_maps["PTensorNonBackstreamDiagonal"]
     rho = pass_maps["rho"]
     mmsx = pass_maps["Mmsx"]
+    pdyn = pass_maps["Pdyn"]
 
     T_sw = 0.5e+6
     B_sw = 5.0e-9
     epsilon = 1.e-10
     kb = 1.38065e-23
+    pd_sw = m_p*3.3e6*600e3*600e3
 
     pr_pressurenbs = (1.0/3.0) * (pr_PTDNBS.sum(-1))
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
@@ -66,8 +68,8 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     ch_mask = (pr_TNBS>2*T_sw).astype(int)
     slams_mask = (Bmag > 1.5*B_sw).astype(int)
-    slams_mask[rho>1.5*3.3e6] = 0
-    slams_mask[mmsx<1] = 0
+    slams_mask[pdyn<1.25*pd_sw] = 0
+    #slams_mask[mmsx<1] = 0
 
     ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
     ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
