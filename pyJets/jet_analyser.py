@@ -384,6 +384,7 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
 
     slams = np.ma.masked_greater_equal(Bmag,1.4*B_sw)
     slams.mask[pr_TNBS>3.0*T_sw] = False
+    slams.mask[pdyn<1.2*pd_sw] = False
     jet = np.ma.masked_greater_equal(pdyn,2.0*tpdynavg)
     jet.mask[pr_TNBS<3.0*T_sw] = False
     slamsjet = np.logical_or(slams,jet)
