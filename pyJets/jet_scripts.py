@@ -66,12 +66,12 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     Bmag = np.linalg.norm(B,axis=-1)
 
-    ch_mask = (pr_TNBS>2*T_sw).astype(int)
+    #ch_mask = (pr_TNBS>2*T_sw).astype(int)
     slams_mask = (Bmag > 1.4*B_sw).astype(int)
     slams_mask[pdyn<1.2*pd_sw] = 0
-    slams_mask[mmsx<1] = 0
+    slams_mask[pr_TNBS>3*T_sw] = 0
 
-    ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
+    #ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
     ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors="black")
 
 def jet_plotter(start,stop,runid,vmax=1.5,boxre=[6,18,-8,6],transient="jet"):
