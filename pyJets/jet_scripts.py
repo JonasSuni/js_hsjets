@@ -44,7 +44,7 @@ except:
 
 def plot_new_sj():
 
-    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="B",operator="z",vmin=-5e-9,vmax=5e-9,colormap="parula",external=nsj_ext,pass_vars=["Pdyn","Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
+    pt.plot.plot_colormap(filename="/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv",usesci=0,lin=1,boxre=[6,18,-8,6],var="B",operator="y",vmin=-5e-9,vmax=5e-9,colormap="parula",external=nsj_ext,pass_vars=["Pdyn","Mmsx","rho","B","RhoNonBackstream","PTensorNonBackstreamDiagonal"])
 
 def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
@@ -68,7 +68,7 @@ def nsj_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
     #ch_mask = (pr_TNBS>2*T_sw).astype(int)
     slams_mask = (Bmag > 1.4*B_sw).astype(int)
-    slams_mask[pdyn<1.1*pd_sw] = 0
+    slams_mask[pdyn<1.15*pd_sw] = 0
     slams_mask[pr_TNBS>3*T_sw] = 0
 
     #ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors="red")
