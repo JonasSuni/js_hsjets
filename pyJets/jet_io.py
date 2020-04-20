@@ -831,6 +831,183 @@ def check_threshold(A,B,thresh):
 
     return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
 
+def jet_tracker(runid,start,stop,threshold=0.5):
+
+    outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # Read initial event files
+    events_old = eventfile_read(runid,start,transient="slamsjet")
+    old_props = eventprop_read(runid,start,transient="slamsjet")
+    events_unsrt = eventfile_read(runid,start+1,transient="slamsjet")
+    props_unsrt = eventprop_read(runid,start+1,transient="slamsjet")
+
+    # Initialise list of jet objects
+    jetobj_list = []
+    dead_jetobj_list = []
+
+    # Initialise unique ID counter
+    counter = 1
+
+    # Print current time
+    print("t = "+str(float(start+1)/2)+"s")
+
+    # Look for jets at bow shock
+    for event in events_unsrt:
+
+        for old_event in events_old:
+
+            if check_threshold(old_event,event,threshold):
+
+                # Create unique ID
+                curr_id = str(counter).zfill(5)
+
+                # Create new jet object
+
+                jetobj_new = NeoTransient(curr_id,runid,float(start)/2,transient="slamsjet")
+
+                # Append current events to jet object properties
+                jetobj_new.cellids.append(old_event)
+                jetobj_new.cellids.append(event)
+                jetobj_new.props.append(old_props[old_events.index(old_event)])
+                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                jetobj_new.times.append(float(start+1)/2)
+
+                jetobj_list.append(jetobj_new)
+
+                # Iterate counter
+                counter += 1
+
+                break
+
+    # Track jets
+    for n in range(start+2,stop+1):
+
+        for jetobj in jetobj_list:
+            if float(n)/2 - jetobj.times[-1] + 0.5 > 5:
+                print("Killing jet {}".format(jetobj.ID))
+                dead_jetobj_list.append(jetobj)
+                jetobj_list.remove(jetobj)
+
+        # Print  current time
+        print("t = "+str(float(n)/2)+"s")
+
+        events_old = events_unsrt
+        old_props = props_unsrt
+
+        # Initialise flags for finding splintering jets
+        flags = []
+
+        # Read event file for current time step
+        events_unsrt = eventfile_read(runid,n,transient="slamsjet")
+        props_unsrt = eventprop_read(runid,n,transient="slamsjet")
+        events = sorted(events_unsrt,key=len)
+        events = events[::-1]
+
+        # Iniatilise list of cells currently being tracked
+        curr_jet_temp_list = []
+
+        # Update existing jets
+        for event in events:
+
+            for jetobj in jetobj_list:
+
+                if jetobj.ID not in flags:
+
+                    if check_threshold(jetobj.cellids[-1],event,threshold):
+
+                        # Append event to jet object properties
+                        jetobj.cellids.append(event)
+                        jetobj.props.append(props_unsrt[events_unsrt.index(event)])
+                        jetobj.times.append(float(n)/2)
+                        #print("Updated jet "+jetobj.ID)
+
+                        flags.append(jetobj.ID)
+                        if event in curr_jet_temp_list:
+                            if "merger" not in jetobj.meta:
+                                jetobj.meta.append("merger")
+                                jetobj.merge_time = float(n)/2
+                        else:
+                            curr_jet_temp_list.append(event)
+
+
+                else:
+                    if event not in curr_jet_temp_list:
+
+                        if check_threshold(jetobj.cellids[-2],event,threshold):
+
+                            curr_id = str(counter).zfill(5)
+                            # Iterate counter
+                            counter += 1
+
+                            jetobj_new = copy.deepcopy(jetobj)
+                            jetobj_new.ID = curr_id
+                            if "splinter" not in jetobj_new.meta:
+                                jetobj_new.meta.append("splinter")
+                                jetobj_new.splinter_time = float(n)/2
+                            jetobj_new.cellids[-1] = event
+                            jetobj_new.props[-1] = props_unsrt[events_unsrt.index(event)]
+                            jetobj_list.append(jetobj_new)
+                            curr_jet_temp_list.append(event)
+
+                            break
+                        else:
+                            continue
+
+                    else:
+                        continue
+
+        # Look for new jets at bow shock
+        for event in events:
+
+            if event not in curr_jet_temp_list:
+
+                for old_event in events_old:
+
+                    if check_threshold(old_event,event,threshold):
+
+                        # Create unique ID
+                        curr_id = str(counter).zfill(5)
+
+                        # Create new jet object
+                        jetobj_new = NeoTransient(curr_id,runid,float(n-1)/2,transient="slamsjet")
+
+                        # Append current events to jet object properties
+                        jetobj_new.cellids.append(old_event)
+                        jetobj_new.cellids.append(event)
+                        jetobj_new.props.append(old_props[events_old.index(old_event)])
+                        jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                        jetobj_new.times.append(float(n)/2)
+
+                        jetobj_list.append(jetobj_new)
+
+                        # Iterate counter
+                        counter += 1
+
+                        break
+
+        jetobj_list = jetobj_list + dead_jetobj_list
+
+        for jetobj in jetobj_list:
+
+            # Write jet object cellids and times to files
+            jetfile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".slamsjet","w")
+            timefile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".times","w")
+
+            jetfile.write(jetobj.return_cellid_string())
+            timefile.write(jetobj.return_time_string())
+            jetobj.jetprops_write(start)
+
+            jetfile.close()
+            timefile.close()
+
+        return None
+
 def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet",sj_fulltrack=False):
 
     if transient == "jet":
