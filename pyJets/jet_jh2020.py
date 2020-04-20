@@ -679,8 +679,8 @@ def jh2020_movie(start,stop,var="pdyn"):
     global sj_jetobs
     global non_sjobs
 
-    sj_jetobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="jet") for n in sj_jet_ids]
-    non_sjobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="jet") for n in non_sj_ids]
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"jh2020_movie/{}/".format(var)
     if not os.path.exists(outputdir):
