@@ -475,7 +475,7 @@ def separate_jets(runid):
         if np.logical_and(props.read("is_slams")==1,props.read("is_jet")==1).any():
             sj_jet_ids.append(n1)
         elif (props.read("is_jet")==1).any():
-            if props.read("sep_from_bs")[0] <= 0.5:
+            if props.read("at_bow_shock")[0] == 1:
                 non_sj_ids.append(n1)
             else:
                 continue
