@@ -991,22 +991,22 @@ def jet_tracker(runid,start,stop,threshold=0.5):
 
                         break
 
-        jetobj_list = jetobj_list + dead_jetobj_list
+    jetobj_list = jetobj_list + dead_jetobj_list
 
-        for jetobj in jetobj_list:
+    for jetobj in jetobj_list:
 
-            # Write jet object cellids and times to files
-            jetfile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".slamsjet","w")
-            timefile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".times","w")
+        # Write jet object cellids and times to files
+        jetfile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".slamsjet","w")
+        timefile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".times","w")
 
-            jetfile.write(jetobj.return_cellid_string())
-            timefile.write(jetobj.return_time_string())
-            jetobj.jetprops_write(start)
+        jetfile.write(jetobj.return_cellid_string())
+        timefile.write(jetobj.return_time_string())
+        jetobj.jetprops_write(start)
 
-            jetfile.close()
-            timefile.close()
+        jetfile.close()
+        timefile.close()
 
-        return None
+    return None
 
 def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet",sj_fulltrack=False):
 
