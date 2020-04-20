@@ -15,8 +15,8 @@ r_e = 6.371e+6
 
 #wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 wrkdir_DNR = os.environ["WRK"]+"/"
-propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream","ew_pd_enh","is_slams","is_jet"]
-propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool]"
+propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream","ew_pd_enh","is_slams","is_jet","is_merger","is_splinter"]
+propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool],is_merger [bool],is_splinter [bool]"
 try:
     vlasdir = os.environ["VLAS"]
 except:
@@ -175,9 +175,11 @@ class NeoTransient:
         self.times = [birthday]
         self.props = []
         self.meta = ["META"]
+        self.merge_time = np.inf
+        self.splinter_time = np.inf
         self.transient = transient
 
-        print("Created jet with ID "+self.ID)
+        print("Created transient with ID "+self.ID)
 
     def return_cellid_string(self):
         # Return string of lists of cellids for printing to file
@@ -191,30 +193,16 @@ class NeoTransient:
 
     def jetprops_write(self,start):
 
-        if self.transient != "slamsjet":
-            if self.times[-1]-self.times[0] >= 4.5:
-                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
-            else:
-                print("Transient {} too short-lived, propfile not written!".format(self.ID))
+        if self.times[-1]-self.times[0] >= 4.5:
+            t_arr = np.array(self.times)
+            splinter_arr = (t_arr>=self.splinter_time).astype(int)
+            merge_arr = (t_arr>=self.merge_time).astype(int)
+            for n in t_arr.size:
+                self.props[n][-2] = merge_arr[n]
+                self.props[n][-1] = splinter_arr[n]
+            propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
         else:
-            if self.times[-1]-self.times[0] < 4.5:
-                print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
-                return None
-            x = np.array(self.props)[:,1]
-            y = np.array(self.props)[:,2]
-            t = self.times
-            x_birth,y_birth = x[0],y[0]
-            x_death,y_death = x[-1],y[-1]
-            bsp_birth,bsp_death = [jx.bow_shock_jonas(self.runid,int(t[0]*2))[::-1],jx.bow_shock_jonas(self.runid,int(t[-1]*2))[::-1]]
-            x_bs = [np.polyval(jx.bow_shock_jonas(self.runid,int(t[n]*2))[::-1],y[n]) for n in range(len(y))]
-            t_crossing = t[np.argmin(np.abs(np.array(x)-np.array(x_bs)))]
-            bsx_birth,bsx_death = [np.polyval(bsp_birth,y_birth),np.polyval(bsp_death,y_death)]
-            if t_crossing-t[0] >= 1.5 and t[-1]-t_crossing >= 1.5 and x_birth >= bsx_birth and x_death <= bsx_death:
-                propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
-            else:
-                print("Transient {} is not SLAMSJET, propfile not written!".format(self.ID))
-                return None
-
+            print("Transient {} too short-lived, propfile not written!".format(self.ID))
 
         return None
 
@@ -569,6 +557,8 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
 def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
 
+    is_merger = 0
+    is_splinter = 0
     is_slams = 0
     is_jet = 0
     if np.intersect1d(cells,slams_cells).size > 0:
@@ -719,7 +709,7 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
 
     [B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg] = [np.nanmean(v) for v in [B_sheath_mag,TPar_sheath,TPerp_sheath,T_sheath,rho_sheath,v_sheath_mag,pd_sheath]]
 
-    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream,ew_pd_enh,is_slams,is_jet]
+    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream,ew_pd_enh,is_slams,is_jet,is_merger,is_splinter]
 
     return temp_arr
 
