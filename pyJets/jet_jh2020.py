@@ -457,7 +457,7 @@ def sj_non_counter():
 
     return np.reshape(data_arr,(4,2))
 
-def separate_jet(runid):
+def separate_jets(runid):
 
     runids = ["ABA","ABC","AEA","AEC"]
     run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
