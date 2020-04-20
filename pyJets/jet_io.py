@@ -874,7 +874,7 @@ def jet_tracker(runid,start,stop,threshold=0.5):
                 # Append current events to jet object properties
                 jetobj_new.cellids.append(old_event)
                 jetobj_new.cellids.append(event)
-                jetobj_new.props.append(old_props[old_events.index(old_event)])
+                jetobj_new.props.append(old_props[events_old.index(old_event)])
                 jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
                 jetobj_new.times.append(float(start+1)/2)
 
