@@ -457,7 +457,31 @@ def sj_non_counter():
 
     return np.reshape(data_arr,(4,2))
 
-def separate_jets(runid):
+def separate_jet(runid):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
+
+    sj_jet_ids = []
+    non_sj_ids = []
+
+    for n1 in range(3000):
+
+        try:
+            props = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
+        except:
+            continue
+
+        if np.logical_and(props.read("is_slams")==1,props.read("is_jet")==1).any():
+            sj_jet_ids.append(n1)
+        elif props.read("sep_from_bs")[0] <= 0.5:
+            non_sj_ids.append(n1)
+        else:
+            continue
+
+    return [np.array(sj_jet_ids),np.array(non_sj_ids)]
+
+def separate_jets_old(runid):
 
     runids = ["ABA","ABC","AEA","AEC"]
     run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
