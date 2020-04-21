@@ -442,7 +442,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     fig.savefig(homedir+"Figures/jh2020/fig2.png")
     plt.close(fig)
 
-def sj_non_counter():
+def sj_non_counter(allow_splinters=True):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
@@ -457,7 +457,7 @@ def sj_non_counter():
 
     return np.reshape(data_arr,(4,2))
 
-def separate_jets(runid):
+def separate_jets(runid,allow_splinters=True):
 
     runids = ["ABA","ABC","AEA","AEC"]
     run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
@@ -470,6 +470,9 @@ def separate_jets(runid):
         try:
             props = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
         except:
+            continue
+
+        if not allow_splinters and "splinter" in props.meta:
             continue
 
         if np.logical_and(props.read("is_slams")==1,props.read("is_jet")==1).any():
