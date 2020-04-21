@@ -717,11 +717,18 @@ def jh2020_movie(runid,start,stop,var="pdyn"):
         if var == "Mms":
             colmap = "parula"
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","core_heating","CellID","Mmsx"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     cellids = pass_maps["CellID"]
+    rho = pass_maps["rho"]
+    mmsx = pass_maps["Mmsx"]
+    core_heating = pass_maps["core_heating"]
+    if runid_g in ["ABA","AEA"]:
+        rho_sw = 1.e6
+    else:
+        rho_sw = 3.3e6
 
     #slams_cells = jio.eventfile_read("ABC",filenr_g,transient="slams")
     #slams_cells = np.array([item for sublist in slams_cells for item in sublist])
@@ -735,6 +742,10 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     jet_mask = np.in1d(cellids,jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask,cellids.shape)
+
+    ch_mask = (core_heating > 3*0.5e6).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
+    rho_mask = (rho > 2*rho_sw).astype(int)
 
     #x_list = []
     #y_list = []
@@ -762,17 +773,21 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             non_xlist.append(jetobj.read_at_time("x_mean",filenr_g/2.0))
             non_ylist.append(jetobj.read_at_time("y_mean",filenr_g/2.0))
 
-    bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
-    mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
-    y_bs = np.arange(-8,6.01,0.05)
-    x_bs = np.polyval(bs_fit,y_bs)
-    x_mp = np.polyval(mp_fit,y_bs)
+    #bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
+    #mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
+    #y_bs = np.arange(-8,6.01,0.05)
+    #x_bs = np.polyval(bs_fit,y_bs)
+    #x_mp = np.polyval(mp_fit,y_bs)
 
-    bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
+    #bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors=jx.orange)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="tomato")
+
+    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.8,colors=black)
+    mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.8,colors=jx.violet)
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors=jx.orange)
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=2)
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=2)
