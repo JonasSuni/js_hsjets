@@ -789,8 +789,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="brown")
 
-    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=2)
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=2)
+    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=1.5)
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
