@@ -764,7 +764,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
     mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
-    y_bs = np.arange(-6,8.01,0.05)
+    y_bs = np.arange(-8,6.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
     x_mp = np.polyval(mp_fit,y_bs)
 
