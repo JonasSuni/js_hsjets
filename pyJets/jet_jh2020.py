@@ -669,30 +669,46 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
-def jh2020_movie(start,stop,var="pdyn"):
+def jh2020_movie(runid,start,stop,var="pdyn"):
+
+    runid_list = ["ABA","ABC","AEA","AEC"]
+    maxfnr_list = [839,1179,1339,879]
+    if start > maxfnr_list[runid_list.index(runid)]:
+        return 0
 
     vars_list = ["pdyn","core_heating","rho","Mms","B"]
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5,3.0,6.6,1,10]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
-    sj_jet_ids,non_sj_ids = separate_jets("ABC")
+    sj_jet_ids,non_sj_ids = separate_jets(runid)
 
     global filenr_g
+    global runid_g
     global sj_jetobs
     global non_sjobs
 
-    sj_jetobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in sj_jet_ids]
-    non_sjobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in non_sj_ids]
+    runid_g = runid
 
-    outputdir = wrkdir_DNR+"jh2020_movie/{}/".format(var)
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
+
+    outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/".format(runid,var)
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
         except OSError:
             pass
 
-    bulkpath = jx.find_bulkpath("ABC")
+    bulkpath = jx.find_bulkpath(runid)
+
+    vmax = vmax_list[var_index]
+    boxre = [6,18,-6,6]
+    if runid in ["ABA","AEA"]:
+        if var == "pdyn":
+            vmax = 1.5
+        boxre = [6,18,-8,6]
+
     for itr in range(start,stop+1):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
@@ -701,7 +717,7 @@ def jh2020_movie(start,stop,var="pdyn"):
         if var == "Mms":
             colmap = "parula"
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
@@ -711,8 +727,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #slams_cells = np.array([item for sublist in slams_cells for item in sublist])
     #jet_cells = jio.eventfile_read("ABC",filenr_g,transient="jet")
     #jet_cells = np.array([item for sublist in jet_cells for item in sublist])
-    slams_cells = np.loadtxt("/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format("ABC",filenr_g)).astype(int)
-    jet_cells = np.loadtxt("/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format("ABC",filenr_g)).astype(int)
+    slams_cells = np.loadtxt("/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(runid_g,filenr_g)).astype(int)
+    jet_cells = np.loadtxt("/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g,filenr_g)).astype(int)
 
     slams_mask = np.in1d(cellids,slams_cells).astype(int)
     slams_mask = np.reshape(slams_mask,cellids.shape)
@@ -746,9 +762,9 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             non_xlist.append(jetobj.read_at_time("x_mean",filenr_g/2.0))
             non_ylist.append(jetobj.read_at_time("y_mean",filenr_g/2.0))
 
-    bs_fit = jx.bow_shock_jonas("ABC",filenr_g)[::-1]
-    mp_fit = jx.mag_pause_jonas("ABC",filenr_g)[::-1]
-    y_bs = np.arange(-6,6.01,0.05)
+    bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
+    mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
+    y_bs = np.arange(-6,8.01,0.05)
     x_bs = np.polyval(bs_fit,y_bs)
     x_mp = np.polyval(mp_fit,y_bs)
 
@@ -763,8 +779,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
-    is_coords = jx.get_cell_coordinates("ABC",1814480)/r_e
-    os_coords = jx.get_cell_coordinates("ABC",1814540)/r_e
+    #is_coords = jx.get_cell_coordinates(runid_g,1814480)/r_e
+    #os_coords = jx.get_cell_coordinates(runid_g,1814540)/r_e
 
     #is2 = jx.get_cell_coordinates("ABC",1814480+2000*30+10)/r_e
     #os2 = jx.get_cell_coordinates("ABC",1814540+2000*30+10)/r_e
@@ -772,7 +788,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     # is_pos, = ax.plot(is_coords[0],is_coords[1],">",color="black",markersize=2)
     # os_pos, = ax.plot(os_coords[0],os_coords[1],"<",color="black",markersize=2)
 
-    cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
+    #cut_through_plot, = ax.plot([is_coords[0],os_coords[0]],[is_coords[1],os_coords[1]],color="black",linewidth=0.8)
     #cut_through_plot2, = ax.plot([is2[0],os2[0]],[is2[1],os2[1]],color="black",linewidth=0.8)
 
 def jh20_slams_movie(start,stop,var="Pdyn",vmax=15e-9):
