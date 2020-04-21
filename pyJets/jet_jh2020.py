@@ -782,12 +782,12 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="tomato")
+    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
+    mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
 
-    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.8,colors="black")
-    mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.8,colors=jx.violet)
-    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors=jx.orange)
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="brown")
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=2)
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=2)
