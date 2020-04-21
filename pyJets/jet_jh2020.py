@@ -785,7 +785,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="tomato")
 
-    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.8,colors=black)
+    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.8,colors="black")
     mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.8,colors=jx.violet)
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.8,colors=jx.orange)
 
