@@ -446,7 +446,7 @@ def sj_non_counter(allow_splinters=True):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
-    data_arr = np.array([separate_jets(runid) for runid in runids]).flatten()
+    data_arr = np.array([separate_jets(runid,allow_splinters) for runid in runids]).flatten()
     count_arr = np.array([arr.size for arr in data_arr])
     count_arr = np.reshape(count_arr,(4,2)).T
 
