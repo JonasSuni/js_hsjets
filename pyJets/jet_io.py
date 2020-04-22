@@ -263,6 +263,11 @@ class Transient:
 
 def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,nbrs=[2,2,0]):
 
+    runid_list = ["ABA","ABC","AEA","AEC"]
+    maxfnr_list = [839,1179,1339,879]
+    if start > maxfnr_list[runid_list.index(runid)]:
+        return 0
+
     global runid_g
     global filenr_g
     runid_g = runid
