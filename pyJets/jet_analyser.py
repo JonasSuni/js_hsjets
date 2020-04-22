@@ -282,7 +282,7 @@ def restrict_area(vlsvobj,boxre):
 
     return masked_ci
 
-def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
+def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
 
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk."+str(filenr).zfill(7)+".vlsv"
@@ -382,7 +382,7 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True):
     # prevent divide by zero errors
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
-    slams = np.ma.masked_greater_equal(Bmag,1.4*B_sw)
+    slams = np.ma.masked_greater_equal(Bmag,mag_thresh*B_sw)
     slams.mask[pr_TNBS>3.0*T_sw] = False
     slams.mask[pdyn<1.2*pdyn_sw] = False
     jet = np.ma.masked_greater_equal(pdyn,2.0*tpdynavg)

@@ -261,7 +261,7 @@ class Transient:
 
         return None
 
-def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,nbrs=[2,2,0]):
+def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,nbrs=[2,2,0],mag_thresh=1.5):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     maxfnr_list = [839,1179,1339,879]
@@ -310,7 +310,7 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
             slams_msk = np.loadtxt(wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
             slamsjet_msk = np.loadtxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/"+str(file_nr)+".mask").astype(int)
         else:
-            jet_msk,slams_msk,slamsjet_msk = ja.mask_maker(runid,file_nr,boxre,avgfile)
+            jet_msk,slams_msk,slamsjet_msk = ja.mask_maker(runid,file_nr,boxre,avgfile,mag_thresh=mag_thresh)
 
         print("Current file number is " + str(file_nr))
 
