@@ -442,7 +442,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     fig.savefig(homedir+"Figures/jh2020/fig2.png")
     plt.close(fig)
 
-def sj_non_counter(allow_splinters=True):
+def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
@@ -454,6 +454,8 @@ def sj_non_counter(allow_splinters=True):
     print("SJ Jets:       {}\n".format(count_arr[0]))
     print("Non-SJ Jets:   {}\n".format(count_arr[1]))
     print("Share:         {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
+
+    np.savetxt(wrkdir_DNR+"sjn_count_{}.txt".format(mag_thresh),count_arr)
 
     return np.reshape(data_arr,(4,2))
 
