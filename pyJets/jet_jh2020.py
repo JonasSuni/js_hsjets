@@ -454,7 +454,7 @@ def mag_thresh_plot(allow_splinters=True):
         share_arr[n] = share
 
     share_arr = share_arr.T
-    mt_arr = np.array(map(float,mt_str_list))
+    mt_arr = np.array(list(map(float,mt_str_list)))
 
     fig,ax = plt.subplots(1,1)
     for m in range(len(runid_list)):
