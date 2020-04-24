@@ -449,7 +449,7 @@ def mag_thresh_plot(allow_splinters=True):
 
     share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     for n in range(len(mt_str_list)):
-        data = np.loadtxt(wrkdir_DNR+"sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
+        data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
         share = data[0]/data.sum(0)
         share_arr[n] = share
 
@@ -487,7 +487,7 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
     print("Non-SJ Jets:   {}\n".format(count_arr[1]))
     print("Share:         {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
 
-    np.savetxt(wrkdir_DNR+"sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
+    np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
     return np.reshape(data_arr,(4,2))
 
