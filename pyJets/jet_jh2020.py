@@ -468,7 +468,7 @@ def mag_thresh_plot(allow_splinters=True):
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     plt.close(fig)
-    return 0
+    return None
 
 def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
 
