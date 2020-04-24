@@ -462,9 +462,11 @@ def mag_thresh_plot(allow_splinters=True):
 
     ax.set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
     ax.set_ylabel("Slamsjet to jet ratio $n_{SJ}/n_{jet}$",fontsize=20,labelpad=10)
-    ax.tick_params(labelsize=20)
+    ax.tick_params(labelsize=10)
     fig.suptitle("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
+    ax.grid()
+    plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     plt.close(fig)
