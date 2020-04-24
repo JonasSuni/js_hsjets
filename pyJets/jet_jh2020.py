@@ -442,6 +442,34 @@ def jh2020_fig2(xlim=[200.,399.5]):
     fig.savefig(homedir+"Figures/jh2020/fig2.png")
     plt.close(fig)
 
+def mag_thresh_plot(allow_splinters=True):
+
+    runid_list = ["ABA","ABC","AEA","AEC"]
+    mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9"]
+
+    share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
+    for n in range(len(mt_str_list)):
+        data = np.loadtxt("sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
+        share = data[0]/data.sum(0)
+        share_arr[n] = share
+
+    share_arr = share_arr.T
+    mt_arr = np.array(map(float,mt_str_list))
+
+    fig,ax = plt.subplots(1,1)
+    for m in range(len(runid_list)):
+        ax.plot(mt_arr,share_arr[m],label=runid_list[m])
+
+    ax.set_xtitle("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
+    ax.set_ytitle("Slamsjet to jet ratio $n_{SJ}/n_{jet}$",fontsize=20,labelpad=10)
+    ax.tick_params(labelsize=20)
+    fig.suptitle("Allow splinters = {}".format(allow_splinters),fontsize=20)
+    ax.legend(frameon=False,numpoints=1,markerscale=3)
+
+    fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
+    plt.close(fig)
+    return 0
+
 def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
 
     runids = ["ABA","ABC","AEA","AEC"]
