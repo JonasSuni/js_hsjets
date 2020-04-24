@@ -460,8 +460,8 @@ def mag_thresh_plot(allow_splinters=True):
     for m in range(len(runid_list)):
         ax.plot(mt_arr,share_arr[m],label=runid_list[m])
 
-    ax.set_xtitle("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
-    ax.set_ytitle("Slamsjet to jet ratio $n_{SJ}/n_{jet}$",fontsize=20,labelpad=10)
+    ax.set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
+    ax.set_ylabel("Slamsjet to jet ratio $n_{SJ}/n_{jet}$",fontsize=20,labelpad=10)
     ax.tick_params(labelsize=20)
     fig.suptitle("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
