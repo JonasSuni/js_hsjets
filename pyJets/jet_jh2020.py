@@ -466,6 +466,8 @@ def mag_thresh_plot(allow_splinters=True):
     #fig.suptitle("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax.legend(frameon=False,numpoints=1,markerscale=3)
     ax.grid()
+    ax.set_xlim(mt_arr[0],mt_arr[-1])
+    ax.set_ylim(0,1)
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
