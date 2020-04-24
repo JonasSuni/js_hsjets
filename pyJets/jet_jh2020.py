@@ -445,7 +445,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
 def mag_thresh_plot(allow_splinters=True):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
-    mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9"]
+    mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","2.0","2.1"]
 
     share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     for n in range(len(mt_str_list)):
