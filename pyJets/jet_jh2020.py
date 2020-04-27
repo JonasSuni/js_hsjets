@@ -678,11 +678,6 @@ def jh2020_fig4(crit="ew_pd"):
 
 def jh2020_fig1(var="pdyn"):
 
-    if sys.version_info.major == 3:
-        plt.style.use("classic")
-        mpl.rcParams['text.usetex'] = True
-        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
-
     vars_list = ["pdyn","core_heating","rho","Mms","B"]
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
@@ -709,11 +704,6 @@ def jh2020_fig1(var="pdyn"):
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"])
 
 def jh2020_movie(runid,start,stop,var="pdyn"):
-
-    #if sys.version_info.major == 3:
-        #plt.style.use("classic")
-        #mpl.rcParams['text.usetex'] = True
-        #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     maxfnr_list = [839,1179,1339,879]
