@@ -710,10 +710,10 @@ def jh2020_fig1(var="pdyn"):
 
 def jh2020_movie(runid,start,stop,var="pdyn"):
 
-    if sys.version_info.major == 3:
-        plt.style.use("classic")
-        mpl.rcParams['text.usetex'] = True
-        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+    #if sys.version_info.major == 3:
+        #plt.style.use("classic")
+        #mpl.rcParams['text.usetex'] = True
+        #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     maxfnr_list = [839,1179,1339,879]
@@ -761,7 +761,7 @@ def jh2020_movie(runid,start,stop,var="pdyn"):
         if var == "Mms":
             colmap = "parula"
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],tickinterval=1,vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
