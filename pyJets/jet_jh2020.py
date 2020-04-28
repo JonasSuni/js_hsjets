@@ -339,13 +339,13 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
 
     fig.suptitle("Y = {:.3f} Re".format(y),fontsize=20)
 
-    if not os.path.exists(homedir+"Figures/jh2020"):
+    if not os.path.exists(wrkdir_DNR+"Figures/jh2020"):
         try:
-            os.makedirs(homedir+"Figures/jh2020")
+            os.makedirs(wrkdir_DNR+"Figures/jh2020")
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format(min_cellid,clip))
+    fig.savefig(wrkdir_DNR+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format(min_cellid,clip))
     plt.close(fig)
 
     return None
