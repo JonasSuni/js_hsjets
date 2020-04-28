@@ -291,7 +291,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
 
-    eventx_arr = np.array([event_for_mesh(runid,fnr,y,x_arr[0],x_arr[-1]) for fnr in np.arange(start,stop+1,dtype=int)])
+    if min_cellid==1814480:
+        eventx_arr = np.array([event_for_mesh(runid,fnr,y,x_arr[0],x_arr[-1]) for fnr in np.arange(start,stop+1,dtype=int)])
 
     rho_sw = 3.3e6
     T_sw = 0.5e6
@@ -322,6 +323,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
             ax.axhline(365,color="black",linewidth=0.8)
             ax.axhline(370,color="black",linewidth=0.8)
             ax.axhline(360,color="black",linewidth=0.8)
+        elif min_cellid == 1784477:
+            ax.axhline(412.5,color="black",linewidth=0.8)
         im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=vmin_list[n],vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
@@ -331,7 +334,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
-        ax.plot(eventx_arr,time_arr,"o",color="red",markersize=2)
+        if min_cellid==1814480:
+            ax.plot(eventx_arr,time_arr,"o",color="red",markersize=2)
         ax.set_xlim(x_arr[0],x_arr[-1])
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
