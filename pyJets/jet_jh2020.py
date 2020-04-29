@@ -247,13 +247,13 @@ def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
         for m in range(len(ann_list)):
             ax.annotate(ann_list[m],xy=(0.8+m*0.2/len(ann_list),0.05),xycoords="axes fraction",color=color_list[m])
 
-    if not os.path.exists(homedir+"Figures/jh2020"):
+    if not os.path.exists(wrkdir_DNR+"Figures/jh2020"):
         try:
-            os.makedirs(homedir+"Figures/jh2020")
+            os.makedirs(wrkdir_DNR+"Figures/jh2020")
         except OSError:
             pass
 
-    fig.savefig(homedir+"Figures/jh2020/cut_{}_{}_{}.png".format(filenr,min_cellid,max_cellid))
+    fig.savefig(wrkdir_DNR+"Figures/jh2020/cut_{}_{}_{}.png".format(filenr,min_cellid,max_cellid))
     plt.close(fig)
 
     return None
