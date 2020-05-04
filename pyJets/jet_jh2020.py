@@ -306,13 +306,13 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
 
     if min_cellid==1814480:
         eventx_arr = np.array([event_for_mesh(runid,fnr,y,x_arr[0],x_arr[-1]) for fnr in np.arange(start,stop+1,dtype=int)])
-    if min_cellid==1784477:
+    elif min_cellid==1784477:
         onejet_obj = jio.PropReader(str(424).zfill(5),"ABC",transient="slamsjet")
-        x = onejet_obj.read("x_mean")
-        y = onejet_obj.read("y_mean")
-        t = onejet_obj.read("time")
-        x = x[np.abs(y-0.6)<=0.25]
-        t = t[np.abs(y-0.6)<=0.25]
+        ox = onejet_obj.read("x_mean")
+        oy = onejet_obj.read("y_mean")
+        ot = onejet_obj.read("time")
+        ox = ox[np.abs(oy-0.6212)<=0.25]
+        ot = ot[np.abs(oy-0.6212)<=0.25]
 
     rho_sw = 3.3e6
     T_sw = 0.5e6
@@ -356,6 +356,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         ax.set_title(var_list[n],fontsize=20)
         if min_cellid==1814480:
             ax.plot(eventx_arr,time_arr,"o",color="red",markersize=2)
+        elif min_cellid == 1784477:
+            ax.plot(ox,ot,"o",color="red",markersize=2)
         ax.set_xlim(x_arr[0],x_arr[-1])
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
