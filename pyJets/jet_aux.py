@@ -140,6 +140,44 @@ def MP_xy():
 
     return [x_mp,y_mp]
 
+def bs_norm(runid="ABC",filenr=825,vlsvobj=None,boxre=[6,18,-8,8]):
+
+    if vlsvobj is None:
+        bulkpath = find_bulkpath(runid)
+        bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+
+    cellids = restrict_area(vlsvobj,boxre)
+    core_heating = vlsvobj.read_variable("core_heating",cellids=cellids)
+    X,Y,Z = xyz_reconstruct(vlsvobj,cellids)
+    T_sw = 0.5e+6
+
+    mask_ch = (core_heating>=3*T_sw)
+
+    X_ch = X[mask_ch]
+    Y_ch = Y[mask_ch]
+    Y_un_ch = np.unique(Y_ch)
+    X_max_ch = np.array([np.max(X_ch[Y_ch == y]) for y in Y_un_ch])
+
+    Xnew = X_max_ch/r_e
+    Ynew = Y_un_ch/r_e
+
+    Xnew = Xnew[np.argsort(Ynew)]
+    Ynew.sort()
+
+    dx = np.gradient(Xnew)
+    dy = np.gradient(Ynew)
+
+    shock_vector = np.array([dx,dy,np.zeros_like(dx)])
+    zvec = np.array([np.zeros_like(dx),np.zeros_like(dx),np.ones_like(dx)])
+    cross_vec = np.cross(shock_vector.T,zvec.T)
+    norm_vec = np.array([v/np.linalg.norm(v) for v in cross_vec])
+
+    nx = norm_vec.T[0]
+    ny = norm_vec.T[1]
+
+    return np.array([Xnew,Ynew,nx,ny]).T
+
 def bs_nonloc(vlsvobj,rho_sw,boxre=[6,18,-8,8]):
 
     cellids = restrict_area(vlsvobj,boxre)
@@ -255,7 +293,7 @@ def bow_shock_jonas(runid,filenr):
         return bs_fit_arr[filenr-580][::-1]
     except:
         mp_fit,bs_fit = bs_mp_fit(runid,filenr)
-        
+
         return bs_fit[::-1]
 
 def mag_pause_jonas(runid,filenr):

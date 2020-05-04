@@ -711,15 +711,28 @@ def jh2020_fig1(var="pdyn"):
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
 
     global filenr_g
+    global runid_g
+    global sj_jetobs
+    global non_sjobs
+    global draw_arrows
+
+    draw_arrows = True
+
+    runid_g = "ABC"
+
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"Figures/jh2020/"
 
     #filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
     #filepath = "/scratch/project_2000203/2D/ABC/bulk/bulk.0000714.vlsv"
-    filepath = vlasdir+"/2D/ABC/bulk/bulk.0000714.vlsv"
+    #filepath = vlasdir+"/2D/ABC/bulk/bulk.0000714.vlsv"
+    filepath = vlasdir="/2D/ABC/bulk/bulk.0000825.vlsv"
 
     #filenr_g = 677
-    filenr_g = 714
+    #filenr_g = 714
+    filenr_g = 825
 
     colmap = "parula"
     if var == "Mms":
@@ -747,6 +760,9 @@ def jh2020_movie(runid,start,stop,var="pdyn"):
     global runid_g
     global sj_jetobs
     global non_sjobs
+    global draw_arrows
+
+    draw_arrows = False
 
     runid_g = runid
 
@@ -851,6 +867,12 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=1.5)
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
+
+    if draw_arrows:
+        arrow_coords = jx.bs_norm(runid_g,filenr_g)
+        for n in range(len(arrow_coords)):
+            nx,ny,dnx,dny = arrow_coords[n]
+            ax.arrow(nx,ny,dnx,dny,head_width=0.1)
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
