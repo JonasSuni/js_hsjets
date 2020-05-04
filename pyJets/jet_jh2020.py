@@ -709,6 +709,7 @@ def jh2020_fig1(var="pdyn"):
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5,3.0,6.6,1,10]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
+    sj_jet_ids,non_sj_ids = separate_jets(runid)
 
     global filenr_g
     global runid_g
