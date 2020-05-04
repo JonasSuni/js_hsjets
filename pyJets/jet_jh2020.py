@@ -186,6 +186,16 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v
     else:
         return output_arr
 
+def find_one_jet():
+
+    nrange = range(1,3000)
+    for n in nrange:
+        jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
+        if jetobj.read("time")[0] == 412.5 and not jetobj.read("is_slams").astype(bool).any():
+            print(n)
+
+    return None
+
 def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
     bulkpath = jx.find_bulkpath(runid)
