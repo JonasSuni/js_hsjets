@@ -870,7 +870,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
 
     if draw_arrows:
-        arrow_coords = jx.bs_norm(runid_g,filenr_g)[::10]
+        arrow_coords = jx.bs_norm(runid_g,filenr_g)
         for n in range(1,len(arrow_coords)):
             nx,ny,dnx,dny = arrow_coords[n]
             if nx//1 > arrow_coords[n-1][0]//1:
