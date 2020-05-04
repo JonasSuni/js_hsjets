@@ -743,7 +743,7 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="pdyn",arr_draw=False):
+def jh2020_movie(runid,start,stop,var="pdyn",arr_draw=False,debug=False):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     maxfnr_list = [839,1179,1339,879]
@@ -771,6 +771,8 @@ def jh2020_movie(runid,start,stop,var="pdyn",arr_draw=False):
     non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/".format(runid,var)
+    if debug:
+        outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/".format(runid,var)
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
