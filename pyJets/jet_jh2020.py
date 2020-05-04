@@ -729,7 +729,7 @@ def jh2020_fig1(var="pdyn"):
     #filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
     #filepath = "/scratch/project_2000203/2D/ABC/bulk/bulk.0000714.vlsv"
     #filepath = vlasdir+"/2D/ABC/bulk/bulk.0000714.vlsv"
-    filepath = vlasdir="/2D/ABC/bulk/bulk.0000825.vlsv"
+    filepath = vlasdir+"/2D/ABC/bulk/bulk.0000825.vlsv"
 
     #filenr_g = 677
     #filenr_g = 714
