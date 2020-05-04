@@ -721,8 +721,8 @@ def jh2020_fig1(var="pdyn"):
 
     runid_g = "ABC"
 
-    sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in sj_jet_ids]
-    non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"Figures/jh2020/"
 
