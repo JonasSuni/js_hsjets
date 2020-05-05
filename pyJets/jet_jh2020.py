@@ -754,6 +754,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5e-9,1.5e6,6.6e6,1,10e-9,600e3,5e6]
+    vscale_list = [1e-9,1.0e6,1.0e6,1,1e-9,1e3,1e6]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
     sj_jet_ids,non_sj_ids = separate_jets(runid)
 
@@ -782,6 +783,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     bulkpath = jx.find_bulkpath(runid)
 
     vmax = vmax_list[var_index]
+    vscale = vscale_list[var_index]
     boxre = [6,18,-6,6]
     if runid in ["ABA","AEA"]:
         if var == "Pdyn":
@@ -800,7 +802,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
 
         pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=0,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,12,-2,2],usesci=0,lin=1,var=var,tickinterval=1,vmin=0,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,12,-2,2],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=0,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
