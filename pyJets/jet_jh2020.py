@@ -750,7 +750,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
 
-    vars_list = ["Pdyn","core_heating","rho","Mmsx","B","v","T"]
+    vars_list = ["Pdyn","core_heating","rho","Mmsx","B","v","Temperature"]
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5,1.5,6.6,1,10,600,5]
