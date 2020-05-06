@@ -1530,34 +1530,43 @@ def hack_2019_fig78(time_thresh=5):
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
 
-    lab_list_7 = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$"]
+    lab_list_7 = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$","$\mathrm{Number~of~Jets}$"]
     lab_list_8 = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
 
-    epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
-    epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
+    epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all,count_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
+    epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all,count_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
 
-    epoch_arr,SEA_mean_list_7_ABA,SEA_std_list_7_ABA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABA"])
-    epoch_arr,SEA_mean_list_7_ABC,SEA_std_list_7_ABC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABC"])
-    epoch_arr,SEA_mean_list_7_AEA,SEA_std_list_7_AEA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEA"])
-    epoch_arr,SEA_mean_list_7_AEC,SEA_std_list_7_AEC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEC"])
+    epoch_arr,SEA_mean_list_7_ABA,SEA_std_list_7_ABA,count_7_ABA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABA"])
+    epoch_arr,SEA_mean_list_7_ABC,SEA_std_list_7_ABC,count_7_ABC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["ABC"])
+    epoch_arr,SEA_mean_list_7_AEA,SEA_std_list_7_AEA,count_7_AEA = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEA"])
+    epoch_arr,SEA_mean_list_7_AEC,SEA_std_list_7_AEC,count_7_AEC = get_SEA(var_list_7,time_thresh=time_thresh,runids=["AEC"])
 
-    epoch_arr,SEA_mean_list_8_ABA,SEA_std_list_8_ABA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABA"])
-    epoch_arr,SEA_mean_list_8_ABC,SEA_std_list_8_ABC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABC"])
-    epoch_arr,SEA_mean_list_8_AEA,SEA_std_list_8_AEA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEA"])
-    epoch_arr,SEA_mean_list_8_AEC,SEA_std_list_8_AEC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEC"])
+    epoch_arr,SEA_mean_list_8_ABA,SEA_std_list_8_ABA,count_8_ABA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABA"])
+    epoch_arr,SEA_mean_list_8_ABC,SEA_std_list_8_ABC,count_8_ABC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["ABC"])
+    epoch_arr,SEA_mean_list_8_AEA,SEA_std_list_8_AEA,count_8_AEA = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEA"])
+    epoch_arr,SEA_mean_list_8_AEC,SEA_std_list_8_AEC,count_8_AEC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEC"])
 
-    fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,10),sharex=True)
+    fig_7,ax_list_7 = plt.subplots(4,1,figsize=(10,10),sharex=True)
 
-    for col in range(3):
+    for col in range(4):
         ax = ax_list_7[col]
 
-        SEA_mean = SEA_mean_list_7_all[col]
-        SEA_std = SEA_std_list_7_all[col]
+        if col != 3:
+            SEA_mean = SEA_mean_list_7_all[col]
+            SEA_std = SEA_std_list_7_all[col]
 
-        SEA_mean_ABA = SEA_mean_list_7_ABA[col]
-        SEA_mean_ABC = SEA_mean_list_7_ABC[col]
-        SEA_mean_AEA = SEA_mean_list_7_AEA[col]
-        SEA_mean_AEC = SEA_mean_list_7_AEC[col]
+            SEA_mean_ABA = SEA_mean_list_7_ABA[col]
+            SEA_mean_ABC = SEA_mean_list_7_ABC[col]
+            SEA_mean_AEA = SEA_mean_list_7_AEA[col]
+            SEA_mean_AEC = SEA_mean_list_7_AEC[col]
+        else:
+            SEA_mean = count_7_all[col]
+            SEA_std = count_7_all[col]
+
+            SEA_mean_ABA = count_7_ABA[col]
+            SEA_mean_ABC = count_7_ABC[col]
+            SEA_mean_AEA = count_7_AEA[col]
+            SEA_mean_AEC = count_7_AEC[col]
 
         ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
@@ -1565,12 +1574,12 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed",color="black")
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
+        #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
         ax.set_xlim(-2.1,0.5)
         ax.set_ylim(bottom=0)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
-        if col == 2:
+        if col == 3:
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
 
     ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
