@@ -1508,7 +1508,7 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
 
     SEA_mean_list = [np.nanmean(SEA_arr,axis=0) for SEA_arr in SEA_arr_list]
     SEA_std_list = [np.nanstd(SEA_arr,ddof=1,axis=0) for SEA_arr in SEA_arr_list]
-    SEA_count_list = np.sum(~np.isnan(SEA_arr),axis=0) for SEA_arr in SEA_arr_list]
+    SEA_count_list = [np.sum(~np.isnan(SEA_arr),axis=0) for SEA_arr in SEA_arr_list]
 
     return (epoch_arr,SEA_mean_list,SEA_std_list,SEA_count_list)
 
