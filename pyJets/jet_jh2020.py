@@ -298,8 +298,8 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         vmin_list = [1,6.6,150,5,0.5]
         vmax_list = [8,30,650,35,20]
     elif clip == "optimal":
-        vmin_list = [2.0,3.3,150,5,0.5]
-        vmax_list = [4.5,15,750,20,15]
+        vmin_list = [0.5,3.3,100,5,0.5]
+        vmax_list = [4.5,20,700,20,15]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
     y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
