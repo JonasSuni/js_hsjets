@@ -1560,13 +1560,13 @@ def hack_2019_fig78(time_thresh=5):
             SEA_mean_AEA = SEA_mean_list_7_AEA[col]
             SEA_mean_AEC = SEA_mean_list_7_AEC[col]
         else:
-            SEA_mean = count_7_all[col]
-            SEA_std = count_7_all[col]
+            SEA_mean = count_7_all[0]
+            SEA_std = count_7_all[0]
 
-            SEA_mean_ABA = count_7_ABA[col]
-            SEA_mean_ABC = count_7_ABC[col]
-            SEA_mean_AEA = count_7_AEA[col]
-            SEA_mean_AEC = count_7_AEC[col]
+            SEA_mean_ABA = count_7_ABA[0]
+            SEA_mean_ABC = count_7_ABC[0]
+            SEA_mean_AEA = count_7_AEA[0]
+            SEA_mean_AEC = count_7_AEC[0]
 
         ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
