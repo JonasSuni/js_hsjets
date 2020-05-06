@@ -754,7 +754,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     var_index = vars_list.index(var)
     label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
     vmax_list = [4.5,1.5,13.2,1,15,600,15]
-    vmin_list = [1.98,0,3.3,0,5,150,0.5]
+    vmin_list = [2.0,0,3.3,0,5,150,0.5]
     vscale_list = [1e9,1.0e-6,1.0e-6,1,1e9,1e-3,1e-6]
     expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
     sj_jet_ids,non_sj_ids = separate_jets(runid)
