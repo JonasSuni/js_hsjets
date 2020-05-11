@@ -497,7 +497,8 @@ def mag_thresh_plot(allow_splinters=True):
 
     fig,ax_list = plt.subplots(3,1,figsize=(8,10))
     for m in range(len(runid_list)):
-        ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
+        #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
+        ax_list[0].plot(mt_arr,slams_number_arr[m],label=runid_list[m])
         ax_list[1].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
         ax_list[2].plot(mt_arr,share_arr[m],label=runid_list[m])
 
