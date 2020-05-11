@@ -481,6 +481,7 @@ def mag_thresh_plot(allow_splinters=True):
     slams_share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     slams_number_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     for n in range(len(mt_str_list)):
+        print(mtr_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
         share = data[0]/(data[0]+data[1])
         slams_share = data[0]/(data[0]+data[2])
@@ -501,9 +502,9 @@ def mag_thresh_plot(allow_splinters=True):
         ax_list[2].plot(mt_arr,share_arr[m],label=runid_list[m])
 
     ax_list[2].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
-    ax_list[0].set_ylabel("Number of SLAMS",fontsize=20,labelpad=10)
-    ax_list[1].set_ylabel("Slamsjet-to-SLAMS ratio $n_{SJ}/n_{SLAMS}$",fontsize=20,labelpad=10)
-    ax_list[2].set_ylabel("Slamsjet-to-jet ratio $n_{SJ}/n_{jet}$",fontsize=20,labelpad=10)
+    ax_list[0].set_ylabel("Number of SLAMS",fontsize=15,labelpad=10)
+    ax_list[1].set_ylabel("Slamsjet-to-SLAMS ratio $n_{SJ}/n_{SLAMS}$",fontsize=15,labelpad=10)
+    ax_list[2].set_ylabel("Slamsjet-to-jet ratio $n_{SJ}/n_{jet}$",fontsize=15,labelpad=10)
     ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax_list[0].legend(frameon=False,numpoints=1,markerscale=3)
     for ax in ax_list:
