@@ -494,7 +494,7 @@ def mag_thresh_plot(allow_splinters=True):
     slams_number_arr = slams_number_arr.T
     mt_arr = np.array(list(map(float,mt_str_list)))
 
-    fig,ax_list = plt.subplots(3,1)
+    fig,ax_list = plt.subplots(3,1,figsize=(8,12))
     for m in range(len(runid_list)):
         ax_list[0].plot(mt_arr,slams_number_arr[m],label=runid_list[m])
         ax_list[1].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
