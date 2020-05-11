@@ -509,16 +509,18 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
 
     data_arr = np.array([separate_jets(runid,allow_splinters) for runid in runids]).flatten()
     count_arr = np.array([arr.size for arr in data_arr])
-    count_arr = np.reshape(count_arr,(4,2)).T
+    count_arr = np.reshape(count_arr,(4,3)).T
 
-    print("Runs:       ABA ABC AEA AEC\n")
-    print("SJ Jets:       {}\n".format(count_arr[0]))
-    print("Non-SJ Jets:   {}\n".format(count_arr[1]))
-    print("Share:         {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
+    print("Runs:           ABA ABC AEA AEC\n")
+    print("SJ Jets:        {}\n".format(count_arr[0]))
+    print("Non-SJ Jets:    {}\n".format(count_arr[1]))
+    print("Non-SJ SLAMS:   {}\n".format(count_arr[2]))
+    print("SJ/jet ratio:   {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
+    print("SJ/SLAMS ratio: {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[2])))
 
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
-    return np.reshape(data_arr,(4,2))
+    return np.reshape(data_arr,(4,3))
 
 def separate_jets(runid,allow_splinters=True):
 
@@ -527,6 +529,7 @@ def separate_jets(runid,allow_splinters=True):
 
     sj_jet_ids = []
     non_sj_ids = []
+    pure_slams_ids = []
 
     for n1 in range(3000):
 
@@ -535,20 +538,31 @@ def separate_jets(runid,allow_splinters=True):
         except:
             continue
 
-        if not allow_splinters and "splinter" in props.meta:
-            continue
-
         if np.logical_and(props.read("is_slams")==1,props.read("is_jet")==1).any():
-            sj_jet_ids.append(n1)
-        elif (props.read("is_jet")==1).any():
-            if props.read("at_bow_shock")[0] == 1:
-                non_sj_ids.append(n1)
+            if not allow_splinters and "splinter" in props.meta:
+                splinter_time = props.read("time")[props.read("is_splinter")==1][0]
+                non_slams_time = props.read("time")[props.read("is_slams")==0][0]
+                if splinter_time >= non_slams_time:
+                    continue
+                else:
+                    sj_jet_ids.append(n1)
             else:
+                sj_jet_ids.append(n1)
+        elif (props.read("is_jet")==1).any():
+            if not allow_splinters and "splinter" in props.meta:
                 continue
-        else:
-            continue
+            elif props.read("at_bow_shock")[0] != 1:
+                continue
+            else:
+                non_sj_ids.append(n1)
+        elif (props.read("is_slams")==1).any():
+            # if not allow_splinters and "splinter" in props.meta:
+            #     continue
+            # else:
+            #     pure_slams_ids.append(n1)
+            pure_slams_ids.append(n1)
 
-    return [np.array(sj_jet_ids),np.array(non_sj_ids)]
+    return [np.array(sj_jet_ids),np.array(non_sj_ids),np.array(pure_slams_ids)]
 
 def separate_jets_old(runid):
 
