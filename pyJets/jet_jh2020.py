@@ -481,7 +481,7 @@ def mag_thresh_plot(allow_splinters=True):
     slams_share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     slams_number_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     for n in range(len(mt_str_list)):
-        print(mt_str_list[n])
+        #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
         share = data[0]/(data[0]+data[1])
         slams_share = data[0]/(data[0]+data[2])
