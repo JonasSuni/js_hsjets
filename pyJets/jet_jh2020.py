@@ -791,7 +791,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     vmin_list = [0,0,0,0,3.3,5,100,0.5]
     vscale_list = [1e9,1e9,1e9,1e9,1.0e-6,1e9,1e-3,1e-6]
     #expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
-    sj_jet_ids,non_sj_ids = separate_jets(runid)
+    sj_jet_ids,non_sj_ids,pure_slams_ids = separate_jets(runid)
 
     global filenr_g
     global runid_g
