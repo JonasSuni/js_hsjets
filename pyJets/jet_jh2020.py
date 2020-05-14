@@ -784,13 +784,13 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
 
-    vars_list = ["Pdyn","core_heating","rho","Mmsx","B","v","Temperature"]
+    vars_list = ["Pmag","Ptot","Pressure","Pdyn","rho","B","v","Temperature"]
     var_index = vars_list.index(var)
-    label_list = ["nPa","$T_{sw}$","$cm^{-3}$","","nT"]
-    vmax_list = [4.5,1.5,20,1,20,700,15]
-    vmin_list = [0.5,0,3.3,0,5,100,0.5]
-    vscale_list = [1e9,1.0e-6,1.0e-6,1,1e9,1e-3,1e-6]
-    expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
+    #label_list = ["nPa","nPa","$T_{sw}$","$cm^{-3}$","","nT"]
+    vmax_list = [4.5,4.5,4.5,4.5,20,20,700,15]
+    vmin_list = [0,0,0,0,3.3,5,100,0.5]
+    vscale_list = [1e9,1e9,1e9,1e9,1.0e-6,1e9,1e-3,1e-6]
+    #expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
     sj_jet_ids,non_sj_ids = separate_jets(runid)
 
     global filenr_g
