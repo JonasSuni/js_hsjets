@@ -382,6 +382,7 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         if custom:
             ax.axhline(412.5,color="black",linewidth=0.8)
             ax.axhline(447.5,color="black",linewidth=0.8)
+            ax.plot([x_arr[0],x_arr[-1]],[412.5,447.5],color="black",linewidth=0.8,linestyle="dashed")
         im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=vmin_list[n],vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
