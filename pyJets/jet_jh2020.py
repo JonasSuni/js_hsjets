@@ -384,9 +384,10 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
             ax.axhline(447.5,color="black",linewidth=0.8)
         im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=vmin_list[n],vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
-        ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
-        ax.contour(XmeshXT,TmeshXT,mms_mask,[0.5],linewidths=1.0,colors=jx.violet)
-        ax.contour(XmeshXT,TmeshXT,tcore_mask,[0.5],linewidths=1.0,colors=jx.orange)
+        if not custom:
+            ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
+            ax.contour(XmeshXT,TmeshXT,mms_mask,[0.5],linewidths=1.0,colors=jx.violet)
+            ax.contour(XmeshXT,TmeshXT,tcore_mask,[0.5],linewidths=1.0,colors=jx.orange)
         ax.tick_params(labelsize=15)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
