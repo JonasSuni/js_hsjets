@@ -82,17 +82,11 @@ class PropReader:
 
     def get_splin_times(self):
 
-        splin_arr = [s[-5:] for s in self.meta if "splin" in s]
+        splin_arr = [s for s in self.meta if s!="splinter"]
+        splin_arr = [s[-5:] for s in splin_arr if "splin" in s]
         splin_arr = list(map(float,splin_arr))
 
         return splin_arr
-
-    def get_merg_times(self):
-
-        merg_arr = [s[-5:] for s in self.meta if "merg" in s]
-        merg_arr = list(map(float,merg_arr))
-
-        return merg_arr
 
     def get_times(self):
         return timefile_read(self.runid,self.start,self.ID,transient=self.transient)
@@ -957,8 +951,6 @@ def jet_tracker(runid,start,stop,threshold=0.5):
                             if "merger" not in jetobj.meta:
                                 jetobj.meta.append("merger")
                                 jetobj.merge_time = float(n)/2
-                            else:
-                                jetobj.meta.append("merg{}".format(str(float(n)/2)))
                         else:
                             curr_jet_temp_list.append(event)
 
