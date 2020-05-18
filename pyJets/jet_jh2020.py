@@ -146,7 +146,7 @@ def jh2020_fig3():
     fig.savefig(homedir+"Figures/jh2020/fig3.png")
     plt.close(fig)
 
-def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v","B","Temperature"],save=True):
+def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v","B","Temperature"],save=True,custom=False):
 
     outputdir = wrkdir_DNR+"timeseries/{}/{}_{}/".format(runid,min_cellid,max_cellid)
 
@@ -155,8 +155,14 @@ def get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=["Pdyn","rho","v
     op_list = ["pass","magnitude","x","y","z","magnitude","x","y","z","pass","pass","pass","pass"]
 
     vars = vars+["Mmsx","TNonBackstream"]
+    if custom:
+        vars = ["Pdyn","rho","Pressure","Pmag","Ptot"]+["Mmsx","TNonBackstream"]
 
-    cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
+    if custom:
+        cellid_range = jet_424_center_cells()
+        outputdir = wrkdir_DNR+"timeseries/{}/{}_{}/".format(runid,"custom","424")
+    else:
+        cellid_range = np.arange(min_cellid,max_cellid+1,dtype=int)
 
     output_arr = np.zeros((len(vars),stop-start+1,cellid_range.size))
 
@@ -198,6 +204,19 @@ def find_one_jet():
             print(n)
 
     return None
+
+def jet_424_center_cells():
+
+    jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
+    vlsvobj = pt.vlsvfile.VlsvReader(vlasdir+"/2D/ABC/bulk/bulk.0000825.vlsv")
+    x_arr = jetobj.read("x_mean")*r_e
+    y_arr = jetobj.read("y_mean")*r_e
+    z_arr = np.zeros_like(x_arr)
+
+    coords = np.array([x_arr,y_arr,z_arr]).T
+    cells = [vlsvobj.get_cellid(coord) for coord in coords]
+
+    return cells
 
 def jh2020_cut_plot(runid,filenr,min_cellid=1814480,max_cellid=1814540):
 
@@ -283,10 +302,13 @@ def event_for_mesh(runid,filenr,y,minx,maxx):
     else:
         return np.nan
 
-def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none"):
+def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none",custom=False):
 
     var_list = ["Pdyn","rho","v","B","Temperature"]
     norm_list = [1.e-9,1.e6,1.e3,1.e-9,1.e6]
+    if custom:
+        var_list = ["Pdyn","rho","Pressure","Pmag","Ptot"]
+        norm_list = [1.e-9,1.e6,1.e-9,1.e-9,1.e-9]
 
     if clip == "none":
         vmin_list = [0,0,0,0,0]
@@ -298,18 +320,24 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         vmin_list = [1,6.6,150,5,0.5]
         vmax_list = [8,30,650,35,20]
     elif clip == "optimal":
-        vmin_list = [0.5,3.3,100,5,0.5]
+        vmin_list = [0.0,3.3,100,5,0.5]
         vmax_list = [4.5,20,700,20,15]
+    if custom:
+        vmin_list = [0.0,3.3,0.2,0.0,1.0]
+        vmax_list = [3,20,2,0.25,4]
 
     cell_arr = np.arange(min_cellid,max_cellid+1,dtype=int)
-    y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
     x_arr = np.array([jx.get_cell_coordinates(runid,cell)[0]/r_e for cell in cell_arr])
+    if custom:
+        cell_arr = jet_424_center_cells()
+        x_arr = np.arange(cell_arr.size)
+    y = jx.get_cell_coordinates(runid,cell_arr[0])[1]/r_e
     time_arr = np.arange(start,stop+1)/2.0
     XmeshXT,TmeshXT = np.meshgrid(x_arr,time_arr)
 
-    if min_cellid==1814480:
+    if min_cellid==1814480 and not custom:
         eventx_arr = np.array([event_for_mesh(runid,fnr,y,x_arr[0],x_arr[-1]) for fnr in np.arange(start,stop+1,dtype=int)])
-    elif min_cellid==1784477:
+    elif min_cellid==1784477 and not custom:
         onejet_obj = jio.PropReader(str(424).zfill(5),"ABC",transient="slamsjet")
         ox = onejet_obj.read("x_mean")
         oy = onejet_obj.read("y_mean")
@@ -320,10 +348,13 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     rho_sw = 3.3e6
     T_sw = 0.5e6
 
-    if not fromfile:
-        data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
+    if custom:
+        data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,"custom","424",start,stop))
     else:
-        data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
+        if not fromfile:
+            data_arr = get_cut_through(runid,start,stop,min_cellid,max_cellid,vars=var_list,save=False)
+        else:
+            data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,min_cellid,max_cellid,start,stop))
 
     rho_mask = (data_arr[1]>=2*rho_sw).astype(int)
     mms_mask = (data_arr[-2]<=1).astype(int)
@@ -338,16 +369,19 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
     for n in range(len(var_list)):
         data = data_arr[n]/norm_list[n]
         ax = ax_list[n]
-        if min_cellid == 1814480:
+        if min_cellid == 1814480 and not custom:
             ax.axhline(328,color="black",linewidth=0.8)
             ax.axhline(337,color="black",linewidth=0.8)
             ax.axhline(345,color="black",linewidth=0.8)
-        elif min_cellid == 1814480+60000+10:
+        elif min_cellid == 1814480+60000+10 and not custom:
             ax.axhline(365,color="black",linewidth=0.8)
             ax.axhline(370,color="black",linewidth=0.8)
             ax.axhline(360,color="black",linewidth=0.8)
-        elif min_cellid == 1784477:
+        elif min_cellid == 1784477 and not custom:
             ax.axhline(412.5,color="black",linewidth=0.8)
+        if custom:
+            ax.axhline(412.5,color="black",linewidth=0.8)
+            ax.axhline(447.5.5,color="black",linewidth=0.8)
         im_list.append(ax.pcolormesh(x_arr,time_arr,data,vmin=vmin_list[n],vmax=vmax_list[n]))
         cb_list.append(fig.colorbar(im_list[n],ax=ax))
         ax.contour(XmeshXT,TmeshXT,rho_mask,[0.5],linewidths=1.0,colors="black")
@@ -357,14 +391,17 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #ax.xaxis.set_major_locator(MaxNLocator(nbins=6,prune="lower"))
         ax.set_title(var_list[n],fontsize=20)
-        if min_cellid==1814480:
+        if min_cellid==1814480 and not custom:
             ax.plot(eventx_arr,time_arr,"o",color="red",markersize=2)
-        elif min_cellid == 1784477:
+        elif min_cellid == 1784477 and not custom:
             ax.plot(ox,ot,"o",color="red",markersize=2)
         ax.set_xlim(x_arr[0],x_arr[-1])
         if n == 0:
             ax.set_ylabel("Simulation time [s]",fontsize=20)
-            ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
+            if custom:
+                ax.set_xlabel("Pos along path",fontsize=20)
+            else:
+                ax.set_xlabel("$\mathrm{X~[R_e]}$",fontsize=20)
 
     fig.suptitle("Y = {:.3f} Re".format(y),fontsize=20)
 
@@ -373,8 +410,10 @@ def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_celli
             os.makedirs(wrkdir_DNR+"Figures/jh2020")
         except OSError:
             pass
-
-    fig.savefig(wrkdir_DNR+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format(min_cellid,clip))
+    if custom:
+        fig.savefig(wrkdir_DNR+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format("custom",clip))
+    else:
+        fig.savefig(wrkdir_DNR+"Figures/jh2020/fig2_mesh_{}_clip{}.png".format(min_cellid,clip))
     plt.close(fig)
 
     return None
