@@ -214,7 +214,7 @@ def jet_424_center_cells():
     z_arr = np.zeros_like(x_arr)
 
     coords = np.array([x_arr,y_arr,z_arr]).T
-    cells = [vlsvobj.get_cellid(coord) for coord in coords]
+    cells = np.array([vlsvobj.get_cellid(coord) for coord in coords])
 
     return cells
 
