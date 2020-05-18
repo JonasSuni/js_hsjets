@@ -197,7 +197,7 @@ def find_one_jet():
     nrange = range(1,3000)
     for n in nrange:
         try:
-            jetobj = jio.PropReader(str(424).zfill(5),"ABC",transient="slamsjet")
+            jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
         except:
             continue
         if jetobj.read("time")[0] == 412.5 and not jetobj.read("is_slams").astype(bool).any():
@@ -207,7 +207,7 @@ def find_one_jet():
 
 def jet_424_center_cells():
 
-    jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slamsjet")
+    jetobj = jio.PropReader(str(424).zfill(5),"ABC",transient="slamsjet")
     vlsvobj = pt.vlsvfile.VlsvReader(vlasdir+"/2D/ABC/bulk/bulk.0000825.vlsv")
     x_arr = jetobj.read("x_mean")*r_e
     y_arr = jetobj.read("y_mean")*r_e
