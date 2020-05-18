@@ -604,9 +604,12 @@ def separate_jets(runid,allow_splinters=True):
             if not allow_splinters and "splinter" in props.meta:
                 splinter_time = props.read("time")[props.read("is_splinter")==1][0]
                 non_slams_time = props.read("time")[props.read("is_slams")==1][-1]+0.5
+                extra_splin_times = np.array(props.get_splin_times())
                 if splinter_time >= non_slams_time:
                     continue
-                else:
+                elif (extra_splin_times>=non_slams_time).any():
+                    continue
+                else :
                     sj_jet_ids.append(n1)
             else:
                 sj_jet_ids.append(n1)

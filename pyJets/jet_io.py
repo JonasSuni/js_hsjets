@@ -80,6 +80,20 @@ class PropReader:
         self.davg_list = ["T_avg","n_max","v_max","pd_max","B_max","TPar_avg","TPerp_avg"]
         self.sheath_list = ["T_sheath","n_sheath","v_sheath","pd_sheath","B_sheath","TPar_sheath","TPerp_sheath"]
 
+    def get_splin_times(self):
+
+        splin_arr = [s[-5:] for s in self.meta if "splin" in s]
+        splin_arr = list(map(float,splin_arr))
+
+        return splin_arr
+
+    def get_merg_times(self):
+
+        merg_arr = [s[-5:] for s in self.meta if "merg" in s]
+        merg_arr = list(map(float,merg_arr))
+
+        return merg_arr
+
     def get_times(self):
         return timefile_read(self.runid,self.start,self.ID,transient=self.transient)
 
@@ -943,6 +957,8 @@ def jet_tracker(runid,start,stop,threshold=0.5):
                             if "merger" not in jetobj.meta:
                                 jetobj.meta.append("merger")
                                 jetobj.merge_time = float(n)/2
+                            else:
+                                jetobj.meta.append("merg{}".format(str(float(n)/2)))
                         else:
                             curr_jet_temp_list.append(event)
 
@@ -961,6 +977,8 @@ def jet_tracker(runid,start,stop,threshold=0.5):
                             if "splinter" not in jetobj_new.meta:
                                 jetobj_new.meta.append("splinter")
                                 jetobj_new.splinter_time = float(n)/2
+                            else:
+                                jetobj.meta.append("splin{}".format(str(float(n)/2)))
                             jetobj_new.cellids[-1] = event
                             jetobj_new.props[-1] = props_unsrt[events_unsrt.index(event)]
                             jetobj_list.append(jetobj_new)
