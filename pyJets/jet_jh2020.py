@@ -557,6 +557,8 @@ def mag_thresh_plot(allow_splinters=True):
         ax.grid()
         ax.set_xlim(mt_arr[0],mt_arr[-1])
         ax.tick_params(labelsize=15)
+    ax_list[0].ylim(bottom=0)
+    ax_list[1].ylim(bottom=0)
     ax_list[2].set_ylim(0,1)
     ax_list[3].set_ylim(0,1)
     plt.tight_layout()
