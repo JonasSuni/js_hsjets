@@ -519,40 +519,46 @@ def mag_thresh_plot(allow_splinters=True):
     share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     slams_share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     slams_number_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
+    jet_number_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     for n in range(len(mt_str_list)):
         #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
         share = data[0]/(data[0]+data[1])
         slams_share = data[0]/(data[0]+data[2])
         slams_number = data[2]+data[0]
+        jet_number = data[1]+data[0]
         share_arr[n] = share
         slams_share_arr[n] = slams_share
         slams_number_arr[n] = slams_number
+        jet_number_arr[n] = jet_number
 
     share_arr = share_arr.T
     slams_share_arr = slams_share_arr.T
     slams_number_arr = slams_number_arr.T
+    jet_number_arr = slams_number_arr.T
     mt_arr = np.array(list(map(float,mt_str_list)))
 
-    fig,ax_list = plt.subplots(3,1,figsize=(8,10))
+    fig,ax_list = plt.subplots(4,1,figsize=(8,10))
     for m in range(len(runid_list)):
         #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[0].plot(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[1].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
-        ax_list[2].plot(mt_arr,share_arr[m],label=runid_list[m])
+        ax_list[0].plot(mt_arr,jet_number_arr[m],label=runid_list[m])
+        ax_list[1].plot(mt_arr,slams_number_arr[m],label=runid_list[m])
+        ax_list[2].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
+        ax_list[3].plot(mt_arr,share_arr[m],label=runid_list[m])
 
-    ax_list[2].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
-    ax_list[0].set_ylabel("Number of SLAMS",fontsize=15,labelpad=10)
-    ax_list[1].set_ylabel("Slamsjet-to-SLAMS ratio $n_{SJ}/n_{SLAMS}$",fontsize=15,labelpad=10)
-    ax_list[2].set_ylabel("Slamsjet-to-jet ratio $n_{SJ}/n_{jet}$",fontsize=15,labelpad=10)
+    ax_list[3].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
+    ax_list[0].set_ylabel("Number of jets",fontsize=15,labelpad=10)
+    ax_list[1].set_ylabel("Number of SLAMS",fontsize=15,labelpad=10)
+    ax_list[2].set_ylabel("Slamsjets per SLAMS",fontsize=15,labelpad=10)
+    ax_list[3].set_ylabel("Slamsjets per jet",fontsize=15,labelpad=10)
     ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax_list[0].legend(frameon=False,numpoints=1,markerscale=3)
     for ax in ax_list:
         ax.grid()
         ax.set_xlim(mt_arr[0],mt_arr[-1])
         ax.tick_params(labelsize=15)
-    ax_list[1].set_ylim(0,1)
     ax_list[2].set_ylim(0,1)
+    ax_list[3].set_ylim(0,1)
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
