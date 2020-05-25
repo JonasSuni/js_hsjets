@@ -309,7 +309,7 @@ def event_424_cut(time=825):
     cell_arr = jet_424_center_cells()
     x_arr = np.arange(cell_arr.size)
     vmin_list = [0.0,0,1,0.0,1]
-    vmax_list = [2.5,20,2.5,0.25,5]
+    vmax_list = [2.5,20,2.5,0.25,4.5]
 
     data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format("ABC","custom","424",725,925))
 
