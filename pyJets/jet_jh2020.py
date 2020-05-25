@@ -313,7 +313,7 @@ def event_424_cut():
 
     plt.ioff()
 
-    fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,20),sharex=True)
+    fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,10),sharex=True)
 
     for n in range(len(var_list)):
         data = data_arr[n][100]/norm_list[n]
@@ -321,7 +321,7 @@ def event_424_cut():
         ax.tick_params(labelsize=15)
         ax.plot(x_arr,data)
         ax.set_xlim(x_arr[0],x_arr[-1])
-        ax.set_ylabel(var_list[n],fontsize=10)
+        ax.set_ylabel(var_list[n],fontsize=15)
     ax_list[-1].set_xlabel("Pos along path",fontsize=20)
 
     if not os.path.exists(wrkdir_DNR+"Figures/jh2020"):
