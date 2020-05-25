@@ -302,7 +302,7 @@ def event_for_mesh(runid,filenr,y,minx,maxx):
     else:
         return np.nan
 
-def event_424_cut():
+def event_424_cut(time=825):
 
     var_list = ["Pdyn","rho","Pressure","Pmag","Ptot"]
     norm_list = [1.e-9,1.e6,1.e-9,1.e-9,1.e-9]
@@ -316,7 +316,7 @@ def event_424_cut():
     fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,10),sharex=True)
 
     for n in range(len(var_list)):
-        data = data_arr[n][100]/norm_list[n]
+        data = data_arr[n][time-725]/norm_list[n]
         ax = ax_list[n]
         ax.tick_params(labelsize=15)
         ax.plot(x_arr,data)
@@ -329,7 +329,7 @@ def event_424_cut():
             os.makedirs(wrkdir_DNR+"Figures/jh2020")
         except OSError:
             pass
-    fig.savefig(wrkdir_DNR+"Figures/jh2020/event_424_cut.png")
+    fig.savefig(wrkdir_DNR+"Figures/jh2020/event_424_cut_{}.png".format(time))
     plt.close(fig)
 
     return None
