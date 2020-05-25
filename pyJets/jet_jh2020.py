@@ -308,6 +308,8 @@ def event_424_cut(time=825):
     norm_list = [1.e-9,1.e6,1.e-9,1.e-9,1.e-9]
     cell_arr = jet_424_center_cells()
     x_arr = np.arange(cell_arr.size)
+    vmin_list = [0.0,0,0,0.0,0]
+    vmax_list = [3,20,2,0.25,4]
 
     data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format("ABC","custom","424",725,925))
 
@@ -322,6 +324,7 @@ def event_424_cut(time=825):
         ax.plot(x_arr,data)
         ax.set_xlim(x_arr[0],x_arr[-1])
         ax.set_ylabel(var_list[n],fontsize=15)
+        ax.set_ylim(vmin_list[n],vmax_list[n])
     ax_list[-1].set_xlabel("Pos along path",fontsize=20)
     ax_list[0].set_title("Time = {}s".format(float(time)/2),fontsize=20)
 
