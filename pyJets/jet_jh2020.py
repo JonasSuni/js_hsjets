@@ -302,6 +302,38 @@ def event_for_mesh(runid,filenr,y,minx,maxx):
     else:
         return np.nan
 
+def event_424_cut():
+
+    var_list = ["Pdyn","rho","Pressure","Pmag","Ptot"]
+    norm_list = [1.e-9,1.e6,1.e-9,1.e-9,1.e-9]
+    cell_arr = jet_424_center_cells()
+    x_arr = np.arange(cell_arr.size)
+
+    data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,"custom","424",start,stop))
+
+    plt.ioff()
+
+    fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,20),sharex=True)
+
+    for n in range(len(var_list)):
+        data = data_arr[n][0]/norm_list[n]
+        ax = ax_list[n]
+        ax.tick_params(labelsize=15)
+        ax.plot(x_arr,data)
+        ax.set_xlim(x_arr[0],x_arr[-1])
+        ax.set_ylabel(var_list[n],fontsize=10)
+    ax_list[-1].set_xlabel("Pos along path",fontsize=20)
+
+    if not os.path.exists(wrkdir_DNR+"Figures/jh2020"):
+        try:
+            os.makedirs(wrkdir_DNR+"Figures/jh2020")
+        except OSError:
+            pass
+    fig.savefig(wrkdir_DNR+"Figures/jh2020/event_424_cut.png")
+    plt.close(fig)
+
+    return None
+
 def jh2020_fig2_mesh(runid="ABC",start=400,stop=799,min_cellid=1814480,max_cellid=1814540,fromfile=True,clip="none",custom=False):
 
     var_list = ["Pdyn","rho","v","B","Temperature"]
