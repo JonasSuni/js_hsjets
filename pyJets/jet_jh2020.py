@@ -325,6 +325,7 @@ def event_424_cut(time=825):
         ax.set_xlim(x_arr[0],x_arr[-1])
         ax.set_ylabel(var_list[n],fontsize=15)
         ax.set_ylim(vmin_list[n],vmax_list[n])
+        ax.grid()
     ax_list[-1].set_xlabel("Pos along path",fontsize=20)
     ax_list[0].set_title("Time = {}s".format(float(time)/2),fontsize=20)
 
