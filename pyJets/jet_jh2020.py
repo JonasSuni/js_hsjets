@@ -323,13 +323,14 @@ def event_424_cut(time=825):
         ax.set_xlim(x_arr[0],x_arr[-1])
         ax.set_ylabel(var_list[n],fontsize=15)
     ax_list[-1].set_xlabel("Pos along path",fontsize=20)
+    ax_list[0].set_title("Time = {}s".format(float(time)/2),fontsize=20)
 
-    if not os.path.exists(wrkdir_DNR+"Figures/jh2020"):
+    if not os.path.exists(wrkdir_DNR+"Figures/jh2020/event_424_cut"):
         try:
-            os.makedirs(wrkdir_DNR+"Figures/jh2020")
+            os.makedirs(wrkdir_DNR+"Figures/jh2020/event_424_cut")
         except OSError:
             pass
-    fig.savefig(wrkdir_DNR+"Figures/jh2020/event_424_cut_{}.png".format(time))
+    fig.savefig(wrkdir_DNR+"Figures/jh2020/event_424_cut/{}.png".format(time))
     plt.close(fig)
 
     return None
