@@ -309,14 +309,14 @@ def event_424_cut():
     cell_arr = jet_424_center_cells()
     x_arr = np.arange(cell_arr.size)
 
-    data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format(runid,"custom","424",start,stop))
+    data_arr = np.load(wrkdir_DNR+"/timeseries/{}/{}_{}/{}_{}.npy".format("ABC","custom","424",725,925))
 
     plt.ioff()
 
     fig,ax_list = plt.subplots(len(var_list),1,figsize=(10,20),sharex=True)
 
     for n in range(len(var_list)):
-        data = data_arr[n][0]/norm_list[n]
+        data = data_arr[n][100]/norm_list[n]
         ax = ax_list[n]
         ax.tick_params(labelsize=15)
         ax.plot(x_arr,data)
