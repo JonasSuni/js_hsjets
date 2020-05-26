@@ -634,7 +634,7 @@ def separate_jets(runid,allow_splinters=True):
     non_sj_ids = []
     pure_slams_ids = []
 
-    for n1 in range(3000):
+    for n1 in range(6000):
 
         try:
             props = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
