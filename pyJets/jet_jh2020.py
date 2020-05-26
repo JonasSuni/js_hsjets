@@ -625,6 +625,7 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
     return np.reshape(data_arr,(4,3))
 
 def separate_jets(runid,allow_splinters=True):
+    # Separate events into slamsjets, non-slams jets, and non-jet slams
 
     runids = ["ABA","ABC","AEA","AEC"]
     run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
@@ -640,32 +641,42 @@ def separate_jets(runid,allow_splinters=True):
         except:
             continue
 
+        # is the event a slamsjet?
         if np.logical_and(props.read("is_slams")==1,props.read("is_jet")==1).any():
-            sj_bool = True
-            non_jet_time = props.read("time")[props.read("is_jet")==1][0]-0.5
-            non_slams_time = props.read("time")[props.read("is_slams")==1][-1]+0.5
+            sj_bool = True # event is categorised as slamsjet by default
+            non_jet_time = props.read("time")[props.read("is_jet")==1][0]-0.5 # last time when event is not jet
+            non_slams_time = props.read("time")[props.read("is_slams")==1][-1]+0.5 # first time when event is not slams
+
+            # is the event a splinter?
             if not allow_splinters and "splinter" in props.meta:
-                splinter_time = props.read("time")[props.read("is_splinter")==1][0]
-                extra_splin_times = np.array(props.get_splin_times())
+                splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
+                extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
                 if splinter_time >= non_slams_time:
                     sj_bool = False
                 elif (extra_splin_times > non_jet_time).any():
                     sj_bool = False
+
+            # is the event a merger?
             if not allow_splinters and "merger" in props.meta:
-                merger_time = props.read("time")[props.read("is_merger")==1][0]
+                merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
                 if merger_time <= non_jet_time:
                     sj_bool = False
+
             if sj_bool:
                 sj_jet_ids.append(n1)
             else:
                 continue
+
+        # is the event a non-slams jet?
         elif (props.read("is_jet")==1).any():
-            if not allow_splinters and "splinter" in props.meta:
+            if not allow_splinters and "splinter" in props.meta: # discard splinters unconditionally
                 continue
-            elif props.read("at_bow_shock")[0] != 1:
+            elif props.read("at_bow_shock")[0] != 1: # is event not at bow shock?
                 continue
             else:
                 non_sj_ids.append(n1)
+
+        # is the event a non-jet slams?
         elif (props.read("is_slams")==1).any():
             # if not allow_splinters and "splinter" in props.meta:
             #     continue
