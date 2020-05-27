@@ -653,7 +653,7 @@ def separate_jets(runid,allow_splinters=True):
                 extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
                 if splinter_time >= non_slams_time:
                     sj_bool = False
-                elif (extra_splin_times > non_jet_time).any():
+                elif (extra_splin_times >= non_slams_time).any():
                     sj_bool = False
 
             # is the event a merger?
