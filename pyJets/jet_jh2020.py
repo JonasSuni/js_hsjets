@@ -628,7 +628,7 @@ def separate_jets(runid,allow_splinters=True):
     # Separate events into slamsjets, non-slams jets, and non-jet slams
 
     runids = ["ABA","ABC","AEA","AEC"]
-    run_cutoff_dict = dict(zip(runids,[10,8,10,8]))
+    run_cutoff_dict = dict(zip(runids,[10,8,10,8])) # DEPRECATED
 
     sj_jet_ids = []
     non_sj_ids = []
