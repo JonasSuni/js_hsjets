@@ -631,8 +631,8 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
     pr_TNBS = pr_pressurenbs/ ((pr_rhonbs + epsilon) * kb)
 
     #is_upstream = int(np.all(rho_ssh < 2*rho_sw))
-    #is_upstream = int(np.all(pr_TNBS < 3*T_sw))
-    is_upstream = int(np.all(mmsx_ssh >= 1))
+    is_upstream = int(np.all(pr_TNBS < 3*T_sw))
+    #is_upstream = int(np.all(mmsx_ssh >= 1))
 
     pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
 
