@@ -563,8 +563,8 @@ def mag_thresh_plot(allow_splinters=True):
     for n in range(len(mt_str_list)):
         #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
-        share = data[0]+epsilon/(data[0]+data[1]+epsilon)
-        slams_share = data[0]+epsilon/(data[0]+data[2]+epsilon)
+        share = (data[0]+epsilon)/(data[0]+data[1]+epsilon)
+        slams_share = (data[0]+epsilon)/(data[0]+data[2]+epsilon)
         slams_number = data[2]+data[0]
         jet_number = data[1]+data[0]
         share_arr[n] = share
@@ -621,8 +621,8 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
     print("SJ Jets:        {}\n".format(count_arr[0]))
     print("Non-SJ Jets:    {}\n".format(count_arr[1]))
     print("Non-SJ SLAMS:   {}\n".format(count_arr[2]))
-    print("SJ/jet ratio:   {}\n".format(count_arr[0].astype(float)+epsilon/(count_arr[0]+count_arr[1]))+epsilon)
-    print("SJ/SLAMS ratio: {}\n".format(count_arr[0].astype(float)+epsilon/(count_arr[0]+count_arr[2]))+epsilon)
+    print("SJ/jet ratio:   {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[0]+count_arr[1]+epsilon)))
+    print("SJ/SLAMS ratio: {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[0]+count_arr[2]+epsilon)))
 
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
