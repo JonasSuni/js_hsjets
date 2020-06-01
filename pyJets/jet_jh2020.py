@@ -550,6 +550,8 @@ def jh2020_fig2(xlim=[200.,399.5]):
 
 def mag_thresh_plot(allow_splinters=True):
 
+    epsilon = 1.e-27
+
     runid_list = ["ABA","ABC","AEA","AEC"]
     #mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","2.0","2.1","2.2","2.5","2.8","3.0"]
     mt_str_list = ["1.1","1.3","1.5","1.7","1.9","2.1","2.3","2.5","2.7","3.0"]
@@ -561,8 +563,8 @@ def mag_thresh_plot(allow_splinters=True):
     for n in range(len(mt_str_list)):
         #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
-        share = data[0]/(data[0]+data[1])
-        slams_share = data[0]/(data[0]+data[2])
+        share = data[0]+epsilon/(data[0]+data[1]+epsilon)
+        slams_share = data[0]+epsilon/(data[0]+data[2]+epsilon)
         slams_number = data[2]+data[0]
         jet_number = data[1]+data[0]
         share_arr[n] = share
@@ -607,6 +609,8 @@ def mag_thresh_plot(allow_splinters=True):
 
 def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
 
+    epsilon = 1.e-27
+
     runids = ["ABA","ABC","AEA","AEC"]
 
     data_arr = np.array([separate_jets(runid,allow_splinters) for runid in runids]).flatten()
@@ -617,8 +621,8 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
     print("SJ Jets:        {}\n".format(count_arr[0]))
     print("Non-SJ Jets:    {}\n".format(count_arr[1]))
     print("Non-SJ SLAMS:   {}\n".format(count_arr[2]))
-    print("SJ/jet ratio:   {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[1])))
-    print("SJ/SLAMS ratio: {}\n".format(count_arr[0].astype(float)/(count_arr[0]+count_arr[2])))
+    print("SJ/jet ratio:   {}\n".format(count_arr[0].astype(float)+epsilon/(count_arr[0]+count_arr[1]))+epsilon)
+    print("SJ/SLAMS ratio: {}\n".format(count_arr[0].astype(float)+epsilon/(count_arr[0]+count_arr[2]))+epsilon)
 
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
