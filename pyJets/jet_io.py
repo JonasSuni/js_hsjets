@@ -908,7 +908,7 @@ def jet_tracker(runid,start,stop,threshold=0.5):
     for n in range(start+2,stop+1):
 
         for jetobj in jetobj_list:
-            if float(n)/2 - jetobj.times[-1] + 0.5 > 5:
+            if float(n)/2 - jetobj.times[-1] + 0.5 > 15:
                 print("Killing jet {}".format(jetobj.ID))
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
