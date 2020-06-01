@@ -682,11 +682,12 @@ def separate_jets(runid,allow_splinters=True):
 
         # is the event a non-jet slams?
         elif (props.read("is_slams")==1).any():
-            # if not allow_splinters and "splinter" in props.meta:
-            #     continue
+            if not allow_splinters and "merger" in props.meta:
+                continue
             # else:
             #     pure_slams_ids.append(n1)
-            pure_slams_ids.append(n1)
+            else:
+                pure_slams_ids.append(n1)
 
     return [np.array(sj_jet_ids),np.array(non_sj_ids),np.array(pure_slams_ids)]
 
