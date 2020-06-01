@@ -201,7 +201,7 @@ class NeoTransient:
 
     def jetprops_write(self,start):
 
-        if self.times[-1]-self.times[0] >= 4.5:
+        if self.times[-1]-self.times[0] >= 0:
             t_arr = np.array(self.times)
             splinter_arr = (t_arr>=self.splinter_time).astype(int)
             merge_arr = (t_arr>=self.merge_time).astype(int)
