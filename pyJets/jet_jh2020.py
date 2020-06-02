@@ -563,10 +563,10 @@ def mag_thresh_plot(allow_splinters=True):
     for n in range(len(mt_str_list)):
         #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
-        share = (data[0]+epsilon)/(data[0]+data[1]+epsilon)
-        slams_share = (data[0]+epsilon)/(data[0]+data[2]+epsilon)
-        slams_number = data[2]+data[0]
-        jet_number = data[1]+data[0]
+        share = (data[0]+epsilon)/(data[1]+epsilon)
+        slams_share = (data[0]+epsilon)/(data[2]+epsilon)
+        slams_number = data[2]
+        jet_number = data[1]
         share_arr[n] = share
         slams_share_arr[n] = slams_share
         slams_number_arr[n] = slams_number
@@ -607,26 +607,90 @@ def mag_thresh_plot(allow_splinters=True):
     plt.close(fig)
     return None
 
-def sj_non_counter(allow_splinters=True,mag_thresh=1.4):
+def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
 
     epsilon = 1.e-27
 
     runids = ["ABA","ABC","AEA","AEC"]
 
-    data_arr = np.array([separate_jets(runid,allow_splinters) for runid in runids]).flatten()
+    data_arr = np.array([separate_jets_new(runid,allow_splinters) for runid in runids]).flatten()
     count_arr = np.array([arr.size for arr in data_arr])
     count_arr = np.reshape(count_arr,(4,3)).T
 
     print("Runs:           ABA ABC AEA AEC\n")
     print("SJ Jets:        {}\n".format(count_arr[0]))
-    print("Non-SJ Jets:    {}\n".format(count_arr[1]))
-    print("Non-SJ SLAMS:   {}\n".format(count_arr[2]))
-    print("SJ/jet ratio:   {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[0]+count_arr[1]+epsilon)))
-    print("SJ/SLAMS ratio: {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[0]+count_arr[2]+epsilon)))
+    print("Jets:           {}\n".format(count_arr[1]))
+    print("SLAMS:          {}\n".format(count_arr[2]))
+    print("SJ/jet ratio:   {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[1]+epsilon)))
+    print("SJ/SLAMS ratio: {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[2]+epsilon)))
 
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
     return np.reshape(data_arr,(4,3))
+
+def separate_jets_new(runid,allow_relatives=True):
+    # Separate events into slamsjets, jets and slams
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    sj_ids = []
+    jet_ids = []
+    slams_ids = []
+
+    for n1 in range(6000):
+
+        try:
+            props = jio.PropReader(str(n1).zfill(5),runid,transient="slamsjet")
+        except:
+            continue
+
+        if props.read("is_slams").any() and props.read("is_jet").any():
+            if allow_relatives:
+                sj_ids.append(n1)
+                slams_ids.append(n1)
+                jet_ids.append(n1)
+            else:
+                non_jet_time = props.read("time")[props.read("is_jet")==1][0]-0.5 # last time when event is not jet
+                non_slams_time = props.read("time")[props.read("is_slams")==1][-1]+0.5 # first time when event is not slams
+                if "splinter" in props.meta:
+                    splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
+                    extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
+                    if splinter_time >= non_slams_time or (extra_splin_times >= non_slams_time).any():
+                        continue
+                    else:
+                        sj_ids.append(n1)
+                        jet_ids.append(n1)
+                        slams_ids.append(n1)
+                if "merger" in props.meta:
+                    merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
+                    if merger_time <= non_jet_time:
+                        continue
+                    else:
+                        sj_ids.append(n1)
+                        jet_ids.append(n1)
+                        slams_ids.append(n1)
+        elif props.read("is_jet").any():
+            if props.read("at_bow_shock")[0] != 1:
+                continue
+            else:
+                if allow_relatives:
+                    jet_ids.append(n1)
+                else:
+                    if "splinter" in props.meta:
+                        continue
+                    else:
+                        jet_ids.append(n1)
+
+        elif props.read("is_slams").any():
+            if allow_relatives:
+                slams_ids.append(n1)
+            else:
+                if "merger" in props.meta:
+                    continue
+                else:
+                    slams_ids.append(n1)
+
+    return [np.unique(sj_ids),np.unique(jet_ids),np.unique(slams_ids)]
 
 def separate_jets(runid,allow_splinters=True):
     # Separate events into slamsjets, non-slams jets, and non-jet slams
