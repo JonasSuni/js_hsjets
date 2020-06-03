@@ -1105,13 +1105,13 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
     #rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
     #mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
-    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors="blue")
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.violet)
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black")
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors=jx.violet)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors="brown")
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=1.5)
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color=jx.violet,markersize=1.5)
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g,filenr_g)
