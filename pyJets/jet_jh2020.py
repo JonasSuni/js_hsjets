@@ -994,7 +994,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
     vmin_list = [[0.0,1.0,0.2,0,1.0,5,250,0.5],[0.0,1.0,0.2,0,3.3,5,100,0.5],[0.0,1.0,0.2,0,1.0,10,250,0.5],[0.0,1.0,0.2,0,3.3,10,100,0.5]][run_index]
     vscale_list = [1e9,1e9,1e9,1e9,1.0e-6,1e9,1e-3,1e-6]
     #expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
-    sj_jet_ids,jet_ids,slams_ids = separate_jets(runid)
+    sj_jet_ids,jet_ids,slams_ids = separate_jets_new(runid,False)
     non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
 
     global filenr_g
