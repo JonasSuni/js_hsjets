@@ -655,7 +655,7 @@ def separate_jets_new(runid,allow_relatives=True):
                 if "splinter" in props.meta:
                     splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
                     extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
-                    if splinter_time >= non_slams_time or (extra_splin_times >= non_slams_time).any():
+                    if splinter_time >= non_jet_time or (extra_splin_times >= non_jet_time).any():
                         continue
                     else:
                         sj_ids.append(n1)
@@ -663,7 +663,7 @@ def separate_jets_new(runid,allow_relatives=True):
                         slams_ids.append(n1)
                 if "merger" in props.meta:
                     merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
-                    if merger_time <= non_jet_time:
+                    if merger_time <= non_slams_time:
                         continue
                     else:
                         sj_ids.append(n1)
