@@ -1024,8 +1024,6 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     vscale = vscale_list[var_index]
     boxre = [6,18,-6,6]
     if runid in ["ABA","AEA"]:
-        if var == "Pdyn":
-            vmax = 1.5
         boxre = [6,18,-8,6]
 
     for itr in range(start,stop+1):
