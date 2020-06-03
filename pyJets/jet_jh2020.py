@@ -652,10 +652,12 @@ def separate_jets_new(runid,allow_relatives=True):
             else:
                 non_jet_time = props.read("time")[props.read("is_jet")==1][0]-0.5 # last time when event is not jet
                 non_slams_time = props.read("time")[props.read("is_slams")==1][-1]+0.5 # first time when event is not slams
+                bs_arrival = props.read("time")[props.read("at_bow_shock")==1][0]
+                bs_departure = props.read("time")[props.read("at_bow_shock")==1][-1]
                 if "splinter" in props.meta:
                     splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
                     extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
-                    if splinter_time >= non_jet_time or (extra_splin_times >= non_jet_time).any():
+                    if splinter_time > bs_departure or (extra_splin_times > bs_departure).any():
                         continue
                     else:
                         sj_ids.append(n1)
@@ -663,7 +665,7 @@ def separate_jets_new(runid,allow_relatives=True):
                         slams_ids.append(n1)
                 if "merger" in props.meta:
                     merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
-                    if merger_time <= non_slams_time:
+                    if merger_time < bs_arrival:
                         continue
                     else:
                         sj_ids.append(n1)
@@ -677,18 +679,32 @@ def separate_jets_new(runid,allow_relatives=True):
                     jet_ids.append(n1)
                 else:
                     if "splinter" in props.meta:
-                        continue
+                        splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
+                        extra_splin_times = np.array(props.get_splin_times()) # times of additional splinterings, if any
+                        bs_departure = props.read("time")[props.read("at_bow_shock")==1][-1]
+                        if splinter_time > bs_departure or (extra_splin_times > bs_departure).any():
+                            continue
+                        else:
+                            jet_ids.append(n1)
                     else:
                         jet_ids.append(n1)
 
         elif props.read("is_slams").any():
-            if allow_relatives:
-                slams_ids.append(n1)
+            if props.read("at_bow_shock")[-1] != 1:
+                continue
             else:
-                if "merger" in props.meta:
-                    continue
-                else:
+                if allow_relatives:
                     slams_ids.append(n1)
+                else:
+                    if "merger" in props.meta:
+                        merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
+                        bs_arrival = props.read("time")[props.read("at_bow_shock")==1][0]
+                        if merger_time < bs_arrival:
+                            continue
+                        else:
+                            slams_ids.append(n1)
+                    else:
+                        slams_ids.append(n1)
 
     return [np.unique(sj_ids),np.unique(jet_ids),np.unique(slams_ids)]
 
