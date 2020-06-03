@@ -979,9 +979,10 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
+def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
+    run_index = runid_list.index(runid)
     maxfnr_list = [839,1179,1339,879]
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
@@ -989,11 +990,12 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     vars_list = ["Pmag","Ptot","Pressure","Pdyn","rho","B","v","Temperature"]
     var_index = vars_list.index(var)
     #label_list = ["nPa","nPa","$T_{sw}$","$cm^{-3}$","","nT"]
-    vmax_list = [0.25,4,2,3.0,20,20,700,15]
-    vmin_list = [0.0,1.0,0.2,0,3.3,5,100,0.5]
+    vmax_list = [[0.25,4,2,1.5,6,20,850,15],[0.25,4,2,3.0,20,20,700,15],[0.25,4,2,1.5,6,40,850,15],[0.25,4,2,3.0,20,40,700,15]][run_index]
+    vmin_list = [[0.0,1.0,0.2,0,1.0,5,250,0.5],[0.0,1.0,0.2,0,3.3,5,100,0.5],[0.0,1.0,0.2,0,1.0,10,250,0.5],[0.0,1.0,0.2,0,3.3,10,100,0.5]][run_index]
     vscale_list = [1e9,1e9,1e9,1e9,1.0e-6,1e9,1e-3,1e-6]
     #expr_list = [pc.expr_pdyn,pc.expr_coreheating,pc.expr_srho,pc.expr_mms,pc.expr_B]
-    sj_jet_ids,non_sj_ids,pure_slams_ids = separate_jets(runid)
+    sj_jet_ids,jet_ids,slams_ids = separate_jets(runid)
+    non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
 
     global filenr_g
     global runid_g
@@ -1008,9 +1010,9 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
     sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in sj_jet_ids]
     non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
 
-    outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/".format(runid,var)
+    outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/{}/".format(runid,var,magt)
     if debug:
-        outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/".format(runid,var)
+        outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/{}/".format(runid,var,magt)
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
@@ -1030,9 +1032,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
 
-        colmap = "parula"
-        if var == "Mmsx":
-            colmap = "parula"
+        colmap = "Reds"
 
         #pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],tickinterval=2,vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
 
@@ -1103,15 +1103,15 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
-    rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
-    mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
+    #rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
+    #mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.dark_blue)
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="brown")
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.8,colors=jx.violet)
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.8,colors="black")
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=1.5)
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color=jx.violet,markersize=1.5)
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g,filenr_g)
