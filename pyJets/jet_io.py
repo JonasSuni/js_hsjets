@@ -634,7 +634,7 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
     is_upstream = int(np.all(pr_TNBS < 3*T_sw))
     #is_upstream = int(np.all(mmsx_ssh >= 1))
 
-    pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+    pdyn = m_p*rho*(np.array(np.linalg.norm(v,axis=-1),ndmin=1)**2)
 
     # Scale variables
     rho /= 1.0e+6
@@ -656,10 +656,10 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
     ew_pd_enh = np.nanmean(ew_pdyn)
 
     # Calculate magnitudes of v and B
-    vmag = np.linalg.norm(v,axis=-1)
-    Bmag = np.linalg.norm(B,axis=-1)
-    B_sheath_mag = np.linalg.norm(B_sheath,axis=-1)
-    v_sheath_mag = np.linalg.norm(v_sheath,axis=-1)
+    vmag = np.array(np.linalg.norm(v,axis=-1),ndmin=1)
+    Bmag = np.array(np.linalg.norm(B,axis=-1),ndmin=1)
+    B_sheath_mag = np.array(np.linalg.norm(B_sheath,axis=-1),ndmin=1)
+    v_sheath_mag = np.array(np.linalg.norm(v_sheath,axis=-1),ndmin=1)
 
     if type(vmag) == float:
         vmag = np.array(vmag)
