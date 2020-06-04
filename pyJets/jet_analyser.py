@@ -383,7 +383,7 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     tpdynavg[tpdynavg == 0.0] = 1.0e-27
 
     slams = np.ma.masked_greater_equal(Bmag,mag_thresh*B_sw)
-    slams.mask[pr_TNBS>3.0*T_sw] = False
+    slams.mask[pr_TNBS>=3.0*T_sw] = False
     slams.mask[pdyn<1.2*pdyn_sw] = False
     jet = np.ma.masked_greater_equal(pdyn,2.0*tpdynavg)
     jet.mask[pr_TNBS<3.0*T_sw] = False
