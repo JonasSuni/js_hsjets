@@ -811,7 +811,7 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
 
     return [events_culled,props]
 
-def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,min_size=2,max_size=7500,neighborhood_reach=[2,2,0]):
+def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
 
     cells = np.array(sj_cells,ndmin=1,dtype=int)
     events = []
@@ -908,7 +908,7 @@ def jet_tracker(runid,start,stop,threshold=0.5):
     for n in range(start+2,stop+1):
 
         for jetobj in jetobj_list:
-            if float(n)/2 - jetobj.times[-1] + 0.5 > 15:
+            if float(n)/2 - jetobj.times[-1] + 0.5 > 2.5:
                 print("Killing jet {}".format(jetobj.ID))
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)

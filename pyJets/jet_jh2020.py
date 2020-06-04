@@ -666,9 +666,12 @@ def separate_jets_new(runid,allow_relatives=True):
                     if splinter_time > bs_departure or (extra_splin_times > bs_departure).any():
                         continue
                     else:
-                        sj_ids.append(n1)
-                        jet_ids.append(n1)
-                        slams_ids.append(n1)
+                        if np.logical_and(props.read("is_splinter"),props.read("is_jet")).any():
+                            sj_ids.append(n1)
+                            jet_ids.append(n1)
+                            slams_ids.append(n1)
+                        else:
+                            slams_ids.append(n1)
                 if "merger" in props.meta:
                     merger_time = props.read("time")[props.read("is_merger")==1][0] # time of first merging
                     if merger_time < bs_arrival:
