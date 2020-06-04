@@ -662,11 +662,11 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
     v_sheath_mag = np.array(np.linalg.norm(v_sheath,axis=-1),ndmin=1)
 
     if type(vmag) == float:
-        vmag = np.array(vmag)
+        vmag = np.array(vmag,ndmin=1)
     if type(Bmag) == float:
-        Bmag = np.array(Bmag)
+        Bmag = np.array(Bmag,ndmin=1)
     if type(B_sheath_mag) == float:
-        B_sheath_mag = np.array(B_sheath_mag)
+        B_sheath_mag = np.array(B_sheath_mag,ndmin=1)
 
     n_avg,n_med,n_max = mean_med_max(rho)
 
