@@ -1023,8 +1023,11 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
     non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/{}/".format(runid,var,magt)
+    fluxfile = None
+    fluxdir = None
     if debug:
         outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/{}/".format(runid,var,magt)
+        fluxdir = bulk
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
@@ -1043,14 +1046,17 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
     for itr in range(start,stop+1):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
+        if debug:
+            fluxdir = bulkpath+"../flux/"
+            fluxfile = "flux.{}.bin".format(str(itr).zfill(7))
 
         colmap = "Blues"
 
         #pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],tickinterval=2,vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir)
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,14,-2,2],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,14,-2,2],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir)
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
