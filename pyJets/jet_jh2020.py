@@ -1027,7 +1027,6 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
     fluxdir = None
     if debug:
         outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/{}/".format(runid,var,magt)
-        fluxdir = bulk
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
