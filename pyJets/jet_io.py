@@ -850,7 +850,7 @@ def check_threshold(A,B,thresh):
 
     return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
 
-def jet_tracker(runid,start,stop,threshold=0.5):
+def jet_tracker(runid,start,stop,threshold=0.1):
 
     outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
 
