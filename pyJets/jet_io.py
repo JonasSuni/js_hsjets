@@ -539,6 +539,8 @@ def eventprop_write(runid,filenr,props,transient="jet"):
         except OSError:
             pass
 
+    print(len(props))
+
     open(outputdir+"/{}.eventprops".format(str(filenr)),"w").close()
     epf = open(outputdir+"/{}.eventprops".format(str(filenr)),"a")
 
