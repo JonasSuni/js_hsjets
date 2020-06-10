@@ -331,15 +331,15 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
         jet_props = [[float(file_nr)/2.0]+line for line in jet_props_inc]
         slams_props = [[float(file_nr)/2.0]+line for line in slams_props_inc]
 
-        print(len(jet_props))
-        print(len(jet_jets))
-
-        print(len(slams_props))
-        print(len(slams_jets))
+        # print(len(jet_props))
+        # print(len(jet_jets))
+        #
+        # print(len(slams_props))
+        # print(len(slams_jets))
 
         eventprop_write(runid,file_nr,props,transient="slamsjet")
-        eventprop_write(runid,file_nr,slams_props,transient="jet")
-        eventprop_write(runid,file_nr,jet_props,transient="slams")
+        eventprop_write(runid,file_nr,slams_props,transient="slams")
+        eventprop_write(runid,file_nr,jet_props,transient="jet")
 
         # erase contents of output file
 
@@ -539,7 +539,7 @@ def eventprop_write(runid,filenr,props,transient="jet"):
         except OSError:
             pass
 
-    print(len(props))
+    # print(len(props))
 
     open(outputdir+"/{}.eventprops".format(str(filenr)),"w").close()
     epf = open(outputdir+"/{}.eventprops".format(str(filenr)),"a")
