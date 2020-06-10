@@ -553,9 +553,9 @@ def mag_thresh_plot(allow_splinters=True):
     epsilon = 1.e-27
 
     if allow_splinters:
-        jet_count_list = [247,505,866,298]
+        jet_count_list = [238,466,782,250]
     else:
-        jet_count_list = [210,423,822,290]
+        jet_count_list = [197,381,733,240]
 
     color_arr = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
 
