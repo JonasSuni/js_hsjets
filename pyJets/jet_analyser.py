@@ -411,7 +411,7 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     np.savetxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slamsjet_ci,restr_ci))
 
     np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.upstream".format(str(filenr)),np.intersect1d(upstream_ci,restr_ci))
-    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.downstream".format(str(filenr)),restr_ci[!np.in1d(restr_ci,upstream_ci)])
+    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.downstream".format(str(filenr)),restr_ci[~np.in1d(restr_ci,upstream_ci)])
 
     return (np.intersect1d(jet_ci,restr_ci),np.intersect1d(slams_ci,restr_ci),np.intersect1d(slamsjet_ci,restr_ci))
 
