@@ -540,7 +540,7 @@ def eventprop_write(runid,filenr,props,transient="jet"):
             pass
 
     open(outputdir+"/{}.eventprops".format(str(filenr)),"w").close()
-    epf = open(outputdir+"/{}.eventprops".format(str(filenr)),"w")
+    epf = open(outputdir+"/{}.eventprops".format(str(filenr)),"a")
 
     epf.write(propfile_header_list+"\n")
 
