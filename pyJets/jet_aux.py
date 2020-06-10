@@ -388,7 +388,7 @@ def spatmesh_get(runid):
 
     return (spat_extent[runids.index(runid)],spat_size[runids.index(runid)])
 
-def get_neighs(runid,cells,neighborhood_reach=[1,1,0]):
+def get_neighs_asym(runid,cells,neighborhood_reach=[-1,1,-1,1,0,0]):
 
     spat_ext,spat_size = spatmesh_get(runid)
     x_size,y_size,z_size = spat_size
@@ -396,9 +396,9 @@ def get_neighs(runid,cells,neighborhood_reach=[1,1,0]):
     cells = np.array(cells,ndmin=1)
     out_cells = np.array(cells,ndmin=1)
 
-    for a in range(-neighborhood_reach[0],neighborhood_reach[0]+1):
-        for b in range(-neighborhood_reach[1],neighborhood_reach[1]+1):
-            for c in range(-neighborhood_reach[2],neighborhood_reach[2]+1):
+    for a in range(neighborhood_reach[0],neighborhood_reach[1]+1):
+        for b in range(neighborhood_reach[2],neighborhood_reach[3]+1):
+            for c in range(neighborhood_reach[4],neighborhood_reach[5]+1):
                 new_cells = cells+a
                 new_cells = new_cells[(new_cells-1)//x_size==(cells-1)//x_size]
                 new_cells = new_cells[np.logical_and((new_cells>0),(new_cells<=x_size*y_size))]
