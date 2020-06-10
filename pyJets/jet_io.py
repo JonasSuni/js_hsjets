@@ -917,6 +917,7 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
 
                 print(len(props_unsrt))
                 print(len(events_unsrt))
+                print(events_unsrt.index(event))
 
                 # Append current events to jet object properties
                 jetobj_new.cellids.append(old_event)
