@@ -869,13 +869,16 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
         curr_event = np.array([cells[0]],dtype=int)
         curr_event_size = curr_event.size
 
-        curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
+        curr_event = np.intersect1d(cells,get_neighbors(runid_g,curr_event,neighborhood_reach))
 
         while curr_event.size != curr_event_size:
 
+            print(curr_event.size)
+            print(curr_event_size)
+
             curr_event_size = curr_event.size
 
-            curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
+            curr_event = np.intersect1d(cells,get_neighbors(runid_g,curr_event,neighborhood_reach))
 
         events.append(curr_event.astype(int))
         cells = cells[~np.in1d(cells,curr_event)]
@@ -943,9 +946,9 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
 
                 jetobj_new = NeoTransient(curr_id,runid,float(start)/2,transient=transient)
 
-                print(len(props_unsrt))
-                print(len(events_unsrt))
-                print(events_unsrt.index(event))
+                #print(len(props_unsrt))
+                #print(len(events_unsrt))
+                #print(events_unsrt.index(event))
 
                 # Append current events to jet object properties
                 jetobj_new.cellids.append(old_event)
