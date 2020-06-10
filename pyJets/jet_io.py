@@ -869,7 +869,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
         curr_event = np.array([cells[0]],dtype=int)
         curr_event_size = curr_event.size
 
-        curr_event = np.intersect1d(cells,get_neighbors(runid_g,curr_event,neighborhood_reach))
+        curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
 
         while curr_event.size != curr_event_size:
 
@@ -878,7 +878,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
 
             curr_event_size = curr_event.size
 
-            curr_event = np.intersect1d(cells,get_neighbors(runid_g,curr_event,neighborhood_reach))
+            curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
 
         events.append(curr_event.astype(int))
         cells = cells[~np.in1d(cells,curr_event)]
