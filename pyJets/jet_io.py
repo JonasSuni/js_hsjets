@@ -915,8 +915,8 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
 
                 jetobj_new = NeoTransient(curr_id,runid,float(start)/2,transient=transient)
 
-                print(props_unsrt)
-                print(events_unsrt)
+                print(len(props_unsrt))
+                print(len(events_unsrt))
 
                 # Append current events to jet object properties
                 jetobj_new.cellids.append(old_event)
