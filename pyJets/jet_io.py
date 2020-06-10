@@ -617,17 +617,17 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
     at_jet = 0
     at_slams = 0
 
-    upstream_slice = get_neighbors_asym(vlsvobj,downstream_cells,neighborhood_reach=[0,2,0,0,0,0])
-    downstream_slice = get_neighbors_asym(vlsvobj,upstream_cells,neighborhood_reach=[-2,0,0,0,0,0])
+    upstream_slice = jx.get_neighs_asym(runid_g,downstream_cells,neighborhood_reach=[0,2,0,0,0,0])
+    downstream_slice = jx.get_neighs_asym(runid_g,upstream_cells,neighborhood_reach=[-2,0,0,0,0,0])
     bs_slice = np.intersect1d(upstream_slice,downstream_slice)
 
     if np.intersect1d(cells,slams_cells).size > 0:
         is_slams = 1
     if np.intersect1d(cells,jet_cells).size > 0:
         is_jet = 1
-    if np.intersect1d(cells,get_neighbors(vlsvobj,slams_cells,neighborhood_reach=[2,2,0])).size > 0:
+    if np.intersect1d(cells,get_neighs(runid_g,slams_cells,neighborhood_reach=[2,2,0])).size > 0:
         at_slams = 1
-    if np.intersect1d(cells,get_neighbors(vlsvobj,jet_cells,neighborhood_reach=[2,2,0])).size > 0:
+    if np.intersect1d(cells,get_neighs(runid_g,jet_cells,neighborhood_reach=[2,2,0])).size > 0:
         at_jet = 1
 
     if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
@@ -842,13 +842,13 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
         curr_event = np.array([cells[0]],dtype=int)
         curr_event_size = curr_event.size
 
-        curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+        curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
 
         while curr_event.size != curr_event_size:
 
             curr_event_size = curr_event.size
 
-            curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+            curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
 
         events.append(curr_event.astype(int))
         cells = cells[~np.in1d(cells,curr_event)]

@@ -388,6 +388,14 @@ def spatmesh_get(runid):
 
     return (spat_extent[runids.index(runid)],spat_size[runids.index(runid)])
 
+def get_neighs(runid,cells,neighborhood_reach=[1,1,0]):
+
+    xn = neighborhood_reach[0]
+    yn = neighborhood_reach[1]
+    zn = neighborhood_reach[2]
+
+    return get_neighs_asym(runid,cells,neighborhood_reach=[-xn,xn,-yn,yn,-zn,zn])
+
 def get_neighs_asym(runid,cells,neighborhood_reach=[-1,1,-1,1,0,0]):
 
     spat_ext,spat_size = spatmesh_get(runid)
