@@ -342,31 +342,37 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
         eventprop_write(runid,file_nr,jet_props,transient="slams")
 
         # erase contents of output file
-        open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","w").close()
-        open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","w").close()
+
         open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","w").close()
 
         # open output file
         fileobj = open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","a")
-        fileobj_jet = open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","a")
-        fileobj_slams = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","a")
 
         # write jets to outputfile
         for jet in jets:
 
             fileobj.write(",".join(list(map(str,jet)))+"\n")
 
+        fileobj.close()
+
+        open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","w").close()
+        fileobj_slams = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","a")
+
         for slams_jet in slams_jets:
 
             fileobj_slams.write(",".join(list(map(str,slams_jet)))+"\n")
+
+        fileobj_slams.close()
+
+        open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","w").close()
+        fileobj_jet = open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","a")
 
         for jet_jet in jet_jets:
 
             fileobj_jet.write(",".join(list(map(str,jet_jet)))+"\n")
 
-        fileobj.close()
         fileobj_jet.close()
-        fileobj_slams.close()
+
         vlsvobj.optimize_close_file()
 
     return None
