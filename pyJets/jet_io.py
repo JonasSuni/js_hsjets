@@ -625,9 +625,9 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
         is_slams = 1
     if np.intersect1d(cells,jet_cells).size > 0:
         is_jet = 1
-    if np.intersect1d(cells,get_neighs(runid_g,slams_cells,neighborhood_reach=[2,2,0])).size > 0:
+    if np.intersect1d(cells,jx.get_neighs(runid_g,slams_cells,neighborhood_reach=[2,2,0])).size > 0:
         at_slams = 1
-    if np.intersect1d(cells,get_neighs(runid_g,jet_cells,neighborhood_reach=[2,2,0])).size > 0:
+    if np.intersect1d(cells,jx.get_neighs(runid_g,jet_cells,neighborhood_reach=[2,2,0])).size > 0:
         at_jet = 1
 
     if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
@@ -873,8 +873,8 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
 
         while curr_event.size != curr_event_size:
 
-            print(curr_event.size)
-            print(curr_event_size)
+            #print(curr_event.size)
+            #print(curr_event_size)
 
             curr_event_size = curr_event.size
 
