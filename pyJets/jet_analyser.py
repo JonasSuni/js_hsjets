@@ -389,6 +389,9 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     jet.mask[pr_TNBS<3.0*T_sw] = False
     slamsjet = np.logical_or(slams,jet)
 
+    upstream = np.ma.masked_less(pr_TNBS,3.0*T_sw)
+    upstream_ci = np.ma.array(sorigid,mask=~upstream.mask).compressed()
+
     jet_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
     slams_ci = np.ma.array(sorigid,mask=~slams.mask).compressed()
     slamsjet_ci = np.ma.array(sorigid,mask=~slamsjet.mask).compressed()
@@ -400,9 +403,15 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
         os.makedirs(wrkdir_DNR+"working/SLAMS/Masks/"+runid)
         os.makedirs(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid)
 
+    if not os.path.exists(wrkdir_DNR+"up_down_stream/"+runid):
+        os.makedirs(wrkdir_DNR+"up_down_stream/"+runid)
+
     np.savetxt(wrkdir_DNR+"working/jets/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(jet_ci,restr_ci))
     np.savetxt(wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slams_ci,restr_ci))
     np.savetxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slamsjet_ci,restr_ci))
+
+    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.upstream".format(str(filenr)),np.intersect1d(upstream_ci,restr_ci))
+    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.downstream".format(str(filenr)),restr_ci[!np.in1d(restr_ci,upstream_ci)])
 
     return (np.intersect1d(jet_ci,restr_ci),np.intersect1d(slams_ci,restr_ci),np.intersect1d(slamsjet_ci,restr_ci))
 

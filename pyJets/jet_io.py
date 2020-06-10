@@ -324,23 +324,43 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
 
         # sort jets
         jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,neighborhood_reach=nbrs)
+        jet_jets,jet_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,jet_msk,neighborhood_reach=nbrs)
+        slams_jets,slams_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slams_msk,neighborhood_reach=nbrs)
 
         props = [[float(file_nr)/2.0]+line for line in props_inc]
+        jet_props = [[float(file_nr)/2.0]+line for line in jet_props_inc]
+        slams_props = [[float(file_nr)/2.0]+line for line in slams_props_inc]
 
         eventprop_write(runid,file_nr,props,transient="slamsjet")
+        eventprop_write(runid,file_nr,slams_props,transient="jet")
+        eventprop_write(runid,file_nr,jet_props,transient="slams")
 
         # erase contents of output file
+        open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","w").close()
+        open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","w").close()
         open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","w").close()
 
         # open output file
         fileobj = open(wrkdir_DNR+"working/SLAMSJETS/events/"+runid+"/"+str(file_nr)+".events","a")
+        fileobj_jet = open(wrkdir_DNR+"working/jets/events/"+runid+"/"+str(file_nr)+".events","a")
+        fileobj_slams = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(file_nr)+".events","a")
 
         # write jets to outputfile
         for jet in jets:
 
             fileobj.write(",".join(list(map(str,jet)))+"\n")
 
+        for slams_jet in slams_jets:
+
+            fileobj_slams.write(",".join(list(map(str,slams_jet)))+"\n")
+
+        for jet_jet in jet_jets:
+
+            fileobj_jet.write(",".join(list(map(str,jet_jet)))+"\n")
+
         fileobj.close()
+        fileobj_jet.close()
+        fileobj_slams.close()
         vlsvobj.optimize_close_file()
 
     return None
@@ -850,9 +870,14 @@ def check_threshold(A,B,thresh):
 
     return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
 
-def jet_tracker(runid,start,stop,threshold=0.1):
+def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
 
-    outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
+    if transient == "slamsjet":
+        outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
+    elif transient == "jet":
+        outputdir = wrkdir_DNR+"working/jets/jets/"+runid
+    elif transient == "slams":
+        outputdir = wrkdir_DNR+"working/SLAMS/slams/"+runid
 
     if not os.path.exists(outputdir):
         try:
@@ -861,10 +886,10 @@ def jet_tracker(runid,start,stop,threshold=0.1):
             pass
 
     # Read initial event files
-    events_old = eventfile_read(runid,start,transient="slamsjet")
-    old_props = eventprop_read(runid,start,transient="slamsjet")
-    events_unsrt = eventfile_read(runid,start+1,transient="slamsjet")
-    props_unsrt = eventprop_read(runid,start+1,transient="slamsjet")
+    events_old = eventfile_read(runid,start,transient=transient)
+    old_props = eventprop_read(runid,start,transient=transient)
+    events_unsrt = eventfile_read(runid,start+1,transient=transient)
+    props_unsrt = eventprop_read(runid,start+1,transient=transient)
 
     # Initialise list of jet objects
     jetobj_list = []
@@ -888,7 +913,7 @@ def jet_tracker(runid,start,stop,threshold=0.1):
 
                 # Create new jet object
 
-                jetobj_new = NeoTransient(curr_id,runid,float(start)/2,transient="slamsjet")
+                jetobj_new = NeoTransient(curr_id,runid,float(start)/2,transient=transient)
 
                 # Append current events to jet object properties
                 jetobj_new.cellids.append(old_event)
@@ -923,8 +948,8 @@ def jet_tracker(runid,start,stop,threshold=0.1):
         flags = []
 
         # Read event file for current time step
-        events_unsrt = eventfile_read(runid,n,transient="slamsjet")
-        props_unsrt = eventprop_read(runid,n,transient="slamsjet")
+        events_unsrt = eventfile_read(runid,n,transient=transient)
+        props_unsrt = eventprop_read(runid,n,transient=transient)
         events = sorted(events_unsrt,key=len)
         events = events[::-1]
 
@@ -996,7 +1021,7 @@ def jet_tracker(runid,start,stop,threshold=0.1):
                         curr_id = str(counter).zfill(5)
 
                         # Create new jet object
-                        jetobj_new = NeoTransient(curr_id,runid,float(n-1)/2,transient="slamsjet")
+                        jetobj_new = NeoTransient(curr_id,runid,float(n-1)/2,transient=transient)
 
                         # Append current events to jet object properties
                         jetobj_new.cellids.append(old_event)
@@ -1017,7 +1042,7 @@ def jet_tracker(runid,start,stop,threshold=0.1):
     for jetobj in jetobj_list:
 
         # Write jet object cellids and times to files
-        jetfile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".slamsjet","w")
+        jetfile = open(outputdir+"/"+str(start)+"."+jetobj.ID+"."+transient,"w")
         timefile = open(outputdir+"/"+str(start)+"."+jetobj.ID+".times","w")
 
         jetfile.write(jetobj.return_cellid_string())
