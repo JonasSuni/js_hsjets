@@ -608,7 +608,7 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
     return TPerp
 
-def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells,downstream_cells):
+def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[],downstream_cells=[]):
 
     is_merger = 0
     is_splinter = 0
