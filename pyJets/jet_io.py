@@ -15,8 +15,8 @@ r_e = 6.371e+6
 
 #wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 wrkdir_DNR = os.environ["WRK"]+"/"
-propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream","ew_pd_enh","is_slams","is_jet","is_merger","is_splinter","at_bow_shock"]
-propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool],is_merger [bool],is_splinter [bool],at_bow_shock [bool]"
+propfile_var_list = ["time","x_mean","y_mean","z_mean","A","Nr_cells","size_rad","size_tan","x_vmax","y_vmax","z_vmax","n_avg","n_med","n_max","v_avg","v_med","v_max","B_avg","B_med","B_max","T_avg","T_med","T_max","TPar_avg","TPar_med","TPar_max","TPerp_avg","TPerp_med","TPerp_max","beta_avg","beta_med","beta_max","x_min","rho_vmax","b_vmax","pd_avg","pd_med","pd_max","B_sheath","TPar_sheath","TPerp_sheath","T_sheath","n_sheath","v_sheath","pd_sheath","is_upstream","ew_pd_enh","is_slams","is_jet","is_merger","is_splinter","at_bow_shock","at_slams","at_jet"]
+propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool],is_merger [bool],is_splinter [bool],at_bow_shock [bool],at_jet [bool],at_jet [bool]"
 try:
     vlasdir = os.environ["VLAS"]
 except:
@@ -322,10 +322,13 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
 
         print("Current file number is " + str(file_nr))
 
+        upstream_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".upstream").astype(int)
+        downstream_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".downstream").astype(int)
+
         # sort jets
-        jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,neighborhood_reach=nbrs)
-        jet_jets,jet_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,jet_msk,neighborhood_reach=nbrs)
-        slams_jets,slams_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slams_msk,neighborhood_reach=nbrs)
+        jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
+        jet_jets,jet_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,jet_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
+        slams_jets,slams_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slams_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
 
         props = [[float(file_nr)/2.0]+line for line in props_inc]
         jet_props = [[float(file_nr)/2.0]+line for line in jet_props_inc]
@@ -605,16 +608,27 @@ def tperp_reader(runid,filenumber,cellids,cells):
 
     return TPerp
 
-def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
+def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells,downstream_cells):
 
     is_merger = 0
     is_splinter = 0
     is_slams = 0
     is_jet = 0
+    at_jet = 0
+    at_slams = 0
+
+    upstream_slice = get_neighbors_asym(vlsvobj,downstream_cells,neighborhood_reach=[0,2,0,0,0,0])
+    downstream_slice = get_neighbors_asym(vlsvobj,upstream_cells,neighborhood_reach=[-2,0,0,0,0,0])
+    bs_slice = np.intersect1d(upstream_slice,downstream_slice)
+
     if np.intersect1d(cells,slams_cells).size > 0:
         is_slams = 1
     if np.intersect1d(cells,jet_cells).size > 0:
         is_jet = 1
+    if np.intersect1d(cells,get_neighbors(vlsvobj,slams_cells,neighborhood_reach=[2,2,0])).size > 0:
+        at_slams = 1
+    if np.intersect1d(cells,get_neighbors(vlsvobj,jet_cells,neighborhood_reach=[2,2,0])).size > 0:
+        at_jet = 1
 
     if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
         sheath_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,0,2])
@@ -756,13 +770,13 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[]):
     #xbs_ch = np.polyval(bs_ch,y_mean)
     #xbs_rho = np.polyval(bs_rho,y_mean)
     #xbs_mms = np.polyval(bs_mms,y_mean)
-    bs_pol = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
-    x_bs = np.polyval(bs_pol,y_mean)
-    at_bow_shock = int(np.abs(np.abs(x_mean-x_bs)-size_rad/2.0)<=0.5)
+    #bs_pol = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
+    #x_bs = np.polyval(bs_pol,y_mean)
+    at_bow_shock = int(np.intersect1d(cells,bs_slice).size > 0)
 
     [B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg] = [np.nanmean(v) for v in [B_sheath_mag,TPar_sheath,TPerp_sheath,T_sheath,rho_sheath,v_sheath_mag,pd_sheath]]
 
-    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream,ew_pd_enh,is_slams,is_jet,is_merger,is_splinter,at_bow_shock]
+    temp_arr = [x_mean,y_mean,z_mean,A,Nr_cells,size_rad,size_tan,x_max,y_max,z_max,n_avg,n_med,n_max,v_avg,v_med,v_max,B_avg,B_med,B_max,T_avg,T_med,T_max,TPar_avg,TPar_med,TPar_max,TPerp_avg,TPerp_med,TPerp_max,beta_avg,beta_med,beta_max,x_min,rho_vmax,b_vmax,pd_avg,pd_med,pd_max,B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg,is_upstream,ew_pd_enh,is_slams,is_jet,is_merger,is_splinter,at_bow_shock,at_slams,at_jet]
 
     return temp_arr
 
@@ -845,7 +859,7 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
 
     return [events_culled,props]
 
-def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
+def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_cells,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
 
     cells = np.array(sj_cells,ndmin=1,dtype=int)
     events = []
@@ -868,7 +882,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,min_size=1,max_size=10000,
 
     events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
 
-    props = [calc_event_props(vlsvobj,event,jet_cells,slams_cells) for event in events_culled]
+    props = [calc_event_props(vlsvobj,event,jet_cells,slams_cells,upstream_cells,downstream_cells) for event in events_culled]
 
     return [events_culled,props]
 
