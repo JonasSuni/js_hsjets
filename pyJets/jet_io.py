@@ -206,8 +206,8 @@ class NeoTransient:
             splinter_arr = (t_arr>=self.splinter_time).astype(int)
             merge_arr = (t_arr>=self.merge_time).astype(int)
             for n in range(t_arr.size):
-                self.props[n][-3] = merge_arr[n]
-                self.props[n][-2] = splinter_arr[n]
+                self.props[n][-5] = merge_arr[n]
+                self.props[n][-4] = splinter_arr[n]
             propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
         else:
             print("Transient {} too short-lived, propfile not written!".format(self.ID))
