@@ -570,6 +570,8 @@ def eventprop_read(runid,filenr,transient="jet"):
     props = props_f.read()
     props_f.close()
     props = props.split("\n")[1:]
+    if props == [] or props == [""]:
+        return []
     props = [list(map(float,line.split(","))) for line in props]
 
     return props
