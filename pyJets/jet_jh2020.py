@@ -655,12 +655,20 @@ def separate_jets_god(runid,allow_relatives=True):
 
         if props.read("at_bow_shock")[0] != 1:
             continue
+
+        if not allow_relatives:
+            if "splinter" in props.meta:
+                non_bs_time = (props.read("time")[props.read("at_bow_shock")==0])[0]
+                splinter_time = props.read("time")[props.read("is_splinter")==1][0] # time of first splintering
+                splin_times = np.array([splinter_time]+props.get_splin_times())
+                if (splin_times>=non_bs_time).any():
+                    continue
+
+        if (props.read("at_slams")==1).any():
+            jet_ids.append(n1)
+            sj_ids.append(n1)
         else:
-            if (props.read("at_slams")==1).any():
-                jet_ids.append(n1)
-                sj_ids.append(n1)
-            else:
-                jet_ids.append(n1)
+            jet_ids.append(n1)
 
     for n2 in range(6000):
 
@@ -669,6 +677,13 @@ def separate_jets_god(runid,allow_relatives=True):
         except:
             continue
 
+        if not allow_relatives:
+            if "merger" in props.meta:
+                bs_time = (props.read("time")[props.read("at_bow_shock")==1])[0]
+                merge_time = props.read("time")[props.read("is_merger")==1][0]
+                if merge_time < bs_time:
+                    continue
+                    
         slams_ids.append(n2)
 
     return [np.unique(sj_ids),np.unique(jet_ids),np.unique(slams_ids)]
