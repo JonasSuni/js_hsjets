@@ -1073,8 +1073,8 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
 
     runid_g = runid
 
-    sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in sj_jet_ids]
-    non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="slamsjet") for n in non_sj_ids]
+    sj_jetobs = [jio.PropReader(str(n).zfill(5),runid,transient="jet") for n in sj_jet_ids]
+    non_sjobs = [jio.PropReader(str(n).zfill(5),runid,transient="jet") for n in non_sj_ids]
 
     outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/{}/".format(runid,var,magt)
     fluxfile = None
