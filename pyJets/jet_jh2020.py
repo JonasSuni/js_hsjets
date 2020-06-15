@@ -653,7 +653,7 @@ def separate_jets_god(runid,allow_relatives=True):
         except:
             continue
 
-        if props.read("at_bow_shock")[0] != 0:
+        if props.read("at_bow_shock")[0] != 1:
             continue
         else:
             if (props.read("at_slams")==1).any():
