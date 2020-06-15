@@ -594,6 +594,7 @@ def mag_thresh_plot(allow_splinters=True):
         ax_list[3].plot(mt_arr,share_arr[m],label=runid_list[m])
     for m in range(len(runid_list)):
         #ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
+        pass
 
     ax_list[3].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
     ax_list[0].set_ylabel("Number of jets",fontsize=15,labelpad=10)
