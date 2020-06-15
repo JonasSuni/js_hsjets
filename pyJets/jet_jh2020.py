@@ -593,7 +593,7 @@ def mag_thresh_plot(allow_splinters=True):
         ax_list[2].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
         ax_list[3].plot(mt_arr,share_arr[m],label=runid_list[m])
     for m in range(len(runid_list)):
-        ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
+        #ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
 
     ax_list[3].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
     ax_list[0].set_ylabel("Number of jets",fontsize=15,labelpad=10)
@@ -622,7 +622,7 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
-    data_arr = np.array([separate_jets_new(runid,allow_splinters) for runid in runids]).flatten()
+    data_arr = np.array([separate_jets_god(runid,allow_splinters) for runid in runids]).flatten()
     count_arr = np.array([arr.size for arr in data_arr])
     count_arr = np.reshape(count_arr,(4,3)).T
 
@@ -636,6 +636,41 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
 
     return np.reshape(data_arr,(4,3))
+
+def separate_jets_god(runid,allow_relatives=True):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    sj_ids = []
+    jet_ids = []
+    slams_ids = []
+
+    for n1 in range(6000):
+
+        try:
+            props = jio.PropReader(str(n1).zfill(5),runid,transient="jet")
+        except:
+            continue
+
+        if props.read("at_bow_shock")[0] != 0:
+            continue
+        else:
+            if (props.read("at_slams")==1).any():
+                jet_ids.append(n1)
+                sj_ids.append(n1)
+            else:
+                jet_ids.append(n1)
+
+    for n2 in range(6000):
+
+        try:
+            props = jio.PropReader(str(n2).zfill(5),runid,transient="slams")
+        except:
+            continue
+
+        slams_ids.append(n2)
+
+    return [np.unique(sj_ids),np.unique(jet_ids),np.unique(slams_ids)]
 
 def separate_jets_new(runid,allow_relatives=True):
     # Separate events into slamsjets, jets and slams
