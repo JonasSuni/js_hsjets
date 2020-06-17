@@ -930,7 +930,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     sj_pendeps = []
     non_pendeps = []
 
-    opstring = r"-".join(runids)
+    opstring = r"\_".join(runids)
 
     for runid in runids_list:
         sj_jet_ids,jet_ids,slams_ids = separate_jets_god(runid,False)
