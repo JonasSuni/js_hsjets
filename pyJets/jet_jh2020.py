@@ -951,7 +951,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     sj_pendeps = np.array(sj_pendeps,ndmin=1)
     non_pendeps = np.array(non_pendeps,ndmin=1)
 
-    bins = np.linspace(0,2.5,30+1)
+    bins = np.linspace(0,2.5,25+1)
     sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
     non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
 
