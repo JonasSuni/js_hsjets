@@ -599,7 +599,7 @@ def mag_thresh_plot(allow_splinters=True):
         pass
 
     ax_list[3].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
-    ax_list[0].set_ylabel("$\mathrm{n_{jet}/s}",fontsize=15,labelpad=10)
+    ax_list[0].set_ylabel("$\mathrm{n_{jet}/s}$",fontsize=15,labelpad=10)
     ax_list[1].set_ylabel("$\mathrm{n_{SLAMS}/s}$",fontsize=15,labelpad=10)
     ax_list[2].set_ylabel("Slamsjets per SLAMS",fontsize=15,labelpad=10)
     ax_list[3].set_ylabel("Slamsjets per jet",fontsize=15,labelpad=10)
