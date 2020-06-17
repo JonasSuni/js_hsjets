@@ -955,11 +955,11 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     fig,ax = plt.subplots(1,1,figsize=(10,10))
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
-    ax.set_title("{}".format(runids),fontsize=20)
+    ax.set_title("{}".format("_".join(runids)),fontsize=20)
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"pendep_{}.png".format(runids))
+    fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
     plt.close(fig)
 
 def get_indent_depth(runid,crit="ew_pd"):
