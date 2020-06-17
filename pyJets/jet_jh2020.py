@@ -953,6 +953,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
+    plt.grid()
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
     ax.set_title("{}".format("_".join(runids)),fontsize=20,pad=10)
