@@ -552,7 +552,7 @@ def mag_thresh_plot(allow_splinters=True):
 
     epsilon = 1.e-27
 
-    run_length = np.array([839,1179,879,1339])/2.0-290.0
+    run_length = np.array([839,1179,1339,879])/2.0-290.0
 
     if allow_splinters:
         jet_count_list = [238,466,782,250]
