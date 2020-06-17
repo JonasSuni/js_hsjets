@@ -924,9 +924,9 @@ def find_slams_of_jet(runid):
 
     return [np.array(sj_ids),np.array(slams_ids)]
 
-def pendep_hist():
+def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
 
-    runids_list = ["ABA","ABC","AEA","AEC"]
+    runids_list = runids
     sj_pendeps = []
     non_pendeps = []
     for runid in runids_list:
@@ -955,10 +955,11 @@ def pendep_hist():
     fig,ax = plt.subplots(1,1,figsize=(10,10))
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
+    ax.set_title("{}".format(runids),fontsize=20)
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"pendep.png")
+    fig.savefig(wrkdir_DNR+"pendep_{}.png".format(runids))
     plt.close(fig)
 
 def get_indent_depth(runid,crit="ew_pd"):
