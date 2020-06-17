@@ -956,7 +956,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
     ax.set_title("{}".format("_".join(runids)),fontsize=20,pad=10)
-    ax.grid()
+    plt.grid()
 
     plt.tight_layout()
 
