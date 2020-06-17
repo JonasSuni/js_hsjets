@@ -939,13 +939,13 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
             props = jio.PropReader(str(sj_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
-            pendep = (bs_dist-x_mean)[np.argmin(x_mean)]
+            pendep = (bs_dist-x_mean)[-1]
             sj_pendeps.append(pendep)
         for non_id in non_sj_ids:
             props = jio.PropReader(str(non_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
-            pendep = (bs_dist-x_mean)[np.argmin(x_mean)]
+            pendep = (bs_dist-x_mean)[-1]
             non_pendeps.append(pendep)
 
     sj_pendeps = np.array(sj_pendeps,ndmin=1)
