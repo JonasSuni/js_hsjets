@@ -963,7 +963,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"pendep_{}.png".format(opstring))
+    fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
     plt.close(fig)
 
 def get_indent_depth(runid,crit="ew_pd"):
