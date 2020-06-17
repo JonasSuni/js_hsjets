@@ -958,7 +958,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
     ax.set_title("{}".format("_".join(runids)),fontsize=20,pad=10)
 
-    plt.tight_layout()
+    #plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
     plt.close(fig)
