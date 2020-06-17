@@ -929,6 +929,9 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     runids_list = runids
     sj_pendeps = []
     non_pendeps = []
+
+    opstring = r"_".join(runids)
+
     for runid in runids_list:
         sj_jet_ids,jet_ids,slams_ids = separate_jets_god(runid,False)
         non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
@@ -956,11 +959,11 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     #plt.grid()
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
-    ax.set_title("{}".format("_".join(runids)),fontsize=20,pad=10)
+    ax.set_title("{}".format(opstring),fontsize=20,pad=10)
 
-    #plt.tight_layout()
+    plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
+    fig.savefig(wrkdir_DNR+"pendep_{}.png".format(opstring))
     plt.close(fig)
 
 def get_indent_depth(runid,crit="ew_pd"):
