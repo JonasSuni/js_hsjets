@@ -924,6 +924,43 @@ def find_slams_of_jet(runid):
 
     return [np.array(sj_ids),np.array(slams_ids)]
 
+def pendep_hist():
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    sj_pendeps = []
+    non_pendeps = []
+    for runid in runids_list:
+        sj_jet_ids,jet_ids,slams_ids = separate_jets_god(runid,False)
+        non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
+        for sj_id in sj_jet_ids:
+            props = jio.PropReader(str(sj_id).zfill(5),runid,transient="jet")
+            x_mean = props.read("x_mean")
+            bs_dist = props.read("bs_distance")
+            pendep = (bs_distance-x_mean)[np.argmin(x_mean)]
+            sj_pendeps.append(pendep)
+        for non_id in non_sj_ids:
+            props = jio.PropReader(str(non_id).zfill(5),runid,transient="jet")
+            x_mean = props.read("x_mean")
+            bs_dist = props.read("bs_distance")
+            pendep = (bs_distance-x_mean)[np.argmin(x_mean)]
+            non_pendeps.append(pendep)
+
+    sj_pendeps = np.array(sj_pendeps,ndmin=1)
+    non_pendeps = np.array(non_pendeps,ndmin=1)
+
+    bins = np.linspace(0,3,20+1)
+    sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
+    non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
+
+    fig,ax = plt.subplots(1,1,figsize=(10,10))
+    ax.hist(sj_pendeps,weights=sj_weights,bins=bins,histtype="step",color="red")
+    ax.hist(non_pendeps,weights=non_weights,bins=bins,histtype="step",color="black")
+
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR+"pendep.png")
+    plt.close(fig)
+
 def get_indent_depth(runid,crit="ew_pd"):
 
     x_res = 227000/r_e
