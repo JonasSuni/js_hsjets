@@ -552,12 +552,14 @@ def mag_thresh_plot(allow_splinters=True):
 
     epsilon = 1.e-27
 
+    run_length = np.array([839,1179,879,1339])/2.0-290.0
+
     if allow_splinters:
         jet_count_list = [238,466,782,250]
     else:
         jet_count_list = [197,381,733,240]
 
-    color_arr = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
+    color_arr = ["black", jx.medium_blue, "green", jx.orange]
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     #mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","2.0","2.1","2.2","2.5","2.8","3.0"]
@@ -588,10 +590,10 @@ def mag_thresh_plot(allow_splinters=True):
     fig,ax_list = plt.subplots(4,1,figsize=(8,10))
     for m in range(len(runid_list)):
         #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[0].plot(mt_arr,jet_number_arr[m],label=runid_list[m])
-        ax_list[1].plot(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[2].plot(mt_arr,slams_share_arr[m],label=runid_list[m])
-        ax_list[3].plot(mt_arr,share_arr[m],label=runid_list[m])
+        ax_list[0].plot(mt_arr,jet_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
+        ax_list[1].plot(mt_arr,slams_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
+        ax_list[2].plot(mt_arr,slams_share_arr[m],label=runid_list[m],color=color_arr[m])
+        ax_list[3].plot(mt_arr,share_arr[m],label=runid_list[m],color=color_arr[m])
     for m in range(len(runid_list)):
         #ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
         pass
