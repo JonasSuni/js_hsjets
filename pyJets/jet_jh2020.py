@@ -563,7 +563,7 @@ def mag_thresh_plot(allow_splinters=True):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     #mt_str_list = ["1.1","1.2","1.3","1.4","1.5","1.6","1.7","1.8","1.9","2.0","2.1","2.2","2.5","2.8","3.0"]
-    mt_str_list = ["1.1","1.3","1.5","1.7","1.9","2.1","2.3","2.5","2.7","3.0"]
+    mt_str_list = ["1.1","1.3","1.5","1.7","1.9","2.1","2.3","2.5","2.7","3.0","3.5","4.0"]
 
     share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
     slams_share_arr = np.zeros((len(mt_str_list),len(runid_list)),dtype=float)
