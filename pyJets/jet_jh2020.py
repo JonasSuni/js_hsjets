@@ -1186,8 +1186,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     jet_mask = np.reshape(jet_mask,cellids.shape)
 
     ch_mask = (core_heating > 3*0.5e6).astype(int)
-    #mach_mask = (mmsx < 1).astype(int)
-    #rho_mask = (rho > 2*rho_sw).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
+    rho_mask = (rho > 2*rho_sw).astype(int)
 
     #x_list = []
     #y_list = []
