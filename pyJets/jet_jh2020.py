@@ -1089,7 +1089,7 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5):
+def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,fig5=False,magt=1.5):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     run_index = runid_list.index(runid)
@@ -1112,6 +1112,9 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
     global sj_jetobs
     global non_sjobs
     global draw_arrows
+    global fig5_g
+
+    fig5_g = fig5
 
     draw_arrows = arr_draw
 
@@ -1149,11 +1152,14 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,magt=1.5
 
         colmap = "Blues"
 
-        #pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,expression=expr_list[var_index],tickinterval=2,vmin=0,vmax=vmax,colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+        if fig5:
+            pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig5/{}.png".format(str(itr).zfill(5)),boxre=[9,12,-2,0],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=40)
+        else:
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,14,-2,2],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
+            pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"{}.png".format(str(itr).zfill(5)),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=40)
+
+            pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"zoom/{}.png".format(str(itr).zfill(5)),boxre=[8,14,-2,2],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
 
 def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
 
@@ -1218,8 +1224,9 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
-    #rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
-    #mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
+    if fig5_g:
+        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
+        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
