@@ -1230,7 +1230,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors="brown")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors="green")
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=1.5)
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=1.5)
