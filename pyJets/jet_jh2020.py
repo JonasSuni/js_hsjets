@@ -959,6 +959,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     #plt.grid()
     ax.hist(sj_pendeps,bins=bins,histtype="step",color="red")
     ax.hist(non_pendeps,bins=bins,histtype="step",color="black")
+    ax.set_xlabel("$\mathrm{X_{BS}-X_{last}}~[R_e]$",fontsize=15,labelpad=10)
+    ax.set_ylabel("Number of jets",fontsize=15,labelpad=10)
     ax.set_title(opstring,fontsize=20,pad=10)
 
     plt.tight_layout()
