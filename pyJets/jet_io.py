@@ -594,22 +594,6 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     pf.close()
     print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
-def tpar_reader(runid,filenumber,cellids,cells):
-    # Read parallel temperatures of specific cells
-
-    TPar = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tpar")
-    TPar = TPar[np.in1d(cellids,cells)]
-
-    return TPar
-
-def tperp_reader(runid,filenumber,cellids,cells):
-    # Read perpendicular temperatures of specific cells
-
-    TPerp = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tperp")
-    TPerp = TPerp[np.in1d(cellids,cells)]
-
-    return TPerp
-
 def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[],downstream_cells=[]):
 
     is_merger = 0
@@ -871,7 +855,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
         curr_event = np.array([cells[0]],dtype=int)
         curr_event_size = curr_event.size
 
-        curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+        curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
 
         while curr_event.size != curr_event_size:
 
@@ -880,7 +864,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
 
             curr_event_size = curr_event.size
 
-            curr_event = np.intersect1d(cells,get_neighbors(vlsvobj,curr_event,neighborhood_reach))
+            curr_event = np.intersect1d(cells,jx.get_neighs(runid_g,curr_event,neighborhood_reach))
 
         events.append(curr_event.astype(int))
         cells = cells[~np.in1d(cells,curr_event)]
@@ -1342,21 +1326,3 @@ def track_jets(runid,start,stop,threshold=0.3,nbrs_bs=[3,3,0],transient="jet",sj
         timefile.close()
 
     return None
-
-def slams_eventfile_read(runid,filenr):
-    # Read array of arrays of cellids from file
-
-    outputlist = []
-
-    ef = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
-    contents = ef.read().strip("\n")
-    ef.close()
-    if contents == "":
-        return []
-    lines = contents.split("\n")
-
-    for line in lines:
-
-        outputlist.append(list(map(int,line.split(","))))
-
-    return outputlist

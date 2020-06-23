@@ -250,3 +250,37 @@ def sort_jets_new(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1
     props = [calc_event_props(vlsvobj,event) for event in events_culled]
 
     return [events_culled,props]
+
+def slams_eventfile_read(runid,filenr):
+    # Read array of arrays of cellids from file
+
+    outputlist = []
+
+    ef = open(wrkdir_DNR+"working/SLAMS/events/"+runid+"/"+str(filenr)+".events","r")
+    contents = ef.read().strip("\n")
+    ef.close()
+    if contents == "":
+        return []
+    lines = contents.split("\n")
+
+    for line in lines:
+
+        outputlist.append(list(map(int,line.split(","))))
+
+    return outputlist
+    
+def tpar_reader(runid,filenumber,cellids,cells):
+    # Read parallel temperatures of specific cells
+
+    TPar = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tpar")
+    TPar = TPar[np.in1d(cellids,cells)]
+
+    return TPar
+
+def tperp_reader(runid,filenumber,cellids,cells):
+    # Read perpendicular temperatures of specific cells
+
+    TPerp = np.loadtxt(wrkdir_DNR+"TP/"+runid+"/"+str(filenumber)+".tperp")
+    TPerp = TPerp[np.in1d(cellids,cells)]
+
+    return TPerp
