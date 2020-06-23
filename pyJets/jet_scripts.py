@@ -1522,10 +1522,10 @@ def hack_2019_fig78(time_thresh=5):
         #mpl.rcParams['text.usetex'] = True
         #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
-        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black","blue","red","green"])
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black","blue",jx.orange,"green"])
     elif sys.version_info.major == 2:
         #mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
-        mpl.rcParams['axes.color_cycle'] = ["black","blue","red","green"]
+        mpl.rcParams['axes.color_cycle'] = ["black","blue",jx.orange,"green"]
 
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
@@ -1584,7 +1584,7 @@ def hack_2019_fig78(time_thresh=5):
 
     ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
     ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.05),xycoords="axes fraction",color="blue",fontsize=20)
-    ax_list_7[0].annotate("AEA",xy=(0.5,1.05),xycoords="axes fraction",color="red",fontsize=20)
+    ax_list_7[0].annotate("AEA",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
     ax_list_7[0].annotate("AEC",xy=(0.5+0.1,1.05),xycoords="axes fraction",color="green",fontsize=20)
 
     #plt.tight_layout()
