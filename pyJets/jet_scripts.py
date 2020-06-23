@@ -826,7 +826,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         std_arr = [np.std(var,ddof=1) for var in var_arr]
         #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
         labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
-        color_arr = ["black","blue","red","green"]
+        color_arr = ["black", jx.violet, jx.orange, "green"]
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
