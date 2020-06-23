@@ -1583,7 +1583,7 @@ def hack_2019_fig78(time_thresh=5):
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
 
     ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
-    ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.05),xycoords="axes fraction",color="blue",fontsize=20)
+    ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
     ax_list_7[0].annotate("AEA",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
     ax_list_7[0].annotate("AEC",xy=(0.5+0.1,1.05),xycoords="axes fraction",color="green",fontsize=20)
 
@@ -1618,8 +1618,8 @@ def hack_2019_fig78(time_thresh=5):
             ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
 
     ax_list_8[0].annotate("ABA",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
-    ax_list_8[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color="blue",fontsize=20)
-    ax_list_8[0].annotate("AEA",xy=(0.5,1.1),xycoords="axes fraction",color="red",fontsize=20)
+    ax_list_8[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color=jx.violet,fontsize=20)
+    ax_list_8[0].annotate("AEA",xy=(0.5,1.1),xycoords="axes fraction",color=jx.orange,fontsize=20)
     ax_list_8[0].annotate("AEC",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="green",fontsize=20)
 
     #plt.tight_layout()
