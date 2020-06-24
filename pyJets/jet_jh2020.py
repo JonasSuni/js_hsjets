@@ -567,7 +567,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
     ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
     ax[0].set_ylabel("Jets/s",fontsize=20,labelpad=10)
-    ax[0].set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
+    ax[1].set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
     ax[0].tick_params(labelsize=15)
     ax[1].tick_params(labelsize=15)
     for axe in fig.get_axes():
