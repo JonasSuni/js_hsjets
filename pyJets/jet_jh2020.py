@@ -510,9 +510,14 @@ def separate_jets_god(runid,allow_relatives=True):
 
 def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
 
+    runid_dict = ["ABA","ABC","AEA","AEC"]
+    run_length = np.array([839,1179,1339,879])/2.0-290.0
+
     runids_list = runids
     sj_pendeps = []
     non_pendeps = []
+    sj_weights = []
+    non_weights = []
 
     opstring = r"\_".join(runids)
 
@@ -523,30 +528,38 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
             props = jio.PropReader(str(sj_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
-            pendep = (bs_dist-x_mean)[-1]
+            pendep = (x_mean-bs_dist)[-1]
             sj_pendeps.append(pendep)
+            sj_weights.append(1.0/run_length[runid_dict.index(runid)])
+
         for non_id in non_sj_ids:
             props = jio.PropReader(str(non_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
-            pendep = (bs_dist-x_mean)[-1]
+            pendep = (x_mean-bs_dist)[-1]
             non_pendeps.append(pendep)
+            non_weights.append(1.0/run_length[runid_dict.index(runid)])
 
     sj_pendeps = np.array(sj_pendeps,ndmin=1)
     non_pendeps = np.array(non_pendeps,ndmin=1)
 
-    bins = np.linspace(0,2.5,25+1)
-    sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
-    non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
+    bins = np.linspace(-2.5,0,25+1)
+    #sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
+    #non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
+    sj_weights = np.array(sj_weights)/len(runids)
+    non_weights = np.array(non_weights)/len(runids)
 
-    fig,ax = plt.subplots(1,1,figsize=(10,10))
+    fig,ax = plt.subplots(2,1,figsize=(5,10),sharex=True)
     #plt.grid()
-    ax.hist(sj_pendeps,bins=bins,histtype="step",color="red",label="SLAMS-originated")
-    ax.hist(non_pendeps,bins=bins,histtype="step",color="black",label="Spontaneous")
-    ax.legend(frameon=False,numpoints=1,markerscale=2)
-    ax.set_xlabel("$\mathrm{X_{BS}-X_{last}}~[R_e]$",fontsize=15,labelpad=10)
-    ax.set_ylabel("Number of jets",fontsize=15,labelpad=10)
-    ax.set_title(opstring,fontsize=20,pad=10)
+    ax[0].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated")
+    ax[0].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated")
+    ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=20)
+    ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=20,labelpad=10)
+    ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
+    ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
+    ax[0].set_ylabel("Jets/s",fontsize=20,labelpad=10)
+    ax[0].set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
+    #ax.set_title(opstring,fontsize=20,pad=10)
 
     plt.tight_layout()
 
@@ -658,7 +671,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,fig5=Fal
         colmap = "Blues"
 
         if fig5:
-            pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig5/{}.png".format(str(itr).zfill(5)),boxre=[9,12,-2,0],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
+            pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig5/{}.png".format(str(itr).zfill(5)),boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
 
         else:
 
