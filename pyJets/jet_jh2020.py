@@ -572,6 +572,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     ax[1].tick_params(labelsize=15)
     for axe in fig.get_axes():
         axe.label_outer()
+    ax[0].set_axis_off()
     #ax.set_title(opstring,fontsize=20,pad=10)
 
     plt.tight_layout()
