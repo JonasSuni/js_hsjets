@@ -425,7 +425,7 @@ def mag_thresh_plot(allow_splinters=True):
     ax_list[3].set_ylabel("FCS-jets\nper FCS",fontsize=15,labelpad=10)
     ax_list[4].set_ylabel("Fraction of jets\ncaused by FCS",fontsize=15,labelpad=10)
     #ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
-    ax_list[1].legend(frameon=False,numpoints=1,markerscale=3,loc="bottom right")
+    ax_list[1].legend(frameon=False,numpoints=1,markerscale=3,loc="lower right")
     for ax in ax_list:
         ax.grid()
         ax.set_xlim(mt_arr[0],mt_arr[-1])
