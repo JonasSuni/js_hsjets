@@ -517,7 +517,7 @@ def separate_jets_god(runid,allow_relatives=True):
 
     return [np.unique(sj_ids),np.unique(jet_ids),np.unique(slams_ids)]
 
-def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
+def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
 
     runid_dict = ["ABA","ABC","AEA","AEC"]
     run_length = np.array([839,1179,1339,879])/2.0-290.0
@@ -558,21 +558,30 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"]):
     sj_weights = np.array(sj_weights)/len(runids)
     non_weights = np.array(non_weights)/len(runids)
 
-    fig,ax = plt.subplots(2,1,figsize=(5,10),sharex=True)
-    #plt.grid()
-    ax[0].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated")
-    ax[0].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated")
-    ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
-    ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
-    ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
-    ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
-    ax[0].set_ylabel("Jets/s",fontsize=25,labelpad=10)
-    ax[1].set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
-    ax[0].tick_params(labelsize=15)
-    ax[1].tick_params(labelsize=15)
-    for axe in fig.get_axes():
-        axe.label_outer()
-    ax[0].set_axis_off()
+    if panel_one:
+        fig,ax = plt.subplots(2,1,figsize=(5,10),sharex=True)
+        #plt.grid()
+        ax[0].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated")
+        ax[0].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated")
+        ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
+        ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
+        ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
+        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        ax[0].set_ylabel("Jets/s",fontsize=25,labelpad=10)
+        ax[1].set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
+        ax[0].tick_params(labelsize=15)
+        ax[1].tick_params(labelsize=15)
+        for axe in fig.get_axes():
+            axe.label_outer()
+    else:
+        fig,ax = plt.subplots(1,1,figsize=(5,5))
+        #plt.grid()
+        ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
+        ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
+        ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
+        ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        ax.set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
+        ax.tick_params(labelsize=15)
     #ax.set_title(opstring,fontsize=20,pad=10)
 
     plt.tight_layout()
