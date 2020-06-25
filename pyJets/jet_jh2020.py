@@ -576,11 +576,11 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     else:
         fig,ax = plt.subplots(1,1,figsize=(5,5))
         #plt.grid()
-        ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
+        ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=20,labelpad=10)
         ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
         ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
-        ax.set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
+        ax.set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
         ax.tick_params(labelsize=15)
     #ax.set_title(opstring,fontsize=20,pad=10)
 
