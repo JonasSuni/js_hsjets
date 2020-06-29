@@ -603,8 +603,8 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
     at_jet = 0
     at_slams = 0
 
-    upstream_slice = jx.get_neighs_asym(runid_g,downstream_cells,neighborhood_reach=[0,2,0,0,0,0])
-    downstream_slice = jx.get_neighs_asym(runid_g,upstream_cells,neighborhood_reach=[-2,0,0,0,0,0])
+    upstream_slice = jx.get_neighs_asym(runid_g,downstream_cells,neighborhood_reach=[0,3,0,0,0,0])
+    downstream_slice = jx.get_neighs_asym(runid_g,upstream_cells,neighborhood_reach=[-3,0,0,0,0,0])
     bs_slice = np.intersect1d(upstream_slice,downstream_slice)
 
     if np.intersect1d(cells,slams_cells).size > 0:

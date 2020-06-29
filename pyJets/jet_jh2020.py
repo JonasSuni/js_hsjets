@@ -388,8 +388,8 @@ def mag_thresh_plot(allow_splinters=True):
     for n in range(len(mt_str_list)):
         #print(mt_str_list[n])
         data = np.loadtxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n],allow_splinters)).astype(float)
-        share = (data[0]+epsilon)/(data[1]+epsilon)
-        slams_share = (data[0]+epsilon)/(data[2]+epsilon)
+        share = (data[0])/(data[1])
+        slams_share = (data[0])/(data[2])
         slams_number = data[2]
         jet_number = data[1]
         sj_number = data[0]
