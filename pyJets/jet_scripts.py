@@ -1338,6 +1338,11 @@ def hack_2019_fig1():
 
 def h19_movie(runid,start,stop):
 
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    maxfnr_list = [839,1179,1339,879]
+    if start > maxfnr_list[runids_list.index(runid)]:
+        return 1
+
     if sys.version_info.major == 3:
         plt.style.use("classic")
         mpl.rcParams['text.usetex'] = True
@@ -1363,7 +1368,6 @@ def h19_movie(runid,start,stop):
 
     runid_g = runid
 
-    runids_list = ["ABA","ABC","AEA","AEC"]
     boxre = [[6,18,-8,6],[6,18,-6,6],[6,18,-8,6],[6,18,-6,6]][runids_list.index(runid)]
     vmax = [1.5,4.5,1.5,4.5][runids_list.index(runid)]
 
