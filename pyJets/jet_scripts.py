@@ -1259,6 +1259,9 @@ def hack_2019_fig1():
     global xvmax_list,yvmax_list
     global vl_xy,mms_xy
     global runid_g,filenr_g,boxre_g
+    global draw_sc
+
+    draw_sc = True
 
     #runids = ["AEA","AEC"]
     runids = ["AEA"]
@@ -1333,6 +1336,79 @@ def hack_2019_fig1():
 
         pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+outpfn_2[n],usesci=0,lin=1,boxre=boxre_2[n],expression=pc.expr_pdyn,vmin=0,vmax=vmax[n],colormap="parula",cbtitle="nPa",tickinterval=0.5,external=h19_fig1_ext,pass_vars=["rho","v","CellID"])
 
+def h19_movie(runid,start,stop):
+
+    if sys.version_info.major == 3:
+        plt.style.use("classic")
+        mpl.rcParams['text.usetex'] = True
+        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+
+    outputdir = homedir+"Figures/hackathon_paper/mov/{}/".format(runid)
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # Initialise required global variables
+    global jet_cells,full_cells
+    global xmean_list,ymean_list
+    global xvmax_list,yvmax_list
+    global vl_xy,mms_xy
+    global runid_g,filenr_g,boxre_g
+    global draw_sc
+
+    draw_sc = False
+
+    runid_g = runid
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    boxre = [[6,18,-8,6],[6,18,-6,6],[6,18,-8,6],[6,18,-6,6]][runids_list.index(runid)]
+    vmax = [1.5,4.5,1.5,4.5][runids_list.index(runid)]
+
+    boxre_g = boxre
+
+    for n in range(start,stop+1):
+        filenr_g = n
+
+        # Initialise lists of coordinates
+        xmean_list = []
+        ymean_list = []
+        xvmax_list = []
+        yvmax_list = []
+
+        event_props = np.array(jio.eventprop_read(runid,n))
+        xmean_list = event_props[:,1]
+        ymean_list = event_props[:,2]
+        xvmax_list = event_props[:,11]
+        yvmax_list = event_props[:,12]
+
+        # Try reading events file
+        try:
+            fileobj = open(wrkdir_DNR+"working/jets/events/{}/{}.events".format(runid,n),"r")
+            contents = fileobj.read()
+            fileobj.close()
+            jet_cells = list(map(int,contents.replace("\n",",").split(",")[:-1]))
+        except IOError:
+            jet_cells = []
+
+        # Try reading mask file
+        try:
+            full_cells = np.loadtxt(wrkdir_DNR+"working/jets/Masks/{}/{}.mask".format(runid,n)).astype(int)
+        except IOError:
+            full_cells = []
+
+        # Find correct file path
+        bulkpath = ja.find_bulkpath(runid)
+
+        bulkname = "bulk.{}.vlsv".format(str(n).zfill(7))
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file {} not found, continuing".format(n))
+            continue
+
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+str(n)+".png",usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmin=0,vmax=vmax,colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"])
 
 def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
 
@@ -1374,8 +1450,9 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     line1, = ax.plot(xmean_list,ymean_list,"o",color="red",markersize=2) # Mean positions
     line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
 
-    vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=4,color=jx.orange)
-    mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=4,color="green")
+    if draw_sc:
+        vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=4,color=jx.orange)
+        mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=4,color="green")
     #vlas = ax.annotate("Vlas",color=jx.orange,xy=(mms_xy[0],mms_xy[1]),xytext=(mms_xy[0]-2,mms_xy[1]-1),arrowprops={"arrowstyle":"->"},fontsize=5)
     #MMS = ax.annotate("MMS",color="black",xy=(vl_xy[0],vl_xy[1]),xytext=(vl_xy[0]-2,vl_xy[1]+1),arrowprops={"arrowstyle":"->"},fontsize=5)
 
