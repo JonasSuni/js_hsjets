@@ -1293,8 +1293,8 @@ def hack_2019_fig1():
         event_props = np.array(jio.eventprop_read(runids[n],filenr[n]))
         xmean_list = event_props[:,1]
         ymean_list = event_props[:,2]
-        xvmax_list = event_props[:,11]
-        yvmax_list = event_props[:,12]
+        xvmax_list = event_props[:,8]
+        yvmax_list = event_props[:,9]
 
         # for itr in range(3000):
         #     try:
