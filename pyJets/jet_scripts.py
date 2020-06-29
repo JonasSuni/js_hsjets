@@ -1385,8 +1385,8 @@ def h19_movie(runid,start,stop):
         event_props = np.array(jio.eventprop_read(runid,n))
         xmean_list = event_props[:,1]
         ymean_list = event_props[:,2]
-        xvmax_list = event_props[:,11]
-        yvmax_list = event_props[:,12]
+        xvmax_list = event_props[:,8]
+        yvmax_list = event_props[:,9]
 
         # Try reading events file
         try:
