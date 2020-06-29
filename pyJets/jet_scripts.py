@@ -1662,10 +1662,10 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed",color="black")
 
-        ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.25,color="black")
-        ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.25,color=jx.violet)
-        ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.25,color=jx.orange)
-        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.25,color="green")
+        ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.2,color=jx.violet,edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.2,color=jx.orange,edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color="green",edgecolor="none")
 
         #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
@@ -1699,11 +1699,21 @@ def hack_2019_fig78(time_thresh=5):
         SEA_mean_AEA = SEA_mean_list_8_AEA[col]
         SEA_mean_AEC = SEA_mean_list_8_AEC[col]
 
+        SEA_std_ABA = SEA_std_list_8_ABA[col]
+        SEA_std_ABC = SEA_std_list_8_ABC[col]
+        SEA_std_AEA = SEA_std_list_8_AEA[col]
+        SEA_std_AEC = SEA_std_list_8_AEC[col]
+
         ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
         ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed",color="black")
+
+        ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.2,color=jx.violet,edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.2,color=jx.orange,edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color="green",edgecolor="none")
 
         #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
