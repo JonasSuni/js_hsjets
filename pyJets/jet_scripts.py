@@ -1662,10 +1662,10 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed",color="black")
 
-        ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std-ABA,alpha=0.25,color="black")
-        ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std-ABC,alpha=0.25,color=jx.violet)
-        ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std-AEA,alpha=0.25,color=jx.orange)
-        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std-AEC,alpha=0.25,color="green")
+        ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.25,color="black")
+        ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.25,color=jx.violet)
+        ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.25,color=jx.orange)
+        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.25,color="green")
 
         #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
