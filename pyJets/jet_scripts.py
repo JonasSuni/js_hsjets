@@ -986,6 +986,8 @@ def DT_mach_comparison(time_thresh=5):
 
     fig,ax_list = plt.subplots(5,3,figsize=(10,12),sharey=True)
 
+    panel_labels = [["a)","f)","k)"],["b)","g)","l)"],["c)","h)","m)"],["d)","i)","n)"],["e)","j)","o)"]]
+
     for row in range(5):
         for col in range(3):
             ax = ax_list[row][col]
@@ -998,6 +1000,7 @@ def DT_mach_comparison(time_thresh=5):
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.legend(fontsize=10,frameon=False,markerscale=0.5)
+            ax.annotate(panel_labels[row][col],(0.1,0.8),xycoords="axes fraction",fontsize=20)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.tick_params(labelsize=15)
