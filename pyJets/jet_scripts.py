@@ -1635,7 +1635,7 @@ def hack_2019_fig78(time_thresh=5):
 
     fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,10),sharex=True)
 
-    fig7_locs = [(0.05,0.9),(0.05,0.9),(0.05,0.9)]
+    fig7_locs = [(0.05,0.85),(0.05,0.85),(0.05,0.85)]
     fig7_labs = ["a)","b)","c)"]
 
     for col in range(3):
@@ -1699,7 +1699,7 @@ def hack_2019_fig78(time_thresh=5):
 
     fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,12),sharex=True)
 
-    fig8_locs = [(0.9,0.875),(0.9,0.875),(0.9,0.875),(0.9,0.875),(0.9,0.1),(0.9,0.1)]
+    fig8_locs = [(0.9,0.8),(0.9,0.8),(0.9,0.8),(0.9,0.8),(0.9,0.1),(0.9,0.1)]
     fig8_labs = ["a)","b)","c)","d)","e)","f)"]
 
     for col in range(6):
