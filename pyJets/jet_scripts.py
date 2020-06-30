@@ -738,8 +738,8 @@ def hack_2019_fig4(time_thresh=5):
                 lab = "med:{:.2f}\nstd:{:.2f}".format(np.median(data_arr),np.std(data_arr,ddof=1))
             ax.hist(data_arr,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
-            ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
-            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=3))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
             ax.legend(fontsize=15,frameon=False,markerscale=0.5)
