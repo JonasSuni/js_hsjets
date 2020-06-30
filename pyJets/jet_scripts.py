@@ -1439,7 +1439,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     pd_sw = sw_pars[3]
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
-    bs_p = ja.bow_shock_jonas(runid_g,filenr_g)[::-1]
+    bs_p = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
     #mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
     bs_x = np.polyval(bs_p,bs_y)
     #mp_x = np.polyval(mp_p,bs_y)+1
