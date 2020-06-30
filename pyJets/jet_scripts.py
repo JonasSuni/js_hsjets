@@ -999,7 +999,7 @@ def DT_mach_comparison(time_thresh=5):
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.legend(fontsize=15,frameon=False)
             ax.set_ylim(0,1)
-            ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.tick_params(labelsize=15)
             if row == 4:
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=30)
