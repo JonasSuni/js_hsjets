@@ -996,17 +996,17 @@ def DT_mach_comparison(time_thresh=5):
             lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
-            ax.legend(fontsize=20,frameon=False)
+            ax.legend(fontsize=15,frameon=False)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
-            ax.tick_params(labelsize=20)
+            ax.tick_params(labelsize=15)
             if row == 4:
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=30)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
 
-    ax_list[0][0].set_title("Low Mach Jets",color="blue")
-    ax_list[0][1].set_title("High Mach Jets",color="red")
+    ax_list[0][0].set_title("Low Mach Jets",color="blue",fontsize=20)
+    ax_list[0][1].set_title("High Mach Jets",color="red",fontsize=20)
 
     plt.tight_layout()
 
@@ -1113,16 +1113,16 @@ def hack_2019_fig35():
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=4,label="MMS High Mach")
-    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=4,label="MMS Low Mach")
-    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=5,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=5,label="Vlas High Mach")
+    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=2,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=2,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=2,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=2,label="Vlas High Mach")
 
 
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
     ax.tick_params(labelsize=20)
-    ax.legend(frameon=False,numpoints=1,markerscale=3)
+    ax.legend(frameon=False,numpoints=1,markerscale=2)
     ax.set_xlabel("X [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
     ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=20,labelpad=10)
     plt.tight_layout()
