@@ -1116,7 +1116,7 @@ def hack_2019_fig35():
     ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=3,label="MMS High Mach")
     ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=3,label="MMS Low Mach")
     ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=2,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=3,label="Vlas High Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=2,label="Vlas High Mach")
 
 
     ax.set_xlim(6,20)
