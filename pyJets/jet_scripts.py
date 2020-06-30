@@ -799,9 +799,9 @@ def hack_2019_fig6(time_thresh=5):
 def hack_2019_fig6_alt(time_thresh=5):
 
     if sys.version_info.major == 3:
-        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black", jx.violet, jx.orange, "green"])
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black", jx.violet, jx.orange, jx.green])
     elif sys.version_info.major == 2:
-        mpl.rcParams['axes.color_cycle'] = ["black", jx.violet, jx.orange, "green"]
+        mpl.rcParams['axes.color_cycle'] = ["black", jx.violet, jx.orange, jx.green]
 
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
@@ -827,7 +827,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         std_arr = [np.std(var,ddof=1) for var in var_arr]
         #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
         labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
-        color_arr = ["black", jx.violet, jx.orange, "green"]
+        color_arr = ["black", jx.violet, jx.orange, jx.green]
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
