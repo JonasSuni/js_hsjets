@@ -742,7 +742,7 @@ def hack_2019_fig4(time_thresh=5):
             ax.xaxis.set_major_locator(MaxNLocator(nbins=5))
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
-            ax.legend(fontsize=15,frameon=False)
+            ax.legend(fontsize=20,frameon=False,markerscale=0.5)
 
             if row == 5:
                 data_arr_2 = darr_list[6][col]/norm
@@ -755,7 +755,7 @@ def hack_2019_fig4(time_thresh=5):
                 ax.hist(data_arr_2,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
-                ax.legend(fontsize=10,frameon=False)
+                ax.legend(fontsize=10,frameon=False,markerscale=0.5)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
 
