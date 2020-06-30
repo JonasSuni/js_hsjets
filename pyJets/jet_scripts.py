@@ -1629,7 +1629,7 @@ def hack_2019_fig78(time_thresh=5):
     lab_list_7 = ["$\mathrm{Extent~[R_e]}$","$\mathrm{Tangential~Size~[R_e]}$","$\mathrm{Size~Ratio}$","$\mathrm{Number~of~Jets}$"]
     lab_list_8 = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T_{perp}~[MK]}$","$\mathrm{\\Delta T_{par}~[MK]}$"]
 
-    color_list = ["black",jx.violet,jx.orange,"green"]
+    color_list = ["black",jx.violet,jx.orange,jx.green]
 
     epoch_arr,SEA_mean_list_7_all,SEA_std_list_7_all,count_7_all = get_SEA(var_list_7,time_thresh=time_thresh)
     epoch_arr,SEA_mean_list_8_all,SEA_std_list_8_all,count_8_all = get_SEA(var_list_8,time_thresh=time_thresh)
@@ -1677,10 +1677,10 @@ def hack_2019_fig78(time_thresh=5):
         if col != 3:
             ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.20)
 
-        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
-        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
-        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
-        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
+        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA",color="black")
+        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC",color=jx.violet)
+        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA",color=jx.orange)
+        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC",color=jx.green)
         ax.axvline(0,linestyle="dashed",color="black")
         ax.annotate(fig7_labs[col],fig7_locs[col],xycoords="axes fraction",fontsize=20)
 
@@ -1732,10 +1732,10 @@ def hack_2019_fig78(time_thresh=5):
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
 
-        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
-        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
-        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
-        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
+        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA",color="black")
+        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC",color=jx.violet)
+        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA",color=jx.orange)
+        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC",color=jx.green)
         ax.axvline(0,linestyle="dashed",color="black")
 
         # ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
