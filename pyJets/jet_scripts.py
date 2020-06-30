@@ -810,7 +810,7 @@ def hack_2019_fig6_alt(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
-    panel_label_list = ["$\mathbb{a)}$","$\mathbb{b)}$","$\mathbb{c)}$"]
+    panel_label_list = ["a)","b)","c)"]
 
     ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
@@ -1551,7 +1551,8 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
 
     var_list = np.array(var_list,ndmin=1).tolist()
 
-    epoch_arr = np.arange(0.5,-2.1,-0.05)
+    #epoch_arr = np.arange(0.5,-2.1,-0.05)
+    epoch_arr = np.arange(-0.5,2.1,0.05)
     SEA_arr_list = [np.zeros_like(epoch_arr) for var in var_list]
     SEA_mean_list = [np.zeros_like(epoch_arr) for var in var_list]
     SEA_std_list = [np.zeros_like(epoch_arr) for var in var_list]
@@ -1573,7 +1574,8 @@ def get_SEA(var_list,centering="A",runids=["ABA","ABC","AEA","AEC"],time_thresh=
                 continue
 
             #time_arr = props.read("time")
-            xdist_arr = props.read("x_mean")-props.read("bs_distance")
+            #xdist_arr = props.read("x_mean")-props.read("bs_distance")
+            xdist_arr = props.read("bs_distance")-props.read("x_mean")
             #cent_arr = props.read(centering)
             sorted_args = np.argsort(xdist_arr)
             xdist_arr.sort()
@@ -1605,10 +1607,10 @@ def hack_2019_fig78(time_thresh=5):
         #mpl.rcParams['text.usetex'] = True
         #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
-        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black",jx.violet,jx.orange,"green"])
+        mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black",jx.violet,jx.orange,jx.green])
     elif sys.version_info.major == 2:
         #mpl.rcParams['axes.color_cycle'] = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
-        mpl.rcParams['axes.color_cycle'] = ["black",jx.violet,jx.orange,"green"]
+        mpl.rcParams['axes.color_cycle'] = ["black",jx.violet,jx.orange,jx.green]
 
     var_list_7 = ["size_rad","size_tan","size_ratio"]
     var_list_8 = ["Dn","Dv","Dpd","DB","DTPerp","DTPar"]
@@ -1632,6 +1634,9 @@ def hack_2019_fig78(time_thresh=5):
     epoch_arr,SEA_mean_list_8_AEC,SEA_std_list_8_AEC,count_8_AEC = get_SEA(var_list_8,time_thresh=time_thresh,runids=["AEC"])
 
     fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,10),sharex=True)
+
+    fig7_locs = [(0.05,0.925),(0.05,0.925),(0.05,0.925)]
+    fig7_labs = ["a)","b)","c)"]
 
     for col in range(3):
         ax = ax_list_7[col]
@@ -1663,26 +1668,29 @@ def hack_2019_fig78(time_thresh=5):
         ax.plot(epoch_arr,SEA_mean_AEA,label="AEA")
         ax.plot(epoch_arr,SEA_mean_AEC,label="AEC")
         ax.axvline(0,linestyle="dashed",color="black")
+        ax.annotate(fig7_labs[col],fig7_locs[col],xycoords="axes fraction",fontsize=20)
 
         ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
         ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.2,color=jx.violet,edgecolor="none")
         ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.2,color=jx.orange,edgecolor="none")
-        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color="green",edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color=jx.green,edgecolor="none")
 
         #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_7[col],fontsize=15)
-        ax.set_xlim(-2.1,0.5)
+        #ax.set_xlim(-2.1,0.5)
+        ax.set_xlim(-0.5,2.1)
         ax.set_ylim(bottom=0)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         #if col == 3:
         #    ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
 
-    ax_list_7[-1].set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+    #ax_list_7[-1].set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+    ax_list_7[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
 
     ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
     ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
     ax_list_7[0].annotate("AEA",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
-    ax_list_7[0].annotate("AEC",xy=(0.5+0.1,1.05),xycoords="axes fraction",color="green",fontsize=20)
+    ax_list_7[0].annotate("AEC",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
 
     #plt.tight_layout()
 
@@ -1690,6 +1698,9 @@ def hack_2019_fig78(time_thresh=5):
     plt.close(fig_7)
 
     fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,12),sharex=True)
+
+    fig8_locs = [(0.9,0.925),(0.9,0.925),(0.9,0.925),(0.9,0.925),(0.9,0.05),(0.9,0.05)]
+    fig8_labs = ["a)","b)","c)","d)","e)","f)"]
 
     for col in range(6):
         ax = ax_list_8[col]
@@ -1715,19 +1726,23 @@ def hack_2019_fig78(time_thresh=5):
         ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
         ax.fill_between(epoch_arr,SEA_mean_ABC-SEA_std_ABC,SEA_mean_ABC+SEA_std_ABC,alpha=0.2,color=jx.violet,edgecolor="none")
         ax.fill_between(epoch_arr,SEA_mean_AEA-SEA_std_AEA,SEA_mean_AEA+SEA_std_AEA,alpha=0.2,color=jx.orange,edgecolor="none")
-        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color="green",edgecolor="none")
+        ax.fill_between(epoch_arr,SEA_mean_AEC-SEA_std_AEC,SEA_mean_AEC+SEA_std_AEC,alpha=0.2,color=jx.green,edgecolor="none")
+
+        ax.annotate(fig8_labs[col],fig8_locs[col],xycoords="axes fraction",fontsize=20)
 
         #ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.25)
         ax.set_ylabel(lab_list_8[col],fontsize=15)
-        ax.set_xlim(-2.1,0.5)
+        #ax.set_xlim(-2.1,0.5)
+        ax.set_xlim(-0.5,2.1)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if col == 5:
-            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+            #ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+            ax.set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
 
     ax_list_8[0].annotate("ABA",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
     ax_list_8[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color=jx.violet,fontsize=20)
     ax_list_8[0].annotate("AEA",xy=(0.5,1.1),xycoords="axes fraction",color=jx.orange,fontsize=20)
-    ax_list_8[0].annotate("AEC",xy=(0.5+0.1,1.1),xycoords="axes fraction",color="green",fontsize=20)
+    ax_list_8[0].annotate("AEC",xy=(0.5+0.1,1.1),xycoords="axes fraction",color=jx.green,fontsize=20)
 
     #plt.tight_layout()
 

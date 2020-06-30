@@ -11,6 +11,7 @@ crimson = '#920000'
 violet = '#B66DFF'
 dark_blue = '#490092'
 orange = '#db6d00'
+green = '#24ff24'
 m_p = 1.672621898e-27
 r_e = 6.371e+6
 
