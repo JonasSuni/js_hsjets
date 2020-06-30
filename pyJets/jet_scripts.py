@@ -997,7 +997,7 @@ def DT_mach_comparison(time_thresh=5):
             lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
-            ax.legend(fontsize=15,frameon=False)
+            ax.legend(fontsize=10,frameon=False,markerscale=0.5)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.tick_params(labelsize=15)
