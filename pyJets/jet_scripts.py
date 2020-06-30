@@ -745,7 +745,10 @@ def hack_2019_fig4(time_thresh=5):
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
             ax.legend(fontsize=15,frameon=False,markerscale=0.5)
-            ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
+            if row == 0 and col == 1:
+                ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
+            else:
+                ax.annotate(panel_labels[row][col],(0.15,0.8),xycoords="axes fraction",fontsize=20)
 
             if row == 5:
                 data_arr_2 = darr_list[6][col]/norm
