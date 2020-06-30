@@ -1108,7 +1108,7 @@ def hack_2019_fig35():
     bs_x,bs_y=jx.BS_xy()
     mp_x,mp_y=jx.MP_xy()
 
-    fig,ax = plt.subplots(1,1,figsize=(10,10))
+    fig,ax = plt.subplots(1,1,figsize=(6,6))
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
