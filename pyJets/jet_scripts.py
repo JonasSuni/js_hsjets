@@ -838,7 +838,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
-        ax.legend(fontsize=10,frameon=False)
+        ax.legend(fontsize=20,frameon=False)
         ax.set_xlabel(label_list[col],fontsize=15)
         ax.set_ylim(0,0.5)
         ax.annotate(panel_label_list[col],(0.05,0.925),xycoords="axes fraction",fontsize=20,weight="bold")
