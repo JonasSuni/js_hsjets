@@ -838,13 +838,13 @@ def hack_2019_fig6_alt(time_thresh=5):
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
-        ax.legend(fontsize=20,frameon=False)
-        ax.set_xlabel(label_list[col],fontsize=15)
+        ax.legend(fontsize=15,frameon=False)
+        ax.set_xlabel(label_list[col],fontsize=25)
         ax.set_ylim(0,0.5)
         ax.annotate(panel_label_list[col],(0.05,0.925),xycoords="axes fraction",fontsize=20,weight="bold")
 
 
-    ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=25,labelpad=10)
 
     plt.tight_layout()
 
@@ -1132,7 +1132,7 @@ def hack_2019_fig35():
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
     ax.tick_params(labelsize=20)
-    ax.legend(frameon=False,numpoints=1,markerscale=3,fontsize=20)
+    ax.legend(frameon=False,numpoints=1,markerscale=3,fontsize=15)
     ax.set_xlabel("X [$\mathrm{R_e}$]",fontsize=25,labelpad=10)
     ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=25,labelpad=10)
     plt.tight_layout()
