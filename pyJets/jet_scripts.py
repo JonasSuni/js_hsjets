@@ -767,7 +767,7 @@ def hack_2019_fig4(time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig4.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig5.png")
     plt.close(fig)
 
 def hack_2019_fig6(time_thresh=5):
@@ -838,7 +838,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
-        ax.legend(fontsize=15,frameon=False)
+        ax.legend(fontsize=15,frameon=False,markerscale=0.5)
         ax.set_xlabel(label_list[col],fontsize=25)
         ax.set_ylim(0,0.5)
         ax.annotate(panel_label_list[col],(0.05,0.925),xycoords="axes fraction",fontsize=20,weight="bold")
@@ -848,7 +848,7 @@ def hack_2019_fig6_alt(time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig6_alt.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig7.png")
     plt.close(fig)
 
 def jetcand_vdf(runid):
@@ -1020,7 +1020,7 @@ def DT_mach_comparison(time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/DT_mach_comp.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig6.png")
     plt.close(fig)
 
 def colorbar(mappable,ax_list):
@@ -1137,7 +1137,7 @@ def hack_2019_fig35():
     ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=25,labelpad=10)
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig35.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/fig3.png")
     plt.close(fig)
 
 def hack_2019_fig2(runid,htw = 60):
@@ -1707,7 +1707,7 @@ def hack_2019_fig78(time_thresh=5):
 
     #plt.tight_layout()
 
-    fig_7.savefig(homedir+"Figures/hackathon_paper/fig7.png")
+    fig_7.savefig(homedir+"Figures/hackathon_paper/fig8.png")
     plt.close(fig_7)
 
     fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,12),sharex=True)
@@ -1760,7 +1760,7 @@ def hack_2019_fig78(time_thresh=5):
 
     #plt.tight_layout()
 
-    fig_8.savefig(homedir+"Figures/hackathon_paper/fig8.png")
+    fig_8.savefig(homedir+"Figures/hackathon_paper/fig9.png")
     plt.close(fig_8)
 
     return None
