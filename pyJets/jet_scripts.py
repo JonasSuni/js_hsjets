@@ -744,7 +744,7 @@ def hack_2019_fig4(time_thresh=5):
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
-            ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+            ax.legend(fontsize=15,frameon=False,markerscale=0.5,numpoints=0)
             if row == 0 and col == 1:
                 ax.annotate(panel_labels[row][col],(0.2,0.8),xycoords="axes fraction",fontsize=20)
             else:
