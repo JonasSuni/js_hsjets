@@ -810,7 +810,7 @@ def hack_2019_fig6_alt(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
-    panel_label_list = ["a)","b)","c)"]
+    panel_label_list = ["$\mathbb{a)}$","$\mathbb{b)}$","$\mathbb{c)}$"]
 
     ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
