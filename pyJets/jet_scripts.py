@@ -1428,7 +1428,7 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     pd_sw = sw_pars[3]
 
     bs_y = np.arange(boxre_g[2],boxre_g[3],0.01)
-    bs_p = ja.bow_shock_markus(runid_g,filenr_g)[::-1]
+    bs_p = ja.bow_shock_jonas(runid_g,filenr_g)[::-1]
     #mp_p,bs_p = ja.bs_mp_fit(runid_g,filenr_g,boxre_g)
     bs_x = np.polyval(bs_p,bs_y)
     #mp_x = np.polyval(mp_p,bs_y)+1
@@ -1635,7 +1635,7 @@ def hack_2019_fig78(time_thresh=5):
 
     fig_7,ax_list_7 = plt.subplots(3,1,figsize=(10,10),sharex=True)
 
-    fig7_locs = [(0.05,0.925),(0.05,0.925),(0.05,0.925)]
+    fig7_locs = [(0.05,0.9),(0.05,0.9),(0.05,0.9)]
     fig7_labs = ["a)","b)","c)"]
 
     for col in range(3):
@@ -1699,7 +1699,7 @@ def hack_2019_fig78(time_thresh=5):
 
     fig_8,ax_list_8 = plt.subplots(6,1,figsize=(10,12),sharex=True)
 
-    fig8_locs = [(0.9,0.925),(0.9,0.925),(0.9,0.925),(0.9,0.925),(0.9,0.05),(0.9,0.05)]
+    fig8_locs = [(0.9,0.875),(0.9,0.875),(0.9,0.875),(0.9,0.875),(0.9,0.1),(0.9,0.1)]
     fig8_labs = ["a)","b)","c)","d)","e)","f)"]
 
     for col in range(6):
