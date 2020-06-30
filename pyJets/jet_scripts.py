@@ -1674,7 +1674,8 @@ def hack_2019_fig78(time_thresh=5):
             SEA_mean_AEA = count_7_AEA[0]
             SEA_mean_AEC = count_7_AEC[0]
 
-        ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.20)
+        if col != 3:
+            ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.20)
 
         ax.plot(epoch_arr,SEA_mean_ABA,label="ABA")
         ax.plot(epoch_arr,SEA_mean_ABC,label="ABC")
