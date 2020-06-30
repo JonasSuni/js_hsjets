@@ -1109,20 +1109,20 @@ def hack_2019_fig35():
     bs_x,bs_y=jx.BS_xy()
     mp_x,mp_y=jx.MP_xy()
 
-    fig,ax = plt.subplots(1,1,figsize=(7,7))
+    fig,ax = plt.subplots(1,1,figsize=(8,8))
 
     ax.plot(mp_x,bs_y,color="black")
     ax.plot(bs_x,bs_y,color="black")
-    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=4,label="MMS High Mach")
-    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=4,label="MMS Low Mach")
-    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=3,label="Vlas Low Mach")
-    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=3,label="Vlas High Mach")
+    ax.plot(mms_high[0],mms_high[1],"x",color=jx.violet,mec=jx.violet,markersize=5,label="MMS High Mach")
+    ax.plot(mms_low[0],mms_low[1],"x",color=jx.medium_blue,mec=jx.medium_blue,markersize=5,label="MMS Low Mach")
+    ax.plot(coords_low[0],coords_low[1],"o",color=jx.dark_blue,mec=jx.dark_blue,markersize=4,label="Vlas Low Mach")
+    ax.plot(coords_high[0],coords_high[1],"o",color=jx.orange,mec=jx.orange,markersize=4,label="Vlas High Mach")
 
 
     ax.set_xlim(6,20)
     ax.set_ylim(-8,6)
-    ax.tick_params(labelsize=20)
-    ax.legend(frameon=False,numpoints=1,markerscale=3)
+    ax.tick_params(labelsize=25)
+    ax.legend(frameon=False,numpoints=1,markerscale=4)
     ax.set_xlabel("X [$\mathrm{R_e}$]",fontsize=25,labelpad=10)
     ax.set_ylabel("Y [$\mathrm{R_e}$]",fontsize=25,labelpad=10)
     plt.tight_layout()
