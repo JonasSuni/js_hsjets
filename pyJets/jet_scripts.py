@@ -810,6 +810,7 @@ def hack_2019_fig6_alt(time_thresh=5):
 
     var_list = ["duration","size_tan","size_ratio"]
     label_list = ["$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
+    panel_label_list = ["a)","b)","c)"]
 
     ABA_vars = read_mult_runs(var_list,time_thresh,runids=["ABA"],amax=False)
     ABC_vars = read_mult_runs(var_list,time_thresh,runids=["ABC"],amax=False)
@@ -833,6 +834,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         ax.legend(fontsize=10,frameon=False)
         ax.set_xlabel(label_list[col],fontsize=15)
         ax.set_ylim(0,0.5)
+        ax.annotate(panel_label_list[col],(0.05,0.95),xycoords="axes fraction",fontsize=20)
 
 
     ax_list[0].set_ylabel("Fraction of jets",fontsize=15,labelpad=10)
