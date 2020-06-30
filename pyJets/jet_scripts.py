@@ -755,7 +755,7 @@ def hack_2019_fig4(time_thresh=5):
                 ax.hist(data_arr_2,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
-                ax.legend(fontsize=16,frameon=False,ncol=2)
+                ax.legend(fontsize=10,frameon=False)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
 
