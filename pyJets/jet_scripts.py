@@ -746,7 +746,7 @@ def hack_2019_fig4(time_thresh=5):
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
-            leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+            leg = ax.legend(fontsize=20,frameon=False,markerscale=0.5)
             jx.legend_compact(leg,color_list)
             if row == 0 and col == 1:
                 ax.annotate(panel_labels[row][col],(0.2,0.8),xycoords="axes fraction",fontsize=20)
@@ -764,7 +764,7 @@ def hack_2019_fig4(time_thresh=5):
                 ax.hist(data_arr_2,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
-                leg = ax.legend(fontsize=10,frameon=False,markerscale=0.5,ncol=2)
+                leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5,ncol=2)
                 jx.legend_compact(leg,color_list)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
