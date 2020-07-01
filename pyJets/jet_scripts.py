@@ -1021,7 +1021,7 @@ def DT_mach_comparison(fontsize=15,time_thresh=5):
             #ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.hist(var_low,weights=weights_low,label=lab[0],color="blue",histtype="step",bins=hist_bins[row])
             ax.hist(var_high,weights=weights_high,label=lab[1],color="red",histtype="step",bins=hist_bins[row])
-            if row == 4 or (row == 0 and col == 2):
+            if row == 4:
                 leg = ax.legend(fontsize=fontsize,frameon=False,markerscale=0.5,ncol=2,columnspacing=-2.0)
             else:
                 leg = ax.legend(fontsize=fontsize,frameon=False,markerscale=0.5)
