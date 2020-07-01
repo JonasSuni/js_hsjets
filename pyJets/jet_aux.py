@@ -26,7 +26,7 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
-def legend_compact(leg,color_list):
+def legend_compact(leg,color_list=["black"]):
 
     for item in leg.legendHandles:
         item.set_visible(False)

@@ -720,6 +720,8 @@ def hack_2019_fig4(time_thresh=5):
 
     darr_list = [[VLH_ext,VLR_ext,MMS_ext],[VLH_n,VLR_n,MMS_n],[VLH_v,VLR_v,MMS_v],[VLH_pd,VLR_pd,MMS_pd],[VLH_B,VLR_B,MMS_B],[VLH_TPerp,VLR_TPerp,MMS_TPerp],[VLH_TPar,VLR_TPar,MMS_TPar]]
 
+    color_list = ["black","blue","red","green"]
+
     fig,ax_list = plt.subplots(6,3,figsize=(10,15),sharey=True)
 
     panel_labels = [["a)","g)","m)"],["b)","h)","n)"],["c)","i)","o)"],["d)","j)","p)"],["e)","k)","q)"],["f)","l)","r)"]]
@@ -745,8 +747,7 @@ def hack_2019_fig4(time_thresh=5):
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
             leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
-            for item in leg.legendHandles:
-                item.set_visible(False)
+            jx.legend_compact(leg,color_list)
             if row == 0 and col == 1:
                 ax.annotate(panel_labels[row][col],(0.2,0.8),xycoords="axes fraction",fontsize=20)
             else:
@@ -764,6 +765,7 @@ def hack_2019_fig4(time_thresh=5):
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
                 ax.legend(fontsize=10,frameon=False,markerscale=0.5)
+                jx.legend_compact(leg,color_list)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
 
