@@ -187,7 +187,8 @@ class NeoTransient:
         self.splinter_time = np.inf
         self.transient = transient
 
-        print("Created transient with ID "+self.ID)
+        if debug_g:
+            print("Created transient with ID "+self.ID)
 
     def return_cellid_string(self):
         # Return string of lists of cellids for printing to file
@@ -210,7 +211,8 @@ class NeoTransient:
                 self.props[n][-4] = splinter_arr[n]
             propfile_write(self.runid,start,self.ID,self.props,self.meta,transient=self.transient)
         else:
-            print("Transient {} too short-lived, propfile not written!".format(self.ID))
+            if debug_g:
+                print("Transient {} too short-lived, propfile not written!".format(self.ID))
 
         return None
 
@@ -592,7 +594,8 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     pf.write(propfile_header_list+"\n")
     pf.write("\n".join([",".join(list(map(str,line))) for line in props]))
     pf.close()
-    print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
+    if debug_g:
+        print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
 def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[],downstream_cells=[]):
 
@@ -887,7 +890,7 @@ def check_threshold(A,B,thresh):
 
     return np.intersect1d(A,B).size > thresh*min(len(A),len(B))
 
-def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
+def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet",dbg=False):
 
     if transient == "slamsjet":
         outputdir = wrkdir_DNR+"working/SLAMSJETS/slamsjets/"+runid
@@ -901,6 +904,10 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
             os.makedirs(outputdir)
         except OSError:
             pass
+
+    global debug_g
+
+    debug_g = dbg
 
     # Read initial event files
     events_old = eventfile_read(runid,start,transient=transient)
@@ -916,7 +923,8 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
     counter = 1
 
     # Print current time
-    print("t = "+str(float(start+1)/2)+"s")
+    if debug:
+        print("t = "+str(float(start+1)/2)+"s")
 
     # Look for jets at bow shock
     for event in events_unsrt:
@@ -955,12 +963,14 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet"):
 
         for jetobj in jetobj_list:
             if float(n)/2 - jetobj.times[-1] + 0.5 > 2.5:
-                print("Killing jet {}".format(jetobj.ID))
+                if debug:
+                    print("Killing jet {}".format(jetobj.ID))
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
 
         # Print  current time
-        print("t = "+str(float(n)/2)+"s")
+        if debug:
+            print("t = "+str(float(n)/2)+"s")
 
         events_old = events_unsrt
         old_props = props_unsrt

@@ -630,7 +630,7 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,fig5=False,magt=1.5):
+def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False,magt=1.5):
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     run_index = runid_list.index(runid)
@@ -667,7 +667,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,fig5=Fal
     outputdir = wrkdir_DNR+"jh2020_movie/{}/{}/{}/".format(runid,var,magt)
     fluxfile = None
     fluxdir = None
-    if debug:
+    if dbg:
         outputdir = wrkdir_DNR+"jh2020_debug/{}/{}/{}/".format(runid,var,magt)
     if not os.path.exists(outputdir):
         try:
@@ -687,7 +687,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,debug=False,fig5=Fal
     for itr in range(start,stop+1):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
-        if debug:
+        if dbg:
             fluxdir = bulkpath+"../flux/"
             fluxfile = "flux.{}.bin".format(str(itr).zfill(7))
 
