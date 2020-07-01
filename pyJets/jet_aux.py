@@ -31,7 +31,10 @@ def legend_compact(leg,color_list=["black"]):
     color_list = []
 
     for n,item in enumerate(leg.legendHandles):
-        color = item.get_color()
+        try:
+            color = item.get_color()
+        except:
+            color = item.color()
         item.set_visible(False)
         leg.texts[n].set_color(color)
 
