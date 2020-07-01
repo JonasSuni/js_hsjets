@@ -695,7 +695,7 @@ def jet_paper_pos():
 
 ### HACKATHON 2019 SCRIPTS HERE ###
 
-def hack_2019_fig4(columnspacing=0.5,time_thresh=5):
+def hack_2019_fig4(columnspacing=0.5,fontsize=15,time_thresh=5):
 
     if sys.version_info.major == 3:
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
@@ -764,7 +764,7 @@ def hack_2019_fig4(columnspacing=0.5,time_thresh=5):
                 ax.hist(data_arr_2,weights=weights,label=lab,histtype="step",bins=bins_list[row])
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
-                leg = ax.legend(fontsize=10,frameon=False,markerscale=0.5,ncol=2,columnspacing=columnspacing)
+                leg = ax.legend(fontsize=fontsize,frameon=False,markerscale=0.5,ncol=2,columnspacing=columnspacing)
                 jx.legend_compact(leg,color_list)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
