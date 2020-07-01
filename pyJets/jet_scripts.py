@@ -695,7 +695,7 @@ def jet_paper_pos():
 
 ### HACKATHON 2019 SCRIPTS HERE ###
 
-def hack_2019_fig4(columnspacing=0.5,fontsize=15,time_thresh=5):
+def hack_2019_fig4(columnspacing=-1.0,fontsize=15,time_thresh=5):
 
     if sys.version_info.major == 3:
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
@@ -837,12 +837,16 @@ def hack_2019_fig6_alt(time_thresh=5):
         med_arr = [np.median(var) for var in var_arr]
         std_arr = [np.std(var,ddof=1) for var in var_arr]
         #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
-        labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
+        if col == 0:
+            labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
+        else:
+            labs_arr = ["med:{:.2f}".format(med_arr[itr]) for itr in range(len(var_arr))]
         color_arr = ["black", jx.violet, jx.orange, jx.green]
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
         ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
-        ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+        leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+        jx.legend_compact(leg,color_arr)
         ax.set_xlabel(label_list[col],fontsize=25)
         ax.set_ylim(0,0.5)
         ax.annotate(panel_label_list[col],(0.05,0.925),xycoords="axes fraction",fontsize=20,weight="bold")
@@ -994,6 +998,8 @@ def DT_mach_comparison(time_thresh=5):
     var_list_low = [VLMax_low,VLRand_low,MMS_low]
     var_list_high = [VLMax_high,VLRand_high,MMS_high]
 
+    color_list = ["blue","red"]
+
     fig,ax_list = plt.subplots(5,3,figsize=(10,12),sharey=True)
 
     panel_labels = [["a)","f)","k)"],["b)","g)","l)"],["c)","h)","m)"],["d)","i)","n)"],["e)","j)","o)"]]
@@ -1009,7 +1015,8 @@ def DT_mach_comparison(time_thresh=5):
             lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
-            ax.legend(fontsize=10,frameon=False,markerscale=0.5)
+            leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+            jx.legend_compact(leg,color_list)
             ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
