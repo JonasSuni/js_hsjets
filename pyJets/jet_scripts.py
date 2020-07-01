@@ -849,7 +849,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         ax.hist(var_arr[1],weights=weights_arr[1],label=labs_arr[1],color=color_arr[1],histtype="step",bins=bins_list[col])
         ax.hist(var_arr[2],weights=weights_arr[2],label=labs_arr[2],color=color_arr[2],histtype="step",bins=bins_list[col])
         ax.hist(var_arr[3],weights=weights_arr[3],label=labs_arr[3],color=color_arr[3],histtype="step",bins=bins_list[col])
-        leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+        leg = ax.legend(fontsize=20,frameon=False,markerscale=0.5)
         jx.legend_compact(leg)
         ax.set_xlabel(label_list[col],fontsize=25)
         ax.set_ylim(0,0.5)
