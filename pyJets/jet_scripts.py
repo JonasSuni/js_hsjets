@@ -975,7 +975,7 @@ def DT_comparison(time_thresh=5):
     fig.savefig(homedir+"Figures/hackathon_paper/DT_comp.png")
     plt.close(fig)
 
-def DT_mach_comparison(time_thresh=5):
+def DT_mach_comparison(fontsize=15,time_thresh=5):
 
     xlabel_list = ["VLMax","VLRand","MMS"]
     ylabel_list = ["$\mathrm{\\Delta T~[MK]}$","$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$"]
@@ -1021,7 +1021,7 @@ def DT_mach_comparison(time_thresh=5):
             #ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             ax.hist(var_low,weights=weights_low,label=lab[0],color="blue",histtype="step",bins=hist_bins[row])
             ax.hist(var_high,weights=weights_high,label=lab[1],color="red",histtype="step",bins=hist_bins[row])
-            leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
+            leg = ax.legend(fontsize=fontsize,frameon=False,markerscale=0.5)
             jx.legend_compact(leg)
             ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
             ax.set_ylim(0,1)
