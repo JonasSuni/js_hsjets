@@ -34,7 +34,7 @@ def legend_compact(leg,color_list=["black"]):
         try:
             color = item.get_color()
         except:
-            color = item.color()
+            color = item.get_ec()
         item.set_visible(False)
         leg.texts[n].set_color(color)
 
