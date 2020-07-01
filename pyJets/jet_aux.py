@@ -28,11 +28,15 @@ except:
 
 def legend_compact(leg,color_list=["black"]):
 
-    for item in leg.legendHandles:
-        item.set_visible(False)
+    color_list = []
 
-    for n,text in enumerate(leg.texts):
-        text.set_color(color_list[n])
+    for n,item in enumerate(leg.legendHandles):
+        #color_list.append(item.get_color())
+        item.set_visible(False)
+        leg.texts[n].set_color(item.get_color())
+
+    #for n,text in enumerate(leg.texts):
+    #    text.set_color(color_list[n])
 
 def transfer_tavg(runid,start,stop):
 
