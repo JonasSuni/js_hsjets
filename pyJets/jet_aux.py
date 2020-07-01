@@ -31,9 +31,9 @@ def legend_compact(leg,color_list=["black"]):
     color_list = []
 
     for n,item in enumerate(leg.legendHandles):
-        #color_list.append(item.get_color())
+        color = item.get_color()
         item.set_visible(False)
-        leg.texts[n].set_color(item.get_color())
+        leg.texts[n].set_color(color)
 
     #for n,text in enumerate(leg.texts):
     #    text.set_color(color_list[n])
