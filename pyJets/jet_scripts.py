@@ -747,7 +747,7 @@ def hack_2019_fig4(columnspacing=-1.0,fontsize=15,time_thresh=5):
             ax.set_ylim(0,0.6)
             ax.tick_params(labelsize=15)
             leg = ax.legend(fontsize=20,frameon=False,markerscale=0.5)
-            jx.legend_compact(leg,color_list)
+            jx.legend_compact(leg)
             if row == 0 and col == 1:
                 ax.annotate(panel_labels[row][col],(0.2,0.8),xycoords="axes fraction",fontsize=20)
             else:
@@ -765,7 +765,7 @@ def hack_2019_fig4(columnspacing=-1.0,fontsize=15,time_thresh=5):
 
                 ax.set_xlabel(xlabel_list[col],labelpad=10,fontsize=25)
                 leg = ax.legend(fontsize=fontsize,frameon=False,markerscale=0.5,ncol=2,columnspacing=columnspacing)
-                jx.legend_compact(leg,color_list)
+                jx.legend_compact(leg)
             if col == 0:
                 ax.set_ylabel(ylabel_list[row],labelpad=10,fontsize=20)
 
@@ -844,9 +844,13 @@ def hack_2019_fig6_alt(time_thresh=5):
         color_arr = ["black", jx.violet, jx.orange, jx.green]
         #color_arr = [jx.violet, jx.medium_blue, jx.dark_blue, jx.orange]
 
-        ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
+        #ax.hist(var_arr,weights=weights_arr,label=labs_arr,color=color_arr,histtype="step",bins=bins_list[col])
+        ax.hist(var_arr[0],weights=weights_arr[0],label=labs_arr[0],color=color_arr[0],histtype="step",bins=bins_list[col])
+        ax.hist(var_arr[1],weights=weights_arr[1],label=labs_arr[1],color=color_arr[1],histtype="step",bins=bins_list[col])
+        ax.hist(var_arr[2],weights=weights_arr[2],label=labs_arr[2],color=color_arr[2],histtype="step",bins=bins_list[col])
+        ax.hist(var_arr[3],weights=weights_arr[3],label=labs_arr[3],color=color_arr[3],histtype="step",bins=bins_list[col])
         leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
-        jx.legend_compact(leg,color_arr)
+        jx.legend_compact(leg)
         ax.set_xlabel(label_list[col],fontsize=25)
         ax.set_ylim(0,0.5)
         ax.annotate(panel_label_list[col],(0.05,0.925),xycoords="axes fraction",fontsize=20,weight="bold")
@@ -1016,7 +1020,7 @@ def DT_mach_comparison(time_thresh=5):
 
             ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
             leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
-            jx.legend_compact(leg,color_list)
+            jx.legend_compact(leg)
             ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
             ax.set_ylim(0,1)
             ax.xaxis.set_major_locator(MaxNLocator(nbins=4))

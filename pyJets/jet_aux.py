@@ -26,9 +26,7 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
-def legend_compact(leg,color_list=["black"]):
-
-    color_list = []
+def legend_compact(leg):
 
     for n,item in enumerate(leg.legendHandles):
         try:
@@ -37,9 +35,6 @@ def legend_compact(leg,color_list=["black"]):
             color = item.get_ec()
         item.set_visible(False)
         leg.texts[n].set_color(color)
-
-    #for n,text in enumerate(leg.texts):
-    #    text.set_color(color_list[n])
 
 def transfer_tavg(runid,start,stop):
 
