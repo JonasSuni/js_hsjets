@@ -1018,7 +1018,9 @@ def DT_mach_comparison(time_thresh=5):
 
             lab = ["med:{:.2f}\nstd:{:.2f}".format(np.median(var_low),np.std(var_low,ddof=1)),"med:{:.2f}\nstd:{:.2f}".format(np.median(var_high),np.std(var_high,ddof=1))]
 
-            ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
+            #ax.hist([var_low,var_high],weights=[weights_low,weights_high],label=lab,color=["blue","red"],histtype="step",bins=hist_bins[row])
+            ax.hist(var_low,weights=weights_low,label=lab[0],color="blue",histtype="step",bins=hist_bins[row])
+            ax.hist(var_high,weights=weights_high,label=lab[1],color="red",histtype="step",bins=hist_bins[row])
             leg = ax.legend(fontsize=15,frameon=False,markerscale=0.5)
             jx.legend_compact(leg)
             ax.annotate(panel_labels[row][col],(0.05,0.8),xycoords="axes fraction",fontsize=20)
