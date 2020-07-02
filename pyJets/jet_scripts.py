@@ -532,6 +532,19 @@ def jet_pos_graph(runid):
 
     return None
 
+def jet_maxdiff_counter():
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    for n in range(0,3000):
+
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580,transient="jet")
+                times = props.read("time")
+                diff = np.ediff1d(times)
+                print(max(diff))
+
 def slams_jet_counter():
 
     runids = ["ABA","ABC","AEA","AEC"]
