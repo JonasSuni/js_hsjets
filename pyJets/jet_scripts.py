@@ -1448,7 +1448,7 @@ def h19_movie(runid,start,stop):
             print("Bulk file {} not found, continuing".format(n))
             continue
 
-        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+str(n)+".png",usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmin=0,vmax=vmax,colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"],tickinterval=1.0)
+        pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+str(n)+".png",usesci=0,lin=1,boxre=boxre,expression=pc.expr_pdyn,vmin=0,vmax=vmax,colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"],tickinterval=2.0)
 
         pt.plot.plot_colormap(filename=bulkpath+bulkname,outputfile=outputdir+"zoom/"+str(n)+".png",usesci=0,lin=1,boxre=[10,14,-3,1],expression=pc.expr_pdyn,vmin=0,vmax=vmax,colormap="parula",cbtitle="nPa",external=h19_fig1_ext,pass_vars=["rho","v","CellID","Pdyn"],tickinterval=0.5)
 
