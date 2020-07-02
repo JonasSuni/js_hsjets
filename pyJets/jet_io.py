@@ -923,7 +923,7 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet",dbg=False):
     counter = 1
 
     # Print current time
-    if debug:
+    if dbg:
         print("t = "+str(float(start+1)/2)+"s")
 
     # Look for jets at bow shock
@@ -963,13 +963,13 @@ def jet_tracker(runid,start,stop,threshold=0.1,transient="slamsjet",dbg=False):
 
         for jetobj in jetobj_list:
             if float(n)/2 - jetobj.times[-1] + 0.5 > 2.5:
-                if debug:
+                if dbg:
                     print("Killing jet {}".format(jetobj.ID))
                 dead_jetobj_list.append(jetobj)
                 jetobj_list.remove(jetobj)
 
         # Print  current time
-        if debug:
+        if dbg:
             print("t = "+str(float(n)/2)+"s")
 
         events_old = events_unsrt
