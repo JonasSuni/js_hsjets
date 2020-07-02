@@ -1703,10 +1703,10 @@ def hack_2019_fig78(time_thresh=5):
         if col != 3:
             ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.20)
 
-        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA",color="black")
-        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC",color=jx.violet)
-        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA",color=jx.orange)
-        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC",color=jx.green)
+        ax.plot(epoch_arr,SEA_mean_ABA,label="HM30",color="black")
+        ax.plot(epoch_arr,SEA_mean_ABC,label="HM5",color=jx.violet)
+        ax.plot(epoch_arr,SEA_mean_AEA,label="HM30",color=jx.orange)
+        ax.plot(epoch_arr,SEA_mean_AEC,label="HM5",color=jx.green)
         ax.axvline(0,linestyle="dashed",color="black")
         ax.annotate(fig7_labs[col],fig7_locs[col],xycoords="axes fraction",fontsize=20)
 
@@ -1726,10 +1726,10 @@ def hack_2019_fig78(time_thresh=5):
     #ax_list_7[-1].set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
     ax_list_7[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
 
-    ax_list_7[0].annotate("ABA",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
-    ax_list_7[0].annotate("ABC",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
-    ax_list_7[0].annotate("AEA",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
-    ax_list_7[0].annotate("AEC",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
+    ax_list_7[0].annotate("HM30",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list_7[0].annotate("HM5",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
+    ax_list_7[0].annotate("LM30",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
+    ax_list_7[0].annotate("LM5",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
 
     #plt.tight_layout()
 
@@ -1758,10 +1758,10 @@ def hack_2019_fig78(time_thresh=5):
 
         ax.fill_between(epoch_arr,SEA_mean-SEA_std,SEA_mean+SEA_std,alpha=0.2)
 
-        ax.plot(epoch_arr,SEA_mean_ABA,label="ABA",color="black")
-        ax.plot(epoch_arr,SEA_mean_ABC,label="ABC",color=jx.violet)
-        ax.plot(epoch_arr,SEA_mean_AEA,label="AEA",color=jx.orange)
-        ax.plot(epoch_arr,SEA_mean_AEC,label="AEC",color=jx.green)
+        ax.plot(epoch_arr,SEA_mean_ABA,label="HM30",color="black")
+        ax.plot(epoch_arr,SEA_mean_ABC,label="HM5",color=jx.violet)
+        ax.plot(epoch_arr,SEA_mean_AEA,label="LM30",color=jx.orange)
+        ax.plot(epoch_arr,SEA_mean_AEC,label="LM5",color=jx.green)
         ax.axvline(0,linestyle="dashed",color="black")
 
         # ax.fill_between(epoch_arr,SEA_mean_ABA-SEA_std_ABA,SEA_mean_ABA+SEA_std_ABA,alpha=0.2,color="black",edgecolor="none")
@@ -1779,10 +1779,10 @@ def hack_2019_fig78(time_thresh=5):
             #ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
             ax.set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
 
-    ax_list_8[0].annotate("ABA",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
-    ax_list_8[0].annotate("ABC",xy=(0.5-0.1,1.1),xycoords="axes fraction",color=jx.violet,fontsize=20)
-    ax_list_8[0].annotate("AEA",xy=(0.5,1.1),xycoords="axes fraction",color=jx.orange,fontsize=20)
-    ax_list_8[0].annotate("AEC",xy=(0.5+0.1,1.1),xycoords="axes fraction",color=jx.green,fontsize=20)
+    ax_list_8[0].annotate("HM30",xy=(0.5-0.2,1.1),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list_8[0].annotate("HM5",xy=(0.5-0.1,1.1),xycoords="axes fraction",color=jx.violet,fontsize=20)
+    ax_list_8[0].annotate("LM30",xy=(0.5,1.1),xycoords="axes fraction",color=jx.orange,fontsize=20)
+    ax_list_8[0].annotate("LM5",xy=(0.5+0.1,1.1),xycoords="axes fraction",color=jx.green,fontsize=20)
 
     #plt.tight_layout()
 
