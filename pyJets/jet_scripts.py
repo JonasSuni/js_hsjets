@@ -545,6 +545,8 @@ def jet_maxdiff_counter():
                 diff = np.ediff1d(times)
                 print(max(diff))
 
+    return None
+
 def slams_jet_counter():
 
     runids = ["ABA","ABC","AEA","AEC"]
