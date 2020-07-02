@@ -815,6 +815,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         mpl.rcParams['axes.color_cycle'] = ["black", jx.violet, jx.orange, jx.green]
 
     runids_list = ["ABA","ABC","AEA","AEC"]
+    paper_runs_list = ["HM30","HM5","LM30","LM5"]
     cutoff_list = [10,8,10,8]
     cutoff_dict = dict(zip(runids_list,cutoff_list))
     bins_list = np.array([np.linspace(time_thresh,60,20+1),np.linspace(0,0.5,25+1),np.linspace(0,5,25+1)])
@@ -838,7 +839,7 @@ def hack_2019_fig6_alt(time_thresh=5):
         std_arr = [np.std(var,ddof=1) for var in var_arr]
         #labs_arr = ["{} med:{:.2f} std:{:.2f}".format(runids_list[itr],med_arr[itr],std_arr[itr]) for itr in range(len(var_arr))]
         if col == 0:
-            labs_arr = ["{} med:{:.2f}".format(runids_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
+            labs_arr = ["{} med:{:.2f}".format(paper_runs_list[itr],med_arr[itr]) for itr in range(len(var_arr))]
         else:
             labs_arr = ["med:{:.2f}".format(med_arr[itr]) for itr in range(len(var_arr))]
         color_arr = ["black", jx.violet, jx.orange, jx.green]
