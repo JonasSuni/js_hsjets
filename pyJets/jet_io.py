@@ -610,6 +610,8 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
     downstream_slice = jx.get_neighs_asym(runid_g,upstream_cells,neighborhood_reach=[-5,0,0,0,0,0])
     bs_slice = np.intersect1d(upstream_slice,downstream_slice)
 
+    if np.intersect1d(cells,bs_slice).size > 0:
+        at_bow_shock = 1
     if np.intersect1d(cells,slams_cells).size > 0:
         is_slams = 1
     if np.intersect1d(cells,jet_cells).size > 0:
@@ -761,7 +763,7 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
     #xbs_mms = np.polyval(bs_mms,y_mean)
     #bs_pol = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
     #x_bs = np.polyval(bs_pol,y_mean)
-    at_bow_shock = int(np.intersect1d(cells,bs_slice).size > 0)
+    #at_bow_shock = int(np.intersect1d(cells,bs_slice).size > 0)
 
     [B_sheath_avg,TPar_sheath_avg,TPerp_sheath_avg,T_sheath_avg,n_sheath_avg,v_sheath_avg,pd_sheath_avg] = [np.nanmean(v) for v in [B_sheath_mag,TPar_sheath,TPerp_sheath,T_sheath,rho_sheath,v_sheath_mag,pd_sheath]]
 
