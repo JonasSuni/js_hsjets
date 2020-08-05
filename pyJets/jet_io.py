@@ -324,13 +324,16 @@ def jet_creator(runid,start,stop,boxre=[6,18,-8,6],maskfile=False,avgfile=True,n
 
         print("Current file number is " + str(file_nr))
 
-        upstream_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".upstream").astype(int)
-        downstream_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".downstream").astype(int)
+        up_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".up").astype(int)
+        down_cells = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".down").astype(int)
+
+        up_cells_mms = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".up.mms").astype(int)
+        down_cells_mms = np.loadtxt(wrkdir_DNR+"up_down_stream/"+runid+"/"+str(file_nr)+".down.mms").astype(int)
 
         # sort jets
-        jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
-        jet_jets,jet_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,jet_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
-        slams_jets,slams_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slams_msk,upstream_cells,downstream_cells,neighborhood_reach=nbrs)
+        jets,props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slamsjet_msk,up_cells,down_cells,up_cells_mms,down_cells_mms,neighborhood_reach=nbrs)
+        jet_jets,jet_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,jet_msk,up_cells,down_cells,up_cells_mms,down_cells_mms,neighborhood_reach=nbrs)
+        slams_jets,slams_props_inc = jet_sorter(vlsvobj,jet_msk,slams_msk,slams_msk,up_cells,down_cells,up_cells_mms,down_cells_mms,neighborhood_reach=nbrs)
 
         props = [[float(file_nr)/2.0]+line for line in props_inc]
         jet_props = [[float(file_nr)/2.0]+line for line in jet_props_inc]
@@ -597,7 +600,7 @@ def propfile_write(runid,filenr,key,props,meta,transient="jet"):
     if debug_g:
         print("Wrote to "+outputdir+"/"+runid+"/"+str(filenr)+"."+key+".props")
 
-def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[],downstream_cells=[]):
+def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],up_cells=[],down_cells=[],up_cells_mms=[],down_cells_mms=[]):
 
     is_merger = 0
     is_splinter = 0
@@ -606,11 +609,18 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],upstream_cells=[]
     at_jet = 0
     at_slams = 0
 
-    upstream_slice = jx.get_neighs_asym(runid_g,downstream_cells,neighborhood_reach=[0,5,0,0,0,0])
-    downstream_slice = jx.get_neighs_asym(runid_g,upstream_cells,neighborhood_reach=[-5,0,0,0,0,0])
-    bs_slice = np.intersect1d(upstream_slice,downstream_slice)
+    upstream_slice = jx.get_neighs_asym(runid_g,down_cells,neighborhood_reach=[0,2,0,0,0,0])
+    downstream_slice = jx.get_neighs_asym(runid_g,up_cells,neighborhood_reach=[-2,0,0,0,0,0])
 
-    if np.intersect1d(cells,bs_slice).size > 0:
+    upstream_slice_mms = jx.get_neighs_asym(runid_g,down_cells_mms,neighborhood_reach=[0,2,0,0,0,0])
+    downstream_slice_mms = jx.get_neighs_asym(runid_g,up_cells_mms,neighborhood_reach=[-2,0,0,0,0,0])
+
+    bs_slice = np.intersect1d(upstream_slice,downstream_slice)
+    bs_slice_mms = np.intersect1d(upstream_slice_mms,downstream_slice_mms)
+
+    bs_slice_tot = np.union1d(bs_slice,bs_slice_mms)
+
+    if np.intersect1d(cells,bs_slice_tot).size > 0:
         at_bow_shock = 1
     if np.intersect1d(cells,slams_cells).size > 0:
         is_slams = 1
@@ -850,7 +860,7 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
 
     return [events_culled,props]
 
-def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_cells,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
+def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,up_cells,down_cells,up_cells_mms,down_cells_mms,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
 
     cells = np.array(sj_cells,ndmin=1,dtype=int)
     events = []
@@ -876,7 +886,7 @@ def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,upstream_cells,downstream_
 
     events_culled = [jet for jet in events if jet.size>=min_size and jet.size<=max_size]
 
-    props = [calc_event_props(vlsvobj,event,jet_cells,slams_cells,upstream_cells,downstream_cells) for event in events_culled]
+    props = [calc_event_props(vlsvobj,event,jet_cells,slams_cells,up_cells,down_cells,up_cells_mms,down_cells_mms) for event in events_culled]
 
     return [events_culled,props]
 
