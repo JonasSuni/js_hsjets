@@ -608,6 +608,7 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],up_cells=[],down_
     is_jet = 0
     at_jet = 0
     at_slams = 0
+    at_bow_shock = 0
 
     upstream_slice = jx.get_neighs_asym(runid_g,down_cells,neighborhood_reach=[0,2,0,0,0,0])
     downstream_slice = jx.get_neighs_asym(runid_g,up_cells,neighborhood_reach=[-2,0,0,0,0,0])
