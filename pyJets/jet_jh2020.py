@@ -564,8 +564,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax[0].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated")
         ax[0].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated")
         ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
-        ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
-        ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
+        sj_hist,sj_bins=ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
+        non_hist,non_bins=ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
         ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax[0].set_ylabel("Jets/s",fontsize=25,labelpad=10)
         ax[1].set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
@@ -577,17 +577,44 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         fig,ax = plt.subplots(1,1,figsize=(5,5))
         #plt.grid()
         ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=20,labelpad=10)
-        ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
-        ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
+        sj_hist,sj_bins=ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
+        non_hist,non_bins=ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax.set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
         ax.tick_params(labelsize=15)
     #ax.set_title(opstring,fontsize=20,pad=10)
+    sj_bins = sj_bins[:-1]
+
+    global maxbin,sj_max,non_max
+
+    maxbin = sj_bins[-1]
+    jet_max = sj_hist[-1]
+
+    sj_popt,sj_pcov=scipy.optimize.curve_fit(expfit_pendep,sj_bins,sj_hist,p0=[1.0,0.0])
+
+    jet_max = non_hist[-1]
+
+    non_popt,non_pcov=scipy.optimize.curve_fit(expfit_pendep,sj_bins,non_hist,p0=[1.0,0.0])
+
+    xinterp = np.linspace(-2.5,0,100+1)
+
+    if panel_one:
+        ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[2]))
+        ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[2]))
+        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+    else:
+        ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[2]))
+        ax.plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[2]))
+        ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
 
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
     plt.close(fig)
+
+def expfit_pendep(xdata,a1,a2):
+
+    return jet_max*np.exp(-a1*(xdata-maxbin)/maxbin)+a2
 
 def jh2020_fig1(var="pdyn"):
 
