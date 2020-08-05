@@ -391,11 +391,12 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     jet.mask[pr_TNBS<3.0*T_sw] = False
     slamsjet = np.logical_or(slams,jet)
 
-    upstream = np.ma.masked_less(pr_TNBS,3.0*T_sw)
-    upstream_ci = np.ma.array(sorigid,mask=~upstream.mask).compressed()
+    if not os.path.exists(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up".format(str(filenr))):
+        upstream = np.ma.masked_less(pr_TNBS,3.0*T_sw)
+        upstream_ci = np.ma.array(sorigid,mask=~upstream.mask).compressed()
 
-    upstream_mms = np.ma.masked_greater_equal(mmsx,1)
-    upstream_mms_ci = np.ma.array(sorigid,mask=~upstream_mms.mask).compressed()
+        upstream_mms = np.ma.masked_greater_equal(mmsx,1)
+        upstream_mms_ci = np.ma.array(sorigid,mask=~upstream_mms.mask).compressed()
 
     jet_ci = np.ma.array(sorigid,mask=~jet.mask).compressed()
     slams_ci = np.ma.array(sorigid,mask=~slams.mask).compressed()
@@ -415,11 +416,12 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     np.savetxt(wrkdir_DNR+"working/SLAMS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slams_ci,restr_ci))
     np.savetxt(wrkdir_DNR+"working/SLAMSJETS/Masks/"+runid+"/{}.mask".format(str(filenr)),np.intersect1d(slamsjet_ci,restr_ci))
 
-    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up".format(str(filenr)),np.intersect1d(upstream_ci,restr_ci))
-    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.down".format(str(filenr)),restr_ci[~np.in1d(restr_ci,upstream_ci)])
+    if not os.path.exists(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up".format(str(filenr))):
+        np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up".format(str(filenr)),np.intersect1d(upstream_ci,restr_ci))
+        np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.down".format(str(filenr)),restr_ci[~np.in1d(restr_ci,upstream_ci)])
 
-    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up.mms".format(str(filenr)),np.intersect1d(upstream_mms_ci,restr_ci))
-    np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.down.mms".format(str(filenr)),restr_ci[~np.in1d(restr_ci,upstream_mms_ci)])
+        np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.up.mms".format(str(filenr)),np.intersect1d(upstream_mms_ci,restr_ci))
+        np.savetxt(wrkdir_DNR+"up_down_stream/"+runid+"/{}.down.mms".format(str(filenr)),restr_ci[~np.in1d(restr_ci,upstream_mms_ci)])
 
     return (np.intersect1d(jet_ci,restr_ci),np.intersect1d(slams_ci,restr_ci),np.intersect1d(slamsjet_ci,restr_ci))
 
