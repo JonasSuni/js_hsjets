@@ -618,7 +618,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
 
 def expfit_pendep(xdata,a1,a2):
 
-    return jet_max*np.exp(-a1*(xdata-maxbin)/maxbin)+a2
+    return jet_max*np.exp(-a1*(xdata-maxbin))+a2
 
 def jh2020_fig1(var="pdyn"):
 
