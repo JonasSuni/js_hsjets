@@ -600,15 +600,15 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
 
     if panel_one:
         jet_max = sj_hist[-1]
-        ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[1]))
+        ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EFL:{:.2f}$R_e$".format(1.0/sj_popt[0]))
         jet_max = non_hist[-1]
-        ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[1]))
+        ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="EFL:{:.2f}$R_e$".format(1.0/non_popt[0]))
         ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
     else:
         jet_max = sj_hist[-1]
-        ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[1]))
+        ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EFL:{:.2f}$R_e$".format(1.0/sj_popt[0]))
         jet_max = non_hist[-1]
-        ax.plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[1]))
+        ax.plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="EFL:{:.2f}$R_e$".format(1.0/non_popt[0]))
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
 
     plt.tight_layout()
