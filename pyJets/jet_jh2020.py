@@ -585,7 +585,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     #ax.set_title(opstring,fontsize=20,pad=10)
     sj_bins = sj_bins[:-1]
 
-    global maxbin,sj_max,non_max
+    global maxbin,jet_max
 
     maxbin = sj_bins[-1]
     jet_max = sj_hist[-1]
