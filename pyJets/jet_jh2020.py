@@ -599,12 +599,12 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     xinterp = np.linspace(-2.5,0,100+1)
 
     if panel_one:
-        ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[2]))
-        ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[2]))
+        ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[1]))
+        ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[1]))
         ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
     else:
-        ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[2]))
-        ax.plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[2]))
+        ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(sj_popt[0],sj_popt[1]))
+        ax.plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="a1:{:.2f} a2:{:.2f}".format(non_popt[0],non_popt[1]))
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
 
     plt.tight_layout()
