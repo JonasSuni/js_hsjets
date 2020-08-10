@@ -409,9 +409,9 @@ def mag_thresh_plot(allow_splinters=True):
     fig,ax_list = plt.subplots(5,1,figsize=(8,10))
     for m in range(len(runid_list)):
         #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[0].plot(mt_arr,sj_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
+        ax_list[2].plot(mt_arr,sj_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
         ax_list[1].plot(mt_arr,jet_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
-        ax_list[2].plot(mt_arr,slams_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
+        ax_list[0].plot(mt_arr,slams_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m])
         ax_list[3].plot(mt_arr,slams_share_arr[m],label=runid_list[m],color=color_arr[m])
         ax_list[4].plot(mt_arr,share_arr[m],label=runid_list[m],color=color_arr[m])
     for m in range(len(runid_list)):
@@ -419,9 +419,9 @@ def mag_thresh_plot(allow_splinters=True):
         pass
 
     ax_list[-1].set_xlabel("Foreshock structure threshold $|B|/B_{IMF}$",fontsize=20,labelpad=10)
-    ax_list[0].set_ylabel("FCS-jets/s",fontsize=15,labelpad=10)
+    ax_list[2].set_ylabel("FCS-jets/s",fontsize=15,labelpad=10)
     ax_list[1].set_ylabel("Jets/s",fontsize=15,labelpad=10)
-    ax_list[2].set_ylabel("FCSs/s",fontsize=15,labelpad=10)
+    ax_list[0].set_ylabel("FCSs/s",fontsize=15,labelpad=10)
     ax_list[3].set_ylabel("FCS-jets\nper FCS",fontsize=15,labelpad=10)
     ax_list[4].set_ylabel("Fraction of jets\ncaused by FCS",fontsize=15,labelpad=10)
     #ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
@@ -430,9 +430,9 @@ def mag_thresh_plot(allow_splinters=True):
         ax.grid()
         ax.set_xlim(mt_arr[0],mt_arr[-1])
         ax.tick_params(labelsize=15)
-    ax_list[0].set_ylim(bottom=0,top=1)
+    ax_list[2].set_ylim(bottom=0,top=1)
     ax_list[1].set_ylim(bottom=0,top=1.25)
-    ax_list[2].set_ylim(bottom=0)
+    ax_list[0].set_ylim(bottom=0)
     ax_list[3].set_ylim(bottom=0)
     ax_list[4].set_ylim(0,1)
     for axe in fig.get_axes():
