@@ -571,6 +571,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax[1].set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
         ax[0].tick_params(labelsize=15)
         ax[1].tick_params(labelsize=15)
+        ax[1].set_ylim(bottom=0)
         for axe in fig.get_axes():
             axe.label_outer()
     else:
@@ -582,6 +583,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax.set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
         ax.tick_params(labelsize=15)
+        ax.set_ylim(bottom=0)
     #ax.set_title(opstring,fontsize=20,pad=10)
     sj_bins = sj_bins[:-1]
 
