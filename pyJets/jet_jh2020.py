@@ -611,7 +611,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax.set_ylim(bottom=0)
         ax.set_xlim(right=0)
     #ax.set_title(opstring,fontsize=20,pad=10)
-    sj_bins = sj_bins[:-1]
+    binwidth = np.ediff1d(sj_bins)[0]
+    sj_bins = sj_bins[:-1]+binwidth/2.0
 
     global maxbin,jet_max
 
