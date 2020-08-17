@@ -523,40 +523,55 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     run_length = np.array([839,1179,1339,879])/2.0-290.0
 
     runids_list = runids
-    sj_pendeps = []
-    non_pendeps = []
-    sj_weights = []
-    non_weights = []
+    sj_pendeps = np.full([2000],np.nan)
+    non_pendeps = np.full([2000],np.nan)
+    sj_weights = np.full([2000],np.nan)
+    non_weights = np.full([2000],np.nan)
+    sj_counter = 0
+    non_counter = 0
 
     opstring = r"\_".join(runids)
 
     for runid in runids_list:
         sj_jet_ids,jet_ids,slams_ids = separate_jets_god(runid,False)
         non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
+        sj_amount = sj_jet_ids.size
+        non_amount = non_sj_ids.size
         for sj_id in sj_jet_ids:
             props = jio.PropReader(str(sj_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
             pendep = (x_mean-bs_dist)[-1]
-            sj_pendeps.append(pendep)
-            sj_weights.append(1.0/run_length[runid_dict.index(runid)])
+            #sj_pendeps.append(pendep)
+            sj_pendeps[sj_counter] = pendep
+            #sj_weights.append(1.0/run_length[runid_dict.index(runid)])
+            sj_weights[sj_counter] = 1.0/(4.0*sj_amount)
+            sj_counter += 1
 
         for non_id in non_sj_ids:
             props = jio.PropReader(str(non_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
             pendep = (x_mean-bs_dist)[-1]
-            non_pendeps.append(pendep)
-            non_weights.append(1.0/run_length[runid_dict.index(runid)])
+            #non_pendeps.append(pendep)
+            non_pendeps[non_counter] = pendep
+            #non_weights.append(1.0/run_length[runid_dict.index(runid)])
+            non_weights[non_counter] = 1.0/(4.0*non_amount)
+            non_counter += 1
 
-    sj_pendeps = np.array(sj_pendeps,ndmin=1)
-    non_pendeps = np.array(non_pendeps,ndmin=1)
+    #sj_pendeps = np.array(sj_pendeps,ndmin=1)
+    #non_pendeps = np.array(non_pendeps,ndmin=1)
+    sj_pendeps = sj_pendeps[:sj_counter]
+    sj_weights = sj_weights[:sj_counter]
+
+    non_pendeps = non_pendeps[:non_counter]
+    non_weights = non_weights[:non_counter]
 
     bins = np.linspace(-2.5,0,25+1)
     #sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
     #non_weights = np.ones(non_pendeps.shape,dtype=float)/non_pendeps.size
-    sj_weights = np.array(sj_weights)/len(runids)
-    non_weights = np.array(non_weights)/len(runids)
+    #sj_weights = np.array(sj_weights)/len(runids)
+    #non_weights = np.array(non_weights)/len(runids)
 
     if panel_one:
         fig,ax = plt.subplots(2,1,figsize=(5,10),sharex=True)
