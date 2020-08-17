@@ -527,6 +527,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     non_pendeps = np.full([2000],np.nan)
     sj_weights = np.full([2000],np.nan)
     non_weights = np.full([2000],np.nan)
+    sj_time_weights = np.full([2000],np.nan)
+    non_time_weights = np.full([2000],np.nan)
     sj_counter = 0
     non_counter = 0
 
@@ -537,6 +539,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         non_sj_ids = jet_ids[np.in1d(jet_ids,sj_jet_ids)==False]
         sj_amount = sj_jet_ids.size
         non_amount = non_sj_ids.size
+        jet_amount = jet_ids.size
+        tracking_duration = run_length[runid_dict.index(runid)]
         for sj_id in sj_jet_ids:
             props = jio.PropReader(str(sj_id).zfill(5),runid,transient="jet")
             x_mean = props.read("x_mean")
@@ -545,7 +549,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
             #sj_pendeps.append(pendep)
             sj_pendeps[sj_counter] = pendep
             #sj_weights.append(1.0/run_length[runid_dict.index(runid)])
-            sj_weights[sj_counter] = 1.0/(4.0*sj_amount)
+            sj_weights[sj_counter] = 1.0/(4.0*jet_amount)
+            sj_time_weights[sj_counter] = 1.0/(4.0*tracking_duration)
             sj_counter += 1
 
         for non_id in non_sj_ids:
@@ -556,16 +561,19 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
             #non_pendeps.append(pendep)
             non_pendeps[non_counter] = pendep
             #non_weights.append(1.0/run_length[runid_dict.index(runid)])
-            non_weights[non_counter] = 1.0/(4.0*non_amount)
+            non_weights[non_counter] = 1.0/(4.0*jet_amount)
+            non_time_weights[non_counter] = 1.0/(4.0*tracking_duration)
             non_counter += 1
 
     #sj_pendeps = np.array(sj_pendeps,ndmin=1)
     #non_pendeps = np.array(non_pendeps,ndmin=1)
     sj_pendeps = sj_pendeps[:sj_counter]
     sj_weights = sj_weights[:sj_counter]
+    sj_time_weights = sj_time_weights[:sj_counter]
 
     non_pendeps = non_pendeps[:non_counter]
     non_weights = non_weights[:non_counter]
+    non_time_weights = non_time_weights[:non_counter]
 
     bins = np.linspace(-2.5,0,25+1)
     #sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
@@ -576,14 +584,14 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
     if panel_one:
         fig,ax = plt.subplots(2,1,figsize=(5,10),sharex=True)
         #plt.grid()
-        ax[0].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated")
-        ax[0].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated")
+        ax[0].hist(sj_pendeps,bins=bins,weights=sj_time_weights,histtype="step",color="red",label="FCS-originated")
+        ax[0].hist(non_pendeps,bins=bins,weights=non_time_weights,histtype="step",color="black",label="Non-FCS-originated")
         ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
         sj_hist,sj_bins,sj_patch=ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
         non_hist,non_bins,non_patch=ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
         ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax[0].set_ylabel("Jets/s",fontsize=25,labelpad=10)
-        ax[1].set_ylabel("Jets/s cumulative",fontsize=25,labelpad=10)
+        ax[1].set_ylabel("Cumulative fraction of jets",fontsize=25,labelpad=10)
         ax[0].tick_params(labelsize=15)
         ax[1].tick_params(labelsize=15)
         ax[1].set_ylim(bottom=0)
@@ -598,7 +606,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         sj_hist,sj_bins,sj_patch=ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
         non_hist,non_bins,non_patch=ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
         ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
-        ax.set_ylabel("Jets/s cumulative",fontsize=20,labelpad=10)
+        ax.set_ylabel("Cumulative fraction of jets",fontsize=20,labelpad=10)
         ax.tick_params(labelsize=15)
         ax.set_ylim(bottom=0)
         ax.set_xlim(right=0)
