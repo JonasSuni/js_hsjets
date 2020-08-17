@@ -549,7 +549,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
             #sj_pendeps.append(pendep)
             sj_pendeps[sj_counter] = pendep
             #sj_weights.append(1.0/run_length[runid_dict.index(runid)])
-            sj_weights[sj_counter] = 1.0/(4.0*jet_amount)
+            sj_weights[sj_counter] = 1.0/(4.0*sj_amount)
             sj_time_weights[sj_counter] = 1.0/(4.0*tracking_duration)
             sj_counter += 1
 
@@ -561,7 +561,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
             #non_pendeps.append(pendep)
             non_pendeps[non_counter] = pendep
             #non_weights.append(1.0/run_length[runid_dict.index(runid)])
-            non_weights[non_counter] = 1.0/(4.0*jet_amount)
+            non_weights[non_counter] = 1.0/(4.0*non_amount)
             non_time_weights[non_counter] = 1.0/(4.0*tracking_duration)
             non_counter += 1
 
