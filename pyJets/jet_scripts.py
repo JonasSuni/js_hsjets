@@ -947,7 +947,7 @@ def rev1_jetcone(runids,time_thresh=5):
     ax_list[0].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
     ax_list[0].tick_params(labelsize=20)
     ax_list[1].hist(data_arr_cone,weights=weights,histtype="step",bins=bins_cone)
-    ax_list[1].set_xlim(-90,90)
+    ax_list[1].set_xlim(-50,50)
     ax_list[1].set_ylim(0,1)
     ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
     ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
