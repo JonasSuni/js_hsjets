@@ -931,7 +931,7 @@ def rev1_jetcone(runids,time_thresh=5):
                 continue
 
             data_list_cone.append(props.read("final_cone")[-1])
-            bins_cone = np.linspace(-90,90,25+1)
+            bins_cone = np.linspace(-50,50,25+1)
             data_list.append(props.read("y_mean")[-1])
             bins = np.linspace(-8,8,25+1)
             jet_count += 1
@@ -939,7 +939,7 @@ def rev1_jetcone(runids,time_thresh=5):
     data_arr_cone = np.array(data_list_cone)
     data_arr = np.array(data_list)
     weights = np.ones_like(data_arr)/float(jet_count)
-    fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(6,12),sharey=True)
+    fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(12,6),sharey=True)
     ax_list[0].hist(data_arr,weights=weights,histtype="step",bins=bins)
     ax_list[0].set_xlim(-8,8)
     ax_list[0].set_ylim(0,1)
