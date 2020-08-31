@@ -955,7 +955,7 @@ def rev1_jetcone(runids,time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/dusk_til_dawn.png")
+    fig.savefig(homedir+"Figures/hackathon_paper/dusk_til_dawn_{}.png".format("_".join(runids)))
     plt.close(fig)
 
 def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False):
