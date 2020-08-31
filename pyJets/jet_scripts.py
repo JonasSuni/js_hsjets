@@ -950,7 +950,7 @@ def rev1_jetcone(runids,time_thresh=5):
     ax_list[1].set_xlim(-50,50)
     ax_list[1].set_ylim(0,0.2)
     ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
-    ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    #ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
     plt.tight_layout()
