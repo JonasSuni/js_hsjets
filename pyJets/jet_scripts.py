@@ -911,7 +911,7 @@ def jetcand_vdf(runid):
 
         pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
 
-def rev1_jetcone(runids):
+def rev1_jetcone(runids,time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
