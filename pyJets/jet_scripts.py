@@ -911,6 +911,53 @@ def jetcand_vdf(runid):
 
         pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
 
+def rev1_jetcone(runids):
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+
+    data_list = []
+    data_list_cone = []
+    jet_count = 0
+
+    for n in range(1,2500):
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                continue
+
+            data_list_cone.append(props.read("final_cone")[-1])
+            bins_cone = np.linspace(-90,90,25+1)
+            data_list.append(props.read("y_mean")[-1])
+            bins = np.linspace(-8,8,25+1)
+            jet_count += 1
+
+    data_arr_cone = np.array(data_list_cone)
+    data_arr = np.array(data_list)
+    weights = np.ones_like(data_arr)/float(jet_count)
+    fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(6,12),sharey=True)
+    ax_list[0].hist(data_arr,weights=weights,histtype="step",bins=bins)
+    ax_list[0].set_xlim(-8,8)
+    ax_list[0].set_ylim(0,1)
+    ax_list[0].set_xlabel("Final Y [$R_e$]",fontsize=20,labelpad=10)
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    ax_list[0].tick_params(labelsize=20)
+    ax_list[1].hist(data_arr_cone,weights=weights,histtype="step",bins=bins_cone)
+    ax_list[1].set_xlim(-90,90)
+    ax_list[1].set_ylim(0,1)
+    ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
+    ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    ax_list[1].tick_params(labelsize=20)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/dusk_til_dawn.png")
+    plt.close(fig)
+
 def read_mult_runs(var_list,time_thresh,runids=["ABA","ABC","AEA","AEC"],amax=False):
 
     if type(var_list) == str:
