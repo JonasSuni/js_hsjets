@@ -927,7 +927,7 @@ def rev1_jetcone(runids,time_thresh=5):
             except:
                 continue
 
-            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
                 continue
 
             data_list_cone.append(props.read("final_cone")[-1])
