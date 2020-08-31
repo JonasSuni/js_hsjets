@@ -135,6 +135,16 @@ class PropReader:
         elif name == "sep_from_bs":
             x,x_size,x_bs = self.read("x_mean"),self.read("size_rad"),self.read("bs_distance")
             return np.abs(np.abs(x-x_bs)-x_size/2.0)
+        elif name == "parcel_speed":
+            x,y = self.read("x_mean"),self.read("y_mean")
+            vx = np.gradient(x,0.5)
+            vy = np.gradient(y,0.5)
+            return np.array([vx,vy]).T
+        elif name == "final_cone":
+            t = self.read("time")
+            x,y = self.read("x_mean")[-1],self.read("y_mean")[-1]
+            cone_angle = np.rad2deg(np.arctan(y/x))
+            return np.ones_like(t)*cone_angle
         else:
             print("Variable not found!")
             return None
