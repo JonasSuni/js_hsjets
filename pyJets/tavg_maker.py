@@ -48,6 +48,8 @@ def v_avg_maker(runid,start,stop):
 
     avg_arr /= float(start-stop+1)
 
+    avg_arr = np.array(avg_arr)
+
     np.save(outputdir+"{}_{}_v.npy".format(start,stop),avg_arr)
 
 def avg_maker_slow(runid,start,stop):
