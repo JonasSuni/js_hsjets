@@ -3,10 +3,52 @@ import pytools as pt
 import linecache as lc
 import pandas as pd
 import os
+import jet_aux as jx
 
 m_p = 1.672621898e-27
 
-wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+#wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+wrkdir_DNR = os.environ["WRK"]+"/"
+try:
+    vlasdir = os.environ["VLAS"]
+except:
+    vlasdir="/proj/vlasov"
+
+try:
+    tavgdir = os.environ["TAVG"]
+except:
+    tavgdir = wrkdir_DNR
+
+def v_avg_maker(runid,start,stop):
+
+    outputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    for n in range(start,stop+1):
+        print("n = {}/{}".format(n,stop))
+
+        bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        cellids = vlsvobj.read_variable("CellID")
+        v = vlsvobj.read_variable("v")[cellids.argsort()]
+
+        if n == start:
+            avg_arr = np.zeros_like(v)
+
+        avg_arr += v
+
+    avg_arr /= float(start-stop+1)
+
+    np.save(outputdir+"{}_{}_v.npy".format(start,stop),avg_arr)
 
 def avg_maker_slow(runid,start,stop):
 
