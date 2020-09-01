@@ -46,7 +46,7 @@ def v_avg_maker(runid,start,stop):
 
         avg_arr += v
 
-    avg_arr /= float(start-stop+1)
+    avg_arr /= float(stop-start+1)
 
     avg_arr = np.array(avg_arr)
 
