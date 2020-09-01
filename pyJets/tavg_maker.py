@@ -21,7 +21,7 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
-def testplot_vavg(runid,start,stop,density=1):
+def testplot_vavg(runid,start,stop,step=1,density=1):
 
     inputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
     bulkpath = jx.find_bulkpath(runid)
@@ -29,7 +29,7 @@ def testplot_vavg(runid,start,stop,density=1):
     try:
         v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
     except:
-        v_avg_maker(runid,start,stop)
+        v_avg_maker(runid,start,stop,step)
         v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
 
     vlsvobj=pt.vlsvfile.VlsvReader(bulkpath+"bulk.0000580.vlsv")
@@ -61,7 +61,7 @@ def testplot_vavg(runid,start,stop,density=1):
     plt.savefig(wrkdir_DNR+"testvavg.png")
     plt.close("all")
 
-def v_avg_maker(runid,start,stop):
+def v_avg_maker(runid,start,stop,step=1):
 
     outputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
 
@@ -74,7 +74,7 @@ def v_avg_maker(runid,start,stop):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    for n in range(start,stop+1):
+    for n in range(start,stop+1,step):
         print("n = {}/{}".format(n,stop))
 
         bulkname = "bulk."+str(n).zfill(7)+".vlsv"
@@ -88,7 +88,7 @@ def v_avg_maker(runid,start,stop):
 
         avg_arr += v
 
-    avg_arr /= float(stop-start+1)
+    avg_arr /= float(len(range(start,stop+1,step)))
 
     avg_arr = np.array(avg_arr)
 
