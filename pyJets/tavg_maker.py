@@ -6,6 +6,7 @@ import os
 import jet_aux as jx
 
 m_p = 1.672621898e-27
+r_e = 6.371e6
 
 #wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
 wrkdir_DNR = os.environ["WRK"]+"/"
@@ -18,6 +19,44 @@ try:
     tavgdir = os.environ["TAVG"]
 except:
     tavgdir = wrkdir_DNR
+
+def testplot_vavg(runid,start,stop,density=1):
+
+    inputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
+    bulkpath = jx.find_bulkpath(runid)
+
+    try:
+        v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
+    except:
+        v_avg_maker(runid,start,stop)
+        v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
+
+    vlsvobj=pt.vlsvfile.VlsvReader(bulkpath+"bulk.0000580.vlsv")
+
+    vx = v[:,0]
+    vy = v[:,1]
+
+    ci=vlsvobj.read_variable("CellID")
+    X=vlsvobj.read_variable("X")[ci.argsort()]/r_e
+    Y=vlsvobj.read_variable("Y")[ci.argsort()]/r_e
+
+    x_mask = np.logical_and(X>0,X<15)
+    y_mask=np.logical_and(Y>-10,Y<10)
+    boxmask=np.logical_and(x_mask,y_mask)
+
+    X=X[boxmask]
+    Y=Y[boxmask]
+    vx=vx[boxmask]
+    vy=vy[boxmask]
+
+    x_arr = np.unique(X)
+    y_arr=np.unique(Y)
+
+    vxmesh=np.reshape(vx,(y_arr.size,x_arr.size))
+    vymesh=np.reshape(vy,(y_arr.size,x_arr.size))
+
+    plt.ion()
+    plt.streamplot(x_arr,y_arr,vxmesh,vymesh,density=density)
 
 def v_avg_maker(runid,start,stop):
 
