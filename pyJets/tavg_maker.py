@@ -4,6 +4,7 @@ import linecache as lc
 import pandas as pd
 import os
 import jet_aux as jx
+import matplotlib.pyplot as plt
 
 m_p = 1.672621898e-27
 r_e = 6.371e6
