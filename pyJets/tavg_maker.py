@@ -58,7 +58,7 @@ def testplot_vavg(runid,start,stop,density=1):
 
     plt.ion()
     plt.streamplot(x_arr,y_arr,vxmesh,vymesh,density=density)
-    plt.show()
+    plt.savefig("~/testvavg.png")
 
 def v_avg_maker(runid,start,stop):
 
