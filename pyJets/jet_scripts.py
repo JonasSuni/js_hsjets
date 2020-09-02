@@ -964,6 +964,9 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
     ax.set_xlim(boxre[0],boxre[1])
     ax.set_ylim(boxre[2],boxre[3])
 
+    testx,testy = rev1_plasmatracker(X,Y,vavgx,vavgy,12,0,boxre)
+    ax.plot(testx,testy,color="orange",zorder=2)
+
     fig.savefig(wrkdir_DNR+"pathtest.png")
     plt.close(fig)
 
