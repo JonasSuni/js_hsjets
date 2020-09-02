@@ -933,7 +933,8 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
         ybuf = yout[-1]+tstep*vybuf
         xout.append(xbuf)
         yout.append(ybuf)
-        t_tot += tstep
+        #t_tot += tstep
+        t_tot += 1
         #print(t_tot)
 
     return (np.array(xout),np.array(yout))
@@ -1002,7 +1003,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     for y_value in plasyrange:
         plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,15,y_value,boxre,maxt=300)
         ax.plot(plasx,plasy,color=jx.orange,zorder=2)
-        
+
     ax.set_xlim(6,12)
     plt.tight_layout()
 
