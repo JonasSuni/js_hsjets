@@ -938,7 +938,7 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
 
     return (np.array(xout),np.array(yout))
 
-def rev1_jetpath(runid,vavgfilename,time_thresh=5):
+def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
 
     if "C" in runid:
         boxre = [6,18,-6,6]
@@ -966,12 +966,13 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
     X = X[all_cells.argsort()]
     Y = Y[all_cells.argsort()]
 
-    all_cells.sort()
-    X = X[np.in1d(all_cells,restr_cells)]
-    Y = Y[np.in1d(all_cells,restr_cells)]
-    pdyn = pdyn[np.in1d(all_cells,restr_cells)]
-    vavgx = vavgx[np.in1d(all_cells,restr_cells)]
-    vavgy = vavgy[np.in1d(all_cells,restr_cells)]
+    if crop:
+        all_cells.sort()
+        X = X[np.in1d(all_cells,restr_cells)]
+        Y = Y[np.in1d(all_cells,restr_cells)]
+        pdyn = pdyn[np.in1d(all_cells,restr_cells)]
+        vavgx = vavgx[np.in1d(all_cells,restr_cells)]
+        vavgy = vavgy[np.in1d(all_cells,restr_cells)]
 
     x_ax,y_ax = np.unique(X),np.unique(Y)
     pdyn = np.reshape(pdyn,(y_ax.size,x_ax.size))
