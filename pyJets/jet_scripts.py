@@ -913,7 +913,7 @@ def jetcand_vdf(runid):
 
 def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
 
-    cell_size = 227000/r_e
+    cell_size = 300000/r_e
 
     tstep = tstep
     t_tot = 0
@@ -952,7 +952,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.0000580.vlsv")
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.001000.vlsv")
     vavg = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+vavgfilename)
     vavgx = vavg[:,0]/r_e
     vavgy = vavg[:,1]/r_e
