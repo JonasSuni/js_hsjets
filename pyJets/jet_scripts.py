@@ -928,7 +928,7 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
         dist = np.linalg.norm([xdist,ydist],axis=0)
         vxbuf = vx[np.argmin(dist)]
         vybuf = vy[np.argmin(dist)]
-        tstep = np.min([cell_size/vxbuf,cell_size/vybuf])
+        tstep = np.min([np.abs(cell_size/vxbuf),np.abs(cell_size/vybuf)])
         xbuf = xout[-1]+tstep*vxbuf
         ybuf = yout[-1]+tstep*vybuf
         xout.append(xbuf)
