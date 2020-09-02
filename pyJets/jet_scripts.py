@@ -913,11 +913,11 @@ def jetcand_vdf(runid):
 
 def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
 
-    cell_size = 300000/r_e
+    cell_size = 227000/r_e
 
     tstep = tstep
     t_tot = 0
-    print(t_tot)
+    #print(t_tot)
 
     xout = [x0]
     yout = [y0]
@@ -934,7 +934,7 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
         xout.append(xbuf)
         yout.append(ybuf)
         t_tot += tstep
-        print(t_tot)
+        #print(t_tot)
 
     return (np.array(xout),np.array(yout))
 
@@ -965,6 +965,14 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
     Y /= r_e
     X = X[all_cells.argsort()]
     Y = Y[all_cells.argsort()]
+
+    all_cells.sort()
+    X = X[np.in1d(all_cells,restr_cells)]
+    Y = Y[np.in1d(all_cells,restr_cells)]
+    pdyn = pdyn[np.in1d(all_cells,restr_cells)]
+    vavgx = vavgx[np.in1d(all_cells,restr_cells)]
+    vavgy = vavgy[np.in1d(all_cells,restr_cells)]
+
     x_ax,y_ax = np.unique(X),np.unique(Y)
     pdyn = np.reshape(pdyn,(y_ax.size,x_ax.size))
 
