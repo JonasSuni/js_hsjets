@@ -952,7 +952,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.001000.vlsv")
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.0001000.vlsv")
     vavg = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+vavgfilename)
     vavgx = vavg[:,0]/r_e
     vavgy = vavg[:,1]/r_e
