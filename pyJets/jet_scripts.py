@@ -937,6 +937,8 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=60):
         yout.append(ybuf)
         t_tot += tstep
 
+    print(xout)
+    print(yout)
     return (np.array(xout),np.array(yout))
 
 def rev1_jetpath(runid,vavgfilename,time_thresh=5):
