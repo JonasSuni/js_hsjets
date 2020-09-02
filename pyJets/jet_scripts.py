@@ -913,8 +913,11 @@ def jetcand_vdf(runid):
 
 def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
 
+    cell_size = 300000/r_e
+
     tstep = tstep
     t_tot = 0
+    print(t_tot)
 
     xout = [x0]
     yout = [y0]
@@ -925,11 +928,13 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=720,tstep=1):
         dist = np.linalg.norm([xdist,ydist],axis=0)
         vxbuf = vx[np.argmin(dist)]
         vybuf = vy[np.argmin(dist)]
+        tstep = np.min([cell_size/vx,cell_size/vy])
         xbuf = xout[-1]+tstep*vxbuf
         ybuf = yout[-1]+tstep*vybuf
         xout.append(xbuf)
         yout.append(ybuf)
         t_tot += tstep
+        print(t_tot)
 
     return (np.array(xout),np.array(yout))
 
