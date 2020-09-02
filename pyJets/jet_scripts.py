@@ -1001,7 +1001,8 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     plasyrange = np.arange(boxre[2],boxre[3],0.5)
     for y_value in plasyrange:
         plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,15,y_value,boxre,maxt=300)
-
+        ax.plot(plasx,plasy,color=jx.orange,zorder=2)
+        
     ax.set_xlim(6,12)
     plt.tight_layout()
 
