@@ -919,10 +919,16 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre):
     yout = [y0]
 
     while xout[-1] > boxre[0] and xout[-1] < boxre[1] and yout[-1] > boxre[2] and yout[-1] < boxre[3]:
+        print(xout[-1])
+        print(yout[-1])
         vxbuf = vx[np.argmin(np.abs(x-xout[-1]))]
         vybuf = vy[np.argmin(np.abs(y-yout[-1]))]
         xbuf = xout[-1]+tstep*vxbuf
         ybuf = yout[-1]+tstep*vybuf
+        print(vxbuf)
+        print(vybuf)
+        print(xbuf)
+        print(ybuf)
         xout.append(xbuf)
         yout.append(ybuf)
 
