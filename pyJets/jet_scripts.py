@@ -913,7 +913,7 @@ def jetcand_vdf(runid):
 
 def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=30):
 
-    tstep = 0.5
+    tstep = 2
     t_tot = 0
 
     xout = [x0]
