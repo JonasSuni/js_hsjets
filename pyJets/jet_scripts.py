@@ -994,9 +994,16 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
             continue
 
         x_mean,y_mean,duration = props.read("x_mean"),props.read("y_mean"),props.read("duration")
-        plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,x_mean[0],y_mean[0],boxre,maxt=duration[0])
-        ax.plot(plasx,plasy,color=jx.orange,zorder=2)
+        #plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,x_mean[0],y_mean[0],boxre,maxt=duration[0])
+        #ax.plot(plasx,plasy,color=jx.orange,zorder=2)
         ax.plot(x_mean,y_mean,color=jx.violet,zorder=3)
+
+    plasyrange = np.arange(boxre[2],boxre[3],0.5)
+    for y_value in plasyrange:
+        plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,15,y_value,boxre,maxt=300)
+
+    ax.set_xlim(6,12)
+    plt.tight_layout()
 
     #testx,testy = rev1_plasmatracker(X,Y,vavgx,vavgy,12,0,boxre)
     #ax.plot(testx,testy,color="orange",zorder=2)
