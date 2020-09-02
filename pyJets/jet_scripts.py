@@ -932,10 +932,10 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
 
     if "C" in runid:
         boxre = [6,18,-6,6]
-        vmax = 9e-9
+        vmax = 6e-9
     else:
         boxre = [6,18,-8,6]
-        vmax = 4.5e-9
+        vmax = 3e-9
 
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
