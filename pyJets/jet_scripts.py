@@ -911,7 +911,7 @@ def jetcand_vdf(runid):
 
         pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
 
-def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=30):
+def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=120):
 
     tstep = 2
     t_tot = 0
