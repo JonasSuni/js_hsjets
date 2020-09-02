@@ -911,14 +911,15 @@ def jetcand_vdf(runid):
 
         pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
 
-def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre):
+def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=30):
 
     tstep = 0.5
+    t_tot = 0
 
     xout = [x0]
     yout = [y0]
 
-    while xout[-1] > boxre[0] and xout[-1] < boxre[1] and yout[-1] > boxre[2] and yout[-1] < boxre[3]:
+    while xout[-1] > boxre[0] and xout[-1] < boxre[1] and yout[-1] > boxre[2] and yout[-1] < boxre[3] and t_tot < maxt:
         #print(xout[-1])
         #print(yout[-1])
         xdist = x-xout[-1]
@@ -934,6 +935,7 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre):
         #print(ybuf)
         xout.append(xbuf)
         yout.append(ybuf)
+        t_tot += tstep
 
     return (np.array(xout),np.array(yout))
 
