@@ -960,7 +960,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
 
-    ax.pcolormesh(x_ax,y_ax,pdyn,vmin=0,vmax=vmax)
+    ax.pcolormesh(x_ax,y_ax,pdyn,vmin=0,vmax=vmax,zorder=1)
     ax.set_xlim(boxre[0],boxre[1])
     ax.set_ylim(boxre[2],boxre[3])
 
