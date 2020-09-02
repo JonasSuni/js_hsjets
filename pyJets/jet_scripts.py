@@ -983,10 +983,24 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     ax.set_xlim(boxre[0],boxre[1])
     ax.set_ylim(boxre[2],boxre[3])
 
-    testx,testy = rev1_plasmatracker(X,Y,vavgx,vavgy,12,0,boxre)
-    ax.plot(testx,testy,color="orange",zorder=2)
+    for n in range(1,2500):
+        try:
+            props = jio.PropReader(str(n).zfill(5),runid,580)
+        except:
+            continue
 
-    fig.savefig(wrkdir_DNR+"pathtest.png")
+        if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
+            continue
+
+        x_mean,y_mean,duration = props.read("x_mean"),props.read("y_mean"),props.read("duration")
+        plasx,plasy = rev1_plasmatracker(X,Y,vavgx,vavgy,x_mean[0],y_mean[0],boxre,maxt=duration)
+        ax.plot(plasx,plasy,color=jx.orange,zorder=2)
+        ax.plot(x_mean,y_mean,color=jx.violet,zorder=3)
+
+    #testx,testy = rev1_plasmatracker(X,Y,vavgx,vavgy,12,0,boxre)
+    #ax.plot(testx,testy,color="orange",zorder=2)
+
+    fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
 def rev1_jetcone(runids,time_thresh=5):
