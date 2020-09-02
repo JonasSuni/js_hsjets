@@ -920,8 +920,6 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=30):
     yout = [y0]
 
     while xout[-1] > boxre[0] and xout[-1] < boxre[1] and yout[-1] > boxre[2] and yout[-1] < boxre[3] and t_tot < maxt:
-        #print(xout[-1])
-        #print(yout[-1])
         xdist = x-xout[-1]
         ydist = y-yout[-1]
         dist = np.linalg.norm([xdist,ydist],axis=0)
@@ -929,16 +927,10 @@ def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre,maxt=30):
         vybuf = vy[np.argmin(dist)]
         xbuf = xout[-1]+tstep*vxbuf
         ybuf = yout[-1]+tstep*vybuf
-        #print(vxbuf)
-        #print(vybuf)
-        #print(xbuf)
-        #print(ybuf)
         xout.append(xbuf)
         yout.append(ybuf)
         t_tot += tstep
 
-    print(xout)
-    print(yout)
     return (np.array(xout),np.array(yout))
 
 def rev1_jetpath(runid,vavgfilename,time_thresh=5):
@@ -958,7 +950,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.0001000.vlsv")
     vavg = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+vavgfilename)
     vavgx = vavg[:,0]/r_e
-    vavgy = vavg[:,0]/r_e
+    vavgy = vavg[:,1]/r_e
 
     all_cells = vlsvobj.read_variable("CellID")
     pdyn = vlsvobj.read_variable("Pdyn")[all_cells.argsort()]
