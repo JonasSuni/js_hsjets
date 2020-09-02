@@ -932,8 +932,10 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
 
     if "C" in runid:
         boxre = [6,18,-6,6]
+        vmax = 3e-9
     else:
         boxre = [6,18,-8,6]
+        vmax = 1.5e-9
 
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
@@ -958,7 +960,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5):
 
     fig,ax = plt.subplots(1,1,figsize=(10,10))
 
-    ax.pcolormesh(x_ax,y_ax,pdyn)
+    ax.pcolormesh(x_ax,y_ax,pdyn,vmin=0,vmax=vmax)
 
     fig.savefig(wrkdir_DNR+"pathtest.png")
     plt.close(fig)
