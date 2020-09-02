@@ -989,7 +989,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
         except:
             continue
 
-        if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
+        if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)] or "splinter" in props.meta:
             continue
 
         x_mean,y_mean,duration = props.read("x_mean"),props.read("y_mean"),props.read("duration")
