@@ -911,6 +911,58 @@ def jetcand_vdf(runid):
 
         pt.plot.plot_vdf(vlsvobj=vlsvobj_list[fn_list.index(fn)],outputdir=outputdir,cellids=[cellid],run=runid,step=fn,box=[-5e+6,5e+6,-5e+6,5e+6],fmin=1e-14,fmax=1e-9,bperp=True,slicethick=0,title=title_list[fn_list.index(fn)])
 
+def rev1_plasmatracker(x,y,vx,vy,x0,y0,boxre):
+
+    tstep = 0.5
+
+    xout = [x0]
+    yout = [y0]
+
+    while xout[-1] > boxre[0] and xout[-1] < boxre[1] and yout[-1] > boxre[2] and yout[-1] < boxre[3]:
+        vxbuf = vx[np.argmin(np.abs(x-xout[-1]))]
+        vybuf = vy[np.argmin(np.abs(y-yout[-1]))]
+        xbuf = xout[-1]+tstep*vxbuf
+        ybuf = yout[-1]+tstep*vybuf
+        xout.append(xbuf)
+        yout.append(ybuf)
+
+    return (np.array(xout),np.array(yout))
+
+def rev1_jetpath(runid,vavgfilename,time_thresh=5):
+
+    if "C" in runid:
+        boxre = [6,18,-6,6]
+    else:
+        boxre = [6,18,-8,6]
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk.0001000.vlsv")
+    vavg = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+vavgfilename)
+    vavgx = vavg[:,0]/r_e
+    vavgy = vavg[:,0]/r_e
+
+    all_cells = vlsvobj.read_variable("CellID")
+    pdyn = vlsvobj.read_variable("Pdyn")[all_cells.argsort()]
+    restr_cells = jx.restrict_area(vlsvobj,boxre)
+    X,Y,Z = jx.xyz_reconstruct(vlsvobj,cellids=all_cells)
+    X /= r_e
+    Y /= r_e
+    X = X[all_cells.argsort()]
+    Y = Y[all_cells.argsort()]
+    x_ax,y_ax = np.unique(X),np.unique(Y)
+    pdyn = np.reshape(pdyn,(y_ax.size,x_ax.size))
+
+    fig,ax = plt.subplots(1,1,figsize=(10,10))
+
+    ax.pcolormesh(x_ax,y_ax,pdyn)
+
+    fig.savefig(wrkdir_DNR+"pathtest.png")
+    plt.close(fig)
+
 def rev1_jetcone(runids,time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
