@@ -1066,7 +1066,7 @@ def rev1_deflection(runid,time_thresh=5):
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
             vavgx,vavgy,vavgz = vavgs[time_cells-1].T
             diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-            deflec_angle = np.rad2deg(np.arctan(np.linalg.norm([vy,vz],axis=0)/vx)-np.arctan(np.linalg.norm([vavgy,vavgz],axis=0)/vavgx))
+            deflec_angle = np.rad2deg(np.arctan(np.linalg.norm([vy,vz],axis=0)/-vx)-np.arctan(np.linalg.norm([vavgy,vavgz],axis=0)/-vavgx))
             jet_diffs[ix] = np.median(diffs)
             jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
