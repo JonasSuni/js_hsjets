@@ -1033,27 +1033,26 @@ def rev1_deflection(runid,time_thresh=5):
     vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
 
     for itr in range(1,3000):
-        for runid in runids:
-            try:
-                props = jio.PropReader(str(itr).zfill(5),runid,580)
-            except:
-                continue
+        try:
+            props = jio.PropReader(str(itr).zfill(5),runid,580)
+        except:
+            continue
 
-            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
-                continue
+        if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
+            continue
 
-            jet_times = props.get_times()
-            jet_cells = props.get_cells()
-            jet_filenrs = (np.array(jet_times)*2).astype(int)
+        jet_times = props.get_times()
+        jet_cells = props.get_cells()
+        jet_filenrs = (np.array(jet_times)*2).astype(int)
 
-            for ix,filenr in enumerate(jet_filenrs):
-                vlsvobj = vlsvobj_list[filenr-580]
-                curr_time = jet_times[ix]
-                time_cells = np.array(jet_cells[ix])
-                vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
-                vavgx,vavgy,vavgz = vavgs[time_cells-1].T
-                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-                print(np.mean(diffs))
+        for ix,filenr in enumerate(jet_filenrs):
+            vlsvobj = vlsvobj_list[filenr-580]
+            curr_time = jet_times[ix]
+            time_cells = np.array(jet_cells[ix])
+            vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
+            vavgx,vavgy,vavgz = vavgs[time_cells-1].T
+            diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
+            print(np.mean(diffs))
 
 
 
