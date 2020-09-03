@@ -1033,6 +1033,7 @@ def rev1_deflection(runid,time_thresh=5):
 
     for n in range(580,endtime+1):
         vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+        print("Loaded filenr {}".format(n))
 
     #cellids = vlsvobj_list[0].read_variable("CellID")
     #cellids.sort()
