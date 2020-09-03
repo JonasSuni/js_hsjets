@@ -1015,6 +1015,13 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
 
 def rev1_deflection(runid,time_thresh=5):
 
+    outputdir = wrkdir_DNR+"deflection/"+runid+"/"
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
     runids_list = ["ABA","ABC","AEA","AEC"]
     cutoff_list = [10,8,10,8]
     endtime_list = [839,1179,1339,879]
@@ -1041,18 +1048,27 @@ def rev1_deflection(runid,time_thresh=5):
         if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
             continue
 
-        jet_times = props.get_times()
+        jet_times = np.array(props.get_times())
+        jet_diffs = np.zeros_like(jet_times)
+        jet_deflecs = np.zeros_like(jet_times)
         jet_cells = props.get_cells()
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
         for ix,filenr in enumerate(jet_filenrs):
             vlsvobj = vlsvobj_list[filenr-580]
+            vlsvobj.optimize_open_file()
             curr_time = jet_times[ix]
             time_cells = np.array(jet_cells[ix])
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
             vavgx,vavgy,vavgz = vavgs[time_cells-1].T
             diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-            print(np.mean(diffs))
+            deflec_angle = np.rad2deg(np.arctan(np.linalg.norm([vy,vz],axis=0)/vx)-np.arctan(np.linalg.norm([vavgy,vavgz],axis=0)/vavgx))
+            jet_diffs[ix] = np.mean(diffs)
+            jet_deflecs[ix] = np.mean(deflec_angle)
+            vlsvobj.optimize_clear_fileindex_for_cellid()
+            vlsvobj.optimize_close_file()
+
+        np.savetxt("jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]))
 
 
 
