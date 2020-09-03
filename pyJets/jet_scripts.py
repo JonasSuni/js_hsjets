@@ -1072,7 +1072,7 @@ def rev1_deflection(runid,time_thresh=5):
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
-        np.savetxt(outputdir+"jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]))
+        np.savetxt(outputdir+"jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]).T)
 
     vlsvobj_list = []
 
