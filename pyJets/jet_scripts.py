@@ -1013,6 +1013,50 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
+def rev1_deflection(runid,time_thresh=5):
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    endtime_list = [839,1179,1339,879]
+    endtime = endtime_list[runids_list.index(runid)]
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    vlsvobj_list = []
+
+    for n in range(580,endtime+1):
+        vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+
+    #cellids = vlsvobj_list[0].read_variable("CellID")
+    #cellids.sort()
+
+    vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
+
+    for itr in range(1,3000):
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(itr).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
+                continue
+
+            jet_times = props.get_times()
+            jet_cells = props.get_cells()
+            jet_filenrs = (np.array(jet_times)*2).astype(int)
+
+            for ix,filenr in enumerate(jet_filenrs):
+                vlsvobj = vlsvobj_list[filenr-580]
+                curr_time = jet_times[ix]
+                time_cells = np.array(jet_cells[ix])
+                vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
+                vavgx,vavgy,vavgz = vavgs[time_cells-1].T
+                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
+                print(np.mean(diffs))
+
+
+
 def rev1_jetcone(runids,time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
