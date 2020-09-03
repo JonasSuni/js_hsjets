@@ -1033,7 +1033,7 @@ def rev1_deflection(runid,time_thresh=5):
 
     for n in range(580,endtime+1):
         vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
-        print("Loaded filenr {}".format(n),flush=True)
+        #print("Loaded filenr {}".format(n),flush=True)
 
     #cellids = vlsvobj_list[0].read_variable("CellID")
     #cellids.sort()
@@ -1049,7 +1049,7 @@ def rev1_deflection(runid,time_thresh=5):
         if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
             continue
 
-        print("Loaded jet {}".format(itr),flush=True)
+        #print("Loaded jet {}".format(itr),flush=True)
 
         jet_times = np.array(props.get_times())
         jet_diffs = np.zeros_like(jet_times)
@@ -1058,7 +1058,7 @@ def rev1_deflection(runid,time_thresh=5):
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
         for ix,filenr in enumerate(jet_filenrs):
-            print("Filenr is {}".format(filenr),flush=True)
+            #print("Filenr is {}".format(filenr),flush=True)
             vlsvobj = vlsvobj_list[filenr-580]
             vlsvobj.optimize_open_file()
             curr_time = jet_times[ix]
@@ -1072,7 +1072,7 @@ def rev1_deflection(runid,time_thresh=5):
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
-        np.savetxt("jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]))
+        np.savetxt(outputdir+"jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]))
 
     vlsvobj_list = []
 
