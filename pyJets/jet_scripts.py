@@ -1049,6 +1049,8 @@ def rev1_deflection(runid,time_thresh=5):
         if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
             continue
 
+        print("Loaded jet {}".format(itr),flush=True)
+
         jet_times = np.array(props.get_times())
         jet_diffs = np.zeros_like(jet_times)
         jet_deflecs = np.zeros_like(jet_times)
@@ -1056,6 +1058,7 @@ def rev1_deflection(runid,time_thresh=5):
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
         for ix,filenr in enumerate(jet_filenrs):
+            print("Filenr is {}".format(filenr),flush=True)
             vlsvobj = vlsvobj_list[filenr-580]
             vlsvobj.optimize_open_file()
             curr_time = jet_times[ix]
