@@ -1070,7 +1070,7 @@ def rev1_deflection(runid,time_thresh=5):
 
         np.savetxt("jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]))
 
-
+    vlsvobj_list = []
 
 def rev1_jetcone(runids,time_thresh=5):
 
