@@ -1113,8 +1113,8 @@ def rev1_defplot(time_thresh=5):
             deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
             deflec_angle = deflec_props[:,2][sorted_args]
 
-            ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
-            ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
+            #ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
+            #ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
 
             res_diff_arr = np.interp(epoch_arr,xdist_arr,deflec_diff,left=np.nan,right=np.nan)
             res_angle_arr = np.interp(epoch_arr,xdist_arr,deflec_angle,left=np.nan,right=np.nan)
