@@ -1123,7 +1123,8 @@ def rev1_defplot(time_thresh=5):
             counter[runids.index(runid)] += 1
 
     for ix in range(len(runids)):
-        mean_arrs[ix] /= counter[ix]
+        diff_mean_arrs[ix] /= counter[ix]
+        angle_mean_arrs[ix] /= counter[ix]
         ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix])
         ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix])
 
