@@ -1076,6 +1076,78 @@ def rev1_deflection(runid,time_thresh=5):
 
     vlsvobj_list = []
 
+def rev1_defplot(time_thresh=5):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    color_list = ["black",jx.violet,jx.orange,jx.green]
+
+    #epoch_arr = np.arange(0.5,-2.1,-0.05)
+    epoch_arr = np.arange(-0.5,2.1,0.05)
+
+    runids_list = ["ABA","ABC","AEA","AEC"]
+    cutoff_list = [10,8,10,8]
+    cutoff_dict = dict(zip(runids_list,cutoff_list))
+
+    diff_mean_arrs = [np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr)]
+    angle_mean_arrs = [np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr)]
+    counter = [0,0,0,0]
+
+    fig,ax_list = plt.subplots(2,1,figsize=(10,10),sharex=True)
+
+    for n in range(1,3000):
+        for runid in runids:
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_dict[runid]:
+                continue
+
+            xdist_arr = props.read("bs_distance")-props.read("x_mean")
+            sorted_args = np.argsort(xdist_arr)
+            xdist_arr.sort()
+            inputdir = wrkdir_DNR+"deflection/"+runid+"/"
+            deflec_props = np.loadtxt(outputdir+"jet_{}_diffs.txt".format(n))
+            deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
+            deflec_angle = deflec_props[:,2][sorted_args]
+
+            ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
+            ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
+
+            res_diff_arr = np.interp(epoch_arr,xdist_arr,deflec_diff,left=np.nan,right=np.nan)
+            res_angle_arr = np.interp(epoch_arr,xdist_arr,deflec_angle,left=np.nan,right=np.nan)
+            diff_mean_arrs[runids.index(runid)] += res_diff_arr
+            angle_mean_arrs[runids.index(runid)] += res_angle_arr
+            counter[runids.index(runid)] += 1
+
+    for ix in range(len(runids)):
+        mean_arrs[ix] /= counter[ix]
+        ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix])
+        ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix])
+
+    ax_list[0].axvline(0,linestyle="dashed",color="black")
+    ax_list[0].set_xlim(-0.5,2.1)
+    ax_list[0].yaxis.set_major_locator(MaxNLocator(nbins=5))
+    ax_list[1].axvline(0,linestyle="dashed",color="black")
+    ax_list[1].set_xlim(-0.5,2.1)
+    ax_list[1].yaxis.set_major_locator(MaxNLocator(nbins=5))
+
+    ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
+    ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
+    ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+
+    ax_list[0].annotate("HM30",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list[0].annotate("HM05",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
+    ax_list[0].annotate("LM30",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
+    ax_list[0].annotate("LM05",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/deflection_plot.png")
+    plt.close(fig)
+
 def rev1_jetcone(runids,time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
