@@ -1091,12 +1091,10 @@ def rev1_defplot(time_thresh=5):
 
     diff_mean_arrs = [np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr)]
     angle_mean_arrs = [np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr),np.zeros_like(epoch_arr)]
-    counter = [0,0,0,0]
-
     fig,ax_list = plt.subplots(2,1,figsize=(10,10),sharex=True)
 
     for n in range(1,3000):
-        for runid in runids:
+        for ix,runid in enumerate(runids):
             try:
                 props = jio.PropReader(str(n).zfill(5),runid,580)
             except:
@@ -1113,22 +1111,25 @@ def rev1_defplot(time_thresh=5):
             deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
             deflec_angle = deflec_props[:,2][sorted_args]
 
-            #ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
-            #ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
+            if xdist_arr.size > 30:
+                ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
+                ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
 
             res_diff_arr = np.interp(epoch_arr,xdist_arr,deflec_diff,left=np.nan,right=np.nan)
             res_angle_arr = np.interp(epoch_arr,xdist_arr,deflec_angle,left=np.nan,right=np.nan)
-            diff_mean_arrs[runids.index(runid)] += res_diff_arr
-            angle_mean_arrs[runids.index(runid)] += res_angle_arr
-            counter[runids.index(runid)] += 1
+
+            diff_mean_arrs[ix] = np.vstack((diff_mean_arrs[ix],res_diff_arr))
+            angle_mean_arrs[ix] = np.vstack((angle_mean_arrs[ix],res_angle_arr))
+
+
+    diff_mean_arrs = [SEA_arr[1:] for SEA_arr in diff_mean_arrs]
+    diff_mean_list = [np.nanmean(SEA_arr,axis=0) for SEA_arr in diff_mean_arrs]
+    angle_mean_arrs = [SEA_arr[1:] for SEA_arr in angle_mean_arrs]
+    angle_mean_list = [np.nanmean(SEA_arr,axis=0) for SEA_arr in angle_mean_arrs]
 
     for ix in range(len(runids)):
-        diff_mean_arrs[ix] /= float(counter[ix])
-        angle_mean_arrs[ix] /= float(counter[ix])
-        print(diff_mean_arrs[ix])
-        print(angle_mean_arrs[ix])
-        ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix],zorder=2)
-        ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix],zorder=2)
+        ax_list[0].plot(epoch_arr,diff_mean_list[ix],color=color_list[ix],zorder=2)
+        ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=2)
 
     ax_list[0].axvline(0,linestyle="dashed",color="black")
     ax_list[0].set_xlim(-0.5,2.1)
