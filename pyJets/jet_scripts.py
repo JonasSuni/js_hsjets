@@ -1135,6 +1135,7 @@ def rev1_defplot(time_thresh=5):
     ax_list[0].set_xlim(-0.5,2.1)
     ax_list[0].yaxis.set_major_locator(MaxNLocator(nbins=5))
     ax_list[1].axvline(0,linestyle="dashed",color="black")
+    ax_list[1].axhline(0,linestyle="dashed",color="black")
     ax_list[1].set_xlim(-0.5,2.1)
     ax_list[1].yaxis.set_major_locator(MaxNLocator(nbins=5))
 
