@@ -1109,7 +1109,7 @@ def rev1_defplot(time_thresh=5):
             sorted_args = np.argsort(xdist_arr)
             xdist_arr.sort()
             inputdir = wrkdir_DNR+"deflection/"+runid+"/"
-            deflec_props = np.loadtxt(outputdir+"jet_{}_diffs.txt".format(n))
+            deflec_props = np.loadtxt(inputdir+"jet_{}_diffs.txt".format(n))
             deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
             deflec_angle = deflec_props[:,2][sorted_args]
 
