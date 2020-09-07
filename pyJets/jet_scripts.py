@@ -1125,8 +1125,8 @@ def rev1_defplot(time_thresh=5):
     for ix in range(len(runids)):
         diff_mean_arrs[ix] /= counter[ix]
         angle_mean_arrs[ix] /= counter[ix]
-        ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix])
-        ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix])
+        ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix],zorder=2)
+        ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix],zorder=2)
 
     ax_list[0].axvline(0,linestyle="dashed",color="black")
     ax_list[0].set_xlim(-0.5,2.1)
