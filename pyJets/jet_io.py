@@ -143,7 +143,7 @@ class PropReader:
         elif name == "final_cone":
             t = self.read("time")
             x,y = self.read("x_mean")[-1],self.read("y_mean")[-1]
-            cone_angle = np.rad2deg(np.arctan(y/x))
+            cone_angle = np.rad2deg(np.arctan2(y,x))
             return np.ones_like(t)*cone_angle
         else:
             print("Variable not found!")

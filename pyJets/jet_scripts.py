@@ -1066,7 +1066,7 @@ def rev1_deflection(runid,time_thresh=5):
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
             vavgx,vavgy,vavgz = vavgs[time_cells-1].T
             diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-            deflec_angle = np.rad2deg(np.arctan(np.linalg.norm([vy,vz],axis=0)/-vx)-np.arctan(np.linalg.norm([vavgy,vavgz],axis=0)/-vavgx))
+            deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
             jet_diffs[ix] = np.median(diffs)
             jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
@@ -1125,6 +1125,8 @@ def rev1_defplot(time_thresh=5):
     for ix in range(len(runids)):
         diff_mean_arrs[ix] /= float(counter[ix])
         angle_mean_arrs[ix] /= float(counter[ix])
+        print(diff_mean_arrs[ix])
+        print(angle_mean_arrs[ix])
         ax_list[0].plot(epoch_arr,diff_mean_arrs[ix],color=color_list[ix],zorder=2)
         ax_list[1].plot(epoch_arr,angle_mean_arrs[ix],color=color_list[ix],zorder=2)
 
