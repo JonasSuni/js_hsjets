@@ -1013,7 +1013,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-def rev1_deflection(runid,time_thresh=5):
+def rev1_deflection(runid,time_thresh=5,timeavg=True):
 
     outputdir = wrkdir_DNR+"deflection/"+runid+"/"
     if not os.path.exists(outputdir):
@@ -1038,7 +1038,8 @@ def rev1_deflection(runid,time_thresh=5):
     #cellids = vlsvobj_list[0].read_variable("CellID")
     #cellids.sort()
 
-    vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
+    if timeavg:
+        vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
 
     for itr in range(1,3000):
         try:
@@ -1064,11 +1065,18 @@ def rev1_deflection(runid,time_thresh=5):
             curr_time = jet_times[ix]
             time_cells = np.array(jet_cells[ix])
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
-            vavgx,vavgy,vavgz = vavgs[time_cells-1].T
-            diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-            deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
-            jet_diffs[ix] = np.median(diffs)
-            jet_deflecs[ix] = np.median(deflec_angle)
+            if timeavg:
+                vavgx,vavgy,vavgz = vavgs[time_cells-1].T
+                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
+                deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
+                jet_diffs[ix] = np.median(diffs)
+                jet_deflecs[ix] = np.median(deflec_angle)
+            else:
+                sheath_cells_plus = jx.get_neighs(runid,time_cells,neighborhood_reach=[2,2,0])
+                sheath_cells = sheath_cells_plus[~np.in1d(sheath_cells_plus,time_cells)]
+                vavgx,vavgy,vavgz = vlsvobj.read_variable("v",cellids=sheath_cells).T
+                diffs = np.linalg.norm([np.median(vx)-np.median(vavgx),np.median(vy)-np.median(vavgy),np.median(vz)-np.median(vavgz)],axis=0)
+                deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
