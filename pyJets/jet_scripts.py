@@ -1013,7 +1013,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-def rev1_deflection(runid,time_thresh=5,timeavg=True):
+def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     outputdir = wrkdir_DNR+"deflection/"+runid+"/"
     if not os.path.exists(outputdir):
