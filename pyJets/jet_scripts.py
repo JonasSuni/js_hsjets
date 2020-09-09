@@ -1014,7 +1014,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-@numba.autojit
+@numba.jit
 def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     start_time = time.time()
