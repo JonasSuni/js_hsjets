@@ -21,7 +21,8 @@ import jetfile_make as jfm
 import jet_io as jio
 import jet_aux as jx
 import time
-from numba import autojit,prange
+import numba
+from numba import prange
 
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
@@ -1014,7 +1015,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-@autojit
+@numba.autojit
 def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     start_time = time.time()
