@@ -1598,7 +1598,7 @@ def hack_2019_fig1():
         mpl.rcParams['text.usetex'] = True
         mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
 
-    outputdir = homedir+"Figures/hackathon_paper/"
+    outputdir = wrkdir_DNR+"Figures/hackathon_paper/"
 
     if not os.path.exists(outputdir):
         try:
