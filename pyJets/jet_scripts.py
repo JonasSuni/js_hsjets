@@ -1810,8 +1810,8 @@ def h19_fig1_ext(ax,XmeshXY,YmeshXY,pass_maps):
     line2, = ax.plot(xvmax_list,yvmax_list,"o",color="white",markersize=2) # v_max positions
 
     if draw_sc:
-        vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=4,color=jx.orange)
-        mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=4,color="green")
+        vlas, = ax.plot(vl_xy[0],vl_xy[1],"*",markersize=8,color=jx.orange)
+        mms, = ax.plot(mms_xy[0],mms_xy[1],"*",markersize=8,color="green")
     #vlas = ax.annotate("Vlas",color=jx.orange,xy=(mms_xy[0],mms_xy[1]),xytext=(mms_xy[0]-2,mms_xy[1]-1),arrowprops={"arrowstyle":"->"},fontsize=5)
     #MMS = ax.annotate("MMS",color="black",xy=(vl_xy[0],vl_xy[1]),xytext=(vl_xy[0]-2,vl_xy[1]+1),arrowprops={"arrowstyle":"->"},fontsize=5)
 
