@@ -1069,14 +1069,15 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
                 diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
                 deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
-                jet_diffs[ix] = np.median(diffs)
-                jet_deflecs[ix] = np.median(deflec_angle)
             else:
                 sheath_cells_plus = jx.get_neighs(runid,time_cells,neighborhood_reach=[2,2,0])
                 sheath_cells = sheath_cells_plus[~np.in1d(sheath_cells_plus,time_cells)]
                 vavgx,vavgy,vavgz = vlsvobj.read_variable("v",cellids=sheath_cells).T
                 diffs = np.linalg.norm([np.median(vx)-np.median(vavgx),np.median(vy)-np.median(vavgy),np.median(vz)-np.median(vavgz)],axis=0)
                 deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
+
+            jet_diffs[ix] = np.median(diffs)
+            jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
