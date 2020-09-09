@@ -1046,6 +1046,8 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     if timeavg:
         vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
+    else:
+        vavgs = np.zeros(10,dtype=float)
 
     for itr in numba.prange(1,3000):
         next_bool = False
