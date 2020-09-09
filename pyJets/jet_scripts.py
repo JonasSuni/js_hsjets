@@ -21,6 +21,7 @@ import jetfile_make as jfm
 import jet_io as jio
 import jet_aux as jx
 import time
+from numba import autojit,prange
 
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
@@ -1013,6 +1014,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
+@autojit
 def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     start_time = time.time()
@@ -1033,7 +1035,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     vlsvobj_list = np.empty(endtime-580+1,dtype=object)
 
-    for n in range(580,endtime+1):
+    for n in prange(580,endtime+1):
         vlsvobj_list[n-580](pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
         #print("Loaded filenr {}".format(n),flush=True)
 
@@ -1043,7 +1045,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
     if timeavg:
         vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
 
-    for itr in range(1,3000):
+    for itr in prange(1,3000):
         try:
             props = jio.PropReader(str(itr).zfill(5),runid,580)
         except:
@@ -1060,7 +1062,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
         jet_cells = props.get_cells()
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
-        for ix in range(jet_filenrs.size):
+        for ix in prange(jet_filenrs.size):
             #print("Filenr is {}".format(filenr),flush=True)
             vlsvobj = vlsvobj_list[jet_filenrs[ix]-580]
             vlsvobj.optimize_open_file()
