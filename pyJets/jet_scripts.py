@@ -22,7 +22,6 @@ import jet_io as jio
 import jet_aux as jx
 import time
 import numba
-from numba import prange
 
 m_p = 1.672621898e-27
 q_e = 1.602176565e-19
@@ -1036,7 +1035,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     vlsvobj_list = np.empty(endtime-580+1,dtype=object)
 
-    for n in prange(580,endtime+1):
+    for n in numba.prange(580,endtime+1):
         vlsvobj_list[n-580](pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
         #print("Loaded filenr {}".format(n),flush=True)
 
@@ -1046,7 +1045,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
     if timeavg:
         vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
 
-    for itr in prange(1,3000):
+    for itr in numba.prange(1,3000):
         try:
             props = jio.PropReader(str(itr).zfill(5),runid,580)
         except:
@@ -1063,7 +1062,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
         jet_cells = props.get_cells()
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
-        for ix in prange(jet_filenrs.size):
+        for ix in numba.prange(jet_filenrs.size):
             #print("Filenr is {}".format(filenr),flush=True)
             vlsvobj = vlsvobj_list[jet_filenrs[ix]-580]
             vlsvobj.optimize_open_file()
