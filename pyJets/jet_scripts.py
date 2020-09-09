@@ -1019,6 +1019,8 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     start_time = time.time()
 
+    next_bool = False
+
     outputdir = wrkdir_DNR+"deflection/"+runid+"/"
     if not os.path.exists(outputdir):
         try:
@@ -1046,9 +1048,13 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
         vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
 
     for itr in numba.prange(1,3000):
+        next_bool = False
         try:
             props = jio.PropReader(str(itr).zfill(5),runid,580)
         except:
+            next_bool = True
+
+        if next_bool:
             continue
 
         if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[runids_list.index(runid)]:
