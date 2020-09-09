@@ -1015,6 +1015,8 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
 
 def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
+    start_time = time.time()
+
     outputdir = wrkdir_DNR+"deflection/"+runid+"/"
     if not os.path.exists(outputdir):
         try:
@@ -1029,10 +1031,10 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    vlsvobj_list = []
+    vlsvobj_list = np.empty(endtime-580+1,dtype=object)
 
     for n in range(580,endtime+1):
-        vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+        vlsvobj_list[n-580](pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
         #print("Loaded filenr {}".format(n),flush=True)
 
     #cellids = vlsvobj_list[0].read_variable("CellID")
@@ -1058,9 +1060,9 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
         jet_cells = props.get_cells()
         jet_filenrs = (np.array(jet_times)*2).astype(int)
 
-        for ix,filenr in enumerate(jet_filenrs):
+        for ix in range(jet_filenrs.size):
             #print("Filenr is {}".format(filenr),flush=True)
-            vlsvobj = vlsvobj_list[filenr-580]
+            vlsvobj = vlsvobj_list[jet_filenrs[ix]-580]
             vlsvobj.optimize_open_file()
             curr_time = jet_times[ix]
             time_cells = np.array(jet_cells[ix])
@@ -1083,7 +1085,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
         np.savetxt(outputdir+"jet_{}_diffs.txt".format(itr),np.array([jet_times,jet_diffs,jet_deflecs]).T)
 
-    vlsvobj_list = []
+    print("Elapsed time is {}".format(time.time()-start_time))
 
 def rev1_defplot(time_thresh=5):
 
@@ -1675,7 +1677,7 @@ def hack_2019_fig1():
 
         # Find correct file path
         bulkpath = ja.find_bulkpath(runids[n])
-        bulkpath = "/scratch/project_2000203/sunijona/vlasiator/2D/AEA/round_3_boundary_sw/"
+        #bulkpath = "/scratch/project_2000203/sunijona/vlasiator/2D/AEA/round_3_boundary_sw/"
 
         bulkname = "bulk.{}.vlsv".format(str(filenr[n]).zfill(7))
 
