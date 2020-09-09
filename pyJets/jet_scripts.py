@@ -1035,10 +1035,10 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    vlsvobj_list = np.empty(endtime-580+1,dtype=object)
+    vlsvobj_list = []
 
-    for n in numba.prange(580,endtime+1):
-        vlsvobj_list[n-580](pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+    for n in range(580,endtime+1):
+        vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
         #print("Loaded filenr {}".format(n),flush=True)
 
     #cellids = vlsvobj_list[0].read_variable("CellID")
