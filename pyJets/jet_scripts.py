@@ -1605,7 +1605,7 @@ def hack_2019_fig1():
     if sys.version_info.major == 3:
         plt.style.use("classic")
         mpl.rcParams['text.usetex'] = True
-        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+        mpl.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 
     outputdir = wrkdir_DNR+"Figures/hackathon_paper/"
 
@@ -1708,7 +1708,7 @@ def h19_movie(runid,start,stop):
     if sys.version_info.major == 3:
         plt.style.use("classic")
         mpl.rcParams['text.usetex'] = True
-        mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+        mpl.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
 
     outputdir = homedir+"Figures/hackathon_paper/mov/{}/".format(runid)
 
@@ -1967,7 +1967,7 @@ def hack_2019_fig78(time_thresh=5):
     if sys.version_info.major == 3:
         #plt.style.use("classic")
         #mpl.rcParams['text.usetex'] = True
-        #mpl.rcParams['text.latex.preamble'] = [r'\usepackage{amsmath}']
+        #mpl.rcParams['text.latex.preamble'] = r'\usepackage{amsmath}'
         #mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=[jx.violet, jx.medium_blue, jx.dark_blue, jx.orange])
         mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=["black",jx.violet,jx.orange,jx.green])
     elif sys.version_info.major == 2:
