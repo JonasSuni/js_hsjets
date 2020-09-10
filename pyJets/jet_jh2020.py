@@ -406,6 +406,8 @@ def mag_thresh_plot(allow_splinters=True):
     sj_number_arr = sj_number_arr.T
     mt_arr = np.array(list(map(float,mt_str_list)))
 
+    plt.subplots_adjust(hspace=0)
+
     fig,ax_list = plt.subplots(5,1,figsize=(8,10))
     for m in range(len(runid_list)):
         #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
@@ -437,7 +439,7 @@ def mag_thresh_plot(allow_splinters=True):
     ax_list[4].set_ylim(0,1)
     for axe in fig.get_axes():
         axe.label_outer()
-    plt.tight_layout(pad=0)
+    plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     plt.close(fig)
