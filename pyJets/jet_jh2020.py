@@ -406,7 +406,7 @@ def mag_thresh_plot(allow_splinters=True):
     sj_number_arr = sj_number_arr.T
     mt_arr = np.array(list(map(float,mt_str_list)))
 
-    ann_locs = [(0.05,0.05),(0.05,0.05),(0.05,0.05),(0.05,0.85),(0.05,0.05)]
+    ann_locs = [(0.03,0.1),(0.03,0.1),(0.03,0.1),(0.03,0.8),(0.03,0.1)]
     ann_labs = ["a)","b)","c)","d)","e)"]
 
     fig,ax_list = plt.subplots(5,1,figsize=(8,10))
