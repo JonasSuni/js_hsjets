@@ -437,7 +437,7 @@ def mag_thresh_plot(allow_splinters=True):
     ax_list[4].set_ylim(0,0.99)
     for axe in fig.get_axes():
         axe.label_outer()
-    plt.tight_layout(h_pad=0)
+    plt.tight_layout(h_pad=-0.2)
     #fig.subplots_adjust(hspace=0)
 
     fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
