@@ -774,7 +774,8 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
 
     if fig5:
         #filenr_list = [954,962,970,996]
-        fig,ax_list = plt.subplots(2,2)
+        fig,ax_list = plt.subplots(2,3)
+        fig.add_subplot(1,3,3)
 
         filepath = bulkpath+"bulk.0000954.vlsv"
         filenr_g = 954
@@ -800,6 +801,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_list[1][1],noylabels=True)
         ax_list[1][1].annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=5)
 
+        fig.subplots_adjust(wspace=0.1)
         fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig4.png")
         plt.close(fig)
         return None
