@@ -777,7 +777,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         scale = 2.0
 
         fig = plt.figure(figsize=(8,8))
-        gs = fig.add_gridspec(2,15)
+        gs = fig.add_gridspec(2,15,wspace=0.1)
         ax_ul = fig.add_subplot(gs[0,0:7])
         ax_ur = fig.add_subplot(gs[0,7:-1])
         ax_ll = fig.add_subplot(gs[1,0:7])
@@ -805,7 +805,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         filepath = bulkpath+"bulk.0000996.vlsv"
         filenr_g = 996
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax,noborder=noborder,scale=scale)
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax,noborder=noborder,scale=scale,cbtitle="$P_{dyn}\\\mathrm{nPa}$")
         ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
 
         #fig.subplots_adjust(wspace=0.05)
