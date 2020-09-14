@@ -762,6 +762,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
 
     if fig1:
         filepath = bulkpath+"bulk.0000895.vlsv"
+        filenr_g = 895
 
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig1.png",boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=40)
 
