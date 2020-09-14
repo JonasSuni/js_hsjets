@@ -641,10 +641,10 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EF: {:.2f}Re".format(-1.0/sj_popt[0]))
         jet_max = non_hist[-1]
         ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="EF: {:.2f}Re".format(-1.0/non_popt[0]))
-        #ax[0].annotate("a)",(0.05,0.9),xycoords="axes fraction",fontsize=20)
-        #ax[1].annotate("b)",(0.05,0.9),xycoords="axes fraction",fontsize=20)
-        ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left",title="a)")
-        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left",title="b)")
+        ax[0].annotate("a)",(0.05,0.1),xycoords="axes fraction",fontsize=20)
+        ax[1].annotate("b)",(0.05,0.1),xycoords="axes fraction",fontsize=20)
+        ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
     else:
         jet_max = sj_hist[-1]
         ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EFL: {:.2f}Re".format(-1.0/sj_popt[0]))
