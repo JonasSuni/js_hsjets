@@ -781,7 +781,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         noborder = True
 
         fig = plt.figure()
-        gs = fig.add_gridspec(2,29,wspace=0)
+        gs = fig.add_gridspec(2,29,wspace=-0.5)
         ax_ul = fig.add_subplot(gs[0,0:14])
         ax_ur = fig.add_subplot(gs[0,14:-1])
         ax_ll = fig.add_subplot(gs[1,0:14])
