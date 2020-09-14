@@ -780,11 +780,11 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         #cbax = fig.add_subplot(1,3,3)
 
         fig = plt.figure()
-        gs = fig.add_gridspec(2,19,wspace=-0.5)
-        ax_ul = fig.add_subplot(gs[0,0:9])
-        ax_ur = fig.add_subplot(gs[0,9:-1])
-        ax_ll = fig.add_subplot(gs[1,0:9])
-        ax_lr = fig.add_subplot(gs[1,9:-1])
+        gs = fig.add_gridspec(2,29,wspace=-0.5)
+        ax_ul = fig.add_subplot(gs[0,0:14])
+        ax_ur = fig.add_subplot(gs[0,14:-1])
+        ax_ll = fig.add_subplot(gs[1,0:14])
+        ax_lr = fig.add_subplot(gs[1,14:-1])
         cbax = fig.add_subplot(gs[:,-1])
 
         filepath = bulkpath+"bulk.0000954.vlsv"
