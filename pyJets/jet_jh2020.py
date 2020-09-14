@@ -597,8 +597,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=25,labelpad=10)
         sj_hist,sj_bins,sj_patch=ax[1].hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
         non_hist,non_bins,non_patch=ax[1].hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
-        ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
-        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        #ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        #ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax[0].set_ylabel("Jets/s",fontsize=25,labelpad=10)
         ax[1].set_ylabel("Cumulative fraction of jets",fontsize=25,labelpad=10)
         ax[0].tick_params(labelsize=15)
@@ -614,7 +614,7 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$",fontsize=20,labelpad=10)
         sj_hist,sj_bins,sj_patch=ax.hist(sj_pendeps,bins=bins,weights=sj_weights,histtype="step",color="red",label="FCS-originated",cumulative=True)
         non_hist,non_bins,non_patch=ax.hist(non_pendeps,bins=bins,weights=non_weights,histtype="step",color="black",label="Non-FCS-originated",cumulative=True)
-        ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        #ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax.set_ylabel("Cumulative fraction of jets",fontsize=20,labelpad=10)
         ax.tick_params(labelsize=15)
         ax.set_ylim(bottom=0)
@@ -641,7 +641,10 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
         ax[1].plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EF: {:.2f}Re".format(-1.0/sj_popt[0]))
         jet_max = non_hist[-1]
         ax[1].plot(xinterp,expfit_pendep(xinterp,non_popt[0],non_popt[1]),color="black",linestyle="dashed",label="EF: {:.2f}Re".format(-1.0/non_popt[0]))
-        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
+        ax[0].annotate("a)",(0.05,0.9),xycoords="axes fraction",fontsize=20)
+        ax[1].annotate("b)",(0.05,0.9),xycoords="axes fraction",fontsize=20)
+        ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="center left")
+        ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="center left")
     else:
         jet_max = sj_hist[-1]
         ax.plot(xinterp,expfit_pendep(xinterp,sj_popt[0],sj_popt[1]),color="red",linestyle="dashed",label="EFL: {:.2f}Re".format(-1.0/sj_popt[0]))
@@ -651,7 +654,8 @@ def pendep_hist(runids=["ABA","ABC","AEA","AEC"],panel_one=True):
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
+    #fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
+    fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig3.png")
     plt.close(fig)
 
 def expfit_pendep(xdata,a1,a2):
