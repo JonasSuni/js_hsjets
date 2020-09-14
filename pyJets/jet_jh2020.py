@@ -773,15 +773,15 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         return None
 
     if fig5:
-        noborder = False
-        scale = 2.0
+        noborder = True
+        scale = 1.5
 
         fig = plt.figure(figsize=(8,8))
-        gs = fig.add_gridspec(2,15,wspace=0.5)
-        ax_ul = fig.add_subplot(gs[0,0:7])
-        ax_ur = fig.add_subplot(gs[0,7:-1])
-        ax_ll = fig.add_subplot(gs[1,0:7])
-        ax_lr = fig.add_subplot(gs[1,7:-1])
+        gs = fig.add_gridspec(2,9)
+        ax_ul = fig.add_subplot(gs[0,0:4])
+        ax_ur = fig.add_subplot(gs[0,4:-1])
+        ax_ll = fig.add_subplot(gs[1,0:4])
+        ax_lr = fig.add_subplot(gs[1,4:-1])
         cbax = fig.add_subplot(gs[:,-1])
 
         filepath = bulkpath+"bulk.0000954.vlsv"
@@ -805,7 +805,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         filepath = bulkpath+"bulk.0000996.vlsv"
         filenr_g = 996
 
-        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax,noborder=noborder,scale=scale,cbtitle="$P_{dyn}\\\mathrm{nPa}$")
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax,noborder=noborder,scale=scale)
         ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
 
         #fig.subplots_adjust(wspace=0.05)
