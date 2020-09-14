@@ -848,12 +848,17 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     if fig5_g:
-        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black",label="$n \geq 2*n_{sw}$")
-        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet,label="$M_{MS,x} \leq 1$")
-    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange,label="$T_{core} \geq 3*T_{sw}$")
+        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
+        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
+        rho_cont.collections[0].set_label("$n \geq 2*n_{sw}$")
+        mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
+    ch_cont.collections[0].set_label("$T_{core} \geq 3*T_{sw}$")
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow",label="FCS")
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green,label="Jet")
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green)
+    slams_cont.collections[0].set_label("FCS")
+    jet_cont.collections[0].set_label("Jet")
 
     non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="Non-FCS-jet")
     sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="FCS-jet")
@@ -866,7 +871,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
                 ax.arrow(nx,ny,dnx,dny,head_width=0.1,width=0.01,color=jx.orange)
 
     if fig1_g:
-        ax.legend(frameon=False,numpoints=1,markerscale=3,loc="upper right")
+        ax.legend(frameon=False,numpoints=1,markerscale=1,loc="upper right")
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
