@@ -773,15 +773,15 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         return None
 
     if fig5:
-        noborder = True
+        noborder = False
         scale = 2.0
 
         fig = plt.figure(figsize=(8,8))
-        gs = fig.add_gridspec(2,9)
-        ax_ul = fig.add_subplot(gs[0,0:4])
-        ax_ur = fig.add_subplot(gs[0,4:-1])
-        ax_ll = fig.add_subplot(gs[1,0:4])
-        ax_lr = fig.add_subplot(gs[1,4:-1])
+        gs = fig.add_gridspec(2,15)
+        ax_ul = fig.add_subplot(gs[0,0:7])
+        ax_ur = fig.add_subplot(gs[0,7:-1])
+        ax_ll = fig.add_subplot(gs[1,0:7])
+        ax_lr = fig.add_subplot(gs[1,7:-1])
         cbax = fig.add_subplot(gs[:,-1])
 
         filepath = bulkpath+"bulk.0000954.vlsv"
