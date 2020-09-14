@@ -446,7 +446,8 @@ def mag_thresh_plot(allow_splinters=True):
     plt.tight_layout()
     fig.subplots_adjust(hspace=0)
 
-    fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
+    #fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
+    fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig2.png")
     plt.close(fig)
     return None
 
@@ -698,7 +699,10 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False,magt=1.5):
+def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False,fig1=False,magt=1.5):
+
+    if fig1:
+        fig5 = False
 
     runid_list = ["ABA","ABC","AEA","AEC"]
     run_index = runid_list.index(runid)
@@ -722,8 +726,10 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
     global non_sjobs
     global draw_arrows
     global fig5_g
+    global fig1_g
 
     fig5_g = fig5
+    fig1_g = fig1
 
     draw_arrows = arr_draw
 
@@ -751,6 +757,13 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
     boxre = [6,18,-6,6]
     if runid in ["ABA","AEA"]:
         boxre = [6,18,-8,6]
+
+    if fig1:
+        filepath = bulkpath+"bulk.0000895.vlsv"
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig1.png",boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=40)
+
+        return None
 
     for itr in range(start,stop+1):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
@@ -834,15 +847,15 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     if fig5_g:
-        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
-        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
-    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
+        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black",label="$n \geq 2*n_{sw}$")
+        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet,label="$M_{MS,x} \leq 1$")
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange,label="$T_{core} \geq 3*T_{sw}$")
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green)
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow",label="FCS")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green,label="Jet")
 
-    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3)
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3)
+    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="Non-FCS-jet")
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="FCS-jet")
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g,filenr_g)
@@ -850,6 +863,9 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             nx,ny,dnx,dny = arrow_coords[n]
             if ny//0.5 > arrow_coords[n-1][1]//0.5:
                 ax.arrow(nx,ny,dnx,dny,head_width=0.1,width=0.01,color=jx.orange)
+
+    if fig1_g:
+        ax.legend(frameon=False,numpoints=1,markerscale=3,loc="upper right")
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
