@@ -781,7 +781,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         noborder = True
 
         fig = plt.figure()
-        gs = fig.add_gridspec(2,29)
+        gs = fig.add_gridspec(2,29,wspace=-0.5)
         ax_ul = fig.add_subplot(gs[0,0:14])
         ax_ur = fig.add_subplot(gs[0,14:-1])
         ax_ll = fig.add_subplot(gs[1,0:14])
@@ -813,7 +813,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
 
         #fig.subplots_adjust(wspace=0.05)
-        plt.tight_layout()
+        #plt.tight_layout()
         fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig4.png")
         plt.close(fig)
         return None
