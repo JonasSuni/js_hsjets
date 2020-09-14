@@ -780,7 +780,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         #cbax = fig.add_subplot(1,3,3)
 
         fig = plt.figure()
-        gs = fig.add_gridspec(2,19)
+        gs = fig.add_gridspec(2,19,wspace=0.1)
         ax_ul = fig.add_subplot(gs[0,0:9])
         ax_ur = fig.add_subplot(gs[0,9:-1])
         ax_ll = fig.add_subplot(gs[1,0:9])
@@ -811,7 +811,7 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax)
         ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
 
-        fig.subplots_adjust(wspace=0.05)
+        #fig.subplots_adjust(wspace=0.05)
         fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig4.png")
         plt.close(fig)
         return None
