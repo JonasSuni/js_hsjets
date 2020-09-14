@@ -772,6 +772,39 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
 
         return None
 
+    if fig5:
+        #filenr_list = [954,962,970,996]
+        fig,ax_list = plt.subplots(2,2)
+
+        filepath = bulkpath+"bulk.0000954.vlsv"
+        filenr_g = 954
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4a.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_list[0][0],nocb=True,noxlabels=True)
+        ax_list[0][0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=5)
+
+        filepath = bulkpath+"bulk.0000962.vlsv"
+        filenr_g = 962
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4b.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_list[0][1],nocb=True,noxlabels=True,noylabels=True)
+        ax_list[0][1].annotate("b)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=5)
+
+        filepath = bulkpath+"bulk.0000970.vlsv"
+        filenr_g = 970
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4c.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_list[1][0],nocb=True)
+        ax_list[1][0].annotate("c)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=5)
+
+        filepath = bulkpath+"bulk.0000996.vlsv"
+        filenr_g = 996
+
+        pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_list[1][1],noylabels=True)
+        ax_list[1][1].annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=5)
+
+        fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig4.png")
+        plt.close(fig)
+        return None
+
+
     for itr in range(start,stop+1):
         filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
         filenr_g = itr
