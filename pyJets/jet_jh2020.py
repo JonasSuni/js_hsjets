@@ -363,7 +363,7 @@ def get_timeseries_data(runid,start,stop,cellid):
 
     return None
 
-def mag_thresh_plot(allow_splinters=True):
+def mag_thresh_plot(allow_splinters=False):
 
     epsilon = 1.e-27
 
@@ -758,6 +758,8 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
     if runid in ["ABA","AEA"]:
         boxre = [6,18,-8,6]
 
+    colmap = "Blues"
+
     if fig1:
         filepath = bulkpath+"bulk.0000895.vlsv"
 
@@ -771,8 +773,6 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         if dbg:
             fluxdir = bulkpath+"../flux/"
             fluxfile = "flux.{}.bin".format(str(itr).zfill(7))
-
-        colmap = "Blues"
 
         if fig5:
             pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig5/{}.png".format(str(itr).zfill(5)),boxre=[9,12,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80)
