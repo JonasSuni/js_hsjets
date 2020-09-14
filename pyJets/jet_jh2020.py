@@ -871,7 +871,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
                 ax.arrow(nx,ny,dnx,dny,head_width=0.1,width=0.01,color=jx.orange)
 
     if fig1_g:
-        ax.legend(frameon=False,numpoints=1,markerscale=1,loc="upper right",fontsize=10)
+        ax.legend(frameon=False,numpoints=1,markerscale=1,loc="upper right",fontsize=5)
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
