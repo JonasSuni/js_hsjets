@@ -773,14 +773,9 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         return None
 
     if fig5:
-        #filenr_list = [954,962,970,996]
-        #fig,ax_list = plt.subplots(2,3)
-        #ax_list[0,2].axis("off")
-        #ax_list[1,2].axis("off")
-        #cbax = fig.add_subplot(1,3,3)
         noborder = True
 
-        fig = plt.figure()
+        fig = plt.figure(figsize=(10,10))
         gs = fig.add_gridspec(2,29,wspace=-0.5)
         ax_ul = fig.add_subplot(gs[0,0:14])
         ax_ur = fig.add_subplot(gs[0,14:-1])
