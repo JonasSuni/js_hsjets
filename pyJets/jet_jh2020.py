@@ -911,8 +911,8 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     slams_cont.collections[0].set_label("FCS")
     jet_cont.collections[0].set_label("Jet")
 
-    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=markscaler*3,markeredgecolor="white",fillstyle="full",mew=markscaler*0.3,label="Non-FCS-jet")
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=markscaler*3,markeredgecolor="white",fillstyle="full",mew=markscaler*0.3,label="FCS-jet")
+    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=markscaler*4,markeredgecolor="white",fillstyle="full",mew=markscaler*0.4,label="Non-FCS-jet")
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=markscaler*4,markeredgecolor="white",fillstyle="full",mew=markscaler*0.4,label="FCS-jet")
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g,filenr_g)
