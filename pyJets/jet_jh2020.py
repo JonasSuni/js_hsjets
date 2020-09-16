@@ -788,25 +788,25 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         filenr_g = 954
 
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4a.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_ul,nocb=True,noxlabels=True,noborder=noborder,scale=scale)
-        ax_ul.annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
+        ax_ul.annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=20)
 
         filepath = bulkpath+"bulk.0000962.vlsv"
         filenr_g = 962
 
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4b.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_ur,nocb=True,noxlabels=True,noylabels=True,noborder=noborder,scale=scale)
-        ax_ur.annotate("b)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
+        ax_ur.annotate("b)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=20)
 
         filepath = bulkpath+"bulk.0000970.vlsv"
         filenr_g = 970
 
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4c.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_ll,nocb=True,noborder=noborder,scale=scale)
-        ax_ll.annotate("c)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
+        ax_ll.annotate("c)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=20)
 
         filepath = bulkpath+"bulk.0000996.vlsv"
         filenr_g = 996
 
         pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/sj_figs/fig4d.png",boxre=[9,13,-3,1],usesci=0,lin=1,vscale=vscale,var=var,tickinterval=1,vmin=vmin,vmax=vmax,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"],fluxfile=fluxfile,fluxdir=fluxdir,fluxlines=80,axes=ax_lr,noylabels=True,cbaxes=cbax,noborder=noborder,scale=scale,cbtitle="")
-        ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=10)
+        ax_lr.annotate("d)",xy=(0.05,0.9),xycoords="axes fraction",fontsize=20)
 
         #fig.subplots_adjust(wspace=0.05)
         plt.tight_layout()
@@ -894,21 +894,25 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     #bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     #mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
+    markscaler = 1.0
     if fig5_g:
-        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
-        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
+        markscaler = 2.0
+
+    if fig5_g:
+        rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=markscaler*0.6,colors="black")
+        mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=markscaler*0.6,colors=jx.violet)
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
-    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
+    ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=markscaler*0.6,colors=jx.orange)
     ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")
 
-    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
-    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green)
+    slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=markscaler*0.6,colors="yellow")
+    jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=markscaler*0.6,colors=jx.green)
     slams_cont.collections[0].set_label("FCS")
     jet_cont.collections[0].set_label("Jet")
 
-    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="Non-FCS-jet")
-    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=3,markeredgecolor="white",fillstyle="full",mew=0.3,label="FCS-jet")
+    non_pos, = ax.plot(non_xlist,non_ylist,"o",color="black",markersize=markscaler*3,markeredgecolor="white",fillstyle="full",mew=markscaler*0.3,label="Non-FCS-jet")
+    sj_pos, = ax.plot(sj_xlist,sj_ylist,"o",color="red",markersize=markscaler*3,markeredgecolor="white",fillstyle="full",mew=markscaler*0.3,label="FCS-jet")
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g,filenr_g)
