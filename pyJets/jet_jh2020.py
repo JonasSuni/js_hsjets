@@ -903,6 +903,12 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
         mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=markscaler*0.6,colors=jx.violet)
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
+        if filenr_g in [962,970]:
+            for ix,xpos in enumerate(non_xlist):
+                if np.abs(xpos-11) < 1.0:
+                    ypos = non_ylist[ix]
+                    ax.annotate("",xy=(xpos-0.1,ypos+0.1),xytext=(-20,20),xycoords="data",textcoords="offset points")
+
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=markscaler*0.6,colors=jx.orange)
     ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")
 
