@@ -908,7 +908,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
         mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=markscaler*0.6,colors=jx.violet)
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
-        ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
+        ax.annotate("",xy=(xpos-0.125,ypos+0.125),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
         # if filenr_g in [962,970]:
         #     for ix,xpos in enumerate(non_xlist):
         #         if np.abs(xpos-11) < 1.0:
@@ -934,7 +934,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
                 ax.arrow(nx,ny,dnx,dny,head_width=0.1,width=0.01,color=jx.orange)
 
     if fig1_g:
-        ax.legend(frameon=False,numpoints=1,markerscale=1,loc="upper right",fontsize=5)
+        ax.legend(frameon=True,numpoints=1,markerscale=1,loc="upper right",fontsize=5)
 
     #xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
 
