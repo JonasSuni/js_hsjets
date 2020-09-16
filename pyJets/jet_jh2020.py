@@ -884,6 +884,11 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
         if filenr_g/2.0 in jetobj.read("time"):
             non_xlist.append(jetobj.read_at_time("x_mean",filenr_g/2.0))
             non_ylist.append(jetobj.read_at_time("y_mean",filenr_g/2.0))
+        if fig5_g:
+            if 962/2.0 in jetobj.read("time"):
+                if np.abs(jetobj.read_at_time("x_mean",962/2.0)-11) < 1.0:
+                    xpos = jetobj.read_at_time("x_mean",962/2.0)
+                    ypos = jetobj.read_at_time("y_mean",962/2.0)
 
     #bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
     #mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
@@ -903,12 +908,12 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
         mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=markscaler*0.6,colors=jx.violet)
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
-        if filenr_g in [962,970]:
-            for ix,xpos in enumerate(non_xlist):
-                if np.abs(xpos-11) < 1.0:
-                    ypos = non_ylist[ix]
-                    ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",
-                            connectionstyle="arc3"))
+        ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
+        # if filenr_g in [962,970]:
+        #     for ix,xpos in enumerate(non_xlist):
+        #         if np.abs(xpos-11) < 1.0:
+        #             ypos = non_ylist[ix]
+        #             ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
 
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=markscaler*0.6,colors=jx.orange)
     ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")

@@ -1014,7 +1014,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-def rev1_deflection(runid,time_thresh=5,timeavg=False):
+def rev1_deflection(runid,time_thresh=5,type="angmag"):
 
     start_time = time.time()
 
@@ -1043,9 +1043,9 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
     #cellids = vlsvobj_list[0].read_variable("CellID")
     #cellids.sort()
 
-    if timeavg:
+    if type == "angmag" or type == "xy":
         vavgs = np.load(wrkdir_DNR+"tavg/velocities/"+runid+"/"+"580_{}_v.npy".format(endtime))
-    else:
+    elif type == "sheath":
         vavgs = np.zeros(10,dtype=float)
 
     for itr in range(1,3000):
@@ -1076,11 +1076,17 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
             curr_time = jet_times[ix]
             time_cells = np.array(jet_cells[ix])
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
-            if timeavg:
+            if type == "angmag":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
                 diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
                 deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
-            else:
+            elif type == "xy":
+                vavgx,vavgy,vavgz = vavgs[time_cells-1].T
+                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
+                deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
+                diffs = vx-vavgx
+                deflec_angle = vy-vavgy
+            elif type == "sheath":
                 sheath_cells_plus = jx.get_neighs(runid,time_cells,neighborhood_reach=[2,2,0])
                 sheath_cells = sheath_cells_plus[~np.in1d(sheath_cells_plus,time_cells)]
                 vavgx,vavgy,vavgz = vlsvobj.read_variable("v",cellids=sheath_cells).T
@@ -1096,7 +1102,7 @@ def rev1_deflection(runid,time_thresh=5,timeavg=False):
 
     print("Elapsed time is {}".format(time.time()-start_time))
 
-def rev1_defplot(time_thresh=5):
+def rev1_defplot(time_thresh=5,type="angmag"):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
@@ -1152,19 +1158,35 @@ def rev1_defplot(time_thresh=5):
         ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=2)
 
     ax_list[0].axvline(0,linestyle="dashed",color="black")
-    ax_list[0].set_xlim(-0.5,2.1)
-    ax_list[0].set_ylim(0,450)
+
     ax_list[0].yaxis.set_major_locator(MaxNLocator(nbins=5))
     ax_list[1].axvline(0,linestyle="dashed",color="black")
     ax_list[1].axhline(0,linestyle="dashed",color="black")
-    ax_list[1].set_xlim(-0.5,2.1)
-    ax_list[1].set_ylim(-60,60)
+
     ax_list[1].yaxis.set_major_locator(MaxNLocator(nbins=5))
+    if type == "angmag":
+        ax_list[0].set_xlim(-0.5,2.1)
+        ax_list[0].set_ylim(0,450)
+        ax_list[1].set_xlim(-0.5,2.1)
+        ax_list[1].set_ylim(-60,60)
+        ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+    elif type == "sheath":
+        ax_list[0].set_xlim(-0.5,2.1)
+        ax_list[0].set_ylim(0,350)
+        ax_list[1].set_xlim(-0.5,2.1)
+        ax_list[1].set_ylim(-30,30)
+        ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+    elif type == "xy":
+        ax_list[0].set_xlim(-0.5,2.1)
+        ax_list[0].set_ylim(-300,300)
+        ax_list[1].set_xlim(-0.5,2.1)
+        ax_list[1].set_ylim(-300,300)
+        ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{V_y~deflection~[kms^{-1}]}$",fontsize=20)
 
     ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
-    ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
-    ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
-
     ax_list[0].annotate("HM30",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
     ax_list[0].annotate("HM05",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
     ax_list[0].annotate("LM30",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
@@ -1172,7 +1194,7 @@ def rev1_defplot(time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"Figures/hackathon_paper/deflection_plot.png")
+    fig.savefig(wrkdir_DNR+"Figures/hackathon_paper/deflection_plot_{}.png".format(type))
     plt.close(fig)
 
 def rev1_jetcone(runids,time_thresh=5):
