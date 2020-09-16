@@ -897,10 +897,10 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
     if fig5_g:
         rho_cont = ax.contour(XmeshXY,YmeshXY,rho_mask,[0.5],linewidths=0.6,colors="black")
         mach_cont = ax.contour(XmeshXY,YmeshXY,mach_mask,[0.5],linewidths=0.6,colors=jx.violet)
-        rho_cont.collections[0].set_label("$n \geq 2*n_{sw}$")
+        rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=0.6,colors=jx.orange)
-    ch_cont.collections[0].set_label("$T_{core} \geq 3*T_{sw}$")
+    ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")
 
     slams_cont = ax.contour(XmeshXY,YmeshXY,slams_mask,[0.5],linewidths=0.6,colors="yellow")
     jet_cont = ax.contour(XmeshXY,YmeshXY,jet_mask,[0.5],linewidths=0.6,colors=jx.green)
