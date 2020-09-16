@@ -907,7 +907,7 @@ def jh20f1_ext(ax, XmeshXY,YmeshXY, pass_maps):
             for ix,xpos in enumerate(non_xlist):
                 if np.abs(xpos-11) < 1.0:
                     ypos = non_ylist[ix]
-                    ax.annotate("",xy=(xpos-0.1,ypos+0.1),xytext=(xpos-1,xpos+1),xycoords="data",textcoords="data")
+                    ax.annotate(" ",xy=(xpos-0.1,ypos+0.1),xytext=(xpos-1,xpos+1),xycoords="data",textcoords="data")
 
     ch_cont = ax.contour(XmeshXY,YmeshXY,ch_mask,[0.5],linewidths=markscaler*0.6,colors=jx.orange)
     ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")
