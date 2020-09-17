@@ -1155,14 +1155,14 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     angle_mean_list = [np.nanmean(SEA_arr,axis=0) for SEA_arr in angle_mean_arrs]
 
     for ix in range(len(runids)):
-        ax_list[0].plot(epoch_arr,diff_mean_list[ix],color=color_list[ix],zorder=2)
-        ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=2)
+        ax_list[0].plot(epoch_arr,diff_mean_list[ix],color=color_list[ix],zorder=3)
+        ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=3)
 
-    ax_list[0].axvline(0,linestyle="dashed",color="black")
+    ax_list[0].axvline(0,linestyle="dashed",color="black",zorder=2)
 
     ax_list[0].yaxis.set_major_locator(MaxNLocator(nbins=5))
-    ax_list[1].axvline(0,linestyle="dashed",color="black")
-    ax_list[1].axhline(0,linestyle="dashed",color="black")
+    ax_list[1].axvline(0,linestyle="dashed",color="black",zorder=2)
+    ax_list[1].axhline(0,linestyle="dashed",color="black",zorder=2)
 
     ax_list[1].yaxis.set_major_locator(MaxNLocator(nbins=5))
     if type == "angmag":
@@ -1186,6 +1186,7 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[1].set_ylim(-300,300)
         ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$",fontsize=20)
         ax_list[1].set_ylabel("$\mathrm{V_y~deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[0].axvline(0,linestyle="dashed",color="black",zorder=2)
 
     ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
     ax_list[0].annotate("HM30",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
