@@ -1091,12 +1091,8 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
                 diffs = np.linalg.norm([np.median(vx)-np.median(vavgx),np.median(vy)-np.median(vavgy),np.median(vz)-np.median(vavgz)],axis=0)
                 deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
 
-            if type == "xy":
-                jet_diffs[ix] = np.mean(diffs)
-                jet_deflecs[ix] = np.mean(deflec_angle)
-            else:
-                jet_diffs[ix] = np.median(diffs)
-                jet_deflecs[ix] = np.median(deflec_angle)
+            jet_diffs[ix] = np.median(diffs)
+            jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
@@ -1137,7 +1133,10 @@ def rev1_defplot(time_thresh=5,type="angmag"):
             inputdir = wrkdir_DNR+"deflection/"+runid+"/"
             deflec_props = np.loadtxt(inputdir+"jet_{}_diffs.txt".format(n))
             deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
-            deflec_angle = deflec_props[:,2][sorted_args]
+            if type == "xy":
+                deflec_angle = deflec_props[:,2][sorted_args]/1.0e3
+            else:
+                deflec_angle = deflec_props[:,2][sorted_args]
 
             if xdist_arr.size > 30:
                 ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
