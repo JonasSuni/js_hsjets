@@ -1138,7 +1138,7 @@ def rev1_defplot(time_thresh=5,type="angmag"):
             else:
                 deflec_angle = deflec_props[:,2][sorted_args]
 
-            if xdist_arr.size > 30:
+            if xdist_arr.size > 0:
                 ax_list[0].plot(xdist_arr,deflec_diff,color="darkgray",zorder=1)
                 ax_list[1].plot(xdist_arr,deflec_angle,color="darkgray",zorder=1)
 
