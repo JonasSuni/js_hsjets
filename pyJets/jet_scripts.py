@@ -1014,7 +1014,7 @@ def rev1_jetpath(runid,vavgfilename,time_thresh=5,crop=True):
     fig.savefig(wrkdir_DNR+"pathtest_{}.png".format(runid))
     plt.close(fig)
 
-def rev1_deflection(runid,time_thresh=5,type="angmag"):
+def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
 
     start_time = time.time()
 
@@ -1048,7 +1048,7 @@ def rev1_deflection(runid,time_thresh=5,type="angmag"):
     elif type == "sheath":
         vavgs = np.zeros(10,dtype=float)
 
-    for itr in range(1,3000):
+    for itr in range(start,stop+1):
         next_bool = False
         try:
             props = jio.PropReader(str(itr).zfill(5),runid,580)
@@ -1082,8 +1082,6 @@ def rev1_deflection(runid,time_thresh=5,type="angmag"):
                 deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
             elif type == "xy":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
-                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
-                deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
                 diffs = vx-vavgx
                 deflec_angle = vy-vavgy
             elif type == "sheath":
@@ -1093,8 +1091,12 @@ def rev1_deflection(runid,time_thresh=5,type="angmag"):
                 diffs = np.linalg.norm([np.median(vx)-np.median(vavgx),np.median(vy)-np.median(vavgy),np.median(vz)-np.median(vavgz)],axis=0)
                 deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
 
-            jet_diffs[ix] = np.median(diffs)
-            jet_deflecs[ix] = np.median(deflec_angle)
+            if type == "xy":
+                jet_diffs[ix] = np.mean(diffs)
+                jet_deflecs[ix] = np.mean(deflec_angle)
+            else:
+                jet_diffs[ix] = np.median(diffs)
+                jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
