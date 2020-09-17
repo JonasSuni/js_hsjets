@@ -1186,7 +1186,7 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[1].set_ylim(-300,300)
         ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$",fontsize=20)
         ax_list[1].set_ylabel("$\mathrm{V_y~deflection~[kms^{-1}]}$",fontsize=20)
-        ax_list[0].axvline(0,linestyle="dashed",color="black",zorder=2)
+        ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
 
     ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
     ax_list[0].annotate("HM30",xy=(0.5-0.2,1.05),xycoords="axes fraction",color="black",fontsize=20)
