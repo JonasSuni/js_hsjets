@@ -871,7 +871,7 @@ def sort_jets_2(vlsvobj,cells,min_size=0,max_size=3000,neighborhood_reach=[1,1,0
 
     return [events_culled,props]
 
-def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,up_cells,down_cells,up_cells_mms,down_cells_mms,min_size=1,max_size=10000,neighborhood_reach=[2,2,0]):
+def jet_sorter(vlsvobj,jet_cells,slams_cells,sj_cells,up_cells,down_cells,up_cells_mms,down_cells_mms,min_size=1,max_size=100000000,neighborhood_reach=[2,2,0]):
 
     cells = np.array(sj_cells,ndmin=1,dtype=int)
     events = []
