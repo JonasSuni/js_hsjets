@@ -1135,6 +1135,10 @@ def rev1_defplot(time_thresh=5,type="angmag"):
             deflec_diff = deflec_props[:,1][sorted_args]/1.0e3
             if type == "xy":
                 deflec_angle = deflec_props[:,2][sorted_args]/1.0e3
+            elif type == "xyabs":
+                ysign_arr = np.sign(props.read("y_mean"))[sorted_args]
+                deflec_angle = deflec_props[:,2][sorted_args]/1.0e3
+                deflec_angle = deflec_angle*ysign_arr
             else:
                 deflec_angle = deflec_props[:,2][sorted_args]
 
@@ -1186,6 +1190,14 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[1].set_ylim(-300,300)
         ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$",fontsize=20)
         ax_list[1].set_ylabel("$\mathrm{V_y~deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
+    elif type == "xyabs":
+        ax_list[0].set_xlim(-0.5,2.1)
+        ax_list[0].set_ylim(-300,300)
+        ax_list[1].set_xlim(-0.5,2.1)
+        ax_list[1].set_ylim(-300,300)
+        ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{V_y~def~away~from~SEL~[kms^{-1}]}$",fontsize=20)
         ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
 
     ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$",fontsize=20)
