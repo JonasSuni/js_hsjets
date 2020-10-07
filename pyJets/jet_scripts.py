@@ -1225,6 +1225,59 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     fig.savefig(wrkdir_DNR+"Figures/hackathon_paper/deflection_plot_{}.png".format(type))
     plt.close(fig)
 
+def rev1_jetcone_all(time_thresh=5):
+
+    runids = ["ABA","ABC","AEA","AEC"]
+    runid_labs = ["HM30","HM05","LM30","LM05"]
+    cutoff_list = [10,8,10,8]
+
+    color_list = ["black",jx.violet,jx.orange,jx.green]
+
+    data_list = [[],[],[],[]]
+    data_list_cone = [[],[],[],[]]
+
+    bins = np.linspace(-8,8,25+1)
+    bins_cone = np.linspace(-50,50,25+1)
+
+    for n in range(1,3000):
+        for ix,runid in enumerate(runids):
+            try:
+                props = jio.PropReader(str(n).zfill(5),runid,580)
+            except:
+                continue
+
+            if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[ix]:
+                continue
+
+            data_list_cone[ix].append(props.read("final_cone")[-1])
+            data_list[ix].append(props.read("y_mean")[-1])
+
+    fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(12,6),sharey=True)
+    for ix,runid_lab in enumerate(runid_labs):
+        data_arr = np.array(data_list[ix])
+        data_cone = np.array(data_list_cone[ix])
+        weights = np.ones_like(data_arr)/data_arr.size
+        ax_list[0].hist(data_arr,weights=weights,bins=bins,histtype="step",label=runid_lab,color=color_list[ix])
+        ax_list[0].hist(data_cone,weights=weights,bins=bins_cone,histtype="step",label=runid_lab,color=color_list[ix])
+
+    ax_list[0].legend(frameon=False,fontsize=20)
+
+    ax_list[0].set_xlim(-8,8)
+    ax_list[0].set_ylim(0,0.2)
+    ax_list[0].set_xlabel("Final Y [$R_e$]",fontsize=20,labelpad=10)
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    ax_list[0].tick_params(labelsize=20)
+    ax_list[1].set_xlim(-50,50)
+    ax_list[1].set_ylim(0,0.2)
+    ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
+    #ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    ax_list[1].tick_params(labelsize=20)
+
+    plt.tight_layout()
+
+    fig.savefig(homedir+"Figures/hackathon_paper/fig11.png")
+    plt.close(fig)
+
 def rev1_jetcone(runids,time_thresh=5):
 
     runids_list = ["ABA","ABC","AEA","AEC"]
