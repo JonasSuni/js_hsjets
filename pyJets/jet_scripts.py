@@ -1167,8 +1167,8 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     angle_mean_list = [np.nanmean(SEA_arr,axis=0) for SEA_arr in angle_mean_arrs]
 
     for ix in range(len(runids)):
-        ax_list[0].plot(epoch_arr,diff_mean_list[ix],color=color_list[ix],zorder=3)
-        ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=3)
+        ax_list[0].plot(epoch_arr,diff_mean_list[ix],color=color_list[ix],zorder=3,linewidth=1.5)
+        ax_list[1].plot(epoch_arr,angle_mean_list[ix],color=color_list[ix],zorder=3,linewidth=1.5)
 
     ax_list[0].axvline(0,linestyle="dashed",color="black",zorder=2)
 
@@ -1183,8 +1183,10 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[1].set_xlim(-0.5,2.1)
         ax_list[1].set_ylim(-40,40)
         ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
-        ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
-        ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+        #ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
+        #ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+        ax_list[0].set_ylabel("$\mathrm{|v|-<|v|>~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{\theta-<\theta>~[^\circ]}$",fontsize=20)
     elif type == "sheath":
         ax_list[0].set_xlim(-0.5,2.1)
         ax_list[0].set_ylim(0,350)
