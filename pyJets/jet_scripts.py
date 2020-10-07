@@ -1037,7 +1037,11 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
     vlsvobj_list = []
 
     for n in range(580,endtime+1):
-        vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+        try:
+            vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
+        except:
+            time.sleep(0.1)
+            vlsvobj_list.append(pt.vlsvfile.VlsvReader(bulkpath+"bulk.{}.vlsv".format(str(n).zfill(7))))
         #print("Loaded filenr {}".format(n),flush=True)
 
     #cellids = vlsvobj_list[0].read_variable("CellID")
@@ -1092,8 +1096,8 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
                 deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
 
             if type == "angmag":
-                jet_diffs[ix] = np.mean(diffs)
-                jet_deflecs[ix] = np.mean(deflec_angle)
+                jet_diffs[ix] = np.median(diffs)
+                jet_deflecs[ix] = np.median(deflec_angle)
             else:
                 jet_diffs[ix] = np.median(diffs)
                 jet_deflecs[ix] = np.median(deflec_angle)
