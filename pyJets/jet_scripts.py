@@ -1078,7 +1078,7 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
             if type == "angmag":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
-                diffs = np.linalg.norm([vx-vavgx,vy-vavgy,vz-vavgz],axis=0)
+                diffs = np.linalg.norm([vx,vy,vz],axis=0)-np.linalg.norm([vavgx,vavgy,vavgz],axis=0)
                 deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
             elif type == "xy":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
@@ -1171,9 +1171,9 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     ax_list[1].yaxis.set_major_locator(MaxNLocator(nbins=5))
     if type == "angmag":
         ax_list[0].set_xlim(-0.5,2.1)
-        ax_list[0].set_ylim(0,450)
+        ax_list[0].set_ylim(-400,400)
         ax_list[1].set_xlim(-0.5,2.1)
-        ax_list[1].set_ylim(-60,60)
+        ax_list[1].set_ylim(-30,30)
         ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
         ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
     elif type == "sheath":
