@@ -1257,8 +1257,8 @@ def rev1_jetcone_all(time_thresh=5):
         data_arr = np.array(data_list[ix])
         data_cone = np.array(data_list_cone[ix])
         weights = np.ones_like(data_arr)/data_arr.size
-        ax_list[0].hist(data_arr,weights=weights,bins=bins,histtype="step",label=runid_lab,color=color_list[ix])
-        ax_list[1].hist(data_cone,weights=weights,bins=bins_cone,histtype="step",label=runid_lab,color=color_list[ix])
+        ax_list[0].hist(data_arr,weights=weights,bins=bins,histtype="step",label=runid_lab,color=color_list[ix],linewidth=1.2)
+        ax_list[1].hist(data_cone,weights=weights,bins=bins_cone,histtype="step",label=runid_lab,color=color_list[ix],linewidth=1.2)
 
     ax_list[0].legend(frameon=False,fontsize=20)
 
@@ -1270,8 +1270,10 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[1].set_xlim(-50,50)
     ax_list[1].set_ylim(0,0.2)
     ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
-    #ax_list[1].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
+
+    ax_list[0].annotate("a)",xy=(0.02,0.9),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list[1].annotate("b)",xy=(0.02,0.9),xycoords="axes fraction",color="black",fontsize=20)
 
     plt.tight_layout()
 
