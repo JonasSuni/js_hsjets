@@ -1082,8 +1082,10 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
             vx,vy,vz = vlsvobj.read_variable("v",cellids=time_cells).T
             if type == "angmag":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
-                diffs = np.linalg.norm([vx,vy,vz],axis=0)-np.linalg.norm([vavgx,vavgy,vavgz],axis=0)
-                deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
+                #diffs = np.linalg.norm([vx,vy,vz],axis=0)-np.linalg.norm([vavgx,vavgy,vavgz],axis=0)
+                #deflec_angle = np.rad2deg(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx)-np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx))
+                diffs = np.linalg.norm([vx,vy],axis=0)-np.linalg.norm([vavgx,vavgy],axis=0)
+                deflec_angle = np.rad2deg(np.arctan2(np.abs(vy),-vx)-np.arctan2(np.abs(vy),-vavgx))
             elif type == "xy":
                 vavgx,vavgy,vavgz = vavgs[time_cells-1].T
                 diffs = vx-vavgx
