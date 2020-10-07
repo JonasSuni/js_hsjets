@@ -1258,7 +1258,7 @@ def rev1_jetcone_all(time_thresh=5):
         data_cone = np.array(data_list_cone[ix])
         weights = np.ones_like(data_arr)/data_arr.size
         ax_list[0].hist(data_arr,weights=weights,bins=bins,histtype="step",label=runid_lab,color=color_list[ix])
-        ax_list[0].hist(data_cone,weights=weights,bins=bins_cone,histtype="step",label=runid_lab,color=color_list[ix])
+        ax_list[1].hist(data_cone,weights=weights,bins=bins_cone,histtype="step",label=runid_lab,color=color_list[ix])
 
     ax_list[0].legend(frameon=False,fontsize=20)
 
