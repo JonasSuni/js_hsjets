@@ -1275,7 +1275,7 @@ def rev1_jetcone_all(time_thresh=5):
 
     plt.tight_layout()
 
-    fig.savefig(homedir+"Figures/hackathon_paper/fig11.png")
+    fig.savefig(wrkdir_DNR+"Figures/hackathon_paper/fig11.png")
     plt.close(fig)
 
 def rev1_jetcone(runids,time_thresh=5):
