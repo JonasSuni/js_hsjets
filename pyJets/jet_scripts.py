@@ -1091,8 +1091,12 @@ def rev1_deflection(runid,start,stop,time_thresh=5,type="angmag"):
                 diffs = np.linalg.norm([np.median(vx)-np.median(vavgx),np.median(vy)-np.median(vavgy),np.median(vz)-np.median(vavgz)],axis=0)
                 deflec_angle = np.rad2deg(np.median(np.arctan2(np.linalg.norm([vy,vz],axis=0),-vx))-np.median(np.arctan2(np.linalg.norm([vavgy,vavgz],axis=0),-vavgx)))
 
-            jet_diffs[ix] = np.median(diffs)
-            jet_deflecs[ix] = np.median(deflec_angle)
+            if type == "angmag":
+                jet_diffs[ix] = np.mean(diffs)
+                jet_deflecs[ix] = np.mean(deflec_angle)
+            else:
+                jet_diffs[ix] = np.median(diffs)
+                jet_deflecs[ix] = np.median(deflec_angle)
             vlsvobj.optimize_clear_fileindex_for_cellid()
             vlsvobj.optimize_close_file()
 
@@ -1173,7 +1177,8 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[0].set_xlim(-0.5,2.1)
         ax_list[0].set_ylim(-400,400)
         ax_list[1].set_xlim(-0.5,2.1)
-        ax_list[1].set_ylim(-30,30)
+        ax_list[1].set_ylim(-40,40)
+        ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
         ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
         ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
     elif type == "sheath":
