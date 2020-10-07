@@ -1236,8 +1236,8 @@ def rev1_jetcone_all(time_thresh=5):
     data_list = [[],[],[],[]]
     data_list_cone = [[],[],[],[]]
 
-    bins = np.linspace(-8,8,25+1)
-    bins_cone = np.linspace(-50,50,25+1)
+    bins = np.linspace(-8,8,20+1)
+    bins_cone = np.linspace(-50,50,20+1)
 
     for n in range(1,3000):
         for ix,runid in enumerate(runids):
