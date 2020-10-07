@@ -1263,12 +1263,12 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[0].legend(frameon=False,fontsize=20)
 
     ax_list[0].set_xlim(-8,8)
-    ax_list[0].set_ylim(0,0.2)
+    ax_list[0].set_ylim(0,0.4)
     ax_list[0].set_xlabel("Final Y [$R_e$]",fontsize=20,labelpad=10)
     ax_list[0].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
     ax_list[0].tick_params(labelsize=20)
     ax_list[1].set_xlim(-50,50)
-    ax_list[1].set_ylim(0,0.2)
+    ax_list[1].set_ylim(0,0.4)
     ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
