@@ -1217,7 +1217,7 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     ax_list[0].annotate("LM30",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
     ax_list[0].annotate("LM05",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
 
-    ax_list[0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list[0].annotate("a)",xy=(0.05,0.1),xycoords="axes fraction",color="black",fontsize=20)
     ax_list[1].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=20)
 
     plt.tight_layout()
