@@ -1185,8 +1185,8 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
         #ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
         #ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
-        ax_list[0].set_ylabel("$\mathrm{|v|-<|v|>~[kms^{-1}]}$",fontsize=20)
-        ax_list[1].set_ylabel("$\mathrm{\theta-<\theta>~[^\circ]}$",fontsize=20)
+        ax_list[0].set_ylabel("$\mathrm{|v|-\left<|v|\right>~[kms^{-1}]}$",fontsize=20)
+        ax_list[1].set_ylabel("$\mathrm{\\theta-\left<\\theta\right>~[^\circ]}$",fontsize=20)
     elif type == "sheath":
         ax_list[0].set_xlim(-0.5,2.1)
         ax_list[0].set_ylim(0,350)
@@ -1216,6 +1216,9 @@ def rev1_defplot(time_thresh=5,type="angmag"):
     ax_list[0].annotate("HM05",xy=(0.5-0.1,1.05),xycoords="axes fraction",color=jx.violet,fontsize=20)
     ax_list[0].annotate("LM30",xy=(0.5,1.05),xycoords="axes fraction",color=jx.orange,fontsize=20)
     ax_list[0].annotate("LM05",xy=(0.5+0.1,1.05),xycoords="axes fraction",color=jx.green,fontsize=20)
+
+    ax_list[0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list[1].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=20)
 
     plt.tight_layout()
 
