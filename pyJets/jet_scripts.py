@@ -1236,8 +1236,8 @@ def rev1_jetcone_all(time_thresh=5):
     data_list = [[],[],[],[]]
     data_list_cone = [[],[],[],[]]
 
-    bins = np.linspace(-8,8,20+1)
-    bins_cone = np.linspace(-50,50,20+1)
+    bins = np.linspace(-8,8,15+1)
+    bins_cone = np.linspace(-50,50,15+1)
 
     for n in range(1,3000):
         for ix,runid in enumerate(runids):
@@ -1272,8 +1272,8 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
-    ax_list[0].annotate("a)",xy=(0.02,0.9),xycoords="axes fraction",color="black",fontsize=20)
-    ax_list[1].annotate("b)",xy=(0.02,0.9),xycoords="axes fraction",color="black",fontsize=20)
+    ax_list[0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=25)
+    ax_list[1].annotate("b)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=25)
 
     plt.tight_layout()
 
