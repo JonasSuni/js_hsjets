@@ -1255,7 +1255,7 @@ def rev1_jetcone_all(time_thresh=5):
             #data_list_cone[ix].append(props.read("final_cone")[-1])
             #data_list[ix].append(props.read("y_mean")[-1])
             data_list_cone[ix%2].append(props.read("final_cone")[-1])
-            data_list[ix+%2].append(props.read("y_mean")[-1])
+            data_list[ix%2].append(props.read("y_mean")[-1])
 
     fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(12,6),sharey=True)
     for ix,runid_lab in enumerate(runid_labs):
