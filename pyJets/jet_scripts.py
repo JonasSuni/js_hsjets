@@ -1275,7 +1275,7 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[0].tick_params(labelsize=20)
     ax_list[1].set_xlim(-50,50)
     ax_list[1].set_ylim(0,0.3)
-    ax_list[1].set_xlabel("$\\theta(t_{last})$ [$^\circ$]",fontsize=25,labelpad=10)
+    ax_list[1].set_xlabel("$\\phi(t_{last})$ [$^\circ$]",fontsize=25,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
     ax_list[0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=25)
