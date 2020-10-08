@@ -1230,7 +1230,8 @@ def rev1_defplot(time_thresh=5,type="angmag"):
 def rev1_jetcone_all(time_thresh=5):
 
     runids = ["ABA","ABC","AEA","AEC"]
-    runid_labs = ["HM30","HM05","LM30","LM05"]
+    #runid_labs = ["HM30","HM05","LM30","LM05"]
+    runid_labs = ["$\mathrm{30^\circ}$","$\mathrm{5^\circ}$"]
     cutoff_list = [10,8,10,8]
 
     color_list = ["black",jx.violet,jx.orange,jx.green]
@@ -1251,8 +1252,10 @@ def rev1_jetcone_all(time_thresh=5):
             if props.read("duration")[0] < time_thresh or max(props.read("r_mean")) < cutoff_list[ix]:
                 continue
 
-            data_list_cone[ix].append(props.read("final_cone")[-1])
-            data_list[ix].append(props.read("y_mean")[-1])
+            #data_list_cone[ix].append(props.read("final_cone")[-1])
+            #data_list[ix].append(props.read("y_mean")[-1])
+            data_list_cone[ix%2].append(props.read("final_cone")[-1])
+            data_list[ix+%2].append(props.read("y_mean")[-1])
 
     fig,ax_list = fig,ax_list = plt.subplots(1,2,figsize=(12,6),sharey=True)
     for ix,runid_lab in enumerate(runid_labs):
