@@ -1231,7 +1231,8 @@ def rev1_jetcone_all(time_thresh=5):
 
     runids = ["ABA","ABC","AEA","AEC"]
     #runid_labs = ["HM30","HM05","LM30","LM05"]
-    runid_labs = ["$\mathrm{30^\circ}$","$\mathrm{5^\circ}$"]
+    #runid_labs = ["$\mathrm{30^\circ}$","$\mathrm{5^\circ}$"]
+    runid_labs = ["HM30+LM30","HM05+LM05"]
     cutoff_list = [10,8,10,8]
 
     color_list = ["black",jx.violet,jx.orange,jx.green]
@@ -1268,13 +1269,13 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[0].legend(frameon=False,fontsize=20)
 
     ax_list[0].set_xlim(-8,8)
-    ax_list[0].set_ylim(0,0.4)
-    ax_list[0].set_xlabel("Final Y [$R_e$]",fontsize=20,labelpad=10)
-    ax_list[0].set_ylabel("Fraction of jets",fontsize=20,labelpad=10)
+    ax_list[0].set_ylim(0,0.3)
+    ax_list[0].set_xlabel("$Y(t_{last})$ [$R_e$]",fontsize=25,labelpad=10)
+    ax_list[0].set_ylabel("Fraction of jets",fontsize=25,labelpad=10)
     ax_list[0].tick_params(labelsize=20)
     ax_list[1].set_xlim(-50,50)
-    ax_list[1].set_ylim(0,0.4)
-    ax_list[1].set_xlabel("Final Cone [deg]",fontsize=20,labelpad=10)
+    ax_list[1].set_ylim(0,0.3)
+    ax_list[1].set_xlabel("$\\theta(t_{last})$ [^\circ]",fontsize=25,labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
     ax_list[0].annotate("a)",xy=(0.05,0.9),xycoords="axes fraction",color="black",fontsize=25)
