@@ -1187,8 +1187,10 @@ def rev1_defplot(time_thresh=5,type="angmag"):
         ax_list[0].axhline(0,linestyle="dashed",color="black",zorder=2)
         #ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
         #ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
-        ax_list[0].set_ylabel("$\mathrm{|v|-\\left<|v|\\right>~[kms^{-1}]}$",fontsize=20)
-        ax_list[1].set_ylabel("$\mathrm{\\theta-\\left<\\theta\\right>~[^\circ]}$",fontsize=20)
+        ax_list[0].set_ylabel("$\mathrm{|v|-\\left<|v|\\right>~[kms^{-1}]}$",fontsize=20,labelpad=10)
+        ax_list[1].set_ylabel("$\mathrm{\\theta-\\left<\\theta\\right>~[^\circ]}$",fontsize=20,labelpad=10)
+        ax_list[0].tick_params(labelsize=15)
+        ax_list[1].tick_params(labelsize=15)
     elif type == "sheath":
         ax_list[0].set_xlim(-0.5,2.1)
         ax_list[0].set_ylim(0,350)
