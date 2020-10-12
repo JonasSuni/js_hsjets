@@ -412,11 +412,11 @@ def mag_thresh_plot(allow_splinters=False):
     fig,ax_list = plt.subplots(5,1,figsize=(8,10))
     for m in range(len(runid_list)):
         #ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[2].plot(mt_arr,sj_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.2)
-        ax_list[1].plot(mt_arr,jet_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.2)
-        ax_list[0].plot(mt_arr,slams_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.2)
-        ax_list[3].plot(mt_arr,slams_share_arr[m],label=runid_list[m],color=color_arr[m],linewidth=1.2)
-        ax_list[4].plot(mt_arr,share_arr[m],label=runid_list[m],color=color_arr[m],linewidth=1.2)
+        ax_list[2].plot(mt_arr,sj_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.5)
+        ax_list[1].plot(mt_arr,jet_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.5)
+        ax_list[0].plot(mt_arr,slams_number_arr[m]/run_length[m],label=runid_list[m],color=color_arr[m],linewidth=1.5)
+        ax_list[3].plot(mt_arr,slams_share_arr[m],label=runid_list[m],color=color_arr[m],linewidth=1.5)
+        ax_list[4].plot(mt_arr,share_arr[m],label=runid_list[m],color=color_arr[m],linewidth=1.5)
     for m in range(len(runid_list)):
         #ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
         pass
@@ -434,8 +434,8 @@ def mag_thresh_plot(allow_splinters=False):
         ax.grid()
         ax.set_xlim(mt_arr[0],mt_arr[-1])
         ax.tick_params(labelsize=15)
-        for lb in ["bottom","top","left","right"]:
-            ax.spines[lb].set_linewidth(1.5)
+        #for lb in ["bottom","top","left","right"]:
+        #    ax.spines[lb].set_linewidth(1.5)
     ax_list[2].set_ylim(bottom=0,top=0.99)
     ax_list[1].set_ylim(bottom=0,top=1.25)
     ax_list[0].set_ylim(bottom=0)
@@ -444,7 +444,7 @@ def mag_thresh_plot(allow_splinters=False):
     for axe in fig.get_axes():
         axe.label_outer()
     plt.tight_layout()
-    fig.subplots_adjust(hspace=0.1)
+    fig.subplots_adjust(hspace=0.0)
 
     #fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig2.png")
