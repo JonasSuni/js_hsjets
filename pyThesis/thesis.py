@@ -1,1 +1,1 @@
-from neighbour_demo import plot_neighbours
+from neighbours_demo import plot_neighbours
