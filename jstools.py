@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyJets")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyLandau")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pySlams")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyThesis")
 
 #Import modules
 
@@ -27,4 +28,9 @@ except ImportError as e:
 try:
     import slams
 except ImportError as e:
-    print("Note: Did not import slams module: ",e)    
+    print("Note: Did not import slams module: ",e)
+
+try:
+    import thesis
+except ImportError as e:
+    print("Note: Did not import thesis module: ",e)
