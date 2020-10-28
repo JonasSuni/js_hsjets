@@ -29,42 +29,42 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
 
     fig,ax_list = plt.subplots(2,3,figsize=(10,10))
 
-    ax_list[0][0].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[0][0].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[0][0].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[0][0].get_xaxis().set_ticks([])
     ax_list[0][0].get_yaxis().set_ticks([])
 
     jet_cells = np.array(mask_cells[0])
 
-    ax_list[0][1].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[0][1].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[0][1].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[0][1].get_xaxis().set_ticks([])
     ax_list[0][1].get_yaxis().set_ticks([])
 
     jet_cells = get_nbrs(jet_cells,xflat.size,yflat.size,[2,2])
 
-    ax_list[0][2].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[0][2].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[0][2].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[0][2].get_xaxis().set_ticks([])
     ax_list[0][2].get_yaxis().set_ticks([])
 
     jet_cells = np.intersect1d(jet_cells,mask_cells)
 
-    ax_list[1][0].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[1][0].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[1][0].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[1][0].get_xaxis().set_ticks([])
     ax_list[1][0].get_yaxis().set_ticks([])
 
     jet_cells = get_nbrs(jet_cells,xflat.size,yflat.size,[2,2])
 
-    ax_list[1][1].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[1][1].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[1][1].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[1][1].get_xaxis().set_ticks([])
     ax_list[1][1].get_yaxis().set_ticks([])
 
     jet_cells = np.intersect1d(jet_cells,mask_cells)
 
-    ax_list[1][2].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1)
+    ax_list[1][2].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
     ax_list[1][2].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=1)
     ax_list[1][2].get_xaxis().set_ticks([])
     ax_list[1][2].get_yaxis().set_ticks([])
