@@ -97,6 +97,8 @@ def find_markus_FCS(dist_thresh=1e5):
             jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slams")
         except:
             continue
+        if "splinter" in jetobj.meta or "merger" in jetobj.meta:
+            continue
         fcs_times = jetobj.read("time")
         fcs_x = jetobj.read("x_mean")*r_e
         fcs_y = jetobj.read("y_mean")*r_e
