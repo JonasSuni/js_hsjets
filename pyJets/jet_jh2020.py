@@ -100,8 +100,8 @@ def find_markus_FCS(dist_thresh=1e5):
         if "splinter" in jetobj.meta or "merger" in jetobj.meta:
             continue
         fcs_times = jetobj.read("time")
-        fcs_x = jetobj.read("x_mean")*r_e
-        fcs_y = jetobj.read("y_mean")*r_e
+        fcs_x = jetobj.read("x_mean")
+        fcs_y = jetobj.read("y_mean")
         if markus_time in fcs_times:
             if np.abs(jetobj.read_at_time("x_mean",markus_time)*r_e-markus_pos[0])<dist_thresh and np.abs(jetobj.read_at_time("y_mean",markus_time)*r_e-markus_pos[1])<dist_thresh:
                 print(fcs_times)
