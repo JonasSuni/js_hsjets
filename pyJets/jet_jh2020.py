@@ -104,9 +104,12 @@ def find_markus_FCS(dist_thresh=1e5):
         fcs_y = jetobj.read("y_mean")
         if markus_time in fcs_times:
             if np.abs(jetobj.read_at_time("x_mean",markus_time)*r_e-markus_pos[0])<dist_thresh and np.abs(jetobj.read_at_time("y_mean",markus_time)*r_e-markus_pos[1])<dist_thresh:
+                text_arr = np.array([fcs_times,fcs_x,fcs_y]).T
+                np.savetxt(wrkdir_DNR+"markus_fcs.txt")
                 print(fcs_times)
                 print(fcs_x)
                 print(fcs_y)
+                print(str(n).zfill(5))
 
     return None
 
