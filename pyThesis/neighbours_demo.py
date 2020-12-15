@@ -33,6 +33,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[0][0].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[0][0].get_xaxis().set_ticks([])
     ax_list[0][0].get_yaxis().set_ticks([])
+    ax_list[0][0].set_xlabel("Step 0",fontsize=24,labelpad=10)
 
     jet_cells = np.array(mask_cells[0])
 
@@ -40,6 +41,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[0][1].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[0][1].get_xaxis().set_ticks([])
     ax_list[0][1].get_yaxis().set_ticks([])
+    ax_list[0][1].set_xlabel("Step 1",fontsize=24,labelpad=10)
 
     jet_cells = get_nbrs(jet_cells,xflat.size,yflat.size,[2,2])
 
@@ -47,6 +49,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[0][2].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[0][2].get_xaxis().set_ticks([])
     ax_list[0][2].get_yaxis().set_ticks([])
+    ax_list[0][2].set_xlabel("Step 2",fontsize=24,labelpad=10)
 
     jet_cells = np.intersect1d(jet_cells,mask_cells)
 
@@ -54,6 +57,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[1][0].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[1][0].get_xaxis().set_ticks([])
     ax_list[1][0].get_yaxis().set_ticks([])
+    ax_list[1][0].set_xlabel("Step 2.5",fontsize=24,labelpad=10)
 
     jet_cells = get_nbrs(jet_cells,xflat.size,yflat.size,[2,2])
 
@@ -61,6 +65,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[1][1].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[1][1].get_xaxis().set_ticks([])
     ax_list[1][1].get_yaxis().set_ticks([])
+    ax_list[1][1].set_xlabel("Step 3",fontsize=24,labelpad=10)
 
     jet_cells = np.intersect1d(jet_cells,mask_cells)
 
@@ -68,6 +73,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[1][2].contour(X,Y,np.reshape(cell_jet,cell_mesh.shape),[0.5],colors="green",zorder=2,linewidths=1.2)
     ax_list[1][2].get_xaxis().set_ticks([])
     ax_list[1][2].get_yaxis().set_ticks([])
+    ax_list[1][2].set_xlabel("Step 3.5",fontsize=24,labelpad=10)
 
     for ax in fig.get_axes():
         for a in np.arange(xmin+0.5,xmax,1):
@@ -75,6 +81,8 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
         for b in np.arange(ymin+0.5,ymax,1):
             ax.axhline(b,linewidth=0.4,zorder=1)
         ax.set_aspect("equal",adjustable="box")
+        #ax.set_xlabel("X",fontsize=20)
+        #ax.set_ylabel("Y",fontsize=20)
 
     plt.tight_layout()
 

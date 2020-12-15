@@ -86,6 +86,28 @@ def find_one_jet():
 
     return None
 
+def find_markus_FCS(dist_thresh=1e5):
+
+    markus_time = 428.0
+    markus_pos = np.array([7.0e7,-2.7e7])
+
+    nrange = range(1,3000)
+    for n in nrange:
+        try:
+            jetobj = jio.PropReader(str(n).zfill(5),"ABC",transient="slams")
+        except:
+            continue
+        fcs_times = jetobj.read("time")
+        fcs_x = jetobj.read("x_mean")*r_e
+        fcs_y = jetobj.read("y_mean")*r_e
+        if markus_time in fcs_times:
+            if np.abs(fcs_x[fcs_times.index(markus_time)]-markus_pos[0])<dist_thresh and np.abs(fcs_y[fcs_times.index(markus_time)]-markus_pos[1])<dist_thresh:
+                print(fcs_times)
+                print(fcs_x)
+                print(fcs_y)
+
+    return None
+
 def jet_424_center_cells():
 
     jetobj = jio.PropReader(str(424).zfill(5),"ABC",transient="slamsjet")
