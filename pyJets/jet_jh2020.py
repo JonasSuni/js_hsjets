@@ -101,7 +101,7 @@ def find_markus_FCS(dist_thresh=1e5):
         fcs_x = jetobj.read("x_mean")*r_e
         fcs_y = jetobj.read("y_mean")*r_e
         if markus_time in fcs_times:
-            if np.abs(fcs_x[fcs_times.index(markus_time)]-markus_pos[0])<dist_thresh and np.abs(fcs_y[fcs_times.index(markus_time)]-markus_pos[1])<dist_thresh:
+            if np.abs(jetobj.read_at_time("x_mean",markus_time)*r_e-markus_pos[0])<dist_thresh and np.abs(jetobj.read_at_time("y_mean",markus_time)*r_e-markus_pos[1])<dist_thresh:
                 print(fcs_times)
                 print(fcs_x)
                 print(fcs_y)
