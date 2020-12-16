@@ -90,7 +90,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         data_meds = np.array([np.median(arr) for arr in data_arr])
         data_stds = np.array([np.std(arr,ddof=1) for arr in data_arr])
 
-    fig,ax_list = plt.subplots(4,2)
+    fig,ax_list = plt.subplots(4,2,figsize=(10,15))
 
     ax_flat = ax_list.T.flatten()
 
