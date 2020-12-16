@@ -29,7 +29,7 @@ def fcs_jet_histogram():
 
     for idx,runid in enumerate(runids):
         sj_ids,non_sj_ids,fcs_ids = jh20.separate_jets_god(runid,False)
-        jet_ids = np.union1d(sj_ids,non_sj_ids))
+        jet_ids = np.union1d(sj_ids,non_sj_ids)
         fcs_counts[idx] = fcs_ids.size
         fcs_counts[idx] = fcs_ids.size
         for fcs_id in fcs_ids:
