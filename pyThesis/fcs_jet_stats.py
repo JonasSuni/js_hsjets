@@ -36,9 +36,9 @@ def fcs_jet_histogram():
         for fcs_id in fcs_ids:
             trans_obj = jio.PropReader(str(fcs_id).zfill(5),runid,580,transient="slams")
             fcs_Dn[idx] = np.append(fcs_Dn[idx],trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
-            fcs_Dv[idx] = np.append(fcs_Dn[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
-            fcs_DB[idx] = np.append(fcs_Dn[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
-            fcs_Dt[idx] = np.append(fcs_Dn[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
+            fcs_Dv[idx] = np.append(fcs_Dv[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
+            fcs_DB[idx] = np.append(fcs_DB[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
+            fcs_DT[idx] = np.append(fcs_DT[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
 
             fcs_dur[idx] = np.append(fcs_dur[idx],trans_obj.read_at_randt("duration"))
             fcs_tsiz[idx] = np.append(fcs_tsiz[idx],trans_obj.read_at_randt("size_tan"))
@@ -47,9 +47,9 @@ def fcs_jet_histogram():
         for jet_id in jet_ids:
             trans_obj = jio.PropReader(str(jet_id).zfill(5),runid,580,transient="jet")
             jet_Dn[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
-            jet_Dv[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
-            jet_DB[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
-            jet_Dt[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
+            jet_Dv[idx] = np.append(jet_Dv[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
+            jet_DB[idx] = np.append(jet_DB[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
+            jet_DT[idx] = np.append(jet_DT[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
 
             jet_dur[idx] = np.append(jet_dur[idx],trans_obj.read_at_randt("duration"))
             jet_tsiz[idx] = np.append(jet_tsiz[idx],trans_obj.read_at_randt("size_tan"))
