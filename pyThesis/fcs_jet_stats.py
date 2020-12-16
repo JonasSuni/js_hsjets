@@ -38,7 +38,7 @@ def fcs_jet_histogram():
             fcs_Dn[idx] = np.append(fcs_Dn[idx],trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
             fcs_Dv[idx] = np.append(fcs_Dv[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
             fcs_DB[idx] = np.append(fcs_DB[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
-            fcs_DT[idx] = np.append(fcs_DT[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
+            fcs_DT[idx] = np.append(fcs_DT[idx],trans_obj.read_at_randt("DT")/ja.sw_normalisation(runid,"DT"))
 
             fcs_dur[idx] = np.append(fcs_dur[idx],trans_obj.read_at_randt("duration"))
             fcs_tsiz[idx] = np.append(fcs_tsiz[idx],trans_obj.read_at_randt("size_tan"))
@@ -49,7 +49,7 @@ def fcs_jet_histogram():
             jet_Dn[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
             jet_Dv[idx] = np.append(jet_Dv[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
             jet_DB[idx] = np.append(jet_DB[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
-            jet_DT[idx] = np.append(jet_DT[idx],trans_obj.read_at_randt("Dt")/ja.sw_normalisation(runid,"Dt"))
+            jet_DT[idx] = np.append(jet_DT[idx],trans_obj.read_at_randt("DT")/ja.sw_normalisation(runid,"DT"))
 
             jet_dur[idx] = np.append(jet_dur[idx],trans_obj.read_at_randt("duration"))
             jet_tsiz[idx] = np.append(jet_tsiz[idx],trans_obj.read_at_randt("size_tan"))
