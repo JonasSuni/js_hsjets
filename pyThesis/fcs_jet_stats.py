@@ -108,6 +108,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         ax.set_ylabel(label_list[idx],labelpad=10,fontsize=20)
         ax.yaxis.set_label_position(pos_list[idx])
 
+    fig.suptitle(transient)
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}".format(transient,weight_by_run))
