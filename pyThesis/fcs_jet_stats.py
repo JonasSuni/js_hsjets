@@ -90,7 +90,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         data_meds = np.array([np.median(arr) for arr in data_arr])
         data_stds = np.array([np.std(arr,ddof=1) for arr in data_arr])
 
-    fig,ax_list = plt.subplots(4,2,figsize=(7,10))
+    fig,ax_list = plt.subplots(4,2,figsize=(7,11))
 
     ax_flat = ax_list.T.flatten()
 
@@ -100,7 +100,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         jx.legend_compact(leg)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=3,prune="lower"))
         ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
-        ax.set_ylim(0,1.0)
+        ax.set_ylim(0,0.8)
         ax.tick_params(labelsize=15)
         ax.set_ylabel(label_list[idx],labelpad=10,fontsize=20)
         ax.yaxis.set_label_position(pos_list[idx])
