@@ -19,7 +19,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
 
     label_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T~[T_{sw}]}$","$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
     if transient == "slams":
-        bins_list = [np.linspace(-2,2,10+1),np.linspace(-0.1,0.3,10+1),np.linspace(0,2,10+1),np.linspace(-1.5,1.5,10+1),np.linspace(-5,5,10+1),np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)]
+        bins_list = [np.linspace(-1.5,1.5,10+1),np.linspace(-0.1,0.3,10+1),np.linspace(0,2,10+1),np.linspace(-1.5,1.5,10+1),np.linspace(-5,5,10+1),np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)]
     else:
         bins_list = [np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1),np.linspace(-5,5,10+1),np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)]
     pos_list = ["left","left","left","left","right","right","right","right"]
