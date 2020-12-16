@@ -19,6 +19,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
 
     label_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T~[MK]}$","$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
     bins_list = [np.linspace(-2,4,10+1),np.linspace(-0.1,0.4,10+1),np.linspace(0,2,10+1),np.linspace(-2,2,10+1),np.linspace(-5,5,10+1),np.linspace(0,60,10+1),np.linspace(0,0.5,10+1),np.linspace(0,5,10+1)]
+    pos_list = ["left","left","left","left","right","right","right","right"]
 
     runids = ["ABA","ABC","AEA","AEC"]
 
@@ -89,9 +90,9 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         data_meds = np.array([np.median(arr) for arr in data_arr])
         data_stds = np.array([np.std(arr,ddof=1) for arr in data_arr])
 
-    fig,ax_list = plt.subplots(4,2,figsize=(10,15))
+    fig,ax_list = plt.subplots(4,2)
 
-    ax_flat = ax_list.flatten()
+    ax_flat = ax_list.T.flatten()
 
     for idx,ax in enumerate(ax_flat):
         ax.hist(data_arr[idx],weights=weights,bins=bins_list[idx],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(data_meds[idx],data_stds[idx]))
@@ -102,6 +103,9 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         ax.set_ylim(0,1.0)
         ax.tick_params(labelsize=15)
         ax.set_ylabel(label_list[idx],labelpad=10,fontsize=20)
+        ax.yaxis.set_label_position(pos_list[idx])
+
+    plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}".format(transient,weight_by_run))
     plt.close(fig)
