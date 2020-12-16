@@ -6,6 +6,7 @@ import jet_aux as jx
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+import os
 
 wrkdir_DNR = os.environ["WRK"]+"/"
 homedir = os.environ["HOME"]+"/"
