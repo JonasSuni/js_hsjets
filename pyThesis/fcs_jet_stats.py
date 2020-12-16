@@ -37,7 +37,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         for idx,runid in enumerate(runids):
             sj_ids,non_sj_ids,fcs_ids = jh20.separate_jets_god(runid,False)
             jet_ids = np.union1d(sj_ids,non_sj_ids)
-            if transient="slams":
+            if transient=="slams":
                 jet_ids = fcs_ids
             jet_counts[idx] = jet_ids.size
             for jet_id in jet_ids:
@@ -67,7 +67,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         for idx,runid in enumerate(runids):
             sj_ids,non_sj_ids,fcs_ids = jh20.separate_jets_god(runid,False)
             jet_ids = np.union1d(sj_ids,non_sj_ids)
-            if transient="slams":
+            if transient=="slams":
                 jet_ids = fcs_ids
 
             jet_counts += jet_ids.size
