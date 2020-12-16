@@ -45,7 +45,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
                 trans_obj = jio.PropReader(str(jet_id).zfill(5),runid,580,transient=transient)
                 jet_Dn[idx] = np.append(jet_Dn[idx],trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
                 jet_Dv[idx] = np.append(jet_Dv[idx],trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
-                fcs_Dpd[idx] = np.append(fcs_Dv[idx],trans_obj.read_at_randt("Dpd")/ja.sw_normalisation(runid,"Dpd"))
+                jet_Dpd[idx] = np.append(jet_Dpd[idx],trans_obj.read_at_randt("Dpd")/ja.sw_normalisation(runid,"Dpd"))
                 jet_DB[idx] = np.append(jet_DB[idx],trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
                 jet_DT[idx] = np.append(jet_DT[idx],trans_obj.read_at_randt("DT")/ja.sw_normalisation(runid,"DT"))
 
@@ -76,7 +76,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
                 trans_obj = jio.PropReader(str(jet_id).zfill(5),runid,580,transient=transient)
                 jet_Dn = np.append(jet_Dn,trans_obj.read_at_randt("Dn")/ja.sw_normalisation(runid,"Dn"))
                 jet_Dv = np.append(jet_Dv,trans_obj.read_at_randt("Dv")/ja.sw_normalisation(runid,"Dv"))
-                fcs_Dpd = np.append(fcs_Dv,trans_obj.read_at_randt("Dpd")/ja.sw_normalisation(runid,"Dpd"))
+                jet_Dpd = np.append(jet_Dpd,trans_obj.read_at_randt("Dpd")/ja.sw_normalisation(runid,"Dpd"))
                 jet_DB = np.append(jet_DB,trans_obj.read_at_randt("DB")/ja.sw_normalisation(runid,"DB"))
                 jet_DT = np.append(jet_DT,trans_obj.read_at_randt("DT")/ja.sw_normalisation(runid,"DT"))
 
