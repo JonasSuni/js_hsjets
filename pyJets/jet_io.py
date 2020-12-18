@@ -644,9 +644,17 @@ def calc_event_props(vlsvobj,cells,jet_cells=[],slams_cells=[],up_cells=[],down_
 
     if np.argmin(vlsvobj.get_spatial_mesh_size())==1:
         sheath_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[2,0,2])
+        if is_jet and not is_slams:
+            sheath_cells = np.intersect1d(sheath_cells,down_cells)
+        elif is_slams and not is_jet:
+            sheath_cells = np.intersect1d(sheath_cells,up_cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,0,1])
     else:
         sheath_cells = get_sheath_cells(vlsvobj,cells)
+        if is_jet and not is_slams:
+            sheath_cells = np.intersect1d(sheath_cells,down_cells)
+        elif is_slams and not is_jet:
+            sheath_cells = np.intersect1d(sheath_cells,up_cells)
         ssh_cells = get_sheath_cells(vlsvobj,cells,neighborhood_reach=[1,1,0])
 
     ew_cells = get_sheath_cells_asym(vlsvobj,cells,neighborhood_reach=[-10,0,0,0,0,0])
