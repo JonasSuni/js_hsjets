@@ -90,8 +90,10 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
 
         weights = np.ones(jet_counts,dtype=float)/float(jet_counts)
         data_arr = np.array([jet_Dn,jet_Dv,jet_Dpd,jet_DB,jet_DT,jet_dur,jet_tsiz,jet_srat])
-        data_meds = np.array([np.nanmedian(arr) for arr in data_arr])
-        data_stds = np.array([np.nanstd(arr,ddof=1) for arr in data_arr])
+        #data_meds = np.array([np.nanmedian(arr) for arr in data_arr])
+        #data_stds = np.array([np.nanstd(arr,ddof=1) for arr in data_arr])
+        data_meds = np.array([np.median(arr) for arr in data_arr])
+        data_stds = np.array([np.std(arr,ddof=1) for arr in data_arr])
 
     fig,ax_list = plt.subplots(4,2,figsize=(7,11))
 
