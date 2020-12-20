@@ -15,7 +15,7 @@ try:
 except:
     vlasdir="/proj/vlasov"
 
-def fcs_jet_histogram(transient="jet",weight_by_run=False):
+def fcs_jet_histogram(transient="jet",weight_by_run=False,magt=1.5):
 
     label_list = ["$\mathrm{\\Delta n~[n_{sw}]}$","$\mathrm{\\Delta |v|~[v_{sw}]}$","$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$","$\mathrm{\\Delta |B|~[B_{IMF}]}$","$\mathrm{\\Delta T~[T_{sw}]}$","$\mathrm{Lifetime~[s]}$","$\mathrm{Tangential~size~[R_e]}$","$\mathrm{Size~ratio}$"]
     if transient == "slams":
@@ -110,8 +110,8 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False):
         ax.set_ylabel(label_list[idx],labelpad=10,fontsize=20)
         ax.yaxis.set_label_position(pos_list[idx])
 
-    fig.suptitle(transient,fontsize=24)
+    fig.suptitle("transient: {} magt: {}".format(transient,magt),fontsize=24)
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}".format(transient,weight_by_run))
+    fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}_magt_{}.png".format(transient,weight_by_run,magt))
     plt.close(fig)
