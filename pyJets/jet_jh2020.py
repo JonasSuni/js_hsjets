@@ -484,9 +484,15 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
 
     runids = ["ABA","ABC","AEA","AEC"]
 
-    data_arr = np.array([separate_jets_god(runid,allow_splinters) for runid in runids]).flatten()
-    count_arr = np.array([arr.size for arr in data_arr])
-    count_arr = np.reshape(count_arr,(4,3)).T
+    count_arr = np.empty((3,4),dtype=int)
+
+    for ix,runid in enumerate(runids):
+        counts = np.array([arr.size for arr in separate_jets_god(runid,allow_splinters)],dtype=int)
+        count_arr[:,ix] = counts
+
+    #data_arr = np.array([separate_jets_god(runid,allow_splinters) for runid in runids]).flatten()
+    #count_arr = np.array([arr.size for arr in data_arr])
+    #count_arr = np.reshape(count_arr,(4,3)).T
 
     print("Runs:           ABA ABC AEA AEC\n")
     print("SJ Jets:        {}\n".format(count_arr[0]))
@@ -495,7 +501,7 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
     print("SJ/jet ratio:   {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[1]+epsilon)))
     print("SJ/SLAMS ratio: {}\n".format((count_arr[0].astype(float)+epsilon)/(count_arr[2]+epsilon)))
 
-    np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr)
+    np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr,fmt="%.0f")
 
     return np.reshape(data_arr,(4,3))
 
