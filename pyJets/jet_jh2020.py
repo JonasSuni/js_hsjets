@@ -503,8 +503,9 @@ def sj_non_counter(allow_splinters=True,mag_thresh=1.5):
 
     np.savetxt(wrkdir_DNR+"sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh,allow_splinters),count_arr,fmt="%.0f")
 
-    return np.reshape(data_arr,(4,3))
-
+    #return np.reshape(data_arr,(4,3))
+    return None
+    
 def separate_jets_god(runid,allow_relatives=True):
 
     runids = ["ABA","ABC","AEA","AEC"]
