@@ -747,7 +747,6 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
     maxfnr_list = [839,1179,1339,879]
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
-        #test
 
     vars_list = ["Pmag","Ptot","Pressure","Pdyn","rho","B","v","Temperature"]
     var_index = vars_list.index(var)
