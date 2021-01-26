@@ -10,5 +10,5 @@ from jet_scripts import jet_pos_graph,jet_paper_pos,slamjet_plotter, jet_paper_c
 from plot_contours import expr_pdyn_gen,expr_pdyn,expr_srho
 from tavg_maker import avg_maker_slow,TP_maker,v_avg_maker,testplot_vavg
 #from vspacecraft import jet_sc,jet_spacecrafts,slams_spacecraft,wave_spacecraft
-from jet_aux import BS_xy, MP_xy,get_cell_coordinates,make_bs_fit,transfer_tavg,get_neighs_asym,get_neighs,bow_shock_jonas
+from jet_aux import BS_xy, MP_xy,get_cell_coordinates,make_bs_fit,transfer_tavg,get_neighs_asym,get_neighs,bow_shock_jonas,ext_magpause
 from jet_jh2020 import jh2020_fig1,jh2020_movie,get_timeseries_data,get_cut_through,jh2020_fig2_mesh,jh2020_cut_plot,sj_non_counter,mag_thresh_plot,find_one_jet,event_424_cut,pendep_hist,separate_jets_god,find_markus_FCS

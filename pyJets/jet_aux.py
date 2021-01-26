@@ -26,6 +26,43 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
+def ext_magpause(ax,XmeshXY,YmeshXY,pass_maps):
+    #if reqvars:
+    #    return ["3d"]
+
+    vlsvobj = vlsvobj_g
+    fileindex = fileindex_g
+
+    xarr = np.linspace(11.0*r_e,7.0*r_e,-1e6)
+    slice = np.arange(xarr.size,dtype=float)
+    theta = np.arange(0,2*np.pi+0.001,np.pi/10)
+    Slice,Theta = np.meshgrid(slice,theta)
+    psi = np.zeros_like(Slice[:-1,:-1],dtype=float)
+
+    for irx,x in enumerate(xarr[:-1]):
+        coords = np.array([x,0,0],dtype=float)
+        for itx,t in enumerate(theta[:-1]):
+            for r in np.arange(0,10*r_e,1e6):
+                y = np.cos(t)*r
+                z = np.sin(t)*r
+                coords[1] = y
+                coords[2] = z
+                cellid = vlsvobj.get_cellid(coords)
+                bz = vlsvobj.read_variable("vg_b_vol",operator="z",cellids=cellid)
+                if bz <= 0:
+                    vz = vlsvobj.read_variable("vg_v",operator="z",cellids=cellid)
+                    psi[irx,itx] = vz
+                    break
+
+    fig,ax = plt.subplots(1,1)
+    Xmesh = Slice*np.cos(Theta)
+    Ymesh = Slice*np.sin(Theta)
+
+    ax.pcolormesh(Xmesh,Ymesh,psi)
+    fig.savefig("/wrk/users/jesuni/jh21_mov/magpause/magplot_{}".format(fileindex))
+    plt.close(fig)
+
+
 def legend_compact(leg):
 
     for n,item in enumerate(leg.legendHandles):
