@@ -33,7 +33,7 @@ def ext_magpause(ax,XmeshXY,YmeshXY,pass_maps):
     vlsvobj = vlsvobj_g
     fileindex = fileindex_g
 
-    xarr = np.linspace(11.0*r_e,7.0*r_e,-1e6)
+    xarr = np.arange(11.0*r_e,7.0*r_e,-1e6)
     slice = np.arange(xarr.size,dtype=float)
     theta = np.arange(0,2*np.pi+0.001,np.pi/10)
     Slice,Theta = np.meshgrid(slice,theta)
