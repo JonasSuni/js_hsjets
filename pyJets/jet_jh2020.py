@@ -737,7 +737,7 @@ def jh2020_fig1(var="pdyn"):
 
     pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1b_{}.png".format(var),boxre=[6,18,-6,6],usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],external=jh20f1_ext,pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mmsx","B","core_heating"])
 
-def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False,fig1=False,magt=1.5):
+def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False,fig1=False,magt=1.5,fig1mov=False):
 
     if fig1:
         fig5 = False
@@ -797,6 +797,15 @@ def jh2020_movie(runid,start,stop,var="Pdyn",arr_draw=False,dbg=False,fig5=False
         boxre = [6,18,-8,6]
 
     colmap = "Blues"
+
+    if fig1mov:
+        fig1_g = True
+        for itr in range(start,stop+1):
+            filepath = bulkpath+"bulk.{}.vlsv".format(str(itr).zfill(7))
+            filenr_g = itr
+            pt.plot.plot_colormap(filename=filepath,outputfile=wrkdir_DNR+"Figures/thesis/mov/{}.png".format(itr),boxre=boxre,usesci=0,lin=1,var=var,tickinterval=2,vmin=vmin,vmax=vmax,vscale=vscale,colormap=colmap,external=jh20f1_ext,pass_vars=["RhoNonBackstream","PTensorNonBackstreamDiagonal","B","v","rho","core_heating","CellID","Mmsx"])
+
+        return None
 
     if fig1:
         filepath = bulkpath+"bulk.0000895.vlsv"

@@ -35,7 +35,7 @@ def ext_magpause(ax,XmeshXY,YmeshXY,pass_maps):
 
     xarr = np.arange(11.0*r_e,7.0*r_e,-1e6)
     slice = np.arange(xarr.size,dtype=float)
-    theta = np.arange(0,2*np.pi+0.001,np.pi/10)
+    theta = np.arange(0,2*np.pi+0.001,np.pi/30)
     Slice,Theta = np.meshgrid(slice,theta)
     psi = np.zeros_like(Slice[:-1,:-1],dtype=float)
 
