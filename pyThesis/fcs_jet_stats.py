@@ -116,9 +116,9 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False,magt=1.5):
 
     #fig.suptitle("transient: {} magt: {}".format(transient,magt),fontsize=24)
     if transient == "jet":
-        fig.suptitle("Jets  $\\eta$ = {}".format(magt),fontsize=24)
+        fig.suptitle("Jets",fontsize=24)
     else:
-        fig.suptitle("FCS  $\\eta$ = {}".format(magt),fontsize=24)
+        fig.suptitle("FCS,  $\\eta$ = {}".format(magt),fontsize=24)
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}_magt_{}.png".format(transient,weight_by_run,magt))
