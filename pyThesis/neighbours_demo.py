@@ -27,6 +27,9 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
 
     jet_cells = np.array([])
 
+    ann_locs = [(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8)]
+    ann_labs = ["a)","b)","c)","d)","e)","f)","g)","h)"]
+
     fig,ax_list = plt.subplots(2,3,figsize=(10,10))
 
     ax_list[0][0].pcolormesh(xflat,yflat,np.reshape(np.in1d(cellids,jet_cells),cell_mesh.shape),zorder=0,shading="auto",vmin=0,vmax=1,cmap="Reds")
@@ -75,12 +78,13 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
     ax_list[1][2].get_yaxis().set_ticks([])
     ax_list[1][2].set_xlabel("Step 3.5",fontsize=24,labelpad=10)
 
-    for ax in fig.get_axes():
+    for idx,ax in enumerate(fig.get_axes()):
         for a in np.arange(xmin+0.5,xmax,1):
             ax.axvline(a,linewidth=0.4,zorder=1)
         for b in np.arange(ymin+0.5,ymax,1):
             ax.axhline(b,linewidth=0.4,zorder=1)
         ax.set_aspect("equal",adjustable="box")
+        ax.annotate(ann_labs[idx],ann_locs[idx],xycoords="axes fraction",fontsize=20)
         #ax.set_xlabel("X",fontsize=20)
         #ax.set_ylabel("Y",fontsize=20)
 

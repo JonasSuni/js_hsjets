@@ -99,6 +99,9 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False,magt=1.5):
 
     ax_flat = ax_list.T.flatten()
 
+    ann_locs = [(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8)]
+    ann_labs = ["a)","b)","c)","d)","e)","f)","g)","h)"]
+
     for idx,ax in enumerate(ax_flat):
         ax.hist(data_arr[idx],weights=weights,bins=bins_list[idx],histtype="step",label="med:{:.2f}\nstd:{:.2f}".format(data_meds[idx],data_stds[idx]))
         leg = ax.legend(fontsize=20,frameon=False,markerscale=0.5)
@@ -109,8 +112,13 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False,magt=1.5):
         ax.tick_params(labelsize=15)
         ax.set_ylabel(label_list[idx],labelpad=10,fontsize=20)
         ax.yaxis.set_label_position(pos_list[idx])
+        ax.annotate(ann_labs[idx],ann_locs[idx],xycoords="axes fraction",fontsize=20)
 
-    fig.suptitle("transient: {} magt: {}".format(transient,magt),fontsize=24)
+    #fig.suptitle("transient: {} magt: {}".format(transient,magt),fontsize=24)
+    if transient == "jet":
+        fig.suptitle("Jets  $\\eta$ = {}".format(magt),fontsize=24)
+    else:
+        fig.suptitle("FCS  $\\eta$ = {}".format(magt),fontsize=24)
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR+"Figures/thesis/{}_stats_runweight_{}_magt_{}.png".format(transient,weight_by_run,magt))
