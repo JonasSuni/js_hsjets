@@ -90,7 +90,7 @@ def plot_neighbours(xmin=-10,xmax=10,ymin=-10,ymax=10):
 
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR+"celltest.png")
+    fig.savefig(wrkdir_DNR+"Figures/thesis/celltest.png")
     plt.close(fig)
 
     return None
