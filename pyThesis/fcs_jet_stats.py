@@ -99,7 +99,7 @@ def fcs_jet_histogram(transient="jet",weight_by_run=False,magt=1.5):
 
     ax_flat = ax_list.T.flatten()
 
-    ann_locs = [(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8),(0.03,0.8)]
+    ann_locs = [(0.1,0.8),(0.1,0.8),(0.1,0.8),(0.1,0.8),(0.1,0.8),(0.1,0.8),(0.1,0.8),(0.1,0.8)]
     ann_labs = ["a)","b)","c)","d)","e)","f)","g)","h)"]
 
     for idx,ax in enumerate(ax_flat):
