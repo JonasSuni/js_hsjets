@@ -449,7 +449,7 @@ def mag_thresh_plot(allow_splinters=False):
         #ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
         pass
 
-    ax_list[-1].set_xlabel("FCS magnetic threshold $\\eta=|B|/B_{IMF}$",fontsize=20,labelpad=10)
+    ax_list[-1].set_xlabel("FCS magnetic threshold $\mathrm{\\eta=|B|/B_{IMF}}$",fontsize=20,labelpad=10)
     ax_list[2].set_ylabel("FCS-jets/s",fontsize=15,labelpad=10)
     ax_list[1].set_ylabel("Jets/s",fontsize=15,labelpad=10)
     ax_list[0].set_ylabel("FCSs/s",fontsize=15,labelpad=10)
@@ -473,7 +473,7 @@ def mag_thresh_plot(allow_splinters=False):
         axe.label_outer()
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.1)
-    
+
     #fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig2.png")
     plt.close(fig)
