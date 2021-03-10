@@ -473,7 +473,7 @@ def mag_thresh_plot(allow_splinters=False):
         axe.label_outer()
     plt.tight_layout()
     fig.subplots_adjust(hspace=0.1)
-    #
+    
     #fig.savefig(wrkdir_DNR+"sjratio_fig_{}.png".format(allow_splinters))
     fig.savefig(wrkdir_DNR+"Figures/sj_figs/fig2.png")
     plt.close(fig)
