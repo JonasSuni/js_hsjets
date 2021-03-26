@@ -1133,7 +1133,7 @@ def jh2020_movie(
     fig1mov=False,
 ):
 
-    mpl.style.use("default")
+    # mpl.style.use("default")
 
     if fig1:
         fig5 = False
@@ -1536,7 +1536,7 @@ def jh2020_movie(
 
 def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
 
-    mpl.style.use("default")
+    # mpl.style.use("default")
 
     cellids = pass_maps["CellID"]
     rho = pass_maps["rho"]
