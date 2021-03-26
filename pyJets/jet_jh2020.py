@@ -1536,7 +1536,7 @@ def jh2020_movie(
 
 def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
 
-    # mpl.style.use("default")
+    mpl.style.use("default")
 
     cellids = pass_maps["CellID"]
     rho = pass_maps["rho"]
