@@ -1133,6 +1133,8 @@ def jh2020_movie(
     fig1mov=False,
 ):
 
+    mpl.style.use("default")
+
     if fig1:
         fig5 = False
 
@@ -1537,6 +1539,8 @@ def jh2020_movie(
 
 def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
 
+    mpl.style.use("default")
+
     cellids = pass_maps["CellID"]
     rho = pass_maps["rho"]
     mmsx = pass_maps["Mmsx"]
@@ -1647,7 +1651,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
     ch_cont = ax.contour(
         XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
     )
-    ch_cont.collections[0].set_label("$T_{core} \geq 3T_{sw}$")
+    ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
 
     slams_cont = ax.contour(
         XmeshXY,
