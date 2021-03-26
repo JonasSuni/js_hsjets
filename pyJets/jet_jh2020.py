@@ -1044,6 +1044,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     plt.close(fig)
 
     print(expfit_pendep(xinterp, sj_popt[0], sj_popt[1])[0])
+    print(sj_hist[0])
 
 
 def expfit_pendep(xdata, a1, a2):
