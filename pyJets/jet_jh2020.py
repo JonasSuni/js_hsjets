@@ -1268,9 +1268,6 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
-            fluxfile=fluxfile,
-            fluxdir=fluxdir,
-            fluxlines=40,
         )
 
         return None
