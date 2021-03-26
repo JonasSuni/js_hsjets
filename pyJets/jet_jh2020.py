@@ -1,4 +1,5 @@
 import sys
+import matplotlib.style
 import matplotlib as mpl
 import jet_aux as jx
 
@@ -811,6 +812,8 @@ def separate_jets_god(runid, allow_relatives=True):
 
 def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
 
+    mpl.style.use("default")
+
     runid_dict = ["ABA", "ABC", "AEA", "AEC"]
     run_length = np.array([839, 1179, 1339, 879]) / 2.0 - 290.0
 
@@ -921,8 +924,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         ax[1].set_ylim(bottom=0)
         ax[0].set_xlim(right=0)
         ax[1].set_xlim(right=0)
-        for axe in fig.get_axes():
-            axe.label_outer()
+        # for axe in fig.get_axes():
+        #    axe.label_outer()
     else:
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         # plt.grid()
