@@ -1251,7 +1251,7 @@ def jh2020_movie(
 
         pt.plot.plot_colormap(
             filename=filepath,
-            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.png",
+            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.pdf",
             boxre=boxre,
             usesci=0,
             lin=1,
