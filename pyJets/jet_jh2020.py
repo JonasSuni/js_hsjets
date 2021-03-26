@@ -1040,7 +1040,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     plt.tight_layout()
 
     # fig.savefig(wrkdir_DNR+"pendep_{}.png".format("_".join(runids)))
-    fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig3.png")
+    fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig3.pdf")
     plt.close(fig)
 
 
@@ -1251,7 +1251,7 @@ def jh2020_movie(
 
         pt.plot.plot_colormap(
             filename=filepath,
-            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.pdf",
+            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.png",
             boxre=boxre,
             usesci=0,
             lin=1,
