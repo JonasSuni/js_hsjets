@@ -583,6 +583,8 @@ def get_timeseries_data(runid, start, stop, cellid):
 
 def mag_thresh_plot(allow_splinters=False):
 
+    mpl.style.use("default")
+
     epsilon = 1.0e-27
 
     run_length = np.array([839, 1179, 1339, 879]) / 2.0 - 290.0
@@ -898,7 +900,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             weights=sj_time_weights,
             histtype="step",
             color="red",
-            label="FCS-originated",
+            label="FCS-jets",
         )
         ax[0].hist(
             non_pendeps,
@@ -906,16 +908,16 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             weights=non_time_weights,
             histtype="step",
             color="black",
-            label="Non-FCS-originated",
+            label="Non-FCS-jets",
         )
-        ax[1].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$", fontsize=25, labelpad=10)
+        ax[1].set_xlabel("$\mathrm{x_{last}-x_{bs}}~[R_e]$", fontsize=25, labelpad=10)
         sj_hist, sj_bins, sj_patch = ax[1].hist(
             sj_pendeps,
             bins=bins,
             weights=sj_weights,
             histtype="step",
             color="red",
-            label="FCS-originated",
+            label="FCS-jets",
             cumulative=True,
         )
         non_hist, non_bins, non_patch = ax[1].hist(
@@ -924,14 +926,14 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             weights=non_weights,
             histtype="step",
             color="black",
-            label="Non-FCS-originated",
+            label="Non-FCS-jets",
             cumulative=True,
         )
         # ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         # ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax[0].set_ylabel("Jets/s", fontsize=25, labelpad=10)
         ax[1].set_ylabel("Cumulative\nfraction of jets", fontsize=25, labelpad=10)
-        ax[0].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$", fontsize=25, labelpad=10)
+        ax[0].set_xlabel("$\mathrm{x_{last}-x_{bs}}~[R_e]$", fontsize=25, labelpad=10)
         ax[0].tick_params(labelsize=15)
         ax[1].tick_params(labelsize=15)
         ax[1].set_ylim(bottom=0)
@@ -942,14 +944,14 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     else:
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         # plt.grid()
-        ax.set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$", fontsize=20, labelpad=10)
+        ax.set_xlabel("$\mathrm{x_{last}-x_{bs}}~[R_e]$", fontsize=20, labelpad=10)
         sj_hist, sj_bins, sj_patch = ax.hist(
             sj_pendeps,
             bins=bins,
             weights=sj_weights,
             histtype="step",
             color="red",
-            label="FCS-originated",
+            label="FCS-jets",
             cumulative=True,
         )
         non_hist, non_bins, non_patch = ax.hist(
@@ -958,7 +960,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             weights=non_weights,
             histtype="step",
             color="black",
-            label="Non-FCS-originated",
+            label="Non-FCS-jets",
             cumulative=True,
         )
         # ax.legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
