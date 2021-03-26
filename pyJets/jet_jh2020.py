@@ -818,12 +818,18 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     run_length = np.array([839, 1179, 1339, 879]) / 2.0 - 290.0
 
     runids_list = runids
-    sj_pendeps = np.full([2000], np.nan)
-    non_pendeps = np.full([2000], np.nan)
-    sj_weights = np.full([2000], np.nan)
-    non_weights = np.full([2000], np.nan)
-    sj_time_weights = np.full([2000], np.nan)
-    non_time_weights = np.full([2000], np.nan)
+    # sj_pendeps = np.full([2000], np.nan)
+    # non_pendeps = np.full([2000], np.nan)
+    # sj_weights = np.full([2000], np.nan)
+    # non_weights = np.full([2000], np.nan)
+    # sj_time_weights = np.full([2000], np.nan)
+    # non_time_weights = np.full([2000], np.nan)
+    sj_pendeps = []
+    non_pendeps = []
+    sj_weights = []
+    non_weights = []
+    sj_time_weights = []
+    non_time_weights = []
     sj_counter = 0
     non_counter = 0
 
@@ -841,11 +847,12 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
             pendep = (x_mean - bs_dist)[-1]
-            # sj_pendeps.append(pendep)
-            sj_pendeps[sj_counter] = pendep
-            # sj_weights.append(1.0/run_length[runid_dict.index(runid)])
-            sj_weights[sj_counter] = 1.0 / (4.0 * sj_amount)
-            sj_time_weights[sj_counter] = 1.0 / (4.0 * tracking_duration)
+            sj_pendeps.append(pendep)
+            # sj_pendeps[sj_counter] = pendep
+            sj_weights.append(1.0 / (4.0 * sj_amount))
+            # sj_weights[sj_counter] = 1.0 / (4.0 * sj_amount)
+            # sj_time_weights[sj_counter] = 1.0 / (4.0 * tracking_duration)
+            sj_time_weights.append(1.0 / (4.0 * tracking_duration))
             sj_counter += 1
 
         for non_id in non_sj_ids:
@@ -853,22 +860,28 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             x_mean = props.read("x_mean")
             bs_dist = props.read("bs_distance")
             pendep = (x_mean - bs_dist)[-1]
-            # non_pendeps.append(pendep)
-            non_pendeps[non_counter] = pendep
-            # non_weights.append(1.0/run_length[runid_dict.index(runid)])
-            non_weights[non_counter] = 1.0 / (4.0 * non_amount)
-            non_time_weights[non_counter] = 1.0 / (4.0 * tracking_duration)
+            non_pendeps.append(pendep)
+            # non_pendeps[non_counter] = pendep
+            non_weights.append(1.0 / (4.0 * non_amount))
+            # non_weights[non_counter] = 1.0 / (4.0 * non_amount)
+            # non_time_weights[non_counter] = 1.0 / (4.0 * tracking_duration)
+            non_time_weights.append(1.0 / (4.0 * tracking_duration))
             non_counter += 1
 
-    # sj_pendeps = np.array(sj_pendeps,ndmin=1)
-    # non_pendeps = np.array(non_pendeps,ndmin=1)
-    sj_pendeps = sj_pendeps[:sj_counter]
-    sj_weights = sj_weights[:sj_counter]
-    sj_time_weights = sj_time_weights[:sj_counter]
+    sj_pendeps = np.array(sj_pendeps, ndmin=1)
+    sj_weights = np.array(sj_weights, ndmin=1)
+    sj_time_weights = np.array(sj_time_weights, ndmin=1)
 
-    non_pendeps = non_pendeps[:non_counter]
-    non_weights = non_weights[:non_counter]
-    non_time_weights = non_time_weights[:non_counter]
+    non_pendeps = np.array(non_pendeps, ndmin=1)
+    non_weights = np.array(non_weights, ndmin=1)
+    non_time_weights = np.array(non_time_weights, ndmin=1)
+    # sj_pendeps = sj_pendeps[:sj_counter]
+    # sj_weights = sj_weights[:sj_counter]
+    # sj_time_weights = sj_time_weights[:sj_counter]
+
+    # non_pendeps = non_pendeps[:non_counter]
+    # non_weights = non_weights[:non_counter]
+    # non_time_weights = non_time_weights[:non_counter]
 
     bins = np.linspace(-2.5, 0, 25 + 1)
     # sj_weights = np.ones(sj_pendeps.shape,dtype=float)/sj_pendeps.size
@@ -877,7 +890,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     # non_weights = np.array(non_weights)/len(runids)
 
     if panel_one:
-        fig, ax = plt.subplots(1, 2, figsize=(8, 4))
+        fig, ax = plt.subplots(1, 2, figsize=(10, 5))
         # plt.grid()
         ax[0].hist(
             sj_pendeps,
