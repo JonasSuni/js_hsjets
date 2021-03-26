@@ -874,7 +874,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     # non_weights = np.array(non_weights)/len(runids)
 
     if panel_one:
-        fig, ax = plt.subplots(2, 1, figsize=(5, 10), sharex=True)
+        fig, ax = plt.subplots(1, 2, figsize=(8, 4))
         # plt.grid()
         ax[0].hist(
             sj_pendeps,
@@ -915,6 +915,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         # ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         ax[0].set_ylabel("Jets/s", fontsize=25, labelpad=10)
         ax[1].set_ylabel("Cumulative fraction of jets", fontsize=25, labelpad=10)
+        ax[0].set_xlabel("$\mathrm{X_{last}-X_{BS}}~[R_e]$", fontsize=25, labelpad=10)
         ax[0].tick_params(labelsize=15)
         ax[1].tick_params(labelsize=15)
         ax[1].set_ylim(bottom=0)
