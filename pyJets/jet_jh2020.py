@@ -700,11 +700,11 @@ def mag_thresh_plot(allow_splinters=False):
     ax_list[3].set_ylim(bottom=0, top=1.99)
     ax_list[4].set_ylim(0, 0.99)
 
-    ax[0].set_yticks([0, 1, 2, 3])
-    ax[1].set_yticks([0.0, 0.5, 1.0])
-    ax[2].set_yticks([0.0, 0.25, 0.5, 0.75])
-    ax[3].set_yticks([0.0, 0.5, 1.0, 1.5])
-    ax[4].set_yticks([0.0, 0.25, 0.5, 0.75])
+    ax_list[0].set_yticks([0, 1, 2, 3])
+    ax_list[1].set_yticks([0.0, 0.5, 1.0])
+    ax_list[2].set_yticks([0.0, 0.25, 0.5, 0.75])
+    ax_list[3].set_yticks([0.0, 0.5, 1.0, 1.5])
+    ax_list[4].set_yticks([0.0, 0.25, 0.5, 0.75])
     for axe in fig.get_axes():
         axe.label_outer()
     plt.tight_layout()
