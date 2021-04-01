@@ -1116,6 +1116,7 @@ def jh2020_movie(
     fig5_g = fig5
     fig1_g = fig1
     fig1two_g = fig1two
+    fig1twoa_g = fig1two
 
     draw_arrows = arr_draw
 
