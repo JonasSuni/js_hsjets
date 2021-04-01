@@ -1217,7 +1217,7 @@ def jh2020_movie(
         ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
         plt.tight_layout()
-        fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.png")
+        fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.pdf")
         plt.close(fig)
         return None
 
@@ -1287,7 +1287,7 @@ def jh2020_movie(
 
     if fig5:
         noborder = True
-        scale = 2.0
+        scale = 1.5
 
         fig = plt.figure(figsize=(8, 8))
         gs = fig.add_gridspec(2, 15)
@@ -1442,13 +1442,12 @@ def jh2020_movie(
             cbaxes=cbax,
             noborder=noborder,
             scale=scale,
-            cbtitle="",
         )
         ax_lr.annotate("d)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
         # fig.subplots_adjust(wspace=0.05)
         plt.tight_layout()
-        fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig4.png")
+        fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig4.pdf")
         plt.close(fig)
         return None
 
