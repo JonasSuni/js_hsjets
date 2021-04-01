@@ -1260,7 +1260,7 @@ def jh2020_movie(
 
         pt.plot.plot_colormap(
             filename=filepath,
-            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.png",
+            outputfile=wrkdir_DNR + "Figures/sj_figs/fig1.pdf",
             boxre=boxre,
             usesci=0,
             lin=1,
@@ -1622,7 +1622,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
     # mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
     markscaler = 1.0
-    if fig5_g or fig1twoa_g:
+    if fig5_g or fig1twoa_g or fig1two_g:
         markscaler = 2.0
 
     if fig5_g:
@@ -1734,7 +1734,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
         )
     if fig1twoa_g:
         ax.legend(
-            frameon=True, numpoints=1, markerscale=2, loc="upper right", fontsize=12
+            frameon=True, numpoints=1, markerscale=1.5, loc="upper right", fontsize=12
         )
 
     # xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
