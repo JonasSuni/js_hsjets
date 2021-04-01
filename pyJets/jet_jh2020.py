@@ -1069,7 +1069,7 @@ def jh2020_movie(
     fig1=False,
     magt=1.5,
     fig1mov=False,
-    fig1two=False
+    fig1two=False,
 ):
 
     # mpl.style.use("default")
@@ -1153,7 +1153,7 @@ def jh2020_movie(
         filepath = bulkpath + "bulk.0000895.vlsv"
         filenr_g = 895
 
-        fig,ax = plt.subplots(1,2,figsize=(12,8))
+        fig, ax = plt.subplots(1, 2, figsize=(12, 8))
 
         fig1_g = True
         fig1two_g = False
@@ -1180,8 +1180,8 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
-            axes = ax[1],
-            noylabels=True
+            axes=ax[1],
+            scale=2.0,
         )
 
         fig1_g = False
@@ -1192,7 +1192,6 @@ def jh2020_movie(
             usesci=0,
             lin=1,
             var=var,
-            tickinterval=2,
             vmin=vmin,
             vmax=vmax,
             vscale=vscale,
@@ -1208,8 +1207,9 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
-            axes = ax[0],
-            nocb=True
+            axes=ax[0],
+            nocb=True,
+            scale=2.0,
         )
 
         ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
@@ -1219,7 +1219,6 @@ def jh2020_movie(
         fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.png")
         plt.close(fig)
         return None
-
 
     if fig1mov:
         fig1_g = True
@@ -1660,7 +1659,12 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
 
     if fig1_g or fig5_g:
         ch_cont = ax.contour(
-            XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
+            XmeshXY,
+            YmeshXY,
+            ch_mask,
+            [0.5],
+            linewidths=markscaler * 0.6,
+            colors=jx.orange,
         )
         ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
 
@@ -1673,7 +1677,12 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             colors="yellow",
         )
         jet_cont = ax.contour(
-            XmeshXY, YmeshXY, jet_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.green
+            XmeshXY,
+            YmeshXY,
+            jet_mask,
+            [0.5],
+            linewidths=markscaler * 0.6,
+            colors=jx.green,
         )
         slams_cont.collections[0].set_label("FCS")
         jet_cont.collections[0].set_label("Jet")
@@ -1702,7 +1711,12 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
         )
     elif fig1two_g:
         ch_cont = ax.contour(
-            XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
+            XmeshXY,
+            YmeshXY,
+            ch_mask,
+            [0.5],
+            linewidths=markscaler * 0.6,
+            colors=jx.orange,
         )
         ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
 
