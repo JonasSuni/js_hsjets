@@ -1058,81 +1058,6 @@ def expfit_pendep(xdata, a1, a2):
     return jet_max * np.exp(-a1 * (xdata - maxbin)) + a2
 
 
-def jh2020_fig1(var="pdyn"):
-
-    vars_list = ["pdyn", "core_heating", "rho", "Mms", "B"]
-    var_index = vars_list.index(var)
-    label_list = ["nPa", "$T_{sw}$", "$cm^{-3}$", "", "nT"]
-    vmax_list = [4.5, 3.0, 6.6, 1, 10]
-    expr_list = [
-        pc.expr_pdyn,
-        pc.expr_coreheating,
-        pc.expr_srho,
-        pc.expr_mms,
-        pc.expr_B,
-    ]
-    sj_jet_ids, non_sj_ids = separate_jets("ABC")
-
-    global filenr_g
-    global runid_g
-    global sj_jetobs
-    global non_sjobs
-    global draw_arrows
-
-    draw_arrows = True
-
-    runid_g = "ABC"
-
-    sj_jetobs = [
-        jio.PropReader(str(n).zfill(5), "ABC", transient="slamsjet") for n in sj_jet_ids
-    ]
-    non_sjobs = [
-        jio.PropReader(str(n).zfill(5), "ABC", transient="slamsjet") for n in non_sj_ids
-    ]
-
-    outputdir = wrkdir_DNR + "Figures/jh2020/"
-
-    # filepath = "/scratch/project_2000203/sunijona/vlasiator/2D/ABC/bulk/bulk.0000677.vlsv"
-    # filepath = "/scratch/project_2000203/2D/ABC/bulk/bulk.0000714.vlsv"
-    # filepath = vlasdir+"/2D/ABC/bulk/bulk.0000714.vlsv"
-    filepath = vlasdir + "/2D/ABC/bulk/bulk.0000825.vlsv"
-
-    # filenr_g = 677
-    # filenr_g = 714
-    filenr_g = 825
-
-    colmap = "parula"
-    if var == "Mms":
-        colmap = "parula"
-
-    # pt.plot.plot_colormap(filename=filepath,outputfile=outputdir+"fig1a_{}.png".format(var),usesci=0,lin=1,expression=expr_list[var_index],vmin=0,vmax=vmax_list[var_index],colormap=colmap,cbtitle=label_list[var_index],pass_vars=["rho","v","CellID","Pdyn","RhoNonBackstream","PTensorNonBackstreamDiagonal","Mms","B"],Earth=1)
-
-    pt.plot.plot_colormap(
-        filename=filepath,
-        outputfile=outputdir + "fig1b_{}.png".format(var),
-        boxre=[6, 18, -6, 6],
-        usesci=0,
-        lin=1,
-        expression=expr_list[var_index],
-        vmin=0,
-        vmax=vmax_list[var_index],
-        colormap=colmap,
-        cbtitle=label_list[var_index],
-        external=jh20f1_ext,
-        pass_vars=[
-            "rho",
-            "v",
-            "CellID",
-            "Pdyn",
-            "RhoNonBackstream",
-            "PTensorNonBackstreamDiagonal",
-            "Mmsx",
-            "B",
-            "core_heating",
-        ],
-    )
-
-
 def jh2020_movie(
     runid,
     start,
@@ -1144,6 +1069,7 @@ def jh2020_movie(
     fig1=False,
     magt=1.5,
     fig1mov=False,
+    fig1two=False
 ):
 
     # mpl.style.use("default")
@@ -1184,9 +1110,11 @@ def jh2020_movie(
     global draw_arrows
     global fig5_g
     global fig1_g
+    global fig1two_g
 
     fig5_g = fig5
     fig1_g = fig1
+    fig1two_g = fig1two
 
     draw_arrows = arr_draw
 
@@ -1220,6 +1148,78 @@ def jh2020_movie(
         boxre = [6, 18, -8, 6]
 
     colmap = "Blues"
+
+    if fig1two:
+        filepath = bulkpath + "bulk.0000895.vlsv"
+        filenr_g = 895
+
+        fig,ax = plt.subplots(1,2,figsize=(12,8))
+
+        fig1_g = True
+        fig1two_g = False
+
+        pt.plot.plot_colormap(
+            filename=filepath,
+            boxre=boxre,
+            usesci=0,
+            lin=1,
+            var=var,
+            tickinterval=2,
+            vmin=vmin,
+            vmax=vmax,
+            vscale=vscale,
+            colormap=colmap,
+            external=jh20f1_ext,
+            pass_vars=[
+                "RhoNonBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+            ],
+            axes = ax[1],
+            noylabels=True
+        )
+
+        fig1_g = False
+        fig1two_g = True
+
+        pt.plot.plot_colormap(
+            filename=filepath,
+            usesci=0,
+            lin=1,
+            var=var,
+            tickinterval=2,
+            vmin=vmin,
+            vmax=vmax,
+            vscale=vscale,
+            colormap=colmap,
+            external=jh20f1_ext,
+            pass_vars=[
+                "RhoNonBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+            ],
+            axes = ax[0],
+            nocb=True
+        )
+
+        ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
+        ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
+
+        plt.tight_layout()
+        fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.png")
+        plt.close(fig)
+        return None
+
 
     if fig1mov:
         fig1_g = True
@@ -1658,47 +1658,53 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
         #             ypos = non_ylist[ix]
         #             ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
 
-    ch_cont = ax.contour(
-        XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
-    )
-    ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
+    if fig1_g or fig5_g:
+        ch_cont = ax.contour(
+            XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
+        )
+        ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
 
-    slams_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        slams_mask,
-        [0.5],
-        linewidths=markscaler * 0.6,
-        colors="yellow",
-    )
-    jet_cont = ax.contour(
-        XmeshXY, YmeshXY, jet_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.green
-    )
-    slams_cont.collections[0].set_label("FCS")
-    jet_cont.collections[0].set_label("Jet")
+        slams_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            slams_mask,
+            [0.5],
+            linewidths=markscaler * 0.6,
+            colors="yellow",
+        )
+        jet_cont = ax.contour(
+            XmeshXY, YmeshXY, jet_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.green
+        )
+        slams_cont.collections[0].set_label("FCS")
+        jet_cont.collections[0].set_label("Jet")
 
-    (non_pos,) = ax.plot(
-        non_xlist,
-        non_ylist,
-        "o",
-        color="black",
-        markersize=markscaler * 4,
-        markeredgecolor="white",
-        fillstyle="full",
-        mew=markscaler * 0.4,
-        label="Non-FCS-jet",
-    )
-    (sj_pos,) = ax.plot(
-        sj_xlist,
-        sj_ylist,
-        "o",
-        color="red",
-        markersize=markscaler * 4,
-        markeredgecolor="white",
-        fillstyle="full",
-        mew=markscaler * 0.4,
-        label="FCS-jet",
-    )
+        (non_pos,) = ax.plot(
+            non_xlist,
+            non_ylist,
+            "o",
+            color="black",
+            markersize=markscaler * 4,
+            markeredgecolor="white",
+            fillstyle="full",
+            mew=markscaler * 0.4,
+            label="Non-FCS-jet",
+        )
+        (sj_pos,) = ax.plot(
+            sj_xlist,
+            sj_ylist,
+            "o",
+            color="red",
+            markersize=markscaler * 4,
+            markeredgecolor="white",
+            fillstyle="full",
+            mew=markscaler * 0.4,
+            label="FCS-jet",
+        )
+    elif fig1two_g:
+        ch_cont = ax.contour(
+            XmeshXY, YmeshXY, ch_mask, [0.5], linewidths=markscaler * 0.6, colors=jx.orange
+        )
+        ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g, filenr_g)
