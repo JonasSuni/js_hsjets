@@ -1724,6 +1724,9 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             colors=jx.orange,
         )
         ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
+        xbox = [6, 6, 18, 18]
+        ybox = [-6, 6, 6, -6]
+        ax.plot(xbox, ybox, color="black", linewidth=0.8 * markscaler)
 
     if draw_arrows:
         arrow_coords = jx.bs_norm(runid_g, filenr_g)
