@@ -1291,11 +1291,11 @@ def jh2020_movie(
         scale = 1.5
 
         fig = plt.figure(figsize=(8, 8))
-        gs = fig.add_gridspec(2, 16)
+        gs = fig.add_gridspec(2, 17)
         ax_ul = fig.add_subplot(gs[0, 0:7])
-        ax_ur = fig.add_subplot(gs[0, 8:-1])
+        ax_ur = fig.add_subplot(gs[0, 8:-2])
         ax_ll = fig.add_subplot(gs[1, 0:7])
-        ax_lr = fig.add_subplot(gs[1, 8:-1])
+        ax_lr = fig.add_subplot(gs[1, 8:-2])
         cbax = fig.add_subplot(gs[:, -1])
 
         filepath = bulkpath + "bulk.0000954.vlsv"
