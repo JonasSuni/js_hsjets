@@ -1451,7 +1451,7 @@ def jh2020_movie(
         ax_lr.annotate("d)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
         # fig.subplots_adjust(wspace=0.05)
-        plt.tight_layout()
+        # plt.tight_layout()
         fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig4.pdf")
         plt.close(fig)
         return None
