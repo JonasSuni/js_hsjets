@@ -1153,7 +1153,7 @@ def jh2020_movie(
         filepath = bulkpath + "bulk.0000895.vlsv"
         filenr_g = 895
 
-        fig, ax = plt.subplots(1, 2, figsize=(6, 4))
+        fig, ax = plt.subplots(1, 2, figsize=(8, 4))
 
         fig1_g = True
         fig1two_g = False
@@ -1210,8 +1210,8 @@ def jh2020_movie(
             nocb=True,
         )
 
-        ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
-        ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
+        ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=12)
+        ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=12)
 
         plt.tight_layout()
         fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.png")
