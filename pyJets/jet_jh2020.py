@@ -1372,8 +1372,8 @@ def jh2020_movie(
             scale=scale,
         )
         ax_ur.annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
-        ax_ur.annotate(
-            "$P_{dyn}$ [nPa]", xy=(0.95, 1.05), xycoords="axes fraction", fontsize=12
+        cbax.annotate(
+            "$P_{dyn}$ [nPa]", xy=(-0.5, 1.05), xycoords="axes fraction", fontsize=12
         )
 
         filepath = bulkpath + "bulk.0000970.vlsv"
