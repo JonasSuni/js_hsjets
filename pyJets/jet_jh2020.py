@@ -1111,6 +1111,7 @@ def jh2020_movie(
     global fig5_g
     global fig1_g
     global fig1two_g
+    global fig1twoa_g
 
     fig5_g = fig5
     fig1_g = fig1
@@ -1153,9 +1154,9 @@ def jh2020_movie(
         filepath = bulkpath + "bulk.0000895.vlsv"
         filenr_g = 895
 
-        fig, ax = plt.subplots(1, 2, figsize=(8, 4))
+        fig, ax = plt.subplots(1, 2, figsize=(12, 8))
 
-        fig1_g = True
+        fig1twoa_g = True
         fig1two_g = False
 
         pt.plot.plot_colormap(
@@ -1181,9 +1182,10 @@ def jh2020_movie(
                 "Mmsx",
             ],
             axes=ax[1],
+            scale=1.5,
         )
 
-        fig1_g = False
+        fig1twoa_g = False
         fig1two_g = True
 
         pt.plot.plot_colormap(
@@ -1208,10 +1210,11 @@ def jh2020_movie(
             ],
             axes=ax[0],
             nocb=True,
+            scale=1.5,
         )
 
-        ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=12)
-        ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=12)
+        ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
+        ax[1].annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
         plt.tight_layout()
         fig.savefig(wrkdir_DNR + "Figures/sj_figs/fig1alt.png")
@@ -1655,7 +1658,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
         #             ypos = non_ylist[ix]
         #             ax.annotate("",xy=(xpos-0.075,ypos+0.075),xytext=(xpos-0.75,ypos+0.75),xycoords="data",textcoords="data",arrowprops=dict(arrowstyle="->",connectionstyle="arc3"))
 
-    if fig1_g or fig5_g:
+    if fig1_g or fig5_g or fig1twoa_g:
         ch_cont = ax.contour(
             XmeshXY,
             YmeshXY,
@@ -1728,6 +1731,10 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
     if fig1_g:
         ax.legend(
             frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5
+        )
+    if fig1twoa_g:
+        ax.legend(
+            frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=12
         )
 
     # xy_pos, = ax.plot(x_list,y_list,"o",color=jx.crimson,markersize=2)
