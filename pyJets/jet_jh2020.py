@@ -1114,12 +1114,14 @@ def jh2020_movie(
     global fig1two_g
     global fig1twoa_g
     global fig5mov_g
+    global fig1mov_g
 
     fig5_g = fig5
     fig1_g = fig1
     fig1two_g = fig1two
     fig1twoa_g = fig1two
     fig5mov_g = fig5mov
+    fig1mov_g = fig1mov
 
     draw_arrows = arr_draw
 
@@ -1773,7 +1775,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             if ny // 0.5 > arrow_coords[n - 1][1] // 0.5:
                 ax.arrow(nx, ny, dnx, dny, head_width=0.1, width=0.01, color=jx.orange)
 
-    if fig1_g:
+    if fig1_g and not fig1mov_g:
         ax.legend(
             frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5
         )
