@@ -1232,12 +1232,12 @@ def jh2020_movie(
             pt.plot.plot_colormap(
                 filename=filepath,
                 outputfile=wrkdir_DNR
-                + "Figures/thesis/mov5/{}.png".format(str(itr).zfill(7)),
+                + "Figures/sj_figs/mov5/{}.png".format(str(itr).zfill(7)),
                 boxre=boxre,
                 usesci=0,
                 lin=1,
                 var=var,
-                tickinterval=2,
+                tickinterval=1,
                 vmin=vmin,
                 vmax=vmax,
                 vscale=vscale,
@@ -1265,7 +1265,7 @@ def jh2020_movie(
             pt.plot.plot_colormap(
                 filename=filepath,
                 outputfile=wrkdir_DNR
-                + "Figures/thesis/mov1/{}.png".format(str(itr).zfill(7)),
+                + "Figures/sj_figs/mov1/{}.png".format(str(itr).zfill(7)),
                 boxre=boxre,
                 usesci=0,
                 lin=1,
