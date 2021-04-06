@@ -1113,11 +1113,13 @@ def jh2020_movie(
     global fig1_g
     global fig1two_g
     global fig1twoa_g
+    global fig5mov_g
 
     fig5_g = fig5
     fig1_g = fig1
     fig1two_g = fig1two
     fig1twoa_g = fig1two
+    fig5mov_g = fig5mov
 
     draw_arrows = arr_draw
 
@@ -1683,14 +1685,15 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
         )
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
         mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
-        ax.annotate(
-            "",
-            xy=(xpos - 0.125, ypos + 0.125),
-            xytext=(xpos - 0.75, ypos + 0.75),
-            xycoords="data",
-            textcoords="data",
-            arrowprops=dict(arrowstyle="->", connectionstyle="arc3"),
-        )
+        if not fig5mov_g:
+            ax.annotate(
+                "",
+                xy=(xpos - 0.125, ypos + 0.125),
+                xytext=(xpos - 0.75, ypos + 0.75),
+                xycoords="data",
+                textcoords="data",
+                arrowprops=dict(arrowstyle="->", connectionstyle="arc3"),
+            )
         # if filenr_g in [962,970]:
         #     for ix,xpos in enumerate(non_xlist):
         #         if np.abs(xpos-11) < 1.0:
