@@ -1070,6 +1070,7 @@ def jh2020_movie(
     magt=1.5,
     fig1mov=False,
     fig1two=False,
+    fig5mov=False,
 ):
 
     # mpl.style.use("default")
@@ -1222,6 +1223,40 @@ def jh2020_movie(
         plt.close(fig)
         return None
 
+    if fig5mov:
+        fig5_g = True
+        boxre = [9, 13, -3, 1]
+        for itr in range(start, stop + 1):
+            filepath = bulkpath + "bulk.{}.vlsv".format(str(itr).zfill(7))
+            filenr_g = itr
+            pt.plot.plot_colormap(
+                filename=filepath,
+                outputfile=wrkdir_DNR
+                + "Figures/thesis/mov5/{}.png".format(str(itr).zfill(7)),
+                boxre=boxre,
+                usesci=0,
+                lin=1,
+                var=var,
+                tickinterval=2,
+                vmin=vmin,
+                vmax=vmax,
+                vscale=vscale,
+                colormap=colmap,
+                external=jh20f1_ext,
+                pass_vars=[
+                    "RhoNonBackstream",
+                    "PTensorNonBackstreamDiagonal",
+                    "B",
+                    "v",
+                    "rho",
+                    "core_heating",
+                    "CellID",
+                    "Mmsx",
+                ],
+            )
+
+        return None
+
     if fig1mov:
         fig1_g = True
         for itr in range(start, stop + 1):
@@ -1230,7 +1265,7 @@ def jh2020_movie(
             pt.plot.plot_colormap(
                 filename=filepath,
                 outputfile=wrkdir_DNR
-                + "Figures/thesis/mov/{}.png".format(str(itr).zfill(7)),
+                + "Figures/thesis/mov1/{}.png".format(str(itr).zfill(7)),
                 boxre=boxre,
                 usesci=0,
                 lin=1,
