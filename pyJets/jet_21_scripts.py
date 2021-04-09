@@ -53,6 +53,12 @@ def make_plots():
         bulkpath = bulk_paths[runs.index(run)]
         for var in vars:
             for cm in cmaps:
+                outdir = "Figures/tektal/{}/{}/".format(run, var)
+                if not os.path.exists(outdir):
+                    try:
+                        os.makedirs(outdir)
+                    except OSError:
+                        pass
                 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
                 ax.axis("off")
                 pt.plot.plot_colormap(
@@ -70,10 +76,7 @@ def make_plots():
                 )
 
                 plt.tight_layout()
-                fig.savefig(
-                    wrkdir_DNR
-                    + "Figures/tektal/{}/{}/{}_{}_{}.png".format(run, var, run, var, cm)
-                )
+                fig.savefig(wrkdir_DNR + outdir + "{}_{}_{}.png".format(run, var, cm))
                 plt.close(fig)
 
     return None
