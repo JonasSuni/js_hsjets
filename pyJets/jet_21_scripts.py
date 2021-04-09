@@ -81,6 +81,7 @@ def make_plots():
                     title="",
                     Earth=1,
                     axes=ax,
+                    highres=2.0,
                 )
 
                 fig.savefig(
