@@ -39,7 +39,8 @@ def make_plots():
 
     outpath = wrkdir_DNR + "Figures/tektal/"
 
-    runs = ["ABA", "ABC", "AEA", "AEC"]
+    # runs = ["ABA", "ABC", "AEA", "AEC", "BCQ", "BFD"]
+    runs = ["BCQ", "BFD"]
     vars = ["Pdyn", "rho", "v", "B"]
     cmaps = ["warhol", "magma", "jet", "plasma", "viridis"]
     bulk_paths = [
@@ -47,6 +48,8 @@ def make_plots():
         "/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/AEA/round_3_boundary_sw/bulk.0001000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
     ]
 
     for run in runs:
