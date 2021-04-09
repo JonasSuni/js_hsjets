@@ -37,65 +37,39 @@ def make_plots():
 
     outpath = wrkdir_DNR + "Figures/tektal/"
 
-    ABA_path = "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv"
+    runs = ["ABA", "ABC", "AEA", "AEC"]
+    vars = ["Pdyn", "rho", "v", "B"]
+    cmaps = ["warhol", "magma", "jet", "plasma", "viridis"]
+    bulk_paths = [
+        "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/AEA/bulk/bulk.0001000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
+    ]
 
-    pt.plot.plot_colormap(
-        filename=ABA_path,
-        outputfile=outpath + "ABA_B_warhol.pdf",
-        var="B",
-        nocb=True,
-        lin=1,
-        colormap="warhol",
-        noxlabels=True,
-        noylabels=True,
-        noborder=True,
-        title="",
-        Earth=1,
-        noaxes=True,
-    )
-    pt.plot.plot_colormap(
-        filename=ABA_path,
-        outputfile=outpath + "ABA_v_warhol.pdf",
-        var="v",
-        nocb=True,
-        lin=1,
-        colormap="warhol",
-        noxlabels=True,
-        noylabels=True,
-        noborder=True,
-        title="",
-        Earth=1,
-        noaxes=True,
-    )
-    pt.plot.plot_colormap(
-        filename=ABA_path,
-        outputfile=outpath + "ABA_rho_warhol.pdf",
-        var="rho",
-        nocb=True,
-        lin=1,
-        colormap="warhol",
-        noxlabels=True,
-        noylabels=True,
-        noborder=True,
-        title="",
-        Earth=1,
-        noaxes=True,
-    )
+    for run in runs:
+        bulkpath = bulk_paths[runs.index(run)]
+        for var in vars:
+            for cm in cmaps:
+                fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+                ax.axis("off")
+                pt.plot.plot_colormap(
+                    filename=bulkpath,
+                    var=var,
+                    nocb=True,
+                    lin=1,
+                    colormap=cm,
+                    noxlabels=True,
+                    noylabels=True,
+                    noborder=True,
+                    title="",
+                    Earth=1,
+                    axes=ax,
+                )
 
-    pt.plot.plot_colormap(
-        filename=ABA_path,
-        outputfile=outpath + "ABA_pdyn_warhol.pdf",
-        var="Pdyn",
-        nocb=True,
-        lin=1,
-        colormap="warhol",
-        noxlabels=True,
-        noylabels=True,
-        noborder=True,
-        title="",
-        Earth=1,
-        noaxes=True,
-    )
+                plt.tight_layout()
+                fig.savefig(wrkdir_DNR + "{}_{}_{}.png".format(run, var, cm))
+                plt.close(fig)
 
     return None
 
