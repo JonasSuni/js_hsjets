@@ -52,7 +52,7 @@ def make_plots():
     )
     pt.plot_colormap(
         filename=ABA_path,
-        outputfile=outpath + "ABA_global_viridis.pdf",
+        outputfile=outpath + "ABA_global_plasma.pdf",
         var="Pdyn",
         nocb=True,
         lin=1,
@@ -63,7 +63,7 @@ def make_plots():
     )
     pt.plot_colormap(
         filename=ABA_path,
-        outputfile=outpath + "ABA_global_viridis.pdf",
+        outputfile=outpath + "ABA_global_magma.pdf",
         var="Pdyn",
         nocb=True,
         lin=1,
