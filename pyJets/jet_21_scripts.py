@@ -75,7 +75,6 @@ def make_plots():
                     axes=ax,
                 )
 
-                plt.tight_layout()
                 fig.savefig(outdir + "{}_{}_{}.png".format(run, var, cm))
                 plt.close(fig)
 
