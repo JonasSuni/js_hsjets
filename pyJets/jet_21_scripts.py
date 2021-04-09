@@ -48,7 +48,7 @@ def make_plots():
         "/wrk/group/spacephysics/vlasiator/2D/AEA/round_3_boundary_sw/bulk.0001000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
     ]
-
+    plt.axis("off")
     for run in runs:
         bulkpath = bulk_paths[runs.index(run)]
         for var in vars:
@@ -59,8 +59,9 @@ def make_plots():
                         os.makedirs(outdir)
                     except OSError:
                         pass
-                fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-                ax.axis("off")
+
+                fig, ax = plt.subplots(1, 1, figsize=(10, 10), constrained_layout=True)
+
                 pt.plot.plot_colormap(
                     filename=bulkpath,
                     var=var,
