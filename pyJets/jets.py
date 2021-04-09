@@ -66,6 +66,7 @@ from jet_scripts import (
 )
 from plot_contours import expr_pdyn_gen, expr_pdyn, expr_srho
 from tavg_maker import avg_maker_slow, TP_maker, v_avg_maker, testplot_vavg
+
 # from vspacecraft import jet_sc,jet_spacecrafts,slams_spacecraft,wave_spacecraft
 from jet_aux import (
     BS_xy,
@@ -93,3 +94,4 @@ from jet_jh2020 import (
     find_markus_FCS,
 )
 
+from jet_21_scripts import make_plots
