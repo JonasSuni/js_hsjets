@@ -76,8 +76,13 @@ def make_plots():
                     axes=ax,
                 )
 
-                fig.savefig(outdir + "{}_{}_{}.png".format(run, var, cm))
-                plt.close(fig, bbox_inches="tight", pad_inches=0, dpi=300)
+                fig.savefig(
+                    outdir + "{}_{}_{}.png".format(run, var, cm),
+                    bbox_inches="tight",
+                    pad_inches=0,
+                    dpi=300,
+                )
+                plt.close(fig)
 
     return None
 
