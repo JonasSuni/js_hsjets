@@ -68,7 +68,9 @@ def make_plots():
                 )
 
                 plt.tight_layout()
-                fig.savefig(wrkdir_DNR + "{}_{}_{}.png".format(run, var, cm))
+                fig.savefig(
+                    wrkdir_DNR + "Figures/tektal/{}_{}_{}.png".format(run, var, cm)
+                )
                 plt.close(fig)
 
     return None
