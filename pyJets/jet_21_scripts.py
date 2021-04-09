@@ -67,7 +67,7 @@ def make_plots():
                     except OSError:
                         pass
 
-                fig, ax = plt.subplots(1, 1, figsize=(15, 15))
+                fig, ax = plt.subplots(1, 1, figsize=(10, 10))
                 ax.axis("off")
                 pt.plot.plot_colormap(
                     filename=bulkpath,
