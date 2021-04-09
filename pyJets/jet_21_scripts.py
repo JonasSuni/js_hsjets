@@ -39,7 +39,7 @@ def make_plots():
 
     ABA_path = "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv"
 
-    pt.plot_colormap(
+    pt.plot.plot_colormap(
         filename=ABA_path,
         outputfile=outpath + "ABA_global_viridis.pdf",
         var="Pdyn",
@@ -50,7 +50,7 @@ def make_plots():
         noylabels=True,
         noborder=True,
     )
-    pt.plot_colormap(
+    pt.plot.plot_colormap(
         filename=ABA_path,
         outputfile=outpath + "ABA_global_plasma.pdf",
         var="Pdyn",
@@ -61,7 +61,7 @@ def make_plots():
         noylabels=True,
         noborder=True,
     )
-    pt.plot_colormap(
+    pt.plot.plot_colormap(
         filename=ABA_path,
         outputfile=outpath + "ABA_global_magma.pdf",
         var="Pdyn",
