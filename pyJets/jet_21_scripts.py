@@ -35,6 +35,8 @@ homedir = os.environ["HOME"] + "/"
 
 def make_plots():
 
+    plt.ioff()
+
     outpath = wrkdir_DNR + "Figures/tektal/"
 
     runs = ["ABA", "ABC", "AEA", "AEC"]
@@ -43,7 +45,7 @@ def make_plots():
     bulk_paths = [
         "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
-        "/wrk/group/spacephysics/vlasiator/2D/AEA/bulk/bulk.0001000.vlsv",
+        "/wrk/group/spacephysics/vlasiator/2D/AEA/round_3_boundary_sw/bulk.0001000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
     ]
 
@@ -69,7 +71,8 @@ def make_plots():
 
                 plt.tight_layout()
                 fig.savefig(
-                    wrkdir_DNR + "Figures/tektal/{}_{}_{}.png".format(run, var, cm)
+                    wrkdir_DNR
+                    + "Figures/tektal/{}/{}/{}_{}_{}.png".format(run, var, run, var, cm)
                 )
                 plt.close(fig)
 
