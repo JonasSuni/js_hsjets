@@ -49,6 +49,9 @@ def make_plots():
         noxlabels=True,
         noylabels=True,
         noborder=True,
+        title="",
+        Earth=1,
+        vmax=3e-9,
     )
     pt.plot.plot_colormap(
         filename=ABA_path,
@@ -60,6 +63,9 @@ def make_plots():
         noxlabels=True,
         noylabels=True,
         noborder=True,
+        title="",
+        Earth=1,
+        vmax=3e-9,
     )
     pt.plot.plot_colormap(
         filename=ABA_path,
@@ -71,6 +77,9 @@ def make_plots():
         noxlabels=True,
         noylabels=True,
         noborder=True,
+        title="",
+        Earth=1,
+        vmax=3e-9,
     )
 
     return None
