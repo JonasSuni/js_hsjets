@@ -97,7 +97,6 @@ def make_plots():
         noborder=True,
         title="",
         Earth=1,
-        vmax=3e-9,
         noaxes=True,
     )
 
