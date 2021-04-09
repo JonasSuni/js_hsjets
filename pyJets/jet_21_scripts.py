@@ -67,7 +67,7 @@ def make_plots():
                     except OSError:
                         pass
 
-                fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+                fig, ax = plt.subplots(1, 1, figsize=(15, 15))
                 ax.axis("off")
                 pt.plot.plot_colormap(
                     filename=bulkpath,
@@ -81,7 +81,6 @@ def make_plots():
                     title="",
                     Earth=1,
                     axes=ax,
-                    highres=2.0,
                 )
 
                 fig.savefig(
