@@ -85,5 +85,21 @@ def make_plots():
         noaxes=True,
     )
 
+    pt.plot.plot_colormap(
+        filename=ABA_path,
+        outputfile=outpath + "ABA_global_warhol.pdf",
+        var="Pdyn",
+        nocb=True,
+        lin=1,
+        colormap="warhol",
+        noxlabels=True,
+        noylabels=True,
+        noborder=True,
+        title="",
+        Earth=1,
+        vmax=3e-9,
+        noaxes=True,
+    )
+
     return None
 
