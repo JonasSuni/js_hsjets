@@ -52,6 +52,7 @@ def make_plots():
         title="",
         Earth=1,
         vmax=3e-9,
+        noaxes=True,
     )
     pt.plot.plot_colormap(
         filename=ABA_path,
@@ -66,6 +67,7 @@ def make_plots():
         title="",
         Earth=1,
         vmax=3e-9,
+        noaxes=True,
     )
     pt.plot.plot_colormap(
         filename=ABA_path,
@@ -80,6 +82,7 @@ def make_plots():
         title="",
         Earth=1,
         vmax=3e-9,
+        noaxes=True,
     )
 
     return None
