@@ -33,7 +33,7 @@ wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
 
 
-def make_plots():
+def make_plots(cb=True):
 
     plt.ioff()
 
@@ -41,8 +41,9 @@ def make_plots():
 
     # runs = ["ABA", "ABC", "AEA", "AEC", "BCQ", "BFD"]
     runs = ["BCQ", "BFD"]
-    vars = ["Pdyn", "rho", "v", "B"]
+    # vars = ["Pdyn", "rho", "v", "B"]
     cmaps = ["warhol", "magma", "jet", "plasma", "viridis"]
+
     # bulk_paths = [
     #     "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv",
     #     "/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
@@ -55,6 +56,13 @@ def make_plots():
         "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
         "/wrk/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
     ]
+    if cb:
+        bulk_paths = [
+            "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
+        ]
+        vars = ["v"]
+        cmaps = ["warhol"]
+        runs = ["BCQ"]
 
     for run in runs:
         bulkpath = bulk_paths[runs.index(run)]
@@ -90,6 +98,29 @@ def make_plots():
                     dpi=300,
                 )
                 plt.close(fig)
+                if cb:
+                    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+                    ax.axis("off")
+                    pt.plot.plot_colormap(
+                        filename=bulkpath,
+                        var=var,
+                        internalcb=True,
+                        lin=1,
+                        colormap=cm,
+                        noxlabels=True,
+                        noylabels=True,
+                        noborder=True,
+                        title="",
+                        Earth=1,
+                        axes=ax,
+                    )
+
+                    fig.savefig(
+                        outdir + "{}_{}_{}_scale.png".format(run, var, cm),
+                        bbox_inches="tight",
+                        pad_inches=0,
+                        dpi=300,
+                    )
 
     return None
 
