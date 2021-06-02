@@ -669,7 +669,7 @@ def mag_thresh_plot(allow_splinters=False):
     linewidth = 1.5
     capsize = 3.0
     fmt = "o-"
-    markersize = 3.0
+    markersize = 4.5
 
     fig, ax_list = plt.subplots(5, 1, figsize=(8, 10))
     for m in range(len(runid_list)):
