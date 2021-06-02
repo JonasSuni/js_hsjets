@@ -668,7 +668,8 @@ def mag_thresh_plot(allow_splinters=False):
     ann_labs = ["a)", "b)", "c)", "d)", "e)"]
     linewidth = 1.5
     capsize = 3.0
-    fmt = "-"
+    fmt = "o-"
+    markersize = 2.0
 
     fig, ax_list = plt.subplots(5, 1, figsize=(8, 10))
     for m in range(len(runid_list)):
@@ -682,6 +683,7 @@ def mag_thresh_plot(allow_splinters=False):
             linewidth=linewidth,
             fmt=fmt,
             capsize=capsize,
+            markersize=markersize,
         )
         ax_list[1].errorbar(
             mt_arr,
@@ -692,6 +694,7 @@ def mag_thresh_plot(allow_splinters=False):
             linewidth=linewidth,
             fmt=fmt,
             capsize=capsize,
+            markersize=markersize,
         )
         ax_list[0].errorbar(
             mt_arr,
@@ -702,6 +705,7 @@ def mag_thresh_plot(allow_splinters=False):
             linewidth=linewidth,
             fmt=fmt,
             capsize=capsize,
+            markersize=markersize,
         )
         ax_list[3].errorbar(
             mt_arr,
@@ -712,6 +716,7 @@ def mag_thresh_plot(allow_splinters=False):
             linewidth=linewidth,
             fmt=fmt,
             capsize=capsize,
+            markersize=markersize,
         )
         ax_list[4].errorbar(
             mt_arr,
@@ -722,6 +727,7 @@ def mag_thresh_plot(allow_splinters=False):
             linewidth=linewidth,
             fmt=fmt,
             capsize=capsize,
+            markersize=markersize,
         )
     for m in range(len(runid_list)):
         # ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
