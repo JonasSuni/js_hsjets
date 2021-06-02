@@ -595,6 +595,7 @@ def mag_thresh_plot(allow_splinters=False):
         jet_count_list = [197, 381, 733, 240]
 
     color_arr = ["black", jx.medium_blue, "green", jx.orange]
+    color_arr = jx.CB_color_cycle
 
     runid_list = ["ABA", "ABC", "AEA", "AEC"]
     runname_list = ["HM30", "HM05", "LM30", "LM05"]

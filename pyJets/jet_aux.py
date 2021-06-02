@@ -26,6 +26,18 @@ try:
 except:
     tavgdir = wrkdir_DNR
 
+CB_color_cycle = [
+    "#377eb8",
+    "#ff7f00",
+    "#4daf4a",
+    "#f781bf",
+    "#a65628",
+    "#984ea3",
+    "#999999",
+    "#e41a1c",
+    "#dede00",
+]
+
 
 def ext_magpause(ax, XmeshXY, YmeshXY, pass_maps):
     # if reqvars:
