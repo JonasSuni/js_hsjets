@@ -631,10 +631,16 @@ def mag_thresh_plot(allow_splinters=False):
 
         for idx in range(len(runid_list)):
             share_ste[n, idx] = jx.division_ste(
-                data[0, idx], data[1, idx], data[0 + 3, idx], data[1 + 3, idx]
+                data[0, idx] / run_length,
+                data[1, idx] / run_length,
+                data[0 + 3, idx],
+                data[1 + 3, idx],
             )
             slams_share_ste[n, idx] = jx.division_ste(
-                data[0, idx], data[2, idx], data[0 + 3, idx], data[2 + 3, idx]
+                data[0, idx] / run_length,
+                data[2, idx] / run_length,
+                data[0 + 3, idx],
+                data[2 + 3, idx],
             )
 
         # share_arr[n] = share
