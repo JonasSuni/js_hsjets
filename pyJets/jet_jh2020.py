@@ -733,7 +733,7 @@ def mag_thresh_plot(allow_splinters=False):
     ax_list[4].set_ylabel("Fraction of jets\ncaused by FCS", fontsize=15, labelpad=10)
     # ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax_list[1].legend(
-        frameon=False, numpoints=1, markerscale=2, loc="lower right", fontsize=12
+        frameon=False, numpoints=1, markerscale=1.8, loc="lower right", fontsize=11
     )
     for ix, ax in enumerate(ax_list):
         ax.annotate(ann_labs[ix], ann_locs[ix], xycoords="axes fraction", fontsize=20)
@@ -743,9 +743,9 @@ def mag_thresh_plot(allow_splinters=False):
         for lb in ["bottom", "top", "left", "right"]:
             ax.spines[lb].set_linewidth(1.5)
     ax_list[2].set_ylim(bottom=0, top=0.99)
-    ax_list[1].set_ylim(bottom=0, top=1.25)
+    ax_list[1].set_ylim(bottom=0, top=1.35)
     ax_list[0].set_ylim(bottom=0)
-    ax_list[3].set_ylim(bottom=0, top=1.99)
+    ax_list[3].set_ylim(bottom=0, top=2.01)
     ax_list[4].set_ylim(0, 0.99)
 
     ax_list[0].set_yticks([0, 1, 2, 3])
