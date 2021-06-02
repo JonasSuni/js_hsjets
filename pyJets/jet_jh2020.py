@@ -1120,9 +1120,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             expfit_pendep(xinterp, sj_popt[0], sj_popt[1]),
             color="red",
             linestyle="dashed",
-            label="FCS-jets\n$e$-folding: {:.2f}R$_\mathrm{E}$".format(
-                -1.0 / sj_popt[0]
-            ),
+            label="FCS-jets\n$e$-folding: {:.2f} ".format(-1.0 / sj_popt[0])
+            + "R$_\mathrm{E}$",
         )
         jet_max = non_hist[-1]
         ax[1].plot(
@@ -1130,9 +1129,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             expfit_pendep(xinterp, non_popt[0], non_popt[1]),
             color="black",
             linestyle="dashed",
-            label="Non-FCS-jets\n$e$-folding: {:.2f}R$_\mathrm{E}$".format(
-                -1.0 / non_popt[0]
-            ),
+            label="Non-FCS-jets\n$e$-folding: {:.2f} ".format(-1.0 / non_popt[0])
+            + "R$_\mathrm{E}$",
         )
         ax[0].annotate("a)", (0.05, 0.1), xycoords="axes fraction", fontsize=20)
         ax[1].annotate("b)", (0.05, 0.1), xycoords="axes fraction", fontsize=20)
