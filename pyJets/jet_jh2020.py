@@ -666,6 +666,9 @@ def mag_thresh_plot(allow_splinters=False):
 
     ann_locs = [(0.03, 0.1), (0.03, 0.1), (0.03, 0.1), (0.03, 0.8), (0.03, 0.1)]
     ann_labs = ["a)", "b)", "c)", "d)", "e)"]
+    linewidth = 1.5
+    capsize = 3.0
+    fmt = "-"
 
     fig, ax_list = plt.subplots(5, 1, figsize=(8, 10))
     for m in range(len(runid_list)):
@@ -676,9 +679,9 @@ def mag_thresh_plot(allow_splinters=False):
             sj_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
-            linewidth=1.2,
-            fmt="o-",
-            capsize=3.0,
+            linewidth=linewidth,
+            fmt=fmt,
+            capsize=capsize,
         )
         ax_list[1].errorbar(
             mt_arr,
@@ -686,9 +689,9 @@ def mag_thresh_plot(allow_splinters=False):
             jet_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
-            linewidth=1.2,
-            fmt="o-",
-            capsize=3.0,
+            linewidth=linewidth,
+            fmt=fmt,
+            capsize=capsize,
         )
         ax_list[0].errorbar(
             mt_arr,
@@ -696,9 +699,9 @@ def mag_thresh_plot(allow_splinters=False):
             slams_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
-            linewidth=1.2,
-            fmt="o-",
-            capsize=3.0,
+            linewidth=linewidth,
+            fmt=fmt,
+            capsize=capsize,
         )
         ax_list[3].errorbar(
             mt_arr,
@@ -706,9 +709,9 @@ def mag_thresh_plot(allow_splinters=False):
             slams_share_ste[m],
             label=runname_list[m],
             color=color_arr[m],
-            linewidth=1.2,
-            fmt="o-",
-            capsize=3.0,
+            linewidth=linewidth,
+            fmt=fmt,
+            capsize=capsize,
         )
         ax_list[4].errorbar(
             mt_arr,
@@ -716,9 +719,9 @@ def mag_thresh_plot(allow_splinters=False):
             share_ste[m],
             label=runname_list[m],
             color=color_arr[m],
-            linewidth=1.2,
-            fmt="o-",
-            capsize=3.0,
+            linewidth=linewidth,
+            fmt=fmt,
+            capsize=capsize,
         )
     for m in range(len(runid_list)):
         # ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
