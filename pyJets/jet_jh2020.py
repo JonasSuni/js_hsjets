@@ -751,7 +751,8 @@ def mag_thresh_plot(allow_splinters=False):
         ax.set_xlim(mt_arr[0], mt_arr[-1])
         ax.tick_params(labelsize=15)
         for lb in ["bottom", "top", "left", "right"]:
-            ax.spines[lb].set_linewidth(1.5)
+            # ax.spines[lb].set_linewidth(1.5)
+            pass
     ax_list[2].set_ylim(bottom=0, top=0.99)
     ax_list[1].set_ylim(bottom=0, top=1.35)
     ax_list[0].set_ylim(bottom=0)
