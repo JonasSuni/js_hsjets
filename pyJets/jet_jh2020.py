@@ -663,40 +663,55 @@ def mag_thresh_plot(allow_splinters=False):
     fig, ax_list = plt.subplots(5, 1, figsize=(8, 10))
     for m in range(len(runid_list)):
         # ax_list[0].semilogy(mt_arr,slams_number_arr[m],label=runid_list[m])
-        ax_list[2].plot(
+        ax_list[2].errorbar(
             mt_arr,
             sj_number_arr[m] / run_length[m],
+            sj_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
             linewidth=1.2,
+            fmt="o-",
+            capsize=3.0,
         )
-        ax_list[1].plot(
+        ax_list[1].errorbar(
             mt_arr,
             jet_number_arr[m] / run_length[m],
+            jet_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
             linewidth=1.2,
+            fmt="o-",
+            capsize=3.0,
         )
-        ax_list[0].plot(
+        ax_list[0].errorbar(
             mt_arr,
             slams_number_arr[m] / run_length[m],
+            slams_number_ste[m],
             label=runname_list[m],
             color=color_arr[m],
             linewidth=1.2,
+            fmt="o-",
+            capsize=3.0,
         )
-        ax_list[3].plot(
+        ax_list[3].errorbar(
             mt_arr,
             slams_share_arr[m],
+            slams_share_ste[m],
             label=runname_list[m],
             color=color_arr[m],
             linewidth=1.2,
+            fmt="o-",
+            capsize=3.0,
         )
-        ax_list[4].plot(
+        ax_list[4].errorbar(
             mt_arr,
             share_arr[m],
+            share_ste[m],
             label=runname_list[m],
             color=color_arr[m],
             linewidth=1.2,
+            fmt="o-",
+            capsize=3.0,
         )
     for m in range(len(runid_list)):
         # ax_list[0].axhline(jet_count_list[m],linestyle="dashed",color=color_arr[m],linewidth=0.8)
