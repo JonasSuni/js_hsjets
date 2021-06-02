@@ -33,7 +33,7 @@ wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
 
 
-def make_plots(cb=True):
+def make_plots(cb=False):
 
     plt.ioff()
 

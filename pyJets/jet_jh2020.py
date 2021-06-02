@@ -606,28 +606,55 @@ def mag_thresh_plot(allow_splinters=False):
     slams_number_arr = np.zeros((len(mt_str_list), len(runid_list)), dtype=float)
     jet_number_arr = np.zeros((len(mt_str_list), len(runid_list)), dtype=float)
     sj_number_arr = np.zeros((len(mt_str_list), len(runid_list)), dtype=float)
+
+    share_ste = np.zeros_like(share_arr)
+    slams_share_ste = np.zeros_like(share_arr)
+    slams_number_ste = np.zeros_like(share_arr)
+    jet_number_ste = np.zeros_like(share_arr)
+    sj_number_ste = np.zeros_like(share_arr)
+
     for n in range(len(mt_str_list)):
         # print(mt_str_list[n])
         data = np.loadtxt(
             wrkdir_DNR
             + "sjn_counts/sjn_count_{}_{}.txt".format(mt_str_list[n], allow_splinters)
         ).astype(float)
-        share = (data[0]) / (data[1])
-        slams_share = (data[0]) / (data[2])
-        slams_number = data[2]
-        jet_number = data[1]
-        sj_number = data[0]
-        share_arr[n] = share
-        slams_share_arr[n] = slams_share
-        slams_number_arr[n] = slams_number
-        jet_number_arr[n] = jet_number
-        sj_number_arr[n] = sj_number
+        share_arr[n] = (data[0]) / (data[1])
+        slams_share_arr[n] = (data[0]) / (data[2])
+        slams_number_arr[n] = data[2]
+        jet_number_arr[n] = data[1]
+        sj_number_arr[n] = data[0]
+
+        slams_number_ste[n] = data[2 + 3]
+        jet_number_ste[n] = data[1 + 3]
+        sj_number_ste[n] = data[0 + 3]
+
+        for idx in range(len(runid_list)):
+            share_ste[n, idx] = jx.division_ste(
+                data[0, idx], data[1, idx], data[0 + 3, idx], data[1 + 3, idx]
+            )
+            slams_share_ste[n, idx] = jx.division_ste(
+                data[0, idx], data[2, idx], data[0 + 3, idx], data[2 + 3, idx]
+            )
+
+        # share_arr[n] = share
+        # slams_share_arr[n] = slams_share
+        # slams_number_arr[n] = slams_number
+        # jet_number_arr[n] = jet_number
+        # sj_number_arr[n] = sj_number
 
     share_arr = share_arr.T
     slams_share_arr = slams_share_arr.T
     slams_number_arr = slams_number_arr.T
     jet_number_arr = jet_number_arr.T
     sj_number_arr = sj_number_arr.T
+
+    share_ste = share_ste.T
+    slams_share_ste = slams_share_ste.T
+    slams_number_ste = slams_number_ste.T
+    jet_number_ste = jet_number_ste.T
+    sj_number_ste = sj_number_ste.T
+
     mt_arr = np.array(list(map(float, mt_str_list)))
 
     ann_locs = [(0.03, 0.1), (0.03, 0.1), (0.03, 0.1), (0.03, 0.8), (0.03, 0.1)]
@@ -721,13 +748,56 @@ def sj_non_counter(allow_splinters=True, mag_thresh=1.5):
     epsilon = 1.0e-27
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
+    end_times = [839 / 2, 1179 / 2, 1339 / 2, 879 / 2]
 
     count_arr = np.empty((3, 4), dtype=int)
+    ste_arr = np.empty((3, 4), dtype=float)
 
     for ix, runid in enumerate(runids):
-        counts = np.array(
-            [arr.size for arr in separate_jets_god(runid, allow_splinters)], dtype=int
+        sjg = separate_jets_god(runid, allow_splinters)
+
+        sj_times = np.array(
+            [
+                jio.PropReader(
+                    str(jid).zfill(5), runid, transient="slamsjet"
+                ).get_times()[0]
+                for jid in sjg[0]
+            ]
         )
+        jet_times = np.array(
+            [
+                jio.PropReader(str(jid).zfill(5), runid, transient="jet").get_times()[0]
+                for jid in sjg[1]
+            ]
+        )
+        fcs_times = np.array(
+            [
+                jio.PropReader(str(jid).zfill(5), runid, transient="slams").get_times()[
+                    0
+                ]
+                for jid in sjg[2]
+            ]
+        )
+
+        h_sj, bins_sj = np.histogram(
+            sj_times, bins=np.arange(290, end_times[ix] + 1, 1)
+        )
+        h_jet, bins_jet = np.histogram(
+            jet_times, bins=np.arange(290, end_times[ix] + 1, 1)
+        )
+        h_fcs, bins_fcs = np.histogram(
+            fcs_times, bins=np.arange(290, end_times[ix] + 1, 1)
+        )
+
+        ste_sj = np.std(h_sj, ddof=1) / np.sqrt(bins_sj.size - 1)
+        ste_jet = np.std(h_jet, ddof=1) / np.sqrt(bins_jet.size - 1)
+        ste_fcs = np.std(h_fcs, ddof=1) / np.sqrt(bins_fcs.size - 1)
+
+        ste_arr[0, ix] = ste_sj
+        ste_arr[1, ix] = ste_jet
+        ste_arr[2, ix] = ste_fcs
+
+        counts = np.array([arr.size for arr in sjg], dtype=int)
         count_arr[:, ix] = counts
 
     # data_arr = np.array([separate_jets_god(runid,allow_splinters) for runid in runids]).flatten()
@@ -749,11 +819,13 @@ def sj_non_counter(allow_splinters=True, mag_thresh=1.5):
         )
     )
 
+    count_ste_arr = np.vstack((count_arr, ste_arr))
+
     np.savetxt(
         wrkdir_DNR
         + "sjn_counts/sjn_count_{}_{}.txt".format(mag_thresh, allow_splinters),
-        count_arr,
-        fmt="%.0f",
+        count_ste_arr,
+        fmt="%.7f",
     )
 
     # return np.reshape(data_arr,(4,3))
@@ -1189,6 +1261,7 @@ def jh2020_movie(
             ],
             axes=ax[1],
             scale=1.5,
+            title="$t =$ {} s".format(filenr_g),
         )
 
         fig1twoa_g = False
@@ -1217,6 +1290,7 @@ def jh2020_movie(
             axes=ax[0],
             nocb=True,
             scale=1.5,
+            title="$t =$ {} s".format(filenr_g),
         )
 
         ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
@@ -1258,6 +1332,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
+                title="$t =$ {} s".format(filenr_g),
             )
 
         return None
@@ -1292,6 +1367,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
+                title="$t =$ {} s".format(filenr_g),
             )
 
         return None
@@ -1323,6 +1399,7 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
+            title="$t =$ {} s".format(filenr_g),
         )
 
         return None
@@ -1373,6 +1450,7 @@ def jh2020_movie(
             noxlabels=True,
             noborder=noborder,
             scale=scale,
+            title="$t =$ {} s".format(filenr_g),
         )
         ax_ul.annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1411,6 +1489,7 @@ def jh2020_movie(
             noylabels=True,
             noborder=noborder,
             scale=scale,
+            title="$t =$ {} s".format(filenr_g),
         )
         ax_ur.annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
         cbax.annotate(
@@ -1450,6 +1529,7 @@ def jh2020_movie(
             nocb=True,
             noborder=noborder,
             scale=scale,
+            title="$t =$ {} s".format(filenr_g),
         )
         ax_ll.annotate("c)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1488,6 +1568,7 @@ def jh2020_movie(
             noborder=noborder,
             scale=scale,
             cbtitle="",
+            title="$t =$ {} s".format(filenr_g),
         )
         ax_lr.annotate("d)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1531,6 +1612,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
+                title="$t =$ {} s".format(filenr_g),
             )
 
         else:
@@ -1561,6 +1643,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=40,
+                title="$t =$ {} s".format(filenr_g),
             )
 
             pt.plot.plot_colormap(
@@ -1589,6 +1672,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
+                title="$t =$ {} s".format(filenr_g),
             )
 
 
