@@ -1047,7 +1047,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         )
         # ax[0].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
         # ax[1].legend(frameon=False,numpoints=1,markerscale=2,fontsize=15,loc="upper left")
-        ax[0].set_ylabel("Jets/s", fontsize=25, labelpad=10)
+        ax[0].set_ylabel("Jets/s", fontsize=20, labelpad=10)
         ax[1].set_ylabel("Cumulative\nfraction of jets", fontsize=20, labelpad=10)
         ax[0].set_xlabel(
             "Disappearance distance\n$x_\mathrm{last}-x_\mathrm{bs}~[R_\mathrm{E}]$",
