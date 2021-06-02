@@ -734,11 +734,11 @@ def mag_thresh_plot(allow_splinters=False):
         pass
 
     ax_list[-1].set_xlabel(
-        "FCS magnetic threshold $\mathrm{\\eta=|B|/B_{IMF}}$", fontsize=20, labelpad=10
+        "FCS magnetic threshold $\\eta=|B|/B_{\mathrm{IMF}}$", fontsize=20, labelpad=10
     )
-    ax_list[2].set_ylabel("FCS-jets/s", fontsize=15, labelpad=10)
-    ax_list[1].set_ylabel("Jets/s", fontsize=15, labelpad=10)
-    ax_list[0].set_ylabel("FCSs/s", fontsize=15, labelpad=10)
+    ax_list[2].set_ylabel("FCS-jets / s", fontsize=15, labelpad=10)
+    ax_list[1].set_ylabel("Jets / s", fontsize=15, labelpad=10)
+    ax_list[0].set_ylabel("FCSs / s", fontsize=15, labelpad=10)
     ax_list[3].set_ylabel("FCS-jets\nper FCS", fontsize=15, labelpad=10)
     ax_list[4].set_ylabel("Fraction of jets\ncaused by FCS", fontsize=15, labelpad=10)
     # ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
