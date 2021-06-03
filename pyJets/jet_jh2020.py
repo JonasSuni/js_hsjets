@@ -1273,12 +1273,13 @@ def jh2020_movie(
         boxre = [6, 18, -8, 6]
 
     colmap = "Blues"
+    colmap = "Greys"
 
     if fig1two:
         filepath = bulkpath + "bulk.0000895.vlsv"
         filenr_g = 895
 
-        fig, ax = plt.subplots(1, 2, figsize=(12, 8))
+        fig, ax = plt.subplots(2, 1, figsize=(8, 12))
 
         fig1twoa_g = True
         fig1two_g = False
@@ -1307,7 +1308,7 @@ def jh2020_movie(
             ],
             axes=ax[1],
             scale=1.5,
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
 
         fig1twoa_g = False
@@ -1336,7 +1337,7 @@ def jh2020_movie(
             axes=ax[0],
             nocb=True,
             scale=1.5,
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
 
         ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
@@ -1378,7 +1379,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
-                title="$t =$ {} s".format(filenr_g),
+                title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
             )
 
         return None
@@ -1413,7 +1414,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
-                title="$t =$ {} s".format(filenr_g),
+                title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
             )
 
         return None
@@ -1445,7 +1446,7 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
 
         return None
@@ -1496,7 +1497,7 @@ def jh2020_movie(
             noxlabels=True,
             noborder=noborder,
             scale=scale,
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
         ax_ul.annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1535,7 +1536,7 @@ def jh2020_movie(
             noylabels=True,
             noborder=noborder,
             scale=scale,
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
         ax_ur.annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
         cbax.annotate(
@@ -1575,7 +1576,7 @@ def jh2020_movie(
             nocb=True,
             noborder=noborder,
             scale=scale,
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
         ax_ll.annotate("c)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1614,7 +1615,7 @@ def jh2020_movie(
             noborder=noborder,
             scale=scale,
             cbtitle="",
-            title="$t =$ {} s".format(filenr_g),
+            title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
         )
         ax_lr.annotate("d)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1658,7 +1659,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
-                title="$t =$ {} s".format(filenr_g),
+                title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
             )
 
         else:
@@ -1689,7 +1690,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=40,
-                title="$t =$ {} s".format(filenr_g),
+                title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
             )
 
             pt.plot.plot_colormap(
@@ -1718,7 +1719,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
-                title="$t =$ {} s".format(filenr_g),
+                title="$t~=$ {:.1f} s".format(filenr_g / 2.0),
             )
 
 
@@ -1796,6 +1797,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
     # bs_cont, = ax.plot(x_bs,y_bs,color="black",linewidth=0.8)
     # mp_cont, = ax.plot(x_mp,y_bs,color="black",linewidth=0.8)
 
+    cb_colors = jx.CB_color_cycle
+
     markscaler = 1.0
     if fig5_g or fig1twoa_g or fig1two_g:
         markscaler = 2.0
@@ -1818,7 +1821,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             colors=jx.violet,
         )
         rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
-        mach_cont.collections[0].set_label("$M_{MS,x} \leq 1$")
+        mach_cont.collections[0].set_label("$M_{ms,x} \leq 1$")
         if not fig5mov_g:
             ax.annotate(
                 "",
@@ -1841,9 +1844,10 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             ch_mask,
             [0.5],
             linewidths=markscaler * 0.6,
-            colors=jx.orange,
+            # colors=jx.orange,
+            colors=cb_colors[1],
         )
-        ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
+        ch_cont.collections[0].set_label("$T_\mathrm{core} = 3T_\mathrm{sw}$")
 
         slams_cont = ax.contour(
             XmeshXY,
@@ -1851,7 +1855,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             slams_mask,
             [0.5],
             linewidths=markscaler * 0.6,
-            colors="yellow",
+            # colors="yellow",
+            colors=cb_colors[2],
         )
         jet_cont = ax.contour(
             XmeshXY,
@@ -1859,7 +1864,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             jet_mask,
             [0.5],
             linewidths=markscaler * 0.6,
-            colors=jx.green,
+            # colors=jx.green,
+            colors=cb_colors[0],
         )
         slams_cont.collections[0].set_label("FCS")
         jet_cont.collections[0].set_label("Jet")
@@ -1879,7 +1885,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             sj_xlist,
             sj_ylist,
             "o",
-            color="red",
+            # color="red",
+            color=cb_colors[3],
             markersize=markscaler * 4,
             markeredgecolor="white",
             fillstyle="full",
@@ -1893,7 +1900,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             ch_mask,
             [0.5],
             linewidths=markscaler * 0.6,
-            colors=jx.orange,
+            # colors=jx.orange,
+            colors=cb_colors[1],
         )
         ch_cont.collections[0].set_label("$T_{core} = 3T_{sw}$")
         xbox = [6, 6, 18, 18, 6]
