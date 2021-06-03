@@ -1308,7 +1308,7 @@ def jh2020_movie(
             ],
             axes=ax[1],
             scale=1.5,
-            title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+            title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
             cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
         )
 
@@ -1338,7 +1338,7 @@ def jh2020_movie(
             axes=ax[0],
             nocb=True,
             scale=1.5,
-            title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+            title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
             cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
         )
 
@@ -1381,7 +1381,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
-                title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+                title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
                 cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
             )
 
@@ -1417,7 +1417,7 @@ def jh2020_movie(
                     "CellID",
                     "Mmsx",
                 ],
-                title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+                title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
                 cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
             )
 
@@ -1450,7 +1450,7 @@ def jh2020_movie(
                 "CellID",
                 "Mmsx",
             ],
-            title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+            title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
             cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
         )
 
@@ -1620,7 +1620,7 @@ def jh2020_movie(
             noborder=noborder,
             scale=scale,
             cbtitle="",
-            title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+            title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
         )
         ax_lr.annotate("d)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
@@ -1664,7 +1664,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
-                title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+                title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
                 cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
             )
 
@@ -1696,7 +1696,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=40,
-                title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+                title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
                 cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
             )
 
@@ -1726,7 +1726,7 @@ def jh2020_movie(
                 fluxfile=fluxfile,
                 fluxdir=fluxdir,
                 fluxlines=80,
-                title="$t~=$ {:.1f} ".format(filenr_g / 2.0) + "$\mathrm{s}$",
+                title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
                 cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
             )
 
