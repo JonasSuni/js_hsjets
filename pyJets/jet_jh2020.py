@@ -1112,7 +1112,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     F_sj = np.array(
         [
             np.ones_like(sj_bins),
-            -jet_max * sj_popt[0] * np.exp(-sj_popt[0] * (sj_bins - maxbin)),
+            -jet_max * (sj_bins - maxbin) * np.exp(-sj_popt[0] * (sj_bins - maxbin)),
         ]
     ).T
 
@@ -1133,7 +1133,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
     F_non = np.array(
         [
             np.ones_like(sj_bins),
-            -jet_max * non_popt[0] * np.exp(-non_popt[0] * (sj_bins - maxbin)),
+            -jet_max * (sj_bins - maxbin) * np.exp(-non_popt[0] * (sj_bins - maxbin)),
         ]
     ).T
 
