@@ -17,6 +17,7 @@ elif sys.version_info.major == 2:
 import pytools as pt
 import os
 import scipy
+import scipy.linalg
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -1105,11 +1106,41 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         expfit_pendep, sj_bins, sj_hist, p0=[1.0, 0.0]
     )
 
+    SSE_sj = np.sum((sj_hist - expfit_pendep(sj_bins, sj_popt[0], sj_popt[1])) ** 2)
+    s2_sj = SSE_sj / (sj_bins.size - 2)
+
+    F_sj = np.array(
+        [
+            np.ones_like(sj_bins),
+            -jet_max * sj_popt[0] * np.exp(-sj_popt[0] * (sj_bins - maxbin)),
+        ]
+    ).T
+
+    Minv_sj = scipy.linalg.inv(F_sj.T @ F_sj)
+
+    sj_a1_std = np.sqrt(s2_sj * Minv_sj[0, 0])
+    print("FCS-jet e-folding std = {}".format(sj_a1_std))
+
     jet_max = non_hist[-1]
 
     non_popt, non_pcov = scipy.optimize.curve_fit(
         expfit_pendep, sj_bins, non_hist, p0=[1.0, 0.0]
     )
+
+    SSE_non = np.sum((non_hist - expfit_pendep(sj_bins, non_popt[0], non_popt[1])) ** 2)
+    s2_non = SSE_non / (sj_bins.size - 2)
+
+    F_non = np.array(
+        [
+            np.ones_like(sj_bins),
+            -jet_max * non_popt[0] * np.exp(-non_popt[0] * (sj_bins - maxbin)),
+        ]
+    ).T
+
+    Minv_non = scipy.linalg.inv(F_non.T @ F_non)
+
+    non_a1_std = np.sqrt(s2_non * Minv_non[0, 0])
+    print("Non-FCS-jet e-folding std = {}".format(non_a1_std))
 
     xinterp = np.linspace(-2.5, 0, 100 + 1)
 
