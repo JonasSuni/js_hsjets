@@ -1151,7 +1151,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             expfit_pendep(xinterp, sj_popt[0], sj_popt[1]),
             color="red",
             linestyle="dashed",
-            label="FCS-jets\n$e$-folding: {:.3f} $\pm$ {:.3f}".format(
+            label="FCS-jets\n$e$-folding: {:.3f} $\pm$ {:.3f} ".format(
                 -1.0 / sj_popt[0], sj_a1_std
             )
             + "$R_\mathrm{E}$",
@@ -1162,7 +1162,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             expfit_pendep(xinterp, non_popt[0], non_popt[1]),
             color="black",
             linestyle="dashed",
-            label="Non-FCS-jets\n$e$-folding: {:.3f} $\pm$ {:.3f}".format(
+            label="Non-FCS-jets\n$e$-folding: {:.3f} $\pm$ {:.3f} ".format(
                 -1.0 / non_popt[0], non_a1_std
             )
             + "$R_\mathrm{E}$",
