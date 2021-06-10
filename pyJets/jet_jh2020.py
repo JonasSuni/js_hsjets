@@ -1012,7 +1012,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             bins=bins,
             weights=sj_time_weights,
             histtype="step",
-            color="red",
+            # color="red",
+            color=jx.CB_color_cycle[3],
             label="FCS-jets",
         )
         ax[0].hist(
@@ -1033,7 +1034,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             bins=bins,
             weights=sj_weights,
             histtype="step",
-            color="red",
+            # color="red",
+            color=jx.CB_color_cycle[3],
             # label="FCS-jets",
             cumulative=True,
         )
@@ -1075,7 +1077,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             bins=bins,
             weights=sj_weights,
             histtype="step",
-            color="red",
+            # color="red",
+            color=jx.CB_color_cycle[3],
             # label="FCS-jets",
             cumulative=True,
         )
@@ -1149,7 +1152,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         ax[1].plot(
             xinterp,
             expfit_pendep(xinterp, sj_popt[0], sj_popt[1]),
-            color="red",
+            # color="red",
+            color=jx.CB_color_cycle[3],
             linestyle="dashed",
             label="FCS-jets\n$e$-folding: {:.2f} $\pm$ {:.2f} ".format(
                 -1.0 / sj_popt[0], sj_a1_std
@@ -1180,7 +1184,8 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         ax.plot(
             xinterp,
             expfit_pendep(xinterp, sj_popt[0], sj_popt[1]),
-            color="red",
+            # color="red",
+            color=jx.CB_color_cycle[3],
             linestyle="dashed",
             label="EFL: {:.2f}Re".format(-1.0 / sj_popt[0]),
         )
