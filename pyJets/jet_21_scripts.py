@@ -33,25 +33,34 @@ wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
 
 
-def tail_sheet_jplot():
+def tail_sheet_jplot(xcut=20):
 
     fnr_range = np.arange(1200, 1501, 1)
-    y_arr = np.loadtxt(wrkdir_DNR + "Figures/sum21/sheet_txt/1200.txt")[:, 0]
+    y_arr = np.loadtxt(
+        wrkdir_DNR + "Figures/sum21/sheet_txt/x{}_1200.txt".format(xcut)
+    )[:, 0]
     val_mesh = np.array(
         [
-            np.loadtxt(wrkdir_DNR + "Figures/sum21/sheet_txt/{}.txt".format(fnr))[:, 1]
+            np.loadtxt(
+                wrkdir_DNR + "Figures/sum21/sheet_txt/x{}_{}.txt".format(xcut, fnr)
+            )[:, 1]
             for fnr in fnr_range
         ]
     )
 
     fig, ax = plt.subplots(1, 1)
     ax.grid()
-    ax.set(xlabel="Y [Re]", ylabel="Time [s]", title="X = -20 Re", xlim=(-10, 10))
+    ax.set(
+        xlabel="Y [Re]",
+        ylabel="Time [s]",
+        title="X = -{} Re".format(xcut),
+        xlim=(-10, 10),
+    )
 
     ax.pcolormesh(y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
 
     plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot.pdf")
+    fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
     plt.close(fig)
 
     return None
