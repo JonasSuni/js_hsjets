@@ -61,6 +61,7 @@ def tail_sheet_jplot(xcut=20):
 
     plt.tight_layout()
     fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
+    fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.png".format(xcut))
     plt.close(fig)
 
     return None
