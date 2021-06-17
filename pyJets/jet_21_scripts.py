@@ -46,7 +46,7 @@ def tail_sheet_jplot():
 
     fig, ax = plt.subplots(1, 1)
     ax.grid()
-    ax.set(xlabel="Y [Re]", ylabel="Time [s]", title="X = -20 Re")
+    ax.set(xlabel="Y [Re]", ylabel="Time [s]", title="X = -20 Re", xlim=(-10, 10))
 
     ax.pcolormesh(y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
 
