@@ -94,4 +94,4 @@ from jet_jh2020 import (
     find_markus_FCS,
 )
 
-from jet_21_scripts import make_plots
+from jet_21_scripts import make_plots, tail_sheet_jplot

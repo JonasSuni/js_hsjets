@@ -33,6 +33,31 @@ wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
 
 
+def tail_sheet_jplot():
+
+    fnr_range = np.arange(1200, 1501, 1)
+    time_range = fnr_range / 2.0
+    y_arr = np.loadtxt(wrkdir_DNR + "Figures/sum21/sheet_txt/1200.txt")[:, 0]
+    val_mesh = np.array(
+        [
+            np.loadtxt(wrkdir_DNR + "Figures/sum21/sheet_txt/{}.txt".format(fnr))[:, 1]
+            for fnr in fnr_range
+        ]
+    )
+
+    fig, ax = plt.subplots(1, 1)
+    ax.grid()
+    ax.set(xlabel="Y [Re]", ylabel="Time [s]")
+
+    ax.pcolormesh(y_arr, time_range, val_mesh, shading="nearest", cmap="seismic")
+
+    plt.tight_layout()
+    fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot.pdf")
+    plt.close(fig)
+
+    return None
+
+
 def make_plots(cb=False):
 
     plt.ioff()
