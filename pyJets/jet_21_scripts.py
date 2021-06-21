@@ -58,6 +58,16 @@ def tail_sheet_jplot(xcut=20):
     )
 
     ax.pcolormesh(y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
+    for fnr in fnr_range:
+        ffjs = np.loadtxt(
+            "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
+                fnr, fnr
+            )
+        )
+        x, y, z = ffjs.T
+        y_plot = y[np.abs(x + xcut) < 0.2]
+        t_plot = np.ones_like(y_plot) * fnr
+        ax.plot(t_plot, y_plot, "^", color="black", markersize=1)
 
     plt.tight_layout()
     fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
