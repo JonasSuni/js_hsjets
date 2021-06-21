@@ -67,7 +67,7 @@ def tail_sheet_jplot(xcut=20):
         x, y, z = ffjs.T
         y_plot = y[np.abs(x + xcut) < 0.2]
         t_plot = np.ones_like(y_plot) * fnr
-        ax.plot(t_plot, y_plot, "^", color="black", markersize=1)
+        ax.plot(y_plot, t_plot, "^", color="black", markersize=1)
 
     plt.tight_layout()
     fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
