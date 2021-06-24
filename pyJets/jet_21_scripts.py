@@ -33,16 +33,22 @@ wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
 
 
+def make_flap_plots():
+
+    for n in range(12, 27, 1):
+        tail_sheet_jplot(xcut=n)
+
+
 def tail_sheet_jplot(xcut=20):
 
     fnr_range = np.arange(1200, 1501, 1)
     y_arr = np.loadtxt(
-        wrkdir_DNR + "Figures/sum21/sheet_txt/x{}_1200.txt".format(xcut)
+        wrkdir_DNR + "Figures/sum21/sheet_txt/x{}/1200.txt".format(xcut)
     )[:, 0]
     val_mesh = np.array(
         [
             np.loadtxt(
-                wrkdir_DNR + "Figures/sum21/sheet_txt/x{}_{}.txt".format(xcut, fnr)
+                wrkdir_DNR + "Figures/sum21/sheet_txt/x{}/{}.txt".format(xcut, fnr)
             )[:, 1]
             for fnr in fnr_range
         ]
@@ -58,6 +64,7 @@ def tail_sheet_jplot(xcut=20):
     )
 
     ax.pcolormesh(y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
+
     for fnr in fnr_range:
         ffjs = np.loadtxt(
             "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
@@ -70,7 +77,7 @@ def tail_sheet_jplot(xcut=20):
         ax.plot(y_plot, t_plot, "^", color="black", markersize=1)
 
     plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
+    # fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
     fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.png".format(xcut))
     plt.close(fig)
 
