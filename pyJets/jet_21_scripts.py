@@ -89,7 +89,7 @@ def tail_sheet_jplot(xcut=20):
 
 def tail_sheet_jplot_y(xcut=20):
 
-    fnr_range = np.arange(1200, 1211, 1)
+    fnr_range = np.arange(1200, 1501, 1)
     x_arr = np.loadtxt(
         wrkdir_DNR + "Figures/sum21/sheet_txt/y{}/1200.txt".format(xcut)
     )[:, 0]
