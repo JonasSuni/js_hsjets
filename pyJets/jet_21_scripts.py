@@ -108,7 +108,7 @@ def tail_sheet_jplot_y(xcut=20):
         xlabel="X [Re]",
         ylabel="Time [s]",
         title="Y = {} Re".format(xcut),
-        xlim=(-25, 10),
+        xlim=(-25, -10),
     )
 
     ax.pcolormesh(x_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
