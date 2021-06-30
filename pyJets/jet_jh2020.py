@@ -741,7 +741,7 @@ def mag_thresh_plot(allow_splinters=False):
     ax_list[1].set_ylabel("Jets / s", fontsize=15, labelpad=10)
     ax_list[0].set_ylabel("FCSs / s", fontsize=15, labelpad=10)
     ax_list[3].set_ylabel("FCS-jets\nper FCS", fontsize=15, labelpad=10)
-    ax_list[4].set_ylabel("Fraction of jets\ncaused by FCS", fontsize=15, labelpad=10)
+    ax_list[4].set_ylabel("Fraction of jets\ncaused by FCSs", fontsize=15, labelpad=10)
     # ax_list[0].set_title("Allow splinters = {}".format(allow_splinters),fontsize=20)
     ax_list[1].legend(
         frameon=False, numpoints=1, markerscale=1.8, loc="lower right", fontsize=11
