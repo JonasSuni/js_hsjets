@@ -1376,7 +1376,7 @@ def jh2020_movie(
                 "Mmsx",
             ],
             axes=ax[0],
-            nocb=True,
+            # nocb=True,
             scale=1.5,
             title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
             cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
@@ -1629,7 +1629,7 @@ def jh2020_movie(
         ax_ll.annotate("c)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
 
         filepath = bulkpath + "bulk.0000996.vlsv"
-        filenr_g = 996
+        filenr_g = 995
 
         pt.plot.plot_colormap(
             filename=filepath,
@@ -1834,10 +1834,16 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             non_xlist.append(jetobj.read_at_time("x_mean", filenr_g / 2.0))
             non_ylist.append(jetobj.read_at_time("y_mean", filenr_g / 2.0))
         if fig5_g:
-            if 962 / 2.0 in jetobj.read("time"):
-                if np.abs(jetobj.read_at_time("x_mean", 962 / 2.0) - 11) < 1.0:
-                    xpos = jetobj.read_at_time("x_mean", 962 / 2.0)
-                    ypos = jetobj.read_at_time("y_mean", 962 / 2.0)
+            if filenr_g == 995:
+                if 995 / 2.0 in jetobj.read("time"):
+                    if np.abs(jetobj.read_at_time("y_mean", 995 / 2.0) + 0.75) < 0.5:
+                        xpos = jetobj.read_at_time("x_mean", 995 / 2.0)
+                        ypos = jetobj.read_at_time("y_mean", 995 / 2.0)
+            else:
+                if 962 / 2.0 in jetobj.read("time"):
+                    if np.abs(jetobj.read_at_time("x_mean", 962 / 2.0) - 11) < 1.0:
+                        xpos = jetobj.read_at_time("x_mean", 962 / 2.0)
+                        ypos = jetobj.read_at_time("y_mean", 962 / 2.0)
 
     # bs_fit = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
     # mp_fit = jx.mag_pause_jonas(runid_g,filenr_g)[::-1]
