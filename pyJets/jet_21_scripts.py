@@ -67,7 +67,9 @@ def tail_sheet_jplot(xcut=20):
         xlim=(-10, 10),
     )
 
-    im = ax.pcolormesh(y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
+    im = ax.pcolormesh(
+        y_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic", vmin=-1, vmax=1
+    )
     fig.colorbar(im, ax=ax)
 
     for fnr in fnr_range:
