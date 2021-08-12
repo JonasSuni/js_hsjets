@@ -35,12 +35,11 @@ homedir = os.environ["HOME"] + "/"
 
 def make_flap_plots():
 
-    for n in range(12, 27, 1):
-        tail_sheet_jplot(xcut=n)
+    #    for n in range(12, 27, 1):
+    #        tail_sheet_jplot(xcut=n)
 
-
-# for n in range(0, 11, 1):
-#    tail_sheet_jplot_y(xcut=n)
+    for n in range(0, 11, 1):
+        tail_sheet_jplot_y(xcut=n)
 
 
 def tail_sheet_jplot(xcut=20):
@@ -115,7 +114,10 @@ def tail_sheet_jplot_y(xcut=20):
         xlim=(-25, -10),
     )
 
-    ax.pcolormesh(x_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic")
+    im = ax.pcolormesh(
+        x_arr, fnr_range, val_mesh, shading="nearest", cmap="seismic", vmin=-1, vmax=1
+    )
+    fig.colorbar(im, ax=ax)
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
