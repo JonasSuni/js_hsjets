@@ -99,4 +99,7 @@ from jet_21_scripts import (
     tail_sheet_jplot,
     make_flap_plots,
     tail_sheet_jplot_y,
+    vfield3_grad,
+    vfield3_dot,
+    vfield3_matder,
 )

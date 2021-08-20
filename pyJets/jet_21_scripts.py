@@ -229,3 +229,40 @@ def make_plots(cb=False):
 
     return None
 
+
+def vfield3_dot(a, b):
+    """ Calculates dot product of vectors a and b in 3D vector field
+    """
+
+    return a[:, :, 0] * b[:, :, 0] + a[:, :, 1] * b[:, :, 1] + a[:, :, 2] * b[:, :, 2]
+
+
+def vfield3_matder(a, b, dr):
+    """ Calculates material derivative of 3D vector fields a and b
+    """
+
+    bx = b[:, :, 0]
+    by = b[:, :, 1]
+    bz = b[:, :, 2]
+
+    grad_bx = vfield3_grad(bx, dr)
+    grad_by = vfield3_grad(by, dr)
+    grad_bz = vfield3_grad(bz, dr)
+
+    resx = vfield3_dot(a, grad_bx)
+    resy = vfield3_dot(a, grad_by)
+    resz = vfield3_dot(a, grad_bz)
+
+    return np.stack((resx, resy, resz), axis=-1)
+
+
+def vfield3_grad(a, dr):
+    """ Calculates gradient of 3D scalar field a using central difference
+    """
+
+    gradx = (np.roll(a, 1, 0) - np.roll(a, -1, 0)) / 2.0 / dr
+    grady = (np.roll(a, 1, 1) - np.roll(a, -1, 1)) / 2.0 / dr
+    gradz = (np.roll(a, 1, 2) - np.roll(a, -1, 2)) / 2.0 / dr
+
+    return np.stack((gradx, grady, gradz), axis=-1)
+
