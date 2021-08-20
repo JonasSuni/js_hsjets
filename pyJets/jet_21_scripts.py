@@ -234,7 +234,11 @@ def vfield3_dot(a, b):
     """ Calculates dot product of vectors a and b in 3D vector field
     """
 
-    return a[:, :, 0] * b[:, :, 0] + a[:, :, 1] * b[:, :, 1] + a[:, :, 2] * b[:, :, 2]
+    return (
+        a[:, :, :, 0] * b[:, :, :, 0]
+        + a[:, :, :, 1] * b[:, :, :, 1]
+        + a[:, :, :, 2] * b[:, :, :, 2]
+    )
 
 
 def vfield3_matder(a, b, dr):
