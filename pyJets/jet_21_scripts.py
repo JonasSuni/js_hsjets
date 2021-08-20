@@ -245,9 +245,9 @@ def vfield3_matder(a, b, dr):
     """ Calculates material derivative of 3D vector fields a and b
     """
 
-    bx = b[:, :, 0]
-    by = b[:, :, 1]
-    bz = b[:, :, 2]
+    bx = b[:, :, :, 0]
+    by = b[:, :, :, 1]
+    bz = b[:, :, :, 2]
 
     grad_bx = vfield3_grad(bx, dr)
     grad_by = vfield3_grad(by, dr)
