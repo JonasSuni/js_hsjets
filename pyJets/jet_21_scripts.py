@@ -293,7 +293,7 @@ def ballooning_crit(B, P, beta):
     n = vfield3_matder(b, b, dr)
     nnorm = vfield3_normalise(n)
 
-    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / (P + 1e-27)
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
@@ -416,7 +416,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon = ballooning_arr[:, 1, :]
     balloon_masked = np.ma.masked_less(balloon, 1)
     balloon_masked.mask[beta > 2] = True
-    # balloon_masked.mask[balloon > 900000] = True
+    balloon_masked.mask[balloon > 1e30] = True
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
