@@ -341,7 +341,7 @@ def plot_ballooning(tstep=1274, xcut=15):
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta"],
             boxre=[-20, -12, -1.5, 1.5],
             normal="y",
-            cutpoint=-1 * xcut * r_e - 2000e3 + 1000e3 * idx,
+            cutpoint=-1 * xcut * r_e - 1000e3 + 1000e3 * idx,
         )
 
     pt.plot.plot_colormap3dslice(
