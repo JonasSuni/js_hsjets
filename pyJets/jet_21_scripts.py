@@ -320,7 +320,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         var="proton/vg_rho",
         draw=1,
         external=ext_get_meshsize,
-        pass_vars=["vg_b_vol"],
+        pass_vars=["vg_b_vol", "CellID"],
         boxre=[-20, -12, -1.5, 1.5],
         normal="y",
         cutpoint=-1 * xcut * r_e,
@@ -355,7 +355,13 @@ def plot_ballooning(tstep=1274, xcut=15):
         vmax=2e-8,
         lin=1,
         external=ext_plot_ballooning,
-        pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "proton/vg_v"],
+        pass_vars=[
+            "vg_b_vol",
+            "proton/vg_pressure",
+            "proton/vg_beta",
+            "proton/vg_v",
+            "CellID",
+        ],
         boxre=[-20, -12, -1.5, 1.5],
         normal="y",
         cutpoint=-1 * xcut * r_e,
@@ -372,6 +378,8 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
     zymesh_size[0] = B.shape[0]
     zymesh_size[1] = B.shape[1]
     zymesh_size[2] = B.shape[2]
+
+    print(pass_maps["CellID"])
 
     return None
 
@@ -425,6 +433,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         cmap="YlOrBr",
         shading="nearest",
     )
+
+    print(pass_maps["CellID"])
 
     return None
 
