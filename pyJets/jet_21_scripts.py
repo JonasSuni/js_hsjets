@@ -408,6 +408,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked = np.ma.masked_array(balloon, balloon < 1)
     balloon_masked.mask[beta > 2] = True
 
+    print(balloon)
+
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
     ax.pcolormesh(
