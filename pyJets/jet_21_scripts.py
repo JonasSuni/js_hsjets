@@ -413,13 +413,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
     ax.pcolormesh(
-        XmeshXY,
-        YmeshXY,
-        balloon_masked,
-        vmin=1,
-        vmax=3,
-        cmap="YlOrBr",
-        shading="nearest",
+        XmeshXY, YmeshXY, balloon, vmin=1, vmax=3, cmap="YlOrBr", shading="nearest",
     )
 
     return None
