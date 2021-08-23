@@ -390,6 +390,8 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     P_arr[:, idx, :] = P
     beta_arr[:, idx, :] = beta
 
+    print(XmeshXY)
+
     return None
 
 
@@ -409,8 +411,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked.mask[beta > 2] = True
     balloon_masked.mask[balloon > 1e30] = True
 
-    print(balloon)
-    print(balloon_masked)
+    # print(balloon)
+    # print(balloon_masked)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
