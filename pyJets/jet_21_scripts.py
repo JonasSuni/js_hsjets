@@ -364,8 +364,12 @@ def plot_ballooning(tstep=1274, xcut=15):
 
 def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
 
+    global zymesh_size
+
     B = pass_maps["vg_b_vol"]
-    zymesh_size = B.shape
+    zymesh_size[0] = B.shape[0]
+    zymesh_size[1] = B.shape[1]
+    zymesh_size[2] = B.shape[2]
 
     return None
 
