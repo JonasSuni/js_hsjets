@@ -275,9 +275,9 @@ def vfield3_grad(a, dr):
     """ Calculates gradient of 3D scalar field a using central difference
     """
 
-    gradx = (np.roll(a, 1, 0) - np.roll(a, -1, 0)) / 2.0 / dr
-    grady = (np.roll(a, 1, 1) - np.roll(a, -1, 1)) / 2.0 / dr
-    gradz = (np.roll(a, 1, 2) - np.roll(a, -1, 2)) / 2.0 / dr
+    gradx = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
+    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
+    gradz = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
 
     return np.stack((gradx, grady, gradz), axis=-1)
 
@@ -379,8 +379,6 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
     zymesh_size[1] = B.shape[1]
     zymesh_size[2] = B.shape[2]
 
-    print(pass_maps["CellID"])
-
     return None
 
 
@@ -397,8 +395,6 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     B_arr[:, idx, :, :] = B
     P_arr[:, idx, :] = P
     beta_arr[:, idx, :] = beta
-
-    print(pass_maps["CellID"])
 
     return None
 
@@ -419,9 +415,6 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked.mask[beta > 2] = True
     balloon_masked.mask[balloon > 900000] = True
 
-    # print(balloon)
-    # print(balloon_masked)
-
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
     ax.pcolormesh(
@@ -433,8 +426,6 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         cmap="YlOrBr",
         shading="nearest",
     )
-
-    print(pass_maps["CellID"])
 
     return None
 
