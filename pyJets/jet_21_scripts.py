@@ -347,7 +347,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         filename=bulkfile,
         outputfile=wrkdir_DNR + "Figures/sum21/ballooning_t{}_x{}".format(tstep, xcut),
         var="proton/vg_b_vol",
-        cmap="seismic",
+        colormap="seismic",
         operator="x",
         vmin=-2e-8,
         vmax=2e-8,
@@ -375,6 +375,10 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
 
 
 def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
+
+    global B_arr
+    global P_arr
+    global beta_arr
 
     B = pass_maps["vg_b_vol"]
     P = pass_maps["proton/vg_pressure"]
