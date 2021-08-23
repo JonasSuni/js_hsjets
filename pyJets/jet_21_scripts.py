@@ -312,6 +312,8 @@ def plot_ballooning(tstep=1274, xcut=15):
     global beta_arr
     global idx
 
+    zymesh_size = (1, 2, 3)
+
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         var="proton/vg_rho",
