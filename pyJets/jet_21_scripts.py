@@ -310,7 +310,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     global B_arr
     global P_arr
     global beta_arr
-    global idx
+    global idx_g
     global ballooning_arr
 
     zymesh_size = [1, 2, 3]
@@ -333,6 +333,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     ballooning_arr = ballooning_crit(B_arr, P_arr, beta_arr)
 
     for idx in [0, 1, 2]:
+        idx_g = idx
         pt.plot.plot_colormap3dslice(
             filename=bulkfile,
             var="proton/vg_rho",
@@ -384,7 +385,7 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
 
 def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
 
-    print(idx)
+    idx = idx_g
 
     global B_arr
     global P_arr
