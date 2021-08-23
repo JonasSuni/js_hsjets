@@ -411,9 +411,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     vx = v[:, :, 0]
 
     balloon = ballooning_arr[:, 1, :]
-    balloon_masked = np.ma.masked_array(balloon, balloon < 1)
+    balloon_masked = np.ma.masked_less(balloon, 1)
     balloon_masked.mask[beta > 2] = True
-    balloon_masked.mask[balloon > 900000] = True
+    # balloon_masked.mask[balloon > 900000] = True
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
