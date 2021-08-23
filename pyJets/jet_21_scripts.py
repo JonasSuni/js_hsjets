@@ -243,7 +243,7 @@ def vfield3_dot(a, b):
 
 def vfield3_normalise(a):
 
-    amag = np.linalg.norm(a, axis=-1) + 1.0e-27
+    amag = np.linalg.norm(a, axis=-1)
 
     resx = a[:, :, :, 0] / amag
     resy = a[:, :, :, 1] / amag
@@ -293,11 +293,11 @@ def ballooning_crit(B, P, beta):
     n = vfield3_matder(b, b, dr)
     nnorm = vfield3_normalise(n)
 
-    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / (P + 1.0e-27)
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
-    return (2 + beta) / 4.0 * kappaP / (kappaC + 1.0e-27)
+    return (2 + beta) / 4.0 * kappaP / kappaC
 
 
 def plot_ballooning(tstep=1274, xcut=15):
