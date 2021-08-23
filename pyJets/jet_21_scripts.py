@@ -241,6 +241,17 @@ def vfield3_dot(a, b):
     )
 
 
+def vfield3_normalise(a):
+
+    amag = np.linalg.norm(a, axis=-1)
+
+    resx = a[:, :, :, 0] / amag
+    resy = a[:, :, :, 1] / amag
+    resz = a[:, :, :, 2] / amag
+
+    return np.stack((resx, resy, resz), axis=-1)
+
+
 def vfield3_matder(a, b, dr):
     """ Calculates material derivative of 3D vector fields a and b
     """
@@ -269,4 +280,131 @@ def vfield3_grad(a, dr):
     gradz = (np.roll(a, 1, 2) - np.roll(a, -1, 2)) / 2.0 / dr
 
     return np.stack((gradx, grady, gradz), axis=-1)
+
+
+def ballooning_crit(B, P, beta):
+
+    dr = 1.0e6
+
+    # Bmag = np.linalg.norm(B, axis=-1)
+
+    b = vfield3_normalise(B)
+
+    n = vfield3_matder(b, b, dr)
+    nnorm = vfield3_normalise(n)
+
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
+    # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
+    kappaC = vfield3_dot(nnorm, n)
+
+    return (2 + beta) / 4.0 * kappaP / (kappaC + 1.0e-27)
+
+
+def plot_ballooning(tstep=1274, xcut=15):
+
+    bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
+        str(tstep).zfill(7)
+    )
+
+    global zymesh_size
+    global B_arr
+    global P_arr
+    global beta_arr
+    global idx
+
+    pt.plot.plot_colormap3dslice(
+        filename=bulkfile,
+        var="proton/vg_rho",
+        draw=1,
+        external=ext_get_meshsize,
+        pass_vars=["vg_b_vol"],
+        boxre=[-5, 5, -1.5, 1.5],
+        normal="x",
+        cutpoint=-1 * xcut * r_e,
+    )
+
+    B_arr = np.empty((3, zymesh_size[0], zymesh_size[1], zymesh_size[2]), dtype=float)
+    P_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+    beta_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+
+    ballooning_arr = ballooning_crit(B_arr, P_arr, beta_arr)
+
+    for idx in [0, 1, 2]:
+        pt.plot.plot_colormap3dslice(
+            filename=bulkfile,
+            var="proton/vg_rho",
+            draw=1,
+            external=ext_get_cuts,
+            pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta"],
+            boxre=[-5, 5, -1.5, 1.5],
+            normal="x",
+            cutpoint=-1 * xcut * r_e - 1000e3 + 1000e3 * idx,
+        )
+
+    pt.plot.plot_colormap3dslice(
+        filename=bulkfile,
+        outputfile=wrkdir_DNR + "Figures/sum21/ballooning_t{}_x{}".format(tstep, xcut),
+        var="proton/vg_b_vol",
+        cmap="seismic",
+        operator="x",
+        vmin=-2e-8,
+        vmax=2e-8,
+        lin=1,
+        external=ext_plot_ballooning,
+        pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "proton/vg_v"],
+        boxre=[-5, 5, -1.5, 1.5],
+        normal="x",
+        cutpoint=-1 * xcut * r_e,
+    )
+
+    return None
+
+
+def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
+
+    B = pass_maps["vg_b_vol"]
+    zymesh_size = B.shape
+
+    return None
+
+
+def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
+
+    B = pass_maps["vg_b_vol"]
+    P = pass_maps["proton/vg_pressure"]
+    beta = pass_maps["proton/vg_beta"]
+
+    B_arr[idx, :, :, :] = B
+    P_arr[idx, :, :] = P
+    beta_arr[idx, :, :] = beta
+
+    return None
+
+
+def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
+
+    B = pass_maps["vg_b_vol"]
+    P = pass_maps["proton/vg_pressure"]
+    beta = pass_maps["proton/vg_beta"]
+    v = pass_maps["proton/vg_v"]
+
+    vx = v[:, :, 0]
+
+    balloon = ballooning_arr[1, :, :, :]
+    balloon_masked = np.ma.masked_array(balloon, balloon > 1)
+    balloon.mask[beta > 2] = True
+
+    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
+
+    ax.pcolormesh(
+        XmeshXY,
+        YmeshXY,
+        balloon_masked,
+        vmin=1,
+        vmax=3,
+        cmap="YlOrBr",
+        shading="nearest",
+    )
+
+    return None
 
