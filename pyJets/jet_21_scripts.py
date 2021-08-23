@@ -293,7 +293,7 @@ def ballooning_crit(B, P, beta):
     n = vfield3_matder(b, b, dr)
     nnorm = vfield3_normalise(n)
 
-    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / (P + 1.0e-27)
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
@@ -311,6 +311,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     global P_arr
     global beta_arr
     global idx
+    global ballooning_arr
 
     zymesh_size = [1, 2, 3]
 
@@ -392,6 +393,8 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
 
 
 def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
+
+    global ballooning_arr
 
     B = pass_maps["vg_b_vol"]
     P = pass_maps["proton/vg_pressure"]
