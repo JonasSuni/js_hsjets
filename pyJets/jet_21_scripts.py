@@ -243,7 +243,7 @@ def vfield3_dot(a, b):
 
 def vfield3_normalise(a):
 
-    amag = np.linalg.norm(a, axis=-1) + 1.0e-27
+    amag = np.linalg.norm(a, axis=-1)
 
     resx = a[:, :, :, 0] / amag
     resy = a[:, :, :, 1] / amag
