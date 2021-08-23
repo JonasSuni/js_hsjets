@@ -321,14 +321,14 @@ def plot_ballooning(tstep=1274, xcut=15):
         draw=1,
         external=ext_get_meshsize,
         pass_vars=["vg_b_vol"],
-        boxre=[-5, 5, -1.5, 1.5],
-        normal="x",
+        boxre=[-20, -12, -1.5, 1.5],
+        normal="y",
         cutpoint=-1 * xcut * r_e,
     )
 
-    B_arr = np.empty((3, zymesh_size[0], zymesh_size[1], zymesh_size[2]), dtype=float)
-    P_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
-    beta_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+    B_arr = np.empty((zymesh_size[0], 3, zymesh_size[1], zymesh_size[2]), dtype=float)
+    P_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+    beta_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
 
     ballooning_arr = ballooning_crit(B_arr, P_arr, beta_arr)
 
@@ -339,15 +339,15 @@ def plot_ballooning(tstep=1274, xcut=15):
             draw=1,
             external=ext_get_cuts,
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta"],
-            boxre=[-5, 5, -1.5, 1.5],
-            normal="x",
+            boxre=[-20, -12, -1.5, 1.5],
+            normal="y",
             cutpoint=-1 * xcut * r_e - 1000e3 + 1000e3 * idx,
         )
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
-        + "Figures/sum21/ballooning_t{}_x{}.png".format(tstep, xcut),
+        + "Figures/sum21/ballooning_t{}_y{}.png".format(tstep, xcut),
         var="vg_b_vol",
         colormap="seismic",
         operator="x",
@@ -356,8 +356,8 @@ def plot_ballooning(tstep=1274, xcut=15):
         lin=1,
         external=ext_plot_ballooning,
         pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "proton/vg_v"],
-        boxre=[-5, 5, -1.5, 1.5],
-        normal="x",
+        boxre=[-20, -12, -1.5, 1.5],
+        normal="y",
         cutpoint=-1 * xcut * r_e,
     )
 
@@ -386,9 +386,9 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     P = pass_maps["proton/vg_pressure"]
     beta = pass_maps["proton/vg_beta"]
 
-    B_arr[idx, :, :, :] = B
-    P_arr[idx, :, :] = P
-    beta_arr[idx, :, :] = beta
+    B_arr[:, idx, :, :] = B
+    P_arr[:, idx, :] = P
+    beta_arr[:, idx, :] = beta
 
     return None
 
@@ -404,7 +404,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     vx = v[:, :, 0]
 
-    balloon = ballooning_arr[1, :, :]
+    balloon = ballooning_arr[:, 1, :]
     balloon_masked = np.ma.masked_array(balloon, balloon < 1)
     balloon_masked.mask[beta > 2] = True
 
