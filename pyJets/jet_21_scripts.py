@@ -243,7 +243,7 @@ def vfield3_dot(a, b):
 
 def vfield3_normalise(a):
 
-    amag = np.linalg.norm(a, axis=-1)
+    amag = np.linalg.norm(a, axis=-1) + 1.0e-27
 
     resx = a[:, :, :, 0] / amag
     resy = a[:, :, :, 1] / amag
@@ -293,11 +293,11 @@ def ballooning_crit(B, P, beta):
     n = vfield3_matder(b, b, dr)
     nnorm = vfield3_normalise(n)
 
-    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / (P + 1e-27)
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
-    return (2 + beta) / 4.0 * kappaP / kappaC
+    return (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
 
 def plot_ballooning(tstep=1274, xcut=15):
@@ -407,13 +407,21 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon = ballooning_arr[:, 1, :]
     balloon_masked = np.ma.masked_array(balloon, balloon < 1)
     balloon_masked.mask[beta > 2] = True
+    balloon_masked.mask[balloon > 1e30] = True
 
-    print(balloon)
+    # print(balloon)
+    # print(balloon_masked)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
 
     ax.pcolormesh(
-        XmeshXY, YmeshXY, balloon, vmin=1, vmax=3, cmap="YlOrBr", shading="nearest",
+        XmeshXY,
+        YmeshXY,
+        balloon_masked,
+        vmin=1,
+        vmax=3,
+        cmap="YlOrBr",
+        shading="nearest",
     )
 
     return None
