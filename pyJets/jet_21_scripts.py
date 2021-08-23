@@ -321,7 +321,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         draw=1,
         external=ext_get_meshsize,
         pass_vars=["vg_b_vol", "CellID"],
-        boxre=[-20, -12, -1.5, 1.5],
+        boxre=[-19, -9, -1.5, 1.5],
         normal="y",
         cutpoint=-1 * xcut * r_e,
     )
@@ -338,7 +338,7 @@ def plot_ballooning(tstep=1274, xcut=15):
             draw=1,
             external=ext_get_cuts,
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
-            boxre=[-20, -12, -1.5, 1.5],
+            boxre=[-19, -9, -1.5, 1.5],
             normal="y",
             cutpoint=-1 * xcut * r_e + 1000e3 * (idx - 1),
         )
@@ -363,7 +363,7 @@ def plot_ballooning(tstep=1274, xcut=15):
             "proton/vg_v",
             "CellID",
         ],
-        boxre=[-20, -12, -1.5, 1.5],
+        boxre=[-19, -9, -1.5, 1.5],
         normal="y",
         cutpoint=-1 * xcut * r_e,
     )
