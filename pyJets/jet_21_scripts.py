@@ -384,6 +384,8 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
 
 def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
 
+    print(idx)
+
     global B_arr
     global P_arr
     global beta_arr
