@@ -243,7 +243,7 @@ def vfield3_dot(a, b):
 
 def vfield3_normalise(a):
 
-    amag = np.linalg.norm(a, axis=-1)
+    amag = np.linalg.norm(a, axis=-1) + 1.0e-27
 
     resx = a[:, :, :, 0] / amag
     resy = a[:, :, :, 1] / amag
@@ -346,7 +346,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR + "Figures/sum21/ballooning_t{}_x{}".format(tstep, xcut),
-        var="proton/vg_b_vol",
+        var="vg_b_vol",
         colormap="seismic",
         operator="x",
         vmin=-2e-8,
