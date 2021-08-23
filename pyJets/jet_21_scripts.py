@@ -326,13 +326,13 @@ def plot_ballooning(tstep=1274, xcut=15):
         cutpoint=-1 * xcut * r_e,
     )
 
-    B_arr = np.empty((zymesh_size[0], 3, zymesh_size[1], zymesh_size[2]), dtype=float)
-    P_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
-    beta_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+    B_arr = np.empty((zymesh_size[0], 5, zymesh_size[1], zymesh_size[2]), dtype=float)
+    P_arr = np.empty((zymesh_size[0], 5, zymesh_size[1]), dtype=float)
+    beta_arr = np.empty((zymesh_size[0], 5, zymesh_size[1]), dtype=float)
 
     ballooning_arr = ballooning_crit(B_arr, P_arr, beta_arr)
 
-    for idx in [0, 1, 2]:
+    for idx in [0, 1, 2, 3, 4]:
         pt.plot.plot_colormap3dslice(
             filename=bulkfile,
             var="proton/vg_rho",
