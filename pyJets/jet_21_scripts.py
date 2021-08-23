@@ -403,7 +403,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     vx = v[:, :, 0]
 
-    balloon = ballooning_arr[1, :, :, :]
+    balloon = ballooning_arr[1, :, :]
     balloon_masked = np.ma.masked_array(balloon, balloon > 1)
     balloon.mask[beta > 2] = True
 
