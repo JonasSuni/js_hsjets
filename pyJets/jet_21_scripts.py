@@ -346,7 +346,8 @@ def plot_ballooning(tstep=1274, xcut=15):
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
-        outputfile=wrkdir_DNR + "Figures/sum21/ballooning_t{}_x{}".format(tstep, xcut),
+        outputfile=wrkdir_DNR
+        + "Figures/sum21/ballooning_t{}_x{}.png".format(tstep, xcut),
         var="vg_b_vol",
         colormap="seismic",
         operator="x",
