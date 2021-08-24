@@ -438,7 +438,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         shading="nearest",
     )
 
-    ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="seismic")
+    # ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="seismic")
 
     return None
 
