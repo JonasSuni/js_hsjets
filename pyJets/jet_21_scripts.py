@@ -299,7 +299,7 @@ def ballooning_crit(B, P, beta):
 
     balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
-    return (balloon, nnorm, kappaC)
+    return (balloon, b, kappaC)
 
 
 def plot_ballooning(tstep=1274, xcut=15):
@@ -353,7 +353,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         + "Figures/sum21/ballooning_t{}_y{}.png".format(tstep, xcut),
         var="proton/vg_pressure",
         colormap="viridis",
-        vmax=3e-10,
+        vmax=1e-10,
         lin=1,
         external=ext_plot_ballooning,
         pass_vars=[
@@ -424,7 +424,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     C = kappaC_arr[:, 1, :]
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
-    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=1.2)
+    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
 
     ax.pcolormesh(
         XmeshXY,
