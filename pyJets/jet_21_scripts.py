@@ -276,12 +276,12 @@ def vfield3_grad(a, dr):
     """
 
     gradx = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
-    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
+    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 4.0 / dr
     gradz = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
 
     return np.stack((gradx, grady, gradz), axis=-1)
 
-    # return np.stack(np.gradient(a, dr), axis=-1)
+    # return np.stack(np.gradient(a, dr,2*dr,dr), axis=-1)
 
 
 def ballooning_crit(B, P, beta):
@@ -344,7 +344,7 @@ def plot_ballooning(tstep=1274, xcut=15):
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
             boxre=[-19, -9, -1.5, 1.5],
             normal="y",
-            cutpoint=-1 * xcut * r_e + 1000e3 * (idx - 1),
+            cutpoint=-1 * xcut * r_e + 1000e3 * (2 * idx - 2),
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(B_arr, P_arr, beta_arr)
@@ -381,9 +381,6 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
     zymesh_size[0] = B.shape[0]
     zymesh_size[1] = B.shape[1]
     zymesh_size[2] = B.shape[2]
-
-    print(XmeshXY)
-    print(YmeshXY)
 
     return None
 
