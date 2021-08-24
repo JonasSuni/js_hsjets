@@ -353,7 +353,6 @@ def plot_ballooning(tstep=1274, xcut=15):
         + "Figures/sum21/ballooning_t{}_y{}.png".format(tstep, xcut),
         var="proton/vg_pressure",
         colormap="viridis",
-        operator="x",
         lin=1,
         external=ext_plot_ballooning,
         pass_vars=[
