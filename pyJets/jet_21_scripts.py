@@ -297,7 +297,9 @@ def ballooning_crit(B, P, beta):
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
-    return (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
+    balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
+
+    return (balloon, nnorm, kappaC)
 
 
 def plot_ballooning(tstep=1274, xcut=15):
@@ -311,7 +313,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     global P_arr
     global beta_arr
     global idx_g
-    global ballooning_arr
+    global ballooning_arr, nnorm_arr, kappaC_arr
 
     zymesh_size = [1, 2, 3]
 
@@ -343,17 +345,15 @@ def plot_ballooning(tstep=1274, xcut=15):
             cutpoint=-1 * xcut * r_e + 1000e3 * (idx - 1),
         )
 
-    ballooning_arr = ballooning_crit(B_arr, P_arr, beta_arr)
+    ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(B_arr, P_arr, beta_arr)
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
         + "Figures/sum21/ballooning_t{}_y{}.png".format(tstep, xcut),
-        var="vg_b_vol",
-        colormap="seismic",
+        var="proton/vg_pressure",
+        colormap="viridis",
         operator="x",
-        vmin=-2e-8,
-        vmax=2e-8,
         lin=1,
         external=ext_plot_ballooning,
         pass_vars=[
@@ -412,13 +412,21 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     v = pass_maps["proton/vg_v"]
 
     vx = v[:, :, 0]
+    Bx = B[:, :, 0]
 
     balloon = ballooning_arr[:, 1, :]
     balloon_masked = np.ma.masked_less(balloon, 1)
     balloon_masked.mask[beta > 2] = True
     balloon_masked.mask[balloon > 1e30] = True
 
-    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="blue", linewidths=1.2)
+    U = nnorm_arr[:, 1, :, 0]
+    V = nnorm_arr[:, 1, :, 2]
+    C = kappaC_arr[:, 1, :]
+
+    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
+    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=1.2)
+
+    ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="PuRd")
 
     ax.pcolormesh(
         XmeshXY,
