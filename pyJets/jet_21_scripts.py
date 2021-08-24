@@ -275,11 +275,13 @@ def vfield3_grad(a, dr):
     """ Calculates gradient of 3D scalar field a using central difference
     """
 
-    gradx = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
-    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
-    gradz = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
+    # gradx = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
+    # grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
+    # gradz = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
 
-    return np.stack((gradx, grady, gradz), axis=-1)
+    # return np.stack((gradx, grady, gradz), axis=-1)
+
+    return np.gradient(a, dr)
 
 
 def ballooning_crit(B, P, beta):
