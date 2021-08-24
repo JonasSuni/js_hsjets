@@ -28,6 +28,7 @@ import jet_io as jio
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
+mu_0 = 1.25663706212e-06
 
 wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
@@ -284,6 +285,21 @@ def vfield3_grad(a, dr):
     # return np.stack(np.gradient(a, dr,dr,dr), axis=-1)
 
 
+def vfield3_curl(a, dr):
+    """ Calculates curl of 3D vector field
+    """
+
+    grad_ax = vfield3_grad(a[:, :, :, 0], dr)
+    grad_ay = vfield3_grad(a[:, :, :, 1], dr)
+    grad_az = vfield3_grad(a[:, :, :, 2], dr)
+
+    resx = grad_az[:, :, :, 1] - grad_ay[:, :, :, 2]
+    resy = grad_ax[:, :, :, 2] - grad_az[:, :, :, 0]
+    resz = grad_ay[:, :, :, 0] - grad_ax[:, :, :, 1]
+
+    return np.stack((resx, resy, resz), axis=-1)
+
+
 def ballooning_crit(B, P, beta):
 
     dr = 1000e3
@@ -315,7 +331,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     global P_arr
     global beta_arr
     global idx_g
-    global ballooning_arr, nnorm_arr, kappaC_arr
+    global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
 
     zymesh_size = [1, 2, 3]
 
@@ -348,6 +364,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(B_arr, P_arr, beta_arr)
+    J_arr = vfield3_curl(B_arr, 1000e3) / mu_0
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
@@ -424,6 +441,13 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     U = nnorm_arr[:, 1, :, 0]
     V = nnorm_arr[:, 1, :, 2]
     C = nnorm_arr[:, 1, :, 1]
+
+    J = J_arr[:, 1, :, :]
+    Jmag = np.linalg.norm(J, axis=-1)
+
+    ax.pcolormesh(
+        XmeshXY, YmeshXY, Jmag, vmin=2e-9, vmax=6e-9, cmap="viridis", shading="nearest",
+    )
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
