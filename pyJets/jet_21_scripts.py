@@ -353,6 +353,7 @@ def plot_ballooning(tstep=1274, xcut=15):
         + "Figures/sum21/ballooning_t{}_y{}.png".format(tstep, xcut),
         var="proton/vg_pressure",
         colormap="viridis",
+        vmax=3e-10,
         lin=1,
         external=ext_plot_ballooning,
         pass_vars=[
@@ -425,8 +426,6 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=1.2)
 
-    ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="PuRd")
-
     ax.pcolormesh(
         XmeshXY,
         YmeshXY,
@@ -436,6 +435,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         cmap="YlOrBr",
         shading="nearest",
     )
+
+    ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="PuRd")
 
     return None
 
