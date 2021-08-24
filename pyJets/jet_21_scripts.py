@@ -281,7 +281,7 @@ def vfield3_grad(a, dr):
 
     # return np.stack((gradx, grady, gradz), axis=-1)
 
-    return np.gradient(a, dr)
+    return np.stack(np.gradient(a, dr), axis=-1)
 
 
 def ballooning_crit(B, P, beta):
