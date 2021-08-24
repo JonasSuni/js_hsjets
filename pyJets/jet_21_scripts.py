@@ -299,7 +299,7 @@ def ballooning_crit(B, P, beta):
 
     balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
-    return (balloon, b, kappaC)
+    return (balloon, n, kappaC)
 
 
 def plot_ballooning(tstep=1274, xcut=15):
