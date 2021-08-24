@@ -275,9 +275,9 @@ def vfield3_grad(a, dr):
     """ Calculates gradient of 3D scalar field a using central difference
     """
 
-    gradx = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
-    grady = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 4.0 / dr
-    gradz = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
+    gradx = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
+    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 4.0 / dr
+    gradz = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
 
     return np.stack((gradx, grady, gradz), axis=-1)
 
@@ -301,7 +301,7 @@ def ballooning_crit(B, P, beta):
 
     balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
-    return (balloon, n, kappaC)
+    return (balloon, nnorm, kappaC)
 
 
 def plot_ballooning(tstep=1274, xcut=15):
@@ -397,9 +397,9 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     P = pass_maps["proton/vg_pressure"]
     beta = pass_maps["proton/vg_beta"]
 
-    B_arr[:, idx, :, :] = B
-    P_arr[:, idx, :] = P
-    beta_arr[:, idx, :] = beta
+    B_arr[:, idx, :, :] = np.swapaxes(B, 0, 1)
+    P_arr[:, idx, :] = np.swapaxes(P, 0, 1)
+    beta_arr[:, idx, :] = np.swapaxes(beta, 0, 1)
 
     return None
 
@@ -424,9 +424,6 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     U = nnorm_arr[:, 1, :, 0]
     V = nnorm_arr[:, 1, :, 2]
     C = nnorm_arr[:, 1, :, 1]
-
-    U = U / np.linalg.norm(nnorm_arr[:, 1, :, 0::2], axis=-1)
-    V = V / np.linalg.norm(nnorm_arr[:, 1, :, 0::2], axis=-1)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
