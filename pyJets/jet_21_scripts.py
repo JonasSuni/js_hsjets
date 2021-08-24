@@ -383,6 +383,7 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
     zymesh_size[2] = B.shape[2]
 
     print(XmeshXY)
+    print(YmeshXY)
 
     return None
 
