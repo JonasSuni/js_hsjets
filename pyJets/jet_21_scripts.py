@@ -524,7 +524,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             BU,
             BV,
             linewidth=0.4,
-            arrowstyle="->",
+            arrowstyle="-",
             color="gray",
             density=1.5,
         )
