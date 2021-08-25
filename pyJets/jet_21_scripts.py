@@ -253,7 +253,7 @@ def vfield3_normalise(a):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def vfield3_matder(a, b, dr):
+def vfield3_matder(a, b, dr, normal="y"):
     """ Calculates material derivative of 3D vector fields a and b
     """
 
@@ -261,9 +261,9 @@ def vfield3_matder(a, b, dr):
     by = b[:, :, :, 1]
     bz = b[:, :, :, 2]
 
-    grad_bx = vfield3_grad(bx, dr)
-    grad_by = vfield3_grad(by, dr)
-    grad_bz = vfield3_grad(bz, dr)
+    grad_bx = vfield3_grad(bx, dr, normal=normal)
+    grad_by = vfield3_grad(by, dr, normal=normal)
+    grad_bz = vfield3_grad(bz, dr, normal=normal)
 
     resx = vfield3_dot(a, grad_bx)
     resy = vfield3_dot(a, grad_by)
@@ -272,26 +272,28 @@ def vfield3_matder(a, b, dr):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def vfield3_grad(a, dr):
+def vfield3_grad(a, dr, normal="y"):
     """ Calculates gradient of 3D scalar field a using central difference
     """
 
-    gradx = (np.roll(a, -1, 2) - np.roll(a, 1, 2)) / 2.0 / dr
-    grady = (np.roll(a, -1, 1) - np.roll(a, 1, 1)) / 2.0 / dr
-    gradz = (np.roll(a, -1, 0) - np.roll(a, 1, 0)) / 2.0 / dr
+    ax_order = [[0, 2, 1], [2, 1, 0], [1, 0, 2]][["x", "y", "z"].index(normal)]
+
+    gradx = (np.roll(a, -1, ax_order[0]) - np.roll(a, 1, ax_order[0])) / 2.0 / dr
+    grady = (np.roll(a, -1, ax_order[1]) - np.roll(a, 1, ax_order[1])) / 2.0 / dr
+    gradz = (np.roll(a, -1, ax_order[2]) - np.roll(a, 1, ax_order[2])) / 2.0 / dr
 
     return np.stack((gradx, grady, gradz), axis=-1)
 
     # return np.stack(np.gradient(a, dr,dr,dr), axis=-1)
 
 
-def vfield3_curl(a, dr):
+def vfield3_curl(a, dr, normal="y"):
     """ Calculates curl of 3D vector field
     """
 
-    grad_ax = vfield3_grad(a[:, :, :, 0], dr)
-    grad_ay = vfield3_grad(a[:, :, :, 1], dr)
-    grad_az = vfield3_grad(a[:, :, :, 2], dr)
+    grad_ax = vfield3_grad(a[:, :, :, 0], dr, normal=normal)
+    grad_ay = vfield3_grad(a[:, :, :, 1], dr, normal=normal)
+    grad_az = vfield3_grad(a[:, :, :, 2], dr, normal=normal)
 
     resx = grad_az[:, :, :, 1] - grad_ay[:, :, :, 2]
     resy = grad_ax[:, :, :, 2] - grad_az[:, :, :, 0]
@@ -300,7 +302,7 @@ def vfield3_curl(a, dr):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def ballooning_crit(B, P, beta):
+def ballooning_crit(B, P, beta, normal="y"):
 
     dr = 1000e3
 
@@ -308,10 +310,10 @@ def ballooning_crit(B, P, beta):
 
     b = vfield3_normalise(B)
 
-    n = vfield3_matder(b, b, dr)
+    n = vfield3_matder(b, b, dr, normal=normal)
     nnorm = vfield3_normalise(n)
 
-    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr)) / P
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr, normal=normal)) / P
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
     kappaC = vfield3_dot(nnorm, n)
 
@@ -320,7 +322,7 @@ def ballooning_crit(B, P, beta):
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(tstep=1274, xcut=15):
+def plot_ballooning(tstep=1274, cut=15, normal="y"):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -332,6 +334,9 @@ def plot_ballooning(tstep=1274, xcut=15):
     global beta_arr
     global idx_g
     global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
+    global normal_g
+
+    normal_g = normal
 
     zymesh_size = [1, 2, 3]
 
@@ -342,13 +347,28 @@ def plot_ballooning(tstep=1274, xcut=15):
         external=ext_get_meshsize,
         pass_vars=["vg_b_vol", "CellID"],
         boxre=[-19, -9, -1.5, 1.5],
-        normal="y",
-        cutpoint=-1 * xcut * r_e,
+        normal=normal,
+        cutpoint=-1 * cut * r_e,
     )
 
-    B_arr = np.empty((zymesh_size[0], 3, zymesh_size[1], zymesh_size[2]), dtype=float)
-    P_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
-    beta_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+    if normal == "x":
+        B_arr = np.empty(
+            (3, zymesh_size[0], zymesh_size[1], zymesh_size[2]), dtype=float
+        )
+        P_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+        beta_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+    elif normal == "y":
+        B_arr = np.empty(
+            (zymesh_size[0], 3, zymesh_size[1], zymesh_size[2]), dtype=float
+        )
+        P_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+        beta_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+    elif normal == "z":
+        B_arr = np.empty(
+            (zymesh_size[0], zymesh_size[1], 3, zymesh_size[2]), dtype=float
+        )
+        P_arr = np.empty((zymesh_size[0], zymesh_size[1], 3), dtype=float)
+        beta_arr = np.empty((zymesh_size[0], zymesh_size[1], 3), dtype=float)
 
     for idx in [0, 1, 2]:
         idx_g = idx
@@ -359,8 +379,8 @@ def plot_ballooning(tstep=1274, xcut=15):
             external=ext_get_cuts,
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
             boxre=[-19, -9, -1.5, 1.5],
-            normal="y",
-            cutpoint=-1 * xcut * r_e + 1000e3 * (idx - 1),
+            normal=normal,
+            cutpoint=-1 * cut * r_e + 1000e3 * (idx - 1),
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(B_arr, P_arr, beta_arr)
@@ -369,7 +389,7 @@ def plot_ballooning(tstep=1274, xcut=15):
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
-        + "Figures/sum21/balloon/ballooning_t{}_y{}.png".format(tstep, xcut),
+        + "Figures/sum21/balloon/ballooning_t{}_{}{}.png".format(tstep, cut, normal),
         var="proton/vg_pressure",
         colormap="viridis",
         vmax=1e-10,
@@ -383,8 +403,9 @@ def plot_ballooning(tstep=1274, xcut=15):
             "CellID",
         ],
         boxre=[-19, -9, -1.5, 1.5],
-        normal="y",
-        cutpoint=-1 * xcut * r_e,
+        normal=normal,
+        cutpoint=-1 * cut * r_e,
+        nocb=True,
     )
 
     return None
@@ -414,9 +435,18 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     P = pass_maps["proton/vg_pressure"]
     beta = pass_maps["proton/vg_beta"]
 
-    B_arr[:, idx, :, :] = B
-    P_arr[:, idx, :] = P
-    beta_arr[:, idx, :] = beta
+    if normal_g == "x":
+        B_arr[idx, :, :, :] = B
+        P_arr[idx, :, :] = P
+        beta_arr[idx, :, :] = beta
+    elif normal_g == "y":
+        B_arr[:, idx, :, :] = B
+        P_arr[:, idx, :] = P
+        beta_arr[:, idx, :] = beta
+    elif normal_g == "z":
+        B_arr[:, :, idx, :] = B
+        P_arr[:, :, idx] = P
+        beta_arr[:, :, idx] = beta
 
     return None
 
@@ -433,33 +463,37 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     vx = v[:, :, 0]
     Bx = B[:, :, 0]
 
-    balloon = ballooning_arr[:, 1, :]
+    if normal_g == "x":
+        balloon = ballooning_arr[1, :, :]
+        J = J_arr[1, :, :, :]
+    elif normal_g == "y":
+        balloon = ballooning_arr[:, 1, :]
+        J = J_arr[:, 1, :, :]
+    elif normal_g == "z":
+        balloon = ballooning_arr[:, :, 1]
+        J = J_arr[:, :, 1, :]
+
     balloon_masked = np.ma.masked_less_equal(balloon, 1)
     balloon_masked.mask[beta >= 2] = True
     # balloon_masked.mask[balloon > 1e30] = True
 
-    U = nnorm_arr[:, 1, :, 0]
-    V = nnorm_arr[:, 1, :, 2]
-    C = nnorm_arr[:, 1, :, 1]
+    # U = nnorm_arr[:, 1, :, 0]
+    # V = nnorm_arr[:, 1, :, 2]
+    # C = nnorm_arr[:, 1, :, 1]
 
-    J = J_arr[:, 1, :, :]
     Jmag = np.linalg.norm(J, axis=-1)
 
-    ax.pcolormesh(
+    J_im = ax.pcolormesh(
         XmeshXY, YmeshXY, Jmag, vmin=2e-9, vmax=6e-9, cmap="viridis", shading="nearest",
     )
 
-    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=1.2)
+    ax.colorbar(J_im, ax=ax, label="$|J|$")
+
+    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.8)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
 
     ax.pcolormesh(
-        XmeshXY,
-        YmeshXY,
-        balloon_masked,
-        vmin=1,
-        vmax=3,
-        cmap="YlOrBr",
-        shading="nearest",
+        XmeshXY, YmeshXY, balloon_masked, vmin=1, cmap="YlOrBr", shading="nearest",
     )
 
     # ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="seismic")
