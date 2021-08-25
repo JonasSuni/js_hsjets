@@ -322,7 +322,7 @@ def ballooning_crit(B, P, beta, normal="y"):
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(tstep=1274, cut=15, normal="y"):
+def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -346,7 +346,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y"):
         draw=1,
         external=ext_get_meshsize,
         pass_vars=["vg_b_vol", "CellID"],
-        boxre=[-19, -9, -1.5, 1.5],
+        boxre=boxre,
         normal=normal,
         cutpoint=-1 * cut * r_e,
     )
@@ -378,7 +378,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y"):
             draw=1,
             external=ext_get_cuts,
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
-            boxre=[-19, -9, -1.5, 1.5],
+            boxre=boxre,
             normal=normal,
             cutpoint=-1 * cut * r_e + 1000e3 * (idx - 1),
         )
@@ -402,7 +402,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y"):
             "proton/vg_v",
             "CellID",
         ],
-        boxre=[-19, -9, -1.5, 1.5],
+        boxre=boxre,
         normal=normal,
         cutpoint=-1 * cut * r_e,
         nocb=True,
