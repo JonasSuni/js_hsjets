@@ -597,7 +597,7 @@ def tail_sheet_jplot_balloon(xcut=14):
         shading="nearest",
         cmap="viridis",
         vmin=2e-9,
-        vmax=6e-9,
+        vmax=10e-9,
     )
     fig.colorbar(im, ax=ax, label="$J_{mag}$")
 
