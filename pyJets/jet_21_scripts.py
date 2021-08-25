@@ -559,7 +559,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
 def tail_sheet_jplot_balloon(xcut=14):
 
-    fnr_range = np.arange(1200, 1501, 1)
+    fnr_range = np.arange(1250, 1501, 1)
     y_arr = np.loadtxt(
         wrkdir_DNR + "Figures/sum21/balloon_txt/x{}_t{}".format(xcut, 1250)
     )[:, 0]
