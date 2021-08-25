@@ -334,9 +334,11 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
     global beta_arr
     global idx_g
     global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
-    global normal_g
+    global normal_g, tstep_g, cut_g
 
     normal_g = normal
+    tstep_g = tstep
+    cut_g = cut
 
     zymesh_size = [1, 2, 3]
 
@@ -527,6 +529,25 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             arrowstyle="-",
             color="gray",
             density=1.5,
+        )
+
+    if normal_g == "x":
+        Bxmag = np.abs(Bx)
+        Jsheet = np.array(
+            [Jmag[idy, idx] for idx, idy in enumerate(np.argmin(Bxmag, axis=0))]
+        )
+        Balloonsheet = np.array(
+            [
+                balloon_masked[idy, idx]
+                for idx, idy in enumerate(np.argmin(Bxmag, axis=0))
+            ]
+        )
+        txt_out = np.array([XmeshXY[0], Jsheet, Balloonsheet]).T
+        np.savetxt(
+            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}".format(
+                cut_g, tstep_g
+            ),
+            txt_out,
         )
 
     # plt.colorbar(Balloon_im, ax=ax, label="Ballooning")
