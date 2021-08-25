@@ -383,8 +383,10 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
             cutpoint=-1 * cut * r_e + 1000e3 * (idx - 1),
         )
 
-    ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(B_arr, P_arr, beta_arr)
-    J_arr = vfield3_curl(B_arr, 1000e3) / mu_0
+    ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
+        B_arr, P_arr, beta_arr, normal=normal
+    )
+    J_arr = vfield3_curl(B_arr, 1000e3, normal=normal) / mu_0
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
@@ -466,20 +468,25 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     if normal_g == "x":
         balloon = ballooning_arr[1, :, :]
         J = J_arr[1, :, :, :]
+        U = nnorm_arr[1, :, :, 0]
+        V = nnorm_arr[1, :, :, 2]
+        C = nnorm_arr[1, :, :, 1]
     elif normal_g == "y":
         balloon = ballooning_arr[:, 1, :]
         J = J_arr[:, 1, :, :]
+        U = nnorm_arr[:, 1, :, 0]
+        V = nnorm_arr[:, 1, :, 2]
+        C = nnorm_arr[:, 1, :, 1]
     elif normal_g == "z":
         balloon = ballooning_arr[:, :, 1]
         J = J_arr[:, :, 1, :]
+        U = nnorm_arr[:, :, 1, 0]
+        V = nnorm_arr[:, :, 1, 2]
+        C = nnorm_arr[:, :, 1, 1]
 
     balloon_masked = np.ma.masked_less_equal(balloon, 1)
     balloon_masked.mask[beta >= 2] = True
     # balloon_masked.mask[balloon > 1e30] = True
-
-    # U = nnorm_arr[:, 1, :, 0]
-    # V = nnorm_arr[:, 1, :, 2]
-    # C = nnorm_arr[:, 1, :, 1]
 
     Jmag = np.linalg.norm(J, axis=-1)
 
