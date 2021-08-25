@@ -471,18 +471,27 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         U = nnorm_arr[1, :, :, 0]
         V = nnorm_arr[1, :, :, 2]
         C = nnorm_arr[1, :, :, 1]
+
+        BU = B[:, :, 1]
+        BV = B[:, :, 2]
     elif normal_g == "y":
         balloon = ballooning_arr[:, 1, :]
         J = J_arr[:, 1, :, :]
         U = nnorm_arr[:, 1, :, 0]
         V = nnorm_arr[:, 1, :, 2]
         C = nnorm_arr[:, 1, :, 1]
+
+        BU = B[:, :, 0]
+        BV = B[:, :, 2]
     elif normal_g == "z":
         balloon = ballooning_arr[:, :, 1]
         J = J_arr[:, :, 1, :]
         U = nnorm_arr[:, :, 1, 0]
         V = nnorm_arr[:, :, 1, 2]
         C = nnorm_arr[:, :, 1, 1]
+
+        BU = B[:, :, 0]
+        BV = B[:, :, 1]
 
     balloon_masked = np.ma.masked_less_equal(balloon, 1)
     balloon_masked.mask[beta >= 2] = True
@@ -508,6 +517,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         cmap="YlOrBr",
         shading="nearest",
     )
+
+    ax.streamplot(XmeshXY, YmeshXY, BU, BV)
 
     # plt.colorbar(Balloon_im, ax=ax, label="Ballooning")
 
