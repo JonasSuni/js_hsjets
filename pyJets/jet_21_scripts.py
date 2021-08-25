@@ -494,14 +494,16 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         XmeshXY, YmeshXY, Jmag, vmin=2e-9, vmax=6e-9, cmap="viridis", shading="nearest",
     )
 
-    plt.colorbar(J_im, ax=ax, label="$|J|$")
+    plt.colorbar(J_im, ax=ax, label="$J_{mag}$")
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.8)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
 
-    ax.pcolormesh(
+    Balloon_im = ax.pcolormesh(
         XmeshXY, YmeshXY, balloon_masked, vmin=1, cmap="YlOrBr", shading="nearest",
     )
+
+    plt.colorbar(Balloon_im, ax=ax, label="Ballooning")
 
     # ax.quiver(XmeshXY, YmeshXY, U, V, C, cmap="seismic")
 
