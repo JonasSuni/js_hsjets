@@ -556,3 +556,77 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     return None
 
+
+def tail_sheet_jplot_balloon(xcut=14):
+
+    fnr_range = np.arange(1200, 1501, 1)
+    y_arr = np.loadtxt(
+        wrkdir_DNR + "Figures/sum21/balloon_txt/x{}_t{}".format(xcut, 1250)
+    )[:, 0]
+    J_mesh = np.array(
+        [
+            np.loadtxt(
+                wrkdir_DNR + "Figures/sum21/balloon_txt/x{}_t{}".format(xcut, fnr)
+            )[:, 1]
+            for fnr in fnr_range
+        ]
+    )
+
+    balloon_mesh = np.array(
+        [
+            np.loadtxt(
+                wrkdir_DNR + "Figures/sum21/balloon_txt/x{}_t{}".format(xcut, fnr)
+            )[:, 2]
+            for fnr in fnr_range
+        ]
+    )
+
+    fig, ax = plt.subplots(1, 1)
+    ax.grid()
+    ax.set(
+        xlabel="Y [Re]",
+        ylabel="Time [s]",
+        title="X = -{} Re".format(xcut),
+        xlim=(-10, 10),
+    )
+
+    im = ax.pcolormesh(
+        y_arr,
+        fnr_range,
+        J_mesh,
+        shading="nearest",
+        cmap="viridis",
+        vmin=2e-9,
+        vmax=6e-9,
+    )
+    fig.colorbar(im, ax=ax, label="$J_{mag}$")
+
+    balloon_im = ax.pcolormesh(
+        y_arr,
+        fnr_range,
+        balloon_mesh,
+        shading="nearest",
+        cmap="YlOrBr",
+        vmin=1,
+        vmax=10,
+    )
+
+    for fnr in fnr_range:
+        ffjs = np.loadtxt(
+            "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
+                fnr, fnr
+            )
+        )
+        x, y, z = ffjs.T
+        y_plot = y[np.abs(x + xcut) < 0.2]
+        t_plot = np.ones_like(y_plot) * fnr
+        ax.plot(y_plot, t_plot, "^", color="black", markersize=1)
+
+    plt.tight_layout()
+    # fig.savefig(wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_x{}.pdf".format(xcut))
+    fig.savefig(
+        wrkdir_DNR + "Figures/sum21/tail_sheet_jplot_balloon_x{}.png".format(xcut)
+    )
+    plt.close(fig)
+
+    return None

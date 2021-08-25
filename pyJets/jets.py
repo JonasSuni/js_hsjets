@@ -103,4 +103,5 @@ from jet_21_scripts import (
     vfield3_dot,
     vfield3_matder,
     plot_ballooning,
+    tail_sheet_jplot_balloon,
 )
