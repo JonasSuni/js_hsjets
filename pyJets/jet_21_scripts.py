@@ -410,6 +410,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
         normal=normal,
         cutpoint=-1 * cut * r_e,
         nocb=True,
+        scale=0.8,
     )
 
     return None
@@ -502,7 +503,13 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     Jmag = np.linalg.norm(J, axis=-1)
 
     J_im = ax.pcolormesh(
-        XmeshXY, YmeshXY, Jmag, vmin=2e-9, vmax=6e-9, cmap="viridis", shading="nearest",
+        XmeshXY,
+        YmeshXY,
+        Jmag,
+        vmin=2e-9,
+        vmax=6e-9,
+        cmap="viridis_r",
+        shading="nearest",
     )
 
     plt.colorbar(J_im, ax=ax, label="$J_{mag}$")
@@ -519,6 +526,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         cmap="YlOrBr",
         shading="nearest",
     )
+
+    plt.colorbar(Balloon_im, ax=ax, label="Balloon")
+
     if normal_g == "y":
         ax.streamplot(
             XmeshXY,
@@ -611,7 +621,7 @@ def tail_sheet_jplot_balloon(xcut=14):
         vmax=10,
     )
 
-    fig.colorbar(balloon_im, ax=ax, label="Balloon")
+    # fig.colorbar(balloon_im, ax=ax, label="Balloon")
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
