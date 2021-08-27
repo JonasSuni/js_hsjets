@@ -595,7 +595,7 @@ def tail_sheet_jplot_balloon(xcut=14):
         fnr_range,
         J_mesh,
         shading="nearest",
-        cmap="viridis",
+        cmap="viridis_r",
         vmin=2e-9,
         vmax=6e-9,
     )
@@ -610,6 +610,8 @@ def tail_sheet_jplot_balloon(xcut=14):
         vmin=1,
         vmax=10,
     )
+
+    fig.colorbar(balloon_im, ax=ax, label="Balloon")
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
