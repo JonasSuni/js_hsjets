@@ -506,10 +506,10 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         XmeshXY, YmeshXY, Jmag, vmin=2, vmax=6, cmap="viridis_r", shading="nearest",
     )
 
-    cax1 = ax.inset_axes([1.04, 0, 0.75, 1])
-    cax2 = ax.inset_axes([1.3, 0, 0.75, 1])
+    # cax1 = ax.inset_axes([1.04, 0, 0.75, 1])
+    # cax2 = ax.inset_axes([1.3, 0, 0.75, 1])
 
-    Jcb = plt.colorbar(J_im, cax=cax1)
+    Jcb = plt.colorbar(J_im, ax=ax)
     Jcb.ax.tick_params(labelsize=6)
     Jcb.set_label("J [nA/m$^2$]", size=6)
 
@@ -526,7 +526,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         shading="nearest",
     )
 
-    Bcb = plt.colorbar(Balloon_im, cax=cax2)
+    Bcb = plt.colorbar(Balloon_im, ax=Jcb.ax)
     Bcb.ax.tick_params(labelsize=6)
     Bcb.set_label("Ballooning", size=6)
 
