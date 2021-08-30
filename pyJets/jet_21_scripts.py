@@ -310,9 +310,11 @@ def ballooning_crit(B, P, beta, normal="y"):
 
     b = vfield3_normalise(B)
 
-    n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
-        b, vfield3_curl(b, dr, normal=normal)
-    )
+    # n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
+    #     b, vfield3_curl(b, dr, normal=normal)
+    # )
+
+    n = vfield3_matder(b, b, dr, normal=normal)
 
     print("b dot n = {}".format(np.sum(vfield3_dot(n, b))))
 
