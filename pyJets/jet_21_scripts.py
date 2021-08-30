@@ -516,6 +516,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     cax2 = ax.inset_axes([1.3, 0, 0.1, 1])
 
     Jcb = plt.colorbar(J_im, cax=cax1)
+    cax1.tick_params(labelsize=12)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.8)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
@@ -531,6 +532,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
     Bcb = plt.colorbar(Balloon_im, cax=cax2)
+    cax2.tick_params(labelsize=12)
 
     if normal_g == "y":
         ax.streamplot(
