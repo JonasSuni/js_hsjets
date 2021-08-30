@@ -330,7 +330,9 @@ def ballooning_crit(B, P, beta, normal="y", method="matder"):
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
+def plot_ballooning(
+    tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5], method="matder"
+):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -394,7 +396,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
-        B_arr, P_arr, beta_arr, normal=normal
+        B_arr, P_arr, beta_arr, normal=normal, method=method
     )
     J_arr = vfield3_curl(B_arr, 1000e3, normal=normal) / mu_0
 
