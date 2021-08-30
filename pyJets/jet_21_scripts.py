@@ -507,7 +507,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
-    cax2 = ax.inset_axes([1.1, 0, 0.05, 1])
+    cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
 
     Jcb = plt.colorbar(J_im, cax=cax1)
     Jcb.ax.tick_params(labelsize=6)
