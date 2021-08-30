@@ -500,23 +500,18 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked.mask[beta >= 2] = True
     # balloon_masked.mask[balloon > 1e30] = True
 
-    Jmag = np.linalg.norm(J, axis=-1)
+    Jmag = np.linalg.norm(J, axis=-1) / 1.0e-9
 
     J_im = ax.pcolormesh(
-        XmeshXY,
-        YmeshXY,
-        Jmag,
-        vmin=2e-9,
-        vmax=6e-9,
-        cmap="viridis_r",
-        shading="nearest",
+        XmeshXY, YmeshXY, Jmag, vmin=2, vmax=6, cmap="viridis_r", shading="nearest",
     )
 
-    cax1 = ax.inset_axes([1.1, 0, 0.1, 1])
-    cax2 = ax.inset_axes([1.3, 0, 0.1, 1])
+    cax1 = ax.inset_axes([1.04, 0, 0.75, 1])
+    cax2 = ax.inset_axes([1.3, 0, 0.75, 1])
 
     Jcb = plt.colorbar(J_im, cax=cax1)
-    Jcb.ax.tick_params(labelsize=8)
+    Jcb.ax.tick_params(labelsize=6)
+    Jcb.set_label("J [nA/m$^2$]", size=6)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.8)
     ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.8)
@@ -532,7 +527,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
     Bcb = plt.colorbar(Balloon_im, cax=cax2)
-    Bcb.ax.tick_params(labelsize=8)
+    Bcb.ax.tick_params(labelsize=6)
+    Bcb.set_label("Ballooning", size=6)
 
     if normal_g == "y":
         ax.streamplot(
