@@ -302,7 +302,7 @@ def vfield3_curl(a, dr, normal="y"):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def ballooning_crit(B, P, beta, normal="y"):
+def ballooning_crit(B, P, beta, normal="y", method="matder"):
 
     dr = 1000e3
 
@@ -310,13 +310,14 @@ def ballooning_crit(B, P, beta, normal="y"):
 
     b = vfield3_normalise(B)
 
-    # n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
-    #     b, vfield3_curl(b, dr, normal=normal)
-    # )
+    if not method == "matder":
+        n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
+            b, vfield3_curl(b, dr, normal=normal)
+        )
+    else:
+        n = vfield3_matder(b, b, dr, normal=normal)
 
-    n = vfield3_matder(b, b, dr, normal=normal)
-
-    print("b dot n = {}".format(np.sum(vfield3_dot(n, b))))
+    print("b dot n = {}".format(np.sum(np.abs(vfield3_dot(n, b)))))
 
     nnorm = vfield3_normalise(n)
 
