@@ -310,12 +310,14 @@ def ballooning_crit(B, P, beta, normal="y"):
 
     b = vfield3_normalise(B)
 
-    n = vfield3_matder(b, b, dr, normal=normal)
+    n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
+        b, vfield3_curl(b, dr, normal=normal)
+    )
     nnorm = vfield3_normalise(n)
 
     kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr, normal=normal)) / P
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
-    kappaC = vfield3_dot(nnorm, n)
+    kappaC = vfield3_dot(nnorm, vfield3_matder(b, b, dr, normal=normal))
 
     balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
