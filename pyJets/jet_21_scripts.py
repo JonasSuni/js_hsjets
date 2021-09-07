@@ -232,8 +232,7 @@ def make_plots(cb=False):
 
 
 def vfield3_dot(a, b):
-    """ Calculates dot product of vectors a and b in 3D vector field
-    """
+    """Calculates dot product of vectors a and b in 3D vector field"""
 
     return (
         a[:, :, :, 0] * b[:, :, :, 0]
@@ -254,8 +253,7 @@ def vfield3_normalise(a):
 
 
 def vfield3_matder(a, b, dr, normal="y"):
-    """ Calculates material derivative of 3D vector fields a and b
-    """
+    """Calculates material derivative of 3D vector fields a and b"""
 
     bx = b[:, :, :, 0]
     by = b[:, :, :, 1]
@@ -273,8 +271,7 @@ def vfield3_matder(a, b, dr, normal="y"):
 
 
 def vfield3_grad(a, dr, normal="y"):
-    """ Calculates gradient of 3D scalar field a using central difference
-    """
+    """Calculates gradient of 3D scalar field a using central difference"""
 
     ax_order = [[0, 2, 1], [2, 1, 0], [1, 0, 2]][["x", "y", "z"].index(normal)]
 
@@ -288,8 +285,7 @@ def vfield3_grad(a, dr, normal="y"):
 
 
 def vfield3_curl(a, dr, normal="y"):
-    """ Calculates curl of 3D vector field
-    """
+    """Calculates curl of 3D vector field"""
 
     grad_ax = vfield3_grad(a[:, :, :, 0], dr, normal=normal)
     grad_ay = vfield3_grad(a[:, :, :, 1], dr, normal=normal)
@@ -302,7 +298,7 @@ def vfield3_curl(a, dr, normal="y"):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def ballooning_crit(B, P, beta, normal="y", method="matder"):
+def ballooning_crit(B, P, beta, normal="y"):
 
     dr = 1000e3
 
@@ -310,53 +306,20 @@ def ballooning_crit(B, P, beta, normal="y", method="matder"):
 
     b = vfield3_normalise(B)
 
-    if not method == "matder":
-        n = vfield3_matder(b, b, dr, normal=normal) + np.cross(
-            b, vfield3_curl(b, dr, normal=normal)
-        )
-    else:
-        n = vfield3_matder(b, b, dr, normal=normal)
-
-    print("b dot n = {}".format(np.sum(np.abs(vfield3_dot(n, b)))))
-    print(
-        "matder term = {}".format(
-            np.sum(np.linalg.norm(vfield3_matder(b, b, dr, normal=normal), axis=-1))
-        )
-    )
-    print(
-        "jxb term = {}".format(
-            np.sum(
-                np.linalg.norm(np.cross(b, vfield3_curl(b, dr, normal=normal)), axis=-1)
-            )
-        )
-    )
-    print(
-        "matder dot jxb = {}".format(
-            np.sum(
-                np.abs(
-                    vfield3_dot(
-                        vfield3_matder(b, b, dr, normal=normal),
-                        np.cross(b, vfield3_curl(b, dr, normal=normal)),
-                    )
-                )
-            )
-        )
-    )
+    n = vfield3_matder(b, b, dr, normal=normal)
 
     nnorm = vfield3_normalise(n)
 
     kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr, normal=normal)) / P
     # kappaB = vfield3_dot(n, vfield3_grad(Bmag, dr)) / Bmag
-    kappaC = vfield3_dot(nnorm, vfield3_matder(b, b, dr, normal=normal))
+    kappaC = vfield3_dot(nnorm, n)
 
     balloon = (2 + beta) / 4.0 * kappaP / (kappaC + 1e-27)
 
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(
-    tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5], method="matder"
-):
+def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -420,7 +383,7 @@ def plot_ballooning(
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
-        B_arr, P_arr, beta_arr, normal=normal, method=method
+        B_arr, P_arr, beta_arr, normal=normal
     )
     J_arr = vfield3_curl(B_arr, 1000e3, normal=normal) / mu_0
 
@@ -537,11 +500,17 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     Jmag = np.linalg.norm(J, axis=-1) / 1.0e-9
 
     J_im = ax.pcolormesh(
-        XmeshXY, YmeshXY, Jmag, vmin=2, vmax=6, cmap="viridis_r", shading="nearest",
+        XmeshXY,
+        YmeshXY,
+        Jmag,
+        vmin=2,
+        vmax=6,
+        cmap="viridis_r",
+        shading="nearest",
     )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
-    cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
+    # cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
 
     Jcb = plt.colorbar(J_im, cax=cax1)
     Jcb.ax.tick_params(labelsize=6)
@@ -550,19 +519,28 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.4)
     # ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4)
 
-    Balloon_im = ax.pcolormesh(
+    # Balloon_im = ax.pcolormesh(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     balloon_masked,
+    #     vmin=1,
+    #     vmax=10,
+    #     cmap="YlOrBr",
+    #     shading="nearest",
+    # )
+
+    ax.contour(
         XmeshXY,
         YmeshXY,
-        balloon_masked,
-        vmin=1,
-        vmax=10,
-        cmap="YlOrBr",
-        shading="nearest",
+        balloon_masked.mask.astype(int),
+        0,
+        colors="white",
+        linewidths=0.6,
     )
 
-    Bcb = plt.colorbar(Balloon_im, cax=cax2)
-    Bcb.ax.tick_params(labelsize=6)
-    Bcb.set_label("Ballooning", size=6, loc="bottom")
+    # Bcb = plt.colorbar(Balloon_im, cax=cax2)
+    # Bcb.ax.tick_params(labelsize=6)
+    # Bcb.set_label("Ballooning", size=6, loc="bottom")
 
     if normal_g == "y":
         ax.streamplot(
