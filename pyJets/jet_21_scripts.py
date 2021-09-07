@@ -408,6 +408,7 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
         cutpoint=-1 * cut * r_e,
         nocb=True,
         scale=0.8,
+        tickinterval=2.5,
     )
 
     return None
