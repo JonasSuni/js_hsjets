@@ -596,7 +596,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             density=1.5,
         )
 
-    if normal_g == "x" and op=="mag":
+    if normal_g == "x" and op_g=="mag":
         Bxmag = np.abs(Bx)
         Jsheet = np.array(
             [Jmag[idy, idx] for idx, idy in enumerate(np.argmin(Bxmag, axis=0))]
