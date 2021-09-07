@@ -240,6 +240,25 @@ def vfield3_dot(a, b):
         + a[:, :, :, 2] * b[:, :, :, 2]
     )
 
+def vfield2_dot(a,b):
+    """Calculates dot product of vectors a and b in 2D vector field"""
+
+    return (
+        a[:, :, 0] * b[:, :, 0]
+        + a[:, :, 1] * b[:, :, 1]
+        + a[:, :, 2] * b[:, :, 2]
+    )
+
+def vfield2_normalise(a):
+
+    amag = np.linalg.norm(a, axis=-1)
+
+    resx = a[:, :, 0] / amag
+    resy = a[:, :, 1] / amag
+    resz = a[:, :, 2] / amag
+
+    return np.stack((resx, resy, resz), axis=-1)
+
 
 def vfield3_normalise(a):
 
@@ -520,8 +539,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             shading="nearest",
         )
     elif op_g == "fa":
-        b = vfield3_normalise(B)
-        Jfa = vfield3_dot(J,b)
+        b = vfield2_normalise(B)
+        Jfa = vfield2_dot(J,b)
         J_im = ax.pcolormesh(
             XmeshXY,
             YmeshXY,
