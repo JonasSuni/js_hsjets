@@ -414,12 +414,12 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5],d
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
         B_arr, P_arr, beta_arr,dr=dr, normal=normal
     )
-    J_arr = vfield3_curl(B_arr, 1000e3, normal=normal) / mu_0
+    J_arr = vfield3_curl(B_arr, dr, normal=normal) / mu_0
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
-        + "Figures/sum21/balloon/ballooning_t{}_{}{}.png".format(tstep, cut, normal),
+        + "Figures/sum21/balloon/ballooning_t{}_{}{}_{}.png".format(tstep, cut, normal,op),
         var="proton/vg_pressure",
         colormap="viridis",
         vmax=1e-10,
@@ -540,13 +540,13 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         )
     elif op_g == "fa":
         b = vfield2_normalise(B)
-        Jfa = vfield2_dot(J,b)
+        Jfa = vfield2_dot(J,b)/1.0e-9
         J_im = ax.pcolormesh(
             XmeshXY,
             YmeshXY,
             Jfa,
-            #vmin=2,
-            #vmax=6,
+            vmin=-2,
+            vmax=2,
             cmap="seismic",
             shading="nearest",
         )
@@ -609,8 +609,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         )
         txt_out = np.array([XmeshXY[0], Jsheet, Balloonsheet]).T
         np.savetxt(
-            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}_{}".format(
-                cut_g, tstep_g, op_g
+            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}".format(
+                cut_g, tstep_g
             ),
             txt_out,
         )
