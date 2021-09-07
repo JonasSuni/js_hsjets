@@ -283,6 +283,15 @@ def vfield3_grad(a, dr, normal="y"):
 
     # return np.stack(np.gradient(a, dr,dr,dr), axis=-1)
 
+def vfield3_grad_stencil5(a,dr,normal="y"):
+    """Calculates gradient of 3D scalar field a using a 5 point stencil"""
+
+    ax_order = [[0, 2, 1], [2, 1, 0], [1, 0, 2]][["x", "y", "z"].index(normal)]
+
+    gradx = (-np.roll(a, -2, ax_order[0]) + 8*np.roll(a, -1, ax_order[0]) - 8*np.roll(a, 1, ax_order[0]) + np.roll(a, 2, ax_order[0])) / 12.0 / dr
+    grady = (-np.roll(a, -2, ax_order[1]) + 8*np.roll(a, -1, ax_order[1]) - 8*np.roll(a, 1, ax_order[1]) + np.roll(a, 2, ax_order[1])) / 12.0 / dr
+    gradz = (-np.roll(a, -2, ax_order[2]) + 8*np.roll(a, -1, ax_order[2]) - 8*np.roll(a, 1, ax_order[2]) + np.roll(a, 2, ax_order[2])) / 12.0 / dr
+
 
 def vfield3_curl(a, dr, normal="y"):
     """Calculates curl of 3D vector field"""
@@ -298,9 +307,7 @@ def vfield3_curl(a, dr, normal="y"):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def ballooning_crit(B, P, beta, normal="y"):
-
-    dr = 1000e3
+def ballooning_crit(B, P, beta,dr=1000e3, normal="y"):
 
     # Bmag = np.linalg.norm(B, axis=-1)
 
@@ -319,7 +326,7 @@ def ballooning_crit(B, P, beta, normal="y"):
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
+def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5],dr=1000e3,op="mag"):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -332,6 +339,9 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
     global idx_g
     global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
     global normal_g, tstep_g, cut_g
+    global op_g
+
+    op_g = op
 
     normal_g = normal
     tstep_g = tstep
@@ -379,11 +389,11 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5]):
             pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
             boxre=boxre,
             normal=normal,
-            cutpoint=-1 * cut * r_e + 1000e3 * (idx - 1),
+            cutpoint=-1 * cut * r_e + dr * (idx - 1),
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
-        B_arr, P_arr, beta_arr, normal=normal
+        B_arr, P_arr, beta_arr,dr=dr, normal=normal
     )
     J_arr = vfield3_curl(B_arr, 1000e3, normal=normal) / mu_0
 
@@ -498,17 +508,29 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked.mask[beta >= 2] = True
     # balloon_masked.mask[balloon > 1e30] = True
 
-    Jmag = np.linalg.norm(J, axis=-1) / 1.0e-9
-
-    J_im = ax.pcolormesh(
-        XmeshXY,
-        YmeshXY,
-        Jmag,
-        vmin=2,
-        vmax=6,
-        cmap="viridis_r",
-        shading="nearest",
-    )
+    if op_g == "mag":
+        Jmag = np.linalg.norm(J, axis=-1) / 1.0e-9
+        J_im = ax.pcolormesh(
+            XmeshXY,
+            YmeshXY,
+            Jmag,
+            vmin=2,
+            vmax=6,
+            cmap="viridis_r",
+            shading="nearest",
+        )
+    elif op_g == "fa":
+        b = vfield3_normalise(B)
+        Jfa = vfield3_dot(J,b)
+        J_im = ax.pcolormesh(
+            XmeshXY,
+            YmeshXY,
+            Jfa,
+            #vmin=2,
+            #vmax=6,
+            cmap="seismic",
+            shading="nearest",
+        )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
     # cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
@@ -568,8 +590,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         )
         txt_out = np.array([XmeshXY[0], Jsheet, Balloonsheet]).T
         np.savetxt(
-            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}".format(
-                cut_g, tstep_g
+            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}_{}".format(
+                cut_g, tstep_g, op_g
             ),
             txt_out,
         )
