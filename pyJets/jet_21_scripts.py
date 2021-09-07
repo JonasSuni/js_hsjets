@@ -240,14 +240,12 @@ def vfield3_dot(a, b):
         + a[:, :, :, 2] * b[:, :, :, 2]
     )
 
-def vfield2_dot(a,b):
+
+def vfield2_dot(a, b):
     """Calculates dot product of vectors a and b in 2D vector field"""
 
-    return (
-        a[:, :, 0] * b[:, :, 0]
-        + a[:, :, 1] * b[:, :, 1]
-        + a[:, :, 2] * b[:, :, 2]
-    )
+    return a[:, :, 0] * b[:, :, 0] + a[:, :, 1] * b[:, :, 1] + a[:, :, 2] * b[:, :, 2]
+
 
 def vfield2_normalise(a):
 
@@ -302,14 +300,42 @@ def vfield3_grad(a, dr, normal="y"):
 
     # return np.stack(np.gradient(a, dr,dr,dr), axis=-1)
 
-def vfield3_grad_stencil5(a,dr,normal="y"):
+
+def vfield3_grad_stencil5(a, dr, normal="y"):
     """Calculates gradient of 3D scalar field a using a 5 point stencil"""
 
     ax_order = [[0, 2, 1], [2, 1, 0], [1, 0, 2]][["x", "y", "z"].index(normal)]
 
-    gradx = (-np.roll(a, -2, ax_order[0]) + 8*np.roll(a, -1, ax_order[0]) - 8*np.roll(a, 1, ax_order[0]) + np.roll(a, 2, ax_order[0])) / 12.0 / dr
-    grady = (-np.roll(a, -2, ax_order[1]) + 8*np.roll(a, -1, ax_order[1]) - 8*np.roll(a, 1, ax_order[1]) + np.roll(a, 2, ax_order[1])) / 12.0 / dr
-    gradz = (-np.roll(a, -2, ax_order[2]) + 8*np.roll(a, -1, ax_order[2]) - 8*np.roll(a, 1, ax_order[2]) + np.roll(a, 2, ax_order[2])) / 12.0 / dr
+    gradx = (
+        (
+            -np.roll(a, -2, ax_order[0])
+            + 8 * np.roll(a, -1, ax_order[0])
+            - 8 * np.roll(a, 1, ax_order[0])
+            + np.roll(a, 2, ax_order[0])
+        )
+        / 12.0
+        / dr
+    )
+    grady = (
+        (
+            -np.roll(a, -2, ax_order[1])
+            + 8 * np.roll(a, -1, ax_order[1])
+            - 8 * np.roll(a, 1, ax_order[1])
+            + np.roll(a, 2, ax_order[1])
+        )
+        / 12.0
+        / dr
+    )
+    gradz = (
+        (
+            -np.roll(a, -2, ax_order[2])
+            + 8 * np.roll(a, -1, ax_order[2])
+            - 8 * np.roll(a, 1, ax_order[2])
+            + np.roll(a, 2, ax_order[2])
+        )
+        / 12.0
+        / dr
+    )
 
 
 def vfield3_curl(a, dr, normal="y"):
@@ -326,7 +352,7 @@ def vfield3_curl(a, dr, normal="y"):
     return np.stack((resx, resy, resz), axis=-1)
 
 
-def ballooning_crit(B, P, beta,dr=1000e3, normal="y"):
+def ballooning_crit(B, P, beta, dr=1000e3, normal="y"):
 
     # Bmag = np.linalg.norm(B, axis=-1)
 
@@ -345,7 +371,9 @@ def ballooning_crit(B, P, beta,dr=1000e3, normal="y"):
     return (balloon, nnorm, kappaC)
 
 
-def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5],dr=1000e3,op="mag"):
+def plot_ballooning(
+    tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5], dr=1000e3, op="mag"
+):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
@@ -412,14 +440,16 @@ def plot_ballooning(tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5],d
         )
 
     ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
-        B_arr, P_arr, beta_arr,dr=dr, normal=normal
+        B_arr, P_arr, beta_arr, dr=dr, normal=normal
     )
     J_arr = vfield3_curl(B_arr, dr, normal=normal) / mu_0
 
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
-        + "Figures/sum21/balloon/ballooning_t{}_{}{}_{}.png".format(tstep, cut, normal,op),
+        + "Figures/sum21/balloon/ballooning_t{}_{}{}_{}.png".format(
+            tstep, cut, normal, op
+        ),
         var="proton/vg_pressure",
         colormap="viridis",
         vmax=1e-10,
@@ -540,7 +570,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         )
     elif op_g == "fa":
         b = vfield2_normalise(B)
-        Jfa = vfield2_dot(J,b)/1.0e-9
+        Jfa = vfield2_dot(J, b) / 1.0e-9
         J_im = ax.pcolormesh(
             XmeshXY,
             YmeshXY,
@@ -596,7 +626,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             density=1.5,
         )
 
-    if normal_g == "x" and op_g=="mag":
+    if normal_g == "x" and op_g == "mag":
         Bxmag = np.abs(Bx)
         Jsheet = np.array(
             [Jmag[idy, idx] for idx, idy in enumerate(np.argmin(Bxmag, axis=0))]
