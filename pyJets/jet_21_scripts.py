@@ -713,7 +713,7 @@ def fac_migration_plot():
     min_arr = np.zeros(fnr_range.shape, dtype=float)
     med_arr = np.zeros(fnr_range.shape, dtype=float)
 
-    for idx, fnr in fnr_range:
+    for idx, fnr in enumerate(fnr_range):
         data = np.loadtxt(wrkdir_DNR + "Figures/sum21/fac_txt/x{}_t{}".format(5.5, fnr))
         yarr[idx] = data[0]
         zarr[idx] = data[1]
