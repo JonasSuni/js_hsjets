@@ -373,7 +373,13 @@ def ballooning_crit(B, P, beta, dr=1000e3, normal="y"):
 
 
 def plot_ballooning(
-    tstep=1274, cut=15, normal="y", boxre=[-19, -9, -1.5, 1.5], dr=1000e3, op="mag"
+    tstep=1274,
+    cut=15,
+    normal="y",
+    boxre=[-19, -9, -1.5, 1.5],
+    dr=1000e3,
+    op="mag",
+    write_txt=False,
 ):
 
     bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
@@ -387,10 +393,11 @@ def plot_ballooning(
     global idx_g
     global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
     global normal_g, tstep_g, cut_g
-    global op_g, zoom_g
+    global op_g, zoom_g, write_txt_g
 
     op_g = op
     zoom_g = 1000e3 / dr
+    write_txt_g = write_txt
 
     normal_g = normal
     tstep_g = tstep
@@ -611,7 +618,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     Jcb = plt.colorbar(J_im, cax=cax1)
     Jcb.ax.tick_params(labelsize=6)
-    Jcb.set_label("J [nA/m$^2$]", size=6, loc="bottom")
+    Jcb.set_label("J [nA/m$^2$]", size=6)
 
     ax.contour(XmeshXY, YmeshXY, vx, 0, colors="cyan", linewidths=0.6)
     # ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4)
@@ -652,7 +659,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             density=1.5,
         )
 
-    if normal_g == "x" and op_g == "mag":
+    if normal_g == "x" and op_g == "mag" and write_txt_g:
         Bxmag = np.abs(Bx)
         Jsheet = np.array(
             [Jmag[idy, idx] for idx, idy in enumerate(np.argmin(Bxmag, axis=0))]
