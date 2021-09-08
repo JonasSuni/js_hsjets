@@ -726,6 +726,12 @@ def fac_migration_plot():
     axs[2].plot(fnr_range, min_arr)
     axs[3].plot(fnr_range, med_arr)
 
+    axs[0].set_ylabel("Y")
+    axs[1].set_ylabel("Z")
+    axs[2].set_ylabel("min(FAC)")
+    axs[3].set_ylabel("med(FAC)")
+    axs[3].set_xlabel("Time")
+
     plt.tight_layout()
     fig.savefig(wrkdir_DNR + "Figures/sum21/fac_plot.png")
     plt.close(fig)
