@@ -706,7 +706,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
 def fac_migration_plot():
 
-    fnr_range = np.arange(1250, 1501, 1)
+    fnr_range = np.arange(1340, 1501, 1)
 
     yarr = np.zeros(fnr_range.shape, dtype=float)
     zarr = np.zeros(fnr_range.shape, dtype=float)
