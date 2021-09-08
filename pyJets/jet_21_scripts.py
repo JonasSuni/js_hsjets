@@ -720,17 +720,15 @@ def fac_migration_plot():
         min_arr[idx] = data[2]
         med_arr[idx] = data[3]
 
-    fig, axs = plt.subplots(4, 1)
+    fig, axs = plt.subplots(3, 1)
     axs[0].plot(fnr_range, yarr)
     axs[1].plot(fnr_range, zarr)
     axs[2].plot(fnr_range, min_arr)
-    axs[3].plot(fnr_range, med_arr)
 
-    axs[0].set_ylabel("Y")
-    axs[1].set_ylabel("Z")
-    axs[2].set_ylabel("min(FAC)")
-    axs[3].set_ylabel("med(FAC)")
-    axs[3].set_xlabel("Time")
+    axs[0].set_ylabel("Y [$R_\mathrm{E}$]")
+    axs[1].set_ylabel("Z [$R_\mathrm{E}$]")
+    axs[2].set_ylabel("min(FAC) [nA/m$^2$]")
+    axs[2].set_xlabel("Time [s]")
     for ax in axs:
         ax.set_xlim(1340, 1500)
 
