@@ -704,6 +704,35 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     return None
 
 
+def fac_migration_plot():
+
+    fnr_range = np.arange(1250, 1501, 1)
+
+    yarr = np.zeros(fnr_range.shape, dtype=float)
+    zarr = np.zeros(fnr_range.shape, dtype=float)
+    min_arr = np.zeros(fnr_range.shape, dtype=float)
+    med_arr = np.zeros(fnr_range.shape, dtype=float)
+
+    for idx, fnr in fnr_range:
+        data = np.loadtxt(wrkdir_DNR + "Figures/sum21/fac_txt/x{}_t{}".format(5.5, fnr))
+        yarr[idx] = data[0]
+        zarr[idx] = data[1]
+        min_arr[idx] = data[2]
+        med_arr[idx] = data[3]
+
+    fig, axs = plt.subplots(4, 1)
+    axs[0].plot(fnr_range, yarr)
+    axs[1].plot(fnr_range, zarr)
+    axs[2].plot(fnr_range, min_arr)
+    axs[3].plot(fnr_range, med_arr)
+
+    plt.tight_layout()
+    fig.savefig(wrkdir_DNR + "Figures/sum21/fac_plot.png")
+    plt.close(fig)
+
+    return None
+
+
 def tail_sheet_jplot_balloon(xcut=14):
 
     fnr_range = np.arange(1250, 1501, 1)

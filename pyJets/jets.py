@@ -105,5 +105,6 @@ from jet_21_scripts import (
     plot_ballooning,
     tail_sheet_jplot_balloon,
     vfield3_curl,
-    vfield3_normalise
+    vfield3_normalise,
+    fac_migration_plot,
 )
