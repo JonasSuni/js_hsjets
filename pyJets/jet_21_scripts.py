@@ -626,14 +626,15 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     #     shading="nearest",
     # )
 
-    ax.contour(
-        XmeshXY,
-        YmeshXY,
-        balloon_masked.mask.astype(int),
-        0,
-        colors="magenta",
-        linewidths=0.6,
-    )
+    if op_g == "mag":
+        ax.contour(
+            XmeshXY,
+            YmeshXY,
+            balloon_masked.mask.astype(int),
+            0,
+            colors="magenta",
+            linewidths=0.6,
+        )
 
     # Bcb = plt.colorbar(Balloon_im, cax=cax2)
     # Bcb.ax.tick_params(labelsize=6)
