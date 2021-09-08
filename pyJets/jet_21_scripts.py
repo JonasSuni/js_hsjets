@@ -2,6 +2,7 @@ import sys
 import matplotlib.style
 import matplotlib as mpl
 import jet_aux as jx
+import scipy.ndimage
 
 if sys.version_info.major == 3:
     mpl.rcParams["axes.prop_cycle"] = mpl.cycler(
@@ -386,9 +387,10 @@ def plot_ballooning(
     global idx_g
     global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
     global normal_g, tstep_g, cut_g
-    global op_g
+    global op_g, zoom_g
 
     op_g = op
+    zoom_g = 1000e3 / dr
 
     normal_g = normal
     tstep_g = tstep
@@ -478,6 +480,9 @@ def ext_get_meshsize(ax, XmeshXY, YmeshXY, pass_maps):
     global zymesh_size
 
     B = pass_maps["vg_b_vol"]
+
+    B = scipy.ndimage.zoom(B, zoom_g, mode="grid-constant", grid_mode=True)
+
     zymesh_size[0] = B.shape[0]
     zymesh_size[1] = B.shape[1]
     zymesh_size[2] = B.shape[2]
@@ -493,9 +498,15 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     global P_arr
     global beta_arr
 
-    B = pass_maps["vg_b_vol"]
-    P = pass_maps["proton/vg_pressure"]
-    beta = pass_maps["proton/vg_beta"]
+    B = scipy.ndimage.zoom(
+        pass_maps["vg_b_vol"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+    P = scipy.ndimage.zoom(
+        pass_maps["proton/vg_pressure"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+    beta = scipy.ndimage.zoom(
+        pass_maps["proton/vg_beta"], zoom_g, mode="grid-constant", grid_mode=True
+    )
 
     if normal_g == "x":
         B_arr[idx, :, :, :] = B
@@ -517,10 +528,21 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     global ballooning_arr
 
-    B = pass_maps["vg_b_vol"]
-    P = pass_maps["proton/vg_pressure"]
-    beta = pass_maps["proton/vg_beta"]
-    v = pass_maps["proton/vg_v"]
+    B = scipy.ndimage.zoom(
+        pass_maps["vg_b_vol"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+    P = scipy.ndimage.zoom(
+        pass_maps["proton/vg_pressure"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+    beta = scipy.ndimage.zoom(
+        pass_maps["proton/vg_beta"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+    v = scipy.ndimage.zoom(
+        pass_maps["proton/vg_v"], zoom_g, mode="grid-constant", grid_mode=True
+    )
+
+    XmeshXY = scipy.ndimage.zoom(XmeshXY, zoom_g, mode="grid-constant", grid_mode=True)
+    YmeshXY = scipy.ndimage.zoom(YmeshXY, zoom_g, mode="grid-constant", grid_mode=True)
 
     vx = v[:, :, 0]
     Bx = B[:, :, 0]
