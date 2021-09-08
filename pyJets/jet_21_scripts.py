@@ -659,6 +659,25 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             density=1.5,
         )
 
+    if normal_g == "x" and op_g == "fa" and write_txt_g:
+        msk = np.ones_like(XmeshXY).astype(bool)
+        msk[XmeshXY < -1] = False
+        msk[XmeshXY > 2] = False
+        msk[YmeshXY < 3] = False
+        msk[YmeshXY > 5] = False
+
+        Jfa_min = np.min(Jfa[msk])
+        ymin = XmeshXY[msk][Jfa[msk] == Jfa_min]
+        zmin = YmeshXY[msk][Jfa[msk] == Jfa_min]
+        Jfa_med = np.median(Jfa[msk])
+
+        txt_out = np.array([ymin, zmin, Jfa_min, Jfa_med])
+
+        np.savetxt(
+            "/wrk/users/jesuni/Figures/sum21/fac_txt/x{}_t{}".format(cut_g, tstep_g),
+            txt_out,
+        )
+
     if normal_g == "x" and op_g == "mag" and write_txt_g:
         Bxmag = np.abs(Bx)
         Jsheet = np.array(
