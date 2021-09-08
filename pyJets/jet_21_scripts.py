@@ -667,14 +667,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         msk[YmeshXY > 5] = False
 
         Jfa_min = np.min(Jfa[msk])
-        ymin = XmeshXY[msk][Jfa[msk] == Jfa_min]
-        zmin = YmeshXY[msk][Jfa[msk] == Jfa_min]
+        ymin = XmeshXY[msk][Jfa[msk] == Jfa_min][0]
+        zmin = YmeshXY[msk][Jfa[msk] == Jfa_min][0]
         Jfa_med = np.median(Jfa[msk])
-
-        print(Jfa_min)
-        print(ymin)
-        print(zmin)
-        print(Jfa_med)
 
         txt_out = np.array([ymin, zmin, Jfa_min, Jfa_med])
 
