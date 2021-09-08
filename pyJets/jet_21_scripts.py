@@ -600,8 +600,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             XmeshXY,
             YmeshXY,
             Jfa,
-            vmin=-2,
-            vmax=2,
+            vmin=-1,
+            vmax=1,
             cmap="seismic",
             shading="nearest",
         )
