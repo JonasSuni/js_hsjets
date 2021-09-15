@@ -3,8 +3,8 @@
 ### Install dependencies:
 sudo apt-get install mayavi2 python-matplotlib python-numpy python-scipy ipython
 
-### Install analysator
-https://github.com/fmihpc/analysator
+### Install my analysator fork
+https://github.com/JonasSuni/analysator
 
 ### Set pythonpath environment variable:
-echo "export PYTHONPATH=$PYTHONPATH:/homeappl/home/<username>/js_hsjets" >> $HOME/.bashrc
+echo "export PYTHONPATH=$PYTHONPATH:<path to parent directory of repo>/js_hsjets" >> $HOME/.bashrc
