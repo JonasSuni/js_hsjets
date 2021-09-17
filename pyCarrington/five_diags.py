@@ -54,4 +54,4 @@ def trace_test():
         "/wrk/group/spacephysics/vlasiator/2D/BGC/bulk/bulk.0000100.vlsv"
     )
 
-    return trace_b_xz(vlsvobj, x0, z0, r_trace=10 * r_e)
+    return trace_b_xz(vlsvobj, x0, z0, r_trace=40e6)
