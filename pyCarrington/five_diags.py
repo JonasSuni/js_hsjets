@@ -23,11 +23,10 @@ def trace_b_xz(
         # b = vlsvobj.read_interpolated_variable(
         #     "vg_b_vol", coordinates=[xlist[-1], 0, zlist[-1]]
         # )
-        ci = int(vlsvobj.get_cellid([xlist[-1], 0, zlist[-1]]))
-        b = vlsvobj.read_variable("vg_b_vol", cellids=ci)
-
-        if np.isnan(b[0]):
+        ci = vlsvobj.get_cellid([xlist[-1], 0, zlist[-1]])
+        if np.isnan(ci):
             break
+        b = vlsvobj.read_variable("vg_b_vol", cellids=int(ci))
 
         bmag = np.linalg.norm(b)
         dx = b[0] / bmag
