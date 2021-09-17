@@ -35,6 +35,9 @@ def trace_b_xz(
         xnew = xlist[-1] + direction * ds * dx
         znew = zlist[-1] + direction * ds * dz
 
+        if np.isnan(xnew) or np.isnan(znew):
+            break
+
         xlist.append(xnew)
         zlist.append(znew)
 
