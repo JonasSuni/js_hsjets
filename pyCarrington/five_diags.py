@@ -21,6 +21,10 @@ def trace_b_xz(
         b = vlsvobj.read_interpolated_variable(
             "vg_b_vol", coordinates=[xlist[-1], 0, zlist[-1]]
         )
+
+        if np.isnan(b[0]):
+            break
+
         bmag = np.linalg.norm(b)
         dx = b[0] / bmag
         dz = b[2] / bmag
