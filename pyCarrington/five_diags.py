@@ -17,6 +17,8 @@ def trace_b_xz(
     zlist = [z0]
 
     for iter in range(iter_max):
+        print(xlist[-1])
+        print(zlist[-1])
 
         b = vlsvobj.read_interpolated_variable(
             "vg_b_vol", coordinates=[xlist[-1], 0, zlist[-1]]
