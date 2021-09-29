@@ -2,7 +2,7 @@ import numpy as np
 import pytools as pt
 
 r_e = 6.371e6
-
+mu_0 = 4*np.pi*1e-7
 
 def map_surface_to_ib(theta, ib):
 
@@ -48,10 +48,34 @@ def trace_b_xz(
 
 
 def trace_test():
-    x0 = np.cos(np.pi / 4) * 30e6
-    z0 = np.sin(np.pi / 4) * 30e6
+    x0 = np.cos(np.pi / 4) * 20e6
+    z0 = np.sin(np.pi / 4) * 20e6
     vlsvobj = pt.vlsvfile.VlsvReader(
-        "/wrk/group/spacephysics/vlasiator/2D/BGC/bulk/bulk.0000100.vlsv"
+        "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000400.vlsv"
     )
 
-    return trace_b_xz(vlsvobj, x0, z0, r_trace=40e6)
+    tracexz = trace_b_xz(vlsvobj, x0, z0, r_trace=25e6)
+
+    xlast = tracexz[0][-1]
+    zlast = tracexz[1][-1]
+
+    B = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([xlast, 0, zlast])))
+    b = B/np.linalg.norm(B)
+
+    J = calc_J(vlsvobj,[xlast,zlast])
+
+    return np.dot(J,b)
+
+def calc_J(vlsvobj,coords_xz,dr=500e3):
+
+    Bxp = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0]+dr, 0, coords_xz[1]])))
+    Bxm = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0]-dr, 0, coords_xz[1]])))
+    Bzp = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1]+dr])))
+    Bzm = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1]-dr])))
+
+    dBxdz = (Bzp[0]-Bzm[0])/2.0/dr
+    dBydx = (Bxp[1]-Bxm[1])/2.0/dr
+    dBydz = (Bzp[1]-Bzm[1])/2.0/dr
+    dBzdx = (Bxp[2]-Bxm[2])/2.0/dr
+
+    return np.array([-dBydz,dBxdz-dBzdx,dBydx])/mu_0
