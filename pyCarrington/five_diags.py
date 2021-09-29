@@ -55,6 +55,7 @@ def trace_test(x0,z0):
     )
 
     tracexz = trace_b_xz(vlsvobj, x0, z0, r_trace=25e6)
+    B0 = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([x0, 0, z0])))
 
     xlast = tracexz[0][-1]
     zlast = tracexz[1][-1]
@@ -62,7 +63,7 @@ def trace_test(x0,z0):
     B = vlsvobj.read_variable("vg_b_vol", cellids=int(vlsvobj.get_cellid([xlast, 0, zlast])))
     b = B/np.linalg.norm(B)
 
-    J = calc_J(vlsvobj,[xlast,zlast])
+    J = calc_J(vlsvobj,[xlast,zlast])*np.linalg.norm(B0)/np.linalg.norm(B)
 
     return np.dot(J,b)
 
