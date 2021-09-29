@@ -17,8 +17,8 @@ def trace_b_xz(
     zlist = [z0]
 
     for iter in range(iter_max):
-        print(xlist[-1])
-        print(zlist[-1])
+        #print(xlist[-1])
+        #print(zlist[-1])
 
         # b = vlsvobj.read_interpolated_variable(
         #     "vg_b_vol", coordinates=[xlist[-1], 0, zlist[-1]]
@@ -47,9 +47,9 @@ def trace_b_xz(
     return (np.array(xlist), np.array(zlist))
 
 
-def trace_test():
-    x0 = np.cos(np.pi / 4) * 20e6
-    z0 = np.sin(np.pi / 4) * 20e6
+def trace_test(x0,z0):
+    #x0 = np.cos(np.pi / 4) * 20e6
+    #z0 = np.sin(np.pi / 4) * 20e6
     vlsvobj = pt.vlsvfile.VlsvReader(
         "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000400.vlsv"
     )
