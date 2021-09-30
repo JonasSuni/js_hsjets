@@ -34,8 +34,8 @@ def trace_b_good(
             Bx = 3 * coords[0] * coords[2] * m / r ** 5
             Bz = (3 * coords[2] * coords[2] * m - m * r ** 2) / r ** 5
         elif kind == "linedipole":
-            Bx = 2 * coords[0] * coords[2] / r ** 4
-            Bz = (coords[2] * coords[2] - coords[0] * coords[0]) / r ** 4
+            Bx = 2 * D * coords[0] * coords[2] / r ** 4
+            Bz = D * (coords[2] * coords[2] - coords[0] * coords[0]) / r ** 4
         elif kind == "fg_b":
             B = vlsvobj.read_interpolated_fsgrid_variable("fg_b", coordinates=coords)
             Bx = B[0]
