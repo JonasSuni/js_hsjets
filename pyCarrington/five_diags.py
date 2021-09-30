@@ -56,6 +56,8 @@ def trace_b_good(
 
         if np.abs(np.linalg.norm(coords) - r_stop) < ds:
             break
+        if np.linalg.norm(coords) < np.linalg.norm(start_coords):
+            break
 
     return (np.array(xlist), np.array(zlist))
 
