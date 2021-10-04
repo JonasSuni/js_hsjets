@@ -11,7 +11,7 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
-def dayside_MP(xstart, xstop):
+def dayside_MP(xstart, xstop, dx):
 
     vlsvobj = pt.vlsvfile.VlsvReader(
         "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
@@ -19,7 +19,7 @@ def dayside_MP(xstart, xstop):
 
     r_stop = 19.1e6
 
-    x_range = np.arange(xstart, xstop, 500e3)
+    x_range = np.arange(xstart, xstop, dx)
     is_closed = np.zeros_like(x_range).astype(bool)
     for itr, x in enumerate(x_range):
         end_coord = trace_b_good(
