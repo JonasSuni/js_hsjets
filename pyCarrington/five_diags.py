@@ -113,20 +113,8 @@ def trace_b_good(
             #        return None
             # Bx = B[0]
             # Bz = B[2]
-            try:
-                Bx = Bx_interpolator(coords[0], coords[2])
-            except:
-                if trace_full:
-                    return np.array(coordlist).T
-                else:
-                    return None
-            try:
-                Bz = Bz_interpolator(coords[0], coords[2])
-            except:
-                if trace_full:
-                    return np.array(coordlist).T
-                else:
-                    return None
+            Bx = Bx_interpolator(coords[0], coords[2])
+            Bz = Bz_interpolator(coords[0], coords[2])
         else:
             raise Exception
 
@@ -142,6 +130,13 @@ def trace_b_good(
         if np.abs(np.linalg.norm(coords) - r_stop) < ds:
             break
         if np.linalg.norm(coords) <= 1.0 * r_e:
+            break
+        if (
+            coords[0] <= np.min(X)
+            or coords[0] >= np.max(X)
+            or coords[2] <= np.min(Z)
+            or coords[2] >= np.max(Z)
+        ):
             break
 
     if trace_full:
