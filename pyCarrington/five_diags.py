@@ -68,12 +68,10 @@ def trace_b_good(
     D = -126.2e6
     m = -8e15
     if trace_full:
-        xlist = []
-        zlist = []
+        coordlist = []
     coords = np.array(start_coords, ndmin=1)
     if trace_full:
-        xlist.append(coords[0])
-        zlist.append(coords[2])
+        coordlist.append(coords)
 
     cellids = vlsvobj.read_variable("CellID")
     X = np.arange(-200e6, 200e6, 500e3) + 250e3
@@ -100,7 +98,7 @@ def trace_b_good(
             B = vlsvobj.read_interpolated_fsgrid_variable("fg_b", coordinates=coords)
             if B is None:
                 if trace_full:
-                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                    return np.array(coordlist).T
                 else:
                     return None
             Bx = B[0]
@@ -118,14 +116,14 @@ def trace_b_good(
                 Bx = Bx_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                    return np.array(coordlist).T
                 else:
                     return None
             try:
                 Bz = Bz_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                    return np.array(coordlist).T
                 else:
                     return None
         else:
@@ -138,8 +136,7 @@ def trace_b_good(
 
         coords = coords + dcoords
         if trace_full:
-            xlist.append(coords[0])
-            zlist.append(coords[2])
+            coordlist.append(coords)
 
         if np.abs(np.linalg.norm(coords) - r_stop) < ds:
             break
@@ -147,7 +144,7 @@ def trace_b_good(
             break
 
     if trace_full:
-        return (np.array(xlist), np.array(zlist))
+        return np.array(coordlist).T
     else:
         return coords
 
