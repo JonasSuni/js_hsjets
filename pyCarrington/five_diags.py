@@ -28,7 +28,7 @@ def dayside_MP(xstart, xstop):
             kind="vg_b_vol",
             r_stop=r_stop,
             ds=500e3,
-            direction=-1,
+            direction=1,
             iter_max=10000,
         )
         if end_coord is None:
@@ -37,10 +37,10 @@ def dayside_MP(xstart, xstop):
             is_closed[itr] = True
         else:
             is_closed[itr] = False
-        print("x = {}, field line closed: {}".format(x / r_e, is_closed[itr]))
+        print("x = {} Re, field line closed: {}".format(x / r_e, is_closed[itr]))
 
     xlast = x_range[is_closed][-1]
-    print("Last closed field line at x = {}".format(xlast))
+    print("Last closed field line at x = {} Re".format(xlast / r_e))
 
     return trace_b_good(
         [xlast, 0, 0],
@@ -48,7 +48,7 @@ def dayside_MP(xstart, xstop):
         kind="vg_b_vol",
         r_stop=19.1e6,
         ds=100e3,
-        direction=-1,
+        direction=1,
         iter_max=10000,
         trace_full=True,
     )
