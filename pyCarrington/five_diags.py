@@ -18,15 +18,18 @@ def trace_b_good(
     ds=500e3,
     direction=1,
     iter_max=1000,
+    trace_full=False,
 ):
 
     D = -126.2e6
     m = -8e15
-    xlist = []
-    zlist = []
+    if trace_full:
+        xlist = []
+        zlist = []
     coords = np.array(start_coords, ndmin=1)
-    xlist.append(coords[0])
-    zlist.append(coords[2])
+    if trace_full:
+        xlist.append(coords[0])
+        zlist.append(coords[2])
 
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
@@ -41,10 +44,20 @@ def trace_b_good(
             Bz = (3 * coords[2] * coords[2] * m - 2 * m * r ** 2) / r ** 5
         elif kind == "fg_b":
             B = vlsvobj.read_interpolated_fsgrid_variable("fg_b", coordinates=coords)
+            if B is None:
+                if trace_full:
+                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                else:
+                    return None
             Bx = B[0]
             Bz = B[2]
         elif kind == "vg_b_vol":
             B = vlsvobj.read_interpolated_variable("vg_b_vol", coordinates=coords)
+            if B is None:
+                if trace_full:
+                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                else:
+                    return None
             Bx = B[0]
             Bz = B[2]
 
@@ -54,15 +67,19 @@ def trace_b_good(
         dcoords = np.array([direction * ds * dx, 0, direction * ds * dz])
 
         coords = coords + dcoords
-        xlist.append(coords[0])
-        zlist.append(coords[2])
+        if trace_full:
+            xlist.append(coords[0])
+            zlist.append(coords[2])
 
         if np.abs(np.linalg.norm(coords) - r_stop) < ds:
             break
-        if np.linalg.norm(coords) < np.linalg.norm(start_coords):
+        if np.linalg.norm(coords) <= 1.0 * r_e:
             break
 
-    return (np.array(xlist), np.array(zlist))
+    if trace_full:
+        return (np.array(xlist), np.array(zlist))
+    else:
+        return coords
 
 
 def trace_b_xz(
