@@ -10,6 +10,47 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
+def dayside_MP(xstart, xstop):
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
+    )
+
+    x_range = np.arange(xstart, xstop, 500e3)
+    is_closed = np.zeros_like(x_range).astype(bool)
+    for itr, x in enumerate(x_range):
+        end_coord = trace_b_good(
+            [x, 0, 0],
+            vlsvobj=vlsvobj,
+            kind="vg_b_vol",
+            r_stop=19.1e6,
+            ds=100e3,
+            direction=-1,
+            iter_max=10000,
+        )
+        if end_coord is None:
+            is_closed[itr] = False
+        elif np.linalg.norm(end_coord) <= r_stop:
+            is_closed[itr] = True
+        else:
+            is_closed[itr] = False
+        print("x = {}, field line closed: {}".format(x / r_e, is_closed[itr]))
+
+    xlast = x_range[is_closed][-1]
+    print("Last closed field line at x = {}".format(xlast))
+
+    return trace_b_good(
+        [xlast, 0, 0],
+        vlsvobj=vlsvobj,
+        kind="vg_b_vol",
+        r_stop=19.1e6,
+        ds=100e3,
+        direction=-1,
+        iter_max=10000,
+        trace_full=True,
+    )
+
+
 def trace_b_good(
     start_coords,
     vlsvobj=None,
@@ -60,6 +101,8 @@ def trace_b_good(
                     return None
             Bx = B[0]
             Bz = B[2]
+        else:
+            raise Exception
 
         Bmag = np.sqrt(Bx ** 2 + Bz ** 2)
         dx = Bx / Bmag
