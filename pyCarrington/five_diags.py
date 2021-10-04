@@ -98,7 +98,7 @@ def trace_b_good(
             B = vlsvobj.read_interpolated_fsgrid_variable("fg_b", coordinates=coords)
             if B is None:
                 if trace_full:
-                    return np.array(coordlist).T
+                    return np.array(coordlist, ndmin=2).T
                 else:
                     return None
             Bx = B[0]
@@ -116,14 +116,14 @@ def trace_b_good(
                 Bx = Bx_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return np.array(coordlist).T
+                    return np.array(coordlist, ndmin=2).T
                 else:
                     return None
             try:
                 Bz = Bz_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return np.array(coordlist).T
+                    return np.array(coordlist, ndmin=2).T
                 else:
                     return None
         else:
@@ -144,7 +144,7 @@ def trace_b_good(
             break
 
     if trace_full:
-        return np.array(coordlist).T
+        return np.array(coordlist, ndmin=2).T
     else:
         return coords
 
