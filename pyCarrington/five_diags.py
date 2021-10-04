@@ -116,24 +116,22 @@ def trace_b_good(
                 Bx = Bx_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return np.array(coordlist, ndmin=2).T
+                    return np.array(coordlist).T
                 else:
                     return None
             try:
                 Bz = Bz_interpolator(coords[0], coords[2])
             except:
                 if trace_full:
-                    return np.array(coordlist, ndmin=2).T
+                    return np.array(coordlist).T
                 else:
                     return None
         else:
             raise Exception
 
         Bmag = np.sqrt(Bx ** 2 + Bz ** 2)
-        dx = Bx / Bmag
-        dz = Bz / Bmag
-        print(direction * ds * dx)
-        print(direction * ds * dz)
+        dx = Bx[0][0] / Bmag
+        dz = Bz[0][0] / Bmag
         dcoords = np.array([direction * ds * dx, 0, direction * ds * dz])
 
         coords = coords + dcoords
@@ -146,7 +144,7 @@ def trace_b_good(
             break
 
     if trace_full:
-        return np.array(coordlist, ndmin=2).T
+        return np.array(coordlist).T
     else:
         return coords
 
