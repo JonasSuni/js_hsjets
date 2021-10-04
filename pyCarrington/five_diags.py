@@ -32,7 +32,7 @@ def dayside_MP(xstart, xstop):
         )
         if end_coord is None:
             is_closed[itr] = False
-        elif np.linalg.norm(end_coord) <= r_stop:
+        elif np.linalg.norm(end_coord) <= (r_stop + 500e3):
             is_closed[itr] = True
         else:
             is_closed[itr] = False
