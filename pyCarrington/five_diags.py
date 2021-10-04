@@ -16,6 +16,8 @@ def dayside_MP(xstart, xstop):
         "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
     )
 
+    r_stop = 19.1e6
+
     x_range = np.arange(xstart, xstop, 500e3)
     is_closed = np.zeros_like(x_range).astype(bool)
     for itr, x in enumerate(x_range):
@@ -23,7 +25,7 @@ def dayside_MP(xstart, xstop):
             [x, 0, 0],
             vlsvobj=vlsvobj,
             kind="vg_b_vol",
-            r_stop=19.1e6,
+            r_stop=r_stop,
             ds=100e3,
             direction=-1,
             iter_max=10000,
