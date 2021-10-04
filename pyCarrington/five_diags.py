@@ -37,7 +37,7 @@ def dayside_MP(xstart, xstop, dx):
             is_closed[itr] = True
         else:
             is_closed[itr] = False
-        print("x = {} Re, field line closed: {}".format(x / r_e, is_closed[itr]))
+        print("x = {} m, field line closed: {}".format(x, is_closed[itr]))
 
     xlast = x_range[is_closed][-1]
     print("Last closed field line at x = {} Re".format(xlast / r_e))
