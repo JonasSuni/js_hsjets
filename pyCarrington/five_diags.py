@@ -1,5 +1,6 @@
 import numpy as np
 import pytools as pt
+from scipy import interpolate
 
 r_e = 6.371e6
 mu_0 = 4 * np.pi * 1e-7
@@ -74,6 +75,13 @@ def trace_b_good(
         xlist.append(coords[0])
         zlist.append(coords[2])
 
+    cellids = vlsvobj.read_variable("CellID")
+    X, Y, Z = np.array([vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]).T
+    BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
+
+    Bx_interpolator = interpolate.interp2d(X, Z, BXint, bounds_error=True)
+    Bz_interpolator = interpolate.interp2d(X, Z, BZint, bounds_error=True)
+
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
         if kind == "dipole":
@@ -95,14 +103,28 @@ def trace_b_good(
             Bx = B[0]
             Bz = B[2]
         elif kind == "vg_b_vol":
-            B = vlsvobj.read_interpolated_variable("vg_b_vol", coordinates=coords)
-            if B is None:
+            # B = vlsvobj.read_interpolated_variable("vg_b_vol", coordinates=coords)
+            # if B is None:
+            #    if trace_full:
+            #        return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+            #    else:
+            #        return None
+            # Bx = B[0]
+            # Bz = B[2]
+            try:
+                Bx = Bx_interpolator(coords[0], coords[2])
+            except:
                 if trace_full:
                     return (np.array(xlist)[:-1], np.array(zlist)[:-1])
                 else:
                     return None
-            Bx = B[0]
-            Bz = B[2]
+            try:
+                Bz = Bz_interpolator(coords[0], coords[2])
+            except:
+                if trace_full:
+                    return (np.array(xlist)[:-1], np.array(zlist)[:-1])
+                else:
+                    return None
         else:
             raise Exception
 
