@@ -76,11 +76,12 @@ def trace_b_good(
         zlist.append(coords[2])
 
     cellids = vlsvobj.read_variable("CellID")
-    X, Y, Z = np.array([vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]).T
-    BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
+    X = np.arange(-200e6, 200e6, 500e3) + 250e3
+    Z = np.arange(-200e6, 200e6, 500e3) + 250e3
+    BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol")[np.argsort(cellids)].T
 
-    Bx_interpolator = interpolate.interp2d(X, Z, BXint, bounds_error=True)
-    Bz_interpolator = interpolate.interp2d(X, Z, BZint, bounds_error=True)
+    Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint)
+    Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint)
 
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
