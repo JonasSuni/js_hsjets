@@ -31,14 +31,13 @@ def dayside_MP(xstart, xstop, dx):
             direction=1,
             iter_max=10000,
         )
-        print(end_coord)
         if end_coord is None:
             is_closed[itr] = False
         elif np.linalg.norm(end_coord) <= (r_stop + 500e3):
             is_closed[itr] = True
         else:
             is_closed[itr] = False
-        print("x = {} m, field line closed: {}".format(x, is_closed[itr]))
+        # print("x = {} m, field line closed: {}".format(x, is_closed[itr]))
 
     xlast = x_range[is_closed][-1]
     print("Last closed field line at x = {} Re".format(xlast / r_e))
