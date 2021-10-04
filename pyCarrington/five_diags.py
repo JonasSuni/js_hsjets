@@ -27,7 +27,7 @@ def dayside_MP(xstart, xstop):
             vlsvobj=vlsvobj,
             kind="vg_b_vol",
             r_stop=r_stop,
-            ds=100e3,
+            ds=500e3,
             direction=-1,
             iter_max=10000,
         )
