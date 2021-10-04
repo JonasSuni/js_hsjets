@@ -129,7 +129,7 @@ def trace_b_good(
         else:
             raise Exception
 
-        Bmag = np.sqrt(Bx ** 2 + Bz ** 2)
+        Bmag = np.sqrt(Bx[0][0] ** 2 + Bz[0][0] ** 2)
         dx = Bx[0][0] / Bmag
         dz = Bz[0][0] / Bmag
         dcoords = np.array([direction * ds * dx, 0, direction * ds * dz])
