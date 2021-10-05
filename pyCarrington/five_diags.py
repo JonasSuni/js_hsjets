@@ -73,15 +73,16 @@ def trace_b_good(
     if trace_full:
         coordlist.append(coords)
 
-    cellids = vlsvobj.read_variable("CellID")
     X = np.arange(-200e6, 200e6, 500e3) + 250e3
     Z = np.arange(-200e6, 200e6, 500e3) + 250e3
-    BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
-    BXint = np.reshape(BXint[np.argsort(cellids)], (X.size, Z.size)).T
-    BZint = np.reshape(BZint[np.argsort(cellids)], (X.size, Z.size)).T
+    if vlsvobj:
+        cellids = vlsvobj.read_variable("CellID")
+        BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
+        BXint = np.reshape(BXint[np.argsort(cellids)], (X.size, Z.size)).T
+        BZint = np.reshape(BZint[np.argsort(cellids)], (X.size, Z.size)).T
 
-    Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint)
-    Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint)
+        Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint)
+        Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint)
 
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
@@ -117,9 +118,14 @@ def trace_b_good(
         else:
             raise Exception
 
-        Bmag = np.sqrt(Bx[0][0] ** 2 + Bz[0][0] ** 2)
-        dx = Bx[0][0] / Bmag
-        dz = Bz[0][0] / Bmag
+        if vlsvobj:
+            Bmag = np.sqrt(Bx[0][0] ** 2 + Bz[0][0] ** 2)
+            dx = Bx[0][0] / Bmag
+            dz = Bz[0][0] / Bmag
+        else:
+            Bmag = np.sqrt(Bx ** 2 + Bz ** 2)
+            dx = Bx / Bmag
+            dz = Bz / Bmag
         dcoords = np.array([direction * ds * dx, 0, direction * ds * dz])
 
         coords = coords + dcoords
