@@ -32,4 +32,4 @@ def check_wall_hit(vlsvobj):
     else:
         print("Wall not hit")
 
-    return np.array(max_vcoords)
+    return (np.array(max_vcoords), np.array(wall_hit_cells))
