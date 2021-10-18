@@ -9,6 +9,7 @@ def check_wall_hit(vlsvobj):
     max_vcoords = []
 
     for ci in cellids:
+        print(ci)
         velocity_cell_map = vlsvobj.read_velocity_cells(ci)
         velocity_cell_ids = np.array([*velocity_cell_map])
         velocity_cell_coordinates = vlsvobj.get_velocity_cell_coordinates(
@@ -17,6 +18,8 @@ def check_wall_hit(vlsvobj):
         try:
             maxv = np.max(np.abs(velocity_cell_coordinates))
             max_vcoords.append(maxv)
+            if maxv >= 3960e3:
+                print("WALL HIT")
         except:
             continue
 
