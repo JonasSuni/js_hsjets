@@ -20,6 +20,7 @@ def check_wall_hit(vlsvobj):
             max_vcoords.append(maxv)
             if maxv >= 3960e3:
                 print("WALL HIT")
+                break
         except:
             continue
 
