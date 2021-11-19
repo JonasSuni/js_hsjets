@@ -408,6 +408,7 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
             )
         )
     )
+    omega2[omega2 <= 0] = 1.0e-27
     growthT = 1 / np.sqrt(omega2)
 
     return (balloon, nnorm, kappaC, growthT)
