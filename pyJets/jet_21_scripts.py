@@ -904,7 +904,7 @@ def plot_residual_bz(tstep):
         pass_vars=[
             "fg_b",
         ],
-        boxre=[-20, -5, -10, 10],
+        boxre=[-20, -8, -10, 10],
         normal="z",
         cutpoint=0,
         nocb=True,
@@ -927,8 +927,8 @@ def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
         residual_bz,
         shading="nearest",
         cmap="seismic",
-        vmin=-10,
-        vmax=10,
+        vmin=-15,
+        vmax=0,
     )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
