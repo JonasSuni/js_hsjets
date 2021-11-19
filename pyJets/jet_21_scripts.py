@@ -912,6 +912,8 @@ def plot_residual_bz(tstep):
         tickinterval=2.0,
     )
 
+    plt.close("all")
+
 
 def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
 
