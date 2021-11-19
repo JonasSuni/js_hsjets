@@ -561,6 +561,7 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     global B_arr
     global P_arr
     global beta_arr
+    global vA_arr
 
     B = scipy.ndimage.zoom(
         pass_maps["vg_b_vol"], (zoom_g, zoom_g, 1), mode="grid-constant", grid_mode=True
@@ -571,19 +572,25 @@ def ext_get_cuts(ax, XmeshXY, YmeshXY, pass_maps):
     beta = scipy.ndimage.zoom(
         pass_maps["proton/vg_beta"], zoom_g, mode="grid-constant", grid_mode=True
     )
+    vA = scipy.ndimage.zoom(
+        pass_maps["vg_va"], zoom_g, mode="grid-constant", grid_mode=True
+    )
 
     if normal_g == "x":
         B_arr[idx, :, :, :] = B
         P_arr[idx, :, :] = P
         beta_arr[idx, :, :] = beta
+        vA_arr[idx, :, :] = vA
     elif normal_g == "y":
         B_arr[:, idx, :, :] = B
         P_arr[:, idx, :] = P
         beta_arr[:, idx, :] = beta
+        vA_arr[:, idx, :] = vA
     elif normal_g == "z":
         B_arr[:, :, idx, :] = B
         P_arr[:, :, idx] = P
         beta_arr[:, :, idx] = beta
+        vA_arr[:, :, idx] = vA
 
     return None
 
