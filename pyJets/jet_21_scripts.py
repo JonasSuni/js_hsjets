@@ -926,7 +926,7 @@ def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         residual_bz,
         shading="nearest",
-        cmap="seismic",
+        cmap="viridis",
         vmin=-15,
         vmax=0,
     )
