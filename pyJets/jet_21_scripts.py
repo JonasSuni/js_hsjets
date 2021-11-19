@@ -928,9 +928,9 @@ def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         residual_bz,
         shading="nearest",
-        cmap="viridis",
+        cmap="RdGy_r",
         vmin=-15,
-        vmax=0,
+        vmax=15,
     )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
