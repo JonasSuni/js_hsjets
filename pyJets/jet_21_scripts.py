@@ -408,6 +408,8 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
             )
         )
     )
+    if (omega2 < 0).any():
+        print("Negatives found")
     omega2[omega2 >= 0] = -1.0e-27
 
     growthT = 1 / np.sqrt(-omega2)
