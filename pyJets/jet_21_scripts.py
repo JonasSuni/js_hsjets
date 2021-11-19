@@ -885,3 +885,47 @@ def tail_sheet_jplot_balloon(xcut=14):
     plt.close(fig)
 
     return None
+
+
+def plot_residual_bz(tstep):
+
+    bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
+        str(tstep).zfill(7)
+    )
+
+    pt.plot.plot_colormap3dslice(
+        filename=bulkfile,
+        outputfile=wrkdir_DNR + "Figures/sum21/residualbz/t{}.png".format(tstep),
+        var="proton/vg_pressure",
+        colormap="viridis",
+        vmax=1e-10,
+        lin=1,
+        external=ext_residual_bz,
+        pass_vars=[
+            "vg_b_vol",
+        ],
+        boxre=[-20, -5, -10, 10],
+        normal="z",
+        cutpoint=0,
+        nocb=True,
+        scale=0.8,
+        tickinterval=2.0,
+    )
+
+
+def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
+
+    Bz = pass_maps("vg_b_vol")[:, :, 2]
+
+    Bz_dipole = 3.12e-5 / np.sqrt(XmeshXY ** 2 + YmeshXY ** 2) ** 3
+
+    residual_bz = (Bz - Bz_dipole) / 1e-9
+
+    im = ax.pcolormesh(XmeshXY, YmeshXY, residual_bz, shading="nearest", cmap="seismic")
+
+    cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
+    # cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
+
+    cb = plt.colorbar(im, cax=cax1)
+    cb.ax.tick_params(labelsize=6)
+    cb.set_label("Bz residual [nT]", size=6)

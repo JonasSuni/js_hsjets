@@ -107,4 +107,5 @@ from jet_21_scripts import (
     vfield3_curl,
     vfield3_normalise,
     fac_migration_plot,
+    plot_residual_bz,
 )
