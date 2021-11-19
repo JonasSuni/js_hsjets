@@ -921,7 +921,15 @@ def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
 
     residual_bz = (Bz - Bz_dipole) / 1e-9
 
-    im = ax.pcolormesh(XmeshXY, YmeshXY, residual_bz, shading="nearest", cmap="seismic")
+    im = ax.pcolormesh(
+        XmeshXY,
+        YmeshXY,
+        residual_bz,
+        shading="nearest",
+        cmap="seismic",
+        vmin=-10,
+        vmax=10,
+    )
 
     cax1 = ax.inset_axes([1.04, 0, 0.05, 1])
     # cax2 = ax.inset_axes([1.3, 0, 0.05, 1])
