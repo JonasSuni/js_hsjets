@@ -372,6 +372,47 @@ def ballooning_crit(B, P, beta, dr=1000e3, normal="y"):
     return (balloon, nnorm, kappaC)
 
 
+def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
+
+    gamma = 5.0 / 3.0
+
+    Bmag = np.linalg.norm(B, axis=-1)
+
+    b = vfield3_normalise(B)
+
+    n = vfield3_matder(b, b, dr, normal=normal)
+
+    nnorm = vfield3_normalise(n)
+
+    kappaP = vfield3_dot(nnorm, vfield3_grad(P, dr, normal=normal)) / P
+    kappaB = vfield3_dot(nnorm, vfield3_grad(Bmag, dr, normal=normal)) / Bmag
+    kappaC = vfield3_dot(nnorm, n)
+
+    kpar = kappaC
+
+    balloon = beta * kappaP / (kappaC + 1e-27)
+    omega2 = (
+        vA ** 2
+        / (2 + gamma * beta)
+        * (
+            (1 + gamma * beta) * kpar ** 2
+            + kappaC * (2 * (kappaB - kappaC) + gamma * beta * (kappaB + kappaC))
+            - np.sqrt(
+                (
+                    kpar ** 2
+                    + kappaC
+                    * (2 * (kappaB - kappaC) + gamma * beta * (kappaB + kappaC))
+                )
+                ** 2
+                + 4 * gamma ** 2 * beta ** 2 * kpar ** 2 * kappaC ** 2
+            )
+        )
+    )
+    growthT = 1 / np.sqrt(omega2)
+
+    return (balloon, nnorm, kappaC, growthT)
+
+
 def plot_ballooning(
     tstep=1274,
     cut=15,
@@ -390,8 +431,9 @@ def plot_ballooning(
     global B_arr
     global P_arr
     global beta_arr
+    global vA_arr
     global idx_g
-    global ballooning_arr, nnorm_arr, kappaC_arr, J_arr
+    global ballooning_arr, nnorm_arr, kappaC_arr, J_arr, growthT_arr
     global normal_g, tstep_g, cut_g
     global op_g, zoom_g, write_txt_g
 
@@ -422,18 +464,21 @@ def plot_ballooning(
         )
         P_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
         beta_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
+        vA_arr = np.empty((3, zymesh_size[0], zymesh_size[1]), dtype=float)
     elif normal == "y":
         B_arr = np.empty(
             (zymesh_size[0], 3, zymesh_size[1], zymesh_size[2]), dtype=float
         )
         P_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
         beta_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
+        vA_arr = np.empty((zymesh_size[0], 3, zymesh_size[1]), dtype=float)
     elif normal == "z":
         B_arr = np.empty(
             (zymesh_size[0], zymesh_size[1], 3, zymesh_size[2]), dtype=float
         )
         P_arr = np.empty((zymesh_size[0], zymesh_size[1], 3), dtype=float)
         beta_arr = np.empty((zymesh_size[0], zymesh_size[1], 3), dtype=float)
+        vA_arr = np.empty((zymesh_size[0], zymesh_size[1], 3), dtype=float)
 
     for idx in [0, 1, 2]:
         idx_g = idx
@@ -442,14 +487,23 @@ def plot_ballooning(
             var="proton/vg_rho",
             draw=1,
             external=ext_get_cuts,
-            pass_vars=["vg_b_vol", "proton/vg_pressure", "proton/vg_beta", "CellID"],
+            pass_vars=[
+                "vg_b_vol",
+                "proton/vg_pressure",
+                "proton/vg_beta",
+                "CellID",
+                "vg_va",
+            ],
             boxre=boxre,
             normal=normal,
             cutpoint=-1 * cut * r_e + dr * (idx - 1),
         )
 
-    ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
-        B_arr, P_arr, beta_arr, dr=dr, normal=normal
+    # ballooning_arr, nnorm_arr, kappaC_arr = ballooning_crit(
+    #     B_arr, P_arr, beta_arr, dr=dr, normal=normal
+    # )
+    ballooning_arr, nnorm_arr, kappaC_arr, growthT_arr = ballooning_liu(
+        B_arr, P_arr, beta_arr, vA_arr, dr=dr, normal=normal
     )
     J_arr = vfield3_curl(B_arr, dr, normal=normal) / mu_0
 
@@ -470,6 +524,7 @@ def plot_ballooning(
             "proton/vg_beta",
             "proton/vg_v",
             "CellID",
+            "vg_va",
         ],
         boxre=boxre,
         normal=normal,
@@ -559,6 +614,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
 
     if normal_g == "x":
         balloon = ballooning_arr[1, :, :]
+        growthT = growthT_arr[1, :, :]
         J = J_arr[1, :, :, :]
         U = nnorm_arr[1, :, :, 0]
         V = nnorm_arr[1, :, :, 2]
@@ -568,6 +624,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         BV = B[:, :, 2]
     elif normal_g == "y":
         balloon = ballooning_arr[:, 1, :]
+        growthT = growthT_arr[:, 1, :]
         J = J_arr[:, 1, :, :]
         U = nnorm_arr[:, 1, :, 0]
         V = nnorm_arr[:, 1, :, 2]
@@ -577,6 +634,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         BV = B[:, :, 2]
     elif normal_g == "z":
         balloon = ballooning_arr[:, :, 1]
+        growthT = growthT_arr[:, :, 1]
         J = J_arr[:, :, 1, :]
         U = nnorm_arr[:, :, 1, 0]
         V = nnorm_arr[:, :, 1, 2]
@@ -586,7 +644,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         BV = B[:, :, 1]
 
     balloon_masked = np.ma.masked_less_equal(balloon, 1)
-    balloon_masked.mask[beta >= 2] = True
+    balloon_masked.mask[beta > 13] = True
+    balloon_masked.mask[beta < 3] = True
+    balloon_masked.mask[growthT > 10] = True
     # balloon_masked.mask[balloon > 1e30] = True
 
     if op_g == "mag":
