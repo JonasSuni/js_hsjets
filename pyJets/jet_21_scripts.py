@@ -536,6 +536,7 @@ def plot_ballooning(
         tickinterval=2.0,
     )
 
+    plt.close("all")
     return None
 
 
