@@ -902,7 +902,7 @@ def plot_residual_bz(tstep):
         lin=1,
         external=ext_residual_bz,
         pass_vars=[
-            "fg_b",
+            "vg_b_vol",
         ],
         boxre=[-20, -8, -10, 10],
         normal="z",
@@ -917,7 +917,7 @@ def plot_residual_bz(tstep):
 
 def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
 
-    Bz = pass_maps["fg_b"][:, :, 2]
+    Bz = pass_maps["vg_b_vol"][:, :, 2]
 
     Bz_dipole = 3.12e-5 / np.sqrt(XmeshXY ** 2 + YmeshXY ** 2) ** 3
 
