@@ -408,8 +408,6 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
             )
         )
     )
-    if (omega2 < 0).any():
-        print("Negatives found")
     omega2[omega2 >= 0] = -1.0e-27
 
     growthT = 1 / np.sqrt(-omega2)
@@ -709,7 +707,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             XmeshXY,
             YmeshXY,
             balloon_masked.mask.astype(int),
-            0,
+            [0.5],
             colors="magenta",
             linewidths=0.6,
         )
