@@ -653,12 +653,20 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         BU = B[:, :, 0]
         BV = B[:, :, 1]
 
-    balloon_masked = np.ma.masked_less_equal(balloon, 1)
-    balloon_masked.mask[beta > 13] = True
-    balloon_masked.mask[beta < 3] = True
-    balloon_masked.mask[growthT > 20] = True
+    balloon_masked10 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked10.mask[beta > 13] = True
+    balloon_masked10.mask[beta < 3] = True
+    balloon_masked10.mask[growthT > 10] = True
 
-    growthT_masked = np.ma.masked_array(growthT, mask=balloon_masked.mask)
+    balloon_masked15 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked15.mask[beta > 13] = True
+    balloon_masked15.mask[beta < 3] = True
+    balloon_masked15.mask[growthT > 15] = True
+
+    balloon_masked20 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked20.mask[beta > 13] = True
+    balloon_masked20.mask[beta < 3] = True
+    balloon_masked20.mask[growthT > 20] = True
 
     # balloon_masked.mask[balloon > 1e30] = True
 
@@ -710,9 +718,25 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         ax.contour(
             XmeshXY,
             YmeshXY,
-            growthT_masked,
-            [10, 15, 20],
-            cmap="Reds",
+            balloon_masked20.mask.astype(int),
+            [0.5],
+            colors=["black"],
+            linewidths=0.6,
+        )
+        ax.contour(
+            XmeshXY,
+            YmeshXY,
+            balloon_masked15.mask.astype(int),
+            [0.5],
+            colors=["red"],
+            linewidths=0.6,
+        )
+        ax.contour(
+            XmeshXY,
+            YmeshXY,
+            balloon_masked10.mask.astype(int),
+            [0.5],
+            colors=["magenta"],
             linewidths=0.6,
         )
 
