@@ -512,7 +512,7 @@ def plot_ballooning(
     pt.plot.plot_colormap3dslice(
         filename=bulkfile,
         outputfile=wrkdir_DNR
-        + "Figures/sum21/balloon/ballooning_t{}_{}{}_{}.png".format(
+        + "Figures/sum21/balloon/x{}/ballooning_t{}_{}{}_{}.png".format(
             tstep, cut, normal, op
         ),
         var="proton/vg_pressure",
