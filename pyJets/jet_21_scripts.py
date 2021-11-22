@@ -513,7 +513,7 @@ def plot_ballooning(
         filename=bulkfile,
         outputfile=wrkdir_DNR
         + "Figures/sum21/balloon/x{}/ballooning_t{}_{}{}_{}.png".format(
-            tstep, cut, normal, op
+            cut, tstep, cut, normal, op
         ),
         var="proton/vg_pressure",
         colormap="viridis",
