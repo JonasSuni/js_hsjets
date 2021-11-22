@@ -656,7 +656,10 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     balloon_masked = np.ma.masked_less_equal(balloon, 1)
     balloon_masked.mask[beta > 13] = True
     balloon_masked.mask[beta < 3] = True
-    balloon_masked.mask[growthT > 10] = True
+    balloon_masked.mask[growthT > 20] = True
+
+    growthT_masked = np.ma.masked_array(growthT, mask=balloon_masked.mask)
+
     # balloon_masked.mask[balloon > 1e30] = True
 
     if op_g == "mag":
@@ -707,9 +710,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         ax.contour(
             XmeshXY,
             YmeshXY,
-            balloon_masked.mask.astype(int),
-            [0.5],
-            colors="magenta",
+            growthT_masked,
+            [10, 15, 20],
+            cmap="Reds",
             linewidths=0.6,
         )
 
