@@ -720,7 +720,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             YmeshXY,
             balloon_masked20.mask.astype(int),
             [0.5],
-            colors=["black"],
+            colors=["plum"],
             linewidths=0.6,
         )
         ax.contour(
@@ -728,7 +728,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             YmeshXY,
             balloon_masked15.mask.astype(int),
             [0.5],
-            colors=["red"],
+            colors=["violet"],
             linewidths=0.6,
         )
         ax.contour(
