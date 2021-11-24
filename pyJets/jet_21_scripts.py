@@ -723,22 +723,22 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             colors=["thistle"],
             linewidths=0.6,
         )
-        ax.contour(
-            XmeshXY,
-            YmeshXY,
-            balloon_masked15.mask.astype(int),
-            [0.5],
-            colors=["violet"],
-            linewidths=0.6,
-        )
-        ax.contour(
-            XmeshXY,
-            YmeshXY,
-            balloon_masked10.mask.astype(int),
-            [0.5],
-            colors=["magenta"],
-            linewidths=0.6,
-        )
+        # ax.contour(
+        #     XmeshXY,
+        #     YmeshXY,
+        #     balloon_masked15.mask.astype(int),
+        #     [0.5],
+        #     colors=["violet"],
+        #     linewidths=0.6,
+        # )
+        # ax.contour(
+        #     XmeshXY,
+        #     YmeshXY,
+        #     balloon_masked10.mask.astype(int),
+        #     [0.5],
+        #     colors=["magenta"],
+        #     linewidths=0.6,
+        # )
 
     # Bcb = plt.colorbar(Balloon_im, cax=cax2)
     # Bcb.ax.tick_params(labelsize=6)
