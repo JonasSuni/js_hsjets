@@ -390,7 +390,7 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
 
     kpar = kappaC
 
-    balloon = beta * kappaP / (kappaC + 1e-27)
+    balloon = kappaC * (beta * kappaP - kappaC)
     omega2 = (
         vA ** 2
         / (2 + gamma * beta)
@@ -653,17 +653,17 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         BU = B[:, :, 0]
         BV = B[:, :, 1]
 
-    balloon_masked10 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked10 = np.ma.masked_less_equal(balloon, 0)
     balloon_masked10.mask[beta > 13] = True
     balloon_masked10.mask[beta < 3] = True
     balloon_masked10.mask[growthT > 10] = True
 
-    balloon_masked15 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked15 = np.ma.masked_less_equal(balloon, 0)
     balloon_masked15.mask[beta > 13] = True
     balloon_masked15.mask[beta < 3] = True
     balloon_masked15.mask[growthT > 15] = True
 
-    balloon_masked20 = np.ma.masked_less_equal(balloon, 1)
+    balloon_masked20 = np.ma.masked_less_equal(balloon, 0)
     balloon_masked20.mask[beta > 13] = True
     balloon_masked20.mask[beta < 3] = True
     balloon_masked20.mask[growthT > 20] = True
