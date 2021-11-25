@@ -390,7 +390,7 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
 
     kpar = kappaC
 
-    balloon = kappaC * (beta * kappaP - kappaC)
+    balloon = beta * kappaP - kappaC
     omega2 = (
         vA ** 2
         / (2 + gamma * beta)
