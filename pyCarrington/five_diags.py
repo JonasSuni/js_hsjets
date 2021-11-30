@@ -11,13 +11,19 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
-def dayside_MP(xstart, xstop, dx):
+def dayside_MP(xstart, xstop, dx, run="BGD"):
 
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
-    )
+    if run == "BGD":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
+        )
 
-    r_stop = 19.1e6
+        r_stop = 19.1e6
+    elif run == "BGF":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
+        )
+        r_stop = 18.1e6
 
     x_range = np.arange(xstart, xstop, dx)
     is_closed = np.zeros_like(x_range).astype(bool)
@@ -40,18 +46,44 @@ def dayside_MP(xstart, xstop, dx):
         # print("x = {} m, field line closed: {}".format(x, is_closed[itr]))
 
     xlast = x_range[is_closed][-1]
+    print("Run is {}".format(run))
     print("Last closed field line at x = {} Re".format(xlast / r_e))
 
-    return trace_b_good(
+    ib_coords = trace_b_good(
         [xlast, 0, 0],
         vlsvobj=vlsvobj,
         kind="vg_b_vol",
-        r_stop=19.1e6,
+        r_stop=r_stop,
+        ds=500e3,
+        direction=1,
+        iter_max=10000,
+        trace_full=False,
+    )
+    surface_coords = trace_b_good(
+        ib_coords,
+        vlsvobj=vlsvobj,
+        kind="linedipole",
+        r_stop=6.371e6,
         ds=100e3,
         direction=1,
         iter_max=10000,
-        trace_full=True,
+        trace_full=False,
     )
+
+    print("Surface coords are {}".format(surface_coords/r_e))
+
+    return None
+
+    # return trace_b_good(
+    #     [xlast, 0, 0],
+    #     vlsvobj=vlsvobj,
+    #     kind="vg_b_vol",
+    #     r_stop=19.1e6,
+    #     ds=100e3,
+    #     direction=1,
+    #     iter_max=10000,
+    #     trace_full=True,
+    # )
 
 
 def trace_b_good(
