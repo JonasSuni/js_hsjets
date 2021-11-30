@@ -61,7 +61,6 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
     )
     surface_coords = trace_b_good(
         ib_coords,
-        vlsvobj=vlsvobj,
         kind="linedipole",
         r_stop=6.371e6,
         ds=100e3,
@@ -70,7 +69,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         trace_full=False,
     )
 
-    print("Surface coords are {}".format(surface_coords/r_e))
+    print("Surface coords are {}".format(surface_coords / r_e))
 
     return None
 
