@@ -70,6 +70,8 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
     )
 
     print("Surface coords are {}".format(surface_coords / r_e))
+    theta = np.rad2deg(np.arctan(surface_coords[2] / surface_coords[0]))
+    print("Theta is {}".format(theta))
 
     return None
 
