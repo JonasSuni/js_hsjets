@@ -56,8 +56,8 @@ def precipitation_diag(run):
             )
             ci = vlsvobj.get_cellid(end_coords)
             precip = vlsvobj.read_variable(
-                "proton/vg_precipitationintegralenergyflux", cellids=int(ci)
-            )
+                "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 0]
+            )[0]
             precip_arr[itr] = precip
         else:
             precip_arr[itr] = 0.0
