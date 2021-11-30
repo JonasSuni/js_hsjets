@@ -11,6 +11,60 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
+def precipitation_diag(run):
+
+    if run == "BGD":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
+        )
+
+        r_stop = 19.1e6
+    elif run == "BGF":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
+        )
+        r_stop = 18.1e6
+
+    theta_arr = np.linspace(120, 60, 10)
+    precip_arr = np.zeros_like(theta_arr)
+
+    for itr, theta in enumerate(theta_arr):
+        start_coords = [
+            r_e * np.cos(np.deg2rad(theta)),
+            0,
+            r_e * np.sin(np.deg2rad(theta)),
+        ]
+        ib_coords = trace_b_good(
+            start_coords,
+            kind="linedipole",
+            r_stop=r_stop,
+            ds=100e3,
+            direction=-1,
+            iter_max=10000,
+            trace_full=False,
+        )
+        if np.linalg.norm(ib_coords) >= (r_stop - 500e3):
+            end_coords = trace_b_good(
+                ib_coords,
+                vlsvobj=vlsvobj,
+                kind="vg_b_vol",
+                r_stop=r_stop + 1000e3,
+                ds=500e3,
+                direction=-1,
+                iter_max=10000,
+                trace_full=False,
+            )
+            ci = vlsvobj.get_cellid(end_coords)
+            precip = vlsvobj.read_variable(
+                "proton/vg_precipitationintegralenergyflux", cellids=int(ci)
+            )
+            precip_arr[itr] = precip
+        else:
+            precip_arr[itr] = 0.0
+
+    return (theta_arr, precip_arr)
+
+
 def dayside_MP(xstart, xstop, dx, run="BGD"):
 
     if run == "BGD":
