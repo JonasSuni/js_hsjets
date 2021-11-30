@@ -25,7 +25,7 @@ def precipitation_diag(run):
         )
         r_stop = 18.1e6
 
-    theta_arr = np.linspace(120, 60, 10)
+    theta_arr = np.linspace(120, 60, 100)
     precip_arr = np.zeros_like(theta_arr)
 
     for itr, theta in enumerate(theta_arr):
