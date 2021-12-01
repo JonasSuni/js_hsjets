@@ -1,6 +1,7 @@
 import numpy as np
 import pytools as pt
 from scipy import interpolate
+import matplotlib.pyplot as plt
 
 r_e = 6.371e6
 mu_0 = 4 * np.pi * 1e-7
@@ -9,6 +10,26 @@ mu_0 = 4 * np.pi * 1e-7
 def map_surface_to_ib(theta, ib):
 
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
+
+
+def plot_precip():
+
+    theta, precip_bgd = precipitation_diag("BGD")
+    theta, precip_bgf = precipitation_diag("BGF")
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.semilogy(theta, precip_bgd, label="Normal")
+    ax.semilogy(theta, precip_bgf, label="Moderate")
+    ax.legend()
+
+    ax.set_xlabel("$\\theta$ [$^\\circ$]")
+    ax.set_ylabel(
+        "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]"
+    )
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation.png")
 
 
 def precipitation_diag(run):
@@ -25,7 +46,7 @@ def precipitation_diag(run):
         )
         r_stop = 18.1e6
 
-    theta_arr = np.linspace(120, 60, 100)
+    theta_arr = np.linspace(120, 60, 60)
     precip_arr = np.zeros_like(theta_arr)
 
     for itr, theta in enumerate(theta_arr):
