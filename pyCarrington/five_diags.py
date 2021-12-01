@@ -14,8 +14,8 @@ def map_surface_to_ib(theta, ib):
 
 def plot_precip():
 
-    theta, precip_bgd = precipitation_diag("BGD")
-    theta, precip_bgf = precipitation_diag("BGF")
+    theta, precip_bgd, meanenergy_bgd = precipitation_diag("BGD")
+    theta, precip_bgf, meanenergy_bgf = precipitation_diag("BGF")
 
     fig, ax = plt.subplots(1, 1)
 
@@ -34,7 +34,25 @@ def plot_precip():
     )
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation.png")
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_integralflux.png")
+    plt.close(fig)
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.plot(theta, meanenergy_bgd, label="Normal")
+    ax.plot(theta, meanenergy_bgf, label="Moderate")
+    ax.legend()
+
+    ax.set_xlim(60, 120)
+    # ax.set_ylim(10 ** 0, 10 ** 10)
+    ax.invert_xaxis()
+
+    ax.set_xlabel("$\\theta$ [$^\\circ$]")
+    ax.set_ylabel("Precipitation mean energy [keV]")
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_meanenergy.png")
     plt.close(fig)
 
 
@@ -54,6 +72,7 @@ def precipitation_diag(run):
 
     theta_arr = np.linspace(120, 60, 60)
     precip_arr = np.zeros_like(theta_arr)
+    meanenergy_arr = np.zeros_like(theta_arr)
 
     for itr, theta in enumerate(theta_arr):
         start_coords = [
@@ -86,10 +105,16 @@ def precipitation_diag(run):
                 "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
             )[0]
             precip_arr[itr] = precip
+
+            meanenergy = precip = vlsvobj.read_variable(
+                "proton/vg_precipitationmeanenergy", cellids=[int(ci), 1]
+            )[0]
+            meanenergy_arr[itr] = meanenergy
         else:
             precip_arr[itr] = 0.0
+            meanenergy_arr[itr] = 0.0
 
-    return (theta_arr, precip_arr)
+    return (theta_arr, precip_arr, meanenergy_arr)
 
 
 def dayside_MP(xstart, xstop, dx, run="BGD"):
