@@ -19,9 +19,14 @@ def plot_precip():
 
     fig, ax = plt.subplots(1, 1)
 
+    ax.grid()
     ax.semilogy(theta, precip_bgd, label="Normal")
     ax.semilogy(theta, precip_bgf, label="Moderate")
     ax.legend()
+
+    ax.set_xlim(60, 120)
+    ax.set_ylim(10 ** 0, 10 ** 10)
+    ax.invert_xaxis()
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]")
     ax.set_ylabel(
