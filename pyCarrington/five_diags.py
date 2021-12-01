@@ -22,16 +22,16 @@ def plot_precip():
     ax.grid()
     ax.semilogy(theta, precip_bgd, label="Normal")
     ax.semilogy(theta, precip_bgf, label="Moderate")
-    ax.legend(fontsize=20)
+    ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
     ax.set_ylim(10 ** 0, 10 ** 10)
     ax.invert_xaxis()
 
-    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=20)
+    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
         "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
-        fontsize=20,
+        fontsize=14,
     )
 
     plt.tight_layout()
@@ -43,14 +43,14 @@ def plot_precip():
     ax.grid()
     ax.semilogy(theta, meanenergy_bgd, label="Normal")
     ax.semilogy(theta, meanenergy_bgf, label="Moderate")
-    ax.legend(fontsize=20)
+    ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
     # ax.set_ylim(10 ** 0, 10 ** 10)
     ax.invert_xaxis()
 
-    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=20)
-    ax.set_ylabel("Precipitation mean energy [keV]", fontsize=20)
+    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+    ax.set_ylabel("Precipitation mean energy [keV]", fontsize=14)
 
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_meanenergy.png")
