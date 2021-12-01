@@ -118,6 +118,48 @@ def precipitation_diag(run):
     return (theta_arr, precip_arr, meanenergy_arr)
 
 
+def plot_MP_theta():
+
+    mp_standoff_bgd, theta_mp_bgd = dayside_MP(7.0 * r_e, 8.0 * r_e, 500e3, run="BGD")
+    mp_standoff_bgf, theta_mp_bgf = dayside_MP(4.0 * r_e, 5.0 * r_e, 500e3, run="BGF")
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.plot(1, mp_standoff_bgd, "o", label="Normal")
+    ax.plot(2, mp_standoff_bgf, "o", label="Moderate")
+    ax.legend(fontsize=14)
+
+    ax.set_xlim(0, 3)
+
+    ax.set_ylabel(
+        "Magnetopause standoff [$R_\mathrm{E}$]",
+        fontsize=14,
+    )
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/mp_standoff.png")
+    plt.close(fig)
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.plot(1, theta_mp_bgd, "o", label="Normal")
+    ax.plot(2, theta_mp_bgf, "o", label="Moderate")
+    ax.legend(fontsize=14)
+
+    ax.set_xlim(0, 3)
+
+    ax.set_ylabel(
+        "Dayside polar cap boundary [$^\circ$]",
+        fontsize=14,
+    )
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/mp_theta.png")
+    plt.close(fig)
+
+
 def dayside_MP(xstart, xstop, dx, run="BGD"):
 
     if run == "BGD":
@@ -180,7 +222,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
     theta = np.rad2deg(np.arctan(surface_coords[2] / surface_coords[0]))
     print("Theta is {}".format(theta))
 
-    return None
+    return (xlast / r_e, theta)
 
     # return trace_b_good(
     #     [xlast, 0, 0],
