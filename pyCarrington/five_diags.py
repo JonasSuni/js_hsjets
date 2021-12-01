@@ -131,6 +131,7 @@ def plot_MP_theta():
     ax.legend(fontsize=14)
 
     ax.set_xlim(0, 3)
+    ax.set_ylim(2, 10)
 
     ax.set_ylabel(
         "Magnetopause standoff [$R_\mathrm{E}$]",
@@ -149,6 +150,7 @@ def plot_MP_theta():
     ax.legend(fontsize=14)
 
     ax.set_xlim(0, 3)
+    ax.set_ylim(70, 90)
 
     ax.set_ylabel(
         "Dayside polar cap boundary [$^\circ$]",
