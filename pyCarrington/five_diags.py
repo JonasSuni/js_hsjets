@@ -35,6 +35,7 @@ def plot_precip():
 
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation.png")
+    plt.close(fig)
 
 
 def precipitation_diag(run):
