@@ -31,7 +31,7 @@ def plot_precip():
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
         "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
-        fontsize=14,
+        fontsize=12,
     )
 
     plt.tight_layout()
