@@ -22,7 +22,7 @@ def plot_precip():
     ax.grid()
     ax.semilogy(theta, precip_bgd, label="Normal")
     ax.semilogy(theta, precip_bgf, label="Moderate")
-    ax.legend(labelsize=20)
+    ax.legend(fontsize=20)
 
     ax.set_xlim(60, 120)
     ax.set_ylim(10 ** 0, 10 ** 10)
@@ -43,7 +43,7 @@ def plot_precip():
     ax.grid()
     ax.semilogy(theta, meanenergy_bgd, label="Normal")
     ax.semilogy(theta, meanenergy_bgf, label="Moderate")
-    ax.legend(labelsize=20)
+    ax.legend(fontsize=20)
 
     ax.set_xlim(60, 120)
     # ax.set_ylim(10 ** 0, 10 ** 10)
