@@ -40,8 +40,8 @@ def plot_precip():
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.plot(theta, meanenergy_bgd, label="Normal")
-    ax.plot(theta, meanenergy_bgf, label="Moderate")
+    ax.semilogy(theta, meanenergy_bgd, label="Normal")
+    ax.semilogy(theta, meanenergy_bgf, label="Moderate")
     ax.legend()
 
     ax.set_xlim(60, 120)
