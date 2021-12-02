@@ -78,7 +78,7 @@ def plot_precip():
 
         ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
         ax.set_ylabel(
-            "Precipitation diff number flux [\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
+            "Precipitation diff number flux [$\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
             fontsize=12,
         )
 
