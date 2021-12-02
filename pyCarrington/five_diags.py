@@ -14,8 +14,12 @@ def map_surface_to_ib(theta, ib):
 
 def plot_precip():
 
-    theta, precip_bgd, meanenergy_bgd = precipitation_diag("BGD")
-    theta, precip_bgf, meanenergy_bgf = precipitation_diag("BGF")
+    theta, precip_bgd, meanenergy_bgd, difflux_bgd, binedges_bgd = precipitation_diag(
+        "BGD"
+    )
+    theta, precip_bgf, meanenergy_bgf, difflux_bgf, binedges_bgf = precipitation_diag(
+        "BGF"
+    )
 
     fig, ax = plt.subplots(1, 1)
 
@@ -56,6 +60,36 @@ def plot_precip():
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_meanenergy.png")
     plt.close(fig)
 
+    for k in range(16):
+        fig, ax = plt.subplots(1, 1)
+
+        ax.grid()
+        ax.semilogy(theta, difflux_bgd[:, k], label="Normal")
+        ax.semilogy(theta, difflux_bgf[:, k], label="Moderate")
+        ax.legend(fontsize=14)
+
+        ax.set_xlim(60, 120)
+        # ax.set_ylim(10 ** 0, 10 ** 10)
+        ax.invert_xaxis()
+
+        ax.set_title(
+            "{:n} - {:n} eV".format(binedges_bgd[k], binedges_bgd[k + 1]), fontsize=14
+        )
+
+        ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+        ax.set_ylabel(
+            "Precipitation diff energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+            fontsize=12,
+        )
+
+        plt.tight_layout()
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/precipitation_diffenergyflux{}.png".format(
+                k
+            )
+        )
+        plt.close(fig)
+
 
 def precipitation_diag(run):
 
@@ -74,6 +108,20 @@ def precipitation_diag(run):
     theta_arr = np.linspace(120, 60, 60)
     precip_arr = np.zeros_like(theta_arr)
     meanenergy_arr = np.zeros_like(theta_arr)
+    diffprecip_arr = np.zeros((theta_arr.size, 16), dtype=float)
+
+    energybins = np.array(
+        [
+            vlsvobj.read_parameter("proton_PrecipitationCentreEnergy{}".format(i))
+            for i in range(16)
+        ]
+    )
+    dlogener = np.log(energybins[1]) - np.log(energybins[0])
+    Ebinedges = np.zeros(len(energybins) + 1)
+    Ebinedges[1:-1] = np.sqrt(energybins[1:] * energybins[:-1])
+    Ebinedges[0] = np.exp(np.log(energybins[0]) - dlogener)
+    Ebinedges[-1] = np.exp(np.log(energybins[-1]) + dlogener)
+    deltaE = Ebinedges[1:] - Ebinedges[:-1]
 
     for itr, theta in enumerate(theta_arr):
         start_coords = [
@@ -107,15 +155,20 @@ def precipitation_diag(run):
             )[0]
             precip_arr[itr] = precip
 
-            meanenergy = precip = vlsvobj.read_variable(
+            meanenergy = vlsvobj.read_variable(
                 "proton/vg_precipitationmeanenergy", cellids=[int(ci), 1]
             )[0]
             meanenergy_arr[itr] = meanenergy
+
+            diffprecip = vlsvobj.read_variable(
+                "proton/vg_precipitationdiffflux", cellids=[int(ci), 1]
+            )[0]
+            diffprecip_arr[itr] = diffprecip * deltaE
         else:
             precip_arr[itr] = 0.0
             meanenergy_arr[itr] = 0.0
 
-    return (theta_arr, precip_arr, meanenergy_arr)
+    return (theta_arr, precip_arr, meanenergy_arr, diffprecip_arr, Ebinedges)
 
 
 def plot_MP_theta():
