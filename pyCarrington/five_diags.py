@@ -14,6 +14,8 @@ def map_surface_to_ib(theta, ib):
 
 def plot_precip(plot_diff=False):
 
+    plt.ioff()
+
     (
         theta,
         precip_bgd,
@@ -139,6 +141,8 @@ def plot_precip(plot_diff=False):
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_z.png")
     plt.close(fig)
+
+    plt.ion()
 
 
 def precipitation_diag(run):
