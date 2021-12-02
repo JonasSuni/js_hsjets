@@ -201,30 +201,38 @@ def precipitation_diag(run):
                 iter_max=10000,
                 trace_full=False,
             )
-            ci = vlsvobj.get_cellid(end_coords)
-            precip = vlsvobj.read_variable(
-                "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
-            )[0]
-            precip_arr[itr] = precip
+            if np.linalg.norm(ib_coords) >= (r_stop + 2000e3 - 500e3):
+                ci = vlsvobj.get_cellid(end_coords)
+                precip = vlsvobj.read_variable(
+                    "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
+                )[0]
+                precip_arr[itr] = precip
 
-            meanenergy = vlsvobj.read_variable(
-                "proton/vg_precipitationmeanenergy", cellids=[int(ci), 1]
-            )[0]
-            meanenergy_arr[itr] = meanenergy
+                meanenergy = vlsvobj.read_variable(
+                    "proton/vg_precipitationmeanenergy", cellids=[int(ci), 1]
+                )[0]
+                meanenergy_arr[itr] = meanenergy
 
-            diffprecip = vlsvobj.read_variable(
-                "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
-            )[0]
-            diffprecip_arr[itr] = diffprecip
+                diffprecip = vlsvobj.read_variable(
+                    "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
+                )[0]
+                diffprecip_arr[itr] = diffprecip
 
-            coords_ci = vlsvobj.get_cell_coordinates(ci)
-            x_arr[itr] = coords_ci[0]
-            z_arr[itr] = coords_ci[2]
+                coords_ci = vlsvobj.get_cell_coordinates(ci)
+                x_arr[itr] = coords_ci[0]
+                z_arr[itr] = coords_ci[2]
+            else:
+                precip_arr[itr] = np.nan
+                meanenergy_arr[itr] = np.nan
+                x_arr[itr] = np.nan
+                z_arr[itr] = np.nan
         else:
-            precip_arr[itr] = 0.0
-            meanenergy_arr[itr] = 0.0
+            precip_arr[itr] = np.nan
+            meanenergy_arr[itr] = np.nan
             x_arr[itr] = np.nan
             z_arr[itr] = np.nan
+            for k in range(16):
+                diffprecip_arr[itr][k] = np.nan
 
     return (
         theta_arr,
