@@ -201,7 +201,7 @@ def precipitation_diag(run):
                 iter_max=10000,
                 trace_full=False,
             )
-            if np.linalg.norm(ib_coords) >= (r_stop + 2000e3 - 500e3):
+            if np.linalg.norm(end_coords) >= (r_stop + 2000e3 - 500e3):
                 ci = vlsvobj.get_cellid(end_coords)
                 precip = vlsvobj.read_variable(
                     "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
