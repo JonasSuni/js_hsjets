@@ -95,13 +95,13 @@ def precipitation_diag(run):
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
         )
 
         r_stop = 19.1e6
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         r_stop = 18.1e6
 
