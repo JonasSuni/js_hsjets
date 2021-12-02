@@ -34,7 +34,7 @@ def plot_precip():
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
-        "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Precipitation integral energy flux [$\mathrm{keV},\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
 
@@ -78,13 +78,13 @@ def plot_precip():
 
         ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
         ax.set_ylabel(
-            "Precipitation diff energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+            "Precipitation diff number flux [\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
             fontsize=12,
         )
 
         plt.tight_layout()
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/precipitation_diffenergyflux{}.png".format(
+            "/wrk/users/jesuni/Figures/carrington/precipitation_diffflux{}.png".format(
                 k
             )
         )
@@ -163,7 +163,7 @@ def precipitation_diag(run):
             diffprecip = vlsvobj.read_variable(
                 "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
             )[0]
-            diffprecip_arr[itr] = diffprecip * deltaE
+            diffprecip_arr[itr] = diffprecip
         else:
             precip_arr[itr] = 0.0
             meanenergy_arr[itr] = 0.0
