@@ -14,12 +14,24 @@ def map_surface_to_ib(theta, ib):
 
 def plot_precip():
 
-    theta, precip_bgd, meanenergy_bgd, difflux_bgd, binedges_bgd = precipitation_diag(
-        "BGD"
-    )
-    theta, precip_bgf, meanenergy_bgf, difflux_bgf, binedges_bgf = precipitation_diag(
-        "BGF"
-    )
+    (
+        theta,
+        precip_bgd,
+        meanenergy_bgd,
+        difflux_bgd,
+        binedges_bgd,
+        x_bgd,
+        z_bgd,
+    ) = precipitation_diag("BGD")
+    (
+        theta,
+        precip_bgf,
+        meanenergy_bgf,
+        difflux_bgf,
+        binedges_bgf,
+        x_bgf,
+        z_bgf,
+    ) = precipitation_diag("BGF")
 
     fig, ax = plt.subplots(1, 1)
 
@@ -90,18 +102,54 @@ def plot_precip():
         )
         plt.close(fig)
 
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.semilogy(theta, x_bgd / r_e, "o", label="Normal")
+    ax.semilogy(theta, x_bgf / r_e, "o", label="Moderate")
+    ax.legend(fontsize=14)
+
+    ax.set_xlim(60, 120)
+    # ax.set_ylim(10 ** 0, 10 ** 10)
+    ax.invert_xaxis()
+
+    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+    ax.set_ylabel("X [RE]", fontsize=14)
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_x.png")
+    plt.close(fig)
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.semilogy(theta, z_bgd / r_e, "o", label="Normal")
+    ax.semilogy(theta, z_bgf / r_e, "o", label="Moderate")
+    ax.legend(fontsize=14)
+
+    ax.set_xlim(60, 120)
+    # ax.set_ylim(10 ** 0, 10 ** 10)
+    ax.invert_xaxis()
+
+    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+    ax.set_ylabel("Z [RE]", fontsize=14)
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_z.png")
+    plt.close(fig)
+
 
 def precipitation_diag(run):
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000460.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
         )
 
         r_stop = 19.1e6
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000460.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         r_stop = 18.1e6
 
@@ -109,6 +157,8 @@ def precipitation_diag(run):
     precip_arr = np.zeros_like(theta_arr)
     meanenergy_arr = np.zeros_like(theta_arr)
     diffprecip_arr = np.zeros((theta_arr.size, 16), dtype=float)
+    x_arr = np.zeros_like(theta_arr)
+    z_arr = np.zeros_like(theta_arr)
 
     energybins = np.array(
         [
@@ -164,11 +214,25 @@ def precipitation_diag(run):
                 "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
             )[0]
             diffprecip_arr[itr] = diffprecip
+
+            coords_ci = vlsvobj.get_cell_coordinates(ci)
+            x_arr[itr] = coords_ci[0]
+            z_arr[itr] = coords_ci[2]
         else:
             precip_arr[itr] = 0.0
             meanenergy_arr[itr] = 0.0
+            x_arr[itr] = np.nan
+            z_arr[itr] = np.nan
 
-    return (theta_arr, precip_arr, meanenergy_arr, diffprecip_arr, Ebinedges)
+    return (
+        theta_arr,
+        precip_arr,
+        meanenergy_arr,
+        diffprecip_arr,
+        Ebinedges,
+        x_arr,
+        z_arr,
+    )
 
 
 def plot_MP_theta():
