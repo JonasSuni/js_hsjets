@@ -143,7 +143,7 @@ def precipitation_diag(run):
                 ib_coords,
                 vlsvobj=vlsvobj,
                 kind="vg_b_vol",
-                r_stop=r_stop + 1000e3,
+                r_stop=r_stop + 2000e3,
                 ds=500e3,
                 direction=-1,
                 iter_max=10000,
