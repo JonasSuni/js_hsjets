@@ -161,7 +161,7 @@ def precipitation_diag(run):
             meanenergy_arr[itr] = meanenergy
 
             diffprecip = vlsvobj.read_variable(
-                "proton/vg_precipitationdiffflux", cellids=[int(ci), 1]
+                "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
             )[0]
             diffprecip_arr[itr] = diffprecip * deltaE
         else:
