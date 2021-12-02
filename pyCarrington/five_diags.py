@@ -12,6 +12,33 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
+def colormap_diff_precip(run="BGF"):
+
+    if run == "BGD":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
+        )
+
+    elif run == "BGF":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
+        )
+
+    for k in range(16):
+        pt.plot.plot_colormap(
+            vlsvobj=vlsvobj,
+            outputdir="/wrk/users/jesuni/Figures/carrington/",
+            var="proton/vg_precipitationdifferentialflux",
+            symlog=1,
+            symmetric=1,
+            operator="{}".format(k),
+            run=run,
+            step=450,
+            boxre=[-10, 10, -10, 10],
+            Earth=1,
+        )
+
+
 def plot_precip(plot_diff=False):
 
     plt.ioff()
