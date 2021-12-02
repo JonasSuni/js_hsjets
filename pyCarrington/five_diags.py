@@ -12,7 +12,7 @@ def map_surface_to_ib(theta, ib):
     return np.arcsin(np.sqrt(ib * np.sin(theta) * np.sin(theta) / r_e))
 
 
-def plot_precip():
+def plot_precip(plot_diff=False):
 
     (
         theta,
@@ -72,41 +72,43 @@ def plot_precip():
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_meanenergy.png")
     plt.close(fig)
 
-    for k in range(16):
-        fig, ax = plt.subplots(1, 1)
+    if plot_diff:
+        for k in range(16):
+            fig, ax = plt.subplots(1, 1)
 
-        ax.grid()
-        ax.semilogy(theta, difflux_bgd[:, k], label="Normal")
-        ax.semilogy(theta, difflux_bgf[:, k], label="Moderate")
-        ax.legend(fontsize=14)
+            ax.grid()
+            ax.semilogy(theta, difflux_bgd[:, k], label="Normal")
+            ax.semilogy(theta, difflux_bgf[:, k], label="Moderate")
+            ax.legend(fontsize=14)
 
-        ax.set_xlim(60, 120)
-        # ax.set_ylim(10 ** 0, 10 ** 10)
-        ax.invert_xaxis()
+            ax.set_xlim(60, 120)
+            # ax.set_ylim(10 ** 0, 10 ** 10)
+            ax.invert_xaxis()
 
-        ax.set_title(
-            "{:n} - {:n} eV".format(binedges_bgd[k], binedges_bgd[k + 1]), fontsize=14
-        )
-
-        ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
-        ax.set_ylabel(
-            "Precipitation diff number flux [$\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
-            fontsize=12,
-        )
-
-        plt.tight_layout()
-        fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/precipitation_diffflux{}.png".format(
-                k
+            ax.set_title(
+                "{:n} - {:n} eV".format(binedges_bgd[k], binedges_bgd[k + 1]),
+                fontsize=14,
             )
-        )
-        plt.close(fig)
+
+            ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+            ax.set_ylabel(
+                "Precipitation diff number flux [$\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
+                fontsize=12,
+            )
+
+            plt.tight_layout()
+            fig.savefig(
+                "/wrk/users/jesuni/Figures/carrington/precipitation_diffflux{}.png".format(
+                    k
+                )
+            )
+            plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(theta, x_bgd / r_e, "o", label="Normal")
-    ax.semilogy(theta, x_bgf / r_e, "o", label="Moderate")
+    ax.plot(theta, x_bgd / r_e, "o", label="Normal")
+    ax.plot(theta, x_bgf / r_e, "o", label="Moderate")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -123,8 +125,8 @@ def plot_precip():
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(theta, z_bgd / r_e, "o", label="Normal")
-    ax.semilogy(theta, z_bgf / r_e, "o", label="Moderate")
+    ax.plot(theta, z_bgd / r_e, "o", label="Normal")
+    ax.plot(theta, z_bgf / r_e, "o", label="Moderate")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
