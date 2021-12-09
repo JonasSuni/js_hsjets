@@ -460,6 +460,8 @@ def trace_b_good(
     else:
         X = np.arange(-200e6, 200e6, 500e3) + 250e3
         Z = np.arange(-200e6, 200e6, 500e3) + 250e3
+        print(X.shape)
+        print(Z.shape)
 
     if vlsvobj:
         cellids = vlsvobj.read_variable("CellID")
