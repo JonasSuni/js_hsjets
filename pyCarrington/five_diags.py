@@ -23,6 +23,10 @@ def colormap_diff_precip(run="BGF"):
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
+    elif run == "BGG":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+        )
 
     for k in range(16):
         pt.plot.plot_colormap(
@@ -61,12 +65,22 @@ def plot_precip(plot_diff=False):
         x_bgf,
         z_bgf,
     ) = precipitation_diag("BGF")
+    (
+        theta,
+        precip_bgg,
+        meanenergy_bgg,
+        difflux_bgg,
+        binedges_bgg,
+        x_bgg,
+        z_bgg,
+    ) = precipitation_diag("BGG")
 
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
     ax.semilogy(theta, precip_bgd, label="Normal")
     ax.semilogy(theta, precip_bgf, label="Moderate")
+    ax.semilogy(theta, precip_bgg, label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -88,6 +102,7 @@ def plot_precip(plot_diff=False):
     ax.grid()
     ax.semilogy(theta, meanenergy_bgd, label="Normal")
     ax.semilogy(theta, meanenergy_bgf, label="Moderate")
+    ax.semilogy(theta, meanenergy_bgg, label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -108,6 +123,7 @@ def plot_precip(plot_diff=False):
             ax.grid()
             ax.semilogy(theta, difflux_bgd[:, k], label="Normal")
             ax.semilogy(theta, difflux_bgf[:, k], label="Moderate")
+            ax.semilogy(theta, difflux_bgg[:, k], label="Strong")
             ax.legend(fontsize=14)
 
             ax.set_xlim(60, 120)
@@ -138,6 +154,7 @@ def plot_precip(plot_diff=False):
     ax.grid()
     ax.plot(theta, x_bgd / r_e, "o", label="Normal")
     ax.plot(theta, x_bgf / r_e, "o", label="Moderate")
+    ax.plot(theta, x_bgg / r_e, "o", label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -156,6 +173,7 @@ def plot_precip(plot_diff=False):
     ax.grid()
     ax.plot(theta, z_bgd / r_e, "o", label="Normal")
     ax.plot(theta, z_bgf / r_e, "o", label="Moderate")
+    ax.plot(theta, z_bgg / r_e, "o", label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -185,6 +203,11 @@ def precipitation_diag(run):
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         r_stop = 18.1e6
+    elif run == "BGG":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+        )
+        r_stop = 14.6e6
 
     theta_arr = np.linspace(120, 60, 60)
     precip_arr = np.zeros_like(theta_arr)
@@ -220,6 +243,7 @@ def precipitation_diag(run):
             direction=-1,
             iter_max=10000,
             trace_full=False,
+            run=run,
         )
         if np.linalg.norm(ib_coords) >= (r_stop - 500e3):
             end_coords = trace_b_good(
@@ -227,10 +251,11 @@ def precipitation_diag(run):
                 vlsvobj=vlsvobj,
                 kind="vg_b_vol",
                 r_stop=r_stop + 2000e3,
-                ds=500e3,
+                ds=100e3,
                 direction=-1,
                 iter_max=10000,
                 trace_full=False,
+                run=run,
             )
             if np.linalg.norm(end_coords) >= (r_stop + 2000e3 - 500e3):
                 ci = vlsvobj.get_cellid(end_coords)
@@ -280,15 +305,17 @@ def plot_MP_theta():
 
     mp_standoff_bgd, theta_mp_bgd = dayside_MP(7.0 * r_e, 8.0 * r_e, 500e3, run="BGD")
     mp_standoff_bgf, theta_mp_bgf = dayside_MP(4.0 * r_e, 5.0 * r_e, 500e3, run="BGF")
+    mp_standoff_bgg, theta_mp_bgg = dayside_MP(14.6e6, 3.0 * r_e, 250e3, run="BGG")
 
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
     ax.plot(1, mp_standoff_bgd, "o", label="Normal")
     ax.plot(2, mp_standoff_bgf, "o", label="Moderate")
+    ax.plot(3, mp_standoff_bgg, "o", label="Strong")
     ax.legend(fontsize=14)
 
-    ax.set_xlim(0, 3)
+    ax.set_xlim(0, 4)
     ax.set_ylim(2, 10)
 
     ax.set_ylabel(
@@ -305,9 +332,10 @@ def plot_MP_theta():
     ax.grid()
     ax.plot(1, theta_mp_bgd, "o", label="Normal")
     ax.plot(2, theta_mp_bgf, "o", label="Moderate")
+    ax.plot(3, theta_mp_bgg, "o", label="Strong")
     ax.legend(fontsize=14)
 
-    ax.set_xlim(0, 3)
+    ax.set_xlim(0, 4)
     ax.set_ylim(70, 90)
 
     ax.set_ylabel(
@@ -333,6 +361,11 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
         )
         r_stop = 18.1e6
+    elif run == "BGG":
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+        )
+        r_stop = 14.6e6
 
     x_range = np.arange(xstart, xstop, dx)
     is_closed = np.zeros_like(x_range).astype(bool)
@@ -342,9 +375,10 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
             vlsvobj=vlsvobj,
             kind="vg_b_vol",
             r_stop=r_stop,
-            ds=500e3,
+            ds=100e3,
             direction=1,
             iter_max=10000,
+            run=run,
         )
         if end_coord is None:
             is_closed[itr] = False
@@ -363,10 +397,11 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         vlsvobj=vlsvobj,
         kind="vg_b_vol",
         r_stop=r_stop,
-        ds=500e3,
+        ds=100e3,
         direction=1,
         iter_max=10000,
         trace_full=False,
+        run=run,
     )
     surface_coords = trace_b_good(
         ib_coords,
@@ -376,6 +411,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         direction=1,
         iter_max=10000,
         trace_full=False,
+        run=run,
     )
 
     print("Surface coords are {}".format(surface_coords / r_e))
@@ -401,10 +437,11 @@ def trace_b_good(
     vlsvobj=None,
     kind="dipole",
     r_stop=10 * r_e,
-    ds=500e3,
+    ds=100e3,
     direction=1,
     iter_max=1000,
     trace_full=False,
+    run="BGD",
 ):
 
     D = -126.2e6
@@ -415,8 +452,13 @@ def trace_b_good(
     if trace_full:
         coordlist.append(coords)
 
-    X = np.arange(-200e6, 200e6, 500e3) + 250e3
-    Z = np.arange(-200e6, 200e6, 500e3) + 250e3
+    if run == "BGG":
+        X = np.arange(-125e6, 125e6, 250e3) + 125e3
+        Z = np.arange(-150e6, 150e6, 250e3) + 125e3
+    else:
+        X = np.arange(-200e6, 200e6, 500e3) + 250e3
+        Z = np.arange(-200e6, 200e6, 500e3) + 250e3
+
     if vlsvobj:
         cellids = vlsvobj.read_variable("CellID")
         BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
