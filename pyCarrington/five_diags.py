@@ -466,14 +466,14 @@ def trace_b_good(
     if vlsvobj:
         cellids = vlsvobj.read_variable("CellID")
         BXint, BYint, BZint = vlsvobj.read_variable("vg_b_vol").T
-        BXint = np.reshape(BXint[np.argsort(cellids)], (X.size, Z.size)).T
-        BZint = np.reshape(BZint[np.argsort(cellids)], (X.size, Z.size)).T
+        BXint = np.reshape(BXint[np.argsort(cellids)], (Z.size, X.size)).T
+        BZint = np.reshape(BZint[np.argsort(cellids)], (Z.size, X.size)).T
 
         print(BXint.shape)
         print(BZint.shape)
 
-        Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint.T)
-        Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint.T)
+        Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint)
+        Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint)
 
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
