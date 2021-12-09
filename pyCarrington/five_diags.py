@@ -472,8 +472,8 @@ def trace_b_good(
         print(BXint.shape)
         print(BZint.shape)
 
-        Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint)
-        Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint)
+        Bx_interpolator = interpolate.RectBivariateSpline(X, Z, BXint.T)
+        Bz_interpolator = interpolate.RectBivariateSpline(X, Z, BZint.T)
 
     for iter in range(iter_max):
         r = np.linalg.norm(coords)
