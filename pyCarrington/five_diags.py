@@ -84,7 +84,7 @@ def plot_precip(plot_diff=False):
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
-    ax.set_ylim(10 ** 0, 10 ** 10)
+    ax.set_ylim(10 ** 0, 10 ** 12)
     ax.invert_xaxis()
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
@@ -198,16 +198,21 @@ def precipitation_diag(run):
         )
 
         r_stop = 19.1e6
+        ds = 500e3
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         r_stop = 18.1e6
+        ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
         )
         r_stop = 14.6e6
+        ds = 250e3
+
+    dib = 4 * ds
 
     theta_arr = np.linspace(120, 60, 60)
     precip_arr = np.zeros_like(theta_arr)
@@ -250,8 +255,8 @@ def precipitation_diag(run):
                 ib_coords,
                 vlsvobj=vlsvobj,
                 kind="vg_b_vol",
-                r_stop=r_stop + 2000e3,
-                ds=100e3,
+                r_stop=r_stop + dib,
+                ds=ds,
                 direction=-1,
                 iter_max=10000,
                 trace_full=False,
@@ -356,16 +361,19 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         )
 
         r_stop = 19.1e6
+        ds = 500e3
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
         )
         r_stop = 18.1e6
+        ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
         )
         r_stop = 14.6e6
+        ds = 250e3
 
     x_range = np.arange(xstart, xstop, dx)
     is_closed = np.zeros_like(x_range).astype(bool)
@@ -375,7 +383,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
             vlsvobj=vlsvobj,
             kind="vg_b_vol",
             r_stop=r_stop,
-            ds=100e3,
+            ds=ds,
             direction=1,
             iter_max=10000,
             run=run,
@@ -397,7 +405,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         vlsvobj=vlsvobj,
         kind="vg_b_vol",
         r_stop=r_stop,
-        ds=100e3,
+        ds=ds,
         direction=1,
         iter_max=10000,
         trace_full=False,
@@ -437,7 +445,7 @@ def trace_b_good(
     vlsvobj=None,
     kind="dipole",
     r_stop=10 * r_e,
-    ds=100e3,
+    ds=500e3,
     direction=1,
     iter_max=1000,
     trace_full=False,
