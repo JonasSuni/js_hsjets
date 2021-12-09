@@ -262,7 +262,7 @@ def precipitation_diag(run):
                 trace_full=False,
                 run=run,
             )
-            if np.linalg.norm(end_coords) >= (r_stop + 2000e3 - 500e3):
+            if np.linalg.norm(end_coords) >= (r_stop + dib - ds):
                 ci = vlsvobj.get_cellid(end_coords)
                 precip = vlsvobj.read_variable(
                     "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
@@ -390,7 +390,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         )
         if end_coord is None:
             is_closed[itr] = False
-        elif np.linalg.norm(end_coord) <= (r_stop + 500e3):
+        elif np.linalg.norm(end_coord) <= (r_stop + ds):
             is_closed[itr] = True
         else:
             is_closed[itr] = False
