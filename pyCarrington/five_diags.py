@@ -43,7 +43,7 @@ def colormap_diff_precip(run="BGF"):
         )
 
 
-def plot_precip(plot_diff=False):
+def plot_precip(plot_diff=False, min_energy=None):
 
     plt.ioff()
 
@@ -75,6 +75,18 @@ def plot_precip(plot_diff=False):
         z_bgg,
     ) = precipitation_diag("BGG")
 
+    deltaE_bgd = binedges_bgd[1:] - binedges_bgd[:-1]
+    if min_energy:
+        precip_bgd = np.zeros_like(theta)
+        precip_bgf = np.zeros_like(theta)
+        precip_bgg = np.zeros_like(theta)
+        idx_list = np.arange(deltaE_bgd.size)
+        idx_list = idx_list[binedges_bgd[:-1] >= min_energy]
+        for idx in idx_list:
+            precip_bgd += difflux_bgd[:, idx] * deltaE_bgd[idx]
+            precip_bgf += difflux_bgf[:, idx] * deltaE_bgd[idx]
+            precip_bgg += difflux_bgg[:, idx] * deltaE_bgd[idx]
+
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
@@ -92,9 +104,20 @@ def plot_precip(plot_diff=False):
         "Precipitation integral energy flux [$\mathrm{keV},\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
+    if min_energy:
+        ax.set_title(">{:n} eV".format(min_energy), fontsize=14)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_integralflux.png")
+    if min_energy:
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/precipitation_integralflux_{}.png".format(
+                min_energy
+            )
+        )
+    else:
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/precipitation_integralflux.png"
+        )
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
