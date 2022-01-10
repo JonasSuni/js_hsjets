@@ -111,7 +111,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         fontsize=12,
     )
     if min_energy:
-        ax.set_title("$<${:n} eV".format(min_energy), fontsize=14)
+        ax.set_title("$>${:n} eV".format(min_energy), fontsize=14)
 
     plt.tight_layout()
     if min_energy:
