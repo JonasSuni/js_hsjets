@@ -55,6 +55,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         binedges_bgd,
         x_bgd,
         z_bgd,
+        energybins,
     ) = precipitation_diag("BGD")
     (
         theta,
@@ -64,6 +65,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         binedges_bgf,
         x_bgf,
         z_bgf,
+        energybins,
     ) = precipitation_diag("BGF")
     (
         theta,
@@ -73,6 +75,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         binedges_bgg,
         x_bgg,
         z_bgg,
+        energybins,
     ) = precipitation_diag("BGG")
 
     deltaE_bgd = binedges_bgd[1:] - binedges_bgd[:-1]
@@ -83,9 +86,12 @@ def plot_precip(plot_diff=False, min_energy=None):
         idx_list = np.arange(deltaE_bgd.size)
         idx_list = idx_list[binedges_bgd[:-1] >= min_energy]
         for idx in idx_list:
-            precip_bgd += difflux_bgd[:, idx] * deltaE_bgd[idx]
-            precip_bgf += difflux_bgf[:, idx] * deltaE_bgd[idx]
-            precip_bgg += difflux_bgg[:, idx] * deltaE_bgd[idx]
+            precip_bgd += difflux_bgd[:, idx] * deltaE_bgd[idx] * energybins[idx]
+            precip_bgf += difflux_bgf[:, idx] * deltaE_bgd[idx] * energybins[idx]
+            precip_bgg += difflux_bgg[:, idx] * deltaE_bgd[idx] * energybins[idx]
+        precip_bgd[precip_bgd <= 0] = np.nan
+        precip_bgf[precip_bgf <= 0] = np.nan
+        precip_bgg[precip_bgg <= 0] = np.nan
 
     fig, ax = plt.subplots(1, 1)
 
@@ -105,7 +111,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         fontsize=12,
     )
     if min_energy:
-        ax.set_title(">{:n} eV".format(min_energy), fontsize=14)
+        ax.set_title("$<${:n} eV".format(min_energy), fontsize=14)
 
     plt.tight_layout()
     if min_energy:
@@ -326,6 +332,7 @@ def precipitation_diag(run):
         Ebinedges,
         x_arr,
         z_arr,
+        energybins,
     )
 
 
