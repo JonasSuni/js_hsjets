@@ -25,7 +25,7 @@ def colormap_diff_precip(run="BGF"):
         )
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
 
     for k in range(16):
@@ -207,7 +207,7 @@ def precipitation_diag(run):
         ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
         r_stop = 14.6e6
         ds = 250e3
@@ -370,7 +370,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000154.vlsv"
+            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
         r_stop = 14.6e6
         ds = 250e3
