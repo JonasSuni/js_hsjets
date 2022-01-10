@@ -86,9 +86,9 @@ def plot_precip(plot_diff=False, min_energy=None):
         idx_list = np.arange(deltaE_bgd.size)
         idx_list = idx_list[binedges_bgd[:-1] >= min_energy]
         for idx in idx_list:
-            precip_bgd += difflux_bgd[:, idx] * deltaE_bgd[idx] * energybins[idx]
-            precip_bgf += difflux_bgf[:, idx] * deltaE_bgd[idx] * energybins[idx]
-            precip_bgg += difflux_bgg[:, idx] * deltaE_bgd[idx] * energybins[idx]
+            precip_bgd += difflux_bgd[:, idx] * deltaE_bgd[idx] * energybins[idx] / 1e3
+            precip_bgf += difflux_bgf[:, idx] * deltaE_bgd[idx] * energybins[idx] / 1e3
+            precip_bgg += difflux_bgg[:, idx] * deltaE_bgd[idx] * energybins[idx] / 1e3
         precip_bgd[precip_bgd <= 0] = np.nan
         precip_bgf[precip_bgf <= 0] = np.nan
         precip_bgg[precip_bgg <= 0] = np.nan
