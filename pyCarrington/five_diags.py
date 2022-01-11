@@ -18,15 +18,18 @@ def colormap_diff_precip(run="BGF"):
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
         )
+        step = 450
 
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
+        step = 450
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
+        step = 239
 
     for k in range(16):
         pt.plot.plot_colormap(
@@ -37,7 +40,7 @@ def colormap_diff_precip(run="BGF"):
             vmax=10 ** 5,
             operator="{}".format(k),
             run=run,
-            step=450,
+            step=step,
             boxre=[-10, 10, -10, 10],
             Earth=1,
         )
