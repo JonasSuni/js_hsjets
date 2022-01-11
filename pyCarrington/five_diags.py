@@ -238,7 +238,7 @@ def precipitation_diag(run):
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
-        r_stop = 14.6e6
+        r_stop = 13.6e6
         ds = 250e3
 
     dib = 4 * ds
@@ -340,7 +340,7 @@ def plot_MP_theta():
 
     mp_standoff_bgd, theta_mp_bgd = dayside_MP(7.0 * r_e, 8.0 * r_e, 500e3, run="BGD")
     mp_standoff_bgf, theta_mp_bgf = dayside_MP(4.0 * r_e, 5.0 * r_e, 500e3, run="BGF")
-    mp_standoff_bgg, theta_mp_bgg = dayside_MP(14.6e6, 3.0 * r_e, 250e3, run="BGG")
+    mp_standoff_bgg, theta_mp_bgg = dayside_MP(13.6e6, 3.0 * r_e, 250e3, run="BGG")
 
     fig, ax = plt.subplots(1, 1)
 
@@ -402,7 +402,7 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
         vlsvobj = pt.vlsvfile.VlsvReader(
             "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
-        r_stop = 14.6e6
+        r_stop = 13.6e6
         ds = 250e3
 
     x_range = np.arange(xstart, xstop, dx)
