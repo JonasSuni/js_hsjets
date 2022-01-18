@@ -189,14 +189,18 @@ def SEA_plots():
     Superposed epoch analysis of fcs-jet vs. non-fcs-jet start location properties
     """
 
+    # Initialise array of times relative to epoch time
     t_arr = np.arange(-5.0, 5.05, 0.5)
 
+    # Initialise number of fcs-jets and non-fcs-jets
     fcs_jet_count = 0
     non_jet_count = 0
 
+    # Initialise arrays of averages
     fcs_jet_avg = np.zeros((6, 21), dtype=float)
     non_jet_avg = np.zeros((6, 21), dtype=float)
 
+    # Initialise figure, add grids, add axis labels
     fig, ax_list = plt.subplots(6, 1, sharex=True)
 
     for ax in ax_list:
@@ -210,41 +214,59 @@ def SEA_plots():
     ax_list[5].set_ylabel("$\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
     ax_list[-1].set_xlabel("$\Delta t~[\mathrm{s}]$")
 
+    # Loop over runs
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
+
+        # Loop over arbitrary large number
         for n1 in range(4000):
+
+            # Try reading fcs-jet timeseries
             try:
                 data = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/fcs_jets/{}/timeseries_{}.txt".format(runid, n1)
                 ).T
-                fcs_jet_count += 1
+                fcs_jet_count += 1  # Iterate fcs-jet count
 
+                # Loop over n,v,pdyn,B,Tperp,Tpar
                 for n2 in range(6):
+
+                    # Plot timeseries of deltas relative to epoch time
                     ax_list[n2].plot(
                         t_arr, data[n2] - data[n2][10], color="darkgray", zorder=1
                     )
+
+                    # Add timeseries of deltas relative to epoch time to average array
                     fcs_jet_avg[n2] += data[n2] - data[n2][10]
             except:
                 pass
 
+            # Try reading non-fcs-jet timeseries
             try:
                 data = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, n1)
                 ).T
-                non_jet_count += 1
+                non_jet_count += 1  # Iterate fcs-jet count
 
+                # Loop over n,v,pdyn,B,Tperp,Tpar
                 for n2 in range(6):
+
+                    # Plot timeseries of deltas relative to epoch time
                     ax_list[n2].plot(
                         t_arr, data[n2] - data[n2][10], color="darkgray", zorder=1
                     )
+
+                    # Add timeseries of deltas relative to epoch time to average array
                     non_jet_avg[n2] += data[n2] - data[n2][10]
             except:
                 pass
 
+    # Calculate averages
     fcs_jet_avg /= fcs_jet_count
     non_jet_avg /= non_jet_count
 
+    # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
             t_arr,
@@ -261,8 +283,10 @@ def SEA_plots():
             zorder=2,
         )
 
+    # Add legend
     ax_list[0].legend()
 
+    # Save as pdf and png and close figure
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.pdf")
