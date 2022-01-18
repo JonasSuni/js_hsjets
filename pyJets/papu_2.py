@@ -16,6 +16,10 @@ import jet_analyser as ja
 import jet_io as jio
 import jet_jh2020 as jh20
 
+mpl.rc("text", usetex=True)
+params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
+plt.rcParams.update(params)
+
 r_e = 6.371e6
 m_p = 1.672621898e-27
 
@@ -287,7 +291,7 @@ def SEA_plots():
     ax_list[0].legend()
 
     # Save as pdf and png and close figure
-    # plt.tight_layout()
+    plt.tight_layout()
 
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.pdf")
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.png")
