@@ -109,3 +109,7 @@ from jet_21_scripts import (
     fac_migration_plot,
     plot_residual_bz,
 )
+
+from papu_2 import (
+    sj_non_timeseries,
+)
