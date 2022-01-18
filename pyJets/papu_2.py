@@ -205,7 +205,7 @@ def SEA_plots():
     non_jet_avg = np.zeros((6, 21), dtype=float)
 
     # Initialise figure, add grids, add axis labels
-    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(10, 12))
+    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(8, 10))
 
     for ax in ax_list:
         ax.grid()
