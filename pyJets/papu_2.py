@@ -28,6 +28,17 @@ except:
 
 
 def sj_non_timeseries(runid):
+
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+
     """
     Variables: t, n, v, Pdyn, B, Tperp, Tpar
     Count: 7
@@ -62,7 +73,19 @@ def sj_non_timeseries(runid):
                 B = vlsvobj.read_variable("B", cellids=cellid, operator="magnitude")
                 Tperp = vlsvobj.read_variable("TPerpendicular", cellids=cellid)
                 Tpar = vlsvobj.read_variable("TParallel", cellids=cellid)
-                out_arr.append(np.array([t, n, v, Pdyn, B, Tperp, Tpar]))
+                out_arr.append(
+                    np.array(
+                        [
+                            t,
+                            n / n_sw,
+                            v / v_sw,
+                            Pdyn / (m_p * n_sw * v_sw * v_sw),
+                            B / B_sw,
+                            Tperp / T_sw,
+                            Tpar / T_sw,
+                        ]
+                    )
+                )
             except:
                 out_arr.append(
                     np.array([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
@@ -101,7 +124,19 @@ def sj_non_timeseries(runid):
                 B = vlsvobj.read_variable("B", cellids=cellid, operator="magnitude")
                 Tperp = vlsvobj.read_variable("TPerpendicular", cellids=cellid)
                 Tpar = vlsvobj.read_variable("TParallel", cellids=cellid)
-                out_arr.append(np.array([t, n, v, Pdyn, B, Tperp, Tpar]))
+                out_arr.append(
+                    np.array(
+                        [
+                            t,
+                            n / n_sw,
+                            v / v_sw,
+                            Pdyn / (m_p * n_sw * v_sw * v_sw),
+                            B / B_sw,
+                            Tperp / T_sw,
+                            Tpar / T_sw,
+                        ]
+                    )
+                )
             except:
                 out_arr.append(
                     np.array([np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan])
