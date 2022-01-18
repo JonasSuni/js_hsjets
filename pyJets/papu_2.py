@@ -205,26 +205,26 @@ def SEA_plots():
     non_jet_avg = np.zeros((6, 21), dtype=float)
 
     # Initialise figure, add grids, add axis labels
-    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(10, 15))
+    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(10, 12))
 
     for ax in ax_list:
         ax.grid()
 
-    # ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
-    # ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
-    # ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-    # ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
-    # ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
-    # ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
-    # ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
+    ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
+    ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
+    ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
+    ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
+    ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
+    ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
+    ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
 
-    ax_list[0].set_ylabel("delta n")
-    ax_list[1].set_ylabel("delta v")
-    ax_list[2].set_ylabel("delta Pdyn")
-    ax_list[3].set_ylabel("delta B")
-    ax_list[4].set_ylabel("delta Tperp")
-    ax_list[5].set_ylabel("delta Tpar")
-    ax_list[-1].set_xlabel("delta t")
+    # ax_list[0].set_ylabel("delta n")
+    # ax_list[1].set_ylabel("delta v")
+    # ax_list[2].set_ylabel("delta Pdyn")
+    # ax_list[3].set_ylabel("delta B")
+    # ax_list[4].set_ylabel("delta Tperp")
+    # ax_list[5].set_ylabel("delta Tpar")
+    # ax_list[-1].set_xlabel("delta t")
 
     # Loop over runs
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
