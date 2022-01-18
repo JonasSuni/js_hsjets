@@ -287,7 +287,7 @@ def SEA_plots():
     ax_list[0].legend()
 
     # Save as pdf and png and close figure
-    plt.tight_layout()
+    # plt.tight_layout()
 
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.pdf")
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.png")
