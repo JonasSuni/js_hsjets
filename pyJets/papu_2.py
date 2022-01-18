@@ -38,6 +38,7 @@ def sj_non_timeseries(runid):
     non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
 
     for sj_id in sj_jet_ids:
+        print("FCS jets: {}".format(sj_id))
         out_arr = []
 
         props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
@@ -72,9 +73,11 @@ def sj_non_timeseries(runid):
         np.savetxt(
             wrkdir_DNR + "papu22/fcs_jets/{}/timeseries_{}.txt".format(runid, sj_id),
             out_arr,
+            fmt="%.7f",
         )
 
     for non_id in non_sj_ids:
+        print("Non-FCS jets: {}".format(non_id))
         out_arr = []
 
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
@@ -109,4 +112,5 @@ def sj_non_timeseries(runid):
         np.savetxt(
             wrkdir_DNR + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, non_id),
             out_arr,
+            fmt="%.7f",
         )
