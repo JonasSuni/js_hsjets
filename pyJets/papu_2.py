@@ -47,7 +47,7 @@ def sj_non_timeseries(runid):
         fnr_arr = np.arange(fnr0 - 10, fnr0 + 11)
         cellid = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-        ).get_cellid(x0 * r_e, y0 * r_e, 0 * r_e)
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
 
         for fnr in fnr_arr:
             try:
@@ -84,7 +84,7 @@ def sj_non_timeseries(runid):
         fnr_arr = np.arange(fnr0 - 10, fnr0 + 11)
         cellid = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-        ).get_cellid(x0 * r_e, y0 * r_e, 0 * r_e)
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
 
         for fnr in fnr_arr:
             try:
