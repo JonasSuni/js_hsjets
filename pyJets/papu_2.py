@@ -205,7 +205,7 @@ def SEA_plots():
     non_jet_avg = np.zeros((6, 21), dtype=float)
 
     # Initialise figure, add grids, add axis labels
-    fig, ax_list = plt.subplots(6, 1, sharex=True)
+    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(10, 15))
 
     for ax in ax_list:
         ax.grid()
@@ -237,7 +237,7 @@ def SEA_plots():
                 data = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/fcs_jets/{}/timeseries_{}.txt".format(runid, n1)
-                ).T
+                ).T[1:]
                 fcs_jet_count += 1  # Iterate fcs-jet count
 
                 # Loop over n,v,pdyn,B,Tperp,Tpar
@@ -258,7 +258,7 @@ def SEA_plots():
                 data = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, n1)
-                ).T
+                ).T[1:]
                 non_jet_count += 1  # Iterate fcs-jet count
 
                 # Loop over n,v,pdyn,B,Tperp,Tpar
