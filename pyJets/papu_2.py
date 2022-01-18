@@ -245,7 +245,7 @@ def SEA_plots():
 
                     # Plot timeseries of deltas relative to epoch time
                     ax_list[n2].plot(
-                        t_arr, data[n2] - data[n2][10], color="darkgray", zorder=1
+                        t_arr, data[n2] - data[n2][10], color="darkgray", zorder=0
                     )
 
                     # Add timeseries of deltas relative to epoch time to average array
