@@ -16,9 +16,9 @@ import jet_analyser as ja
 import jet_io as jio
 import jet_jh2020 as jh20
 
-mpl.rc("text", usetex=True)
-params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
-plt.rcParams.update(params)
+# mpl.rc("text", usetex=True)
+# params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
+# plt.rcParams.update(params)
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
@@ -210,13 +210,13 @@ def SEA_plots():
     for ax in ax_list:
         ax.grid()
 
-    ax_list[0].set_ylabel("$\Delta n~[n_\mathrm{sw}]$")
-    ax_list[1].set_ylabel("$\Delta v~[v_\mathrm{sw}]$")
-    ax_list[2].set_ylabel("$\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-    ax_list[3].set_ylabel("$\Delta B~[B_\mathrm{IMF}]$")
-    ax_list[4].set_ylabel("$\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
-    ax_list[5].set_ylabel("$\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
-    ax_list[-1].set_xlabel("$\Delta t~[\mathrm{s}]$")
+    ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
+    ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
+    ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
+    ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
+    ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
+    ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
+    ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
 
     # Loop over runs
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
