@@ -201,8 +201,8 @@ def SEA_plots():
     non_jet_count = 0
 
     # Initialise arrays of averages
-    fcs_jet_avg = np.zeros((6, 21), dtype=float)
-    non_jet_avg = np.zeros((6, 21), dtype=float)
+    fcs_jet_avg = np.zeros((6, 41), dtype=float)
+    non_jet_avg = np.zeros((6, 41), dtype=float)
 
     # Initialise figure, add grids, add axis labels
     fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(8, 10))

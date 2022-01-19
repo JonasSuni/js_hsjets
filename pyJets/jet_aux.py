@@ -681,4 +681,3 @@ def sw_par_dict(runid):
 def division_ste(a, b, stea, steb):
 
     return (a / b) * np.sqrt((stea / a) ** 2 + (steb / b) ** 2)
-
