@@ -57,7 +57,7 @@ def sj_non_timeseries(runid):
 
     # Loop through fcs-jet IDs
     for sj_id in sj_jet_ids:
-        print("FCS jets: {}".format(sj_id))
+        print("FCS jets for run {}: {}".format(runid, sj_id))
         out_arr = []
 
         # Read jet position, time and filenumber at time of birth
@@ -123,7 +123,7 @@ def sj_non_timeseries(runid):
 
     # Loop through non-fcs-jet IDs
     for non_id in non_sj_ids:
-        print("Non-FCS jets: {}".format(non_id))
+        print("Non-FCS jets for run {}: {}".format(runid, non_id))
         out_arr = []
 
         # Read jet position, time and filenumber at time of birth
