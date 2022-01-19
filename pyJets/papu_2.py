@@ -66,8 +66,8 @@ def sj_non_timeseries(runid):
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
-        # Initialise +-5s array of file numbers
-        fnr_arr = np.arange(fnr0 - 10, fnr0 + 11)
+        # Initialise +-10s array of file numbers
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
 
         # Get cellid of initial position
         cellid = pt.vlsvfile.VlsvReader(
@@ -132,8 +132,8 @@ def sj_non_timeseries(runid):
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
-        # Initialise +-5s array of file numbers
-        fnr_arr = np.arange(fnr0 - 10, fnr0 + 11)
+        # Initialise +-10s array of file numbers
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
 
         # Get cellid of initial position
         cellid = pt.vlsvfile.VlsvReader(
@@ -194,7 +194,7 @@ def SEA_plots():
     """
 
     # Initialise array of times relative to epoch time
-    t_arr = np.arange(-5.0, 5.05, 0.5)
+    t_arr = np.arange(-10.0, 10.05, 0.5)
 
     # Initialise number of fcs-jets and non-fcs-jets
     fcs_jet_count = 0
@@ -245,11 +245,11 @@ def SEA_plots():
 
                     # Plot timeseries of deltas relative to epoch time
                     ax_list[n2].plot(
-                        t_arr, data[n2] - data[n2][10], color="darkgray", zorder=0
+                        t_arr, data[n2] - data[n2][20], color="darkgray", zorder=0
                     )
 
                     # Add timeseries of deltas relative to epoch time to average array
-                    fcs_jet_avg[n2] += data[n2] - data[n2][10]
+                    fcs_jet_avg[n2] += data[n2] - data[n2][20]
             except:
                 pass
 
@@ -266,11 +266,11 @@ def SEA_plots():
 
                     # Plot timeseries of deltas relative to epoch time
                     ax_list[n2].plot(
-                        t_arr, data[n2] - data[n2][10], color="lightgray", zorder=1
+                        t_arr, data[n2] - data[n2][20], color="lightgray", zorder=1
                     )
 
                     # Add timeseries of deltas relative to epoch time to average array
-                    non_jet_avg[n2] += data[n2] - data[n2][10]
+                    non_jet_avg[n2] += data[n2] - data[n2][20]
             except:
                 pass
 
