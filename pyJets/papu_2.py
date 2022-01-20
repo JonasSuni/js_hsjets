@@ -312,10 +312,10 @@ def fcs_non_jet_hist(lastbs=False):
     # n [m^-3], v [m/s], B [T], T [K]
     runid_list = ["ABA", "ABC", "AEA", "AEC"]
     sw_pars = [
-        [1e6, 750e3, 5e-9, 0.5e6],
-        [3.3e6, 600e3, 5e-9, 0.5e6],
-        [1e6, 750e3, 10e-9, 0.5e6],
-        [3.3e6, 600e3, 10e-9, 0.5e6],
+        [1, 750, 5, 0.5],
+        [3.3, 600, 5, 0.5],
+        [1, 750, 10, 0.5],
+        [3.3, 600, 10, 0.5],
     ]
 
     # Initialise arrays for variables to be read
@@ -339,7 +339,16 @@ def fcs_non_jet_hist(lastbs=False):
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
 
         n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
-        sw_norm = [n_sw, v_sw, m_p * n_sw * v_sw * v_sw, B_sw, T_sw, 1, 1, 1]
+        sw_norm = [
+            n_sw,
+            v_sw,
+            m_p * n_sw * 1e6 * v_sw * 1e3 * v_sw * 1e3 * 1e9,
+            B_sw,
+            T_sw,
+            1,
+            1,
+            1,
+        ]
 
         # Get IDs of fcs-jets and non-fcs-jets
         sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
@@ -381,17 +390,15 @@ def fcs_non_jet_hist(lastbs=False):
 
         ax.hist(
             fcs_jet_props[n1],
-            density=True,
             histtype="step",
-            bins=10,
+            bins=np.ones(len(fcs_jet_props[n1])) / float(len(fcs_jet_props[n1])),
             color=jx.CB_color_cycle[0],
             label="FCS-jets",
         )
         ax.hist(
             non_jet_props[n1],
-            density=True,
             histtype="step",
-            bins=10,
+            bins=np.ones(len(non_jet_props[n1])) / float(len(non_jet_props[n1])),
             color=jx.CB_color_cycle[1],
             label="non-FCS-jets",
         )
