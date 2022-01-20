@@ -332,6 +332,16 @@ def fcs_non_jet_hist(lastbs=False):
         "$Tangential~size~[R_\mathrm{E}]$",
         "$Size~ratio$",
     ]
+    bins_list = [
+        np.linspace(-2, 5, 10 + 1),
+        np.linspace(-0.1, 0.6, 10 + 1),
+        np.linspace(0, 3, 10 + 1),
+        np.linspace(-2, 3, 10 + 1),
+        np.linspace(-10, 5, 10 + 1),
+        np.linspace(0, 60, 10 + 1),
+        np.linspace(0, 0.5, 10 + 1),
+        np.linspace(0, 5, 10 + 1),
+    ]
     pos_list = ["left", "left", "left", "left", "right", "right", "right", "right"]
     fcs_jet_props = [[], [], [], [], [], [], [], []]
     non_jet_props = [[], [], [], [], [], [], [], []]
@@ -392,7 +402,7 @@ def fcs_non_jet_hist(lastbs=False):
             fcs_jet_props[n1],
             histtype="step",
             weights=np.ones(len(fcs_jet_props[n1])) / float(len(fcs_jet_props[n1])),
-            bins=10,
+            bins=bins_list[n1],
             color=jx.CB_color_cycle[0],
             label="FCS-jets",
         )
@@ -400,7 +410,7 @@ def fcs_non_jet_hist(lastbs=False):
             non_jet_props[n1],
             histtype="step",
             weights=np.ones(len(non_jet_props[n1])) / float(len(non_jet_props[n1])),
-            bins=10,
+            bins=bins_list[n1],
             color=jx.CB_color_cycle[1],
             label="non-FCS-jets",
         )
