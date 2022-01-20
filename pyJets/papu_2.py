@@ -391,19 +391,21 @@ def fcs_non_jet_hist(lastbs=False):
         ax.hist(
             fcs_jet_props[n1],
             histtype="step",
-            bins=np.ones(len(fcs_jet_props[n1])) / float(len(fcs_jet_props[n1])),
+            weights=np.ones(len(fcs_jet_props[n1])) / float(len(fcs_jet_props[n1])),
+            bins=10
             color=jx.CB_color_cycle[0],
             label="FCS-jets",
         )
         ax.hist(
             non_jet_props[n1],
             histtype="step",
-            bins=np.ones(len(non_jet_props[n1])) / float(len(non_jet_props[n1])),
+            weights=np.ones(len(non_jet_props[n1])) / float(len(non_jet_props[n1])),
+            bins=10
             color=jx.CB_color_cycle[1],
             label="non-FCS-jets",
         )
 
-    ax_flat[0].legend(fontsize=20, frameon=False, markerscale=0.5)
+    ax_flat[0].legend(frameon=False, markerscale=0.5)
 
     plt.tight_layout()
 
