@@ -392,7 +392,7 @@ def fcs_non_jet_hist(lastbs=False):
             fcs_jet_props[n1],
             histtype="step",
             weights=np.ones(len(fcs_jet_props[n1])) / float(len(fcs_jet_props[n1])),
-            bins=10
+            bins=10,
             color=jx.CB_color_cycle[0],
             label="FCS-jets",
         )
@@ -400,7 +400,7 @@ def fcs_non_jet_hist(lastbs=False):
             non_jet_props[n1],
             histtype="step",
             weights=np.ones(len(non_jet_props[n1])) / float(len(non_jet_props[n1])),
-            bins=10
+            bins=10,
             color=jx.CB_color_cycle[1],
             label="non-FCS-jets",
         )
