@@ -396,7 +396,7 @@ def fcs_non_jet_hist(lastbs=False):
             label="non-FCS-jets",
         )
 
-    ax_list[0].legend(fontsize=20, frameon=False, markerscale=0.5)
+    ax_flat[0].legend(fontsize=20, frameon=False, markerscale=0.5)
 
     plt.tight_layout()
 
