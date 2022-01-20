@@ -304,3 +304,102 @@ def SEA_plots():
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.pdf")
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.png")
     plt.close(fig)
+
+
+def fcs_non_jet_hist(lastbs=False):
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+
+    # Initialise arrays for variables to be read
+    # delta n, delta v, delta Pdyn, delta B, delta T, Lifetime, Tangential size, Size ratio
+    # Count: 8
+    vars_list = ["Dn", "Dv", "Dpd", "DB", "DT", "duration", "size_tan", "size_ratio"]
+    label_list = [
+        "$\\Delta n~[n_\mathrm{sw}]$",
+        "$\\Delta |v|~[v_\mathrm{sw}]$",
+        "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$\\Delta |B|~[B_\mathrm{IMF}]$",
+        "$\\Delta T~[T_\mathrm{sw}]$",
+        "$Lifetime~[\mathrm{s}]}$",
+        "$Tangential~size~[R_\mathrm{E}]$",
+        "$Size~ratio$",
+    ]
+    pos_list = ["left", "left", "left", "left", "right", "right", "right", "right"]
+    fcs_jet_props = [[], [], [], [], [], [], [], []]
+    non_jet_props = [[], [], [], [], [], [], [], []]
+
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+
+        n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+        sw_norm = [n_sw, v_sw, m_p * n_sw * v_sw * v_sw, B_sw, T_sw, 1, 1, 1]
+
+        # Get IDs of fcs-jets and non-fcs-jets
+        sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
+        non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
+
+        for sj_id in sj_jet_ids:
+            props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
+            for n1 in range(8):
+                if lastbs:
+                    fcs_jet_props[n1].append(
+                        props.read_at_lastbs(vars_list[n1]) / sw_norm[n1]
+                    )
+                else:
+                    fcs_jet_props[n1].append(
+                        props.read_at_amax(vars_list[n1]) / sw_norm[n1]
+                    )
+
+        for non_id in non_sj_ids:
+            props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+            for n1 in range(8):
+                if lastbs:
+                    non_jet_props[n1].append(
+                        props.read_at_lastbs(vars_list[n1]) / sw_norm[n1]
+                    )
+                else:
+                    non_jet_props[n1].append(
+                        props.read_at_amax(vars_list[n1]) / sw_norm[n1]
+                    )
+
+    fig, ax_list = plt.subplots(4, 2, figsize=(7, 11))
+
+    ax_flat = ax_list.T.flatten()
+
+    for n1, ax in enumerate(ax_flat):
+        ax.set_ylabel(label_list[n1], labelpad=10, fontsize=20)
+        ax.yaxis.set_label_position(pos_list[n1])
+        ax.grid()
+        ax.tick_params(labelsize=15)
+
+        ax.hist(
+            fcs_jet_props[n1],
+            density=True,
+            histtype="step",
+            bins=10,
+            color=jx.CB_color_cycle[0],
+            label="FCS-jets",
+        )
+        ax.hist(
+            non_jet_props[n1],
+            density=True,
+            histtype="step",
+            bins=10,
+            color=jx.CB_color_cycle[1],
+            label="non-FCS-jets",
+        )
+
+    ax_list[0].legend(fontsize=20, frameon=False, markerscale=0.5)
+
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.pdf".format(lastbs))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.png".format(lastbs))
+    plt.close(fig)

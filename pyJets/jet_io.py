@@ -262,6 +262,11 @@ class PropReader:
 
         return self.read(name)[self.amax_index()]
 
+    def read_at_lastbs(self, name):
+
+        t0 = self.read("time")[self.read("at_bow_shock") == 1][-1]
+        return self.read_at_time(self, var, t0)
+
 
 class NeoTransient:
 
