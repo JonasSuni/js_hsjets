@@ -376,7 +376,16 @@ def plot_driving_MP_theta():
         )
         ax.set_xlabel(xlabel_arr[n1], fontsize=14)
         ax.grid()
-        ax.plot(driving_arr[n1], standoff_arr, "o")
+        ax.plot(driving_arr[n1], standoff_arr, "o", label="Line dipole")
+
+        ax.plot(
+            driving_arr[n1],
+            100 ** (1.0 / 6) * standoff_arr ** (2 / 3),
+            "o",
+            label="Estimated 3D dipole",
+        )
+
+        ax.legend()
 
         plt.tight_layout()
         fig.savefig(
