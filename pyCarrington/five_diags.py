@@ -351,7 +351,7 @@ def plot_driving_MP_theta():
 
     rho_arr = np.array([3.3, 7, 20])
     v_arr = np.array([600, 1000, 1500])
-    pdyn_arr = m_p * rho_arr * 1e6 * v_arr * 1e6 * 1e9
+    pdyn_arr = m_p * rho_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
     B_arr = np.array([10, 20, 30])
 
     driving_arr = np.array([rho_arr, v_arr, pdyn_arr, B_arr])
