@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 r_e = 6.371e6
 mu_0 = 4 * np.pi * 1e-7
+m_p = 1.672621898e-27
 
 
 def map_surface_to_ib(theta, ib):
@@ -337,6 +338,53 @@ def precipitation_diag(run):
         z_arr,
         energybins,
     )
+
+
+def plot_driving_MP_theta():
+
+    mp_standoff_bgd, theta_mp_bgd = dayside_MP(7.0 * r_e, 8.0 * r_e, 500e3, run="BGD")
+    mp_standoff_bgf, theta_mp_bgf = dayside_MP(4.0 * r_e, 5.0 * r_e, 500e3, run="BGF")
+    mp_standoff_bgg, theta_mp_bgg = dayside_MP(13.6e6, 3.0 * r_e, 250e3, run="BGG")
+
+    standoff_arr = np.array([mp_standoff_bgd, mp_standoff_bgf, mp_standoff_bgg])
+    theta_arr = np.array([theta_mp_bgd, theta_mp_bgf, theta_mp_bgg])
+
+    rho_arr = np.array([3.3, 7, 20])
+    v_arr = np.array([600, 1000, 1500])
+    pdyn_arr = m_p * rho_arr * 1e6 * v_arr * 1e6 * 1e9
+    B_arr = np.array([10, 20, 30])
+
+    driving_arr = np.array([rho_arr, v_arr, pdyn_arr, B_arr])
+
+    xlabel_arr = [
+        "$n_\mathrm{sw}~[\mathrm{cm}^{-3}]$",
+        "$v_\mathrm{sw}~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn,sw}~[\mathrm{nPa}]$",
+        "$-B_{\mathrm{IMF},z}~[\mathrm{nT}]$",
+    ]
+    outname_arr = ["n", "v", "pdyn", "B"]
+
+    for n1 in range(4):
+
+        fig, ax = plt.subplots(1, 1)
+
+        ax.set_ylim(2, 10)
+
+        ax.set_ylabel(
+            "Magnetopause standoff [$R_\mathrm{E}$]",
+            fontsize=14,
+        )
+        ax.set_xlabel(xlabel_arr[n1], fontsize=14)
+        ax.grid()
+        ax.plot(driving_arr[n1], standoff_arr, "o")
+
+        plt.tight_layout()
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/mp_standoff_{}.png".format(
+                outname_arr[n1]
+            )
+        )
+        plt.close(fig)
 
 
 def plot_MP_theta():
