@@ -230,14 +230,16 @@ def plot_precip(plot_diff=False, min_energy=None):
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(num_arr[0], max_precip_arr[0], "o", label="Normal")
-    ax.semilogy(num_arr[1], max_precip_arr[1], "o", label="Moderate")
-    ax.semilogy(num_arr[2], max_precip_arr[2], "o", label="Strong")
+    ax.semilogy(num_arr[0], max_precip_arr[0], "o", label="Normal", color="black")
+    ax.semilogy(num_arr[1], max_precip_arr[1], "o", label="Moderate", color="black")
+    ax.semilogy(num_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.set_ylabel(
         "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
-    ax.legend(fontsize=14)
+    # ax.legend(fontsize=14)
     if min_energy:
         ax.set_title("$>${:n} eV".format(min_energy), fontsize=14)
 
@@ -437,9 +439,20 @@ def plot_MP_theta():
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.plot(1, mp_standoff_bgd, "o", label="Normal")
-    ax.plot(2, mp_standoff_bgf, "o", label="Moderate")
-    ax.plot(3, mp_standoff_bgg, "o", label="Strong")
+    ax.plot(1, mp_standoff_bgd, "o", label="Line dipole", color="black")
+    ax.plot(2, mp_standoff_bgf, "o", color="black")
+    ax.plot(3, mp_standoff_bgg, "o", color="black")
+    ax.plot(
+        1,
+        100 ** (1.0 / 6) * mp_standoff_bgd ** (2.0 / 3),
+        "o",
+        label="3D dipole\nestimate",
+        color="C1",
+    )
+    ax.plot(2, 100 ** (1.0 / 6) * mp_standoff_bgf ** (2.0 / 3), "o", color="C1")
+    ax.plot(3, 100 ** (1.0 / 6) * mp_standoff_bgg ** (2.0 / 3), "o", color="C1")
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.legend(fontsize=14)
 
     ax.set_xlim(0, 4)
@@ -457,10 +470,12 @@ def plot_MP_theta():
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.plot(1, theta_mp_bgd, "o", label="Normal")
-    ax.plot(2, theta_mp_bgf, "o", label="Moderate")
-    ax.plot(3, theta_mp_bgg, "o", label="Strong")
-    ax.legend(fontsize=14)
+    ax.plot(1, theta_mp_bgd, "o", label="Normal", color="black")
+    ax.plot(2, theta_mp_bgf, "o", label="Moderate", color="black")
+    ax.plot(3, theta_mp_bgg, "o", label="Strong", color="black")
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
+    # ax.legend(fontsize=14)
 
     ax.set_xlim(0, 4)
     ax.set_ylim(70, 90)
