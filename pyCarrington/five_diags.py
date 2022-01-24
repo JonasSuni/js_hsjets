@@ -239,6 +239,10 @@ def plot_precip(plot_diff=False, min_energy=None):
         "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
+    ax.set_xlabel(
+        "Driving conditions",
+        fontsize=14,
+    )
     # ax.legend(fontsize=14)
     if min_energy:
         ax.set_title("$>${:n} eV".format(min_energy), fontsize=14)
@@ -462,6 +466,10 @@ def plot_MP_theta():
         "Magnetopause standoff [$R_\mathrm{E}$]",
         fontsize=14,
     )
+    ax.set_xlabel(
+        "Driving conditions",
+        fontsize=14,
+    )
 
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/mp_standoff.png")
@@ -482,6 +490,10 @@ def plot_MP_theta():
 
     ax.set_ylabel(
         "Dayside polar cap boundary [$^\circ$]",
+        fontsize=14,
+    )
+    ax.set_xlabel(
+        "Driving conditions",
         fontsize=14,
     )
 
