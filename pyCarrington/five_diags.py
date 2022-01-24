@@ -111,7 +111,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
-        "Precipitation integral energy flux [$\mathrm{keV},\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
+        "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
     if min_energy:
@@ -170,7 +170,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
             ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
             ax.set_ylabel(
-                "Precipitation diff number flux [$\mathrm{cm}^{-2},\mathrm{s}^{-1},\mathrm{sr}^{-1}$]",
+                "Precipitation diff number flux [$\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
                 fontsize=12,
             )
 
@@ -218,6 +218,38 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_z.png")
+    plt.close(fig)
+
+    num_arr = [1, 2, 3]
+    max_precip_arr = [
+        np.nanmax(precip_bgd),
+        np.nanmax(precip_bgf),
+        np.nanmax(precip_bgg),
+    ]
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.semilogy(num_arr[0], max_precip_arr[0], "o", label="Normal")
+    ax.semilogy(num_arr[1], max_precip_arr[1], "o", label="Moderate")
+    ax.semilogy(num_arr[2], max_precip_arr[2], "o", label="Strong")
+    ax.set_ylabel(
+        "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        fontsize=12,
+    )
+    ax.legend(fontsize=14)
+    if min_energy:
+        ax.set_title("$>${:n} eV".format(min_energy), fontsize=14)
+
+    plt.tight_layout()
+    if min_energy:
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/max_integralflux_{}.png".format(
+                min_energy
+            )
+        )
+    else:
+        fig.savefig("/wrk/users/jesuni/Figures/carrington/max_integralflux.png")
     plt.close(fig)
 
     plt.ion()
