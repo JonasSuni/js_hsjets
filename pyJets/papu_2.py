@@ -595,12 +595,12 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    ax.clabel(jet_cont, "Jet", inline=True)
-    ax.clabel(ch_cont, "BS CH", inline=True)
-    ax.clabel(slams_cont, "FCS", inline=True)
-    ax.clabel(rho_cont, "BS rho", inline=True)
-    ax.clabel(mach_cont, "BS Mmsx", inline=True)
-    ax.clabel(cav_shfa_cont, "Cav/SHFA", inline=True)
+    ax.clabel(jet_cont, ["Jet"], inline=True)
+    ax.clabel(ch_cont, ["BS CH"], inline=True)
+    ax.clabel(slams_cont, ["FCS"], inline=True)
+    ax.clabel(rho_cont, ["BS rho"], inline=True)
+    ax.clabel(mach_cont, ["BS Mmsx"], inline=True)
+    ax.clabel(cav_shfa_cont, ["Cav/SHFA"], inline=True)
 
     print(jet_cont.collections[0])
 
