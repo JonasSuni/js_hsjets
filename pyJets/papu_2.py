@@ -595,7 +595,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    print(jet_cont.collections[0][0])
+    print(jet_cont.collections[0])
 
     jet_cont.collections[0].set_label("Jet")
     ch_cont.collections[0].set_label("BS CH")
