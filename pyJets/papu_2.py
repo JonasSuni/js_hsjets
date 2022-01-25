@@ -612,17 +612,18 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     mach_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[4])
     cav_shfa_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[5])
 
+    proxy = [
+        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr])
+        for itr in range(len(CB_color_cycle))
+    ]
+
     ax.legend(
-        (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
+        # (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
+        proxy,
         ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
         frameon=True,
         numpoints=1,
         markerscale=1,
         loc="upper right",
         fontsize=5,
-    )
-
-    ax.legend(
-        (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
-        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
     )
