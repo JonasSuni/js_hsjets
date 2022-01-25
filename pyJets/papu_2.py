@@ -592,4 +592,5 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     mach_cont.collections[0].set_label("BS Mmsx")
     cav_shfa_cont.collections[0].set_label("Cav/SHFA")
 
-    ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
+    # ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
+    ax.legend(loc="upper right")
