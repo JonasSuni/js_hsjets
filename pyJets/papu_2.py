@@ -2,6 +2,7 @@ import sys
 import matplotlib.style
 import matplotlib as mpl
 import jet_aux as jx
+from pyJets.jet_aux import CB_color_cycle
 import pytools as pt
 import os
 import scipy
@@ -532,13 +533,16 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
     cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
 
+    CB_color_cycle = jx.CB_color_cycle
+
     jet_cont = ax.contour(
         XmeshXY,
         YmeshXY,
         jet_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[0],
+        colors=CB_color_cycle[0],
+        linestyles=["solid"],
     )
 
     ch_cont = ax.contour(
@@ -547,7 +551,8 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         ch_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[1],
+        colors=CB_color_cycle[1],
+        linestyles=["solid"],
     )
 
     slams_cont = ax.contour(
@@ -556,7 +561,8 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         slams_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[2],
+        colors=CB_color_cycle[2],
+        linestyles=["solid"],
     )
 
     rho_cont = ax.contour(
@@ -565,7 +571,8 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         rho_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[3],
+        colors=CB_color_cycle[3],
+        linestyles=["solid"],
     )
 
     mach_cont = ax.contour(
@@ -574,7 +581,8 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         mach_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[4],
+        colors=CB_color_cycle[4],
+        linestyles=["solid"],
     )
 
     cav_shfa_cont = ax.contour(
@@ -583,7 +591,8 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         cav_shfa_mask,
         [0.5],
         linewidths=0.6,
-        colors=jx.CB_color_cycle[5],
+        colors=CB_color_cycle[5],
+        linestyles=["solid"],
     )
     jet_cont.collections[0].set_label("Jet")
     ch_cont.collections[0].set_label("BS CH")
@@ -592,5 +601,4 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     mach_cont.collections[0].set_label("BS Mmsx")
     cav_shfa_cont.collections[0].set_label("Cav/SHFA")
 
-    # ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
-    ax.legend(loc="upper right")
+    ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
