@@ -318,7 +318,7 @@ def fcs_non_jet_hist(lastbs=False):
         [3.3, 600, 10, 0.5],
     ]
 
-    # Initialise arrays for variables to be read
+    # Initialise arrays for variables to be read and their figure labels, histogram bins and label positions
     # delta n, delta v, delta Pdyn, delta B, delta T, Lifetime, Tangential size, Size ratio
     # Count: 8
     vars_list = ["Dn", "Dv", "Dpd", "DB", "DT", "duration", "size_tan", "size_ratio"]
@@ -346,8 +346,10 @@ def fcs_non_jet_hist(lastbs=False):
     fcs_jet_props = [[], [], [], [], [], [], [], []]
     non_jet_props = [[], [], [], [], [], [], [], []]
 
+    # Loop over runs
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
 
+        # Get solar wind values and make normalisation array
         n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
         sw_norm = [
             n_sw,
@@ -364,30 +366,49 @@ def fcs_non_jet_hist(lastbs=False):
         sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
         non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
 
+        # Loop over fcs-jets
         for sj_id in sj_jet_ids:
+
+            # Read properties
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
             for n1 in range(8):
+
+                # Should properties be taken at last time at bow shock...
                 if lastbs:
                     fcs_jet_props[n1].append(
                         props.read_at_lastbs(vars_list[n1]) / sw_norm[n1]
                     )
+
+                # ...or at the time of maximum area?
                 else:
                     fcs_jet_props[n1].append(
                         props.read_at_amax(vars_list[n1]) / sw_norm[n1]
                     )
 
+        # Loop over non-fcs-jets
         for non_id in non_sj_ids:
+
+            # Read properties
             props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
             for n1 in range(8):
+
+                # Should properties be taken at last time at bow shock...
                 if lastbs:
                     non_jet_props[n1].append(
                         props.read_at_lastbs(vars_list[n1]) / sw_norm[n1]
                     )
+
+                # ...or at the time of maximum area?
                 else:
                     non_jet_props[n1].append(
                         props.read_at_amax(vars_list[n1]) / sw_norm[n1]
                     )
 
+    # Make figure
     fig, ax_list = plt.subplots(4, 2, figsize=(7, 11))
 
     ax_flat = ax_list.T.flatten()
@@ -417,8 +438,150 @@ def fcs_non_jet_hist(lastbs=False):
 
     ax_flat[5].legend(frameon=False, markerscale=0.5)
 
+    # Save figure
     plt.tight_layout()
 
     fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.pdf".format(lastbs))
     fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.png".format(lastbs))
     plt.close(fig)
+
+
+def colormap_with_contours(runid, filenr):
+
+    global runid_g, filenr_g
+    runid_g = runid
+    filenr_g = filenr
+
+    # Path to vlsv files for current run
+    bulkpath = jx.find_bulkpath(runid)
+    bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+    vmax = [1.5, 3.0, 1.5, 3.0][runid_list.index(runid)]
+    if runid in ["ABA", "AEA"]:
+        boxre = [6, 18, -8, 6]
+    else:
+        boxre = [6, 18, -6, 6]
+
+    pt.plot.plot_colormap(
+        filename=bulkpath + bulkname,
+        outputfile=wrkdir_DNR
+        + "papu22/Figures/{}/contours_{}.png".format(runid, filenr),
+        boxre=boxre,
+        usesci=0,
+        lin=1,
+        var="Pdyn",
+        tickinterval=1,
+        vmin=0,
+        vmax=vmax,
+        wmark=True,
+        vscale=1e9,
+        colormap="Greys",
+        external=ext_contours,
+        pass_vars=[
+            "RhoNonBackstream",
+            "PTensorNonBackstreamDiagonal",
+            "B",
+            "v",
+            "rho",
+            "core_heating",
+            "CellID",
+            "Mmsx",
+        ],
+        title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
+        cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+    )
+
+
+def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
+
+    B = pass_maps["B"]
+    rho = pass_maps["rho"]
+    cellids = pass_maps["CellID"]
+    mmsx = pass_maps["Mmsx"]
+    core_heating = pass_maps["core_heating"]
+    Bmag = np.linalg.norm(B, axis=-1)
+
+    slams_cells = np.loadtxt(
+        "/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(runid_g, filenr_g)
+    ).astype(int)
+    jet_cells = np.loadtxt(
+        "/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g, filenr_g)
+    ).astype(int)
+
+    slams_mask = np.in1d(cellids, slams_cells).astype(int)
+    slams_mask = np.reshape(slams_mask, cellids.shape)
+
+    jet_mask = np.in1d(cellids, jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask, cellids.shape)
+
+    ch_mask = (core_heating > 3 * 0.5e6).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
+    rho_mask = (rho > 2 * rho_sw).astype(int)
+
+    cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
+    cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
+
+    jet_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        jet_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[0],
+    )
+
+    ch_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        ch_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[1],
+    )
+
+    slams_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        slams_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[2],
+    )
+
+    rho_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        rho_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[3],
+    )
+
+    mach_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        mach_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[4],
+    )
+
+    cav_shfa_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        cav_shfa_mask,
+        [0.5],
+        linewidths=0.6,
+        colors=jx.CB_color_cycle[5],
+    )
