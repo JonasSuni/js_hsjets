@@ -597,11 +597,11 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
 
     print(jet_cont.collections[0])
 
-    # jet_cont.collections[0].set_label("Jet")
-    # ch_cont.collections[0].set_label("BS CH")
-    # slams_cont.collections[0].set_label("FCS")
-    # rho_cont.collections[0].set_label("BS rho")
-    # mach_cont.collections[0].set_label("BS Mmsx")
-    # cav_shfa_cont.collections[0].set_label("Cav/SHFA")
+    jet_cont.collections[0].set_label("Jet")
+    ch_cont.collections[0].set_label("BS CH")
+    slams_cont.collections[0].set_label("FCS")
+    rho_cont.collections[0].set_label("BS rho")
+    mach_cont.collections[0].set_label("BS Mmsx")
+    cav_shfa_cont.collections[0].set_label("Cav/SHFA")
 
-    # ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
+    ax.legend(frameon=True, numpoints=5, markerscale=5, loc="upper right", fontsize=5)
