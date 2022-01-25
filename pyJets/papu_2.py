@@ -539,6 +539,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[0],
+        label="Jets",
     )
 
     ch_cont = ax.contour(
@@ -548,6 +549,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[1],
+        label="CH",
     )
 
     slams_cont = ax.contour(
@@ -557,6 +559,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[2],
+        label="FCS",
     )
 
     rho_cont = ax.contour(
@@ -566,6 +569,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[3],
+        label="rho",
     )
 
     mach_cont = ax.contour(
@@ -575,6 +579,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[4],
+        label="Mmsx",
     )
 
     cav_shfa_cont = ax.contour(
@@ -584,4 +589,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         [0.5],
         linewidths=0.6,
         colors=jx.CB_color_cycle[5],
+        label="Cav/SHFA",
     )
+
+    ax.legend(frameon=True, numpoints=1, markerscale=1, loc="upper right", fontsize=5)
