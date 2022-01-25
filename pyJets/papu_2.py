@@ -478,7 +478,7 @@ def colormap_with_contours(runid, filenr):
     pt.plot.plot_colormap(
         filename=bulkpath + bulkname,
         outputfile=wrkdir_DNR
-        + "papu22/Figures/{}/contours_{}.png".format(runid, filenr),
+        + "papu22/Figures/{}/contours_{}.png".format(runid, str(filenr).zfill(7)),
         boxre=boxre,
         usesci=0,
         lin=1,
