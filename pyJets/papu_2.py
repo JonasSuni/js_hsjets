@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.lines import Line2D
 
 import plot_contours as pc
 import jet_analyser as ja
@@ -597,11 +598,26 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
 
     print(jet_cont.collections[0])
 
-    jet_cont.collections[0].set_label("Jet")
-    ch_cont.collections[0].set_label("BS CH")
-    slams_cont.collections[0].set_label("FCS")
-    rho_cont.collections[0].set_label("BS rho")
-    mach_cont.collections[0].set_label("BS Mmsx")
-    cav_shfa_cont.collections[0].set_label("Cav/SHFA")
+    # jet_cont.collections[0].set_label("Jet")
+    # ch_cont.collections[0].set_label("BS CH")
+    # slams_cont.collections[0].set_label("FCS")
+    # rho_cont.collections[0].set_label("BS rho")
+    # mach_cont.collections[0].set_label("BS Mmsx")
+    # cav_shfa_cont.collections[0].set_label("Cav/SHFA")
 
-    ax.legend(frameon=True, numpoints=5, markerscale=5, loc="upper right", fontsize=5)
+    jet_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[0])
+    ch_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[1])
+    slams_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[2])
+    rho_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[3])
+    mach_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[4])
+    cav_shfa_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[5])
+
+    ax.legend(
+        (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
+        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
+        frameon=True,
+        numpoints=1,
+        markerscale=1,
+        loc="upper right",
+        fontsize=5,
+    )
