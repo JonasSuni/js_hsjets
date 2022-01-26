@@ -448,11 +448,25 @@ def fcs_non_jet_hist(lastbs=False):
     plt.close(fig)
 
 
-def colormap_with_contours(runid, filenr):
+def papu22_mov_script(runid):
 
-    global runid_g, filenr_g
+    sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
+    non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
+
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    stop_list = [839, 1179, 879, 1339]
+
+    for filenr in range(580, stop_list[runid_list.index(runid)]):
+        colormap_with_contours(runid, filenr, sj_ids=sj_jet_ids, non_ids=non_sj_ids)
+
+
+def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
+
+    global runid_g, filenr_g, sj_ids_g, non_ids_g
     runid_g = runid
     filenr_g = filenr
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
 
     # Path to vlsv files for current run
     bulkpath = jx.find_bulkpath(runid)
@@ -520,6 +534,29 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     jet_cells = np.loadtxt(
         "/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g, filenr_g)
     ).astype(int)
+
+    sj_jetobs = [
+        jio.PropReader(str(sj_id).zfill(5), runid_g, transient="jet")
+        for sj_id in sj_ids_g
+    ]
+    non_sjobs = [
+        jio.PropReader(str(non_id).zfill(5), runid_g, transient="jet")
+        for non_id in non_ids_g
+    ]
+
+    sj_xlist = []
+    sj_ylist = []
+    non_xlist = []
+    non_ylist = []
+
+    for jetobj in sj_jetobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            sj_xlist.append(jetobj.read_at_time("x_mean", filenr_g / 2.0))
+            sj_ylist.append(jetobj.read_at_time("y_mean", filenr_g / 2.0))
+    for jetobj in non_sjobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            non_xlist.append(jetobj.read_at_time("x_mean", filenr_g / 2.0))
+            non_ylist.append(jetobj.read_at_time("y_mean", filenr_g / 2.0))
 
     slams_mask = np.in1d(cellids, slams_cells).astype(int)
     slams_mask = np.reshape(slams_mask, cellids.shape)
@@ -594,6 +631,29 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         linewidths=0.6,
         colors=CB_color_cycle[5],
         linestyles=["solid"],
+    )
+
+    (non_pos,) = ax.plot(
+        non_xlist,
+        non_ylist,
+        "o",
+        color="black",
+        markersize=2,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=0.2,
+        label="Non-FCS-jet",
+    )
+    (sj_pos,) = ax.plot(
+        sj_xlist,
+        sj_ylist,
+        "o",
+        color="red",
+        markersize=2,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=0.2,
+        label="FCS-jet",
     )
 
     # print(jet_cont.collections[0])

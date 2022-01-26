@@ -110,4 +110,10 @@ from jet_21_scripts import (
     plot_residual_bz,
 )
 
-from papu_2 import sj_non_timeseries, SEA_plots, fcs_non_jet_hist,colormap_with_contours
+from papu_2 import (
+    sj_non_timeseries,
+    SEA_plots,
+    fcs_non_jet_hist,
+    colormap_with_contours,
+    papu22_mov_script,
+)
