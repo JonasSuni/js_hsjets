@@ -638,10 +638,10 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         non_ylist,
         "o",
         color="black",
-        markersize=2,
+        markersize=4,
         markeredgecolor="white",
         fillstyle="full",
-        mew=0.2,
+        mew=0.4,
         label="Non-FCS-jet",
     )
     (sj_pos,) = ax.plot(
@@ -649,10 +649,10 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         sj_ylist,
         "o",
         color="red",
-        markersize=2,
+        markersize=4,
         markeredgecolor="white",
         fillstyle="full",
-        mew=0.2,
+        mew=0.4,
         label="FCS-jet",
     )
 
