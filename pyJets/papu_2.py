@@ -456,7 +456,7 @@ def papu22_mov_script(runid):
     runid_list = ["ABA", "ABC", "AEA", "AEC"]
     stop_list = [839, 1179, 879, 1339]
 
-    for filenr in range(580, stop_list[runid_list.index(runid)]):
+    for filenr in range(580, stop_list[runid_list.index(runid)] + 1):
         colormap_with_contours(runid, filenr, sj_ids=sj_jet_ids, non_ids=non_sj_ids)
 
 
