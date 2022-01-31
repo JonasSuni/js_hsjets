@@ -481,8 +481,9 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
         [1e6, 750e3, 10e-9, 0.5e6],
         [3.3e6, 600e3, 10e-9, 0.5e6],
     ]
-    global rho_sw, v_sw, B_sw, T_sw
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
     vmax = [1.5, 3.0, 1.5, 3.0][runid_list.index(runid)]
     if runid in ["ABA", "AEA"]:
         boxre = [6, 18, -8, 6]
@@ -513,6 +514,7 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
             "core_heating",
             "CellID",
             "Mmsx",
+            "Pdyn",
         ],
         title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
         cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
@@ -527,6 +529,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     mmsx = pass_maps["Mmsx"]
     core_heating = pass_maps["core_heating"]
     Bmag = np.linalg.norm(B, axis=-1)
+    Pdyn = pass_maps["Pdyn"]
 
     slams_cells = np.loadtxt(
         "/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(runid_g, filenr_g)
@@ -564,12 +567,15 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     jet_mask = np.in1d(cellids, jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask, cellids.shape)
 
-    ch_mask = (core_heating > 3 * 0.5e6).astype(int)
+    ch_mask = (core_heating > 3 * T_sw).astype(int)
     mach_mask = (mmsx < 1).astype(int)
     rho_mask = (rho > 2 * rho_sw).astype(int)
 
     cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
     cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
+
+    diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
+    diamag_mask[Bmag > 0.8 * B_sw] = 0
 
     CB_color_cycle = jx.CB_color_cycle
 
@@ -623,10 +629,20 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    cav_shfa_cont = ax.contour(
+    # cav_shfa_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     cav_shfa_mask,
+    #     [0.5],
+    #     linewidths=0.6,
+    #     colors=CB_color_cycle[5],
+    #     linestyles=["solid"],
+    # )
+
+    diamag_cont = ax.contour(
         XmeshXY,
         YmeshXY,
-        cav_shfa_mask,
+        diamag_mask,
         [0.5],
         linewidths=0.6,
         colors=CB_color_cycle[5],
@@ -665,19 +681,20 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     # mach_cont.collections[0].set_label("BS Mmsx")
     # cav_shfa_cont.collections[0].set_label("Cav/SHFA")
 
-    jet_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[0])
-    ch_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[1])
-    slams_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[2])
-    rho_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[3])
-    mach_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[4])
-    cav_shfa_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[5])
+    # jet_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[0])
+    # ch_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[1])
+    # slams_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[2])
+    # rho_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[3])
+    # mach_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[4])
+    # cav_shfa_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[5])
 
     proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(6)]
 
     ax.legend(
         # (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
         proxy,
-        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
+        # ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
+        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Diamag"),
         frameon=True,
         numpoints=1,
         markerscale=1,

@@ -108,6 +108,7 @@ from jet_21_scripts import (
     vfield3_normalise,
     fac_migration_plot,
     plot_residual_bz,
+    maxime2_diff,
 )
 
 from papu_2 import (
