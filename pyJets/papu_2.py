@@ -281,12 +281,18 @@ def SEA_plots(zero_level=False):
                 for n2 in range(6):
 
                     # Plot timeseries of deltas relative to epoch time
-                    ax_list[n2].plot(
-                        t_arr, data[n2] - data[n2][20], color="lightgray", zorder=1
-                    )
+                    if not zero_level:
+                        ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+                    else:
+                        ax_list[n2].plot(
+                            t_arr, data[n2] - data[n2][20], color="lightgray", zorder=1
+                        )
 
                     # Add timeseries of deltas relative to epoch time to average array
-                    non_jet_avg[n2] += data[n2] - data[n2][20]
+                    if not zero_level:
+                        non_jet_avg[n2] += data[n2]
+                    else:
+                        non_jet_avg[n2] += data[n2] - data[n2][20]
             except:
                 pass
 
