@@ -575,7 +575,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
 
     diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
-    diamag_mask[Bmag > B_sw] = 0
+    # diamag_mask[Bmag > B_sw] = 0
 
     CB_color_cycle = jx.CB_color_cycle
 
