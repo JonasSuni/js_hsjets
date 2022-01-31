@@ -190,7 +190,7 @@ def sj_non_timeseries(runid):
         )
 
 
-def SEA_plots():
+def SEA_plots(zero_level=False):
     """
     Superposed epoch analysis of fcs-jet vs. non-fcs-jet start location properties
     """
@@ -212,12 +212,20 @@ def SEA_plots():
     for ax in ax_list:
         ax.grid()
 
-    ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
-    ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
-    ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-    ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
-    ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
-    ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
+    if zero_level:
+        ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
+        ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
+        ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
+        ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
+        ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
+        ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
+    else:
+        ax_list[0].set_ylabel("$n~[n_\mathrm{sw}]$")
+        ax_list[1].set_ylabel("$v~[v_\mathrm{sw}]$")
+        ax_list[2].set_ylabel("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
+        ax_list[3].set_ylabel("$B~[B_\mathrm{IMF}]$")
+        ax_list[4].set_ylabel("$T_\mathrm{perp}~[T_\mathrm{sw}]$")
+        ax_list[5].set_ylabel("$T_\mathrm{par}~[T_\mathrm{sw}]$")
     ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
 
     # ax_list[0].set_ylabel("delta n")
@@ -246,12 +254,18 @@ def SEA_plots():
                 for n2 in range(6):
 
                     # Plot timeseries of deltas relative to epoch time
-                    ax_list[n2].plot(
-                        t_arr, data[n2] - data[n2][20], color="darkgray", zorder=0
-                    )
+                    if not zero_level:
+                        ax_list[n2].plot(t_arr, data[n2], color="darkgray", zorder=0)
+                    else:
+                        ax_list[n2].plot(
+                            t_arr, data[n2] - data[n2][20], color="darkgray", zorder=0
+                        )
 
                     # Add timeseries of deltas relative to epoch time to average array
-                    fcs_jet_avg[n2] += data[n2] - data[n2][20]
+                    if not zero_level:
+                        fcs_jet_avg[n2] += data[n2]
+                    else:
+                        fcs_jet_avg[n2] += data[n2] - data[n2][20]
             except:
                 pass
 
@@ -303,8 +317,8 @@ def SEA_plots():
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.pdf")
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot.png")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot_{}.pdf".format(zero_level))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot_{}.png".format(zero_level))
     plt.close(fig)
 
 
