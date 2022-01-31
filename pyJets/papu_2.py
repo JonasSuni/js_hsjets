@@ -190,10 +190,15 @@ def sj_non_timeseries(runid):
         )
 
 
-def SEA_plots(zero_level=False):
+def SEA_plots(zero_level=False, run_id="all"):
     """
     Superposed epoch analysis of fcs-jet vs. non-fcs-jet start location properties
     """
+
+    if run_id == "all":
+        runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        runid_list = [run_id]
 
     # Initialise array of times relative to epoch time
     t_arr = np.arange(-10.0, 10.05, 0.5)
@@ -237,7 +242,7 @@ def SEA_plots(zero_level=False):
     # ax_list[-1].set_xlabel("delta t")
 
     # Loop over runs
-    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+    for runid in runid_list:
 
         # Loop over arbitrary large number
         for n1 in range(4000):
@@ -319,12 +324,17 @@ def SEA_plots(zero_level=False):
 
     # Add legend
     ax_list[0].legend()
+    ax_list[0].set_title(run_id)
 
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot_{}.pdf".format(zero_level))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_plot_{}.png".format(zero_level))
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
+    )
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id)
+    )
     plt.close(fig)
 
 
