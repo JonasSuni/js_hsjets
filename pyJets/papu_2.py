@@ -330,7 +330,12 @@ def SEA_plots(zero_level=False, run_id="all"):
     plt.close(fig)
 
 
-def fcs_non_jet_hist(lastbs=False):
+def fcs_non_jet_hist(lastbs=False, run_id="all"):
+
+    if run_id == "all":
+        run_arr = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        run_arr = [run_id]
 
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
@@ -397,7 +402,7 @@ def fcs_non_jet_hist(lastbs=False):
     non_jet_props = [[], [], [], [], [], [], [], [], [], []]
 
     # Loop over runs
-    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+    for runid in run_arr:
 
         # Get solar wind values and make normalisation array
         n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
@@ -489,12 +494,19 @@ def fcs_non_jet_hist(lastbs=False):
         )
 
     ax_flat[6].legend(frameon=False, markerscale=0.5)
+    ax_flat[0].set_title(run_id, fontsize=20)
 
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.pdf".format(lastbs))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_non_hist_lastbs_{}.png".format(lastbs))
+    fig.savefig(
+        wrkdir_DNR
+        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.pdf".format(lastbs, run_id)
+    )
+    fig.savefig(
+        wrkdir_DNR
+        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id)
+    )
     plt.close(fig)
 
 
