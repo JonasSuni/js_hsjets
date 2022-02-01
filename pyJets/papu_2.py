@@ -425,7 +425,7 @@ def fcs_non_jet_hist(lastbs=False):
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
 
             # Loop over variables
-            for n1 in range(8):
+            for n1 in range(len(vars_list)):
 
                 # Should properties be taken at last time at bow shock...
                 if lastbs:
@@ -446,7 +446,7 @@ def fcs_non_jet_hist(lastbs=False):
             props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
 
             # Loop over variables
-            for n1 in range(8):
+            for n1 in range(len(vars_list)):
 
                 # Should properties be taken at last time at bow shock...
                 if lastbs:
