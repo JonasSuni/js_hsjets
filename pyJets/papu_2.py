@@ -233,14 +233,6 @@ def SEA_plots(zero_level=False, run_id="all"):
         ax_list[5].set_ylabel("$T_\mathrm{par}~[T_\mathrm{sw}]$")
     ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
 
-    # ax_list[0].set_ylabel("delta n")
-    # ax_list[1].set_ylabel("delta v")
-    # ax_list[2].set_ylabel("delta Pdyn")
-    # ax_list[3].set_ylabel("delta B")
-    # ax_list[4].set_ylabel("delta Tperp")
-    # ax_list[5].set_ylabel("delta Tpar")
-    # ax_list[-1].set_xlabel("delta t")
-
     # Loop over runs
     for runid in runid_list:
 
@@ -351,9 +343,20 @@ def fcs_non_jet_hist(lastbs=False):
     ]
 
     # Initialise arrays for variables to be read and their figure labels, histogram bins and label positions
-    # delta n, delta v, delta Pdyn, delta B, delta T, Lifetime, Tangential size, Size ratio
-    # Count: 8
-    vars_list = ["Dn", "Dv", "Dpd", "DB", "DT", "duration", "size_tan", "size_ratio"]
+    # delta n, delta v, delta Pdyn, delta B, delta T, Lifetime, Tangential size, Size ratio, leaves bs, dies at bs
+    # Count: 10
+    vars_list = [
+        "Dn",
+        "Dv",
+        "Dpd",
+        "DB",
+        "DT",
+        "duration",
+        "size_tan",
+        "size_ratio",
+        "leaves_bs",
+        "dies_at_bs",
+    ]
     label_list = [
         "$\\Delta n~[n_\mathrm{sw}]$",
         "$\\Delta |v|~[v_\mathrm{sw}]$",
@@ -361,8 +364,10 @@ def fcs_non_jet_hist(lastbs=False):
         "$\\Delta |B|~[B_\mathrm{IMF}]$",
         "$\\Delta T~[T_\mathrm{sw}]$",
         "$Lifetime~[\mathrm{s}]}$",
-        "$Tangential~size~[R_\mathrm{E}]$",
-        "$Size~ratio$",
+        "$Tangential$\n$size~[R_\mathrm{E}]$",
+        "Size Ratio",
+        "Leaves BS",
+        "Dies\nat BS",
     ]
     bins_list = [
         np.linspace(-2, 5, 10 + 1),
@@ -373,10 +378,23 @@ def fcs_non_jet_hist(lastbs=False):
         np.linspace(0, 60, 10 + 1),
         np.linspace(0, 0.5, 10 + 1),
         np.linspace(0, 5, 10 + 1),
+        np.linspace(0, 1, 2 + 1),
+        np.linspace(0, 1, 2 + 1),
     ]
-    pos_list = ["left", "left", "left", "left", "right", "right", "right", "right"]
-    fcs_jet_props = [[], [], [], [], [], [], [], []]
-    non_jet_props = [[], [], [], [], [], [], [], []]
+    pos_list = [
+        "left",
+        "left",
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+    ]
+    fcs_jet_props = [[], [], [], [], [], [], [], [], [], []]
+    non_jet_props = [[], [], [], [], [], [], [], [], [], []]
 
     # Loop over runs
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
@@ -389,6 +407,8 @@ def fcs_non_jet_hist(lastbs=False):
             m_p * n_sw * 1e6 * v_sw * 1e3 * v_sw * 1e3 * 1e9,
             B_sw,
             T_sw,
+            1,
+            1,
             1,
             1,
             1,
@@ -441,7 +461,7 @@ def fcs_non_jet_hist(lastbs=False):
                     )
 
     # Make figure
-    fig, ax_list = plt.subplots(4, 2, figsize=(7, 11))
+    fig, ax_list = plt.subplots(5, 2, figsize=(7, 13))
 
     ax_flat = ax_list.T.flatten()
 
@@ -468,7 +488,7 @@ def fcs_non_jet_hist(lastbs=False):
             label="non-FCS-jets",
         )
 
-    ax_flat[5].legend(frameon=False, markerscale=0.5)
+    ax_flat[6].legend(frameon=False, markerscale=0.5)
 
     # Save figure
     plt.tight_layout()

@@ -227,6 +227,14 @@ class PropReader:
             x, y = self.read("x_mean")[-1], self.read("y_mean")[-1]
             cone_angle = np.rad2deg(np.arctan2(y, x))
             return np.ones_like(t) * cone_angle
+        elif name == "leaves_bs":
+            at_bow_shock = self.read("at_bow_shock")
+            leaves_bs = int((at_bow_shock == 0).any())
+            return np.ones_like(at_bow_shock) * leaves_bs
+        elif name == "dies_at_bs":
+            at_bow_shock = self.read("at_bow_shock")
+            dies_at_bs = int(at_bow_shock[-1] == 1)
+            return np.ones_like(at_bow_shock) * dies_at_bs
         else:
             print("Variable not found!")
             return None

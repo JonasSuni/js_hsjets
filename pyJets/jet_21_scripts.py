@@ -37,8 +37,6 @@ homedir = os.environ["HOME"] + "/"
 
 def maxime2_diff(A=0.3, Dmm=0.01, dt=0.01):
 
-    mpl.use("TkAgg")
-
     plt.ion()
 
     mu = np.arange(-1, 1.0005, 0.001)
