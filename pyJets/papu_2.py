@@ -145,6 +145,8 @@ def non_jet_jplots(runid):
             ax.set_xlim(x_range[0], x_range[-1])
             ax.set_ylim(t_range[0], t_range[-1])
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+            ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+            ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=20, labelpad=10)
 
         # Save figure
