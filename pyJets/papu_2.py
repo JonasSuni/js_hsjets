@@ -131,12 +131,12 @@ def non_jet_jplots(runid):
         for idx, ax in enumerate(ax_list):
             ax.tick_params(labelsize=15)
             im_list.append(
-                ax.pcolormesh(x_range, t_range, data_arr[idx], shading="nearest")
+                ax.pcolormesh(
+                    x_range, t_range, data_arr[idx], shading="nearest", cmap="Greys"
+                )
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-            ax.contour(
-                XmeshXY, YmeshXY, rho_arr, [2 * n_sw], colors=[CB_color_cycle[3]]
-            )
+            ax.contour(XmeshXY, YmeshXY, rho_arr, [2 * n_sw], colors=["black"])
             ax.contour(
                 XmeshXY, YmeshXY, Tcore_arr, [3 * T_sw], colors=[CB_color_cycle[1]]
             )
