@@ -94,7 +94,7 @@ def non_jet_jplots(runid):
 
         for fnr in fnr_range:
             vlsvobj = pt.vlsvfile.VlsvReader(
-                bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
             v_arr.append(
