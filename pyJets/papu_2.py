@@ -105,8 +105,8 @@ def non_jet_jplots(runid):
                 vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
             )
             T_arr.append(vlsvobj.read_variable("Temperature", cellids=cell_range))
-            Tcore_arr.append(vlsvobj.read_variable("core_heating"), cellids=cell_range)
-            mmsx_arr.append(vlsvobj.read_variable("Mmsx"), cellids=cell_range)
+            Tcore_arr.append(vlsvobj.read_variable("core_heating", cellids=cell_range))
+            mmsx_arr.append(vlsvobj.read_variable("Mmsx", cellids=cell_range))
 
         rho_arr = np.array(rho_arr) / 1.0e6
         v_arr = np.array(v_arr) / 1.0e3
