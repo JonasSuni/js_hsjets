@@ -33,6 +33,129 @@ except:
     vlasdir = "/proj/vlasov"
 
 
+def non_jet_jplots(runid):
+
+    CB_color_cycle = jx.CB_color_cycle
+
+    dx = 227e3 / r_e
+    varname_list = [
+        "$n$ [cm$^{-3}$]",
+        "$v$ [km/s]",
+        "$P_\mathrm{dyn}$ [nPa]",
+        "$B$ [nT]",
+        "$T$ [MK]",
+    ]
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1.0, 750.0, 5.0, 0.5],
+        [3.3, 600.0, 5.0, 0.5],
+        [1.0, 750.0, 10.0, 0.5],
+        [3.3, 600.0, 10.0, 0.5],
+    ]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+
+    # Path to vlsv files for current run
+    bulkpath = jx.find_bulkpath(runid)
+
+    # Get IDs of fcs-jets and non-fcs-jets
+    sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
+    non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
+
+    # Loop through non-fcs-jet IDs
+    for non_id in non_sj_ids:
+        print("Non-FCS jets for run {}: {}".format(runid, non_id))
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        fnr0 = int(t0 * 2)
+
+        fnr_range = np.arange(fnr0 - 30, fnr0 + 30 + 1)
+        t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+        # Get cellid of initial position
+        cellid = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+
+        cell_range = np.arange(cellid - 20, cellid + 20 + 1)
+        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.1, dx)
+
+        XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
+
+        rho_arr = []
+        v_arr = []
+        pdyn_arr = []
+        B_arr = []
+        T_arr = []
+        Tcore_arr = []
+        mmsx_arr = []
+
+        for fnr in fnr_range:
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+            )
+            rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
+            v_arr.append(vlsvobj.read_variable("v", op="magnitude", cellids=cell_range))
+            pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
+            B_arr.append(vlsvobj.read_variable("B", op="magnitude", cellids=cell_range))
+            T_arr.append(vlsvobj.read_variable("Temperature", cellids=cell_range))
+            Tcore_arr.append(vlsvobj.read_variable("core_heating"), cellids=cell_range)
+            mmsx_arr.append(vlsvobj.read_variable("Mmsx"), cellids=cell_range)
+
+        rho_arr = np.array(rho_arr) / 1.0e6
+        v_arr = np.array(v_arr) / 1.0e3
+        pdyn_arr = np.array(pdyn_arr) / 1.0e-9
+        B_arr = np.array(B_arr) / 1.0e-9
+        T_arr = np.array(T_arr) / 1.0e6
+        Tcore_arr = np.array(Tcore_arr) / 1.0e6
+        mmsx_arr = np.array(mmsx_arr)
+
+        data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
+
+        fig, ax_list = plt.subplots(
+            1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
+        )
+        im_list = []
+        cb_list = []
+        fig.suptitle(
+            "Run: {}, JetID: {}, $y$ = {:.3f} $R_\mathrm{E}$".format(runid, non_id, y0),
+            fontsize=20,
+        )
+        for idx, ax in enumerate(ax_list):
+            ax.tick_params(labelsize=15)
+            im_list.append(
+                ax.pcolormesh(data_arr[idx], XmeshXY, YmeshXY, shading="nearest")
+            )
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            ax.contour(
+                XmeshXY, YmeshXY, rho_arr, [2 * rho_sw], colors=[CB_color_cycle[3]]
+            )
+            ax.contour(
+                XmeshXY, YmeshXY, Tcore_arr, [3 * T_sw], colors=[CB_color_cycle[1]]
+            )
+            ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
+            ax.set_title(varname_list[idx], fontsize=20)
+            ax.set_xlim(x_range[0], x_range[-1])
+            ax.set_ylim(t_range[0], t_range[-1])
+            ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=20)
+
+        # Save figure
+        plt.tight_layout()
+
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        )
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5))
+        )
+        plt.close(fig)
+
+
 def sj_non_timeseries(runid):
     """
     Variables: t, n, v, Pdyn, B, Tperp, Tpar

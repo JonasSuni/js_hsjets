@@ -117,4 +117,5 @@ from papu_2 import (
     fcs_non_jet_hist,
     colormap_with_contours,
     papu22_mov_script,
+    non_jet_jplots,
 )

@@ -37,8 +37,6 @@ homedir = os.environ["HOME"] + "/"
 
 def maxime2_diff(A=0.3, Dmm=0.01, dt=0.01):
 
-    plt.ion()
-
     mu = np.arange(-1, 1.0005, 0.001)
     f = np.exp(-mu * mu - A * (1 - mu * mu))
     t = 0.0
@@ -46,23 +44,8 @@ def maxime2_diff(A=0.3, Dmm=0.01, dt=0.01):
     dx = 0.001
     A = A
 
-    fig, ax_list = plt.subplots(3, 1)
-    ax_list[0].grid()
-    ax_list[1].grid()
-    ax_list[2].grid()
-    ax_list[0].set_xlim(-1, 1)
-    ax_list[0].set_ylim(0, max(f))
-    ax_list[1].set_xlim(-1, 1)
-    ax_list[1].set_ylim(0, max(f))
-    ax_list[2].set_xlim(0, 60)
-    ax_list[2].set_ylim(0.2, 1)
-
     t_arr = [t]
     A_arr = [A]
-
-    ax_list[0].plot(mu, f)
-
-    plt.draw()
 
     while np.abs(A - 1) > 0.1:
         df = (1 - mu * mu) * Dmm * np.gradient(
@@ -76,10 +59,7 @@ def maxime2_diff(A=0.3, Dmm=0.01, dt=0.01):
         t_arr.append(t)
         A_arr.append(A)
 
-    ax_list[1].plot(mu, f)
-    ax_list[2].plot(t_arr, A_arr)
-    plt.tight_layout()
-    plt.show()
+    return (t_arr, A_arr)
 
 
 def make_flap_plots():
