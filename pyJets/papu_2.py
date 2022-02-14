@@ -124,7 +124,8 @@ def non_jet_jplots(runid):
         im_list = []
         cb_list = []
         fig.suptitle(
-            "Run: {}, JetID: {}, $y$ = {:.3f} $R_\mathrm{E}$".format(runid, non_id, y0),
+            "Run: {}, JetID: {}, $y$ = {:.3f} ".format(runid, non_id, y0)
+            + "$R_\mathrm{E}$",
             fontsize=20,
         )
         for idx, ax in enumerate(ax_list):
