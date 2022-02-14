@@ -80,7 +80,7 @@ def non_jet_jplots(runid):
         ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
 
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
-        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.1, dx)
+        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.001, dx)
 
         XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
