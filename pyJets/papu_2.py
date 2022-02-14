@@ -141,11 +141,11 @@ def non_jet_jplots(runid):
                 XmeshXY, YmeshXY, Tcore_arr, [3 * T_sw], colors=[CB_color_cycle[1]]
             )
             ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
-            ax.set_title(varname_list[idx], fontsize=20)
+            ax.set_title(varname_list[idx], fontsize=20, pad=10)
             ax.set_xlim(x_range[0], x_range[-1])
             ax.set_ylim(t_range[0], t_range[-1])
-            ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20)
-        ax_list[0].set_ylabel("Simulation time [s]", fontsize=20)
+            ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=20, labelpad=10)
 
         # Save figure
         plt.tight_layout()
