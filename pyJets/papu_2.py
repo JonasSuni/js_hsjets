@@ -97,9 +97,13 @@ def non_jet_jplots(runid):
                 bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
-            v_arr.append(vlsvobj.read_variable("v", op="magnitude", cellids=cell_range))
+            v_arr.append(
+                vlsvobj.read_variable("v", operator="magnitude", cellids=cell_range)
+            )
             pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
-            B_arr.append(vlsvobj.read_variable("B", op="magnitude", cellids=cell_range))
+            B_arr.append(
+                vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
+            )
             T_arr.append(vlsvobj.read_variable("Temperature", cellids=cell_range))
             Tcore_arr.append(vlsvobj.read_variable("core_heating"), cellids=cell_range)
             mmsx_arr.append(vlsvobj.read_variable("Mmsx"), cellids=cell_range)
