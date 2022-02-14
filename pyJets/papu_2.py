@@ -80,7 +80,7 @@ def non_jet_jplots(runid):
         ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
 
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
-        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.001, dx)
+        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
 
         XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
@@ -135,7 +135,7 @@ def non_jet_jplots(runid):
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             ax.contour(
-                XmeshXY, YmeshXY, rho_arr, [2 * rho_sw], colors=[CB_color_cycle[3]]
+                XmeshXY, YmeshXY, rho_arr, [2 * n_sw], colors=[CB_color_cycle[3]]
             )
             ax.contour(
                 XmeshXY, YmeshXY, Tcore_arr, [3 * T_sw], colors=[CB_color_cycle[1]]
