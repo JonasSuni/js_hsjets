@@ -7,6 +7,14 @@ r_e = 6.371e6
 mu_0 = 4 * np.pi * 1e-7
 m_p = 1.672621898e-27
 
+r_geo = 35.786e6 / r_e + 1
+r_galileo = 23.222e6 / r_e + 1
+r_gps = 20.180e6 / r_e + 1
+r_glonass = 19.130e6 / r_e + 1
+
+r_sats = [r_geo, r_galileo, r_gps, r_glonass]
+name_sats = ["GEO", "Galileo", "GPS", "GLONASS"]
+
 
 def map_surface_to_ib(theta, ib):
 
@@ -482,6 +490,15 @@ def plot_driving_MP_theta():
             label="Estimated 3D dipole",
         )
 
+        for idx in range(len(r_sats)):
+            ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
+            ax.annotate(
+                name_sats[idx],
+                xy=(1.01 * ax.get_xlim()[1], r_sats[idx]),
+                color="red",
+                fontsize=14,
+            )
+
         ax.legend()
 
         plt.tight_layout()
@@ -520,6 +537,15 @@ def plot_MP_theta():
 
     ax.set_xlim(0, 4)
     ax.set_ylim(2, 10)
+
+    for idx in range(len(r_sats)):
+        ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
+        ax.annotate(
+            name_sats[idx],
+            xy=(1.01 * ax.get_xlim()[1], r_sats[idx]),
+            color="red",
+            fontsize=14,
+        )
 
     ax.set_ylabel(
         "Magnetopause standoff [$R_\mathrm{E}$]",
