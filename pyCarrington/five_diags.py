@@ -56,6 +56,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         precip_bgd,
         meanenergy_bgd,
         difflux_bgd,
+        FAC_bgd,
         binedges_bgd,
         x_bgd,
         z_bgd,
@@ -66,6 +67,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         precip_bgf,
         meanenergy_bgf,
         difflux_bgf,
+        FAC_bgf,
         binedges_bgf,
         x_bgf,
         z_bgf,
@@ -76,6 +78,7 @@ def plot_precip(plot_diff=False, min_energy=None):
         precip_bgg,
         meanenergy_bgg,
         difflux_bgg,
+        FAC_bgg,
         binedges_bgg,
         x_bgg,
         z_bgg,
@@ -96,6 +99,27 @@ def plot_precip(plot_diff=False, min_energy=None):
         precip_bgd[precip_bgd <= 0] = np.nan
         precip_bgf[precip_bgf <= 0] = np.nan
         precip_bgg[precip_bgg <= 0] = np.nan
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.grid()
+    ax.plot(theta, FAC_bgd, label="Normal")
+    ax.plot(theta, FAC_bgf, label="Moderate")
+    ax.plot(theta, FAC_bgg, label="Strong")
+    ax.legend(fontsize=14)
+
+    ax.set_xlim(60, 120)
+    ax.invert_xaxis()
+
+    ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
+    ax.set_ylabel(
+        "FAC [A/m$^2$]",
+        fontsize=14,
+    )
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/FAC.png")
+    plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
 
@@ -258,6 +282,33 @@ def plot_precip(plot_diff=False, min_energy=None):
         fig.savefig("/wrk/users/jesuni/Figures/carrington/max_integralflux.png")
     plt.close(fig)
 
+    fig, ax = plt.subplots(1, 1)
+
+    max_fac_arr = [
+        np.nanmax(FAC_bgd),
+        np.nanmax(FAC_bgf),
+        np.nanmax(FAC_bgg),
+    ]
+
+    ax.grid()
+    ax.plot(num_arr[0], max_fac_arr[0], "o", label="Normal", color="black")
+    ax.plot(num_arr[1], max_fac_arr[1], "o", label="Moderate", color="black")
+    ax.plot(num_arr[2], max_fac_arr[2], "o", label="Strong", color="black")
+    ax.set_xticks([1, 2, 3])
+    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
+    ax.set_ylabel(
+        "Maximum FAC [A/m$^2$]",
+        fontsize=14,
+    )
+    ax.set_xlabel(
+        "Driving conditions",
+        fontsize=14,
+    )
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.png")
+    plt.close(fig)
+
     plt.ion()
 
 
@@ -291,6 +342,7 @@ def precipitation_diag(run):
     diffprecip_arr = np.zeros((theta_arr.size, 16), dtype=float)
     x_arr = np.zeros_like(theta_arr)
     z_arr = np.zeros_like(theta_arr)
+    FAC_arr = np.zeros_like(theta_arr)
 
     energybins = np.array(
         [
@@ -349,6 +401,8 @@ def precipitation_diag(run):
                     "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
                 )[0]
                 diffprecip_arr[itr] = diffprecip
+                FAC = calc_J(vlsvobj, end_coords, dr=ds)
+                FAC_arr[itr] = FAC
 
                 coords_ci = vlsvobj.get_cell_coordinates(ci)
                 x_arr[itr] = coords_ci[0]
@@ -358,11 +412,15 @@ def precipitation_diag(run):
                 meanenergy_arr[itr] = np.nan
                 x_arr[itr] = np.nan
                 z_arr[itr] = np.nan
+                FAC_arr[itr] = np.nan
+                for k in range(16):
+                    diffprecip_arr[itr][k] = np.nan
         else:
             precip_arr[itr] = np.nan
             meanenergy_arr[itr] = np.nan
             x_arr[itr] = np.nan
             z_arr[itr] = np.nan
+            FAC_arr[itr] = np.nan
             for k in range(16):
                 diffprecip_arr[itr][k] = np.nan
 
@@ -371,6 +429,7 @@ def precipitation_diag(run):
         precip_arr,
         meanenergy_arr,
         diffprecip_arr,
+        FAC_arr,
         Ebinedges,
         x_arr,
         z_arr,
@@ -780,9 +839,46 @@ def calc_J(vlsvobj, coords_xz, dr=500e3):
         cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1] - dr])),
     )
 
+    B = vlsvobj.read_variable(
+        "vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1]]))
+    )
+    b = B / np.linalg.norm(B)
+
     dBxdz = (Bzp[0] - Bzm[0]) / 2.0 / dr
     dBydx = (Bxp[1] - Bxm[1]) / 2.0 / dr
     dBydz = (Bzp[1] - Bzm[1]) / 2.0 / dr
     dBzdx = (Bxp[2] - Bxm[2]) / 2.0 / dr
 
     return np.array([-dBydz, dBxdz - dBzdx, dBydx]) / mu_0
+
+
+def calc_FAC(vlsvobj, coords_xz, dr=500e3):
+
+    Bxp = vlsvobj.read_variable(
+        "vg_b_vol",
+        cellids=int(vlsvobj.get_cellid([coords_xz[0] + dr, 0, coords_xz[1]])),
+    )
+    Bxm = vlsvobj.read_variable(
+        "vg_b_vol",
+        cellids=int(vlsvobj.get_cellid([coords_xz[0] - dr, 0, coords_xz[1]])),
+    )
+    Bzp = vlsvobj.read_variable(
+        "vg_b_vol",
+        cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1] + dr])),
+    )
+    Bzm = vlsvobj.read_variable(
+        "vg_b_vol",
+        cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1] - dr])),
+    )
+
+    B = vlsvobj.read_variable(
+        "vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1]]))
+    )
+    b = B / np.linalg.norm(B)
+
+    dBxdz = (Bzp[0] - Bzm[0]) / 2.0 / dr
+    dBydx = (Bxp[1] - Bxm[1]) / 2.0 / dr
+    dBydz = (Bzp[1] - Bzm[1]) / 2.0 / dr
+    dBzdx = (Bxp[2] - Bxm[2]) / 2.0 / dr
+
+    return np.dot(b, np.array([-dBydz, dBxdz - dBzdx, dBydx]) / mu_0)
