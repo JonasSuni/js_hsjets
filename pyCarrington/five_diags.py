@@ -103,9 +103,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(theta, FAC_bgd, label="Normal")
-    ax.semilogy(theta, FAC_bgf, label="Moderate")
-    ax.semilogy(theta, FAC_bgg, label="Strong")
+    ax.semilogy(theta, FAC_bgd / 1e-9, label="Normal")
+    ax.semilogy(theta, FAC_bgf / 1e-9, label="Moderate")
+    ax.semilogy(theta, FAC_bgg / 1e-9, label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -113,7 +113,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
-        "FAC [A/m$^2$]",
+        "FAC [nA/m$^2$]",
         fontsize=14,
     )
 
@@ -291,13 +291,13 @@ def plot_precip(plot_diff=False, min_energy=None):
     ]
 
     ax.grid()
-    ax.semilogy(num_arr[0], max_fac_arr[0], "o", label="Normal", color="black")
-    ax.semilogy(num_arr[1], max_fac_arr[1], "o", label="Moderate", color="black")
-    ax.semilogy(num_arr[2], max_fac_arr[2], "o", label="Strong", color="black")
+    ax.semilogy(num_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
+    ax.semilogy(num_arr[1], max_fac_arr[1] / 1e-9, "o", label="Moderate", color="black")
+    ax.semilogy(num_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.set_ylabel(
-        "Maximum FAC [A/m$^2$]",
+        "Maximum FAC [nA/m$^2$]",
         fontsize=14,
     )
     ax.set_xlabel(
