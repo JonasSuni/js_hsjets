@@ -874,7 +874,7 @@ def calc_FAC(vlsvobj, coords_xz, dr=500e3):
     B = vlsvobj.read_variable(
         "vg_b_vol", cellids=int(vlsvobj.get_cellid([coords_xz[0], 0, coords_xz[1]]))
     )
-    b = B / np.linalg.norm(B)
+    b = B / (np.linalg.norm(B) + 1e-27)
 
     dBxdz = (Bzp[0] - Bzm[0]) / 2.0 / dr
     dBydx = (Bxp[1] - Bxm[1]) / 2.0 / dr
