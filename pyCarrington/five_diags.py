@@ -14,7 +14,7 @@ r_glonass = 19.130e6 / r_e + 1
 
 r_sats = [r_geo, r_galileo, r_gps, r_glonass]
 name_sats = ["GEO", "Galileo", "GPS", "GLONASS"]
-offset_sats = [0.0, 0.0, 0.0, -0.05]
+offset_sats = [0.0, 0.0, 0.0, -0.01]
 
 
 def map_surface_to_ib(theta, ib):
