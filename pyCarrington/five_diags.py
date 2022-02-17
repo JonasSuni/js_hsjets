@@ -103,9 +103,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.plot(theta, FAC_bgd, label="Normal")
-    ax.plot(theta, FAC_bgf, label="Moderate")
-    ax.plot(theta, FAC_bgg, label="Strong")
+    ax.semilogy(theta, FAC_bgd, label="Normal")
+    ax.semilogy(theta, FAC_bgf, label="Moderate")
+    ax.semilogy(theta, FAC_bgg, label="Strong")
     ax.legend(fontsize=14)
 
     ax.set_xlim(60, 120)
@@ -291,9 +291,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     ]
 
     ax.grid()
-    ax.plot(num_arr[0], max_fac_arr[0], "o", label="Normal", color="black")
-    ax.plot(num_arr[1], max_fac_arr[1], "o", label="Moderate", color="black")
-    ax.plot(num_arr[2], max_fac_arr[2], "o", label="Strong", color="black")
+    ax.semilogy(num_arr[0], max_fac_arr[0], "o", label="Normal", color="black")
+    ax.semilogy(num_arr[1], max_fac_arr[1], "o", label="Moderate", color="black")
+    ax.semilogy(num_arr[2], max_fac_arr[2], "o", label="Strong", color="black")
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.set_ylabel(
