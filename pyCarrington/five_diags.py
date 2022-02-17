@@ -401,7 +401,7 @@ def precipitation_diag(run):
                     "proton/vg_precipitationdifferentialflux", cellids=[int(ci), 1]
                 )[0]
                 diffprecip_arr[itr] = diffprecip
-                FAC = calc_FAC(vlsvobj, end_coords, dr=ds)
+                FAC = calc_FAC(vlsvobj, [end_coords[0], end_coords[1]], dr=ds)
                 FAC_arr[itr] = FAC
 
                 coords_ci = vlsvobj.get_cell_coordinates(ci)
