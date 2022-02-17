@@ -494,7 +494,7 @@ def plot_driving_MP_theta():
             ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
             ax.annotate(
                 name_sats[idx],
-                (1.01, r_sats[idx] / 8.0),
+                (1.01, r_sats[idx] / 8.0 - 1.0 / 4),
                 xycoords="axes fraction",
                 color="red",
                 fontsize=14,
@@ -543,7 +543,7 @@ def plot_MP_theta():
         ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
         ax.annotate(
             name_sats[idx],
-            (1.01, r_sats[idx] / 8.0),
+            (1.01, r_sats[idx] / 8.0 - 1.0 / 4),
             xycoords="axes fraction",
             color="red",
             fontsize=14,
