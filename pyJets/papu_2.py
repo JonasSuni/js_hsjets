@@ -152,10 +152,10 @@ def non_jet_jplots(runid):
         # Save figure
         plt.tight_layout()
 
-        fig.savefig(
-            wrkdir_DNR
-            + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
-        )
+        # fig.savefig(
+        #     wrkdir_DNR
+        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        # )
         fig.savefig(
             wrkdir_DNR
             + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5))

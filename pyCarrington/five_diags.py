@@ -460,7 +460,15 @@ def plot_driving_MP_theta():
     pdyn_arr = m_p * rho_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
     B_arr = np.array([10, 20, 30])
 
+    rho_3d = np.array([4, 7])
+    v_3d = np.array([750, 1000])
+    pdyn_3d = m_p * rho_3d * 1e6 * v_3d * v_3d * 1e6 * 1e9
+    B_3d = np.array([10, 20])
+
+    standoff_3d = np.array([8.01, 6.29])
+
     driving_arr = np.array([rho_arr, v_arr, pdyn_arr, B_arr])
+    driving_3d = np.array([rho_3d, v_3d, pdyn_3d, B_3d])
 
     xlabel_arr = [
         "$n_\mathrm{sw}~[\mathrm{cm}^{-3}]$",
@@ -488,8 +496,9 @@ def plot_driving_MP_theta():
             driving_arr[n1],
             100 ** (1.0 / 6) * standoff_arr ** (2 / 3),
             "o",
-            label="Estimated 3D dipole",
+            label="Estimated 3D",
         )
+        ax.plot(driving_3d[n1], standoff_3d, "o", label="3D run")
 
         for idx in range(len(r_sats)):
             ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
