@@ -365,7 +365,7 @@ def SEA_types(run_id="all"):
     for runid in runid_list:
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_beam.txt", dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/{}_beam.txt".format(runid), dtype=int, ndmin=1
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -384,7 +384,9 @@ def SEA_types(run_id="all"):
                 beam_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt", dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt".format(runid),
+            dtype=int,
+            ndmin=1,
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -403,7 +405,9 @@ def SEA_types(run_id="all"):
                 stripe_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt", dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt".format(runid),
+            dtype=int,
+            ndmin=1,
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -422,7 +426,9 @@ def SEA_types(run_id="all"):
                 reformation_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt", dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt".format(runid),
+            dtype=int,
+            ndmin=1,
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -441,7 +447,9 @@ def SEA_types(run_id="all"):
                 foreshock_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_complex.txt", dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/{}_complex.txt".format(runid),
+            dtype=int,
+            ndmin=1,
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
