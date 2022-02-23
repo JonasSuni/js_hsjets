@@ -720,7 +720,7 @@ def non_type_hist(run_id="all"):
         "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
         "$\\Delta |B|~[B_\mathrm{IMF}]$",
         "$\\Delta T~[T_\mathrm{sw}]$",
-        "$Lifetime~[\mathrm{s}]}$",
+        "$Lifetime~[\\mathrm{s}]}$",
         "$Tangential$\n$size~[R_\mathrm{E}]$",
         "Size Ratio",
         "First cone [deg]",
