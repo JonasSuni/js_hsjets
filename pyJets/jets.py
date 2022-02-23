@@ -118,4 +118,5 @@ from papu_2 import (
     colormap_with_contours,
     papu22_mov_script,
     non_jet_jplots,
+    SEA_types,
 )

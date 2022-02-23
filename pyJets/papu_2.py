@@ -320,6 +320,221 @@ def sj_non_timeseries(runid):
         )
 
 
+def SEA_types(run_id="all"):
+    """
+    Superposed epoch analysis of different types of non-fcs-jets
+    """
+
+    if run_id == "all":
+        runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        runid_list = [run_id]
+
+    # Initialise array of times relative to epoch time
+    t_arr = np.arange(-10.0, 10.05, 0.5)
+
+    # Initialise number of jets of different types
+    beam_count = 0
+    stripe_count = 0
+    reformation_count = 0
+    foreshock_count = 0
+    complex_count = 0
+
+    # Initialise arrays of averages
+    beam_avg = np.zeros((6, 41), dtype=float)
+    stripe_avg = np.zeros((6, 41), dtype=float)
+    reformation_avg = np.zeros((6, 41), dtype=float)
+    foreshock_avg = np.zeros((6, 41), dtype=float)
+    complex_avg = np.zeros((6, 41), dtype=float)
+
+    # Initialise figure, add grids, add axis labels
+    fig, ax_list = plt.subplots(6, 1, sharex=True, figsize=(8, 10))
+
+    for ax in ax_list:
+        ax.grid()
+
+    ax_list[0].set_ylabel("$n~[n_\mathrm{sw}]$")
+    ax_list[1].set_ylabel("$v~[v_\mathrm{sw}]$")
+    ax_list[2].set_ylabel("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
+    ax_list[3].set_ylabel("$B~[B_\mathrm{IMF}]$")
+    ax_list[4].set_ylabel("$T_\mathrm{perp}~[T_\mathrm{sw}]$")
+    ax_list[5].set_ylabel("$T_\mathrm{par}~[T_\mathrm{sw}]$")
+    ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
+
+    # Loop over runs
+    for runid in runid_list:
+
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_beam.txt", dtype=int, ndmin=1
+        )
+        for jet_id in jet_ids:
+            data = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, jet_id)
+            ).T[1:]
+            beam_count += 1  # Iterate jet count
+
+            # Loop over n,v,pdyn,B,Tperp,Tpar
+            for n2 in range(6):
+
+                # Plot timeseries of deltas relative to epoch time
+                ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+
+                # Add timeseries of deltas relative to epoch time to average array
+                beam_avg[n2] += data[n2]
+
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt", dtype=int, ndmin=1
+        )
+        for jet_id in jet_ids:
+            data = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, jet_id)
+            ).T[1:]
+            stripe_count += 1  # Iterate jet count
+
+            # Loop over n,v,pdyn,B,Tperp,Tpar
+            for n2 in range(6):
+
+                # Plot timeseries of deltas relative to epoch time
+                ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+
+                # Add timeseries of deltas relative to epoch time to average array
+                stripe_avg[n2] += data[n2]
+
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt", dtype=int, ndmin=1
+        )
+        for jet_id in jet_ids:
+            data = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, jet_id)
+            ).T[1:]
+            reformation_count += 1  # Iterate jet count
+
+            # Loop over n,v,pdyn,B,Tperp,Tpar
+            for n2 in range(6):
+
+                # Plot timeseries of deltas relative to epoch time
+                ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+
+                # Add timeseries of deltas relative to epoch time to average array
+                reformation_avg[n2] += data[n2]
+
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt", dtype=int, ndmin=1
+        )
+        for jet_id in jet_ids:
+            data = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, jet_id)
+            ).T[1:]
+            foreshock_count += 1  # Iterate jet count
+
+            # Loop over n,v,pdyn,B,Tperp,Tpar
+            for n2 in range(6):
+
+                # Plot timeseries of deltas relative to epoch time
+                ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+
+                # Add timeseries of deltas relative to epoch time to average array
+                foreshock_avg[n2] += data[n2]
+
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_complex.txt", dtype=int, ndmin=1
+        )
+        for jet_id in jet_ids:
+            data = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/non_jets/{}/timeseries_{}.txt".format(runid, jet_id)
+            ).T[1:]
+            complex_count += 1  # Iterate jet count
+
+            # Loop over n,v,pdyn,B,Tperp,Tpar
+            for n2 in range(6):
+
+                # Plot timeseries of deltas relative to epoch time
+                ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
+
+                # Add timeseries of deltas relative to epoch time to average array
+                complex_avg[n2] += data[n2]
+
+    # Calculate averages
+    if beam_count != 0:
+        beam_avg /= beam_count
+    else:
+        beam_avg[:, :] = np.nan
+
+    if stripe_count != 0:
+        stripe_avg /= stripe_count
+    else:
+        stripe_avg[:, :] = np.nan
+
+    if reformation_count != 0:
+        reformation_avg /= reformation_count
+    else:
+        reformation_avg[:, :] = np.nan
+
+    if foreshock_count != 0:
+        foreshock_avg /= foreshock_count
+    else:
+        foreshock_avg[:, :] = np.nan
+
+    if complex_count != 0:
+        complex_avg /= complex_count
+    else:
+        complex_avg[:, :] = np.nan
+
+    # Plot averages of n,v,pdyn,B,Tperp,Tpar
+    for n2 in range(6):
+        ax_list[n2].plot(
+            t_arr,
+            beam_avg[n2],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+            zorder=2,
+        )
+        ax_list[n2].plot(
+            t_arr,
+            stripe_avg[n2],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+            zorder=2,
+        )
+        ax_list[n2].plot(
+            t_arr,
+            reformation_avg[n2],
+            color=jx.CB_color_cycle[2],
+            label="Reformation",
+            zorder=2,
+        )
+        ax_list[n2].plot(
+            t_arr,
+            foreshock_avg[n2],
+            color=jx.CB_color_cycle[3],
+            label="Foreshock",
+            zorder=2,
+        )
+        ax_list[n2].plot(
+            t_arr,
+            complex_avg[n2],
+            color=jx.CB_color_cycle[4],
+            label="Complex",
+            zorder=2,
+        )
+
+    # Add legend
+    ax_list[0].legend()
+    ax_list[0].set_title(run_id)
+
+    # Save as pdf and png and close figure
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id))
+    plt.close(fig)
+
+
 def SEA_plots(zero_level=False, run_id="all"):
     """
     Superposed epoch analysis of fcs-jet vs. non-fcs-jet start location properties
