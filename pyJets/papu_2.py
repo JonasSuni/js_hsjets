@@ -723,8 +723,8 @@ def non_type_hist(run_id="all"):
         "$Lifetime~[\mathrm{s}]$",
         "$Tangential$\n$size~[R_\mathrm{E}]$",
         "Size Ratio",
-        "First cone [deg]",
-        "First y [RE]",
+        "First cone [$^\circ$]",
+        "First $y$ [$R_\mathrm{E}$]",
     ]
     bins_list = [
         np.linspace(-2, 5, 10 + 1),
@@ -956,7 +956,7 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
         "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
         "$\\Delta |B|~[B_\mathrm{IMF}]$",
         "$\\Delta T~[T_\mathrm{sw}]$",
-        "$Lifetime~[\mathrm{s}]}$",
+        "$Lifetime~[\mathrm{s}]$",
         "$Tangential$\n$size~[R_\mathrm{E}]$",
         "Size Ratio",
         "Leaves BS",
