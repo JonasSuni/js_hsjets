@@ -683,6 +683,241 @@ def SEA_plots(zero_level=False, run_id="all"):
     plt.close(fig)
 
 
+def non_type_hist(run_id="all"):
+    if run_id == "all":
+        run_arr = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        run_arr = [run_id]
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1, 750, 5, 0.5],
+        [3.3, 600, 5, 0.5],
+        [1, 750, 10, 0.5],
+        [3.3, 600, 10, 0.5],
+    ]
+
+    # Initialise arrays for variables to be read and their figure labels, histogram bins and label positions
+    # delta n, delta v, delta Pdyn, delta B, delta T, Lifetime, Tangential size, Size ratio, first cone, first y
+    # Count: 10
+    vars_list = [
+        "Dn",
+        "Dv",
+        "Dpd",
+        "DB",
+        "DT",
+        "duration",
+        "size_tan",
+        "size_ratio",
+        "first_cone",
+        "first_y",
+    ]
+    label_list = [
+        "$\\Delta n~[n_\mathrm{sw}]$",
+        "$\\Delta |v|~[v_\mathrm{sw}]$",
+        "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$\\Delta |B|~[B_\mathrm{IMF}]$",
+        "$\\Delta T~[T_\mathrm{sw}]$",
+        "$Lifetime~[\mathrm{s}]}$",
+        "$Tangential$\n$size~[R_\mathrm{E}]$",
+        "Size Ratio",
+        "First cone [$^\\circ$]",
+        "First $y$ [$R_\mathrm{E}$]",
+    ]
+    bins_list = [
+        np.linspace(-2, 5, 10 + 1),
+        np.linspace(-0.1, 0.6, 10 + 1),
+        np.linspace(0, 3, 10 + 1),
+        np.linspace(-2, 3, 10 + 1),
+        np.linspace(-10, 5, 10 + 1),
+        np.linspace(0, 60, 10 + 1),
+        np.linspace(0, 0.5, 10 + 1),
+        np.linspace(0, 5, 10 + 1),
+        np.linspace(-60, 60, 10 + 1),
+        np.linspace(-6, 6, 10 + 1),
+    ]
+    pos_list = [
+        "left",
+        "left",
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "right",
+        "right",
+        "right",
+    ]
+    beam_props = [[], [], [], [], [], [], [], [], [], []]
+    stripe_props = [[], [], [], [], [], [], [], [], [], []]
+    reformation_props = [[], [], [], [], [], [], [], [], [], []]
+    foreshock_props = [[], [], [], [], [], [], [], [], [], []]
+    complex_props = [[], [], [], [], [], [], [], [], [], []]
+
+    # Loop over runs
+    for runid in run_arr:
+
+        # Get solar wind values and make normalisation array
+        n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+        sw_norm = [
+            n_sw,
+            v_sw,
+            m_p * n_sw * 1e6 * v_sw * 1e3 * v_sw * 1e3 * 1e9,
+            B_sw,
+            T_sw,
+            1,
+            1,
+            1,
+            1,
+            1,
+        ]
+
+        for jet_id in np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_beam.txt".format(runid),
+            dtype=int,
+            ndmin=1,
+        ):
+            # Read properties
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
+            for n1 in range(len(vars_list)):
+
+                # ...or at the time of maximum area?
+                beam_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
+
+        for jet_id in np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt".format(runid),
+            dtype=int,
+            ndmin=1,
+        ):
+            # Read properties
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
+            for n1 in range(len(vars_list)):
+
+                # ...or at the time of maximum area?
+                stripe_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
+
+        for jet_id in np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt".format(runid),
+            dtype=int,
+            ndmin=1,
+        ):
+            # Read properties
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
+            for n1 in range(len(vars_list)):
+
+                # ...or at the time of maximum area?
+                reformation_props[n1].append(
+                    props.read_at_amax(vars_list[n1]) / sw_norm[n1]
+                )
+
+        for jet_id in np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt".format(runid),
+            dtype=int,
+            ndmin=1,
+        ):
+            # Read properties
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
+            for n1 in range(len(vars_list)):
+
+                # ...or at the time of maximum area?
+                foreshock_props[n1].append(
+                    props.read_at_amax(vars_list[n1]) / sw_norm[n1]
+                )
+
+        for jet_id in np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/{}_complex.txt".format(runid),
+            dtype=int,
+            ndmin=1,
+        ):
+            # Read properties
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+
+            # Loop over variables
+            for n1 in range(len(vars_list)):
+
+                # ...or at the time of maximum area?
+                complex_props[n1].append(
+                    props.read_at_amax(vars_list[n1]) / sw_norm[n1]
+                )
+
+    # Make figure
+    fig, ax_list = plt.subplots(5, 2, figsize=(7, 13))
+
+    ax_flat = ax_list.T.flatten()
+
+    for n1, ax in enumerate(ax_flat):
+        ax.set_ylabel(label_list[n1], labelpad=10, fontsize=20)
+        ax.yaxis.set_label_position(pos_list[n1])
+        ax.grid()
+        ax.tick_params(labelsize=15)
+
+        ax.hist(
+            beam_props[n1],
+            histtype="step",
+            weights=np.ones(len(beam_props[n1])) / float(len(beam_props[n1])),
+            bins=bins_list[n1],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+        )
+
+        ax.hist(
+            stripe_props[n1],
+            histtype="step",
+            weights=np.ones(len(stripe_props[n1])) / float(len(stripe_props[n1])),
+            bins=bins_list[n1],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+        )
+
+        ax.hist(
+            reformation_props[n1],
+            histtype="step",
+            weights=np.ones(len(reformation_props[n1]))
+            / float(len(reformation_props[n1])),
+            bins=bins_list[n1],
+            color=jx.CB_color_cycle[2],
+            label="Reformation",
+        )
+
+        ax.hist(
+            foreshock_props[n1],
+            histtype="step",
+            weights=np.ones(len(foreshock_props[n1])) / float(len(foreshock_props[n1])),
+            bins=bins_list[n1],
+            color=jx.CB_color_cycle[3],
+            label="Foreshock",
+        )
+
+        ax.hist(
+            complex_props[n1],
+            histtype="step",
+            weights=np.ones(len(complex_props[n1])) / float(len(complex_props[n1])),
+            bins=bins_list[n1],
+            color=jx.CB_color_cycle[4],
+            label="Complex",
+        )
+
+    ax_flat[6].legend(frameon=False, markerscale=0.5)
+    ax_flat[0].set_title(run_id, fontsize=20)
+
+    # Save figure
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id))
+    plt.close(fig)
+
+
 def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
     if run_id == "all":

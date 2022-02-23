@@ -222,6 +222,15 @@ class PropReader:
             vx = np.gradient(x, 0.5)
             vy = np.gradient(y, 0.5)
             return np.array([vx, vy]).T
+        elif name == "first_cone":
+            t = self.read("time")
+            x, y = self.read("x_mean")[0], self.read("y_mean")[0]
+            cone_angle = np.rad2deg(np.arctan2(y, x))
+            return np.ones_like(t) * cone_angle
+        elif name == "first_y":
+            t = self.read("time")
+            y = self.read("y_mean")[0]
+            return np.ones_like(t) * y
         elif name == "final_cone":
             t = self.read("time")
             x, y = self.read("x_mean")[-1], self.read("y_mean")[-1]
