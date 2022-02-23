@@ -723,8 +723,8 @@ def non_type_hist(run_id="all"):
         "$Lifetime~[\mathrm{s}]}$",
         "$Tangential$\n$size~[R_\mathrm{E}]$",
         "Size Ratio",
-        "First cone [$^\\circ$]",
-        "First $y$ [$R_\mathrm{E}$]",
+        "First cone [deg]",
+        "First y [RE]",
     ]
     bins_list = [
         np.linspace(-2, 5, 10 + 1),
