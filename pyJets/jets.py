@@ -119,4 +119,5 @@ from papu_2 import (
     papu22_mov_script,
     non_jet_jplots,
     SEA_types,
+    non_type_hist,
 )
