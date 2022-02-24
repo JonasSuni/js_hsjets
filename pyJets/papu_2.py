@@ -97,7 +97,7 @@ def types_jplot_SEA(run_id, kind="beam"):
             try:
                 rho, v, pdyn, B, T, Tcore, mmsx = np.load(
                     wrkdir_DNR
-                    + "papu22/jmap_txts/{}/{}_{}".format(
+                    + "papu22/jmap_txts/{}/{}_{}.npy".format(
                         runid, runid, str(non_id).zfill(5)
                     )
                 )
