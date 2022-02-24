@@ -92,6 +92,7 @@ def types_jplot_SEA(run_id, kind="beam"):
             dtype=int,
             ndmin=1,
         )
+        print(non_ids)
         for non_id in non_ids:
             try:
                 rho, v, pdyn, B, T, Tcore, mmsx = np.load(
