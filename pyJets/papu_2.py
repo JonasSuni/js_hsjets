@@ -33,17 +33,47 @@ except:
     vlasdir = "/proj/vlasov"
 
 
+def get_non_jets(runid):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+
+    non_ids = []
+
+    for n1 in range(6000):
+
+        try:
+            props = jio.PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        if props.read("time")[0] == 290.0:
+            continue
+
+        if "splinter" in props.meta:
+            continue
+
+        if (props.read("at_slams") == 1).any():
+            continue
+        else:
+            non_ids.append(n1)
+
+    return np.unique(non_ids)
+
+
 def non_jet_jplots(runid):
 
     CB_color_cycle = jx.CB_color_cycle
 
     dx = 227e3 / r_e
     varname_list = [
-        "$n$ [cm$^{-3}$]",
-        "$v$ [km/s]",
-        "$P_\mathrm{dyn}$ [nPa]",
-        "$B$ [nT]",
-        "$T$ [MK]",
+        "$n$ [$n_\mathrm{sw}$]",
+        "$v$ [$v_\mathrm{sw}$]",
+        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        "$B$ [$B_\mathrm{IMF}$]",
+        "$T$ [$T_\mathrm{sw}$]",
     ]
 
     # Solar wind parameters for the different runs
@@ -56,13 +86,14 @@ def non_jet_jplots(runid):
         [3.3, 600.0, 10.0, 0.5],
     ]
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+    vmin_norm = [1.0 / 2, 1.0 / 6, 1.0 / 6, 1.0 / 2, 1.0]
+    vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
 
     # Path to vlsv files for current run
     bulkpath = jx.find_bulkpath(runid)
 
-    # Get IDs of fcs-jets and non-fcs-jets
-    sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
-    non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
+    # Get IDs of non-fcs-jets
+    non_sj_ids = get_non_jets(runid)
 
     # Loop through non-fcs-jet IDs
     for non_id in non_sj_ids:
@@ -108,12 +139,14 @@ def non_jet_jplots(runid):
             Tcore_arr.append(vlsvobj.read_variable("core_heating", cellids=cell_range))
             mmsx_arr.append(vlsvobj.read_variable("Mmsx", cellids=cell_range))
 
-        rho_arr = np.array(rho_arr) / 1.0e6
-        v_arr = np.array(v_arr) / 1.0e3
-        pdyn_arr = np.array(pdyn_arr) / 1.0e-9
-        B_arr = np.array(B_arr) / 1.0e-9
-        T_arr = np.array(T_arr) / 1.0e6
-        Tcore_arr = np.array(Tcore_arr) / 1.0e6
+        rho_arr = np.array(rho_arr) / 1.0e6 / n_sw
+        v_arr = np.array(v_arr) / 1.0e3 / v_sw
+        pdyn_arr = (
+            np.array(pdyn_arr) / 1.0e-9 / (m_p * n_sw * 1e6 * v_sw * v_sw * 1e6 / 1e-9)
+        )
+        B_arr = np.array(B_arr) / 1.0e-9 / B_sw
+        T_arr = np.array(T_arr) / 1.0e6 / T_sw
+        Tcore_arr = np.array(Tcore_arr) / 1.0e6 / T_sw
         mmsx_arr = np.array(mmsx_arr)
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
@@ -132,14 +165,18 @@ def non_jet_jplots(runid):
             ax.tick_params(labelsize=15)
             im_list.append(
                 ax.pcolormesh(
-                    x_range, t_range, data_arr[idx], shading="nearest", cmap="Greys"
+                    x_range,
+                    t_range,
+                    data_arr[idx],
+                    shading="nearest",
+                    cmap="Greys",
+                    vmin=vmin_norm[idx],
+                    vmax=vmax_norm[idx],
                 )
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-            ax.contour(XmeshXY, YmeshXY, rho_arr, [2 * n_sw], colors=["black"])
-            ax.contour(
-                XmeshXY, YmeshXY, Tcore_arr, [3 * T_sw], colors=[CB_color_cycle[1]]
-            )
+            ax.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
+            ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=20, pad=10)
             ax.set_xlim(x_range[0], x_range[-1])
@@ -161,6 +198,12 @@ def non_jet_jplots(runid):
             + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5))
         )
         plt.close(fig)
+
+        np.save(
+            wrkdir_DNR
+            + "papu22/jmap_txts/{}/{}_{}".format(runid, runid, str(non_id).zfill(5)),
+            np.array([rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr]),
+        )
 
 
 def sj_non_timeseries(runid):
