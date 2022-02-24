@@ -141,7 +141,7 @@ def types_jplot_SEA(run_id, kind="beam"):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}".format(run_id, kind),
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
         fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
