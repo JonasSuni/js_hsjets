@@ -174,7 +174,7 @@ def types_jplot_SEA(run_id, kind="beam"):
     #     wrkdir_DNR
     #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
     # )
-    fig.savefig(wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(runid, kind))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind))
     plt.close(fig)
 
 
