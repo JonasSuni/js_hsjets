@@ -162,7 +162,7 @@ def types_jplot_SEA(run_id, kind="beam"):
         ax.set_title(varname_list[idx], fontsize=20, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("$Epoch x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
