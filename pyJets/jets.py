@@ -120,4 +120,5 @@ from papu_2 import (
     non_jet_jplots,
     SEA_types,
     non_type_hist,
+    types_jplot_SEA
 )
