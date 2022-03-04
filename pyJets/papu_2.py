@@ -153,7 +153,7 @@ def types_jplot_SEA(run_id, kind="beam"):
                 t_range,
                 data_arr[idx],
                 shading="nearest",
-                cmap="Greys",
+                cmap="viridis",
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
