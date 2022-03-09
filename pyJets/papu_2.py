@@ -63,7 +63,7 @@ def get_non_jets(runid):
     return np.unique(non_ids)
 
 
-def types_jplot_SEA(run_id, kind="beam"):
+def types_jplot_SEA(run_id, kind="beam",version="old"):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
@@ -87,11 +87,18 @@ def types_jplot_SEA(run_id, kind="beam"):
     type_count = 0
 
     for runid in runid_list:
-        non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_{}.txt".format(runid, kind),
-            dtype=int,
-            ndmin=1,
-        )
+        if version == "old":
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+        elif version == "new":
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
         print(non_ids)
         for non_id in non_ids:
             try:
