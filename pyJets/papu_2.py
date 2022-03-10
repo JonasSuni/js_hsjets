@@ -531,7 +531,7 @@ def SEA_types(run_id="all"):
     for runid in runid_list:
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_beam.txt".format(runid), dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/new/{}_beam.txt".format(runid), dtype=int, ndmin=1
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -550,7 +550,7 @@ def SEA_types(run_id="all"):
                 beam_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_stripe.txt".format(runid),
             dtype=int,
             ndmin=1,
         )
@@ -571,7 +571,7 @@ def SEA_types(run_id="all"):
                 stripe_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_reformation.txt".format(runid),
             dtype=int,
             ndmin=1,
         )
@@ -592,7 +592,7 @@ def SEA_types(run_id="all"):
                 reformation_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_foreshock.txt".format(runid),
             dtype=int,
             ndmin=1,
         )
@@ -613,7 +613,7 @@ def SEA_types(run_id="all"):
                 foreshock_avg[n2] += data[n2]
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_complex.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_complex.txt".format(runid),
             dtype=int,
             ndmin=1,
         )
@@ -704,7 +704,7 @@ def SEA_types(run_id="all"):
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
+    #fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id))
     plt.close(fig)
 
@@ -840,9 +840,9 @@ def SEA_plots(zero_level=False, run_id="all"):
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    fig.savefig(
-        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
-    )
+    #fig.savefig(
+    #    wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
+    #)
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id)
     )
@@ -941,7 +941,7 @@ def non_type_hist(run_id="all"):
         ]
 
         for jet_id in np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_beam.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_beam.txt".format(runid),
             dtype=int,
             ndmin=1,
         ):
@@ -955,7 +955,7 @@ def non_type_hist(run_id="all"):
                 beam_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
 
         for jet_id in np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_stripe.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_stripe.txt".format(runid),
             dtype=int,
             ndmin=1,
         ):
@@ -969,7 +969,7 @@ def non_type_hist(run_id="all"):
                 stripe_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
 
         for jet_id in np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_reformation.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_reformation.txt".format(runid),
             dtype=int,
             ndmin=1,
         ):
@@ -985,7 +985,7 @@ def non_type_hist(run_id="all"):
                 )
 
         for jet_id in np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_foreshock.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_foreshock.txt".format(runid),
             dtype=int,
             ndmin=1,
         ):
@@ -1001,7 +1001,7 @@ def non_type_hist(run_id="all"):
                 )
 
         for jet_id in np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/{}_complex.txt".format(runid),
+            wrkdir_DNR + "papu22/id_txts/new/{}_complex.txt".format(runid),
             dtype=int,
             ndmin=1,
         ):
@@ -1079,7 +1079,7 @@ def non_type_hist(run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
+    #fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
     fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id))
     plt.close(fig)
 
@@ -1253,10 +1253,10 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(
-        wrkdir_DNR
-        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.pdf".format(lastbs, run_id)
-    )
+    #fig.savefig(
+    #    wrkdir_DNR
+    #    + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.pdf".format(lastbs, run_id)
+    #)
     fig.savefig(
         wrkdir_DNR
         + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id)
