@@ -182,7 +182,7 @@ def types_jplot_SEA(run_id, kind="beam",version="old"):
     #     wrkdir_DNR
     #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
     # )
-    fig.savefig(wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind),dpi=300)
     plt.close(fig)
 
 
@@ -318,7 +318,7 @@ def non_jet_jplots(runid):
         # )
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5))
+            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5)),dpi=300
         )
         plt.close(fig)
 
@@ -705,7 +705,7 @@ def SEA_types(run_id="all"):
     plt.tight_layout()
 
     #fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id),dpi=300)
     plt.close(fig)
 
 
@@ -844,7 +844,7 @@ def SEA_plots(zero_level=False, run_id="all"):
     #    wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
     #)
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id)
+        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id),dpi=300
     )
     plt.close(fig)
 
@@ -1080,7 +1080,7 @@ def non_type_hist(run_id="all"):
     plt.tight_layout()
 
     #fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id),dpi=300)
     plt.close(fig)
 
 
@@ -1259,7 +1259,7 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
     #)
     fig.savefig(
         wrkdir_DNR
-        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id)
+        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id),dpi=300
     )
     plt.close(fig)
 
