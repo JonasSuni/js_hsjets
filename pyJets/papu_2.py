@@ -33,6 +33,74 @@ except:
     vlasdir = "/proj/vlasov"
 
 
+def jet_pos_plot():
+    runids = ["AEC", "AEA", "ABC", "ABA"]
+    CB_color_cycle = jx.CB_color_cycle
+    kinds = ["foreshock", "beam", "complex", "stripe"]
+    draw_labels = [True, False, False, False]
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(14, 14))
+    ax_flat = ax_list.flatten()
+
+    yarr = np.arange(-8, 6, 0.1)
+    bs_fit = [jx.bs_mp_fit(runid, 800)[1] for runid in runids]
+    bs_x = [
+        np.polyval(bs_fit[idx], yarr) - bs_fit[idx][-1] for idx in range(len(runids))
+    ]
+
+    for idx, ax in enumerate(ax_flat):
+        ax.plot(bs_x[idx], yarr, color="black")
+
+    for n1, runid in enumerate(runids):
+        ax = ax_flat[n1]
+        for n2, kind in enumerate(kinds):
+            label_bool = draw_labels[n1]
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+            for non_id in non_ids:
+                props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+                x0, y0, t0 = (
+                    props.read("x_mean")[0],
+                    props.read("y_mean")[0],
+                    props.read("time")[0],
+                )
+                bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
+                if label_bool:
+                    ax.plot(
+                        np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        y0,
+                        "o",
+                        color=CB_color_cycle[n2],
+                        label=kinds[n2].capitalize(),
+                    )
+                    label_bool = False
+                else:
+                    ax.plot(
+                        np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        y0,
+                        "x",
+                        color=CB_color_cycle[n2],
+                    )
+        label_bool = draw_labels[n1]
+        ax.grid()
+        ax.set_xlim(6, 18)
+        if runid in ["ABA", "AEA"]:
+            ax.set_ylim(-8, 6)
+        else:
+            ax.set_ylim(-6, 6)
+        if label_bool:
+            ax.legend()
+
+    # Save figure
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR + "papu22/Figures/BS_plot.png", dpi=300)
+    plt.close(fig)
+
+
 def get_non_jets(runid):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -63,7 +131,7 @@ def get_non_jets(runid):
     return np.unique(non_ids)
 
 
-def types_jplot_SEA(run_id, kind="beam",version="old"):
+def types_jplot_SEA(run_id, kind="beam", version="old"):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
@@ -182,7 +250,9 @@ def types_jplot_SEA(run_id, kind="beam",version="old"):
     #     wrkdir_DNR
     #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
     # )
-    fig.savefig(wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind),dpi=300)
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
+    )
     plt.close(fig)
 
 
@@ -318,7 +388,8 @@ def non_jet_jplots(runid):
         # )
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5)),dpi=300
+            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5)),
+            dpi=300,
         )
         plt.close(fig)
 
@@ -493,6 +564,10 @@ def SEA_types(run_id="all"):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    elif run_id == "30":
+        runid_list = ["ABA", "AEA"]
+    elif run_id == "05":
+        runid_list = ["ABC", "AEC"]
     else:
         runid_list = [run_id]
 
@@ -531,7 +606,9 @@ def SEA_types(run_id="all"):
     for runid in runid_list:
 
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/new/{}_beam.txt".format(runid), dtype=int, ndmin=1
+            wrkdir_DNR + "papu22/id_txts/new/{}_beam.txt".format(runid),
+            dtype=int,
+            ndmin=1,
         )
         for jet_id in jet_ids:
             data = np.loadtxt(
@@ -704,8 +781,8 @@ def SEA_types(run_id="all"):
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    #fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id),dpi=300)
+    # fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
+    fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id), dpi=300)
     plt.close(fig)
 
 
@@ -716,6 +793,10 @@ def SEA_plots(zero_level=False, run_id="all"):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    elif run_id == "30":
+        runid_list = ["ABA", "AEA"]
+    elif run_id == "05":
+        runid_list = ["ABC", "AEC"]
     else:
         runid_list = [run_id]
 
@@ -840,11 +921,12 @@ def SEA_plots(zero_level=False, run_id="all"):
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    #fig.savefig(
+    # fig.savefig(
     #    wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
-    #)
+    # )
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id),dpi=300
+        wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id),
+        dpi=300,
     )
     plt.close(fig)
 
@@ -852,6 +934,10 @@ def SEA_plots(zero_level=False, run_id="all"):
 def non_type_hist(run_id="all"):
     if run_id == "all":
         run_arr = ["ABA", "ABC", "AEA", "AEC"]
+    elif run_id == "30":
+        runid_list = ["ABA", "AEA"]
+    elif run_id == "05":
+        runid_list = ["ABC", "AEC"]
     else:
         run_arr = [run_id]
 
@@ -1079,8 +1165,10 @@ def non_type_hist(run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    #fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
-    fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id),dpi=300)
+    # fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id), dpi=300
+    )
     plt.close(fig)
 
 
@@ -1088,6 +1176,10 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
     if run_id == "all":
         run_arr = ["ABA", "ABC", "AEA", "AEC"]
+    elif run_id == "30":
+        runid_list = ["ABA", "AEA"]
+    elif run_id == "05":
+        runid_list = ["ABC", "AEC"]
     else:
         run_arr = [run_id]
 
@@ -1253,13 +1345,14 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    #fig.savefig(
+    # fig.savefig(
     #    wrkdir_DNR
     #    + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.pdf".format(lastbs, run_id)
-    #)
+    # )
     fig.savefig(
         wrkdir_DNR
-        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id),dpi=300
+        + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.png".format(lastbs, run_id),
+        dpi=300,
     )
     plt.close(fig)
 
