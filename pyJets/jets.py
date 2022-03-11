@@ -78,6 +78,7 @@ from jet_aux import (
     get_neighs,
     bow_shock_jonas,
     ext_magpause,
+    bs_mp_fit,
 )
 from jet_jh2020 import (
     jh2020_movie,
@@ -120,5 +121,5 @@ from papu_2 import (
     non_jet_jplots,
     SEA_types,
     non_type_hist,
-    types_jplot_SEA
+    types_jplot_SEA,
 )
