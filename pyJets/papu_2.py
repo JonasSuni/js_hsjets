@@ -86,7 +86,7 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(6, 18)
+        ax.set_xlim(-4, 4)
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-8, 6)
         else:
