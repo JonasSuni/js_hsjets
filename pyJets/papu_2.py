@@ -37,9 +37,9 @@ def jet_pos_plot():
     runids = ["AEC", "AEA", "ABC", "ABA"]
     CB_color_cycle = jx.CB_color_cycle
     kinds = ["foreshock", "beam", "complex", "stripe"]
-    draw_labels = [True, False, False, False]
+    draw_labels = [False, True, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(14, 14))
+    fig, ax_list = plt.subplots(2, 2, figsize=(10, 10))
     ax_flat = ax_list.flatten()
 
     yarr = np.arange(-8, 6, 0.1)
@@ -72,7 +72,7 @@ def jet_pos_plot():
                     ax.plot(
                         np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
                         y0,
-                        "o",
+                        "c",
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
                     )
@@ -86,13 +86,17 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(-4, 4)
+        ax.set_xlim(-3, 2)
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-8, 6)
         else:
             ax.set_ylim(-6, 6)
         if label_bool:
             ax.legend()
+        ax_flat[0].set_ylabel("10 nT")
+        ax_flat[2].set_ylabel("5 nT")
+        ax_flat[2].set_xlabel("5 deg")
+        ax_flat[3].set_xlabel("30 deg")
 
     # Save figure
     plt.tight_layout()
