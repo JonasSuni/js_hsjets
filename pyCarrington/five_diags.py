@@ -14,7 +14,7 @@ r_glonass = 19.130e6 / r_e + 1
 
 r_sats = [r_geo, r_galileo, r_gps, r_glonass]
 name_sats = ["GEO", "Galileo", "GPS", "GLONASS"]
-offset_sats = [0.0, 0.0, 0.0, -0.02]
+offset_sats = [-0.005, -0.005, -0.005, -0.025]
 
 
 def map_surface_to_ib(theta, ib):
@@ -288,7 +288,10 @@ def plot_precip(plot_diff=False, min_energy=None):
             )
         )
     else:
-        fig.savefig("/wrk/users/jesuni/Figures/carrington/max_integralflux.png")
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/max_integralflux.png", dpi=300
+        )
+        fig.savefig("/wrk/users/jesuni/Figures/carrington/max_integralflux.pdf")
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
@@ -315,7 +318,8 @@ def plot_precip(plot_diff=False, min_energy=None):
     )
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.png")
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.png", dpi=300)
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.pdf")
     plt.close(fig)
 
     plt.ion()
@@ -515,6 +519,12 @@ def plot_driving_MP_theta():
         plt.tight_layout()
         fig.savefig(
             "/wrk/users/jesuni/Figures/carrington/mp_standoff_{}.png".format(
+                outname_arr[n1]
+            ),
+            dpi=300,
+        )
+        fig.savefig(
+            "/wrk/users/jesuni/Figures/carrington/mp_standoff_{}.pdf".format(
                 outname_arr[n1]
             )
         )
