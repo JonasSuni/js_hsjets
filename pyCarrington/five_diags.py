@@ -743,7 +743,7 @@ def line_dipole_vis():
     D = -126.2e6
     m = -8e15
 
-    x = np.arange(-50,50,0.1)*r_e
+    x = np.arange(-15,15,0.1)*r_e
     xmesh,zmesh = np.meshgrid(x,x)
     rmesh = np.sqrt(xmesh**2+zmesh**2)
 
@@ -763,7 +763,7 @@ def line_dipole_vis():
     fig,ax = plt.subplots(1,1)
 
     ax.grid()
-    ax.set(xlabel="$X~[R_\mathrm{E}]$",ylabel="$X~[R_\mathrm{E}]$",xlim=(-50,50),ylim=(-50,50))
+    ax.set(xlabel="$X~[R_\mathrm{E}]$",ylabel="$X~[R_\mathrm{E}]$",xlim=(-15,15),ylim=(-15,15))
 
     ax.contour(x,x,rmesh,[r_e],colors=["C0"])
     dip_cs = ax.contour(x/r_e,x/r_e,P_mag_dip/1.e-9,[1,2,3,4,5],colors=["C1","C1","C1","C1","C1"],linestyles=["dashed","dashed","dashed","dashed","dashed"])
