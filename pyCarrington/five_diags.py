@@ -265,10 +265,16 @@ def plot_precip(plot_diff=False, min_energy=None):
     plt.close(fig)
 
     num_arr = [1, 2, 3]
+    # max_precip_arr = [
+    #     np.nanmax(precip_bgd * start_B_bgd / end_B_bgd),
+    #     np.nanmax(precip_bgf * start_B_bgf / end_B_bgf),
+    #     np.nanmax(precip_bgg * start_B_bgg / end_B_bgg),
+    # ]
+
     max_precip_arr = [
-        np.nanmax(precip_bgd * start_B_bgd / end_B_bgd),
-        np.nanmax(precip_bgf * start_B_bgf / end_B_bgf),
-        np.nanmax(precip_bgg * start_B_bgg / end_B_bgg),
+        np.nanmax(precip_bgd),
+        np.nanmax(precip_bgf),
+        np.nanmax(precip_bgg),
     ]
 
     fig, ax = plt.subplots(1, 1)
@@ -307,10 +313,16 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     fig, ax = plt.subplots(1, 1)
 
+    # max_fac_arr = [
+    #     np.nanmax(FAC_bgd * start_B_bgd / end_B_bgd),
+    #     np.nanmax(FAC_bgf * start_B_bgf / end_B_bgf),
+    #     np.nanmax(FAC_bgg * start_B_bgg / end_B_bgg),
+    # ]
+
     max_fac_arr = [
-        np.nanmax(FAC_bgd * start_B_bgd / end_B_bgd),
-        np.nanmax(FAC_bgf * start_B_bgf / end_B_bgf),
-        np.nanmax(FAC_bgg * start_B_bgg / end_B_bgg),
+        np.nanmax(FAC_bgd),
+        np.nanmax(FAC_bgf),
+        np.nanmax(FAC_bgg),
     ]
 
     ax.grid()
