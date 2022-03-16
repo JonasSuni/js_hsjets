@@ -418,7 +418,7 @@ def precipitation_diag(run):
             if np.linalg.norm(end_coords) >= (r_stop + dib - ds):
                 ci = vlsvobj.get_cellid(end_coords)
                 Bmag = vlsvobj.read_variable(
-                    "proton/vg_b_vol", operator="magnitude", cellids=[int(ci), 1]
+                    "vg_b_vol", operator="magnitude", cellids=[int(ci), 1]
                 )[0]
                 precip = vlsvobj.read_variable(
                     "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
