@@ -738,6 +738,45 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
     #     trace_full=True,
     # )
 
+def line_dipole_vis():
+
+    D = -126.2e6
+    m = -8e15
+
+    x = np.arange(-50,50,0.1)*r_e
+    xmesh,zmesh = np.meshgrid(x,x)
+    rmesh = np.sqrt(xmesh**2+zmesh**2)
+
+    xmesh = np.ma.masked_where(rmesh<0.9*r_e,xmesh)
+    ymesh = np.ma.masked_where(rmesh<0.9*r_e,ymesh)
+    rmesh = np.ma.masked_where(rmesh<0.9*r_e,rmesh)
+
+    Bx_dip = 3*xmesh*zmesh*m/rmesh**5
+    Bz_dip = (3*zmesh*zmesh*m-m*rmesh*rmesh)/rmesh**5
+
+    Bx_line = 2*D*xmesh*zmesh/rmesh**4
+    Bz_line = D*(zmesh*zmesh-xmesh*xmesh)/rmesh**4
+
+    P_mag_dip = (Bx_dip**2+Bz_dip**2)/2.0/mu_0
+    P_mag_line = (Bx_line**2+Bz_line**2)/2.0/mu_0
+
+    fig,ax = plt.subplots(1,1)
+
+    ax.grid()
+    ax.set(xlabel="$X~[R_\mathrm{E}]$",ylabel="$X~[R_\mathrm{E}]$",xlim=(-50,50),ylim=(-50,50))
+
+    ax.contour(x,x,rmesh,[r_e],colors=["C0"])
+    dip_cs = ax.contour(x,x,P_mag_dip/1.e-9,[1,2,3,4,5],colors=["C1","C1","C1","C1","C1"],linestyles=["dashed","dashed","dashed","dashed","dashed"])
+    line_cs = ax.contour(x,x,P_mag_line/1.e-9,[1,2,3,4,5],colors=["C2","C2","C2","C2","C2"],linestyles=["dotted","dotted","dotted","dotted","dotted"])
+
+    ax.clabel(dip_cs)
+    ax.clabel(line_cs)
+
+    plt.tight_layout()
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.png",dpi=300)
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.pdf")
+    plt.close(fig)
+
 
 def trace_b_good(
     start_coords,
