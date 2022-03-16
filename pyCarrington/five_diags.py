@@ -769,8 +769,8 @@ def line_dipole_vis():
     dip_cs = ax.contour(x/r_e,x/r_e,P_mag_dip/1.e-9,[0.5,1,4],colors=["C1","C1","C1"],linestyles=["dashed","dashed","dashed"],linewidths=[0.8,0.8,0.8])
     line_cs = ax.contour(x/r_e,x/r_e,P_mag_line/1.e-9,[0.5,1,4],colors=["C2","C2","C2"],linestyles=["dotted","dotted","dotted"],linewidths=[0.8,0.8,0.8])
 
-    ax.clabel(dip_cs,fontsize=12)
-    ax.clabel(line_cs,fontsize=12)
+    ax.clabel(dip_cs,fontsize=8)
+    ax.clabel(line_cs,fontsize=8)
 
     ax.set_aspect(1)
 
