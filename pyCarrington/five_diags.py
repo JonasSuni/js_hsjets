@@ -748,7 +748,7 @@ def line_dipole_vis():
     rmesh = np.sqrt(xmesh**2+zmesh**2)
 
     xmesh = np.ma.masked_where(rmesh<0.9*r_e,xmesh)
-    ymesh = np.ma.masked_where(rmesh<0.9*r_e,ymesh)
+    zmesh = np.ma.masked_where(rmesh<0.9*r_e,zmesh)
     rmesh = np.ma.masked_where(rmesh<0.9*r_e,rmesh)
 
     Bx_dip = 3*xmesh*zmesh*m/rmesh**5
