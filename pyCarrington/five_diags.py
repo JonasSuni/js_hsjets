@@ -475,6 +475,9 @@ def precipitation_diag(run):
             for k in range(16):
                 diffprecip_arr[itr][k] = np.nan
 
+    print(start_B)
+    print(end_B)
+
     return (
         theta_arr,
         precip_arr,
