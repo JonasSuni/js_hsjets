@@ -58,6 +58,11 @@ def colormap_diff_precip(run="BGF"):
 
 def plot_precip(plot_diff=False, min_energy=None):
 
+    rho_arr = np.array([3.3, 7, 20])
+    v_arr = np.array([600, 1000, 1500])
+    pdyn_arr = m_p * rho_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
+    B_arr = np.array([10, 20, 30])
+
     plt.ioff()
 
     (
@@ -70,6 +75,8 @@ def plot_precip(plot_diff=False, min_energy=None):
         x_bgd,
         z_bgd,
         energybins,
+        start_B_bgd,
+        end_B_bgd,
     ) = precipitation_diag("BGD")
     (
         theta,
@@ -81,6 +88,8 @@ def plot_precip(plot_diff=False, min_energy=None):
         x_bgf,
         z_bgf,
         energybins,
+        start_B_bgf,
+        end_B_bgf,
     ) = precipitation_diag("BGF")
     (
         theta,
@@ -92,6 +101,8 @@ def plot_precip(plot_diff=False, min_energy=None):
         x_bgg,
         z_bgg,
         energybins,
+        start_B_bgg,
+        end_B_bgg,
     ) = precipitation_diag("BGG")
 
     deltaE_bgd = binedges_bgd[1:] - binedges_bgd[:-1]
@@ -255,25 +266,25 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     num_arr = [1, 2, 3]
     max_precip_arr = [
-        np.nanmax(precip_bgd),
-        np.nanmax(precip_bgf),
-        np.nanmax(precip_bgg),
+        np.nanmax(precip_bgd * start_B_bgd / end_B_bgd),
+        np.nanmax(precip_bgf * start_B_bgf / end_B_bgf),
+        np.nanmax(precip_bgg * start_B_bgg / end_B_bgg),
     ]
 
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(num_arr[0], max_precip_arr[0], "o", label="Normal", color="black")
-    ax.semilogy(num_arr[1], max_precip_arr[1], "o", label="Moderate", color="black")
-    ax.semilogy(num_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
-    ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
+    ax.semilogy(pdyn_arr[0], max_precip_arr[0], "o", label="Normal", color="black")
+    ax.semilogy(pdyn_arr[1], max_precip_arr[1], "o", label="Moderate", color="black")
+    ax.semilogy(pdyn_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
+    # ax.set_xticks([1, 2, 3])
+    # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.set_ylabel(
         "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
     ax.set_xlabel(
-        "Driving conditions",
+        "$P_\mathrm{dyn,sw}$ [nPa]",
         fontsize=14,
     )
     # ax.legend(fontsize=14)
@@ -297,23 +308,25 @@ def plot_precip(plot_diff=False, min_energy=None):
     fig, ax = plt.subplots(1, 1)
 
     max_fac_arr = [
-        np.nanmax(FAC_bgd),
-        np.nanmax(FAC_bgf),
-        np.nanmax(FAC_bgg),
+        np.nanmax(FAC_bgd * start_B_bgd / end_B_bgd),
+        np.nanmax(FAC_bgf * start_B_bgf / end_B_bgf),
+        np.nanmax(FAC_bgg * start_B_bgg / end_B_bgg),
     ]
 
     ax.grid()
-    ax.semilogy(num_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
-    ax.semilogy(num_arr[1], max_fac_arr[1] / 1e-9, "o", label="Moderate", color="black")
-    ax.semilogy(num_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
-    ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(["Normal", "Moderate", "Strong"])
+    ax.semilogy(pdyn_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
+    ax.semilogy(
+        pdyn_arr[1], max_fac_arr[1] / 1e-9, "o", label="Moderate", color="black"
+    )
+    ax.semilogy(pdyn_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
+    # ax.set_xticks([1, 2, 3])
+    # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     ax.set_ylabel(
         "Maximum FAC [nA/m$^2$]",
         fontsize=14,
     )
     ax.set_xlabel(
-        "Driving conditions",
+        "$P_\mathrm{dyn,sw}$ [nPa]",
         fontsize=14,
     )
 
@@ -326,6 +339,8 @@ def plot_precip(plot_diff=False, min_energy=None):
 
 
 def precipitation_diag(run):
+
+    D = -126.2e6
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
@@ -356,6 +371,8 @@ def precipitation_diag(run):
     x_arr = np.zeros_like(theta_arr)
     z_arr = np.zeros_like(theta_arr)
     FAC_arr = np.zeros_like(theta_arr)
+    start_B = np.zeros_like(theta_arr)
+    end_B = np.zeros_like(theta_arr)
 
     energybins = np.array(
         [
@@ -400,6 +417,9 @@ def precipitation_diag(run):
             )
             if np.linalg.norm(end_coords) >= (r_stop + dib - ds):
                 ci = vlsvobj.get_cellid(end_coords)
+                Bmag = vlsvobj.read_variable(
+                    "proton/vg_b_vol", operator="magnitude", cellids=[int(ci), 1]
+                )[0]
                 precip = vlsvobj.read_variable(
                     "proton/vg_precipitationintegralenergyflux", cellids=[int(ci), 1]
                 )[0]
@@ -416,11 +436,15 @@ def precipitation_diag(run):
                 diffprecip_arr[itr] = diffprecip
                 FAC = calc_FAC(vlsvobj, [end_coords[0], end_coords[1]], dr=ds)
                 FAC_arr[itr] = FAC
+                end_B[itr] = Bmag
+                start_B[itr] = D / np.linalg.norm(start_coords) ** 2
 
                 coords_ci = vlsvobj.get_cell_coordinates(ci)
                 x_arr[itr] = coords_ci[0]
                 z_arr[itr] = coords_ci[2]
             else:
+                start_B[itr] = D / np.linalg.norm(start_coords) ** 2
+                end_B[itr] = 999999
                 precip_arr[itr] = np.nan
                 meanenergy_arr[itr] = np.nan
                 x_arr[itr] = np.nan
@@ -429,6 +453,8 @@ def precipitation_diag(run):
                 for k in range(16):
                     diffprecip_arr[itr][k] = np.nan
         else:
+            start_B[itr] = D / np.linalg.norm(start_coords) ** 2
+            end_B[itr] = 999999
             precip_arr[itr] = np.nan
             meanenergy_arr[itr] = np.nan
             x_arr[itr] = np.nan
@@ -447,6 +473,8 @@ def precipitation_diag(run):
         x_arr,
         z_arr,
         energybins,
+        start_B,
+        end_B,
     )
 
 
