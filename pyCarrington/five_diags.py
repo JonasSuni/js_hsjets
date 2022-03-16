@@ -766,8 +766,8 @@ def line_dipole_vis():
     ax.set(xlabel="$X~[R_\mathrm{E}]$",ylabel="$Z~[R_\mathrm{E}]$",xlim=(-15,15),ylim=(-15,15))
 
     ax.contour(x/r_e,x/r_e,rmesh,[r_e],colors=["C0"])
-    dip_cs = ax.contour(x/r_e,x/r_e,P_mag_dip/1.e-9,[0.5,1,4],colors=["C1","C1","C1"],linestyles=["dashed","dashed","dashed"])
-    line_cs = ax.contour(x/r_e,x/r_e,P_mag_line/1.e-9,[0.5,1,4],colors=["C2","C2","C2"],linestyles=["dotted","dotted","dotted"])
+    dip_cs = ax.contour(x/r_e,x/r_e,P_mag_dip/1.e-9,[0.5,1,4],colors=["C1","C1","C1"],linestyles=["dashed","dashed","dashed"],linewidths=[0.6,0.6,0.6])
+    line_cs = ax.contour(x/r_e,x/r_e,P_mag_line/1.e-9,[0.5,1,4],colors=["C2","C2","C2"],linestyles=["dotted","dotted","dotted"],linewidths=[0.6,0.6,0.6])
 
     ax.clabel(dip_cs)
     ax.clabel(line_cs)
