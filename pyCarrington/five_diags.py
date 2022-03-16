@@ -265,17 +265,17 @@ def plot_precip(plot_diff=False, min_energy=None):
     plt.close(fig)
 
     num_arr = [1, 2, 3]
-    # max_precip_arr = [
-    #     np.nanmax(precip_bgd * start_B_bgd / end_B_bgd),
-    #     np.nanmax(precip_bgf * start_B_bgf / end_B_bgf),
-    #     np.nanmax(precip_bgg * start_B_bgg / end_B_bgg),
-    # ]
-
     max_precip_arr = [
-        np.nanmax(precip_bgd),
-        np.nanmax(precip_bgf),
-        np.nanmax(precip_bgg),
+        np.nanmax(precip_bgd * start_B_bgd / end_B_bgd),
+        np.nanmax(precip_bgf * start_B_bgf / end_B_bgf),
+        np.nanmax(precip_bgg * start_B_bgg / end_B_bgg),
     ]
+
+    # max_precip_arr = [
+    #     np.nanmax(precip_bgd),
+    #     np.nanmax(precip_bgf),
+    #     np.nanmax(precip_bgg),
+    # ]
 
     fig, ax = plt.subplots(1, 1)
 
@@ -313,17 +313,17 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     fig, ax = plt.subplots(1, 1)
 
-    # max_fac_arr = [
-    #     np.nanmax(FAC_bgd * start_B_bgd / end_B_bgd),
-    #     np.nanmax(FAC_bgf * start_B_bgf / end_B_bgf),
-    #     np.nanmax(FAC_bgg * start_B_bgg / end_B_bgg),
-    # ]
-
     max_fac_arr = [
-        np.nanmax(FAC_bgd),
-        np.nanmax(FAC_bgf),
-        np.nanmax(FAC_bgg),
+        np.nanmax(FAC_bgd * start_B_bgd / end_B_bgd),
+        np.nanmax(FAC_bgf * start_B_bgf / end_B_bgf),
+        np.nanmax(FAC_bgg * start_B_bgg / end_B_bgg),
     ]
+
+    # max_fac_arr = [
+    #     np.nanmax(FAC_bgd),
+    #     np.nanmax(FAC_bgf),
+    #     np.nanmax(FAC_bgg),
+    # ]
 
     ax.grid()
     ax.semilogy(pdyn_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
@@ -449,13 +449,13 @@ def precipitation_diag(run):
                 FAC = calc_FAC(vlsvobj, [end_coords[0], end_coords[1]], dr=ds)
                 FAC_arr[itr] = FAC
                 end_B[itr] = Bmag
-                start_B[itr] = D / np.linalg.norm(start_coords) ** 2
+                start_B[itr] = np.abs(D) / np.linalg.norm(start_coords) ** 2
 
                 coords_ci = vlsvobj.get_cell_coordinates(ci)
                 x_arr[itr] = coords_ci[0]
                 z_arr[itr] = coords_ci[2]
             else:
-                start_B[itr] = D / np.linalg.norm(start_coords) ** 2
+                start_B[itr] = np.abs(D) / np.linalg.norm(start_coords) ** 2
                 end_B[itr] = 999999
                 precip_arr[itr] = np.nan
                 meanenergy_arr[itr] = np.nan
@@ -465,7 +465,7 @@ def precipitation_diag(run):
                 for k in range(16):
                     diffprecip_arr[itr][k] = np.nan
         else:
-            start_B[itr] = D / np.linalg.norm(start_coords) ** 2
+            start_B[itr] = np.abs(D) / np.linalg.norm(start_coords) ** 2
             end_B[itr] = 999999
             precip_arr[itr] = np.nan
             meanenergy_arr[itr] = np.nan
@@ -475,8 +475,8 @@ def precipitation_diag(run):
             for k in range(16):
                 diffprecip_arr[itr][k] = np.nan
 
-    print(start_B)
-    print(end_B)
+    # print(start_B)
+    # print(end_B)
 
     return (
         theta_arr,
