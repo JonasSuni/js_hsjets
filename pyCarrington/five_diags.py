@@ -285,14 +285,20 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.semilogy(pdyn_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
+    # ax.set_ylabel(
+    #     "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+    #     fontsize=12,
+    # )
+    # ax.set_xlabel(
+    #     "$P_\mathrm{dyn,sw}$ [nPa]",
+    #     fontsize=14,
+    # )
     ax.set_ylabel(
-        "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Suurin protonipresipitaation energiavuo [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
+        labelpad=10,
     )
-    ax.set_xlabel(
-        "$P_\mathrm{dyn,sw}$ [nPa]",
-        fontsize=14,
-    )
+    ax.set_xlabel("Aurinkotuulen dynaaminen paine [nPa]", fontsize=12, labelpad=10)
     # ax.legend(fontsize=14)
     if min_energy:
         ax.set_title("$>${:n} eV".format(min_energy), fontsize=14)
@@ -333,14 +339,16 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.semilogy(pdyn_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
-    ax.set_ylabel(
-        "Maximum FAC [nA/m$^2$]",
-        fontsize=14,
-    )
-    ax.set_xlabel(
-        "$P_\mathrm{dyn,sw}$ [nPa]",
-        fontsize=14,
-    )
+    # ax.set_ylabel(
+    #     "Maximum FAC [nA/m$^2$]",
+    #     fontsize=14,
+    # )
+    # ax.set_xlabel(
+    #     "$P_\mathrm{dyn,sw}$ [nPa]",
+    #     fontsize=14,
+    # )
+    ax.set_ylabel("Suurin kentänsuuntainen virta [nA/m$^2$]", fontsize=12, labelpad=10)
+    ax.set_xlabel("Aurinkotuulen dynaaminen paine [nPa]", fontsize=12, labelpad=10)
 
     plt.tight_layout()
     fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.png", dpi=300)
@@ -520,8 +528,8 @@ def plot_driving_MP_theta():
     xlabel_arr = [
         "$n_\mathrm{sw}~[\mathrm{cm}^{-3}]$",
         "$v_\mathrm{sw}~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn,sw}~[\mathrm{nPa}]$",
-        "$-B_{\mathrm{IMF},z}~[\mathrm{nT}]$",
+        # "$P_\mathrm{dyn,sw}~[\mathrm{nPa}]$",
+        "Aurinkotuulen dynaaminen paine [nPa]" "$-B_{\mathrm{IMF},z}~[\mathrm{nT}]$",
     ]
     outname_arr = ["n", "v", "pdyn", "B"]
 
@@ -531,21 +539,25 @@ def plot_driving_MP_theta():
 
         ax.set_ylim(2, 10)
 
+        # ax.set_ylabel(
+        #     "Magnetopause standoff [$R_\mathrm{E}$]",
+        #     fontsize=12,
+        #     labelpad=10
+        # )
         ax.set_ylabel(
-            "Magnetopause standoff [$R_\mathrm{E}$]",
-            fontsize=14,
+            "Magnetopaussin paikka [$R_\mathrm{E}$]", fontsize=12, labelpad=10
         )
-        ax.set_xlabel(xlabel_arr[n1], fontsize=14)
+        ax.set_xlabel(xlabel_arr[n1], fontsize=12, labelpad=10)
         ax.grid()
-        ax.plot(driving_arr[n1], standoff_arr, "o", label="Line dipole")
+        ax.plot(driving_arr[n1], standoff_arr, "o", label="Viivadipoli")
 
         ax.plot(
             driving_arr[n1],
             100 ** (1.0 / 6) * standoff_arr ** (2 / 3),
             "o",
-            label="Estimated 3D",
+            label="3D-arvio",
         )
-        ax.plot(driving_3d[n1], standoff_3d, "o", label="3D run")
+        ax.plot(driving_3d[n1], standoff_3d, "o", label="3D-ajo")
 
         for idx in range(len(r_sats)):
             ax.axhline(r_sats[idx], linewidth=0.6, linestyle="dashed", color="red")
