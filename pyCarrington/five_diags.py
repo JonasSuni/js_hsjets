@@ -532,6 +532,7 @@ def plot_driving_MP_theta():
         "$v_\mathrm{sw}~[\mathrm{km/s}]$",
         # "$P_\mathrm{dyn,sw}~[\mathrm{nPa}]$",
         "Aurinkotuulen dynaaminen paine [nPa]" "$-B_{\mathrm{IMF},z}~[\mathrm{nT}]$",
+        "$B_\mathrm{IMF}~[nT]$",
     ]
     outname_arr = ["n", "v", "pdyn", "B"]
 
