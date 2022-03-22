@@ -347,7 +347,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     #     "$P_\mathrm{dyn,sw}$ [nPa]",
     #     fontsize=14,
     # )
-    ax.set_ylabel("Suurin kentänsuuntainen virta [nA/m$^2$]", fontsize=12, labelpad=10)
+    ax.set_ylabel(
+        "Suurin kentänsuuntainen virrantiheys [nA/m$^2$]", fontsize=12, labelpad=10
+    )
     ax.set_xlabel("Aurinkotuulen dynaaminen paine [nPa]", fontsize=12, labelpad=10)
 
     plt.tight_layout()
@@ -750,44 +752,76 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
     #     trace_full=True,
     # )
 
+
 def line_dipole_vis():
 
     D = -126.2e6
     m = -8e15
 
-    x = np.arange(-15,15,0.1)*r_e
-    xmesh,zmesh = np.meshgrid(x,x)
-    rmesh = np.sqrt(xmesh**2+zmesh**2)
+    x = np.arange(-15, 15, 0.1) * r_e
+    xmesh, zmesh = np.meshgrid(x, x)
+    rmesh = np.sqrt(xmesh ** 2 + zmesh ** 2)
 
-    xmesh = np.ma.masked_where(rmesh<0.9*r_e,xmesh)
-    zmesh = np.ma.masked_where(rmesh<0.9*r_e,zmesh)
-    rmesh = np.ma.masked_where(rmesh<0.9*r_e,rmesh)
+    xmesh = np.ma.masked_where(rmesh < 0.9 * r_e, xmesh)
+    zmesh = np.ma.masked_where(rmesh < 0.9 * r_e, zmesh)
+    rmesh = np.ma.masked_where(rmesh < 0.9 * r_e, rmesh)
 
-    Bx_dip = 3*xmesh*zmesh*m/rmesh**5
-    Bz_dip = (3*zmesh*zmesh*m-m*rmesh*rmesh)/rmesh**5
+    Bx_dip = 3 * xmesh * zmesh * m / rmesh ** 5
+    Bz_dip = (3 * zmesh * zmesh * m - m * rmesh * rmesh) / rmesh ** 5
 
-    Bx_line = 2*D*xmesh*zmesh/rmesh**4
-    Bz_line = D*(zmesh*zmesh-xmesh*xmesh)/rmesh**4
+    Bx_line = 2 * D * xmesh * zmesh / rmesh ** 4
+    Bz_line = D * (zmesh * zmesh - xmesh * xmesh) / rmesh ** 4
 
-    P_mag_dip = (Bx_dip**2+Bz_dip**2)/2.0/mu_0
-    P_mag_line = (Bx_line**2+Bz_line**2)/2.0/mu_0
+    P_mag_dip = (Bx_dip ** 2 + Bz_dip ** 2) / 2.0 / mu_0
+    P_mag_line = (Bx_line ** 2 + Bz_line ** 2) / 2.0 / mu_0
 
-    fig,ax = plt.subplots(1,1)
+    fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.set(xlabel="$X~[R_\mathrm{E}]$",ylabel="$Z~[R_\mathrm{E}]$",xlim=(-15,15),ylim=(-15,15))
+    ax.set(
+        xlabel="$X~[R_\mathrm{E}]$",
+        ylabel="$Z~[R_\mathrm{E}]$",
+        xlim=(-15, 15),
+        ylim=(-15, 15),
+    )
 
-    ax.contour(x/r_e,x/r_e,rmesh,[r_e],colors=["C0"])
-    dip_cs = ax.contour(x/r_e,x/r_e,P_mag_dip/1.e-9,[0.5,1,4],colors=["C1","C1","C1"],linestyles=["dashed","dashed","dashed"],linewidths=[0.8,0.8,0.8])
-    line_cs = ax.contour(x/r_e,x/r_e,P_mag_line/1.e-9,[0.5,1,4],colors=["C2","C2","C2"],linestyles=["dotted","dotted","dotted"],linewidths=[0.8,0.8,0.8])
+    ax.contour(x / r_e, x / r_e, rmesh, [r_e], colors=["C0"])
+    dip_cs = ax.contour(
+        x / r_e,
+        x / r_e,
+        P_mag_dip / 1.0e-9,
+        [0.5, 1, 4],
+        colors=["C1", "C1", "C1"],
+        linestyles=["dashed", "dashed", "dashed"],
+        linewidths=[0.8, 0.8, 0.8],
+    )
+    line_cs = ax.contour(
+        x / r_e,
+        x / r_e,
+        P_mag_line / 1.0e-9,
+        [0.5, 1, 4],
+        colors=["C2", "C2", "C2"],
+        linestyles=["dotted", "dotted", "dotted"],
+        linewidths=[0.8, 0.8, 0.8],
+    )
 
-    ax.clabel(dip_cs,fontsize=8)
-    ax.clabel(line_cs,fontsize=8)
+    ax.clabel(dip_cs, fontsize=8)
+    ax.clabel(line_cs, fontsize=8)
+
+    proxy = [plt.Rectangle((0, 0), 1, 1, fc=["C1", "C2"][itr]) for itr in range(2)]
+    ax.legend(
+        proxy,
+        ("3D-dipoli", "Viivadipoli"),
+        frameon=True,
+        numpoints=1,
+        markerscale=1,
+        loc="upper right",
+    )
 
     ax.set_aspect(1)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.png",dpi=300)
+    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.png", dpi=300)
     fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.pdf")
     plt.close(fig)
 
