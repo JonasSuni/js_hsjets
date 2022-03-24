@@ -445,8 +445,8 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
 def plot_ballooning(
     tstep=1274,
     cut=15,
-    normal="y",
-    boxre=[-19, -9, -1.5, 1.5],
+    normal="x",
+    boxre=[-10, 10, -1.5, 1.5],
     dr=1000e3,
     op="mag",
     write_txt=False,
@@ -703,9 +703,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             XmeshXY,
             YmeshXY,
             Jmag,
-            vmin=2,
-            vmax=6,
-            cmap="viridis_r",
+            vmin=4,
+            vmax=10,
+            cmap="batlow_r",
             shading="nearest",
         )
     elif op_g == "fa":
