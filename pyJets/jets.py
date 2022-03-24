@@ -122,5 +122,6 @@ from papu_2 import (
     SEA_types,
     non_type_hist,
     types_jplot_SEA,
-    jet_pos_plot
+    jet_pos_plot,
+    P_jplots
 )
