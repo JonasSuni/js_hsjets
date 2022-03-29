@@ -126,4 +126,5 @@ from papu_2 import (
     P_jplots,
     types_P_jplot_SEA,
     fcs_jet_jplot_txtonly,
+    foreshock_jplot_SEA,
 )

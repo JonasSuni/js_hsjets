@@ -165,6 +165,192 @@ def get_non_jets(runid):
     return np.unique(non_ids)
 
 
+def foreshock_jplot_SEA(run_id):
+
+    if run_id == "all":
+        runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        runid_list = [run_id]
+
+    x0 = 0.0
+    t0 = 0.0
+    t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+    dx = 227e3 / r_e
+    x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+    XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
+
+    rho_avg = np.zeros_like(XmeshXY)
+    v_avg = np.zeros_like(XmeshXY)
+    pdyn_avg = np.zeros_like(XmeshXY)
+    B_avg = np.zeros_like(XmeshXY)
+    T_avg = np.zeros_like(XmeshXY)
+    Tcore_avg = np.zeros_like(XmeshXY)
+    mmsx_avg = np.zeros_like(XmeshXY)
+    type_count = 0
+
+    sj_rho_avg = np.zeros_like(XmeshXY)
+    sj_v_avg = np.zeros_like(XmeshXY)
+    sj_pdyn_avg = np.zeros_like(XmeshXY)
+    sj_B_avg = np.zeros_like(XmeshXY)
+    sj_T_avg = np.zeros_like(XmeshXY)
+    sj_Tcore_avg = np.zeros_like(XmeshXY)
+    sj_mmsx_avg = np.zeros_like(XmeshXY)
+    sj_count = 0
+
+    for runid in runid_list:
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, "foreshock"),
+            dtype=int,
+            ndmin=1,
+        )
+        sj_ids = get_fcs_jets(runid)
+
+        for non_id in non_ids:
+            try:
+                rho, v, pdyn, B, T, Tcore, mmsx = np.load(
+                    wrkdir_DNR
+                    + "papu22/jmap_txts/{}/{}_{}.npy".format(
+                        runid, runid, str(non_id).zfill(5)
+                    )
+                )
+                type_count += 1
+                rho_avg = rho_avg + rho
+                v_avg = v_avg + v
+                pdyn_avg = pdyn_avg + pdyn
+                B_avg = B_avg + B
+                T_avg = T_avg + T
+                Tcore_avg = Tcore_avg + Tcore
+                mmsx_avg = mmsx_avg + mmsx
+
+            except:
+                continue
+
+        for sj_id in sj_ids:
+            try:
+                rho, v, pdyn, B, T, Tcore, mmsx = np.load(
+                    wrkdir_DNR
+                    + "papu22/sj_jmap_txts/{}/{}_{}.npy".format(
+                        runid, runid, str(sj_id).zfill(5)
+                    )
+                )
+                sj_count += 1
+                sj_rho_avg = sj_rho_avg + rho
+                sj_v_avg = sj_v_avg + v
+                sj_pdyn_avg = sj_pdyn_avg + pdyn
+                sj_B_avg = sj_B_avg + B
+                sj_T_avg = sj_T_avg + T
+                sj_Tcore_avg = sj_Tcore_avg + Tcore
+                sj_mmsx_avg = sj_mmsx_avg + mmsx
+
+            except:
+                continue
+
+    if type_count != 0:
+        rho_avg /= type_count
+        v_avg /= type_count
+        pdyn_avg /= type_count
+        B_avg /= type_count
+        T_avg /= type_count
+        Tcore_avg /= type_count
+        mmsx_avg /= type_count
+    else:
+        print("No jets of type {} found in run {}".format("foreshock", run_id))
+        return 0
+
+    if sj_count != 0:
+        sj_rho_avg /= sj_count
+        sj_v_avg /= sj_count
+        sj_pdyn_avg /= sj_count
+        sj_B_avg /= sj_count
+        sj_T_avg /= sj_count
+        sj_Tcore_avg /= sj_count
+        sj_mmsx_avg /= sj_count
+    else:
+        return 0
+
+    varname_list = [
+        "$n$ [$n_\mathrm{sw}$]",
+        "$v$ [$v_\mathrm{sw}$]",
+        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        "$B$ [$B_\mathrm{IMF}$]",
+        "$T$ [$T_\mathrm{sw}$]",
+        "$M_{\mathrm{MS},x}$",
+    ]
+
+    data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
+
+    sj_data_arr = [sj_rho_avg, sj_v_avg, sj_pdyn_avg, sj_B_avg, sj_T_avg, sj_mmsx_avg]
+
+    fig, ax_list = plt.subplots(
+        2, len(varname_list), figsize=(24, 20), sharex=True, sharey=True
+    )
+    im_list = []
+    cb_list = []
+    sj_im_list = []
+    sj_cb_list = []
+    fig.suptitle(
+        "Run: {}, Type: {}, Nnon = {}, Nfcs = {}".format(
+            run_id, "foreshock vs. FCS-jet", type_count, sj_count
+        ),
+        fontsize=20,
+    )
+    for idx, ax in enumerate(ax_list[0]):
+        ax.tick_params(labelsize=15)
+        im_list.append(
+            ax.pcolormesh(
+                x_range,
+                t_range,
+                data_arr[idx],
+                shading="nearest",
+                cmap="viridis",
+            )
+        )
+        cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
+        ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
+        ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
+        ax.set_title(varname_list[idx], fontsize=20, pad=10)
+        ax.set_xlim(x_range[0], x_range[-1])
+        ax.set_ylim(t_range[0], t_range[-1])
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+        ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+    ax_list[0][0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+
+    for idx, ax in enumerate(ax_list[1]):
+        ax.tick_params(labelsize=15)
+        sj_im_list.append(
+            ax.pcolormesh(
+                x_range,
+                t_range,
+                sj_data_arr[idx],
+                shading="nearest",
+                cmap="viridis",
+            )
+        )
+        sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
+        ax.contour(XmeshXY, YmeshXY, sj_rho_avg, [2], colors=["black"])
+        ax.contour(XmeshXY, YmeshXY, sj_Tcore_avg, [3], colors=[CB_color_cycle[1]])
+        ax.contour(XmeshXY, YmeshXY, sj_mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
+        ax.set_title(varname_list[idx], fontsize=20, pad=10)
+        ax.set_xlim(x_range[0], x_range[-1])
+        ax.set_ylim(t_range[0], t_range[-1])
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+        ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+    ax_list[1][0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+
+    # Save figure
+    plt.tight_layout()
+
+    fig.savefig(
+        wrkdir_DNR
+        + "papu22/Figures/jmap_SEA_foreshock_comparison_{}.png".format(run_id),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def types_jplot_SEA(run_id, kind="beam", version="new"):
 
     if run_id == "all":
@@ -280,10 +466,6 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     # Save figure
     plt.tight_layout()
 
-    # fig.savefig(
-    #     wrkdir_DNR
-    #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
-    # )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
     )
@@ -402,10 +584,6 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
     # Save figure
     plt.tight_layout()
 
-    # fig.savefig(
-    #     wrkdir_DNR
-    #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
-    # )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/P_jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
     )
