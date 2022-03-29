@@ -135,7 +135,7 @@ def get_non_jets(runid):
     return np.unique(non_ids)
 
 
-def types_jplot_SEA(run_id, kind="beam", version="old"):
+def types_jplot_SEA(run_id, kind="beam", version="new"):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
@@ -256,6 +256,128 @@ def types_jplot_SEA(run_id, kind="beam", version="old"):
     # )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
+    )
+    plt.close(fig)
+
+
+def types_P_jplot_SEA(run_id, kind="beam", version="new"):
+
+    if run_id == "all":
+        runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        runid_list = [run_id]
+
+    x0 = 0.0
+    t0 = 0.0
+    t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+    dx = 227e3 / r_e
+    x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+    XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
+
+    rho_avg = np.zeros_like(XmeshXY)
+    pdyn_avg = np.zeros_like(XmeshXY)
+    pth_avg = np.zeros_like(XmeshXY)
+    pmag_avg = np.zeros_like(XmeshXY)
+    ptot_avg = np.zeros_like(XmeshXY)
+    Tcore_avg = np.zeros_like(XmeshXY)
+    mmsx_avg = np.zeros_like(XmeshXY)
+    type_count = 0
+
+    for runid in runid_list:
+        if version == "old":
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+        elif version == "new":
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+        print(non_ids)
+        for non_id in non_ids:
+            try:
+                rho, pdyn, pmag, pth, ptot, Tcore, mmsx = np.load(
+                    wrkdir_DNR
+                    + "papu22/P_jmap_txts/{}/{}_{}.npy".format(
+                        runid, runid, str(non_id).zfill(5)
+                    )
+                )
+                type_count += 1
+                rho_avg = rho_avg + rho
+                pdyn_avg = pdyn_avg + pdyn
+                pth_avg = pth_avg + pth
+                pmag_avg = pmag_avg + pmag
+                ptot_avg = ptot_avg + ptot
+                Tcore_avg = Tcore_avg + Tcore
+                mmsx_avg = mmsx_avg + mmsx
+
+            except:
+                continue
+
+    if type_count != 0:
+        rho_avg /= type_count
+        pdyn_avg /= type_count
+        pth_avg /= type_count
+        pmag_avg /= type_count
+        ptot_avg /= type_count
+        Tcore_avg /= type_count
+        mmsx_avg /= type_count
+    else:
+        print("No jets of type {} found in run {}".format(kind, run_id))
+        return 0
+
+    varname_list = [
+        "$P_{th}/P_{tot}$",
+        "$P_{dyn}/P_{tot}$",
+        "$P_{mag}/P_{tot}$",
+    ]
+
+    data_arr = [pth_avg / ptot_avg, pdyn_avg / ptot_avg, pmag_avg / ptot_avg]
+
+    fig, ax_list = plt.subplots(
+        1, len(varname_list), figsize=(24, 10), sharex=True, sharey=True
+    )
+    im_list = []
+    cb_list = []
+    fig.suptitle(
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
+    )
+    for idx, ax in enumerate(ax_list):
+        ax.tick_params(labelsize=15)
+        im_list.append(
+            ax.pcolormesh(
+                x_range,
+                t_range,
+                data_arr[idx],
+                shading="nearest",
+                cmap="viridis",
+            )
+        )
+        cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
+        ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
+        ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
+        ax.set_title(varname_list[idx], fontsize=20, pad=10)
+        ax.set_xlim(x_range[0], x_range[-1])
+        ax.set_ylim(t_range[0], t_range[-1])
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+        ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+    ax_list[0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+
+    # Save figure
+    plt.tight_layout()
+
+    # fig.savefig(
+    #     wrkdir_DNR
+    #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+    # )
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/P_jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
     )
     plt.close(fig)
 
@@ -403,6 +525,7 @@ def non_jet_jplots(runid):
             np.array([rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr]),
         )
 
+
 def P_jplots(runid):
 
     CB_color_cycle = jx.CB_color_cycle
@@ -424,8 +547,8 @@ def P_jplots(runid):
         [3.3, 600.0, 10.0, 0.5],
     ]
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
-    vmin_norm = [0,0,0]
-    vmax_norm = [1,1,1]
+    vmin_norm = [0, 0, 0]
+    vmax_norm = [1, 1, 1]
 
     # Path to vlsv files for current run
     bulkpath = jx.find_bulkpath(runid)
@@ -481,7 +604,7 @@ def P_jplots(runid):
         pth_arr = np.array(pth_arr)
         ptot_arr = np.array(ptot_arr)
 
-        data_arr = [pth_arr/ptot_arr,pdyn_arr/ptot_arr,pmag_arr/ptot_arr]
+        data_arr = [pth_arr / ptot_arr, pdyn_arr / ptot_arr, pmag_arr / ptot_arr]
 
         fig, ax_list = plt.subplots(
             1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
@@ -535,8 +658,11 @@ def P_jplots(runid):
         np.save(
             wrkdir_DNR
             + "papu22/P_jmap_txts/{}/{}_{}".format(runid, runid, str(non_id).zfill(5)),
-            np.array([rho_arr, pdyn_arr, pmag_arr,pth_arr,ptot_arr , Tcore_arr, mmsx_arr]),
+            np.array(
+                [rho_arr, pdyn_arr, pmag_arr, pth_arr, ptot_arr, Tcore_arr, mmsx_arr]
+            ),
         )
+
 
 def sj_non_timeseries(runid):
     """
