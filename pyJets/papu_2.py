@@ -305,6 +305,8 @@ def foreshock_jplot_SEA(run_id):
                 data_arr[idx],
                 shading="nearest",
                 cmap="viridis",
+                vmin=vmin_norm[idx],
+                vmax=vmax_norm[idx],
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
