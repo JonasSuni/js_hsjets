@@ -280,9 +280,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     fig, ax = plt.subplots(1, 1)
 
     ax.grid()
-    ax.semilogy(pdyn_arr[0], max_precip_arr[0], "o", label="Normal", color="black")
-    ax.semilogy(pdyn_arr[1], max_precip_arr[1], "o", label="Moderate", color="black")
-    ax.semilogy(pdyn_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
+    ax.plot(pdyn_arr[0], max_precip_arr[0], "o", label="Normal", color="black")
+    ax.plot(pdyn_arr[1], max_precip_arr[1], "o", label="Moderate", color="black")
+    ax.plot(pdyn_arr[2], max_precip_arr[2], "o", label="Strong", color="black")
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     # ax.set_ylabel(
@@ -332,11 +332,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     # ]
 
     ax.grid()
-    ax.semilogy(pdyn_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
-    ax.semilogy(
-        pdyn_arr[1], max_fac_arr[1] / 1e-9, "o", label="Moderate", color="black"
-    )
-    ax.semilogy(pdyn_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
+    ax.plot(pdyn_arr[0], max_fac_arr[0] / 1e-9, "o", label="Normal", color="black")
+    ax.plot(pdyn_arr[1], max_fac_arr[1] / 1e-9, "o", label="Moderate", color="black")
+    ax.plot(pdyn_arr[2], max_fac_arr[2] / 1e-9, "o", label="Strong", color="black")
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     # ax.set_ylabel(
