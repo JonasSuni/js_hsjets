@@ -26,25 +26,25 @@ def colormap_diff_precip(run="BGF"):
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
         )
         step = 450
 
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         step = 450
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
         step = 239
 
     for k in range(16):
         pt.plot.plot_colormap(
             vlsvobj=vlsvobj,
-            outputdir="/wrk/users/jesuni/Figures/carrington/",
+            outputdir="/wrk-vakka/users/jesuni/Figures/carrington/",
             var="proton/vg_precipitationdifferentialflux",
             vmin=1,
             vmax=10 ** 5,
@@ -138,7 +138,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     )
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/FAC.png")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/FAC.png")
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
@@ -164,13 +164,13 @@ def plot_precip(plot_diff=False, min_energy=None):
     plt.tight_layout()
     if min_energy:
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/precipitation_integralflux_{}.png".format(
+            "/wrk-vakka/users/jesuni/Figures/carrington/precipitation_integralflux_{}.png".format(
                 min_energy
             )
         )
     else:
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/precipitation_integralflux.png"
+            "/wrk-vakka/users/jesuni/Figures/carrington/precipitation_integralflux.png"
         )
     plt.close(fig)
 
@@ -190,7 +190,9 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.set_ylabel("Precipitation mean energy [keV]", fontsize=14)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/precipitation_meanenergy.png")
+    fig.savefig(
+        "/wrk-vakka/users/jesuni/Figures/carrington/precipitation_meanenergy.png"
+    )
     plt.close(fig)
 
     if plot_diff:
@@ -220,7 +222,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
             plt.tight_layout()
             fig.savefig(
-                "/wrk/users/jesuni/Figures/carrington/precipitation_diffflux{}.png".format(
+                "/wrk-vakka/users/jesuni/Figures/carrington/precipitation_diffflux{}.png".format(
                     k
                 )
             )
@@ -242,7 +244,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.set_ylabel("X [RE]", fontsize=14)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_x.png")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/precip_x.png")
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
@@ -261,7 +263,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.set_ylabel("Z [RE]", fontsize=14)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/precip_z.png")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/precip_z.png")
     plt.close(fig)
 
     num_arr = [1, 2, 3]
@@ -306,15 +308,15 @@ def plot_precip(plot_diff=False, min_energy=None):
     plt.tight_layout()
     if min_energy:
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/max_integralflux_{}.png".format(
+            "/wrk-vakka/users/jesuni/Figures/carrington/max_integralflux_{}.png".format(
                 min_energy
             )
         )
     else:
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/max_integralflux.png", dpi=300
+            "/wrk-vakka/users/jesuni/Figures/carrington/max_integralflux.png", dpi=300
         )
-        fig.savefig("/wrk/users/jesuni/Figures/carrington/max_integralflux.pdf")
+        fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/max_integralflux.pdf")
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
@@ -351,8 +353,8 @@ def plot_precip(plot_diff=False, min_energy=None):
     ax.set_xlabel("Aurinkotuulen dynaaminen paine [nPa]", fontsize=12, labelpad=10)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.png", dpi=300)
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/max_fac.pdf")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/max_fac.png", dpi=300)
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/max_fac.pdf")
     plt.close(fig)
 
     plt.ion()
@@ -364,20 +366,20 @@ def precipitation_diag(run):
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000450.vlsv"
         )
 
         r_stop = 19.1e6
         ds = 500e3
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000450.vlsv"
         )
         r_stop = 18.1e6
         ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
         r_stop = 13.6e6
         ds = 250e3
@@ -574,13 +576,13 @@ def plot_driving_MP_theta():
 
         plt.tight_layout()
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/mp_standoff_{}.png".format(
+            "/wrk-vakka/users/jesuni/Figures/carrington/mp_standoff_{}.png".format(
                 outname_arr[n1]
             ),
             dpi=300,
         )
         fig.savefig(
-            "/wrk/users/jesuni/Figures/carrington/mp_standoff_{}.pdf".format(
+            "/wrk-vakka/users/jesuni/Figures/carrington/mp_standoff_{}.pdf".format(
                 outname_arr[n1]
             )
         )
@@ -635,7 +637,7 @@ def plot_MP_theta():
     )
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/mp_standoff.png")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/mp_standoff.png")
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1)
@@ -661,7 +663,7 @@ def plot_MP_theta():
     )
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/mp_theta.png")
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/mp_theta.png")
     plt.close(fig)
 
 
@@ -669,20 +671,20 @@ def dayside_MP(xstart, xstop, dx, run="BGD"):
 
     if run == "BGD":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000500.vlsv"
         )
 
         r_stop = 19.1e6
         ds = 500e3
     elif run == "BGF":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGF/extendvspace_restart229/bulk.0000470.vlsv"
         )
         r_stop = 18.1e6
         ds = 500e3
     elif run == "BGG":
         vlsvobj = pt.vlsvfile.VlsvReader(
-            "/wrk/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BGG/denseIono_restart81/bulk/bulk.0000239.vlsv"
         )
         r_stop = 13.6e6
         ds = 250e3
@@ -820,8 +822,10 @@ def line_dipole_vis():
     ax.set_aspect(1)
 
     plt.tight_layout()
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.png", dpi=300)
-    fig.savefig("/wrk/users/jesuni/Figures/carrington/line_dipole_vs.pdf")
+    fig.savefig(
+        "/wrk-vakka/users/jesuni/Figures/carrington/line_dipole_vs.png", dpi=300
+    )
+    fig.savefig("/wrk-vakka/users/jesuni/Figures/carrington/line_dipole_vs.pdf")
     plt.close(fig)
 
 
@@ -978,7 +982,7 @@ def trace_test(x0, z0):
     # x0 = np.cos(np.pi / 4) * 20e6
     # z0 = np.sin(np.pi / 4) * 20e6
     vlsvobj = pt.vlsvfile.VlsvReader(
-        "/wrk/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000400.vlsv"
+        "/wrk-vakka/group/spacephysics/vlasiator/2D/BGD/bulk/bulk.0000400.vlsv"
     )
 
     tracexz = trace_b_xz(vlsvobj, x0, z0, r_max=25e6)
