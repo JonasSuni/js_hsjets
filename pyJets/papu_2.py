@@ -178,8 +178,8 @@ def foreshock_jplot_SEA(run_id):
     dx = 227e3 / r_e
     x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
     XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
-    vmin_norm = [1.0 / 2, 1.0 / 6, 1.0 / 6, 1.0 / 2, 1.0, 0.0]
-    vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0, 1.0]
+    vmin_norm = [1.0 / 2, 1.0 / 4, 1.0 / 4, 1.0 / 2, 1.0, 0.0]
+    vmax_norm = [4.0, 2.0, 2.0, 4.0, 24.0, 1.0]
 
     rho_avg = np.zeros_like(XmeshXY)
     v_avg = np.zeros_like(XmeshXY)
