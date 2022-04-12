@@ -305,8 +305,10 @@ def foreshock_jplot_SEA(run_id):
                 data_arr[idx],
                 shading="nearest",
                 cmap="viridis",
-                vmin=vmin_norm[idx],
-                vmax=vmax_norm[idx],
+                # vmin=vmin_norm[idx],
+                # vmax=vmax_norm[idx],
+                vmin=np.min(data_arr[idx]),
+                vmax=np.max(data_arr[idx]),
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -330,8 +332,10 @@ def foreshock_jplot_SEA(run_id):
                 sj_data_arr[idx],
                 shading="nearest",
                 cmap="viridis",
-                vmin=vmin_norm[idx],
-                vmax=vmax_norm[idx],
+                # vmin=vmin_norm[idx],
+                # vmax=vmax_norm[idx],
+                vmin=np.min(data_arr[idx]),
+                vmax=np.max(data_arr[idx]),
             )
         )
         sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
