@@ -296,7 +296,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     #     fontsize=14,
     # )
     ax.set_ylabel(
-        "Suurin protonisadanta [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Suurin protonisadannan energiavuo [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
         labelpad=10,
     )
