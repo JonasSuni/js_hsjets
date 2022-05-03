@@ -49,21 +49,25 @@ def jet_pos_plot():
     ]
 
     vlsvobj_arr = [jx.read_bulkfile(runid, 800) for runid in runids]
-    cellid_arr = [vlsvobj_arr[idx].read("CellID") for idx in range(len(runids))]
+    cellid_arr = [
+        vlsvobj_arr[idx].read_variable("CellID") for idx in range(len(runids))
+    ]
     Yun_arr = [
-        np.unique(vlsvobj_arr[idx].read("Y")[np.argsort(cellid_arr[idx])]) / r_e
+        np.unique(vlsvobj_arr[idx].read_variable("Y")[np.argsort(cellid_arr[idx])])
+        / r_e
         for idx in range(len(runids))
     ]
     Xun_arr = [
-        np.unique(vlsvobj_arr[idx].read("Y")[np.argsort(cellid_arr[idx])]) / r_e
+        np.unique(vlsvobj_arr[idx].read_variable("Y")[np.argsort(cellid_arr[idx])])
+        / r_e
         for idx in range(len(runids))
     ]
     Bz_arr = [
-        vlsvobj_arr[idx].read("B", operator="z")[np.argsort(cellid_arr[idx])]
+        vlsvobj_arr[idx].read_variable("B", operator="z")[np.argsort(cellid_arr[idx])]
         for idx in range(len(runids))
     ]
     RhoBS_arr = [
-        vlsvobj_arr[idx].read("RhoBackstream")[np.argsort(cellid_arr[idx])]
+        vlsvobj_arr[idx].read_variable("RhoBackstream")[np.argsort(cellid_arr[idx])]
         for idx in range(len(runids))
     ]
 
