@@ -42,8 +42,8 @@ def jet_pos_plot():
     fig, ax_list = plt.subplots(2, 2, figsize=(10, 10))
     ax_flat = ax_list.flatten()
 
-    yarr = np.arange(-20, 20, 0.1)
-    bs_fit = [jx.bs_mp_fit(runid, 800)[1] for runid in runids]
+    yarr = np.arange(-15, 15, 0.1)
+    bs_fit = [jx.bs_mp_fit(runid, 800, boxre=[6, 18, -15, 15])[1] for runid in runids]
     bs_x = [
         np.polyval(bs_fit[idx], yarr) - bs_fit[idx][-1] for idx in range(len(runids))
     ]
@@ -86,9 +86,9 @@ def jet_pos_plot():
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
             np.abs(Bz_arr[idx]),
-            [0.5e-9],
+            [1e-9],
             colors=[CB_color_cycle[4]],
-            linewidths=[0.5],
+            linewidths=[0.6],
         )
         ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
@@ -96,7 +96,7 @@ def jet_pos_plot():
             np.abs(RhoBS_arr[idx]),
             [1],
             colors=[CB_color_cycle[4]],
-            linewidths=[0.5],
+            linewidths=[0.6],
             linestyles=["dashed"],
         )
 
@@ -135,11 +135,11 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(-3, 6)
+        ax.set_xlim(-3, 4)
         if runid in ["ABA", "AEA"]:
-            ax.set_ylim(-20, 20)
+            ax.set_ylim(-15, 15)
         else:
-            ax.set_ylim(-20, 20)
+            ax.set_ylim(-15, 15)
         if label_bool:
             ax.legend()
         ax_flat[0].set_ylabel("10 nT")
