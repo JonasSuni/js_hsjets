@@ -81,13 +81,13 @@ def jet_pos_plot():
     ]
 
     for idx, ax in enumerate(ax_flat):
-        ax.plot(bs_x[idx], yarr, color="black")
+
         ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
-            np.abs(Bz_arr[idx]),
-            [1e-9],
-            colors=[CB_color_cycle[4]],
+            Bz_arr[idx],
+            [-0.5e-9, 0.5e-9],
+            colors=[CB_color_cycle[4], CB_color_cycle[5]],
             linewidths=[0.6],
         )
         ax.contour(
@@ -95,10 +95,11 @@ def jet_pos_plot():
             Yun_arr[idx],
             np.abs(RhoBS_arr[idx]),
             [1],
-            colors=[CB_color_cycle[4]],
+            colors=["black"],
             linewidths=[0.6],
             linestyles=["dashed"],
         )
+        ax.plot(bs_x[idx], yarr, color="black")
 
     for n1, runid in enumerate(runids):
         ax = ax_flat[n1]
