@@ -88,7 +88,7 @@ def jet_pos_plot():
             Bz_arr[idx],
             [-0.5e-9, 0.5e-9],
             colors=[CB_color_cycle[4], CB_color_cycle[5]],
-            linewidths=[0.6],
+            linewidths=[0.6, 0.6],
         )
         ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
