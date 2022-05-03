@@ -53,13 +53,11 @@ def jet_pos_plot():
         vlsvobj_arr[idx].read_variable("CellID") for idx in range(len(runids))
     ]
     Yun_arr = [
-        np.unique(vlsvobj_arr[idx].read_variable("Y")[np.argsort(cellid_arr[idx])])
-        / r_e
+        np.unique(jx.xyz_reconstruct(runid)[1][np.argsort(cellid_arr[idx])]) / r_e
         for idx in range(len(runids))
     ]
     Xun_arr = [
-        np.unique(vlsvobj_arr[idx].read_variable("Y")[np.argsort(cellid_arr[idx])])
-        / r_e
+        np.unique(jx.xyz_reconstruct(runid)[0][np.argsort(cellid_arr[idx])]) / r_e
         for idx in range(len(runids))
     ]
     Bz_arr = [
