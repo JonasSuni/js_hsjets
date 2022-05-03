@@ -42,7 +42,7 @@ def jet_pos_plot():
     fig, ax_list = plt.subplots(2, 2, figsize=(10, 10))
     ax_flat = ax_list.flatten()
 
-    yarr = np.arange(-8, 6, 0.1)
+    yarr = np.arange(-20, 20, 0.1)
     bs_fit = [jx.bs_mp_fit(runid, 800)[1] for runid in runids]
     bs_x = [
         np.polyval(bs_fit[idx], yarr) - bs_fit[idx][-1] for idx in range(len(runids))
@@ -135,11 +135,11 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(-3, 2)
+        ax.set_xlim(-3, 6)
         if runid in ["ABA", "AEA"]:
-            ax.set_ylim(-8, 6)
+            ax.set_ylim(-20, 20)
         else:
-            ax.set_ylim(-6, 6)
+            ax.set_ylim(-20, 20)
         if label_bool:
             ax.legend()
         ax_flat[0].set_ylabel("10 nT")
