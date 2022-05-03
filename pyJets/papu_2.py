@@ -48,8 +48,44 @@ def jet_pos_plot():
         np.polyval(bs_fit[idx], yarr) - bs_fit[idx][-1] for idx in range(len(runids))
     ]
 
+    vlsvobj_arr = [jx.read_bulkfile(runid, 800) for runid in runids]
+    cellid_arr = [vlsvobj_arr[idx].read("CellID") for idx in range(len(runids))]
+    Yun_arr = [
+        np.unique(vlsvobj_arr[idx].read("Y")[np.argsort(cellid_arr[idx])]) / r_e
+        for idx in range(len(runids))
+    ]
+    Xun_arr = [
+        np.unique(vlsvobj_arr[idx].read("Y")[np.argsort(cellid_arr[idx])]) / r_e
+        for idx in range(len(runids))
+    ]
+    Bz_arr = [
+        vlsvobj_arr[idx].read("B", operator="z")[np.argsort(cellid_arr[idx])]
+        for idx in range(len(runids))
+    ]
+    RhoBS_arr = [
+        vlsvobj_arr[idx].read("RhoBackstream")[np.argsort(cellid_arr[idx])]
+        for idx in range(len(runids))
+    ]
+
+    Bz_arr = np.reshape(Bz_arr, (Yun_arr.size, Xun_arr.size))
+    RhoBS_arr = np.reshape(RhoBS_arr, (Yun_arr.size, Xun_arr.size))
+
     for idx, ax in enumerate(ax_flat):
         ax.plot(bs_x[idx], yarr, color="black")
+        ax.contour(
+            Xun_arr - bs_fit[idx][-1],
+            Yun_arr,
+            np.abs(Bz_arr),
+            [5e-9],
+            colors=[CB_color_cycle[4]],
+        )
+        ax.contour(
+            Xun_arr - bs_fit[idx][-1],
+            Yun_arr,
+            np.abs(RhoBS_arr),
+            [1],
+            colors=[CB_color_cycle[5]],
+        )
 
     for n1, runid in enumerate(runids):
         ax = ax_flat[n1]
@@ -447,13 +483,18 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=15)
         im_list.append(
             ax.pcolormesh(
-                x_range, t_range, data_arr[idx], shading="nearest", cmap="viridis",
+                x_range,
+                t_range,
+                data_arr[idx],
+                shading="nearest",
+                cmap="viridis",
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -563,7 +604,8 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=15)
@@ -1300,10 +1342,18 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
+            t_arr,
+            beam_avg[n2],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+            zorder=2,
         )
         ax_list[n2].plot(
-            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
+            t_arr,
+            stripe_avg[n2],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+            zorder=2,
         )
         ax_list[n2].plot(
             t_arr,

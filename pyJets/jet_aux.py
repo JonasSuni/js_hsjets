@@ -5,6 +5,7 @@ import scipy.constants as sc
 import os
 import pytools as pt
 import time
+import matplotlib.pyplot as plt
 
 medium_blue = "#006DDB"
 crimson = "#920000"
@@ -651,6 +652,12 @@ def find_bulkpath(runid):
         bulkpath = vlpath + "bulk/"
 
     return bulkpath
+
+
+def read_bulkfile(runid, fnr):
+
+    bulkpath = find_bulkpath(runid)
+    return pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7)))
 
 
 def sw_par_dict(runid):
