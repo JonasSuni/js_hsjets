@@ -118,7 +118,7 @@ def jet_pos_plot():
                     ax.plot(
                         np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
                         y0,
-                        "c",
+                        "x",
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
                     )
