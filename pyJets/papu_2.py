@@ -71,22 +71,28 @@ def jet_pos_plot():
         for idx in range(len(runids))
     ]
 
-    Bz_arr = np.reshape(Bz_arr, (Yun_arr.size, Xun_arr.size))
-    RhoBS_arr = np.reshape(RhoBS_arr, (Yun_arr.size, Xun_arr.size))
+    Bz_arr = [
+        np.reshape(Bz_arr[idx], (Yun_arr[idx].size, Xun_arr[idx].size))
+        for idx in range(len(runids))
+    ]
+    RhoBS_arr = [
+        np.reshape(RhoBS_arr[idx], (Yun_arr[idx].size, Xun_arr[idx].size))
+        for idx in range(len(runids))
+    ]
 
     for idx, ax in enumerate(ax_flat):
         ax.plot(bs_x[idx], yarr, color="black")
         ax.contour(
-            Xun_arr - bs_fit[idx][-1],
-            Yun_arr,
-            np.abs(Bz_arr),
+            Xun_arr[idx] - bs_fit[idx][-1],
+            Yun_arr[idx],
+            np.abs(Bz_arr[idx]),
             [5e-9],
             colors=[CB_color_cycle[4]],
         )
         ax.contour(
-            Xun_arr - bs_fit[idx][-1],
-            Yun_arr,
-            np.abs(RhoBS_arr),
+            Xun_arr[idx] - bs_fit[idx][-1],
+            Yun_arr[idx],
+            np.abs(RhoBS_arr[idx]),
             [1],
             colors=[CB_color_cycle[5]],
         )
