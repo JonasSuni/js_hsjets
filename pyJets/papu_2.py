@@ -1605,6 +1605,9 @@ def non_type_hist(run_id="all"):
         "right",
         "right",
     ]
+    types_list = ["foreshock", "beam", "complex", "stripe"]
+    all_props = [[[]] * 8] * 4
+
     beam_props = [[], [], [], [], [], [], [], [], [], []]
     stripe_props = [[], [], [], [], [], [], [], [], [], []]
     reformation_props = [[], [], [], [], [], [], [], [], [], []]
@@ -2015,6 +2018,7 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
         vmax=vmax,
         wmark=True,
         vscale=1e9,
+        fsaved="black",
         colormap="Greys",
         external=ext_contours,
         pass_vars=[
@@ -2151,38 +2155,38 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     #     linestyles=["solid"],
     # )
 
-    diamag_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        diamag_mask,
-        [0.5],
-        linewidths=0.6,
-        colors=CB_color_cycle[5],
-        linestyles=["solid"],
-    )
+    # diamag_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     diamag_mask,
+    #     [0.5],
+    #     linewidths=0.6,
+    #     colors=CB_color_cycle[5],
+    #     linestyles=["solid"],
+    # )
 
-    (non_pos,) = ax.plot(
-        non_xlist,
-        non_ylist,
-        "o",
-        color="black",
-        markersize=4,
-        markeredgecolor="white",
-        fillstyle="full",
-        mew=0.4,
-        label="Non-FCS-jet",
-    )
-    (sj_pos,) = ax.plot(
-        sj_xlist,
-        sj_ylist,
-        "o",
-        color="red",
-        markersize=4,
-        markeredgecolor="white",
-        fillstyle="full",
-        mew=0.4,
-        label="FCS-jet",
-    )
+    # (non_pos,) = ax.plot(
+    #     non_xlist,
+    #     non_ylist,
+    #     "o",
+    #     color="black",
+    #     markersize=4,
+    #     markeredgecolor="white",
+    #     fillstyle="full",
+    #     mew=0.4,
+    #     label="Non-FCS-jet",
+    # )
+    # (sj_pos,) = ax.plot(
+    #     sj_xlist,
+    #     sj_ylist,
+    #     "o",
+    #     color="red",
+    #     markersize=4,
+    #     markeredgecolor="white",
+    #     fillstyle="full",
+    #     mew=0.4,
+    #     label="FCS-jet",
+    # )
 
     # print(jet_cont.collections[0])
 
