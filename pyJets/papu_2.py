@@ -326,7 +326,7 @@ def foreshock_jplot_SEA(run_id):
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
         "$B$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
-        "$M_{\mathrm{MS},x}$",
+        # "$M_{\mathrm{MS},x}$",
     ]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
@@ -486,7 +486,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
         "$B$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
-        "$M_{\mathrm{MS},x}$",
+        # "$M_{\mathrm{MS},x}$",
     ]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
@@ -497,18 +497,13 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
-        fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=15)
         im_list.append(
             ax.pcolormesh(
-                x_range,
-                t_range,
-                data_arr[idx],
-                shading="nearest",
-                cmap="viridis",
+                x_range, t_range, data_arr[idx], shading="nearest", cmap="viridis",
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -618,8 +613,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
-        fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=15)
@@ -1356,18 +1350,10 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr,
-            beam_avg[n2],
-            color=jx.CB_color_cycle[0],
-            label="Beam",
-            zorder=2,
+            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
         )
         ax_list[n2].plot(
-            t_arr,
-            stripe_avg[n2],
-            color=jx.CB_color_cycle[1],
-            label="Stripe",
-            zorder=2,
+            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
