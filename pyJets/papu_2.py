@@ -2259,7 +2259,7 @@ def jet_vdf_plotter(runid):
                 vmin=0,
                 vmax=pdmax,
                 boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
-                # internalcb=True,
+                internalcb=True,
                 lin=1,
                 colormap="batlow",
             )
@@ -2275,7 +2275,7 @@ def jet_vdf_plotter(runid):
                 xy=1,
                 slicethick=1e9,
                 box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
+                internalcb=True,
                 setThreshold=1e-15,
             )
             pt.plot.plot_vdf(
@@ -2287,7 +2287,7 @@ def jet_vdf_plotter(runid):
                 xz=1,
                 slicethick=1e9,
                 box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
+                internalcb=True,
                 setThreshold=1e-15,
             )
             pt.plot.plot_vdf(
@@ -2299,7 +2299,7 @@ def jet_vdf_plotter(runid):
                 yz=1,
                 slicethick=1e9,
                 box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
+                internalcb=True,
                 setThreshold=1e-15,
             )
 
