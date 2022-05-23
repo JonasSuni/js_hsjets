@@ -2260,6 +2260,7 @@ def jet_vdf_plotter(runid):
                 vmax=pdmax,
                 vscale=1e9,
                 cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                usesci=0,
                 boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                 # internalcb=True,
                 lin=1,
@@ -2305,7 +2306,7 @@ def jet_vdf_plotter(runid):
                 setThreshold=1e-15,
             )
 
-            plt.tight_layout()
+            plt.subplots_adjust(wspace=0.5, hspace=0.5)
 
             fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
             fig.savefig(
