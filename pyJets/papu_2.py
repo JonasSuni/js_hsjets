@@ -2222,7 +2222,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
 def jet_vdf_plotter(runid):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
-    pdmax = [1.5e-9, 3.5e-9, 1.5e-9, 3.5e-9][runids.index(runid)]
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
     cellids = obj_580.read_variable("CellID")
@@ -2259,6 +2259,7 @@ def jet_vdf_plotter(runid):
                 vmin=0,
                 vmax=pdmax,
                 vscale=1e9,
+                cbtitle="$P_\mathrm{dyn}$ [nPa]",
                 boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                 # internalcb=True,
                 lin=1,
