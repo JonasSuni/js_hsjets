@@ -2306,7 +2306,7 @@ def jet_vdf_plotter(runid):
                 setThreshold=1e-15,
             )
 
-            plt.subplots_adjust(wspace=0.5, hspace=0.5)
+            plt.subplots_adjust(wspace=1, hspace=1)
 
             fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
             fig.savefig(
