@@ -2250,7 +2250,7 @@ def jet_vdf_plotter(runid):
             fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
             x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
 
-            fig, ax_list = plt.subplots(2, 2, figsize=(11, 10))
+            fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
 
             pt.plot.plot_colormap(
                 axes=ax_list[0][0],
@@ -2306,7 +2306,7 @@ def jet_vdf_plotter(runid):
                 setThreshold=1e-15,
             )
 
-            plt.subplots_adjust(wspace=1, hspace=1)
+            # plt.subplots_adjust(wspace=1, hspace=1)
 
             fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
             fig.savefig(
