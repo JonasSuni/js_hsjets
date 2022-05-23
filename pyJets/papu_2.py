@@ -2259,7 +2259,7 @@ def jet_vdf_plotter(runid):
                 vmin=0,
                 vmax=pdmax,
                 boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
-                internalcb=True,
+                # internalcb=True,
                 lin=1,
                 colormap="batlow",
             )
@@ -2274,7 +2274,8 @@ def jet_vdf_plotter(runid):
                 bvector=1,
                 xy=1,
                 slicethick=1e9,
-                internalcb=True,
+                box=[-2e6, 2e6, -2e6, 2e6],
+                # internalcb=True,
                 setThreshold=1e-15,
             )
             pt.plot.plot_vdf(
@@ -2285,7 +2286,8 @@ def jet_vdf_plotter(runid):
                 bvector=1,
                 xz=1,
                 slicethick=1e9,
-                internalcb=True,
+                box=[-2e6, 2e6, -2e6, 2e6],
+                # internalcb=True,
                 setThreshold=1e-15,
             )
             pt.plot.plot_vdf(
@@ -2296,13 +2298,15 @@ def jet_vdf_plotter(runid):
                 bvector=1,
                 yz=1,
                 slicethick=1e9,
-                internalcb=True,
+                box=[-2e6, 2e6, -2e6, 2e6],
+                # internalcb=True,
                 setThreshold=1e-15,
             )
 
             fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
             fig.savefig(
-                wrkdir_DNR + "papu22/VDFs/{}/jet_vdf_{}_{}".format(runid, jet_id, fnr)
+                wrkdir_DNR
+                + "papu22/VDFs/{}/jet_vdf_{}_{}.png".format(runid, jet_id, fnr)
             )
             plt.close(fig)
 
