@@ -2266,6 +2266,7 @@ def jet_vdf_plotter(runid):
                 lin=1,
                 colormap="batlow",
                 scale=1.3,
+                tickinterval=1.0,
             )
             ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
             ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
