@@ -2265,6 +2265,7 @@ def jet_vdf_plotter(runid):
                 # internalcb=True,
                 lin=1,
                 colormap="batlow",
+                scale=1.3,
             )
             ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
             ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
@@ -2280,6 +2281,7 @@ def jet_vdf_plotter(runid):
                 box=[-2e6, 2e6, -2e6, 2e6],
                 # internalcb=True,
                 setThreshold=1e-15,
+                scale=1.3,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
@@ -2292,6 +2294,7 @@ def jet_vdf_plotter(runid):
                 box=[-2e6, 2e6, -2e6, 2e6],
                 # internalcb=True,
                 setThreshold=1e-15,
+                scale=1.3,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
@@ -2304,6 +2307,7 @@ def jet_vdf_plotter(runid):
                 box=[-2e6, 2e6, -2e6, 2e6],
                 # internalcb=True,
                 setThreshold=1e-15,
+                scale=1.3,
             )
 
             # plt.subplots_adjust(wspace=1, hspace=1)
