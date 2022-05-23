@@ -2233,7 +2233,7 @@ def jet_vdf_plotter(runid):
 
     vdf_cells = cellids[fsaved == 1]
 
-    sj_ids, jet_ids, fcs_ids = jh20.separate_jets_god(runid, True)
+    sj_ids, jet_ids, fcs_ids = jh20.separate_jets_god(runid, False)
 
     for jet_id in jet_ids:
         props = jio.PropReader(str(jet_id).zfill(5), runid)
@@ -2302,6 +2302,8 @@ def jet_vdf_plotter(runid):
                 # internalcb=True,
                 setThreshold=1e-15,
             )
+
+            plt.tight_layout()
 
             fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
             fig.savefig(
