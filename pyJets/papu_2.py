@@ -2217,3 +2217,93 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         loc="upper right",
         fontsize=5,
     )
+
+
+def jet_vdf_plotter(runid):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    pdmax = [1.5e-9, 3.5e-9, 1.5e-9, 3.5e-9][runids.index(runid)]
+    bulkpath = jx.find_bulkpath(runid)
+    obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
+    cellids = obj_580.read_variable("CellID")
+    if obj_580.check_variable("fSaved"):
+        fsaved = obj_580.read_variable("fSaved")
+    else:
+        fsaved = obj_580.read_variable("vg_f_saved")
+
+    vdf_cells = cellids[fsaved == 1]
+
+    sj_ids, jet_ids, fcs_ids = jh20.separate_jets_god(runid, True)
+
+    for jet_id in jet_ids:
+        props = jio.PropReader(str(jet_id).zfill(5), runid)
+        jet_times = props.get_times()
+        jet_cells = props.get_cells()
+
+        for idx, t in enumerate(jet_times):
+            if np.intersect1d(jet_cells[idx], vdf_cells).size == 0:
+                continue
+            else:
+                vdf_cellid = np.intersect1d(jet_cells[idx], vdf_cells)[0]
+
+            fnr = int(t * 2)
+            fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+
+            fig, ax_list = plt.subplots(2, 2, figsize=(10, 10))
+
+            pt.plot.plot_colormap(
+                axes=ax_list[0][0],
+                filename=bulkpath + fname,
+                var="Pdyn",
+                vmin=0,
+                vmax=pdmax,
+                boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+                internalcb=True,
+                lin=1,
+                colormap="batlow",
+            )
+            ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
+            ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
+
+            pt.plot.plot_vdf(
+                axes=ax_list[0][1],
+                filename=bulkpath + fname,
+                cellids=[vdf_cellid],
+                colormap="batlow",
+                bvector=1,
+                xy=1,
+                slicethick=1e9,
+                internalcb=True,
+                setThreshold=1e-15,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][0],
+                filename=bulkpath + fname,
+                cellids=[vdf_cellid],
+                colormap="batlow",
+                bvector=1,
+                xz=1,
+                slicethick=1e9,
+                internalcb=True,
+                setThreshold=1e-15,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][1],
+                filename=bulkpath + fname,
+                cellids=[vdf_cellid],
+                colormap="batlow",
+                bvector=1,
+                yz=1,
+                slicethick=1e9,
+                internalcb=True,
+                setThreshold=1e-15,
+            )
+
+            fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
+            fig.savefig(
+                wrkdir_DNR + "papu22/VDFs/{}/jet_vdf_{}_{}".format(runid, jet_id, fnr)
+            )
+            plt.close(fig)
+
+    return None

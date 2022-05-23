@@ -127,4 +127,5 @@ from papu_2 import (
     types_P_jplot_SEA,
     fcs_jet_jplot_txtonly,
     foreshock_jplot_SEA,
+    jet_vdf_plotter,
 )
