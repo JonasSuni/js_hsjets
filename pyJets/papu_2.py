@@ -482,7 +482,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
 
     varname_list = [
         "$n$ [$n_\mathrm{sw}$]",
-        "$v$ [$v_\mathrm{sw}$]",
+        "$v_x$ [$v_\mathrm{sw}$]",
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
         "$B$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
@@ -702,7 +702,7 @@ def fcs_jet_jplot_txtonly(runid):
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
             v_arr.append(
-                vlsvobj.read_variable("v", operator="magnitude", cellids=cell_range)
+                vlsvobj.read_variable("v", operator="x", cellids=cell_range)
             )
             pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
             B_arr.append(
@@ -736,7 +736,7 @@ def non_jet_jplots(runid):
     dx = 227e3 / r_e
     varname_list = [
         "$n$ [$n_\mathrm{sw}$]",
-        "$v$ [$v_\mathrm{sw}$]",
+        "$v_x$ [$v_\mathrm{sw}$]",
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
         "$B$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
@@ -752,7 +752,7 @@ def non_jet_jplots(runid):
         [3.3, 600.0, 10.0, 0.5],
     ]
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
-    vmin_norm = [1.0 / 2, 1.0 / 6, 1.0 / 6, 1.0 / 2, 1.0]
+    vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
 
     # Path to vlsv files for current run
@@ -795,7 +795,7 @@ def non_jet_jplots(runid):
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
             v_arr.append(
-                vlsvobj.read_variable("v", operator="magnitude", cellids=cell_range)
+                vlsvobj.read_variable("v", operator="x", cellids=cell_range)
             )
             pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
             B_arr.append(
