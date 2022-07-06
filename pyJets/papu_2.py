@@ -322,7 +322,7 @@ def foreshock_jplot_SEA(run_id):
 
     varname_list = [
         "$n$ [$n_\mathrm{sw}$]",
-        "$v$ [$v_\mathrm{sw}$]",
+        "$v_x$ [$v_\mathrm{sw}$]",
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
         "$B$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
@@ -346,6 +346,22 @@ def foreshock_jplot_SEA(run_id):
         ),
         fontsize=20,
     )
+
+    vmin = [
+        np.min(data_arr[0]),
+        -1,
+        np.min(data_arr[2]),
+        np.min(data_arr[3]),
+        np.min(data_arr[4]),
+    ]
+    vmax = [
+        np.max(data_arr[0]),
+        1,
+        np.max(data_arr[2]),
+        np.max(data_arr[3]),
+        np.max(data_arr[4]),
+    ]
+
     for idx, ax in enumerate(ax_list[0]):
         ax.tick_params(labelsize=15)
         im_list.append(
@@ -357,8 +373,8 @@ def foreshock_jplot_SEA(run_id):
                 cmap="viridis",
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
-                vmin=np.min(data_arr[idx]),
-                vmax=np.max(data_arr[idx]),
+                vmin=vmin[idx],
+                vmax=vmax[idx],
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -490,8 +506,8 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     ]
 
     cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
-    vmin = [None, -0.5, None, None, None]
-    vmax = [None, 0.5, None, None, None]
+    vmin = [None, -1, None, None, None]
+    vmax = [None, 1, None, None, None]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
