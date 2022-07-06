@@ -1,7 +1,10 @@
 ### Installation:
 
 ### Install dependencies:
-sudo apt-get install mayavi2 python-matplotlib python-numpy python-scipy ipython
+python3
+python-matplotlib
+python-numpy
+python-scipy
 
 ### Install my analysator fork
 https://github.com/JonasSuni/analysator
