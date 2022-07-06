@@ -489,6 +489,10 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         # "$M_{\mathrm{MS},x}$",
     ]
 
+    cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
+    vmin = [None, -1, None, None, None]
+    vmax = [None, 1, None, None, None]
+
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
     fig, ax_list = plt.subplots(
@@ -503,7 +507,13 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.tick_params(labelsize=15)
         im_list.append(
             ax.pcolormesh(
-                x_range, t_range, data_arr[idx], shading="nearest", cmap="viridis",
+                x_range,
+                t_range,
+                data_arr[idx],
+                shading="nearest",
+                cmap=cmap[idx],
+                vmin=vmin[idx],
+                vmax=vmax[idx],
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -701,9 +711,7 @@ def fcs_jet_jplot_txtonly(runid):
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
-            v_arr.append(
-                vlsvobj.read_variable("v", operator="x", cellids=cell_range)
-            )
+            v_arr.append(vlsvobj.read_variable("v", operator="x", cellids=cell_range))
             pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
             B_arr.append(
                 vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
@@ -794,9 +802,7 @@ def non_jet_jplots(runid):
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
             rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
-            v_arr.append(
-                vlsvobj.read_variable("v", operator="x", cellids=cell_range)
-            )
+            v_arr.append(vlsvobj.read_variable("v", operator="x", cellids=cell_range))
             pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
             B_arr.append(
                 vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
