@@ -490,8 +490,8 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     ]
 
     cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
-    vmin = [None, -1, None, None, None]
-    vmax = [None, 1, None, None, None]
+    vmin = [None, -0.5, None, None, None]
+    vmax = [None, 0.5, None, None, None]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
