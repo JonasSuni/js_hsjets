@@ -361,6 +361,7 @@ def foreshock_jplot_SEA(run_id):
         np.max(data_arr[3]),
         np.max(data_arr[4]),
     ]
+    cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
 
     for idx, ax in enumerate(ax_list[0]):
         ax.tick_params(labelsize=15)
@@ -370,7 +371,7 @@ def foreshock_jplot_SEA(run_id):
                 t_range,
                 data_arr[idx],
                 shading="nearest",
-                cmap="viridis",
+                cmap=cmap[idx],
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
                 vmin=vmin[idx],
@@ -397,7 +398,7 @@ def foreshock_jplot_SEA(run_id):
                 t_range,
                 sj_data_arr[idx],
                 shading="nearest",
-                cmap="viridis",
+                cmap=cmap[idx],
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
                 vmin=vmin[idx],
