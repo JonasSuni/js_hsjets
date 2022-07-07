@@ -400,8 +400,8 @@ def foreshock_jplot_SEA(run_id):
                 cmap="viridis",
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
-                vmin=np.min(data_arr[idx]),
-                vmax=np.max(data_arr[idx]),
+                vmin=vmin[idx],
+                vmax=vmax[idx],
             )
         )
         sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
