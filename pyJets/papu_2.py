@@ -2269,78 +2269,86 @@ def jet_vdf_plotter(runid):
             else:
                 vdf_cellid = np.intersect1d(jet_cells[idx], vdf_cells)[0]
 
-            fnr = int(t * 2)
-            fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
-            x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+            for tc in np.arange(t - 10, t + 10.01, 0.5):
+                fnr = int(tc * 2)
+                fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
 
-            fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
+                fig, ax_list = plt.subplots(
+                    2, 2, figsize=(11, 10), constrained_layout=True
+                )
 
-            pt.plot.plot_colormap(
-                axes=ax_list[0][0],
-                filename=bulkpath + fname,
-                var="Pdyn",
-                vmin=0,
-                vmax=pdmax,
-                vscale=1e9,
-                cbtitle="$P_\mathrm{dyn}$ [nPa]",
-                usesci=0,
-                boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
-                # internalcb=True,
-                lin=1,
-                colormap="batlow",
-                scale=1.3,
-                tickinterval=1.0,
-            )
-            ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
-            ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
+                pt.plot.plot_colormap(
+                    axes=ax_list[0][0],
+                    filename=bulkpath + fname,
+                    var="Pdyn",
+                    vmin=0,
+                    vmax=pdmax,
+                    vscale=1e9,
+                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    usesci=0,
+                    boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+                    # internalcb=True,
+                    lin=1,
+                    colormap="batlow",
+                    scale=1.3,
+                    tickinterval=1.0,
+                )
+                ax_list[0][0].axhline(
+                    y_re, linestyle="dashed", linewidth=0.6, color="k"
+                )
+                ax_list[0][0].axvline(
+                    x_re, linestyle="dashed", linewidth=0.6, color="k"
+                )
 
-            pt.plot.plot_vdf(
-                axes=ax_list[0][1],
-                filename=bulkpath + fname,
-                cellids=[vdf_cellid],
-                colormap="batlow",
-                bvector=1,
-                xy=1,
-                slicethick=1e9,
-                box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
-                setThreshold=1e-15,
-                scale=1.3,
-            )
-            pt.plot.plot_vdf(
-                axes=ax_list[1][0],
-                filename=bulkpath + fname,
-                cellids=[vdf_cellid],
-                colormap="batlow",
-                bvector=1,
-                xz=1,
-                slicethick=1e9,
-                box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
-                setThreshold=1e-15,
-                scale=1.3,
-            )
-            pt.plot.plot_vdf(
-                axes=ax_list[1][1],
-                filename=bulkpath + fname,
-                cellids=[vdf_cellid],
-                colormap="batlow",
-                bvector=1,
-                yz=1,
-                slicethick=1e9,
-                box=[-2e6, 2e6, -2e6, 2e6],
-                # internalcb=True,
-                setThreshold=1e-15,
-                scale=1.3,
-            )
+                pt.plot.plot_vdf(
+                    axes=ax_list[0][1],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    colormap="batlow",
+                    bvector=1,
+                    xy=1,
+                    slicethick=1e9,
+                    box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
+                pt.plot.plot_vdf(
+                    axes=ax_list[1][0],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    colormap="batlow",
+                    bvector=1,
+                    xz=1,
+                    slicethick=1e9,
+                    box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
+                pt.plot.plot_vdf(
+                    axes=ax_list[1][1],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    colormap="batlow",
+                    bvector=1,
+                    yz=1,
+                    slicethick=1e9,
+                    box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
 
-            # plt.subplots_adjust(wspace=1, hspace=1)
+                # plt.subplots_adjust(wspace=1, hspace=1)
 
-            fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, t))
-            fig.savefig(
-                wrkdir_DNR
-                + "papu22/VDFs/{}/jet_vdf_{}_{}.png".format(runid, jet_id, fnr)
-            )
-            plt.close(fig)
+                fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, tc))
+                fig.savefig(
+                    wrkdir_DNR
+                    + "papu22/VDFs/{}/jet_vdf_{}_{}.png".format(runid, jet_id, fnr)
+                )
+                plt.close(fig)
+            break
 
     return None
