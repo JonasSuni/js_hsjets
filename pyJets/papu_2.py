@@ -646,7 +646,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
             "$T$",
         ]
     else:
-        norm = colors.Normalize()
+        norm = colors.Normalize(vmin=vmin_norm, vmax=vmax_norm)
         varname_list = [
             "$P_{th}/P_{tot}$",
             "$P_{dyn}/P_{tot}$",
@@ -672,8 +672,8 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
                 data_arr[idx],
                 shading="nearest",
                 cmap="viridis",
-                vmin=vmin_norm[idx],
-                vmax=vmax_norm[idx],
+                # vmin=vmin_norm[idx],
+                # vmax=vmax_norm[idx],
                 norm=norm,
             )
         )
