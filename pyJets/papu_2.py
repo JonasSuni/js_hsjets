@@ -657,7 +657,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
         ]
 
     if shfa:
-        data_arr = [pth_avg, pdyn_avg, pmag_avg]
+        data_arr = [pth_avg, pmag_avg, ptot_avg]
     else:
         data_arr = [pth_avg / ptot_avg, pdyn_avg / ptot_avg, pmag_avg / ptot_avg]
 
