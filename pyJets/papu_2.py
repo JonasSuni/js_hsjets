@@ -656,7 +656,10 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
             "$P_{mag}/P_{tot}$",
         ]
 
-    data_arr = [pth_avg / ptot_avg, pdyn_avg / ptot_avg, pmag_avg / ptot_avg]
+    if shfa:
+        data_arr = [pth_avg, pdyn_avg, pmag_avg]
+    else:
+        data_arr = [pth_avg / ptot_avg, pdyn_avg / ptot_avg, pmag_avg / ptot_avg]
 
     fig, ax_list = plt.subplots(
         1, len(varname_list), figsize=(24, 10), sharex=True, sharey=True
