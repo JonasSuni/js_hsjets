@@ -9,6 +9,7 @@ import scipy
 import scipy.linalg
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.lines import Line2D
@@ -24,6 +25,8 @@ import jet_jh2020 as jh20
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
+mu0 = 1.25663706212e-06
+kb = 1.380649e-23
 
 wrkdir_DNR = os.environ["WRK"] + "/"
 homedir = os.environ["HOME"] + "/"
@@ -554,15 +557,19 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     plt.close(fig)
 
 
-def types_P_jplot_SEA(run_id, kind="beam", version="new"):
+def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
 
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
         runid_list = [run_id]
 
-    vmin_norm = [0, 0, 0]
-    vmax_norm = [1, 1, 1]
+    if shfa:
+        vmin_norm = [None, None, None]
+        vmax_norm = [None, None, None]
+    else:
+        vmin_norm = [0, 0, 0]
+        vmax_norm = [1, 1, 1]
 
     x0 = 0.0
     t0 = 0.0
@@ -605,11 +612,17 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
                 type_count += 1
                 rho_avg = rho_avg + rho
                 pdyn_avg = pdyn_avg + pdyn
-                pth_avg = pth_avg + pth
-                pmag_avg = pmag_avg + pmag
-                ptot_avg = ptot_avg + ptot
                 Tcore_avg = Tcore_avg + Tcore
                 mmsx_avg = mmsx_avg + mmsx
+
+                if shfa:
+                    pth_avg = pth_avg + rho
+                    pmag_avg = pmag_avg + np.sqrt(2 * mu0 * pmag)
+                    ptot_avg = ptot_avg + pth / (rho * kb)
+                else:
+                    pth_avg = pth_avg + pth
+                    pmag_avg = pmag_avg + pmag
+                    ptot_avg = ptot_avg + ptot
 
             except:
                 continue
@@ -625,12 +638,20 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
     else:
         print("No jets of type {} found in run {}".format(kind, run_id))
         return 0
-
-    varname_list = [
-        "$P_{th}/P_{tot}$",
-        "$P_{dyn}/P_{tot}$",
-        "$P_{mag}/P_{tot}$",
-    ]
+    if shfa:
+        norm = colors.LogNorm()
+        varname_list = [
+            "$n$",
+            "$B$",
+            "$T$",
+        ]
+    else:
+        norm = colors.Normalize()
+        varname_list = [
+            "$P_{th}/P_{tot}$",
+            "$P_{dyn}/P_{tot}$",
+            "$P_{mag}/P_{tot}$",
+        ]
 
     data_arr = [pth_avg / ptot_avg, pdyn_avg / ptot_avg, pmag_avg / ptot_avg]
 
@@ -653,6 +674,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
                 cmap="viridis",
                 vmin=vmin_norm[idx],
                 vmax=vmax_norm[idx],
+                norm=norm,
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -669,10 +691,16 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new"):
 
     # Save figure
     plt.tight_layout()
-
-    fig.savefig(
-        wrkdir_DNR + "papu22/Figures/P_jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
-    )
+    if shfa:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/shfa_jmap_SEA_{}_{}.png".format(run_id, kind),
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/P_jmap_SEA_{}_{}.png".format(run_id, kind),
+            dpi=300,
+        )
     plt.close(fig)
 
 
