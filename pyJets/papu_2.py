@@ -639,14 +639,17 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
         print("No jets of type {} found in run {}".format(kind, run_id))
         return 0
     if shfa:
-        norm = colors.LogNorm()
+        norm = [colors.LogNorm(), colors.LogNorm(), colors.LogNorm()]
         varname_list = [
             "$n$",
             "$B$",
             "$T$",
         ]
     else:
-        norm = colors.Normalize(vmin=vmin_norm, vmax=vmax_norm)
+        norm = [
+            colors.Normalize(vmin=vmin_norm[idx], vmax=vmax_norm[idx])
+            for idx in range(len(vmax_norm))
+        ]
         varname_list = [
             "$P_{th}/P_{tot}$",
             "$P_{dyn}/P_{tot}$",
@@ -674,7 +677,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
                 cmap="viridis",
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
-                norm=norm,
+                norm=norm[idx],
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
