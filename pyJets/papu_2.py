@@ -154,7 +154,7 @@ def jet_pos_plot():
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/BS_plot.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "papu22/Figures/BS_plot.pdf", dpi=300)
     plt.close(fig)
 
 
@@ -379,6 +379,7 @@ def foreshock_jplot_SEA(run_id):
                 # vmax=vmax_norm[idx],
                 vmin=vmin[idx],
                 vmax=vmax[idx],
+                rasterized=True,
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -406,6 +407,7 @@ def foreshock_jplot_SEA(run_id):
                 # vmax=vmax_norm[idx],
                 vmin=vmin[idx],
                 vmax=vmax[idx],
+                rasterized=True,
             )
         )
         sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
@@ -425,7 +427,7 @@ def foreshock_jplot_SEA(run_id):
 
     fig.savefig(
         wrkdir_DNR
-        + "papu22/Figures/jmap_SEA_foreshock_comparison_{}.png".format(run_id),
+        + "papu22/Figures/jmap_SEA_foreshock_comparison_{}.pdf".format(run_id),
         dpi=300,
     )
     plt.close(fig)
@@ -534,6 +536,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
                 cmap=cmap[idx],
                 vmin=vmin[idx],
                 vmax=vmax[idx],
+                rasterized=True,
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -552,7 +555,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.png".format(run_id, kind), dpi=300
+        wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.pdf".format(run_id, kind), dpi=300
     )
     plt.close(fig)
 
@@ -681,6 +684,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
                 norm=norm[idx],
+                rasterized=True,
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -895,6 +899,7 @@ def non_jet_jplots(runid):
                     cmap="Greys",
                     vmin=vmin_norm[idx],
                     vmax=vmax_norm[idx],
+                    rasterized=True,
                 )
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
@@ -1031,6 +1036,7 @@ def P_jplots(runid):
                     cmap="Greys",
                     vmin=vmin_norm[idx],
                     vmax=vmax_norm[idx],
+                    rasterized=True,
                 )
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
