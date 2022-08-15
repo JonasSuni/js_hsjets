@@ -364,7 +364,7 @@ def foreshock_jplot_SEA(run_id):
         np.max(data_arr[3]),
         np.max(data_arr[4]),
     ]
-    cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
+    cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
 
     for idx, ax in enumerate(ax_list[0]):
         ax.tick_params(labelsize=15)
@@ -511,7 +511,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         # "$M_{\mathrm{MS},x}$",
     ]
 
-    cmap = ["viridis", "vik", "viridis", "viridis", "viridis"]
+    cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
     vmin = [None, -1, None, None, None]
     vmax = [None, 1, None, None, None]
 
@@ -680,7 +680,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
                 t_range,
                 data_arr[idx],
                 shading="nearest",
-                cmap="viridis",
+                cmap="batlow",
                 # vmin=vmin_norm[idx],
                 # vmax=vmax_norm[idx],
                 norm=norm[idx],
@@ -877,6 +877,7 @@ def non_jet_jplots(runid):
         mmsx_arr = np.array(mmsx_arr)
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
+        cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
 
         fig, ax_list = plt.subplots(
             1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
@@ -896,7 +897,7 @@ def non_jet_jplots(runid):
                     t_range,
                     data_arr[idx],
                     shading="nearest",
-                    cmap="Greys",
+                    cmap=cmap[idx],
                     vmin=vmin_norm[idx],
                     vmax=vmax_norm[idx],
                     rasterized=True,
