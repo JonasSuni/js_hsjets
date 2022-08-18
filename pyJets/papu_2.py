@@ -401,7 +401,8 @@ def foreshock_jplot_SEA(run_id):
         # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[0][0].set_ylabel("Foreshock jets\nEpoch time [s]", fontsize=24, labelpad=10)
+    ax_list[0][0].set_ylabel("Epoch time [s]", fontsize=24, labelpad=10)
+    ax_list[0][-1].twinx().set_ylabel("Foreshock jets", fontsize=24, labelpad=10)
 
     for idx, ax in enumerate(ax_list[1]):
         ax.tick_params(labelsize=16)
@@ -430,7 +431,8 @@ def foreshock_jplot_SEA(run_id):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[1][0].set_ylabel("FCS-jets\nEpoch time [s]", fontsize=24, labelpad=10)
+    ax_list[1][0].set_ylabel("Epoch time [s]", fontsize=24, labelpad=10)
+    ax_list[1][-1].twinx().set_ylabel("FCS-jets", fontsize=24, labelpad=10)
 
     # Save figure
     plt.tight_layout()
