@@ -140,23 +140,24 @@ def jet_pos_plot():
         label_bool = draw_labels[n1]
         ax.grid()
         ax.set_xlim(-3, 4)
-        ax.set_aspect(30 / 7)
+        ax.set_aspect("equal")
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-15, 15)
         else:
             ax.set_ylim(-15, 15)
         if label_bool:
             ax.legend(fontsize=24)
-        ax_flat[0].set_ylabel("$B_\mathrm{IMF}=$10 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
-        ax_flat[2].set_ylabel("$B_\mathrm{IMF}=$5 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
-        ax_flat[2].set_xlabel(
-            "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$5 deg",
-            fontsize=24,
-        )
-        ax_flat[3].set_xlabel(
-            "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$30 deg",
-            fontsize=24,
-        )
+    ax_flat[0].set_ylabel("$Y~[R_\mathrm{E}]$", fontsize=24)
+    ax_flat[1].twinx().set_ylabel("$B_\mathrm{IMF}=$10 nT", fontsize=24)
+    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=$5 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
+    ax_flat[2].set_xlabel(
+        "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$5 deg",
+        fontsize=24,
+    )
+    ax_flat[3].set_xlabel(
+        "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$30 deg",
+        fontsize=24,
+    )
 
     # Save figure
     plt.tight_layout()
