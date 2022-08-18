@@ -140,16 +140,23 @@ def jet_pos_plot():
         label_bool = draw_labels[n1]
         ax.grid()
         ax.set_xlim(-3, 4)
+        ax.set_aspect(30 / 7)
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-15, 15)
         else:
             ax.set_ylim(-15, 15)
         if label_bool:
-            ax.legend()
-        ax_flat[0].set_ylabel("10 nT")
-        ax_flat[2].set_ylabel("5 nT")
-        ax_flat[2].set_xlabel("5 deg")
-        ax_flat[3].set_xlabel("30 deg")
+            ax.legend(fontsize=24)
+        ax_flat[0].set_ylabel("$B_\mathrm{IMF}=$10 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
+        ax_flat[2].set_ylabel("$B_\mathrm{IMF}=$5 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
+        ax_flat[2].set_xlabel(
+            "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$5 deg",
+            fontsize=24,
+        )
+        ax_flat[3].set_xlabel(
+            "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$30 deg",
+            fontsize=24,
+        )
 
     # Save figure
     plt.tight_layout()
@@ -343,12 +350,12 @@ def foreshock_jplot_SEA(run_id):
     cb_list = []
     sj_im_list = []
     sj_cb_list = []
-    fig.suptitle(
-        "Run: {}, Type: {}, Nnon = {}, Nfcs = {}".format(
-            run_id, "foreshock vs. FCS-jet", type_count, sj_count
-        ),
-        fontsize=20,
-    )
+    # fig.suptitle(
+    #     "Run: {}, Type: {}, Nnon = {}, Nfcs = {}".format(
+    #         run_id, "foreshock vs. FCS-jet", type_count, sj_count
+    #     ),
+    #     fontsize=20,
+    # )
 
     vmin = [
         np.min(data_arr[0]),
@@ -383,19 +390,20 @@ def foreshock_jplot_SEA(run_id):
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        cb_list[idx].ax.tick_params(labelsize=16)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
-        ax.set_title(varname_list[idx], fontsize=20, pad=10)
+        ax.set_title(varname_list[idx], fontsize=24, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
         # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[0][0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+    ax_list[0][0].set_ylabel("Foreshock jets\nEpoch time [s]", fontsize=24, labelpad=10)
 
     for idx, ax in enumerate(ax_list[1]):
-        ax.tick_params(labelsize=15)
+        ax.tick_params(labelsize=16)
         sj_im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -411,16 +419,17 @@ def foreshock_jplot_SEA(run_id):
             )
         )
         sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
+        sj_cb_list[idx].ax.tick_params(labelsize=16)
         ax.contour(XmeshXY, YmeshXY, sj_rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, sj_Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, sj_mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
         # ax.set_title(varname_list[idx], fontsize=20, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[1][0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+    ax_list[1][0].set_ylabel("FCS-jets\nEpoch time [s]", fontsize=24, labelpad=10)
 
     # Save figure
     plt.tight_layout()
@@ -522,11 +531,11 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     )
     im_list = []
     cb_list = []
-    fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
-    )
+    # fig.suptitle(
+    #     "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+    # )
     for idx, ax in enumerate(ax_list):
-        ax.tick_params(labelsize=15)
+        ax.tick_params(labelsize=16)
         im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -540,16 +549,19 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        cb_list[idx].ax.tick_params(labelsize=16)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
-        ax.set_title(varname_list[idx], fontsize=20, pad=10)
+        ax.set_title(varname_list[idx], fontsize=24, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
+    ax_list[0].set_ylabel(
+        "{} jets\nEpoch time [s]".format(kind.capitalize()), fontsize=24, labelpad=10
+    )
 
     # Save figure
     plt.tight_layout()
