@@ -146,17 +146,19 @@ def jet_pos_plot():
         else:
             ax.set_ylim(-15, 15)
         if label_bool:
-            ax.legend(fontsize=24)
-    ax_flat[0].set_ylabel("$Y~[R_\mathrm{E}]$", fontsize=24)
-    ax_flat[1].twinx().set_ylabel("$B_\mathrm{IMF}=$10 nT", fontsize=24)
-    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=$5 nT\n$Y~[R_\mathrm{E}]$", fontsize=24)
+            ax.legend(fontsize=20)
+    ax_flat[0].set_ylabel("$Y~[R_\mathrm{E}]$", fontsize=20)
+    ax2 = ax_flat[1].twinx()
+    ax2.set_ylabel("$B_\mathrm{IMF}=$10 nT", fontsize=20)
+    ax2.tick_params(labelright="off")
+    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=$5 nT\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_xlabel(
         "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$5 deg",
-        fontsize=24,
+        fontsize=20,
     )
     ax_flat[3].set_xlabel(
         "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n$\\theta_\mathrm{cone}=$30 deg",
-        fontsize=24,
+        fontsize=20,
     )
 
     # Save figure
