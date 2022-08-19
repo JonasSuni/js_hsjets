@@ -42,7 +42,7 @@ def jet_pos_plot():
     kinds = ["foreshock", "beam", "complex", "stripe"]
     draw_labels = [False, True, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(10, 10))
+    fig, ax_list = plt.subplots(2, 2, figsize=(10, 10), sharex=True, sharey=True)
     ax_flat = ax_list.flatten()
 
     yarr = np.arange(-15, 15, 0.1)
@@ -141,12 +141,13 @@ def jet_pos_plot():
         ax.grid()
         ax.set_xlim(-3, 4)
         # ax.set_aspect("equal")
+        ax.tick_params(labelsize=16)
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-15, 15)
         else:
             ax.set_ylim(-15, 15)
         if label_bool:
-            ax.legend(fontsize=20)
+            ax.legend(fontsize=16)
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_xlabel(
