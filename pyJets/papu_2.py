@@ -807,7 +807,7 @@ def fcs_jet_jplot_txtonly(runid):
         )
 
 
-def non_jet_jplots(runid):
+def non_jet_jplots(runid, txt=False):
 
     CB_color_cycle = jx.CB_color_cycle
 
@@ -859,37 +859,51 @@ def non_jet_jplots(runid):
 
         XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
-        rho_arr = []
-        v_arr = []
-        pdyn_arr = []
-        B_arr = []
-        T_arr = []
-        Tcore_arr = []
-        mmsx_arr = []
-
-        for fnr in fnr_range:
-            vlsvobj = pt.vlsvfile.VlsvReader(
-                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        if txt:
+            rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr = np.load(
+                wrkdir_DNR
+                + "papu22/jmap_txts/{}/{}_{}.npy".format(
+                    runid, runid, str(non_id).zfill(5)
+                )
             )
-            rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
-            v_arr.append(vlsvobj.read_variable("v", operator="x", cellids=cell_range))
-            pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
-            B_arr.append(
-                vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
-            )
-            T_arr.append(vlsvobj.read_variable("Temperature", cellids=cell_range))
-            Tcore_arr.append(vlsvobj.read_variable("core_heating", cellids=cell_range))
-            mmsx_arr.append(vlsvobj.read_variable("Mmsx", cellids=cell_range))
+        else:
+            rho_arr = []
+            v_arr = []
+            pdyn_arr = []
+            B_arr = []
+            T_arr = []
+            Tcore_arr = []
+            mmsx_arr = []
 
-        rho_arr = np.array(rho_arr) / 1.0e6 / n_sw
-        v_arr = np.array(v_arr) / 1.0e3 / v_sw
-        pdyn_arr = (
-            np.array(pdyn_arr) / 1.0e-9 / (m_p * n_sw * 1e6 * v_sw * v_sw * 1e6 / 1e-9)
-        )
-        B_arr = np.array(B_arr) / 1.0e-9 / B_sw
-        T_arr = np.array(T_arr) / 1.0e6 / T_sw
-        Tcore_arr = np.array(Tcore_arr) / 1.0e6 / T_sw
-        mmsx_arr = np.array(mmsx_arr)
+            for fnr in fnr_range:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                rho_arr.append(vlsvobj.read_variable("rho", cellids=cell_range))
+                v_arr.append(
+                    vlsvobj.read_variable("v", operator="x", cellids=cell_range)
+                )
+                pdyn_arr.append(vlsvobj.read_variable("Pdyn", cellids=cell_range))
+                B_arr.append(
+                    vlsvobj.read_variable("B", operator="magnitude", cellids=cell_range)
+                )
+                T_arr.append(vlsvobj.read_variable("Temperature", cellids=cell_range))
+                Tcore_arr.append(
+                    vlsvobj.read_variable("core_heating", cellids=cell_range)
+                )
+                mmsx_arr.append(vlsvobj.read_variable("Mmsx", cellids=cell_range))
+
+            rho_arr = np.array(rho_arr) / 1.0e6 / n_sw
+            v_arr = np.array(v_arr) / 1.0e3 / v_sw
+            pdyn_arr = (
+                np.array(pdyn_arr)
+                / 1.0e-9
+                / (m_p * n_sw * 1e6 * v_sw * v_sw * 1e6 / 1e-9)
+            )
+            B_arr = np.array(B_arr) / 1.0e-9 / B_sw
+            T_arr = np.array(T_arr) / 1.0e6 / T_sw
+            Tcore_arr = np.array(Tcore_arr) / 1.0e6 / T_sw
+            mmsx_arr = np.array(mmsx_arr)
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
         cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
@@ -944,11 +958,14 @@ def non_jet_jplots(runid):
         )
         plt.close(fig)
 
-        np.save(
-            wrkdir_DNR
-            + "papu22/jmap_txts/{}/{}_{}".format(runid, runid, str(non_id).zfill(5)),
-            np.array([rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr]),
-        )
+        if not txt:
+            np.save(
+                wrkdir_DNR
+                + "papu22/jmap_txts/{}/{}_{}".format(
+                    runid, runid, str(non_id).zfill(5)
+                ),
+                np.array([rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr]),
+            )
 
 
 def P_jplots(runid):
