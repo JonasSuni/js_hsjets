@@ -953,7 +953,7 @@ def non_jet_jplots(runid, txt=False):
         # )
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/jmaps/{}_{}.png".format(runid, str(non_id).zfill(5)),
+            + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5)),
             dpi=300,
         )
         plt.close(fig)
