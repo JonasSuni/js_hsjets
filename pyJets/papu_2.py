@@ -402,7 +402,7 @@ def foreshock_jplot_SEA(run_id):
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
     ax_list[0][0].set_ylabel(
-        "Foreshock jets\n\nEpoch time [s]", fontsize=24, labelpad=10
+        "Foreshock jets\n\nEpoch time [s]", fontsize=28, labelpad=10
     )
 
     for idx, ax in enumerate(ax_list[1]):
@@ -432,7 +432,7 @@ def foreshock_jplot_SEA(run_id):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[1][0].set_ylabel("FCS-jets\n\nEpoch time [s]", fontsize=24, labelpad=10)
+    ax_list[1][0].set_ylabel("FCS-jets\n\nEpoch time [s]", fontsize=28, labelpad=10)
 
     # Save figure
     plt.tight_layout()
@@ -530,7 +530,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
     fig, ax_list = plt.subplots(
-        1, len(varname_list), figsize=(24, 10), sharex=True, sharey=True
+        1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
     )
     im_list = []
     cb_list = []
@@ -562,9 +562,8 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-    ax_list[0].set_ylabel(
-        "{} jets\n\nEpoch time [s]".format(kind.capitalize()), fontsize=24, labelpad=10
-    )
+    ax_list[0].set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
+    fig.suptitle("{} jets".format(kind.capitalize()), fontsize=28)
 
     # Save figure
     plt.tight_layout()
