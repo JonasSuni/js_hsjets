@@ -563,7 +563,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
     ax_list[0].set_ylabel(
-        "{} jets\nEpoch time [s]".format(kind.capitalize()), fontsize=24, labelpad=10
+        "{} jets\n\nEpoch time [s]".format(kind.capitalize()), fontsize=24, labelpad=10
     )
 
     # Save figure
@@ -823,6 +823,7 @@ def non_jet_jplots(runid, txt=False):
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
     runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    runids_paper = ["HM30", "HM05", "LM30", "LM05"]
     sw_pars = [
         [1.0, 750.0, 5.0, 0.5],
         [3.3, 600.0, 5.0, 0.5],
@@ -914,9 +915,11 @@ def non_jet_jplots(runid, txt=False):
         im_list = []
         cb_list = []
         fig.suptitle(
-            "Run: {}, JetID: {}, $y$ = {:.3f} ".format(runid, non_id, y0)
+            "Run: {}, JetID: {}, $y$ = {:.3f} ".format(
+                runids_paper[runid_list.index(runid)], non_id, y0
+            )
             + "$R_\mathrm{E}$",
-            fontsize=20,
+            fontsize=32,
         )
         for idx, ax in enumerate(ax_list):
             ax.tick_params(labelsize=16)
@@ -942,7 +945,7 @@ def non_jet_jplots(runid, txt=False):
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax_list[0].set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=32, labelpad=10)
 
         # Save figure
         plt.tight_layout()
