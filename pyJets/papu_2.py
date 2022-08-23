@@ -919,7 +919,7 @@ def non_jet_jplots(runid, txt=False):
                 runids_paper[runid_list.index(runid)], non_id, y0
             )
             + "$R_\mathrm{E}$",
-            fontsize=32,
+            fontsize=28,
         )
         for idx, ax in enumerate(ax_list):
             ax.tick_params(labelsize=16)
@@ -945,7 +945,7 @@ def non_jet_jplots(runid, txt=False):
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax_list[0].set_ylabel("Simulation time [s]", fontsize=32, labelpad=10)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
         # Save figure
         plt.tight_layout()
