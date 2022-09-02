@@ -83,6 +83,8 @@ def jet_pos_plot():
         for idx in range(len(runids))
     ]
 
+    annot = ["a)", "b)", "c)", "d)"]
+
     for idx, ax in enumerate(ax_flat):
 
         ax.contour(
@@ -103,6 +105,7 @@ def jet_pos_plot():
             linestyles=["dashed"],
         )
         ax.plot(bs_x[idx], yarr, color="black")
+        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
         ax = ax_flat[n1]
@@ -373,6 +376,8 @@ def foreshock_jplot_SEA(run_id):
         np.max(data_arr[4]),
     ]
     cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
+    annot = ["a)", "b)", "c)", "d)", "e)"]
+    annot_sj = ["f)", "g)", "h)", "i)", "j)"]
 
     for idx, ax in enumerate(ax_list[0]):
         ax.tick_params(labelsize=15)
@@ -401,6 +406,7 @@ def foreshock_jplot_SEA(run_id):
         # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
     ax_list[0][0].set_ylabel(
         "Foreshock jets\n\nEpoch time [s]", fontsize=28, labelpad=10
     )
@@ -432,6 +438,7 @@ def foreshock_jplot_SEA(run_id):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+        ax.annotate(annot_sj[idx], (0.05, 0.95), "axes fraction", fontsize=24)
     ax_list[1][0].set_ylabel("FCS-jets\n\nEpoch time [s]", fontsize=28, labelpad=10)
 
     # Save figure
@@ -526,6 +533,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
     vmin = [None, -1, None, None, None]
     vmax = [None, 1, None, None, None]
+    annot = ["a)", "b)", "c)", "d)", "e)"]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
@@ -562,6 +570,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
     fig.suptitle("{} jets".format(kind.capitalize()), fontsize=28)
 
@@ -907,6 +916,7 @@ def non_jet_jplots(runid, txt=False):
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
         cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
+        annot = ["a)", "b)", "c)", "d)", "e)"]
 
         fig, ax_list = plt.subplots(
             1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
@@ -944,6 +954,7 @@ def non_jet_jplots(runid, txt=False):
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+            ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
         # Save figure
