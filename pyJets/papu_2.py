@@ -105,7 +105,7 @@ def jet_pos_plot():
             linestyles=["dashed"],
         )
         ax.plot(bs_x[idx], yarr, color="black")
-        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=20)
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
         ax = ax_flat[n1]
