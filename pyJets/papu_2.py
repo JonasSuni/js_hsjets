@@ -105,7 +105,7 @@ def jet_pos_plot():
             linestyles=["dashed"],
         )
         ax.plot(bs_x[idx], yarr, color="black")
-        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=20)
+        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
         ax = ax_flat[n1]
@@ -406,7 +406,7 @@ def foreshock_jplot_SEA(run_id):
         # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
+        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
     ax_list[0][0].set_ylabel(
         "Foreshock jets\n\nEpoch time [s]", fontsize=28, labelpad=10
     )
@@ -438,7 +438,7 @@ def foreshock_jplot_SEA(run_id):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot_sj[idx], (0.05, 0.95), "axes fraction", fontsize=24)
+        ax.annotate(annot_sj[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
     ax_list[1][0].set_ylabel("FCS-jets\n\nEpoch time [s]", fontsize=28, labelpad=10)
 
     # Save figure
@@ -570,7 +570,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
+        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
     fig.suptitle("{} jets".format(kind.capitalize()), fontsize=28)
 
@@ -954,7 +954,7 @@ def non_jet_jplots(runid, txt=False):
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-            ax.annotate(annot[idx], (0.05, 0.95), "axes fraction", fontsize=24)
+            ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
         # Save figure
