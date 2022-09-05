@@ -87,16 +87,16 @@ def jet_pos_plot():
 
     for idx, ax in enumerate(ax_flat):
 
-        ax.contour(
+        cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
             Bz_arr[idx],
             [-0.5e-9, 0.5e-9],
             colors=[CB_color_cycle[4], CB_color_cycle[5]],
             linewidths=[0.6, 0.6],
-            rasterized=True,
         )
-        ax.contour(
+        cont.set_rasterized(True)
+        cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
             np.abs(RhoBS_arr[idx]),
@@ -104,9 +104,9 @@ def jet_pos_plot():
             colors=["black"],
             linewidths=[0.6],
             linestyles=["dashed"],
-            rasterized=True,
         )
-        ax.plot(bs_x[idx], yarr, color="black", rasterized=True)
+        cont.set_rasterized(True)
+        ax.plot(bs_x[idx], yarr, color="black")
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
@@ -133,7 +133,6 @@ def jet_pos_plot():
                         "x",
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
-                        rasterized=True,
                     )
                     label_bool = False
                 else:
@@ -142,7 +141,6 @@ def jet_pos_plot():
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
-                        rasterized=True,
                     )
         label_bool = draw_labels[n1]
         ax.grid()
