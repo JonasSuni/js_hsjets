@@ -42,7 +42,7 @@ def jet_pos_plot():
     kinds = ["foreshock", "beam", "complex", "stripe"]
     draw_labels = [False, True, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(16, 16), sharex=True, sharey=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(10, 10), sharex=True, sharey=True)
     ax_flat = ax_list.flatten()
 
     yarr = np.arange(-15, 15, 0.1)
