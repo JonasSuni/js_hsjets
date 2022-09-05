@@ -106,7 +106,7 @@ def jet_pos_plot():
             linestyles=["dashed"],
             rasterized=True,
         )
-        ax.plot(bs_x[idx], yarr, color="black")
+        ax.plot(bs_x[idx], yarr, color="black", rasterized=True)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
@@ -133,6 +133,7 @@ def jet_pos_plot():
                         "x",
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
+                        rasterized=True,
                     )
                     label_bool = False
                 else:
@@ -141,6 +142,7 @@ def jet_pos_plot():
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
+                        rasterized=True,
                     )
         label_bool = draw_labels[n1]
         ax.grid()
