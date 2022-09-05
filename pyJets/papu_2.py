@@ -135,6 +135,7 @@ def jet_pos_plot():
                         "x",
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
+                        rasterized=True,
                     )
                     label_bool = False
                 else:
@@ -143,6 +144,7 @@ def jet_pos_plot():
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
+                        rasterized=True,
                     )
         label_bool = draw_labels[n1]
         ax.grid()
