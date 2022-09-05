@@ -95,7 +95,8 @@ def jet_pos_plot():
             colors=[CB_color_cycle[4], CB_color_cycle[5]],
             linewidths=[0.6, 0.6],
         )
-        cont.set_rasterized(True)
+        for c in cont.collections:
+            c.set_rasterized(True)
         cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
@@ -105,7 +106,8 @@ def jet_pos_plot():
             linewidths=[0.6],
             linestyles=["dashed"],
         )
-        cont.set_rasterized(True)
+        for c in cont.collections:
+            c.set_rasterized(True)
         ax.plot(bs_x[idx], yarr, color="black")
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
