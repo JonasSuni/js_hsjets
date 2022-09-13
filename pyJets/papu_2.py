@@ -86,11 +86,17 @@ def jet_pos_plot():
     annot = ["a)", "b)", "c)", "d)"]
 
     for idx, ax in enumerate(ax_flat):
+        Xun_minus_bs = np.array(
+            [
+                [Xun_arr[idx][i2] - np.polyval(bs_fit, Yun_arr[idx][i2, 0])]
+                for i2 in range(len(Xun_arr[idx]))
+            ]
+        )
 
         cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
-            Bz_arr[idx],
+            np.ma.masked_where(Xun_minus_bs < 0, Bz_arr[idx]),
             [-0.5e-9, 0.5e-9],
             colors=[CB_color_cycle[4], CB_color_cycle[5]],
             linewidths=[0.6, 0.6],
@@ -100,7 +106,7 @@ def jet_pos_plot():
         cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
             Yun_arr[idx],
-            np.abs(RhoBS_arr[idx]),
+            np.ma.masked_where(Xun_minus_bs < 0, np.abs(RhoBS_arr[idx])),
             [1],
             colors=["black"],
             linewidths=[0.6],
@@ -148,7 +154,7 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(-3, 4)
+        ax.set_xlim(-3, 2)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         if runid in ["ABA", "AEA"]:
@@ -386,7 +392,7 @@ def foreshock_jplot_SEA(run_id):
     annot_sj = ["f)", "g)", "h)", "i)", "j)"]
 
     for idx, ax in enumerate(ax_list[0]):
-        ax.tick_params(labelsize=15)
+        ax.tick_params(labelsize=20)
         im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -402,7 +408,7 @@ def foreshock_jplot_SEA(run_id):
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-        cb_list[idx].ax.tick_params(labelsize=16)
+        cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
@@ -418,7 +424,7 @@ def foreshock_jplot_SEA(run_id):
     )
 
     for idx, ax in enumerate(ax_list[1]):
-        ax.tick_params(labelsize=16)
+        ax.tick_params(labelsize=20)
         sj_im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -434,7 +440,7 @@ def foreshock_jplot_SEA(run_id):
             )
         )
         sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
-        sj_cb_list[idx].ax.tick_params(labelsize=16)
+        sj_cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, sj_rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, sj_Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, sj_mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
@@ -552,7 +558,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     #     "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     # )
     for idx, ax in enumerate(ax_list):
-        ax.tick_params(labelsize=16)
+        ax.tick_params(labelsize=20)
         im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -566,7 +572,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         )
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-        cb_list[idx].ax.tick_params(labelsize=16)
+        cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
@@ -703,7 +709,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
         fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
-        ax.tick_params(labelsize=15)
+        ax.tick_params(labelsize=20)
         im_list.append(
             ax.pcolormesh(
                 x_range,
@@ -938,7 +944,7 @@ def non_jet_jplots(runid, txt=False):
             fontsize=28,
         )
         for idx, ax in enumerate(ax_list):
-            ax.tick_params(labelsize=16)
+            ax.tick_params(labelsize=20)
             im_list.append(
                 ax.pcolormesh(
                     x_range,
@@ -952,6 +958,7 @@ def non_jet_jplots(runid, txt=False):
                 )
             )
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            cb_list[idx].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
             ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
@@ -1079,7 +1086,7 @@ def P_jplots(runid):
             fontsize=20,
         )
         for idx, ax in enumerate(ax_list):
-            ax.tick_params(labelsize=15)
+            ax.tick_params(labelsize=20)
             im_list.append(
                 ax.pcolormesh(
                     x_range,
