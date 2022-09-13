@@ -86,12 +86,10 @@ def jet_pos_plot():
     annot = ["a)", "b)", "c)", "d)"]
 
     for idx, ax in enumerate(ax_flat):
-        print(len(Xun_arr[idx]))
-        print(len(Yun_arr[idx]))
         Xun_minus_bs = np.array(
             [
-                [Xun_arr[idx] - np.polyval(bs_fit, Yun_arr[idx][i2])]
-                for i2 in range(len(Xun_arr[idx]))
+                [Xun_arr[idx] - np.polyval(bs_fit, Yun_arr[idx][i2])
+                for i2 in range(len(Xun_arr[idx]))]
             ]
         )
 
