@@ -96,6 +96,7 @@ def jet_pos_plot():
                 ]
             ]
         )
+        print(Xun_minus_bs.shape)
 
         cont = ax.contour(
             Xun_arr[idx] - bs_fit[idx][-1],
