@@ -90,10 +90,8 @@ def jet_pos_plot():
         print(Yun_arr[idx].shape)
         Xun_minus_bs = np.array(
             [
-                [
-                    Xun_arr[idx] - np.polyval(bs_fit[idx], Yun_arr[idx][i2])
-                    for i2 in range(len(Yun_arr[idx]))
-                ]
+                Xun_arr[idx] - np.polyval(bs_fit[idx], Yun_arr[idx][i2])
+                for i2 in range(len(Yun_arr[idx]))
             ]
         )
         print(Xun_minus_bs.shape)
