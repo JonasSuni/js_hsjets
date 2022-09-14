@@ -439,7 +439,7 @@ def foreshock_jplot_SEA(run_id):
     ]
     vmax = [
         np.max(data_arr[0]),
-        -0.25,
+        -0.5,
         np.max(data_arr[2]),
         np.max(data_arr[3]),
         np.max(data_arr[4]),
