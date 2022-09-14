@@ -97,7 +97,8 @@ def jet_pos_plot():
         print(Xun_minus_bs.shape)
 
         cont = ax.contour(
-            Xun_arr[idx] - bs_fit[idx][-1],
+            # Xun_arr[idx] - bs_fit[idx][-1],
+            Xun_arr[idx],
             Yun_arr[idx],
             np.ma.masked_where(Xun_minus_bs < 0, Bz_arr[idx]),
             [-0.5e-9, 0.5e-9],
@@ -107,7 +108,8 @@ def jet_pos_plot():
         for c in cont.collections:
             c.set_rasterized(True)
         cont = ax.contour(
-            Xun_arr[idx] - bs_fit[idx][-1],
+            # Xun_arr[idx] - bs_fit[idx][-1],
+            Xun_arr[idx],
             Yun_arr[idx],
             np.ma.masked_where(Xun_minus_bs < 0, np.abs(RhoBS_arr[idx])),
             [1],
@@ -117,7 +119,7 @@ def jet_pos_plot():
         )
         for c in cont.collections:
             c.set_rasterized(True)
-        ax.plot(bs_x[idx], yarr, color="black")
+        # ax.plot(bs_x[idx], yarr, color="black")
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
     for n1, runid in enumerate(runids):
@@ -139,7 +141,8 @@ def jet_pos_plot():
                 bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
                 if label_bool:
                     ax.plot(
-                        np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        x0,
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
@@ -149,7 +152,8 @@ def jet_pos_plot():
                     label_bool = False
                 else:
                     ax.plot(
-                        np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        x0,
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
@@ -157,13 +161,16 @@ def jet_pos_plot():
                     )
         label_bool = draw_labels[n1]
         ax.grid()
-        ax.set_xlim(-3, 2)
+        # ax.set_xlim(-3, 2)
+        ax.set_xlim(6,18)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         if runid in ["ABA", "AEA"]:
-            ax.set_ylim(-15, 15)
+            ax.set_ylim(-8, 6)
+            ax.set_aspect(1.17,adjustable="box")
         else:
-            ax.set_ylim(-15, 15)
+            ax.set_ylim(-6, 6)
+            ax.set_aspect(1.0,adjustable="box")
         if label_bool:
             ax.legend(fontsize=16)
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
