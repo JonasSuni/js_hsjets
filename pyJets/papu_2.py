@@ -553,7 +553,11 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
     fig, ax_list = plt.subplots(
-        2, int(np.ceil(len(varname_list)/2.0)), figsize=(20, 10), sharex=True, sharey=True
+        2,
+        int(np.ceil(len(varname_list) / 2.0)),
+        figsize=(20, 10),
+        sharex=True,
+        sharey=True,
     )
     ax_list = ax_list.flatten()
     im_list = []
@@ -561,7 +565,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     # fig.suptitle(
     #     "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     # )
-    for idx, ax in enumerate(ax_list):
+    for idx, ax in enumerate(ax_list[: len(varname_list)]):
         ax.tick_params(labelsize=20)
         im_list.append(
             ax.pcolormesh(
