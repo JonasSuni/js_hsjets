@@ -162,15 +162,15 @@ def jet_pos_plot():
         label_bool = draw_labels[n1]
         ax.grid()
         # ax.set_xlim(-3, 2)
-        ax.set_xlim(6,18)
+        ax.set_xlim(6, 18)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-8, 6)
-            ax.set_aspect(1.17,adjustable="box")
+            ax.set_aspect(1.17, adjustable="box")
         else:
             ax.set_ylim(-6, 6)
-            ax.set_aspect(1.0,adjustable="box")
+            ax.set_aspect(1.0, adjustable="box")
         if label_bool:
             ax.legend(fontsize=16)
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
