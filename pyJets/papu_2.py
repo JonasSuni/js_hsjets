@@ -574,6 +574,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
                 rasterized=True,
             )
         )
+        ax.set_aspect(0.25, adjustabel="box")
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
