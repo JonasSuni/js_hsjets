@@ -141,7 +141,7 @@ def jet_pos_plot():
                     props.read("y_mean")[0],
                     props.read("time")[0],
                 )
-                bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
+                # bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
                 if label_bool:
                     ax.plot(
                         # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
@@ -173,7 +173,7 @@ def jet_pos_plot():
                 props.read("y_mean")[0],
                 props.read("time")[0],
             )
-            bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
+            # bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
             if label_bool:
                 ax.plot(
                     # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
