@@ -470,7 +470,7 @@ def foreshock_jplot_SEA(run_id):
             cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
             cb_list[idx].cmap.set_over("red")
         else:
-            cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
