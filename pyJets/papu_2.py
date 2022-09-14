@@ -166,21 +166,29 @@ def jet_pos_plot():
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         if runid in ["ABA", "AEA"]:
-            ax.set_ylim(-8, 6)
-            ax.set_aspect(1.17, adjustable="box")
+            ax.set_ylim(-10, 10)
+            ax.set_aspect(1.67, adjustable="box")
         else:
-            ax.set_ylim(-6, 6)
-            ax.set_aspect(1.0, adjustable="box")
+            ax.set_ylim(-10, 10)
+            ax.set_aspect(1.67, adjustable="box")
         if label_bool:
             ax.legend(fontsize=16)
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
+    # ax_flat[2].set_xlabel(
+    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+    #     fontsize=20,
+    # )
+    # ax_flat[3].set_xlabel(
+    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+    #     fontsize=20,
+    # )
     ax_flat[2].set_xlabel(
-        "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
         fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
         fontsize=20,
     )
 
