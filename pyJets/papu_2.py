@@ -439,12 +439,12 @@ def foreshock_jplot_SEA(run_id):
     ]
     vmax = [
         np.max(data_arr[0]),
-        0,
+        -0.25,
         np.max(data_arr[2]),
         np.max(data_arr[3]),
         np.max(data_arr[4]),
     ]
-    cmap = ["batlow", "Blues", "batlow", "batlow", "batlow"]
+    cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     annot = ["a)", "b)", "c)", "d)", "e)"]
     annot_sj = ["f)", "g)", "h)", "i)", "j)"]
 
