@@ -577,6 +577,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_aspect(0.1, adjustable="box")
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
+        cb_list[idx].ax.set_aspect(0.1, adjustable="box")
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, Tcore_avg, [3], colors=[CB_color_cycle[1]])
         ax.contour(XmeshXY, YmeshXY, mmsx_avg, [1.0], colors=[CB_color_cycle[4]])
