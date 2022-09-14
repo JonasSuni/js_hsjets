@@ -439,7 +439,7 @@ def foreshock_jplot_SEA(run_id):
     ]
     vmax = [
         np.max(data_arr[0]),
-        -0.5,
+        0,
         np.max(data_arr[2]),
         np.max(data_arr[3]),
         np.max(data_arr[4]),
@@ -464,8 +464,13 @@ def foreshock_jplot_SEA(run_id):
                 rasterized=True,
             )
         )
+        # if idx == 1:
+        #     ax.contourf(x_range, t_range, data_arr[idx], [0, 10], colors="red")
         if idx == 1:
-            ax.contourf(x_range, t_range, data_arr[idx], [0, 10], colors="red")
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+            cb_list[idx].cmap.set_over("red")
+        else:
+            cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
@@ -498,9 +503,13 @@ def foreshock_jplot_SEA(run_id):
                 rasterized=True,
             )
         )
+        # if idx == 1:
+        #     ax.contourf(x_range, t_range, sj_data_arr[idx], [0, 10], colors="red")
         if idx == 1:
-            ax.contourf(x_range, t_range, sj_data_arr[idx], [0, 10], colors="red")
-        sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
+            sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax, extend="max"))
+            sj_cb_list[idx].cmap.set_over("red")
+        else:
+            sj_cb_list.append(fig.colorbar(sj_im_list[idx], ax=ax))
         sj_cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, sj_rho_avg, [2], colors=["black"])
         ax.contour(XmeshXY, YmeshXY, sj_Tcore_avg, [3], colors=[CB_color_cycle[1]])
