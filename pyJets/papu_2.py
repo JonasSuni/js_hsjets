@@ -439,7 +439,7 @@ def foreshock_jplot_SEA(run_id):
     ]
     vmax = [
         np.max(data_arr[0]),
-        1,
+        0,
         np.max(data_arr[2]),
         np.max(data_arr[3]),
         np.max(data_arr[4]),
@@ -464,6 +464,8 @@ def foreshock_jplot_SEA(run_id):
                 rasterized=True,
             )
         )
+        if idx == 2:
+            ax.contourf(x_range, t_range, data_arr[idx], [0, 10], colors="red")
         cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
