@@ -363,7 +363,7 @@ def foreshock_jplot_SEA(run_id):
     sj_data_arr = [sj_rho_avg, sj_v_avg, sj_pdyn_avg, sj_B_avg, sj_T_avg, sj_mmsx_avg]
 
     fig, ax_list = plt.subplots(
-        2, len(varname_list), figsize=(24, 16), sharex=True, sharey=True
+        2, len(varname_list), figsize=(24, 10), sharex=True, sharey=True
     )
     im_list = []
     cb_list = []
