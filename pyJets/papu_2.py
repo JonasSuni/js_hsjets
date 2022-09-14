@@ -553,8 +553,9 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
     fig, ax_list = plt.subplots(
-        1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
+        2, int(np.ceil(len(varname_list)/2.0)), figsize=(20, 10), sharex=True, sharey=True
     )
+    ax_list = ax_list.flatten()
     im_list = []
     cb_list = []
     # fig.suptitle(
