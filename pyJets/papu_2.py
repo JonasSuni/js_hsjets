@@ -184,7 +184,7 @@ def jet_pos_plot():
                     label="FCS-jets",
                     rasterized=True,
                     zorder=0,
-                    alpha=0.7,
+                    alpha=0.3,
                 )
                 label_bool = False
             else:
@@ -196,7 +196,7 @@ def jet_pos_plot():
                     color="gray",
                     rasterized=True,
                     zorder=0,
-                    alpha=0.7,
+                    alpha=0.3,
                 )
         label_bool = draw_labels[n1]
         ax.grid()
@@ -211,7 +211,7 @@ def jet_pos_plot():
             ax.set_ylim(-10, 10)
             ax.set_aspect("equal", adjustable="box")
         if label_bool:
-            ax.legend(fontsize=12)
+            ax.legend(fontsize=12, loc="center left")
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
