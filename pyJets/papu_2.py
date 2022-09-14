@@ -1,3 +1,4 @@
+from operator import ge
 import sys
 import matplotlib.style
 import matplotlib as mpl
@@ -42,7 +43,7 @@ def jet_pos_plot():
     kinds = ["foreshock", "beam", "complex", "stripe"]
     draw_labels = [False, True, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(7, 12), sharex=True, sharey=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
     ax_flat = ax_list.flatten()
 
     yarr = np.arange(-15, 15, 0.1)
@@ -104,6 +105,7 @@ def jet_pos_plot():
             [-0.5e-9, 0.5e-9],
             colors=[CB_color_cycle[4], CB_color_cycle[5]],
             linewidths=[0.6, 0.6],
+            zorder=1,
         )
         for c in cont.collections:
             c.set_rasterized(True)
@@ -116,6 +118,7 @@ def jet_pos_plot():
             colors=["black"],
             linewidths=[0.6],
             linestyles=["dashed"],
+            zorder=1,
         )
         for c in cont.collections:
             c.set_rasterized(True)
@@ -148,6 +151,7 @@ def jet_pos_plot():
                         color=CB_color_cycle[n2],
                         label=kinds[n2].capitalize(),
                         rasterized=True,
+                        zorder=2,
                     )
                     label_bool = False
                 else:
@@ -158,7 +162,42 @@ def jet_pos_plot():
                         "x",
                         color=CB_color_cycle[n2],
                         rasterized=True,
+                        zorder=2,
                     )
+        label_bool = draw_labels[n1]
+        fcs_jet_ids = get_fcs_jets(runid)
+        for sj_id in fcs_jet_ids:
+            props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
+            x0, y0, t0 = (
+                props.read("x_mean")[0],
+                props.read("y_mean")[0],
+                props.read("time")[0],
+            )
+            bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
+            if label_bool:
+                ax.plot(
+                    # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                    x0,
+                    y0,
+                    "x",
+                    color="gray",
+                    label="FCS-jets",
+                    rasterized=True,
+                    zorder=0,
+                    alpha=0.7,
+                )
+                label_bool = False
+            else:
+                ax.plot(
+                    # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                    x0,
+                    y0,
+                    "x",
+                    color="gray",
+                    rasterized=True,
+                    zorder=0,
+                    alpha=0.7,
+                )
         label_bool = draw_labels[n1]
         ax.grid()
         # ax.set_xlim(-3, 2)
@@ -172,7 +211,7 @@ def jet_pos_plot():
             ax.set_ylim(-10, 10)
             ax.set_aspect("equal", adjustable="box")
         if label_bool:
-            ax.legend(fontsize=16)
+            ax.legend(fontsize=12)
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
