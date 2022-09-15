@@ -223,12 +223,10 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
     )
 
     # Save figure
@@ -781,8 +779,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
-        fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1549,18 +1546,10 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr,
-            beam_avg[n2],
-            color=jx.CB_color_cycle[0],
-            label="Beam",
-            zorder=2,
+            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
         )
         ax_list[n2].plot(
-            t_arr,
-            stripe_avg[n2],
-            color=jx.CB_color_cycle[1],
-            label="Stripe",
-            zorder=2,
+            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
@@ -2424,6 +2413,124 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
         loc="upper right",
         fontsize=5,
     )
+
+
+def vdf_plotter(runid, cellid, t0):
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(wrkdir_DNR + "papu22/VDFs/{}/{}/".format(runid, cellid)):
+        try:
+            os.makedirs(wrkdir_DNR + "papu22/VDFs/{}/{}/".format(runid, cellid))
+        except OSError:
+            pass
+
+    global runid_g
+    global filenr_g
+
+    runid_g = runid
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    bulkpath = jx.find_bulkpath(runid)
+    obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
+    cellids = obj_580.read_variable("CellID")
+    if obj_580.check_variable("fSaved"):
+        fsaved = obj_580.read_variable("fSaved")
+    else:
+        fsaved = obj_580.read_variable("vg_f_saved")
+
+    vdf_cells = cellids[fsaved == 1]
+
+    if float(cellid) not in vdf_cells:
+        print("CellID {} in run {} does not contain VDF data!".format(cellid, runid))
+        return 1
+
+    for tc in np.arange(t0 - 10, t0 + 10.01, 0.5):
+        fnr = int(tc * 2)
+        filenr_g = fnr
+        fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        x_re, y_re, z_re = obj_580.get_cell_coordinates(cellid) / r_e
+
+        fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
+
+        pt.plot.plot_colormap(
+            axes=ax_list[0][0],
+            filename=bulkpath + fname,
+            var="Pdyn",
+            vmin=0,
+            vmax=pdmax,
+            vscale=1e9,
+            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+            # internalcb=True,
+            lin=1,
+            colormap="batlow",
+            scale=1.3,
+            tickinterval=1.0,
+            external=ext_contours,
+            pass_vars=[
+                "RhoNonBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+                "Pdyn",
+            ],
+        )
+        ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
+        ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
+
+        pt.plot.plot_vdf(
+            axes=ax_list[0][1],
+            filename=bulkpath + fname,
+            cellids=[cellid],
+            colormap="batlow",
+            bvector=1,
+            xy=1,
+            slicethick=1e9,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+        )
+        pt.plot.plot_vdf(
+            axes=ax_list[1][0],
+            filename=bulkpath + fname,
+            cellids=[cellid],
+            colormap="batlow",
+            bvector=1,
+            xz=1,
+            slicethick=1e9,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+        )
+        pt.plot.plot_vdf(
+            axes=ax_list[1][1],
+            filename=bulkpath + fname,
+            cellids=[cellid],
+            colormap="batlow",
+            bvector=1,
+            yz=1,
+            slicethick=1e9,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+        )
+
+        # plt.subplots_adjust(wspace=1, hspace=1)
+
+        fig.suptitle("Run: {}, Cellid: {}, Time: {}s".format(runid, cellid, tc))
+        fig.savefig(wrkdir_DNR + "papu22/VDFs/{}/{}/{}.png".format(runid, cellid, fnr))
+        plt.close(fig)
+
+    return None
 
 
 def jet_vdf_plotter(runid):
