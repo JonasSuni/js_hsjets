@@ -2415,7 +2415,7 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
 
-def vdf_plotter(runid, cellid, t0):
+def vdf_plotter(runid, cellid, t0, zoom=1):
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(wrkdir_DNR + "papu22/VDFs/{}/{}/".format(runid, cellid)):
@@ -2478,7 +2478,12 @@ def vdf_plotter(runid, cellid, t0):
             # vscale=1e19,
             cbtitle="$P_\mathrm{dyn}$ [Pa]",
             usesci=1,
-            boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+            boxre=[
+                x_re - 2.0 / zoom,
+                x_re + 2.0 / zoom,
+                y_re - 2.0 / zoom,
+                y_re + 2.0 / zoom,
+            ],
             # internalcb=True,
             lin=1,
             colormap="batlow",
