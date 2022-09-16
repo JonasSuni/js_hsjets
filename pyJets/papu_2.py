@@ -2426,6 +2426,11 @@ def vdf_plotter(runid, cellid, t0):
 
     global runid_g
     global filenr_g
+    global sj_ids_g
+    global non_ids_g
+
+    sj_ids_g = []
+    non_ids_g = []
 
     runid_g = runid
 
