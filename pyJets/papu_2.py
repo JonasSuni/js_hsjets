@@ -2719,6 +2719,7 @@ def jet_animator(runid, jetid):
 
 
 def jet_update(fnr):
+    ax.clear()
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
     global filenr_g
     filenr_g = fnr
