@@ -129,4 +129,5 @@ from papu_2 import (
     foreshock_jplot_SEA,
     jet_vdf_plotter,
     vdf_plotter,
+    jet_animator,
 )

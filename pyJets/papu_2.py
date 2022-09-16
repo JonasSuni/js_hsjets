@@ -14,6 +14,7 @@ import matplotlib.colors as colors
 from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib.lines import Line2D
+from matplotlib.animation import FuncAnimation
 
 import plot_contours as pc
 import jet_analyser as ja
@@ -2475,7 +2476,7 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
             var="Pdyn",
             vmin=0,
             vmax=pdmax * 1e-9,
-            # vscale=1e19,
+            # vscale=1e9,
             cbtitle="$P_\mathrm{dyn}$ [Pa]",
             usesci=1,
             boxre=[
@@ -2664,3 +2665,47 @@ def jet_vdf_plotter(runid):
             break
 
     return None
+
+
+def jet_animator(runid, jetid):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    bulkpath = jx.find_bulkpath(runid)
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+
+    fig, ax = plt.subplots(1, 1)
+
+    props = jio.PropReader(str(jetid).zfill(5), runid)
+    t0 = props.read("time")[0]
+    x0 = props.read("x_mean")[0]
+    y0 = props.read("y_mean")[0]
+
+    fnr0 = int(t0 * 2)
+
+    ani = FuncAnimation(
+        fig, jet_update, frames=np.arange(fnr0 - 20, fnr0 + 20 + 0.1, 1), blit=False
+    )
+    ani.save(wrkdir_DNR + "papu22/jet_ani/{}_{}.mp4".format(runid, jetid), fps=5)
+
+
+def jet_update(fnr):
+    fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    pt.plot.plot_colormap(
+        axes=ax,
+        filename=bulkpath + fname,
+        var="Pdyn",
+        vmin=0,
+        vmax=pdmax,
+        vscale=1e9,
+        cbtitle="$P_\mathrm{dyn}$ [nPa]",
+        usesci=0,
+        boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
+        # internalcb=True,
+        lin=1,
+        colormap="batlow",
+        scale=1.3,
+        tickinterval=1.0,
+    )
+    ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
+    ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+
