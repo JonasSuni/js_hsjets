@@ -2401,13 +2401,27 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     # mach_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[4])
     # cav_shfa_line = Line2D([0], [0], linestyle="none", color=CB_color_cycle[5])
 
-    proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(6)]
+    # proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(6)]
+
+    # ax.legend(
+    #     # (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
+    #     proxy,
+    #     # ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
+    #     ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Diamag"),
+    #     frameon=True,
+    #     numpoints=1,
+    #     markerscale=1,
+    #     loc="upper right",
+    #     fontsize=5,
+    # )
+
+    proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(5)]
 
     ax.legend(
         # (jet_line, ch_line, slams_line, rho_line, mach_line, cav_shfa_line),
         proxy,
         # ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Cav/SHFA"),
-        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Diamag"),
+        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx"),
         frameon=True,
         numpoints=1,
         markerscale=1,
@@ -2669,9 +2683,14 @@ def jet_vdf_plotter(runid):
 
 def jet_animator(runid, jetid):
     global ax, x0, y0, pdmax, bulkpath
+    global runid_g, filenr_g, sj_ids_g, non_ids_g
+    runid_g = runid
     runids = ["ABA", "ABC", "AEA", "AEC"]
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+
+    sj_ids_g = get_fcs_jets(runid)
+    non_ids_g = get_non_jets(runid)
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
@@ -2690,6 +2709,7 @@ def jet_animator(runid, jetid):
 
 def jet_update(fnr):
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+    filenr_g = fnr
     pt.plot.plot_colormap(
         axes=ax,
         filename=bulkpath + fname,
@@ -2705,6 +2725,18 @@ def jet_update(fnr):
         lin=1,
         colormap="batlow",
         tickinterval=1.0,
+        external=ext_contours,
+        pass_vars=[
+            "RhoNonBackstream",
+            "PTensorNonBackstreamDiagonal",
+            "B",
+            "v",
+            "rho",
+            "core_heating",
+            "CellID",
+            "Mmsx",
+            "Pdyn",
+        ],
     )
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
