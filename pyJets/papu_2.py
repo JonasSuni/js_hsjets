@@ -2871,10 +2871,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         non_ylist,
         "o",
         color="black",
-        markersize=4,
+        markersize=10,
         markeredgecolor="white",
         fillstyle="full",
-        mew=0.4,
+        mew=1,
         label="Non-FCS-jet",
     )
     (sj_pos,) = ax.plot(
@@ -2882,18 +2882,20 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         sj_ylist,
         "o",
         color="red",
-        markersize=4,
+        markersize=10,
         markeredgecolor="white",
         fillstyle="full",
-        mew=0.4,
+        mew=1,
         label="FCS-jet",
     )
 
-    proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(5)]
+    proxy = [
+        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(5)
+    ] + [non_pos, sj_pos]
 
     ax.legend(
         proxy,
-        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx"),
+        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Non-FCS jet", "FCS-jet"),
         frameon=True,
         numpoints=1,
         markerscale=1,
