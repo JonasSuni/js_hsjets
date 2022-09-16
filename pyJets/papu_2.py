@@ -2252,11 +2252,11 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     ).astype(int)
 
     sj_jetobs = [
-        jio.PropReader(str(sj_id).zfill(5), runid_g, transient="jet")
+        jio.PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
         for sj_id in sj_ids_g
     ]
     non_sjobs = [
-        jio.PropReader(str(non_id).zfill(5), runid_g, transient="jet")
+        jio.PropReader(str(int(non_id)).zfill(5), runid_g, transient="jet")
         for non_id in non_ids_g
     ]
 
@@ -2689,8 +2689,8 @@ def jet_animator(runid, jetid):
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
 
-    sj_ids_g = np.int(get_fcs_jets(runid))
-    non_ids_g = np.int(get_non_jets(runid))
+    sj_ids_g = get_fcs_jets(runid)
+    non_ids_g = get_non_jets(runid)
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
