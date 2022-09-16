@@ -2683,7 +2683,7 @@ def jet_vdf_plotter(runid):
 
 def jet_animator(runid, jetid):
     global ax, x0, y0, pdmax, bulkpath
-    global runid_g, filenr_g, sj_ids_g, non_ids_g
+    global runid_g, sj_ids_g, non_ids_g
     runid_g = runid
     runids = ["ABA", "ABC", "AEA", "AEC"]
     bulkpath = jx.find_bulkpath(runid)
@@ -2709,6 +2709,7 @@ def jet_animator(runid, jetid):
 
 def jet_update(fnr):
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+    global filenr_g
     filenr_g = fnr
     pt.plot.plot_colormap(
         axes=ax,
