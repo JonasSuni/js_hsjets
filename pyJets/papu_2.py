@@ -2715,7 +2715,12 @@ def jet_animator(runid, jetid):
     ani = FuncAnimation(
         fig, jet_update, frames=np.arange(fnr0 - 20, fnr0 + 20 + 0.1, 1), blit=False
     )
-    ani.save(wrkdir_DNR + "papu22/jet_ani/{}_{}.mp4".format(runid, jetid), fps=5)
+    ani.save(
+        wrkdir_DNR + "papu22/jet_ani/{}_{}.mp4".format(runid, jetid),
+        fps=5,
+        dpi=150,
+        bitrate=1000,
+    )
 
 
 def jet_update(fnr):
