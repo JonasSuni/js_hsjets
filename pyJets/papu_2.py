@@ -2673,7 +2673,7 @@ def jet_animator(runid, jetid):
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
 
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     props = jio.PropReader(str(jetid).zfill(5), runid)
     t0 = props.read("time")[0]
@@ -2708,4 +2708,4 @@ def jet_update(fnr):
     )
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
-
+    plt.tight_layout()
