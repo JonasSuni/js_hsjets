@@ -2673,7 +2673,7 @@ def jet_animator(runid, jetid):
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
 
-    fig, ax = plt.subplots(1, 1)
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
     props = jio.PropReader(str(jetid).zfill(5), runid)
     t0 = props.read("time")[0]
