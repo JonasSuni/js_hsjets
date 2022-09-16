@@ -2668,7 +2668,7 @@ def jet_vdf_plotter(runid):
 
 
 def jet_animator(runid, jetid):
-
+    global ax, x0, y0, pdmax, bulkpath
     runids = ["ABA", "ABC", "AEA", "AEC"]
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
