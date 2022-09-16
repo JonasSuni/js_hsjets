@@ -2424,6 +2424,8 @@ def vdf_plotter(runid, cellid, t0):
         except OSError:
             pass
 
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+
     global runid_g
     global filenr_g
     global sj_ids_g
@@ -2434,7 +2436,16 @@ def vdf_plotter(runid, cellid, t0):
 
     runid_g = runid
 
-    runids = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
