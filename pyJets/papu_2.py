@@ -2689,8 +2689,8 @@ def jet_animator(runid, jetid):
     bulkpath = jx.find_bulkpath(runid)
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
 
-    sj_ids_g = get_fcs_jets(runid)
-    non_ids_g = get_non_jets(runid)
+    sj_ids_g = np.int(get_fcs_jets(runid))
+    non_ids_g = np.int(get_non_jets(runid))
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
