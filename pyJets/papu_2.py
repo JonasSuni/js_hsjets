@@ -2475,7 +2475,7 @@ def vdf_plotter(runid, cellid, t0):
             var="Pdyn",
             vmin=0,
             # vmax=pdmax,
-            vscale=1e9,
+            vscale=1e18,
             cbtitle="$P_\mathrm{dyn}$ [nPa]",
             usesci=0,
             boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
