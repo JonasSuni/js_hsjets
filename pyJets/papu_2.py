@@ -2699,11 +2699,11 @@ def jet_update(fnr):
         # vscale=1e9,
         cbtitle="$P_\mathrm{dyn}$ [Pa]",
         usesci=1,
+        scale=2,
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
         # internalcb=True,
         lin=1,
         colormap="batlow",
-        scale=1.3,
         tickinterval=1.0,
     )
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
