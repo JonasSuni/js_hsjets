@@ -2689,7 +2689,7 @@ def jet_animator(runid, jetid):
 
 
 def jet_update(fnr):
-    fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
     pt.plot.plot_colormap(
         axes=ax,
         filename=bulkpath + fname,
