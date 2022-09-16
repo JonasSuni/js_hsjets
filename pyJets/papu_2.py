@@ -2738,7 +2738,7 @@ def jet_update(fnr):
         lin=1,
         colormap="batlow",
         tickinterval=1.0,
-        external=ext_contours,
+        external=ext_jet,
         pass_vars=[
             "RhoNonBackstream",
             "PTensorNonBackstreamDiagonal",
@@ -2754,3 +2754,149 @@ def jet_update(fnr):
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     plt.tight_layout()
+
+
+def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
+
+    B = pass_maps["B"]
+    rho = pass_maps["rho"]
+    cellids = pass_maps["CellID"]
+    mmsx = pass_maps["Mmsx"]
+    core_heating = pass_maps["core_heating"]
+    Bmag = np.linalg.norm(B, axis=-1)
+    Pdyn = pass_maps["Pdyn"]
+
+    slams_cells = np.loadtxt(
+        "/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+            runid_g, int(filenr_g)
+        )
+    ).astype(int)
+    jet_cells = np.loadtxt(
+        "/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g, int(filenr_g))
+    ).astype(int)
+
+    sj_jetobs = [
+        jio.PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
+        for sj_id in sj_ids_g
+    ]
+    non_sjobs = [
+        jio.PropReader(str(int(non_id)).zfill(5), runid_g, transient="jet")
+        for non_id in non_ids_g
+    ]
+
+    sj_xlist = []
+    sj_ylist = []
+    non_xlist = []
+    non_ylist = []
+
+    for jetobj in sj_jetobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            sj_xlist.append(jetobj.read_at_time("x_mean", filenr_g / 2.0))
+            sj_ylist.append(jetobj.read_at_time("y_mean", filenr_g / 2.0))
+    for jetobj in non_sjobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            non_xlist.append(jetobj.read_at_time("x_mean", filenr_g / 2.0))
+            non_ylist.append(jetobj.read_at_time("y_mean", filenr_g / 2.0))
+
+    slams_mask = np.in1d(cellids, slams_cells).astype(int)
+    slams_mask = np.reshape(slams_mask, cellids.shape)
+
+    jet_mask = np.in1d(cellids, jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask, cellids.shape)
+
+    ch_mask = (core_heating > 3 * T_sw).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
+    rho_mask = (rho > 2 * rho_sw).astype(int)
+
+    cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
+    cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
+
+    diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
+    diamag_mask[Bmag > B_sw] = 0
+
+    CB_color_cycle = jx.CB_color_cycle
+
+    jet_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        jet_mask,
+        [0.5],
+        linewidths=1.0,
+        colors=CB_color_cycle[0],
+        linestyles=["solid"],
+    )
+
+    ch_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        ch_mask,
+        [0.5],
+        linewidths=1.0,
+        colors=CB_color_cycle[1],
+        linestyles=["solid"],
+    )
+
+    slams_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        slams_mask,
+        [0.5],
+        linewidths=1.0,
+        colors=CB_color_cycle[2],
+        linestyles=["solid"],
+    )
+
+    rho_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        rho_mask,
+        [0.5],
+        linewidths=1.0,
+        colors=CB_color_cycle[3],
+        linestyles=["solid"],
+    )
+
+    mach_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        mach_mask,
+        [0.5],
+        linewidths=1.0,
+        colors=CB_color_cycle[4],
+        linestyles=["solid"],
+    )
+
+    (non_pos,) = ax.plot(
+        non_xlist,
+        non_ylist,
+        "o",
+        color="black",
+        markersize=4,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=0.4,
+        label="Non-FCS-jet",
+    )
+    (sj_pos,) = ax.plot(
+        sj_xlist,
+        sj_ylist,
+        "o",
+        color="red",
+        markersize=4,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=0.4,
+        label="FCS-jet",
+    )
+
+    proxy = [plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(5)]
+
+    ax.legend(
+        proxy,
+        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx"),
+        frameon=True,
+        numpoints=1,
+        markerscale=1,
+        loc="upper right",
+        fontsize=16,
+    )
