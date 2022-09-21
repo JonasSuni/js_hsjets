@@ -2715,9 +2715,10 @@ def kind_animations(runid):
 
 
 def jet_animator(runid, jetid, kind):
-    global ax, x0, y0, pdmax, bulkpath
+    global ax, x0, y0, pdmax, bulkpath, jetid_g
     global runid_g, sj_ids_g, non_ids_g, kind_g
     kind_g = kind
+    jetid_g = jetid
     runid_g = runid
     runids = ["ABA", "ABC", "AEA", "AEC"]
     sw_pars = [
@@ -2772,7 +2773,7 @@ def jet_update(fnr):
         cbtitle="$P_\mathrm{dyn}$ [Pa]",
         usesci=1,
         scale=2,
-        title="Run: {}, t: {}s, Kind: {}".format(runid_g, float(fnr) / 2.0, kind_g),
+        title="",
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
         # internalcb=True,
         lin=1,
@@ -2790,6 +2791,12 @@ def jet_update(fnr):
             "Mmsx",
             "Pdyn",
         ],
+    )
+    ax.set_title(
+        "Run: {}, ID: {}, Kind: {}\\t = {}s".format(
+            runid_g, jetid_g, kind_g, float(fnr) / 2.0
+        ),
+        pad=10,
     )
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
