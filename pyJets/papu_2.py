@@ -2804,16 +2804,22 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     Bmag = np.linalg.norm(B, axis=-1)
     Pdyn = pass_maps["Pdyn"]
 
-    slams_cells = np.loadtxt(
-        "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
-            runid_g, int(filenr_g)
-        )
-    ).astype(int)
-    jet_cells = np.loadtxt(
-        "/wrk-vakka/users/jesuni/working/jets/Masks/{}/{}.mask".format(
-            runid_g, int(filenr_g)
-        )
-    ).astype(int)
+    try:
+        slams_cells = np.loadtxt(
+            "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+                runid_g, int(filenr_g)
+            )
+        ).astype(int)
+    except:
+        slams_cells = []
+    try:
+        jet_cells = np.loadtxt(
+            "/wrk-vakka/users/jesuni/working/jets/Masks/{}/{}.mask".format(
+                runid_g, int(filenr_g)
+            )
+        ).astype(int)
+    except:
+        jet_cells = []
 
     sj_jetobs = [
         jio.PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
