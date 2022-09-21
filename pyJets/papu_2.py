@@ -2698,9 +2698,9 @@ def jet_vdf_plotter(runid):
 
 def kind_animations(runid):
 
-    sj_ids = get_fcs_jets(runid)
-    for sj_id in sj_ids:
-        jet_animator(runid, sj_id, "FCS-jet")
+    # sj_ids = get_fcs_jets(runid)
+    # for sj_id in sj_ids:
+    #     jet_animator(runid, sj_id, "FCS-jet")
 
     for kind in ["foreshock", "beam", "stripe", "complex"]:
         non_ids = np.loadtxt(
