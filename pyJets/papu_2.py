@@ -2793,7 +2793,7 @@ def jet_update(fnr):
         ],
     )
     ax.set_title(
-        "Run: {}, ID: {}, Kind: {}, t = {}s".format(
+        "Run: {}, ID: {}, Kind: {}\n t = {}s".format(
             runid_g, jetid_g, kind_g, float(fnr) / 2.0
         ),
         pad=10,
