@@ -2256,12 +2256,14 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
     Pdyn = pass_maps["Pdyn"]
 
     slams_cells = np.loadtxt(
-        "/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+        "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
             runid_g, int(filenr_g)
         )
     ).astype(int)
     jet_cells = np.loadtxt(
-        "/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g, int(filenr_g))
+        "/wrk-vakka/users/jesuni/working/jets/Masks/{}/{}.mask".format(
+            runid_g, int(filenr_g)
+        )
     ).astype(int)
 
     sj_jetobs = [
@@ -2803,12 +2805,14 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     Pdyn = pass_maps["Pdyn"]
 
     slams_cells = np.loadtxt(
-        "/wrk/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+        "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
             runid_g, int(filenr_g)
         )
     ).astype(int)
     jet_cells = np.loadtxt(
-        "/wrk/users/jesuni/working/jets/Masks/{}/{}.mask".format(runid_g, int(filenr_g))
+        "/wrk-vakka/users/jesuni/working/jets/Masks/{}/{}.mask".format(
+            runid_g, int(filenr_g)
+        )
     ).astype(int)
 
     sj_jetobs = [
