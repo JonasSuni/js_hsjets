@@ -130,4 +130,5 @@ from papu_2 import (
     jet_vdf_plotter,
     vdf_plotter,
     jet_animator,
+    kind_animations,
 )

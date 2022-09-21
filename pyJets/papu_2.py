@@ -224,10 +224,12 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        fontsize=20,
     )
 
     # Save figure
@@ -780,7 +782,8 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1547,10 +1550,18 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
+            t_arr,
+            beam_avg[n2],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+            zorder=2,
         )
         ax_list[n2].plot(
-            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
+            t_arr,
+            stripe_avg[n2],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+            zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
@@ -2683,9 +2694,28 @@ def jet_vdf_plotter(runid):
     return None
 
 
-def jet_animator(runid, jetid):
+def kind_animations(runid):
+
+    sj_ids = get_fcs_jets(runid)
+    for sj_id in sj_ids:
+        jet_animator(runid, sj_id, "FCS-jet")
+
+    for kind in ["foreshock", "beam", "stripe", "complex"]:
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
+        for non_id in non_ids:
+            jet_animator(runid, non_id, kind)
+
+    return None
+
+
+def jet_animator(runid, jetid, kind):
     global ax, x0, y0, pdmax, bulkpath
-    global runid_g, sj_ids_g, non_ids_g
+    global runid_g, sj_ids_g, non_ids_g, kind_g
+    kind_g = kind
     runid_g = runid
     runids = ["ABA", "ABC", "AEA", "AEC"]
     sw_pars = [
@@ -2738,6 +2768,7 @@ def jet_update(fnr):
         cbtitle="$P_\mathrm{dyn}$ [Pa]",
         usesci=1,
         scale=2,
+        title="Run: {}, t: {}s, Kind: {}".format(runid_g, float(fnr) / 2.0, kind_g),
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
         # internalcb=True,
         lin=1,
