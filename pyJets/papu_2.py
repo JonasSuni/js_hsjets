@@ -2753,6 +2753,8 @@ def jet_animator(runid, jetid, kind):
         dpi=150,
         bitrate=1000,
     )
+    print("Saved animation of jet {} in run {}".format(jetid, runid))
+    plt.close(fig)
 
 
 def jet_update(fnr):
