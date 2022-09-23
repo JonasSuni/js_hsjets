@@ -131,7 +131,7 @@ def jet_pos_plot():
         for n2, kind in enumerate(kinds):
             label_bool = draw_labels[n1]
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -335,7 +335,7 @@ def foreshock_jplot_SEA(run_id):
 
     for runid in runid_list:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, "foreshock"),
+            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, "foreshock"),
             dtype=int,
             ndmin=1,
         )
@@ -566,7 +566,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         elif version == "new":
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
