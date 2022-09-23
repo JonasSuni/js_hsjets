@@ -2749,7 +2749,7 @@ def jet_animator(runid, jetid, kind):
         fig, jet_update, frames=np.arange(fnr0 - 20, fnr0 + 20 + 0.1, 1), blit=False
     )
     ani.save(
-        wrkdir_DNR + "papu22/jet_ani/{}_{}.mp4".format(runid, jetid),
+        wrkdir_DNR + "papu22/jet_ani/{}/{}/{}.mp4".format(runid, kind, jetid),
         fps=5,
         dpi=150,
         bitrate=1000,
