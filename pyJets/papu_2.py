@@ -2771,7 +2771,7 @@ def jet_update(fnr):
         vmax=pdmax,
         vscale=1e9,
         cbtitle="$P_\mathrm{dyn}$ [nPa]",
-        usesci=1,
+        usesci=0,
         scale=2,
         title="",
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
