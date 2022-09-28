@@ -224,12 +224,10 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
     )
 
     # Save figure
@@ -782,8 +780,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
-        fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1211,6 +1208,145 @@ def P_jplots(runid):
         )
 
 
+def kind_timeseries(runid, kind):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    non_ids = np.loadtxt(
+        wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+        dtype=int,
+        ndmin=1,
+    )
+    vars = [
+        "rho",
+        "v",
+        "v",
+        "v",
+        "v",
+        "Pdyn",
+        "B",
+        "B",
+        "B",
+        "B",
+        "TParallel",
+        "TPerpendicular",
+    ]
+    plot_labels = [
+        None,
+        "vx",
+        "vy",
+        "vz",
+        "|v|",
+        None,
+        "Bx",
+        "By",
+        "Bz",
+        "|B|",
+        "TPar",
+        "TPerp",
+    ]
+    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e9, 1e-6, 1e-6]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B~[\mathrm{nT}]$",
+        "$T~[\mathrm{MK}]$",
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    for non_id in non_ids:
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+        fnr0 = int(t0 * 2)
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+        cellid = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+        data_arr = np.zeros((len(vars), fnr_arr.size), dtype=float)
+
+        for idx, fnr in enumerate(fnr_arr):
+            try:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                for idx2, var in enumerate(vars):
+                    data_arr[idx2, idx] = (
+                        vlsvobj.read_variable(var, cellids=cellid, operator=ops[idx2])
+                        * scales[idx2]
+                    )
+            except:
+                data_arr[:, idx] = np.nan
+
+        fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 12))
+        ax_list[0].set_title("Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind))
+        for idx in range(len(vars)):
+            ax = ax_list[plot_index[idx]]
+            ax.grid()
+            ax.plot(
+                t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
+            )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if draw_legend[idx]:
+                ax.legend()
+        ax_list[-1].set_xlabel("Simulation time [s]")
+        for idx, ax in enumerate(ax_list):
+            ax.set_ylabel(ylabels[idx])
+            ax.axvline(t0, linestyle="dashed")
+        plt.tight_layout()
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/timeseries/{}/{}/{}.pdf".format(
+                runid, kind, str(non_id).zfill(5)
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
+
+
 def sj_non_timeseries(runid):
     """
     Variables: t, n, v, Pdyn, B, Tperp, Tpar
@@ -1550,18 +1686,10 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr,
-            beam_avg[n2],
-            color=jx.CB_color_cycle[0],
-            label="Beam",
-            zorder=2,
+            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
         )
         ax_list[n2].plot(
-            t_arr,
-            stripe_avg[n2],
-            color=jx.CB_color_cycle[1],
-            label="Stripe",
-            zorder=2,
+            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
