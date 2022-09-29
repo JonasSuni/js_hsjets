@@ -1210,6 +1210,8 @@ def P_jplots(runid):
 
 def kind_timeseries(runid, kind):
 
+    bulkpath = jx.find_bulkpath(runid)
+
     runids = ["ABA", "ABC", "AEA", "AEC"]
     non_ids = np.loadtxt(
         wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
