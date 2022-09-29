@@ -1299,6 +1299,7 @@ def kind_timeseries(runid, kind):
     ]
 
     for non_id in non_ids:
+        print("Jet {} of kind {} in run {}".format(non_id, kind, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
