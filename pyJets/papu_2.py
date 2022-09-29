@@ -1327,7 +1327,6 @@ def kind_timeseries(runid, kind):
         ax_list[0].set_title("Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind))
         for idx in range(len(vars)):
             ax = ax_list[plot_index[idx]]
-            ax.grid()
             ax.plot(
                 t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
             )
@@ -1336,6 +1335,7 @@ def kind_timeseries(runid, kind):
                 ax.legend()
         ax_list[-1].set_xlabel("Simulation time [s]")
         for idx, ax in enumerate(ax_list):
+            ax.grid()
             ax.set_ylabel(ylabels[idx])
             ax.axvline(t0, linestyle="dashed")
         plt.tight_layout()
