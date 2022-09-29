@@ -1234,15 +1234,15 @@ def kind_timeseries(runid, kind):
     ]
     plot_labels = [
         None,
-        "vx",
-        "vy",
-        "vz",
-        "|v|",
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
         None,
-        "Bx",
-        "By",
-        "Bz",
-        "|B|",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
         "TPar",
         "TPerp",
     ]
@@ -1323,7 +1323,7 @@ def kind_timeseries(runid, kind):
             except:
                 data_arr[:, idx] = np.nan
 
-        fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 12))
+        fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
         ax_list[0].set_title("Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind))
         for idx in range(len(vars)):
             ax = ax_list[plot_index[idx]]
@@ -1341,7 +1341,7 @@ def kind_timeseries(runid, kind):
         plt.tight_layout()
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/timeseries/{}/{}/{}.pdf".format(
+            + "papu22/Figures/timeseries/{}/{}/{}.png".format(
                 runid, kind, str(non_id).zfill(5)
             ),
             dpi=300,
