@@ -1282,9 +1282,9 @@ def jet_avg_std(kind, version="2D"):
     print(bins_dur)
 
     return (
-        np.histogram(data_arr[0], bins=int(bins_dur)),
-        np.histogram(data_arr[1], bins=int(bins_pen)),
-        np.histogram(data_arr[0], bins=int(bins_pd)),
+        np.histogram(data_arr[0][:counter], bins=int(bins_dur)),
+        np.histogram(data_arr[1][:counter], bins=int(bins_pen)),
+        np.histogram(data_arr[0][:counter], bins=int(bins_pd)),
     )
 
 
