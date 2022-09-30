@@ -1211,7 +1211,7 @@ def P_jplots(runid):
         )
 
 
-def jet_avg_std(kind):
+def jet_avg_std(kind, version="2D"):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -1228,7 +1228,7 @@ def jet_avg_std(kind):
             jet_ids = get_fcs_jets(runid)
         else:
             jet_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/{}/{}_{}.txt".format(version, runid, kind),
                 dtype=int,
                 ndmin=1,
             )
