@@ -1267,6 +1267,8 @@ def jet_avg_std(kind, version="2D"):
     iqr_pen = np.subtract.reduce(np.nanpercentile(data_arr[1], [75, 25]))
     iqr_pd = np.subtract.reduce(np.nanpercentile(data_arr[2], [75, 25]))
 
+    print(iqr_dur)
+
     bins_dur = (np.nanmax(data_arr[0]) - np.nanmin(data_arr[0])) / (
         2 * iqr_dur / float(counter) ** (1.0 / 3)
     )
@@ -1276,6 +1278,8 @@ def jet_avg_std(kind, version="2D"):
     bins_pd = (np.nanmax(data_arr[2]) - np.nanmin(data_arr[2])) / (
         2 * iqr_pd / float(counter) ** (1.0 / 3)
     )
+
+    print(bins_dur)
 
     return (
         np.histogram(data_arr[0], bins=int(bins_dur)),
