@@ -224,10 +224,12 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        fontsize=20,
     )
 
     # Save figure
@@ -780,7 +782,8 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1207,43 +1210,57 @@ def P_jplots(runid):
             ),
         )
 
-def jet_avg_std(runid,kind):
 
-    runids = ["ABA","ABC","AEA","AEC"]
+def jet_avg_std(runid, kind):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
 
     if kind == "fcs":
         jet_ids = get_fcs_jets(runid)
     else:
         jet_ids = np.loadtxt(
-        wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
-        dtype=int,
-        ndmin=1,
-    )
-    rho_sw = [1e6,3.3e6,1e6,3.3e6]
-    v_sw = [750e3,600e3,750e3,600e3]
-    pdyn_sw = [m_p*rho_sw[idx]*v_sw[idx]*v_sw[idx] for idx in range(len(runids))]
+            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
+    rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
+    v_sw = [750e3, 600e3, 750e3, 600e3]
+    pdyn_sw = [m_p * rho_sw[idx] * v_sw[idx] * v_sw[idx] for idx in range(len(runids))]
 
-    data_arr = np.zeros((3,jet_ids.size),dtype=float)
+    data_arr = np.zeros((3, jet_ids.size), dtype=float)
 
-    for idx,jet_id in enumerate(jet_ids):
+    for idx, jet_id in enumerate(jet_ids):
         props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
         duration = props.read("duration")[0]
-        pendep = props.read("x_mean")[-1]-props.read("bs_distance")[-1]
-        pd_max = np.max(props.read("pd_max"))/(pdyn_sw*1e9)
+        pendep = props.read("x_mean")[-1] - props.read("bs_distance")[-1]
+        pd_max = np.max(props.read("pd_max")) / (pdyn_sw[runids.index(runid)] * 1e9)
         data_arr[0][idx] = duration
         data_arr[1][idx] = pendep
         data_arr[2][idx] = pd_max
-    
+
     print("\n")
     print("RUN: {}".format(runid))
     print("KIND: {}".format(kind.capitalize()))
     print("N = {}".format(jet_ids.size))
-    print("Duration = {:.3f} +- {:.3f} s".format(np.nanmean(data_arr[0]),np.std(data_arr[0],ddof=1)))
-    print("Penetration depth = {:.3f} +- {:.3f} RE".format(np.nanmean(data_arr[1]),np.std(data_arr[1],ddof=1)))
-    print("Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(np.nanmean(data_arr[2]),np.std(data_arr[2],ddof=1)))
+    print(
+        "Duration = {:.3f} +- {:.3f} s".format(
+            np.nanmean(data_arr[0]), np.std(data_arr[0], ddof=1)
+        )
+    )
+    print(
+        "Penetration depth = {:.3f} +- {:.3f} RE".format(
+            np.nanmean(data_arr[1]), np.std(data_arr[1], ddof=1)
+        )
+    )
+    print(
+        "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
+            np.nanmean(data_arr[2]), np.std(data_arr[2], ddof=1)
+        )
+    )
     print("\n")
 
     return None
+
 
 def kind_timeseries(runid, kind):
 
@@ -1362,7 +1379,9 @@ def kind_timeseries(runid, kind):
                 data_arr[:, idx] = np.nan
 
         fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
-        ax_list[0].set_title("Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize()))
+        ax_list[0].set_title(
+            "Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize())
+        )
         for idx in range(len(vars)):
             ax = ax_list[plot_index[idx]]
             ax.plot(
@@ -1726,10 +1745,18 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
+            t_arr,
+            beam_avg[n2],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+            zorder=2,
         )
         ax_list[n2].plot(
-            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
+            t_arr,
+            stripe_avg[n2],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+            zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
