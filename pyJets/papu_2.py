@@ -1211,50 +1211,54 @@ def P_jplots(runid):
         )
 
 
-def jet_avg_std(runid, kind):
+def jet_avg_std(kind):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
-    if kind == "fcs":
-        jet_ids = get_fcs_jets(runid)
-    else:
-        jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
-            dtype=int,
-            ndmin=1,
-        )
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
     v_sw = [750e3, 600e3, 750e3, 600e3]
     pdyn_sw = [m_p * rho_sw[idx] * v_sw[idx] * v_sw[idx] for idx in range(len(runids))]
 
-    data_arr = np.zeros((3, jet_ids.size), dtype=float)
+    data_arr = np.empty((3, 6000), dtype=float)
+    data_arr.fill(np.nan)
 
-    for idx, jet_id in enumerate(jet_ids):
-        props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
-        duration = props.read("duration")[0]
-        pendep = props.read("x_mean")[-1] - props.read("bs_distance")[-1]
-        pd_max = np.max(props.read("pd_max")) / (pdyn_sw[runids.index(runid)] * 1e9)
-        data_arr[0][idx] = duration
-        data_arr[1][idx] = pendep
-        data_arr[2][idx] = pd_max
+    counter = 0
+    for runid in runids:
+        if kind == "fcs":
+            jet_ids = get_fcs_jets(runid)
+        else:
+            jet_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+        for jet_id in jet_ids:
+            props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
+            duration = props.read("duration")[0]
+            pendep = props.read("x_mean")[-1] - props.read("bs_distance")[-1]
+            pd_max = np.max(props.read("pd_max")) / (pdyn_sw[runids.index(runid)] * 1e9)
+            data_arr[0][counter] = duration
+            data_arr[1][counter] = pendep
+            data_arr[2][counter] = pd_max
+            counter += 1
 
     print("\n")
-    print("RUN: {}".format(runid))
+    # print("RUN: {}".format(runid))
     print("KIND: {}".format(kind.capitalize()))
     print("N = {}".format(jet_ids.size))
     print(
         "Duration = {:.3f} +- {:.3f} s".format(
-            np.nanmean(data_arr[0]), np.std(data_arr[0], ddof=1)
+            np.nanmean(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
         )
     )
     print(
         "Penetration depth = {:.3f} +- {:.3f} RE".format(
-            np.nanmean(data_arr[1]), np.std(data_arr[1], ddof=1)
+            np.nanmean(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
         )
     )
     print(
         "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
-            np.nanmean(data_arr[2]), np.std(data_arr[2], ddof=1)
+            np.nanmean(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
         )
     )
     print("\n")
