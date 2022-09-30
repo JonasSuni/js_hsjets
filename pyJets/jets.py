@@ -131,5 +131,6 @@ from papu_2 import (
     vdf_plotter,
     jet_animator,
     kind_animations,
-    kind_timeseries
+    kind_timeseries,
+    jet_avg_std,
 )
