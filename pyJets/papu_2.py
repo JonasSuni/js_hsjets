@@ -1263,7 +1263,25 @@ def jet_avg_std(kind, version="2D"):
     )
     print("\n")
 
-    return None
+    iqr_dur = np.subtract.reduce(np.nanpercentile(data_arr[0], [75, 25]))
+    iqr_pen = np.subtract.reduce(np.nanpercentile(data_arr[1], [75, 25]))
+    iqr_pd = np.subtract.reduce(np.nanpercentile(data_arr[2], [75, 25]))
+
+    bins_dur = (np.nanmax(data_arr[0]) - np.nanmin(data_arr[0])) / (
+        2 * iqr_dur / float(counter) ** (1.0 / 3)
+    )
+    bins_pen = (np.nanmax(data_arr[1]) - np.nanmin(data_arr[1])) / (
+        2 * iqr_pen / float(counter) ** (1.0 / 3)
+    )
+    bins_pd = (np.nanmax(data_arr[2]) - np.nanmin(data_arr[2])) / (
+        2 * iqr_pd / float(counter) ** (1.0 / 3)
+    )
+
+    return (
+        np.histogram(data_arr[0], bins=int(bins_dur)),
+        np.histogram(data_arr[1], bins=int(bins_pen)),
+        np.histogram(data_arr[0], bins=int(bins_pd)),
+    )
 
 
 def kind_timeseries(runid, kind):
