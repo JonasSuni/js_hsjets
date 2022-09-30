@@ -1245,7 +1245,7 @@ def jet_avg_std(kind):
     print("\n")
     # print("RUN: {}".format(runid))
     print("KIND: {}".format(kind.capitalize()))
-    print("N = {}".format(jet_ids.size))
+    print("N = {}".format(counter))
     print(
         "Duration = {:.3f} +- {:.3f} s".format(
             np.nanmean(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
