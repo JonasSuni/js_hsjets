@@ -661,6 +661,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
+    ax_list[-1].set_axis_off()
     fig.suptitle("{} jets".format(kind.capitalize()), fontsize=28)
 
     # Save figure
