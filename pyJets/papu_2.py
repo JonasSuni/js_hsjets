@@ -1009,7 +1009,7 @@ def non_jet_jplots(runid, txt=False):
         annot = ["a)", "b)", "c)", "d)", "e)"]
 
         fig, ax_list = plt.subplots(
-            1, len(varname_list), figsize=(20, 10), sharex=True, sharey=True
+            1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
         )
         im_list = []
         cb_list = []
