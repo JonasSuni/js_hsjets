@@ -224,12 +224,10 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
-        fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
     )
 
     # Save figure
@@ -482,7 +480,7 @@ def foreshock_jplot_SEA(run_id):
         # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
     ax_list[0][0].set_ylabel(
         "Foreshock jets\n\nEpoch time [s]", fontsize=28, labelpad=10
     )
@@ -520,7 +518,7 @@ def foreshock_jplot_SEA(run_id):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot_sj[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
+        ax.annotate(annot_sj[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
     ax_list[1][0].set_ylabel("FCS-jets\n\nEpoch time [s]", fontsize=28, labelpad=10)
 
     # Save figure
@@ -659,8 +657,11 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
+    ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
+        "Epoch time [s]", fontsize=28, labelpad=10
+    )
     ax_list[-1].set_axis_off()
     fig.suptitle("{} jets".format(kind.capitalize()), fontsize=28)
 
@@ -783,8 +784,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
-        fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1009,9 +1009,17 @@ def non_jet_jplots(runid, txt=False):
         cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
         annot = ["a)", "b)", "c)", "d)", "e)"]
 
+        # fig, ax_list = plt.subplots(
+        #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
+        # )
         fig, ax_list = plt.subplots(
-            1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
+            2,
+            int(np.ceil(len(varname_list) / 2.0)),
+            figsize=(20, 10),
+            sharex=True,
+            sharey=True,
         )
+        ax_list = ax_list.flatten()
         im_list = []
         cb_list = []
         fig.suptitle(
@@ -1046,8 +1054,12 @@ def non_jet_jplots(runid, txt=False):
             ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-            ax.annotate(annot[idx], (0.05, 0.95), xycoords="axes fraction", fontsize=24)
+            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+        ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
+            "Epoch time [s]", fontsize=28, labelpad=10
+        )
+        ax_list[-1].set_axis_off()
 
         # Save figure
         plt.tight_layout()
@@ -1768,18 +1780,10 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr,
-            beam_avg[n2],
-            color=jx.CB_color_cycle[0],
-            label="Beam",
-            zorder=2,
+            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
         )
         ax_list[n2].plot(
-            t_arr,
-            stripe_avg[n2],
-            color=jx.CB_color_cycle[1],
-            label="Stripe",
-            zorder=2,
+            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
