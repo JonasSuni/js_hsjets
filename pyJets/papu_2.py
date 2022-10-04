@@ -1029,7 +1029,8 @@ def non_jet_jplots(runid, txt=False):
             + "$R_\mathrm{E}$",
             fontsize=28,
         )
-        for idx, ax in enumerate(ax_list):
+        for idx in range(len(varname_list)):
+            ax = ax_list[idx]
             ax.tick_params(labelsize=20)
             im_list.append(
                 ax.pcolormesh(
