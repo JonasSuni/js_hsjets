@@ -224,10 +224,12 @@ def jet_pos_plot():
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$", fontsize=20,
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        fontsize=20,
     )
 
     # Save figure
@@ -784,7 +786,8 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count), fontsize=20,
+        "Run: {}, Type: {}, N = {}".format(run_id, kind, type_count),
+        fontsize=20,
     )
     for idx, ax in enumerate(ax_list):
         ax.tick_params(labelsize=20)
@@ -1058,7 +1061,7 @@ def non_jet_jplots(runid, txt=False):
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
-            "Epoch time [s]", fontsize=28, labelpad=10
+            "Simulation time [s]", fontsize=28, labelpad=10
         )
         ax_list[-1].set_axis_off()
 
@@ -1781,10 +1784,18 @@ def SEA_types(run_id="all"):
     # Plot averages of n,v,pdyn,B,Tperp,Tpar
     for n2 in range(6):
         ax_list[n2].plot(
-            t_arr, beam_avg[n2], color=jx.CB_color_cycle[0], label="Beam", zorder=2,
+            t_arr,
+            beam_avg[n2],
+            color=jx.CB_color_cycle[0],
+            label="Beam",
+            zorder=2,
         )
         ax_list[n2].plot(
-            t_arr, stripe_avg[n2], color=jx.CB_color_cycle[1], label="Stripe", zorder=2,
+            t_arr,
+            stripe_avg[n2],
+            color=jx.CB_color_cycle[1],
+            label="Stripe",
+            zorder=2,
         )
         ax_list[n2].plot(
             t_arr,
