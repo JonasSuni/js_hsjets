@@ -133,4 +133,5 @@ from papu_2 import (
     kind_animations,
     kind_timeseries,
     jet_avg_std,
+    kind_SEA_timeseries
 )

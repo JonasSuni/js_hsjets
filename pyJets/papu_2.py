@@ -1301,6 +1301,120 @@ def jet_avg_std(kind, version="2D"):
     )
 
 
+def kind_SEA_timeseries(kind):
+
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        None,
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "TPar",
+        "TPerp",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        # "$\\rho~[\mathrm{cm}^{-3}]$",
+        # "$v~[\mathrm{km/s}]$",
+        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        # "$B~[\mathrm{nT}]$",
+        # "$T~[\mathrm{MK}]$",
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((len(plot_labels), fnr_arr.size), dtype=float)
+    counter = 0
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
+        for non_id in non_ids:
+            data_arr = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/timeseries_txts/{}/{}/{}.txt".format(
+                    runid, kind, str(non_id).zfill(5)
+                )
+            )
+            avg_arr = avg_arr + data_arr
+            counter += 1
+
+    avg_arr = avg_arr / counter
+    fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
+    ax_list[0].set_title("Kind: {}".format(kind.capitalize()))
+    for idx in range(len(vars)):
+        ax = ax_list[plot_index[idx]]
+        ax.plot(t_arr, avg_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
+        ax.set_xlim(t_arr[0], t_arr[-1])
+        if draw_legend[idx]:
+            ax.legend()
+    ax_list[-1].set_xlabel("Epoch time [s]")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.axvline(0, linestyle="dashed")
+    plt.tight_layout()
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/timeseries_SEA_{}.pdf".format(kind),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def kind_timeseries(runid, kind):
 
     bulkpath = jx.find_bulkpath(runid)
@@ -1355,11 +1469,22 @@ def kind_timeseries(runid, kind):
         True,
     ]
     ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B~[\mathrm{nT}]$",
-        "$T~[\mathrm{MK}]$",
+        # "$\\rho~[\mathrm{cm}^{-3}]$",
+        # "$v~[\mathrm{km/s}]$",
+        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        # "$B~[\mathrm{nT}]$",
+        # "$T~[\mathrm{MK}]$",
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    norm = [
+        [1, 750, 750, 750, 750, 0.9408498320756251, 5, 5, 5, 5, 0.5, 0.5],
+        [3.3, 600, 600, 600, 600, 1.9870748453437201, 5, 5, 5, 5, 0.5, 0.5],
+        [1, 750, 750, 750, 750, 0.9408498320756251, 10, 10, 10, 10, 0.5, 0.5],
+        [3.3, 600, 600, 600, 600, 1.9870748453437201, 10, 10, 10, 10, 0.5, 0.5],
     ]
     ops = [
         "pass",
@@ -1391,6 +1516,7 @@ def kind_timeseries(runid, kind):
         CB_color_cycle[1],
     ]
 
+    run_norm = norm[runids.index(runid)]
     for non_id in non_ids:
         print("Jet {} of kind {} in run {}".format(non_id, kind, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
@@ -1413,6 +1539,7 @@ def kind_timeseries(runid, kind):
                     data_arr[idx2, idx] = (
                         vlsvobj.read_variable(var, cellids=cellid, operator=ops[idx2])
                         * scales[idx2]
+                        / run_norm[idx2]
                     )
             except:
                 data_arr[:, idx] = np.nan
@@ -1441,6 +1568,13 @@ def kind_timeseries(runid, kind):
                 runid, kind, str(non_id).zfill(5)
             ),
             dpi=300,
+        )
+        np.savetxt(
+            wrkdir_DNR
+            + "papu22/timeseries_txts/{}/{}/{}.txt".format(
+                runid, kind, str(non_id).zfill(5)
+            ),
+            data_arr,
         )
         plt.close(fig)
 
