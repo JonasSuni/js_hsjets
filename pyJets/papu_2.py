@@ -1378,11 +1378,14 @@ def kind_SEA_timeseries(kind):
     avg_arr = np.zeros((len(plot_labels), fnr_arr.size), dtype=float)
     counter = 0
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
-        non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
-            dtype=int,
-            ndmin=1,
-        )
+        if kind == "fcs":
+            non_ids = get_fcs_jets(runid)
+        else:
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
         for non_id in non_ids:
             data_arr = np.loadtxt(
                 wrkdir_DNR
