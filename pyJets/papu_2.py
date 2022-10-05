@@ -1396,7 +1396,7 @@ def kind_SEA_timeseries(kind):
     avg_arr = avg_arr / counter
     fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
     ax_list[0].set_title("Kind: {}".format(kind.capitalize()))
-    for idx in range(len(vars)):
+    for idx in range(len(plot_labels)):
         ax = ax_list[plot_index[idx]]
         ax.plot(t_arr, avg_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
         ax.set_xlim(t_arr[0], t_arr[-1])
