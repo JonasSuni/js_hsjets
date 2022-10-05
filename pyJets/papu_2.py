@@ -1420,12 +1420,15 @@ def kind_timeseries(runid, kind):
     bulkpath = jx.find_bulkpath(runid)
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
-    non_ids = np.loadtxt(
-        wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
-        dtype=int,
-        ndmin=1,
-    )
-    vars = [
+    if kind == "fcs":
+        non_ids = get_fcs_jets(runid)
+    else:
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
+    var_list = [
         "rho",
         "v",
         "v",
@@ -1528,14 +1531,14 @@ def kind_timeseries(runid, kind):
         cellid = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
         ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
-        data_arr = np.zeros((len(vars), fnr_arr.size), dtype=float)
+        data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
 
         for idx, fnr in enumerate(fnr_arr):
             try:
                 vlsvobj = pt.vlsvfile.VlsvReader(
                     bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 )
-                for idx2, var in enumerate(vars):
+                for idx2, var in enumerate(var_list):
                     data_arr[idx2, idx] = (
                         vlsvobj.read_variable(var, cellids=cellid, operator=ops[idx2])
                         * scales[idx2]
@@ -1548,7 +1551,7 @@ def kind_timeseries(runid, kind):
         ax_list[0].set_title(
             "Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize())
         )
-        for idx in range(len(vars)):
+        for idx in range(len(var_list)):
             ax = ax_list[plot_index[idx]]
             ax.plot(
                 t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
