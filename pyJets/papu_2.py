@@ -612,7 +612,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         # "$M_{\mathrm{MS},x}$",
     ]
 
-    cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
+    cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, 0, 1, 4, 30]
     annot = ["a)", "b)", "c)", "d)", "e)"]
