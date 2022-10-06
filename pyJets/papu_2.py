@@ -431,20 +431,22 @@ def foreshock_jplot_SEA(run_id):
     #     fontsize=20,
     # )
 
-    vmin = [
-        np.min(data_arr[0]),
-        -1,
-        np.min(data_arr[2]),
-        np.min(data_arr[3]),
-        np.min(data_arr[4]),
-    ]
-    vmax = [
-        np.max(data_arr[0]),
-        0,
-        np.max(data_arr[2]),
-        np.max(data_arr[3]),
-        np.max(data_arr[4]),
-    ]
+    # vmin = [
+    #     np.min(data_arr[0]),
+    #     -1,
+    #     np.min(data_arr[2]),
+    #     np.min(data_arr[3]),
+    #     np.min(data_arr[4]),
+    # ]
+    # vmax = [
+    #     np.max(data_arr[0]),
+    #     0,
+    #     np.max(data_arr[2]),
+    #     np.max(data_arr[3]),
+    #     np.max(data_arr[4]),
+    # ]
+    vmin = [0, -1, 0.25, 0, 10]
+    vmax = [4, 0, 1, 4, 30]
     cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     annot = ["a)", "b)", "c)", "d)", "e)"]
     annot_sj = ["f)", "g)", "h)", "i)", "j)"]
