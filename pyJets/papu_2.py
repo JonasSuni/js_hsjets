@@ -1343,8 +1343,8 @@ def kind_SEA_timeseries(kind):
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    vmins = [1.5, -0.8, 0.4, -3.5, 10]
-    vmaxs = [4.6, 0.8, 1.6, 3.5, 35]
+    vmins = [1.5, -0.8, 0.4, -3.75, 10]
+    vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
     ops = [
         "pass",
         "x",
