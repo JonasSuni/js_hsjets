@@ -1343,6 +1343,8 @@ def kind_SEA_timeseries(kind):
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
+    vmins = [1.5, -0.75, 0.4, -3, 10]
+    vmaxs = [4.5, 0.75, 1.6, 3, 35]
     ops = [
         "pass",
         "x",
@@ -1410,6 +1412,7 @@ def kind_SEA_timeseries(kind):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
         ax.axvline(0, linestyle="dashed")
+        ax.set_ylim(vmins[idx], vmaxs[idx])
     plt.tight_layout()
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/timeseries_SEA_{}.pdf".format(kind),
