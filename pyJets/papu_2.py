@@ -613,8 +613,8 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     ]
 
     cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
-    vmin = [None, -1, None, None, None]
-    vmax = [None, 1, None, None, None]
+    vmin = [0, -1, 0.25, 0, 10]
+    vmax = [4, 0, 1, 4, 30]
     annot = ["a)", "b)", "c)", "d)", "e)"]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
@@ -647,7 +647,12 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         )
         # ax.set_aspect(0.1, adjustable="box")
-        cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        if idx == 1:
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+            cb_list[idx].cmap.set_over("red")
+        else:
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb_list[idx].ax.tick_params(labelsize=20)
         # cb_list[idx].ax.set_aspect(0.1, adjustable="box")
         ax.contour(XmeshXY, YmeshXY, rho_avg, [2], colors=["black"])
