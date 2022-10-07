@@ -942,6 +942,8 @@ def non_jet_jplots(runid, txt=False):
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
     vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
+    vmin = [0, -1, 0.25, 0, 10]
+    vmax = [4, 0, 1, 4, 30]
 
     # Path to vlsv files for current run
     bulkpath = jx.find_bulkpath(runid)
@@ -1016,7 +1018,7 @@ def non_jet_jplots(runid, txt=False):
             mmsx_arr = np.array(mmsx_arr)
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
-        cmap = ["batlow", "vik", "batlow", "batlow", "batlow"]
+        cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
         annot = ["a)", "b)", "c)", "d)", "e)"]
 
         # fig, ax_list = plt.subplots(
@@ -1049,12 +1051,17 @@ def non_jet_jplots(runid, txt=False):
                     data_arr[idx],
                     shading="nearest",
                     cmap=cmap[idx],
-                    vmin=vmin_norm[idx],
-                    vmax=vmax_norm[idx],
+                    vmin=vmin[idx],
+                    vmax=vmax[idx],
                     rasterized=True,
                 )
             )
-            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            if idx == 1:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+                cb_list[idx].cmap.set_over("red")
+            else:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
             ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
