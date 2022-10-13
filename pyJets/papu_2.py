@@ -1451,7 +1451,7 @@ def trifecta(runid, kind):
 
     var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
     plot_labels = ["VS1", "VS2", "VS3"]
-    scales = [1e-6, 1e9, 1e-3, 1e-9, 1e-6]
+    scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
         "$B~[B_\mathrm{IMF}]$",
