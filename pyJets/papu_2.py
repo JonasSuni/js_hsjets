@@ -1435,6 +1435,114 @@ def kind_SEA_timeseries(kind):
     plt.close(fig)
 
 
+def trifecta(runid, kind):
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    if kind == "fcs":
+        non_ids = get_fcs_jets(runid)
+    else:
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
+
+    var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
+    plot_labels = ["VS1", "VS2", "VS3"]
+    scales = [1e-6, 1e9, 1e-3, 1e-9, 1e-6]
+    ylabels = [
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    norm = [
+        [1, 5, 750, 0.9408498320756251, 0.5],
+        [3.3, 5, 600, 1.9870748453437201, 0.5],
+        [1, 10, 750, 0.9408498320756251, 0.5],
+        [3.3, 10, 600, 1.9870748453437201, 0.5],
+    ]
+    ops = ["pass", "magnitude", "magnitude", "pass", "pass"]
+    plot_colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+    ]
+    run_norm = norm[runids.index(runid)]
+
+    for non_id in non_ids:
+        print("Jet {} of kind {} in run {}".format(non_id, kind, runid))
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+        fnr0 = int(t0 * 2)
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+        d_cell = 227e3
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        cellids = [
+            vlsvobj.get_cellid([x0 * r_e - 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + 2 * d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e + 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
+        ]
+        data_arr = np.zeros((3, len(var_list), fnr_arr.size), dtype=float)
+
+        for idx, fnr in enumerate(fnr_arr):
+            try:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                for idx2, var in enumerate(var_list):
+                    data_arr[:, idx2, idx] = (
+                        vlsvobj.read_variable(var, cellids=cellids, operator=ops[idx2])
+                        * scales[idx2]
+                        / run_norm[idx2]
+                    )
+            except:
+                data_arr[:, :, idx] = np.nan
+
+        fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
+        ax_list[0].set_title(
+            "Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize())
+        )
+        for idx in range(len(var_list)):
+            ax = ax_list[idx]
+            for idx2 in range(len(plot_labels)):
+                ax.plot(
+                    t_arr,
+                    data_arr[idx2, idx],
+                    color=plot_colors[idx2],
+                    label=plot_labels[idx],
+                )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if idx == 0:
+                ax.legend()
+        ax_list[-1].set_xlabel("Simulation time [s]")
+        for idx, ax in enumerate(ax_list):
+            ax.grid()
+            ax.set_ylabel(ylabels[idx])
+            ax.axvline(t0, linestyle="dashed")
+        plt.tight_layout()
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/trifecta/{}/{}/{}.png".format(
+                runid, kind, str(non_id).zfill(5)
+            ),
+            dpi=300,
+        )
+        np.save(
+            wrkdir_DNR
+            + "papu22/trifecta_txts/{}/{}/{}".format(runid, kind, str(non_id).zfill(5)),
+            data_arr,
+        )
+        plt.close(fig)
+
+
 def kind_timeseries(runid, kind):
 
     bulkpath = jx.find_bulkpath(runid)
