@@ -135,4 +135,5 @@ from papu_2 import (
     jet_avg_std,
     kind_SEA_timeseries,
     trifecta,
+    SEA_trifecta,
 )

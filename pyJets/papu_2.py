@@ -1359,20 +1359,6 @@ def kind_SEA_timeseries(kind):
     ]
     vmins = [1.5, -0.8, 0.4, -3.75, 10]
     vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
-    ops = [
-        "pass",
-        "x",
-        "y",
-        "z",
-        "magnitude",
-        "pass",
-        "x",
-        "y",
-        "z",
-        "magnitude",
-        "pass",
-        "pass",
-    ]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
     plot_colors = [
         "k",
@@ -1434,6 +1420,71 @@ def kind_SEA_timeseries(kind):
     )
     plt.close(fig)
 
+def SEA_trifecta(kind):
+
+    plot_labels = ["VS1", "VS2", "VS3"]
+    ylabels = [
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    plot_colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+    ]
+
+    vmins = [1.5, -3.75, -0.8, 0.4, 10]
+    vmaxs = [4.6, 3.75,0.8, 1.6,  35]
+
+    t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((3,len(plot_labels), fnr_arr.size), dtype=float)
+    counter = 0
+
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        if kind == "fcs":
+            non_ids = get_fcs_jets(runid)
+        else:
+            non_ids = np.loadtxt(
+                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                dtype=int,
+                ndmin=1,
+            )
+        for non_id in non_ids:
+            data_arr = np.load(
+                wrkdir_DNR
+                + "papu22/trifecta_txts/{}/{}/{}.npy".format(
+                    runid, kind, str(non_id).zfill(5)
+                )
+            )
+            avg_arr = avg_arr + data_arr
+            counter += 1
+
+    avg_arr = avg_arr / counter
+    fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
+    ax_list[0].set_title("Kind: {}".format(kind.capitalize()))
+    for idx in range(len(plot_labels)):
+        ax = ax_list[idx]
+        for idx2 in range(len(plot_labels)):
+            ax.plot(t_arr, avg_arr[idx2,idx], color=plot_colors[idx2], label=plot_labels[idx2])
+        ax.set_xlim(t_arr[0], t_arr[-1])
+        if ax == 0:
+            ax.legend()
+    ax_list[-1].set_xlabel("Epoch time [s]")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.axvline(0, linestyle="dashed")
+        ax.set_ylim(vmins[idx], vmaxs[idx])
+    plt.tight_layout()
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/trifecta_SEA_{}.pdf".format(kind),
+        dpi=300,
+    )
+    plt.close(fig)
 
 def trifecta(runid, kind):
 
