@@ -1517,7 +1517,7 @@ def trifecta(runid, kind):
                     t_arr,
                     data_arr[idx2, idx],
                     color=plot_colors[idx2],
-                    label=plot_labels[idx],
+                    label=plot_labels[idx2],
                 )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if idx == 0:
