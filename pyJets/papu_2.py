@@ -1420,6 +1420,7 @@ def kind_SEA_timeseries(kind):
     )
     plt.close(fig)
 
+
 def SEA_trifecta(kind):
 
     plot_labels = ["VS1", "VS2", "VS3"]
@@ -1437,11 +1438,11 @@ def SEA_trifecta(kind):
     ]
 
     vmins = [1.5, -3.75, -0.8, 0.4, 10]
-    vmaxs = [4.6, 3.75,0.8, 1.6,  35]
+    vmaxs = [4.6, 3.75, 0.8, 1.6, 35]
 
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
-    avg_arr = np.zeros((3,len(plot_labels), fnr_arr.size), dtype=float)
+    avg_arr = np.zeros((3, len(ylabels), fnr_arr.size), dtype=float)
     counter = 0
 
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
@@ -1469,7 +1470,12 @@ def SEA_trifecta(kind):
     for idx in range(len(plot_labels)):
         ax = ax_list[idx]
         for idx2 in range(len(plot_labels)):
-            ax.plot(t_arr, avg_arr[idx2,idx], color=plot_colors[idx2], label=plot_labels[idx2])
+            ax.plot(
+                t_arr,
+                avg_arr[idx2, idx],
+                color=plot_colors[idx2],
+                label=plot_labels[idx2],
+            )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if ax == 0:
             ax.legend()
@@ -1485,6 +1491,7 @@ def SEA_trifecta(kind):
         dpi=300,
     )
     plt.close(fig)
+
 
 def trifecta(runid, kind):
 
