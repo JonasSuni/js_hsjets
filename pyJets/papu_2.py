@@ -1437,8 +1437,8 @@ def SEA_trifecta(kind):
         CB_color_cycle[2],
     ]
 
-    vmins = [1.5, -3.75, -0.8, 0.4, 10]
-    vmaxs = [4.6, 3.75, 0.8, 1.6, 35]
+    vmins = [1.5, 1.75, 0.2, 0.4, 10]
+    vmaxs = [5, 3.75, 0.8, 1.6, 35]
 
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
