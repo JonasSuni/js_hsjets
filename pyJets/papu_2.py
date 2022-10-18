@@ -1508,8 +1508,8 @@ def SEA_trifecta(kind):
     Xinv = np.linalg.pinv(dmatrix)
     params = np.matmul(Xinv, avec)
 
-    vx = params[0] / params[2]
-    vy = params[1] / params[2]
+    vx = params[2] / params[0]
+    vy = params[2] / params[1]
 
     print("KIND: {}, VX = {} km/s, VY = {} km/s".format(kind, vx / 1e3, vy / 1e3))
 
