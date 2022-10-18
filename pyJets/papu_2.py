@@ -1517,6 +1517,7 @@ def SEA_trifecta(kind):
     results = jx.timing_analysis_datadict(avg_arr)
     print(
         "\nLUCILES ALGORITHM\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s\n".format(
+            kind,
             results["wave_velocity_sc_frame"] * results["wave_vector"][0][0],
             results["wave_velocity_sc_frame"] * results["wave_vector"][1][0],
         )
