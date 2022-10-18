@@ -1492,6 +1492,27 @@ def SEA_trifecta(kind):
     )
     plt.close(fig)
 
+    (i1,) = np.where(avg_arr[0, 3] == np.max(avg_arr[0, 3]))
+    (i2,) = np.where(avg_arr[1, 3] == np.max(avg_arr[1, 3]))
+    (i3,) = np.where(avg_arr[2, 3] == np.max(avg_arr[2, 3]))
+
+    d_cell = 227e3
+    dmatrix = np.array(
+        [
+            [-d_cell, -d_cell, t_arr[i1]],
+            [0, d_cell, t_arr[i2]],
+            [d_cell, -d_cell, t_arr[i3]],
+        ]
+    )
+    avec = np.array([1.0, 1.0, 1.0])
+    Xinv = np.linalg.pinv(dmatrix)
+    params = np.matmul(Xinv, avec)
+
+    vx = params[0] / params[2]
+    vy = params[1] / params[2]
+
+    print("KIND: {}, VX = {} km/s, VY = {} km/s".format(kind, vx / 1e3, vy / 1e3))
+
 
 def trifecta(runid, kind):
 
