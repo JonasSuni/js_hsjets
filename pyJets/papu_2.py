@@ -1514,6 +1514,7 @@ def SEA_trifecta(kind):
     print(
         "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
     )
+    results = jx.timing_analysis_datadict(avg_arr)
 
 
 def trifecta(runid, kind):
