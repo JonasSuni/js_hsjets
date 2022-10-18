@@ -1499,9 +1499,9 @@ def SEA_trifecta(kind):
     d_cell = 227e3
     dmatrix = np.array(
         [
-            [-d_cell, -d_cell, t_arr[i1]],
-            [0, d_cell, t_arr[i2]],
-            [d_cell, -d_cell, t_arr[i3]],
+            [-d_cell, -d_cell, t_arr[i1][0]],
+            [0, d_cell, t_arr[i2][0]],
+            [d_cell, -d_cell, t_arr[i3][0]],
         ]
     )
     avec = np.array([1.0, 1.0, 1.0])
