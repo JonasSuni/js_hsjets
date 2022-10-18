@@ -1511,7 +1511,7 @@ def SEA_trifecta(kind):
     vx = params[2] / params[0]
     vy = params[2] / params[1]
 
-    print("KIND: {}, VX = {} km/s, VY = {} km/s".format(kind, vx / 1e3, vy / 1e3))
+    print("KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3))
 
 
 def trifecta(runid, kind):
