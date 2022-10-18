@@ -1499,9 +1499,9 @@ def SEA_trifecta(kind):
     d_cell = 227e3
     dmatrix = np.array(
         [
-            [-d_cell, -d_cell, t_arr[i1][0]],
-            [0, d_cell, t_arr[i2][0]],
-            [d_cell, -d_cell, t_arr[i3][0]],
+            [-d_cell, -d_cell, -t_arr[i1][0]],
+            [0, d_cell, -t_arr[i2][0]],
+            [d_cell, -d_cell, -t_arr[i3][0]],
         ]
     )
     avec = np.array([1.0, 1.0, 1.0])
@@ -1511,7 +1511,9 @@ def SEA_trifecta(kind):
     vx = params[2] / params[0]
     vy = params[2] / params[1]
 
-    print("KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3))
+    print(
+        "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
+    )
 
 
 def trifecta(runid, kind):
