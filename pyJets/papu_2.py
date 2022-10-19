@@ -1625,7 +1625,7 @@ def trifecta(runid, kind):
         wave_v_sc = results["wave_velocity_sc_frame"]
         out_results = [
             wave_v_sc * wave_vector[0][0],
-            wave_v_sc * wave_vector[0][1],
+            wave_v_sc * wave_vector[1][0],
             results["wave_velocity_relative2sc"][0],
             results["wave_velocity_relative2sc"][1],
         ]
