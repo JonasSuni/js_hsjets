@@ -1560,6 +1560,7 @@ def trifecta(runid, kind):
         CB_color_cycle[1],
         CB_color_cycle[2],
     ]
+    v_ops = ["x", "y", "z"]
     run_norm = norm[runids.index(runid)]
 
     for non_id in non_ids:
@@ -1579,7 +1580,7 @@ def trifecta(runid, kind):
             vlsvobj.get_cellid([x0 * r_e, y0 * r_e + d_cell, 0 * r_e]),
             vlsvobj.get_cellid([x0 * r_e + d_cell, y0 * r_e - d_cell, 0 * r_e]),
         ]
-        data_arr = np.zeros((3, len(var_list), fnr_arr.size), dtype=float)
+        data_arr = np.zeros((3, len(var_list) + 3 + 1, fnr_arr.size), dtype=float)
 
         for idx, fnr in enumerate(fnr_arr):
             try:
@@ -1591,6 +1592,13 @@ def trifecta(runid, kind):
                         vlsvobj.read_variable(var, cellids=cellids, operator=ops[idx2])
                         * scales[idx2]
                         / run_norm[idx2]
+                    )
+                for idx2 in range(3):
+                    data_arr[:, len(var_list) + idx2, idx] = (
+                        vlsvobj.read_variable(
+                            "v", cellids=cellids, operator=v_ops[idx2]
+                        )
+                        * scales[2]
                     )
             except:
                 data_arr[:, :, idx] = np.nan
@@ -1611,7 +1619,23 @@ def trifecta(runid, kind):
             ax.set_xlim(t_arr[0], t_arr[-1])
             if idx == 0:
                 ax.legend()
-        ax_list[-1].set_xlabel("Simulation time [s]")
+
+        results = jx.timing_analysis_datadict(data_arr)
+        wave_vector = results["wave_vector"]
+        wave_v_sc = results["wave_velocity_sc_frame"]
+        out_results = [
+            wave_v_sc * wave_vector[0][0],
+            wave_v_sc * wave_vector[0][1],
+            results["wave_velocity_relative2sc"][0],
+            results["wave_velocity_relative2sc"][1],
+        ]
+        data_arr[0, 8, :4] = out_results
+
+        ax_list[-1].set_xlabel(
+            "Simulation time [s]\nWave (vx,vy) = ({:.3g},{:.3g}), RelSC (vx,vy) = ({:.3g},{:.3g})".format(
+                out_results[0], out_results[1], out_results[2], out_results[3]
+            )
+        )
         for idx, ax in enumerate(ax_list):
             ax.grid()
             ax.set_ylabel(ylabels[idx])
@@ -1624,6 +1648,7 @@ def trifecta(runid, kind):
             ),
             dpi=300,
         )
+
         np.save(
             wrkdir_DNR
             + "papu22/trifecta_txts/{}/{}/{}".format(runid, kind, str(non_id).zfill(5)),

@@ -817,6 +817,16 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     results["cross_corr_values"] = cross_corr_values
     print("Correlation coefficients: ", cross_corr_values)
 
+    V_bulk = np.array(
+        [
+            np.mean(data[ref_sc, 5]),
+            np.mean(data[ref_sc, 6]),
+            np.mean(data[ref_sc, 7]),
+        ]
+    )
+    print("Bulk velocity: ", V_bulk, np.linalg.norm(V_bulk))
+    Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
+
     # if "proton/V.x" in data:
     #     V_bulk = np.array(
     #         [
@@ -825,8 +835,7 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     #             np.mean(data["proton/V.z"][min_time:max_time, ref_sc]),
     #         ]
     #     )
-    #     print("Bulk velocity: ", V_bulk, np.linalg.norm(V_bulk))
-    #     Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
+    #     
 
     # elif "V.x" in data:
     #     V_bulk = np.array(
@@ -840,17 +849,17 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     # else:
     #     print("No bulk velocity found - wave velocity only in simulation frame")
 
-    # if "Vpl" in locals():
-    #     print("Wave phase velocity in plasma frame ", Vpl)
+    if "Vpl" in locals():
+        print("Wave phase velocity in plasma frame ", Vpl)
 
-    #     wave_velocity_relative2sc = (
-    #         V_bulk.reshape((3, 1))
-    #         + (wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)) * wave_vector
-    #     )
-    #     wave_velocity_relative2sc.shape = 3
-    #     print("Wave velocity relative to spacecraft ", wave_velocity_relative2sc)
+        wave_velocity_relative2sc = (
+            V_bulk.reshape((3, 1))
+            + (wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)) * wave_vector
+        )
+        wave_velocity_relative2sc.shape = 3
+        print("Wave velocity relative to spacecraft ", wave_velocity_relative2sc)
 
-    #     results["wave_velocity_plasma_frame"] = Vpl
-    #     results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
+        results["wave_velocity_plasma_frame"] = Vpl
+        results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
 
     return results
