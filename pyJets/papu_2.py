@@ -1442,7 +1442,7 @@ def SEA_trifecta(kind):
 
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
-    avg_arr = np.zeros((3, len(ylabels), fnr_arr.size), dtype=float)
+    avg_arr = np.zeros((3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
     counter = 0
 
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
@@ -1492,34 +1492,47 @@ def SEA_trifecta(kind):
     )
     plt.close(fig)
 
-    (i1,) = np.where(avg_arr[0, 3] == np.max(avg_arr[0, 3]))
-    (i2,) = np.where(avg_arr[1, 3] == np.max(avg_arr[1, 3]))
-    (i3,) = np.where(avg_arr[2, 3] == np.max(avg_arr[2, 3]))
+    # (i1,) = np.where(avg_arr[0, 3] == np.max(avg_arr[0, 3]))
+    # (i2,) = np.where(avg_arr[1, 3] == np.max(avg_arr[1, 3]))
+    # (i3,) = np.where(avg_arr[2, 3] == np.max(avg_arr[2, 3]))
 
-    d_cell = 227e3
-    dmatrix = np.array(
-        [
-            [-d_cell, -d_cell, -t_arr[i1][0]],
-            [0, d_cell, -t_arr[i2][0]],
-            [d_cell, -d_cell, -t_arr[i3][0]],
-        ]
-    )
-    avec = np.array([1.0, 1.0, 1.0])
-    Xinv = np.linalg.pinv(dmatrix)
-    params = np.matmul(Xinv, avec)
+    # d_cell = 227e3
+    # dmatrix = np.array(
+    #     [
+    #         [-d_cell, -d_cell, -t_arr[i1][0]],
+    #         [0, d_cell, -t_arr[i2][0]],
+    #         [d_cell, -d_cell, -t_arr[i3][0]],
+    #     ]
+    # )
+    # avec = np.array([1.0, 1.0, 1.0])
+    # Xinv = np.linalg.pinv(dmatrix)
+    # params = np.matmul(Xinv, avec)
 
-    vx = params[2] / params[0]
-    vy = params[2] / params[1]
+    # vx = params[2] / params[0]
+    # vy = params[2] / params[1]
 
+    # print(
+    #     "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
+    # )
+    avg_res = avg_arr[0, 8]
     print(
-        "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
+        "\nLUCILES AVGS\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s, VX_rel = {:.3g}, VY_rel = {:.3g}\n".format(
+            kind,
+            avg_res[0],
+            avg_res[1],
+            avg_res[2],
+            avg_res[3],
+        )
     )
+
     results = jx.timing_analysis_datadict(avg_arr)
     print(
-        "\nLUCILES ALGORITHM\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s\n".format(
+        "\nLUCILES ALGORITHM\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s, VX_rel = {:.3g}, VY_rel = {:.3g}\n".format(
             kind,
             results["wave_velocity_sc_frame"] * results["wave_vector"][0][0],
             results["wave_velocity_sc_frame"] * results["wave_vector"][1][0],
+            results["wave_velocity_relative2sc"][0],
+            results["wave_velocity_relative2sc"][1],
         )
     )
 
