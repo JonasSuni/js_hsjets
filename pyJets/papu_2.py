@@ -335,7 +335,7 @@ def foreshock_jplot_SEA(run_id):
 
     for runid in runid_list:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, "foreshock"),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, "foreshock"),
             dtype=int,
             ndmin=1,
         )
