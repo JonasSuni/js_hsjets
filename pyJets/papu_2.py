@@ -1392,9 +1392,7 @@ def kind_SEA_timeseries(kind):
         for non_id in non_ids:
             data_arr = np.loadtxt(
                 wrkdir_DNR
-                + "papu22/timeseries_txts/{}_{}_{}.txt".format(
-                    runid, kind, str(non_id).zfill(5)
-                )
+                + "papu22/timeseries_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
             )
             avg_arr = avg_arr + data_arr
             counter += 1
@@ -1458,9 +1456,7 @@ def SEA_trifecta(kind):
         for non_id in non_ids:
             data_arr = np.load(
                 wrkdir_DNR
-                + "papu22/trifecta_txts/{}_{}_{}.npy".format(
-                    runid, kind, str(non_id).zfill(5)
-                )
+                + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             avg_arr = avg_arr + data_arr
             counter += 1
@@ -1665,7 +1661,7 @@ def trifecta(runid, kind):
 
         np.save(
             wrkdir_DNR
-            + "papu22/trifecta_txts/{}_{}_{}".format(runid, kind, str(non_id).zfill(5)),
+            + "papu22/trifecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
         plt.close(fig)
@@ -1830,9 +1826,7 @@ def kind_timeseries(runid, kind):
         )
         np.savetxt(
             wrkdir_DNR
-            + "papu22/timeseries_txts/{}_{}_{}.txt".format(
-                runid, kind, str(non_id).zfill(5)
-            ),
+            + "papu22/timeseries_txts/{}_{}.txt".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
         plt.close(fig)
