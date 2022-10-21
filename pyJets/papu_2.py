@@ -568,7 +568,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         elif version == "new":
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1391,7 +1391,7 @@ def kind_SEA_timeseries(kind):
         for non_id in non_ids:
             data_arr = np.loadtxt(
                 wrkdir_DNR
-                + "papu22/timeseries_txts/{}/{}/{}.txt".format(
+                + "papu22/timeseries_txts/{}_{}_{}.txt".format(
                     runid, kind, str(non_id).zfill(5)
                 )
             )
@@ -1457,7 +1457,7 @@ def SEA_trifecta(kind):
         for non_id in non_ids:
             data_arr = np.load(
                 wrkdir_DNR
-                + "papu22/trifecta_txts/{}/{}/{}.npy".format(
+                + "papu22/trifecta_txts/{}_{}_{}.npy".format(
                     runid, kind, str(non_id).zfill(5)
                 )
             )
@@ -1664,7 +1664,7 @@ def trifecta(runid, kind):
 
         np.save(
             wrkdir_DNR
-            + "papu22/trifecta_txts/{}/{}/{}".format(runid, kind, str(non_id).zfill(5)),
+            + "papu22/trifecta_txts/{}_{}_{}".format(runid, kind, str(non_id).zfill(5)),
             data_arr,
         )
         plt.close(fig)
@@ -1829,7 +1829,7 @@ def kind_timeseries(runid, kind):
         )
         np.savetxt(
             wrkdir_DNR
-            + "papu22/timeseries_txts/{}/{}/{}.txt".format(
+            + "papu22/timeseries_txts/{}_{}_{}.txt".format(
                 runid, kind, str(non_id).zfill(5)
             ),
             data_arr,
