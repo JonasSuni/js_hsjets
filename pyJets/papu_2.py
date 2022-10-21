@@ -1385,7 +1385,7 @@ def kind_SEA_timeseries(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1449,7 +1449,7 @@ def SEA_trifecta(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1543,7 +1543,7 @@ def trifecta(runid, kind):
         non_ids = get_fcs_jets(runid)
     else:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
@@ -1676,7 +1676,7 @@ def kind_timeseries(runid, kind):
         non_ids = get_fcs_jets(runid)
     else:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/2D/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
