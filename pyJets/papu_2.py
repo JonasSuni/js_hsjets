@@ -3628,12 +3628,13 @@ def non_jet_omni(runid):
 
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
         x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
-        fig = plt.figure(figsize=(10, 10))
-        gs = fig.add_gridspec(8, 8)
-        ax_nw = fig.add_subplot(gs[0:4, 0:4])
-        ax_ne = fig.add_subplot(gs[0:4, 4:8])
-        ax_sw = fig.add_subplot(gs[4:8, 0:4])
-        ax_se_list = [fig.add_subplot(gs[4 + n, 4:8]) for n in range(4)]
+
+        fig = plt.figure(figsize=(16, 16))
+        gs = fig.add_gridspec(10, 10)
+        ax_nw = fig.add_subplot(gs[0:5, 0:5])
+        ax_ne = fig.add_subplot(gs[0:5, 5:10])
+        ax_sw = fig.add_subplot(gs[5:10, 0:5])
+        ax_se_list = [fig.add_subplot(gs[5 + n, 5:10]) for n in range(5)]
 
         pt.plot.plot_colormap(
             axes=ax_nw,
@@ -3675,7 +3676,8 @@ def non_jet_omni(runid):
         plt.tight_layout()
 
         fig.savefig(
-            wrkdir_DNR + "papu22/Figures/omni/{}_{}_omni.png".format(runid, non_id)
+            wrkdir_DNR
+            + "papu22/Figures/omni/{}_{}_omni.png".format(runid, str(non_id).zfill(5))
         )
 
         plt.close(fig)
