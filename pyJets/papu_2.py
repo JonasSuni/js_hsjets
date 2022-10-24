@@ -3632,9 +3632,9 @@ def non_jet_omni(runid):
         fig = plt.figure(figsize=(16, 16), constrained_layout=True)
         gs = fig.add_gridspec(11, 11)
         ax_nw = fig.add_subplot(gs[0:5, 0:5])
-        ax_ne = fig.add_subplot(gs[0:5, 6:10])
-        ax_sw = fig.add_subplot(gs[6:10, 0:5])
-        ax_se_list = [fig.add_subplot(gs[6 + n, 6:10]) for n in range(5)]
+        ax_ne = fig.add_subplot(gs[0:5, 6:11])
+        ax_sw = fig.add_subplot(gs[6:11, 0:5])
+        ax_se_list = [fig.add_subplot(gs[6 + n, 6:11]) for n in range(5)]
 
         pt.plot.plot_colormap(
             axes=ax_nw,
