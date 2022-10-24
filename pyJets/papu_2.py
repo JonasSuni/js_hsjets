@@ -3629,7 +3629,7 @@ def non_jet_omni(runid):
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
         x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
 
-        fig = plt.figure(figsize=(16, 16))
+        fig = plt.figure(figsize=(16, 16), constrained_layout=True)
         gs = fig.add_gridspec(10, 10)
         ax_nw = fig.add_subplot(gs[0:5, 0:5])
         ax_ne = fig.add_subplot(gs[0:5, 5:10])
@@ -3705,7 +3705,6 @@ def non_jet_omni(runid):
         ax_ne.set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
         # plt.tight_layout()
-        gs.tight_layout(fig)
 
         fig.savefig(
             wrkdir_DNR
