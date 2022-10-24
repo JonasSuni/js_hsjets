@@ -3689,7 +3689,7 @@ def non_jet_omni(runid):
             vmax=2,
             rasterized=True,
         )
-        cb = fig.colorbar(im, ax=ax)
+        cb = fig.colorbar(im, ax=ax_ne)
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=20)
         ax_ne.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
