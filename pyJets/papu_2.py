@@ -3579,3 +3579,96 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         loc="upper right",
         fontsize=16,
     )
+
+
+def non_jet_omni(runid):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    runid_g = runid
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    non_ids = get_non_jets(runid)
+    sj_ids = get_fcs_jets(runid)
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+
+    for non_id in non_ids:
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        t0 = props.read("time")[0]
+        x0 = props.read("x_mean")[0]
+        y0 = props.read("y_mean")[0]
+        fnr0 = int(t0 * 2)
+
+        filenr_g = fnr0
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr0)).zfill(7))
+
+        fnr_range = np.arange(fnr0 - 30, fnr0 + 30 + 1)
+        t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+        # Get cellid of initial position
+        cellid = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+        dx = 227e3 / r_e
+
+        cell_range = np.arange(cellid - 20, cellid + 20 + 1)
+        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+        fig = plt.figure(figsize=(10, 10))
+        gs = fig.add_gridspec(8, 8)
+        ax_nw = fig.add_subplot(gs[0:4, 0:4])
+        ax_ne = fig.add_subplot(gs[0:4, 4:8])
+        ax_sw = fig.add_subplot(gs[4:8, 0:4])
+        ax_se_list = [fig.add_subplot(gs[4 + n, 4:8]) for n in range(4)]
+
+        pt.plot.plot_colormap(
+            axes=ax_nw,
+            filename=bulkpath + fname,
+            var="Pdyn",
+            vmin=0,
+            vmax=pdmax,
+            vscale=1e9,
+            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            scale=2,
+            title="",
+            boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
+            # internalcb=True,
+            lin=1,
+            colormap="batlow",
+            tickinterval=1.0,
+            external=ext_jet,
+            pass_vars=[
+                "RhoNonBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+                "Pdyn",
+            ],
+        )
+        ax.set_title(
+            "Run: {}, ID: {}, Kind: {}\n t = {}s".format(
+                runid_g, jetid_g, kind_g, float(fnr0) / 2.0
+            ),
+            pad=10,
+            fontsize=20,
+        )
+        ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
+        ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+
+        plt.tight_layout()
+
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/omni/{}_{}_omni.png".format(runid, non_id)
+        )
+
+        plt.close(fig)

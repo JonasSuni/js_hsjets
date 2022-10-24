@@ -136,4 +136,5 @@ from papu_2 import (
     kind_SEA_timeseries,
     trifecta,
     SEA_trifecta,
+    non_jet_omni,
 )
