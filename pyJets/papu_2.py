@@ -3647,7 +3647,7 @@ def non_jet_omni(runid):
             usesci=0,
             scale=2,
             title="",
-            boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
+            boxre=[x0 - 1, x0 + 1, y0 - 1, y0 + 1],
             # internalcb=True,
             lin=1,
             colormap="batlow",
@@ -3672,6 +3672,37 @@ def non_jet_omni(runid):
         )
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+
+        rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr = np.load(
+            wrkdir_DNR
+            + "papu22/jmap_txts/{}/{}_{}.npy".format(runid, runid, str(non_id).zfill(5))
+        )
+        XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
+        ax_ne.tick_params(labelsize=20)
+        im = ax_ne.pcolormesh(
+            x_range,
+            t_range,
+            pdyn_arr,
+            shading="nearest",
+            cmap="batlow",
+            vmin=1.0 / 6,
+            vmax=2,
+            rasterized=True,
+        )
+        cb = fig.colorbar(im, ax=ax)
+        # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        cb.ax.tick_params(labelsize=20)
+        ax_ne.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
+        ax_ne.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
+        ax_ne.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
+        ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
+        ax_ne.set_xlim(x_range[0], x_range[-1])
+        ax_ne.set_ylim(t0 - 10, t0 + 10)
+        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+        ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
+        ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
+        ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+        ax_ne.set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
         plt.tight_layout()
 
