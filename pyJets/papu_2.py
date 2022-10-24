@@ -3704,7 +3704,8 @@ def non_jet_omni(runid):
         ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_ne.set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
 
-        plt.tight_layout()
+        # plt.tight_layout()
+        gs.tight_layout(fig)
 
         fig.savefig(
             wrkdir_DNR
