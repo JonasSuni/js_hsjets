@@ -3665,9 +3665,7 @@ def non_jet_omni(runid):
             ],
         )
         ax_nw.set_title(
-            "Run: {}, ID: {}, Kind: {}\n t = {}s".format(
-                runid_g, jetid_g, kind_g, float(fnr0) / 2.0
-            ),
+            "Run: {}, ID: {}\n t = {}s".format(runid, non_id, float(fnr0) / 2.0),
             pad=10,
             fontsize=20,
         )
