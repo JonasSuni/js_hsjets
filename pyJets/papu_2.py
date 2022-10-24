@@ -3629,12 +3629,12 @@ def non_jet_omni(runid):
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
         x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
 
-        fig = plt.figure(figsize=(18, 16), constrained_layout=True)
-        gs = fig.add_gridspec(10, 10)
+        fig = plt.figure(figsize=(16, 16), constrained_layout=True)
+        gs = fig.add_gridspec(11, 11)
         ax_nw = fig.add_subplot(gs[0:5, 0:5])
-        ax_ne = fig.add_subplot(gs[0:5, 5:10])
-        ax_sw = fig.add_subplot(gs[5:10, 0:5])
-        ax_se_list = [fig.add_subplot(gs[5 + n, 5:10]) for n in range(5)]
+        ax_ne = fig.add_subplot(gs[0:5, 6:10])
+        ax_sw = fig.add_subplot(gs[6:10, 0:5])
+        ax_se_list = [fig.add_subplot(gs[6 + n, 6:10]) for n in range(5)]
 
         pt.plot.plot_colormap(
             axes=ax_nw,
@@ -3702,7 +3702,7 @@ def non_jet_omni(runid):
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
-        ax_ne.set_ylabel("Simulation time [s]", fontsize=20, labelpad=10)
+        ax_ne.set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
 
         # plt.tight_layout()
 
