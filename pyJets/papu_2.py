@@ -3664,15 +3664,15 @@ def non_jet_omni(runid):
                 "Pdyn",
             ],
         )
-        ax.set_title(
+        ax_nw.set_title(
             "Run: {}, ID: {}, Kind: {}\n t = {}s".format(
                 runid_g, jetid_g, kind_g, float(fnr0) / 2.0
             ),
             pad=10,
             fontsize=20,
         )
-        ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
-        ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+        ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
+        ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
 
         plt.tight_layout()
 
