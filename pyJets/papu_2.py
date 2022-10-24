@@ -1280,17 +1280,17 @@ def jet_avg_std(kind, version="2D"):
     print("N = {}".format(counter))
     print(
         "Duration = {:.3f} +- {:.3f} s".format(
-            np.nanmean(data_arr[0]), np.nanstd(data_arr[0], ddof=1) / np.sqrt(counter)
+            np.nanmean(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
         )
     )
     print(
         "Penetration depth = {:.3f} +- {:.3f} RE".format(
-            np.nanmean(data_arr[1]), np.nanstd(data_arr[1], ddof=1) / np.sqrt(counter)
+            np.nanmean(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
         )
     )
     print(
         "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
-            np.nanmean(data_arr[2]), np.nanstd(data_arr[2], ddof=1) / np.sqrt(counter)
+            np.nanmean(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
         )
     )
     print("\n")
