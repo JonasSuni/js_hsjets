@@ -3789,7 +3789,7 @@ def non_jet_omni(runid):
             ylabels = [
                 "$\\rho~[\\rho_\mathrm{sw}]$",
                 "$v~[v_\mathrm{sw}]$",
-                "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+                "$P_\mathrm{dyn}\\[P_\mathrm{dyn,sw}]$",
                 "$B~[B_\mathrm{IMF}]$",
                 "$T~[T_\mathrm{sw}]$",
             ]
