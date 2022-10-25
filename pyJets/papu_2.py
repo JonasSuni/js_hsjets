@@ -3738,6 +3738,96 @@ def non_jet_omni(runid):
         except:
             ax_sw.set_axis_off()
 
+        try:
+            timeseries_data = np.load(
+                wrkdir_DNR
+                + "papu22/timeseries_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
+            )
+            var_list = [
+                "rho",
+                "v",
+                "v",
+                "v",
+                "v",
+                "Pdyn",
+                "B",
+                "B",
+                "B",
+                "B",
+                "TParallel",
+                "TPerpendicular",
+            ]
+            plot_labels = [
+                None,
+                "$v_x$",
+                "$v_y$",
+                "$v_z$",
+                "$|v|$",
+                None,
+                "$B_x$",
+                "$B_y$",
+                "$B_z$",
+                "$|B|$",
+                "TPar",
+                "TPerp",
+            ]
+            draw_legend = [
+                False,
+                False,
+                False,
+                False,
+                True,
+                False,
+                False,
+                False,
+                False,
+                True,
+                False,
+                True,
+            ]
+            ylabels = [
+                "$\\rho~[\\rho_\mathrm{sw}]$",
+                "$v~[v_\mathrm{sw}]$",
+                "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+                "$B~[B_\mathrm{IMF}]$",
+                "$T~[T_\mathrm{sw}]$",
+            ]
+            plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+            plot_colors = [
+                "k",
+                CB_color_cycle[0],
+                CB_color_cycle[1],
+                CB_color_cycle[2],
+                "k",
+                "k",
+                CB_color_cycle[0],
+                CB_color_cycle[1],
+                CB_color_cycle[2],
+                "k",
+                CB_color_cycle[0],
+                CB_color_cycle[1],
+            ]
+            t_arr = np.arange(t0 - 10, t0 + 10 + 0.1, 0.5)
+            for idx in range(len(var_list)):
+                ax = ax_se_list[plot_index[idx]]
+                ax.plot(
+                    t_arr,
+                    timeseries_data[idx],
+                    color=plot_colors[idx],
+                    label=plot_labels[idx],
+                )
+                ax.set_xlim(t_range[0], t_arr[-1])
+            if draw_legend[idx]:
+                ax.legend()
+            ax_se_list[-1].set_xlabel("Simulation time [s]")
+            for idx, ax in enumerate(ax_se_list):
+                ax.grid()
+                ax.set_ylabel(ylabels[idx])
+                ax.axvline(t0, linestyle="dashed")
+        except:
+            for ax in ax_se_list:
+                ax.set_axis_off()
+
         # plt.tight_layout()
 
         fig.savefig(
