@@ -3820,14 +3820,14 @@ def non_jet_omni(runid):
                 ax.set_xlim(t_arr[0], t_arr[-1])
                 if draw_legend[idx]:
                     ax.legend()
-            ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=16)
+            ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=20)
             for idx, ax in enumerate(ax_se_list):
                 ax.grid()
-                ax.set_ylabel(ylabels[idx], fotnsize=16)
+                ax.set_ylabel(ylabels[idx], fontsize=20)
                 ax.axvline(t0, linestyle="dashed")
                 ax.tick_params(labelsize=16)
-                # if idx != len(ax_se_list) - 1:
-                #     ax.set_xticklabels([])
+                if idx != len(ax_se_list) - 1:
+                    ax.set_xticklabels([])
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
