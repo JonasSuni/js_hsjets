@@ -3823,7 +3823,7 @@ def non_jet_omni(runid):
             ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=20)
             for idx, ax in enumerate(ax_se_list):
                 ax.grid()
-                ax.set_ylabel(ylabels[idx], fontsize=20)
+                ax.set_ylabel(ylabels[idx], fontsize=16)
                 ax.axvline(t0, linestyle="dashed")
                 ax.tick_params(labelsize=16)
                 if idx != len(ax_se_list) - 1:
