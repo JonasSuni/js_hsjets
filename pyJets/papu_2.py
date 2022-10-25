@@ -3735,7 +3735,7 @@ def non_jet_omni(runid):
             ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
             ax_sw.grid()
             ax_sw.tick_params(labelsize=16)
-            ax_sw.set_title("Trifecta timing analysis", fontsize=20)
+            ax_sw.set_title("Trifecta timing analysis", fontsize=20, pad=10)
         except:
             ax_sw.set_axis_off()
 
@@ -3828,7 +3828,7 @@ def non_jet_omni(runid):
                 ax.tick_params(labelsize=16)
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
-            ax_se_list[0].set_title("Timeseries", fontsize=20)
+            ax_se_list[0].set_title("Timeseries", fontsize=20, pad=10)
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
