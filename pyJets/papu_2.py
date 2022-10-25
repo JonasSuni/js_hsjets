@@ -3732,6 +3732,8 @@ def non_jet_omni(runid):
         maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
         ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
         ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
+        ax_sw.grid()
+        ax_sw.tick_params(labelsize=16)
 
         # plt.tight_layout()
 
