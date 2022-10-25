@@ -3739,7 +3739,7 @@ def non_jet_omni(runid):
             ax_sw.set_axis_off()
 
         try:
-            timeseries_data = np.load(
+            timeseries_data = np.loadtxt(
                 wrkdir_DNR
                 + "papu22/timeseries_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
             )
