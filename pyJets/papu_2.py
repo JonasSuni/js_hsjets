@@ -3828,6 +3828,7 @@ def non_jet_omni(runid):
                 ax.tick_params(labelsize=16)
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
+            ax_se_list[0].set_title("Timeseries", fontsize=20)
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
