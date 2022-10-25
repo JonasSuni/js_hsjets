@@ -3722,14 +3722,18 @@ def non_jet_omni(runid):
                 vy_arr[idx],
                 color=CB_color_cycle[idx],
                 label=arrow_labels[idx],
+                angles="xy",
+                scale_units="xy",
+                scale=1,
             )
+        ax_sw.legend(fontsize=16)
         ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24)
         ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24)
         maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
         ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
         ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
 
-        plt.tight_layout()
+        # plt.tight_layout()
 
         fig.savefig(
             wrkdir_DNR
