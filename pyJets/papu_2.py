@@ -3705,35 +3705,38 @@ def non_jet_omni(runid):
         ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         ax_ne.set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
 
-        trifecta_data = np.load(
-            wrkdir_DNR
-            + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
-        )
-        res = trifecta_data[0, 8]
-        bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
-        vx_arr = np.array([res[0], bVx, res[2]])
-        vy_arr = np.array([res[1], bVy, res[3]])
-        arrow_labels = ["Wave in SC frame", "Bulk V", "Wave rel to SC"]
-        for idx in range(3):
-            ax_sw.quiver(
-                0,
-                0,
-                vx_arr[idx],
-                vy_arr[idx],
-                color=CB_color_cycle[idx],
-                label=arrow_labels[idx],
-                angles="xy",
-                scale_units="xy",
-                scale=1,
+        try:
+            trifecta_data = np.load(
+                wrkdir_DNR
+                + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
-        ax_sw.legend(fontsize=16)
-        ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24)
-        ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24)
-        maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
-        ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
-        ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
-        ax_sw.grid()
-        ax_sw.tick_params(labelsize=16)
+            res = trifecta_data[0, 8]
+            bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
+            vx_arr = np.array([res[0], bVx, res[2]])
+            vy_arr = np.array([res[1], bVy, res[3]])
+            arrow_labels = ["Wave in SC frame", "Bulk V", "Wave rel to SC"]
+            for idx in range(3):
+                ax_sw.quiver(
+                    0,
+                    0,
+                    vx_arr[idx],
+                    vy_arr[idx],
+                    color=CB_color_cycle[idx],
+                    label=arrow_labels[idx],
+                    angles="xy",
+                    scale_units="xy",
+                    scale=1,
+                )
+            ax_sw.legend(fontsize=16)
+            ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24)
+            ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24)
+            maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
+            ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
+            ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
+            ax_sw.grid()
+            ax_sw.tick_params(labelsize=16)
+        except:
+            ax_sw.set_axis_off()
 
         # plt.tight_layout()
 
