@@ -3816,7 +3816,7 @@ def non_jet_omni(runid):
                     color=plot_colors[idx],
                     label=plot_labels[idx],
                 )
-                ax.set_xlim(t_range[0], t_arr[-1])
+                ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx]:
                 ax.legend()
             ax_se_list[-1].set_xlabel("Simulation time [s]")
