@@ -3620,10 +3620,11 @@ def non_jet_omni(runid):
 
         fnr_range = np.arange(fnr0 - 30, fnr0 + 30 + 1)
         t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
-        # Get cellid of initial position
-        cellid = pt.vlsvfile.VlsvReader(
+        vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+        )
+        # Get cellid of initial position
+        cellid = vlsvobj.get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
         dx = 227e3 / r_e
 
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
@@ -3704,7 +3705,31 @@ def non_jet_omni(runid):
         ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         ax_ne.set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
 
-        # plt.tight_layout()
+        trifecta_data = np.load(
+            wrkdir_DNR
+            + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
+        )
+        res = trifecta_data[0, 8]
+        bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
+        vx_arr = np.array([res[0], bVx, res[2]])
+        vy_arr = np.array([res[1], bVy, res[3]])
+        arrow_labels = ["Wave in SC frame", "Bulk V", "Wave rel to SC"]
+        for idx in range(3):
+            ax_sw.quiver(
+                0,
+                0,
+                vx_arr[idx],
+                vy_arr[idx],
+                color=CB_color_cycle[idx],
+                label=arrow_labels[idx],
+            )
+        ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24)
+        ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24)
+        maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
+        ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
+        ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
+
+        plt.tight_layout()
 
         fig.savefig(
             wrkdir_DNR
