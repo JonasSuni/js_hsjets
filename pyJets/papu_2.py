@@ -3826,8 +3826,8 @@ def non_jet_omni(runid):
                 ax.set_ylabel(ylabels[idx], fotnsize=20)
                 ax.axvline(t0, linestyle="dashed")
                 ax.tick_params(labelsize=16)
-                if idx != len(ax_se_list) - 1:
-                    ax.set_xticklabels([])
+                # if idx != len(ax_se_list) - 1:
+                #     ax.set_xticklabels([])
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
