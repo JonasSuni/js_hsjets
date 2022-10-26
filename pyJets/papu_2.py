@@ -3715,8 +3715,8 @@ def non_jet_omni(runid):
             )
             res = trifecta_data[0, 8]
             bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
-            vx_arr = np.array([res[0], bVx, res[2], res[4]])
-            vy_arr = np.array([res[1], bVy, res[3], res[5]])
+            vx_arr = np.array([res[0], bVx, res[2], res[0] - bVx])
+            vy_arr = np.array([res[1], bVy, res[3], res[1] - bVy])
             arrow_labels = [
                 "Wave in SC frame",
                 "Bulk V",
