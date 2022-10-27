@@ -1089,7 +1089,7 @@ def non_jet_jplots(runid, txt=False):
         # )
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5)),
+            + "papu22/Figures/jmaps/{}_{}_jm.png".format(runid, str(non_id).zfill(5)),
             dpi=300,
         )
         plt.close(fig)
@@ -1534,7 +1534,7 @@ def SEA_trifecta(kind):
     )
 
 
-def trifecta(runid, kind):
+def trifecta(runid, kind="non"):
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -1542,11 +1542,12 @@ def trifecta(runid, kind):
     if kind == "fcs":
         non_ids = get_fcs_jets(runid)
     else:
-        non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
-            dtype=int,
-            ndmin=1,
-        )
+        # non_ids = np.loadtxt(
+        #     wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+        #     dtype=int,
+        #     ndmin=1,
+        # )
+        non_ids = get_non_jets(runid)
 
     var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
     plot_labels = ["VS1", "VS2", "VS3"]
@@ -1574,7 +1575,7 @@ def trifecta(runid, kind):
     run_norm = norm[runids.index(runid)]
 
     for non_id in non_ids:
-        print("Jet {} of kind {} in run {}".format(non_id, kind, runid))
+        print("Jet {} in run {}".format(non_id, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
@@ -1614,9 +1615,7 @@ def trifecta(runid, kind):
                 data_arr[:, :, idx] = np.nan
 
         fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
-        ax_list[0].set_title(
-            "Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize())
-        )
+        ax_list[0].set_title("Run: {}, Jet: {}".format(runid, non_id))
         for idx in range(len(var_list)):
             ax = ax_list[idx]
             for idx2 in range(len(plot_labels)):
@@ -1656,8 +1655,8 @@ def trifecta(runid, kind):
         plt.tight_layout()
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/trifecta/{}/{}/{}.png".format(
-                runid, kind, str(non_id).zfill(5)
+            + "papu22/Figures/trifecta/{}_{}_tf.png".format(
+                runid, str(non_id).zfill(5)
             ),
             dpi=300,
         )
@@ -1670,7 +1669,7 @@ def trifecta(runid, kind):
         plt.close(fig)
 
 
-def kind_timeseries(runid, kind):
+def kind_timeseries(runid, kind="non"):
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -1678,11 +1677,13 @@ def kind_timeseries(runid, kind):
     if kind == "fcs":
         non_ids = get_fcs_jets(runid)
     else:
-        non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
-            dtype=int,
-            ndmin=1,
-        )
+        # non_ids = np.loadtxt(
+        #     wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+        #     dtype=int,
+        #     ndmin=1,
+        # )
+        non_ids = get_non_jets(runid)
+
     var_list = [
         "rho",
         "v",
@@ -1776,7 +1777,7 @@ def kind_timeseries(runid, kind):
 
     run_norm = norm[runids.index(runid)]
     for non_id in non_ids:
-        print("Jet {} of kind {} in run {}".format(non_id, kind, runid))
+        print("Jet {} in run {}".format(non_id, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
@@ -1803,9 +1804,7 @@ def kind_timeseries(runid, kind):
                 data_arr[:, idx] = np.nan
 
         fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
-        ax_list[0].set_title(
-            "Run: {}, Jet: {}, Kind: {}".format(runid, non_id, kind.capitalize())
-        )
+        ax_list[0].set_title("Run: {}, Jet: {}".format(runid, non_id))
         for idx in range(len(var_list)):
             ax = ax_list[plot_index[idx]]
             ax.plot(
@@ -1822,8 +1821,8 @@ def kind_timeseries(runid, kind):
         plt.tight_layout()
         fig.savefig(
             wrkdir_DNR
-            + "papu22/Figures/timeseries/{}/{}/{}.png".format(
-                runid, kind, str(non_id).zfill(5)
+            + "papu22/Figures/timeseries/{}_{}_ts.png".format(
+                runid, str(non_id).zfill(5)
             ),
             dpi=300,
         )
