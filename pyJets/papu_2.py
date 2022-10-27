@@ -3714,13 +3714,16 @@ def non_jet_omni(runid):
             )
             res = trifecta_data[0, 8]
             bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
-            vx_arr = np.array([res[0], bVx, res[2], res[4]])
-            vy_arr = np.array([res[1], bVy, res[3], res[5]])
+            B = vlsvobj.read_variable("B", cellids=cellid)
+            n = vlsvobj.read_variable("rho", cellids=cellid)
+            vAx, vAy, vAz = B / np.sqrt(m_p * n * mu0) / 1.0e3
+            vx_arr = np.array([res[0], bVx, res[0] - bVx, vAx])
+            vy_arr = np.array([res[1], bVy, res[1] - bVy, vAy])
             arrow_labels = [
                 "Wave in SC frame",
                 "Bulk V",
-                "Wave rel to SC",
                 "Wave in pl frame",
+                "Alfven vel",
             ]
             for idx in range(4):
                 ax_sw.quiver(
