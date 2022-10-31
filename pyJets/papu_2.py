@@ -3717,13 +3717,13 @@ def non_jet_omni(runid):
             B = vlsvobj.read_variable("B", cellids=cellid)
             n = vlsvobj.read_variable("rho", cellids=cellid)
             vAx, vAy, vAz = B / np.sqrt(m_p * n * mu0) / 1.0e3
-            vx_arr = np.array([res[0], bVx, res[0] - bVx, vAx])
-            vy_arr = np.array([res[1], bVy, res[1] - bVy, vAy])
+            vx_arr = np.array([res[0], res[2], bVx, vAx])
+            vy_arr = np.array([res[1], res[3], bVy, vAy])
             arrow_labels = [
-                "Wave in SC frame",
-                "Bulk V",
-                "Wave in pl frame",
-                "Alfven vel",
+                "$v_\mathrm{timing}$",
+                "$v_\mathrm{SC frame}$",
+                "$v_\mathrm{bulk}$",
+                "$v_\mathrm{A}$",
             ]
             for idx in range(4):
                 ax_sw.quiver(
