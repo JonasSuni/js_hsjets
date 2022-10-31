@@ -3889,7 +3889,7 @@ def jmap_SEA_comp(run_id):
                 data = np.load(
                     wrkdir_DNR
                     + "papu22/{}jmap_txts/{}/{}_{}.npy".format(
-                        prefix, runid, runid, str(non_id).zfill(5)
+                        prefix[idx], runid, runid, str(non_id).zfill(5)
                     )
                 )
                 data_avg[idx, :, :, :] = data_avg[idx, :, :, :] + data
