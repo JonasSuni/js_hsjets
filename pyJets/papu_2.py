@@ -3867,7 +3867,7 @@ def jmap_SEA_comp(run_id):
     x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
     XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
-    kinds = ["beam", "foreshock", "FCS"]
+    kinds = ["beam", "foreshock", "fcs"]
     kind_names = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     prefix = ["", "", "sj_"]
     counts = [0, 0, 0]
