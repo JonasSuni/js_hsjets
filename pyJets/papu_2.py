@@ -3914,8 +3914,8 @@ def jmap_SEA_comp(run_id):
     fig, ax_list = plt.subplots(
         len(varname_list), len(kinds), figsize=(24, 16), sharex=True, sharey=True
     )
-    im_list = [[]] * len(kinds)
-    cb_list = [[]] * len(kinds)
+    im_list = []
+    cb_list = []
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, 0, 1, 4, 30]
     cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
@@ -3929,7 +3929,7 @@ def jmap_SEA_comp(run_id):
     for idx2 in range(len(kinds)):
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.tick_params(labelsize=20)
-            im_list[idx2].append(
+            im_list.append(
                 ax.pcolormesh(
                     x_range,
                     t_range,
@@ -3942,13 +3942,13 @@ def jmap_SEA_comp(run_id):
                 )
             )
             if idx == 1:
-                cb_list[idx2].append(
-                    fig.colorbar(im_list[idx2][idx], ax=ax, extend="max")
+                cb_list.append(
+                    fig.colorbar(im_list[idx2*len(varname_list)+idx], ax=ax, extend="max")
                 )
-                cb_list[idx2][idx].cmap.set_over("red")
+                cb_list[idx2*len(varname_list)+idx].cmap.set_over("red")
             else:
-                cb_list[idx2].append(fig.colorbar(im_list[idx2][idx], ax=ax))
-            cb_list[idx2][idx].ax.tick_params(labelsize=20)
+                cb_list.append(fig.colorbar(im_list[idx2*len(varname_list)+idx], ax=ax))
+            cb_list[idx2*len(varname_list)+idx].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_avg[idx2, 0, :, :], [2], colors=["black"])
             ax.contour(
                 XmeshXY,
