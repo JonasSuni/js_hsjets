@@ -3912,7 +3912,7 @@ def jmap_SEA_comp(run_id):
     ]
 
     fig, ax_list = plt.subplots(
-        len(varname_list), len(kinds), figsize=(10, 24), sharex=True, sharey=True
+        len(varname_list), len(kinds), figsize=(20, 12), sharex=True, sharey=True
     )
     im_list = []
     cb_list = []
@@ -3970,8 +3970,8 @@ def jmap_SEA_comp(run_id):
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24
             )
-        ax_list[idx2][0].set_title(kind_names[idx2], fontsize=28, pad=10)
-        ax_list[idx2][-1].set_xlabel(
+        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=28, pad=10)
+        ax_list[-1][idx2].set_xlabel(
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10
         )
     for idx, ax in enumerate(ax_list[:, 0]):
