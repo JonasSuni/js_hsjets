@@ -3851,3 +3851,139 @@ def non_jet_omni(runid):
         )
 
         plt.close(fig)
+
+
+def jmap_SEA_comp(run_id):
+
+    if run_id == "all":
+        runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    else:
+        runid_list = [run_id]
+
+    x0 = 0.0
+    t0 = 0.0
+    t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+    dx = 227e3 / r_e
+    x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+    XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
+
+    kinds = ["beam", "foreshock", "FCS"]
+    kind_names = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    prefix = ["", "", "sj_"]
+    counts = [0, 0, 0]
+
+    data_avg = np.zeros((3, 7, XmeshXY.shape[0], XmeshXY.shape[1]))
+
+    for runid in runid_list:
+        for idx, kind in enumerate(kinds):
+            if kind == "fcs":
+                non_ids = get_fcs_jets(runid)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+
+            for non_id in non_ids:
+                data = np.load(
+                    wrkdir_DNR
+                    + "papu22/{}jmap_txts/{}/{}_{}.npy".format(
+                        prefix, runid, runid, str(non_id).zfill(5)
+                    )
+                )
+                data_avg[idx, :, :, :] = data_avg[idx, :, :, :] + data
+                counts[idx] += 1
+
+    for idx, kind in enumerate(kinds):
+        if counts[idx] != 0:
+            data_avg[idx, :, :, :] /= counts[idx]
+        else:
+            print("No jets of kind {} found in run {}".format(kind, run_id))
+            return 0
+
+    varname_list = [
+        "$n$ [$n_\mathrm{sw}$]",
+        "$v_x$ [$v_\mathrm{sw}$]",
+        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        "$B$ [$B_\mathrm{IMF}$]",
+        "$T$ [$T_\mathrm{sw}$]",
+        # "$M_{\mathrm{MS},x}$",
+    ]
+
+    fig, ax_list = plt.subplots(
+        len(varname_list), len(kinds), figsize=(10, 24), sharex=True, sharey=True
+    )
+    im_list = []
+    cb_list = []
+    vmin = [0, -1, 0.25, 0, 10]
+    vmax = [4, 0, 1, 4, 30]
+    cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
+    annot = [
+        ["a)", "b)", "c)", "d)", "e)"],
+        ["f)", "g)", "h)", "i)", "j)"],
+        ["k)", "l)", "m)", "n)", "o)"],
+    ]
+    annot_sj = ["f)", "g)", "h)", "i)", "j)"]
+
+    for idx2 in range(len(kinds)):
+        for idx, ax in enumerate(ax_list[:, idx2]):
+            ax.tick_params(labelsize=20)
+            im_list.append(
+                ax.pcolormesh(
+                    x_range,
+                    t_range,
+                    data_avg[idx2, idx, :, :],
+                    shading="nearest",
+                    cmap=cmap[idx],
+                    vmin=vmin[idx],
+                    vmax=vmax[idx],
+                    rasterized=True,
+                )
+            )
+            if idx == 1:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+                cb_list[idx].cmap.set_over("red")
+            else:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            cb_list[idx].ax.tick_params(labelsize=20)
+            ax.contour(XmeshXY, YmeshXY, data_avg[idx2, 0, :, :], [2], colors=["black"])
+            ax.contour(
+                XmeshXY,
+                YmeshXY,
+                data_avg[idx2, 5, :, :],
+                [3],
+                colors=[CB_color_cycle[1]],
+            )
+            ax.contour(
+                XmeshXY,
+                YmeshXY,
+                data_avg[idx2, 6, :, :],
+                [1.0],
+                colors=[CB_color_cycle[4]],
+            )
+            ax.set_title(varname_list[idx], fontsize=24, pad=10)
+            ax.set_xlim(x_range[0], x_range[-1])
+            ax.set_ylim(t_range[0], t_range[-1])
+            ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+            ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+            ax.annotate(
+                annot[idx2][idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24
+            )
+        ax_list[idx2][0].set_title(kind_names[idx2], fontsize=28, pad=10)
+        ax_list[idx2][-1].set_xlabel(
+            "Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10
+        )
+    for idx, ax in enumerate(ax_list[:, 0]):
+        ax.set_ylabel(
+            "{}\n\nEpoch time [s]".format(varname_list[idx]), fontsize=24, labelpad=10
+        )
+
+    # Save figure
+    plt.tight_layout()
+
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/jmap_SEA_comp_{}.pdf".format(run_id),
+        dpi=300,
+    )
+    plt.close(fig)

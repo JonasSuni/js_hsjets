@@ -137,4 +137,5 @@ from papu_2 import (
     trifecta,
     SEA_trifecta,
     non_jet_omni,
+    jmap_SEA_comp,
 )
