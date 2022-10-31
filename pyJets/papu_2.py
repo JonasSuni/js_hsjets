@@ -3912,7 +3912,7 @@ def jmap_SEA_comp(run_id):
     ]
 
     fig, ax_list = plt.subplots(
-        len(varname_list), len(kinds), figsize=(20, 12), sharex=True, sharey=True
+        len(varname_list), len(kinds), figsize=(24, 16), sharex=True, sharey=True
     )
     im_list = []
     cb_list = []
