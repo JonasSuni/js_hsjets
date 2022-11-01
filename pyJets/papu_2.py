@@ -4138,7 +4138,7 @@ def timing_comp():
         "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    
+
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
     counters = [0, 0, 0]
@@ -4200,4 +4200,3 @@ def timing_comp():
         dpi=300,
     )
     plt.close(fig)
-
