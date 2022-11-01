@@ -4073,6 +4073,8 @@ def SEA_timeseries_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
+                if np.nan in data_arr:
+                    continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
@@ -4091,9 +4093,9 @@ def SEA_timeseries_comp():
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
-                ax.legend()
+                ax.legend(loc="center right")
         ax_list[-1][idx2].set_xlabel("Epoch time [s]")
-        for idx, ax in enumerate(ax_list[:,idx2]):
+        for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
             if idx2 == 0:
                 ax.set_ylabel(ylabels[idx])
