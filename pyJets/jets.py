@@ -138,4 +138,5 @@ from papu_2 import (
     SEA_trifecta,
     non_jet_omni,
     jmap_SEA_comp,
+    SEA_timeseries_comp,
 )

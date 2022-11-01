@@ -3993,3 +3993,114 @@ def jmap_SEA_comp(run_id):
         dpi=300,
     )
     plt.close(fig)
+
+
+def SEA_timeseries_comp():
+
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        None,
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "TPar",
+        "TPerp",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    vmins = [1.5, -0.8, 0.4, -3.75, 10]
+    vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    kinds = ["beam", "foreshock", "fcs"]
+    kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
+    counters = [0, 0, 0]
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        for idx, kind in enumerate(kinds):
+            if kind == "fcs":
+                non_ids = get_fcs_jets(runid)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+            for non_id in non_ids:
+                data_arr = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/timeseries_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                avg_arr[idx] = avg_arr[idx] + data_arr
+                counters[idx] += 1
+
+    for idx in range(len(kinds)):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(16, 8))
+    for idx2, kind in enumerate(kinds):
+        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]))
+        for idx in range(len(plot_labels)):
+            ax = ax_list[plot_index[idx]][idx2]
+            ax.plot(
+                t_arr,
+                avg_arr[idx2, idx],
+                color=plot_colors[idx],
+                label=plot_labels[idx],
+            )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if draw_legend[idx] and idx2 == 0:
+                ax.legend()
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]")
+        for idx, ax in enumerate(ax_list):
+            ax.grid()
+            ax.set_ylabel(ylabels[idx])
+            ax.axvline(0, linestyle="dashed")
+            ax.set_ylim(vmins[idx], vmaxs[idx])
+    plt.tight_layout()
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/timeseries_SEA_comp.pdf",
+        dpi=300,
+    )
+    plt.close(fig)
