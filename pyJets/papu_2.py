@@ -4171,7 +4171,7 @@ def timing_comp():
     )
 
     for idx, ax in enumerate(ax_list):
-        ax.set_title("{}".format(kind_labels[idx2]), fontsize=24, pad=10)
+        ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 8]
         results = jx.timing_analysis_datadict(avg_arr[idx])
         vx = [avg_res[0], results["wave_velocity_relative2sc"][0]]
