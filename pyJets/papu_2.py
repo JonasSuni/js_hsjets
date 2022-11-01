@@ -4080,9 +4080,9 @@ def SEA_timeseries_comp():
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(12, 8))
+    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(24, 16))
     for idx2, kind in enumerate(kinds):
-        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]))
+        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=24, pad=10)
         for idx in range(len(plot_labels)):
             ax = ax_list[plot_index[idx]][idx2]
             ax.plot(
@@ -4093,12 +4093,13 @@ def SEA_timeseries_comp():
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
-                ax.legend(loc="center right")
-        ax_list[-1][idx2].set_xlabel("Epoch time [s]")
+                ax.legend(loc="center right", fontsize=16)
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=20, labelpad=10)
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
+            ax.tick_params(labelsize=20)
             if idx2 == 0:
-                ax.set_ylabel(ylabels[idx])
+                ax.set_ylabel(ylabels[idx], fontsize=20, labelpad=10)
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
     plt.tight_layout()
