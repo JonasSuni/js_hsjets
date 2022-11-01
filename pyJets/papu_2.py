@@ -4124,3 +4124,80 @@ def SEA_timeseries_comp():
         dpi=300,
     )
     plt.close(fig)
+
+
+def timing_comp():
+
+    kinds = ["beam", "foreshock", "fcs"]
+    kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    arrow_labels = ["Average of Timing", "Timing of Average"]
+    ylabels = [
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
+    counters = [0, 0, 0]
+
+    for idx, kind in enumerate(kinds):
+        for runid in ["ABA", "ABC", "AEA", "AEC"]:
+            if kind == "fcs":
+                non_ids = get_fcs_jets(runid)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+            for non_id in non_ids:
+                data_arr = np.load(
+                    wrkdir_DNR
+                    + "papu22/trifecta_txts/{}_{}.npy".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                avg_arr[idx] = avg_arr[idx] + data_arr
+                counters[idx] += 1
+
+    for idx, kind in enumerate(kinds):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+
+    fig, ax_list = plt.subplots(
+        1, len(kinds), sharex=True, sharey=True, figsize=(24, 16)
+    )
+
+    for idx, ax in enumerate(ax_list):
+        ax.set_title("{}".format(kind_labels[idx2]), fontsize=24, pad=10)
+        avg_res = avg_arr[idx, 0, 8]
+        results = jx.timing_analysis_datadict(avg_arr[idx])
+        vx = [avg_res[0], results["wave_velocity_relative2sc"][0]]
+        vy = [avg_res[1], results["wave_velocity_relative2sc"][1]]
+        for idx2 in range(len(vx)):
+            ax.quiver(
+                0,
+                0,
+                vx[idx],
+                vy[idx],
+                color=CB_color_cycle[idx],
+                label=arrow_labels[idx],
+                angles="xy",
+                scale_units="xy",
+                scale=1,
+            )
+        if idx == 0:
+            ax.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
+            ax.legend(fontsize=16)
+        ax.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
+        ax.tick_params(labelsize=20)
+        ax.grid()
+    plt.tight_layout()
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/timing_comp.pdf",
+        dpi=300,
+    )
+    plt.close(fig)
+

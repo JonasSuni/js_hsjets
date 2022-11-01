@@ -139,4 +139,5 @@ from papu_2 import (
     non_jet_omni,
     jmap_SEA_comp,
     SEA_timeseries_comp,
+    timing_comp,
 )
