@@ -4188,11 +4188,11 @@ def timing_comp():
                 scale_units="xy",
                 scale=1,
             )
-        ax.set_xlim(-1.1 * np.max(np.abs(vx)), 1.1 * np.max(np.abs(vx)))
-        ax.set_ylim(-1.1 * np.max(np.abs(vy)), 1.1 * np.max(np.abs(vy)))
         if idx == 0:
             ax.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             ax.legend(fontsize=16)
+            ax.set_xlim(-1.1 * np.max(np.abs(vx)), 1.1 * np.max(np.abs(vx)))
+            ax.set_ylim(-1.1 * np.max(np.abs(vy)), 1.1 * np.max(np.abs(vy)))
         ax.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
