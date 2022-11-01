@@ -4167,7 +4167,7 @@ def timing_comp():
         avg_arr[idx] = avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
-        1, len(kinds), sharex=True, sharey=True, figsize=(24, 16)
+        1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
     )
     vx_all = []
     vy_all = []
