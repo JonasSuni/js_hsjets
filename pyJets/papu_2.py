@@ -4073,7 +4073,7 @@ def SEA_timeseries_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
-                if np.nan in data_arr:
+                if np.isnan(data_arr).any():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
