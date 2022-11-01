@@ -4090,10 +4090,11 @@ def SEA_timeseries_comp():
                 avg_arr[idx2, idx],
                 color=plot_colors[idx],
                 label=plot_labels[idx],
+                linewidth=2
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
-                ax.legend(loc="center right", fontsize=16)
+                ax.legend(loc="lower right", fontsize=16)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=20, labelpad=10)
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
@@ -4102,6 +4103,8 @@ def SEA_timeseries_comp():
                 ax.set_ylabel(ylabels[idx], fontsize=20, labelpad=10)
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
+    for ax in ax_list.flat:
+        ax.label_outer()
     plt.tight_layout()
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/timeseries_SEA_comp.pdf",
