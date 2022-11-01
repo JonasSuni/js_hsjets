@@ -3941,18 +3941,21 @@ def jmap_SEA_comp(run_id):
                     rasterized=True,
                 )
             )
-            if idx == 1:
-                cb_list.append(
-                    fig.colorbar(
-                        im_list[idx2 * len(varname_list) + idx], ax=ax, extend="max"
+            if idx2 == 0:
+                if idx == 1:
+                    cb_list.append(
+                        fig.colorbar(
+                            im_list[idx2 * len(varname_list) + idx], ax=ax, extend="max"
+                        )
                     )
-                )
-                cb_list[idx2 * len(varname_list) + idx].cmap.set_over("red")
-            else:
-                cb_list.append(
-                    fig.colorbar(im_list[idx2 * len(varname_list) + idx], ax=ax)
-                )
-            cb_list[idx2 * len(varname_list) + idx].ax.tick_params(labelsize=20)
+                    # cb_list[idx2 * len(varname_list) + idx].cmap.set_over("red")
+                    cb_list[idx].cmap.set_over("red")
+                else:
+                    cb_list.append(
+                        fig.colorbar(im_list[idx2 * len(varname_list) + idx], ax=ax)
+                    )
+                # cb_list[idx2 * len(varname_list) + idx].ax.tick_params(labelsize=20)
+                cb_list[idx].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_avg[idx2, 0, :, :], [2], colors=["black"])
             ax.contour(
                 XmeshXY,
