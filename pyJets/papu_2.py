@@ -4093,9 +4093,10 @@ def SEA_timeseries_comp():
             if draw_legend[idx] and idx2 == 0:
                 ax.legend()
         ax_list[-1][idx2].set_xlabel("Epoch time [s]")
-        for idx, ax in enumerate(ax_list):
+        for idx, ax in enumerate(ax_list[:,idx2]):
             ax.grid()
-            ax.set_ylabel(ylabels[idx])
+            if idx2 == 0:
+                ax.set_ylabel(ylabels[idx])
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
     plt.tight_layout()
