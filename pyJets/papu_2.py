@@ -3941,7 +3941,7 @@ def jmap_SEA_comp(run_id):
                     rasterized=True,
                 )
             )
-            if idx2 == 0:
+            if idx2 == 2:
                 if idx == 1:
                     cb_list.append(
                         fig.colorbar(
