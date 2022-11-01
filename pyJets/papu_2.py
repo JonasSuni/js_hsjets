@@ -4080,7 +4080,7 @@ def SEA_timeseries_comp():
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(16, 8))
+    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(12, 8))
     for idx2, kind in enumerate(kinds):
         ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]))
         for idx in range(len(plot_labels)):
