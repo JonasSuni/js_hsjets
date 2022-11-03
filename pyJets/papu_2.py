@@ -4153,7 +4153,7 @@ def timing_comp():
 
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
-    ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
+    # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     counters = [0, 0, 0]
 
     for idx, kind in enumerate(kinds):
@@ -4167,25 +4167,25 @@ def timing_comp():
                     ndmin=1,
                 )
             for non_id in non_ids:
-                ts_data = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/timeseries_txts/{}_{}.txt".format(
-                        runid, str(non_id).zfill(5)
-                    )
-                )
+                # ts_data = np.loadtxt(
+                #     wrkdir_DNR
+                #     + "papu22/timeseries_txts/{}_{}.txt".format(
+                #         runid, str(non_id).zfill(5)
+                #     )
+                # )
                 data_arr = np.load(
                     wrkdir_DNR
                     + "papu22/trifecta_txts/{}_{}.npy".format(
                         runid, str(non_id).zfill(5)
                     )
                 )
-                ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
+                # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
     for idx, kind in enumerate(kinds):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-        ts_avg_arr[idx] = ts_avg_arr[idx] / counters[idx]
+        # ts_avg_arr[idx] = ts_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
