@@ -3675,6 +3675,7 @@ def non_jet_omni(runid):
         )
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+        ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
         rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr = np.load(
             wrkdir_DNR
@@ -3746,6 +3747,7 @@ def non_jet_omni(runid):
             ax_sw.grid()
             ax_sw.tick_params(labelsize=16)
             ax_sw.set_title("Trifecta timing analysis", fontsize=20, pad=10)
+            ax_ne.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         except:
             ax_sw.set_axis_off()
 
@@ -3803,6 +3805,7 @@ def non_jet_omni(runid):
                 "$B~[B_\mathrm{IMF}]$",
                 "$T~[T_\mathrm{sw}]$",
             ]
+            annots = ["d)", "e)", "f)", "g)", "h)"]
             plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
             plot_colors = [
                 "k",
@@ -3829,7 +3832,7 @@ def non_jet_omni(runid):
                 )
                 ax.set_xlim(t_arr[0], t_arr[-1])
                 if draw_legend[idx]:
-                    ax.legend()
+                    ax.legend(loc="lower right")
             ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=20)
             for idx, ax in enumerate(ax_se_list):
                 ax.grid()
@@ -3838,6 +3841,9 @@ def non_jet_omni(runid):
                 ax.tick_params(labelsize=16)
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
+                ax.annotate(
+                    annots[idx], (0.05, 0.85), xycoords="axes fraction", fontsize=20
+                )
             ax_se_list[0].set_title("Timeseries", fontsize=20, pad=10)
         except:
             for ax in ax_se_list:
@@ -4130,7 +4136,11 @@ def timing_comp():
 
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
-    arrow_labels = ["Average of Timing", "Timing of Average"]
+    arrow_labels = [
+        "$\\langle v_\mathrm{SC} \\rangle$",
+        "$v_{\\langle \mathrm{SC} \\rangle}$",
+        "$v_\mathrm{bulk}$",
+    ]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
         "$B~[B_\mathrm{IMF}]$",
@@ -4169,14 +4179,29 @@ def timing_comp():
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
     )
+    n_avg = [
+        np.nanmean(avg_arr[0, :, 0, :].flatten()),
+        np.nanmean(avg_arr[1, :, 0, :].flatten()),
+        np.nanmean(avg_arr[2, :, 0, :].flatten()),
+    ]
+    vbx_avg = [
+        np.nanmean(avg_arr[0, :, 5, :].flatten()),
+        np.nanmean(avg_arr[1, :, 5, :].flatten()),
+        np.nanmean(avg_arr[2, :, 5, :].flatten()),
+    ]
+    vby_avg = [
+        np.nanmean(avg_arr[0, :, 6, :].flatten()),
+        np.nanmean(avg_arr[1, :, 6, :].flatten()),
+        np.nanmean(avg_arr[2, :, 6, :].flatten()),
+    ]
     vx_all = []
     vy_all = []
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 8]
         results = jx.timing_analysis_datadict(avg_arr[idx])
-        vx = [avg_res[0], results["wave_velocity_relative2sc"][0]]
-        vy = [avg_res[1], results["wave_velocity_relative2sc"][1]]
+        vx = [avg_res[0], results["wave_velocity_relative2sc"][0], vbx_avg[idx]]
+        vy = [avg_res[1], results["wave_velocity_relative2sc"][1], vby_avg[idx]]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
         for idx2 in range(len(vx)):
