@@ -4241,13 +4241,13 @@ def timing_comp():
             avg_res[0],
             results["wave_velocity_relative2sc"][0],
             vbx_avg[idx],
-            bx_avg / np.sqrt(mu0 * m_p * n_avg[idx]),
+            bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vy = [
             avg_res[1],
             results["wave_velocity_relative2sc"][1],
             vby_avg[idx],
-            by_avg / np.sqrt(mu0 * m_p * n_avg[idx]),
+            by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
