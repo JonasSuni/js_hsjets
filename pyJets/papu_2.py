@@ -4195,41 +4195,41 @@ def timing_comp():
     #     np.nanmean(avg_arr[1, :, 0, :].flatten()),
     #     np.nanmean(avg_arr[2, :, 0, :].flatten()),
     # ]
-    # vbx_avg = [
-    #     np.nanmean(avg_arr[0, :, 5, :].flatten()),
-    #     np.nanmean(avg_arr[1, :, 5, :].flatten()),
-    #     np.nanmean(avg_arr[2, :, 5, :].flatten()),
-    # ]
-    # vby_avg = [
-    #     np.nanmean(avg_arr[0, :, 6, :].flatten()),
-    #     np.nanmean(avg_arr[1, :, 6, :].flatten()),
-    #     np.nanmean(avg_arr[2, :, 6, :].flatten()),
-    # ]
-    n_avg = [
-        np.nanmean(ts_avg_arr[0, 0, :]),
-        np.nanmean(ts_avg_arr[1, 0, :]),
-        np.nanmean(ts_avg_arr[2, 0, :]),
-    ]
     vbx_avg = [
-        np.nanmean(ts_avg_arr[0, 1, :]),
-        np.nanmean(ts_avg_arr[1, 1, :]),
-        np.nanmean(ts_avg_arr[2, 1, :]),
+        np.nanmean(avg_arr[0, :, 5, :].flatten()),
+        np.nanmean(avg_arr[1, :, 5, :].flatten()),
+        np.nanmean(avg_arr[2, :, 5, :].flatten()),
     ]
     vby_avg = [
-        np.nanmean(ts_avg_arr[0, 2, :]),
-        np.nanmean(ts_avg_arr[1, 2, :]),
-        np.nanmean(ts_avg_arr[2, 2, :]),
+        np.nanmean(avg_arr[0, :, 6, :].flatten()),
+        np.nanmean(avg_arr[1, :, 6, :].flatten()),
+        np.nanmean(avg_arr[2, :, 6, :].flatten()),
     ]
-    bx_avg = [
-        np.nanmean(ts_avg_arr[0, 6, :]),
-        np.nanmean(ts_avg_arr[1, 6, :]),
-        np.nanmean(ts_avg_arr[2, 6, :]),
-    ]
-    by_avg = [
-        np.nanmean(ts_avg_arr[0, 7, :]),
-        np.nanmean(ts_avg_arr[1, 7, :]),
-        np.nanmean(ts_avg_arr[2, 7, :]),
-    ]
+    # n_avg = [
+    #     np.nanmean(ts_avg_arr[0, 0, :]),
+    #     np.nanmean(ts_avg_arr[1, 0, :]),
+    #     np.nanmean(ts_avg_arr[2, 0, :]),
+    # ]
+    # vbx_avg = [
+    #     np.nanmean(ts_avg_arr[0, 1, :]),
+    #     np.nanmean(ts_avg_arr[1, 1, :]),
+    #     np.nanmean(ts_avg_arr[2, 1, :]),
+    # ]
+    # vby_avg = [
+    #     np.nanmean(ts_avg_arr[0, 2, :]),
+    #     np.nanmean(ts_avg_arr[1, 2, :]),
+    #     np.nanmean(ts_avg_arr[2, 2, :]),
+    # ]
+    # bx_avg = [
+    #     np.nanmean(ts_avg_arr[0, 6, :]),
+    #     np.nanmean(ts_avg_arr[1, 6, :]),
+    #     np.nanmean(ts_avg_arr[2, 6, :]),
+    # ]
+    # by_avg = [
+    #     np.nanmean(ts_avg_arr[0, 7, :]),
+    #     np.nanmean(ts_avg_arr[1, 7, :]),
+    #     np.nanmean(ts_avg_arr[2, 7, :]),
+    # ]
 
     vx_all = []
     vy_all = []
@@ -4241,13 +4241,13 @@ def timing_comp():
             avg_res[2],
             results["wave_velocity_relative2sc"][0],
             vbx_avg[idx],
-            #bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
+            # bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vy = [
             avg_res[3],
             results["wave_velocity_relative2sc"][1],
             vby_avg[idx],
-            #by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
+            # by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
