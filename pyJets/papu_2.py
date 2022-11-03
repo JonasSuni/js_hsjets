@@ -4238,13 +4238,13 @@ def timing_comp():
         avg_res = avg_arr[idx, 0, 8]
         results = jx.timing_analysis_datadict(avg_arr[idx])
         vx = [
-            avg_res[0],
+            avg_res[2],
             results["wave_velocity_relative2sc"][0],
             vbx_avg[idx],
             bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vy = [
-            avg_res[1],
+            avg_res[3],
             results["wave_velocity_relative2sc"][1],
             vby_avg[idx],
             by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
