@@ -4141,6 +4141,7 @@ def timing_comp():
         "$\\langle v_\mathrm{SC} \\rangle$",
         "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
+        "$v_\mathrm{A}$",
     ]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
@@ -4152,6 +4153,7 @@ def timing_comp():
 
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
+    ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     counters = [0, 0, 0]
 
     for idx, kind in enumerate(kinds):
@@ -4165,44 +4167,88 @@ def timing_comp():
                     ndmin=1,
                 )
             for non_id in non_ids:
+                ts_data = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/timeseries_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
                 data_arr = np.load(
                     wrkdir_DNR
                     + "papu22/trifecta_txts/{}_{}.npy".format(
                         runid, str(non_id).zfill(5)
                     )
                 )
+                ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
     for idx, kind in enumerate(kinds):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
+        ts_avg_arr[idx] = ts_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
     )
+    # n_avg = [
+    #     np.nanmean(avg_arr[0, :, 0, :].flatten()),
+    #     np.nanmean(avg_arr[1, :, 0, :].flatten()),
+    #     np.nanmean(avg_arr[2, :, 0, :].flatten()),
+    # ]
+    # vbx_avg = [
+    #     np.nanmean(avg_arr[0, :, 5, :].flatten()),
+    #     np.nanmean(avg_arr[1, :, 5, :].flatten()),
+    #     np.nanmean(avg_arr[2, :, 5, :].flatten()),
+    # ]
+    # vby_avg = [
+    #     np.nanmean(avg_arr[0, :, 6, :].flatten()),
+    #     np.nanmean(avg_arr[1, :, 6, :].flatten()),
+    #     np.nanmean(avg_arr[2, :, 6, :].flatten()),
+    # ]
     n_avg = [
-        np.nanmean(avg_arr[0, :, 0, :].flatten()),
-        np.nanmean(avg_arr[1, :, 0, :].flatten()),
-        np.nanmean(avg_arr[2, :, 0, :].flatten()),
+        np.nanmean(ts_avg_arr[0, 0, :]),
+        np.nanmean(ts_avg_arr[1, 0, :]),
+        np.nanmean(ts_avg_arr[2, 0, :]),
     ]
     vbx_avg = [
-        np.nanmean(avg_arr[0, :, 5, :].flatten()),
-        np.nanmean(avg_arr[1, :, 5, :].flatten()),
-        np.nanmean(avg_arr[2, :, 5, :].flatten()),
+        np.nanmean(ts_avg_arr[0, 1, :]),
+        np.nanmean(ts_avg_arr[1, 1, :]),
+        np.nanmean(ts_avg_arr[2, 1, :]),
     ]
     vby_avg = [
-        np.nanmean(avg_arr[0, :, 6, :].flatten()),
-        np.nanmean(avg_arr[1, :, 6, :].flatten()),
-        np.nanmean(avg_arr[2, :, 6, :].flatten()),
+        np.nanmean(ts_avg_arr[0, 2, :]),
+        np.nanmean(ts_avg_arr[1, 2, :]),
+        np.nanmean(ts_avg_arr[2, 2, :]),
     ]
+    bx_avg = [
+        np.nanmean(ts_avg_arr[0, 6, :]),
+        np.nanmean(ts_avg_arr[1, 6, :]),
+        np.nanmean(ts_avg_arr[2, 6, :]),
+    ]
+    by_avg = [
+        np.nanmean(ts_avg_arr[0, 7, :]),
+        np.nanmean(ts_avg_arr[1, 7, :]),
+        np.nanmean(ts_avg_arr[2, 7, :]),
+    ]
+
     vx_all = []
     vy_all = []
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 8]
         results = jx.timing_analysis_datadict(avg_arr[idx])
-        vx = [avg_res[0], results["wave_velocity_relative2sc"][0], vbx_avg[idx]]
-        vy = [avg_res[1], results["wave_velocity_relative2sc"][1], vby_avg[idx]]
+        vx = [
+            avg_res[0],
+            results["wave_velocity_relative2sc"][0],
+            vbx_avg[idx],
+            bx_avg / np.sqrt(mu0 * m_p * n_avg[idx]),
+        ]
+        vy = [
+            avg_res[1],
+            results["wave_velocity_relative2sc"][1],
+            vby_avg[idx],
+            by_avg / np.sqrt(mu0 * m_p * n_avg[idx]),
+        ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
         for idx2 in range(len(vx)):
