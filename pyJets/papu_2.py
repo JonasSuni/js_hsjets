@@ -4136,6 +4136,7 @@ def timing_comp():
 
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    annot = ["a)", "b)", "c)"]
     arrow_labels = [
         "$\\langle v_\mathrm{SC} \\rangle$",
         "$v_{\\langle \mathrm{SC} \\rangle}$",
@@ -4218,6 +4219,7 @@ def timing_comp():
             )
         ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         if idx == 0:
             ax.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             ax.legend(fontsize=16)
