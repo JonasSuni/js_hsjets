@@ -4142,9 +4142,9 @@ def timing_comp():
     annot = ["a)", "b)", "c)"]
     arrow_labels = [
         "$\\langle v_\mathrm{SC} \\rangle$",
-        "$v_{\\langle \mathrm{SC} \\rangle}$",
+        # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
-        "$v_\mathrm{A}$",
+        # "$v_\mathrm{A}$",
     ]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
@@ -4241,16 +4241,16 @@ def timing_comp():
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 8]
-        results = jx.timing_analysis_datadict(avg_arr[idx])
+        # results = jx.timing_analysis_datadict(avg_arr[idx])
         vx = [
             avg_res[2],
-            results["wave_velocity_relative2sc"][0],
+            # results["wave_velocity_relative2sc"][0],
             vbx_avg[idx],
             # bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
         vy = [
             avg_res[3],
-            results["wave_velocity_relative2sc"][1],
+            # results["wave_velocity_relative2sc"][1],
             vby_avg[idx],
             # by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
         ]
