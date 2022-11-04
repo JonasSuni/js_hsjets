@@ -1534,7 +1534,7 @@ def SEA_trifecta(kind):
     )
 
 
-def trifecta(runid, kind="non"):
+def trifecta(runid, kind="non", draw=True):
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -1587,9 +1587,9 @@ def trifecta(runid, kind="non"):
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
         )
         cellids = [
-            vlsvobj.get_cellid([x0 * r_e - d_cell, y0 * r_e - d_cell, 0 * r_e]),
-            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + d_cell, 0 * r_e]),
-            vlsvobj.get_cellid([x0 * r_e + d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e - 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + 2 * d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e + 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
         ]
         data_arr = np.zeros((3, len(var_list) + 3 + 1, fnr_arr.size), dtype=float)
 
@@ -1614,21 +1614,6 @@ def trifecta(runid, kind="non"):
             except:
                 data_arr[:, :, idx] = np.nan
 
-        fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
-        ax_list[0].set_title("Run: {}, Jet: {}".format(runid, non_id))
-        for idx in range(len(var_list)):
-            ax = ax_list[idx]
-            for idx2 in range(len(plot_labels)):
-                ax.plot(
-                    t_arr,
-                    data_arr[idx2, idx],
-                    color=plot_colors[idx2],
-                    label=plot_labels[idx2],
-                )
-            ax.set_xlim(t_arr[0], t_arr[-1])
-            if idx == 0:
-                ax.legend()
-
         results = jx.timing_analysis_datadict(data_arr)
         wave_vector = results["wave_vector"]
         wave_v_sc = results["wave_velocity_sc_frame"]
@@ -1643,30 +1628,46 @@ def trifecta(runid, kind="non"):
         ]
         data_arr[0, 8, :6] = out_results
 
-        ax_list[-1].set_xlabel(
-            "Simulation time [s]\nWave (vx,vy) = ({:.3g},{:.3g}), RelSC (vx,vy) = ({:.3g},{:.3g})".format(
-                out_results[0], out_results[1], out_results[2], out_results[3]
+        if draw:
+            fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
+            ax_list[0].set_title("Run: {}, Jet: {}".format(runid, non_id))
+            for idx in range(len(var_list)):
+                ax = ax_list[idx]
+                for idx2 in range(len(plot_labels)):
+                    ax.plot(
+                        t_arr,
+                        data_arr[idx2, idx],
+                        color=plot_colors[idx2],
+                        label=plot_labels[idx2],
+                    )
+                ax.set_xlim(t_arr[0], t_arr[-1])
+                if idx == 0:
+                    ax.legend()
+
+            ax_list[-1].set_xlabel(
+                "Simulation time [s]\nWave (vx,vy) = ({:.3g},{:.3g}), RelSC (vx,vy) = ({:.3g},{:.3g})".format(
+                    out_results[0], out_results[1], out_results[2], out_results[3]
+                )
             )
-        )
-        for idx, ax in enumerate(ax_list):
-            ax.grid()
-            ax.set_ylabel(ylabels[idx])
-            ax.axvline(t0, linestyle="dashed")
-        plt.tight_layout()
-        fig.savefig(
-            wrkdir_DNR
-            + "papu22/Figures/trifecta/{}_{}_tf.png".format(
-                runid, str(non_id).zfill(5)
-            ),
-            dpi=300,
-        )
+            for idx, ax in enumerate(ax_list):
+                ax.grid()
+                ax.set_ylabel(ylabels[idx])
+                ax.axvline(t0, linestyle="dashed")
+            plt.tight_layout()
+            fig.savefig(
+                wrkdir_DNR
+                + "papu22/Figures/trifecta/{}_{}_tf.png".format(
+                    runid, str(non_id).zfill(5)
+                ),
+                dpi=300,
+            )
+            plt.close(fig)
 
         np.save(
             wrkdir_DNR
             + "papu22/trifecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
-        plt.close(fig)
 
 
 def kind_timeseries(runid, kind="non"):
