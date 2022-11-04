@@ -4135,6 +4135,8 @@ def SEA_timeseries_comp():
 
 def timing_comp():
 
+    vsws = [750, 600, 750, 600]
+
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     annot = ["a)", "b)", "c)"]
@@ -4158,7 +4160,8 @@ def timing_comp():
     counters = [0, 0, 0]
 
     for idx, kind in enumerate(kinds):
-        for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
+            vsw = vsws[idx2]
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
@@ -4180,6 +4183,7 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
+                data_arr[idx, :, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
@@ -4268,9 +4272,9 @@ def timing_comp():
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         if idx == 0:
-            ax.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
+            ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=24, labelpad=10)
             ax.legend(fontsize=16)
-        ax.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
+        ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=24, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
     plt.tight_layout()
