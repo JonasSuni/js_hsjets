@@ -757,9 +757,9 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     phi = [-120, 0, 120]
     pos_jonas = np.array(
         [
-            [np.sin(np.deg2rad(phi[0])), np.cos(np.deg2rad(phi[0])), 0],
-            [np.sin(np.deg2rad(phi[1])), np.cos(np.deg2rad(phi[1])), 0],
-            [np.sin(np.deg2rad(phi[2])), np.cos(np.deg2rad(phi[2])), 0],
+            [dcell*np.sin(np.deg2rad(phi[0])), dcell*np.cos(np.deg2rad(phi[0])), 0],
+            [dcell*np.sin(np.deg2rad(phi[1])), dcell*np.cos(np.deg2rad(phi[1])), 0],
+            [dcell*np.sin(np.deg2rad(phi[2])), dcell*np.cos(np.deg2rad(phi[2])), 0],
         ]
     )
 
