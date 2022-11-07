@@ -3522,6 +3522,17 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     CB_color_cycle = jx.CB_color_cycle
 
+    stream = ax.streamplot(
+        XmeshXY,
+        YmeshXY,
+        B[:, :, 0],
+        B[:, :, 1],
+        arrowstyle="-",
+        broken_streamlines=False,
+        color="k",
+        linewidth=1.0,
+    )
+
     jet_cont = ax.contour(
         XmeshXY,
         YmeshXY,
@@ -3547,7 +3558,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         slams_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.2,
         colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
@@ -3557,7 +3568,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         rho_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.2,
         colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
@@ -3567,7 +3578,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         mach_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.2,
         colors=CB_color_cycle[4],
         linestyles=["solid"],
     )
