@@ -1594,7 +1594,7 @@ def trifecta(runid, kind="non", draw=True):
         coords = [
             [
                 x0 * r_e + np.sin(np.deg2rad(phi)) * d_cell,
-                x0 * r_e + np.cos(np.deg2rad(phi)) * d_cell,
+                y0 * r_e + np.cos(np.deg2rad(phi)) * d_cell,
                 0,
             ]
             for phi in [-120, 0, 120]
@@ -1612,9 +1612,9 @@ def trifecta(runid, kind="non", draw=True):
                         np.array(
                             [
                                 vlsvobj.read_interpolated_variable(
-                                    var, coord, operator=ops[idx2]
+                                    var, coords[idx3], operator=ops[idx2]
                                 )
-                                for coord in coords
+                                for idx3 in range(3)
                             ]
                         )
                         * scales[idx2]
@@ -1628,9 +1628,9 @@ def trifecta(runid, kind="non", draw=True):
                         np.array(
                             [
                                 vlsvobj.read_interpolated_variable(
-                                    "v", coord, operator=v_ops[idx2]
+                                    "v", coords[idx3], operator=v_ops[idx2]
                                 )
-                                for coord in coords
+                                for idx3 in range(3)
                             ]
                         )
                         * scales[2]
