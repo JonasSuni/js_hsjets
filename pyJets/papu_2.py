@@ -1005,6 +1005,71 @@ def non_jet_jplots(runid, txt=False):
                     vlsvobj.read_variable("core_heating", cellids=cell_range)
                 )
                 mmsx_arr.append(vlsvobj.read_variable("Mmsx", cellids=cell_range))
+                # rho_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "rho",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # v_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "v",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #             operator="magnitude",
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # pdyn_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "Pdyn",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # B_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "B",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #             operator="magnitude",
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # T_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "Temperature",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # Tcore_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "core_heating",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
+                # mmsx_arr.append(
+                #     [
+                #         vlsvobj.read_interpolated_variable(
+                #             "Mmsx",
+                #             [xpos * r_e, y0 * r_e, 0],
+                #         )
+                #         for xpos in x_range
+                #     ]
+                # )
 
             rho_arr = np.array(rho_arr) / 1.0e6 / n_sw
             v_arr = np.array(v_arr) / 1.0e3 / v_sw
@@ -3734,7 +3799,7 @@ def non_jet_omni(runid):
         cb = fig.colorbar(im, ax=ax_ne)
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
-        ax_ne.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
+        ax_ne.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=[CB_color_cycle[3]])
         ax_ne.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
         ax_ne.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
         ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=20, pad=10)
