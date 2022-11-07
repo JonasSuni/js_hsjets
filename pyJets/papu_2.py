@@ -1587,9 +1587,9 @@ def trifecta(runid, kind="non", draw=True):
             bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
         )
         cellids = [
-            vlsvobj.get_cellid([x0 * r_e - 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
-            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + 2 * d_cell, 0 * r_e]),
-            vlsvobj.get_cellid([x0 * r_e + 2 * d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e - d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e + d_cell, y0 * r_e - d_cell, 0 * r_e]),
         ]
         data_arr = np.zeros((3, len(var_list) + 3 + 1, fnr_arr.size), dtype=float)
 

@@ -754,7 +754,7 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     print("Time differences: ", time_difference)
 
     dcell = 227.0 / Re
-    pos_jonas = np.array([[-2*dcell, -dcell, 0], [0, 2*dcell, 0], [2*dcell, -dcell, 0]])
+    pos_jonas = np.array([[-dcell, -dcell, 0], [0, dcell, 0], [dcell, -dcell, 0]])
 
     matrix_positions = np.zeros((3, 3))
     pos_ref_sc = np.zeros((3, 3))
@@ -835,7 +835,7 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     #             np.mean(data["proton/V.z"][min_time:max_time, ref_sc]),
     #         ]
     #     )
-    #     
+    #
 
     # elif "V.x" in data:
     #     V_bulk = np.array(
