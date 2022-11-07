@@ -754,7 +754,14 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     print("Time differences: ", time_difference)
 
     dcell = 227.0 / Re
-    pos_jonas = np.array([[-dcell, -dcell, 0], [0, dcell, 0], [dcell, -dcell, 0]])
+    phi = [-120, 0, 120]
+    pos_jonas = np.array(
+        [
+            [np.sin(np.deg2rad(phi[0])), np.cos(np.deg2rad(phi[0])), 0],
+            [np.sin(np.deg2rad(phi[1])), np.cos(np.deg2rad(phi[1])), 0],
+            [np.sin(np.deg2rad(phi[2])), np.cos(np.deg2rad(phi[2])), 0],
+        ]
+    )
 
     matrix_positions = np.zeros((3, 3))
     pos_ref_sc = np.zeros((3, 3))

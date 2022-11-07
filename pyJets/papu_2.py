@@ -1591,6 +1591,14 @@ def trifecta(runid, kind="non", draw=True):
             vlsvobj.get_cellid([x0 * r_e, y0 * r_e + d_cell, 0 * r_e]),
             vlsvobj.get_cellid([x0 * r_e + d_cell, y0 * r_e - d_cell, 0 * r_e]),
         ]
+        coords = [
+            [
+                x0 * r_e + np.sin(np.deg2rad(phi)) * d_cell,
+                x0 * r_e + np.cos(np.deg2rad(phi)) * d_cell,
+                0,
+            ]
+            for phi in [-120, 0, 120]
+        ]
         data_arr = np.zeros((3, len(var_list) + 3 + 1, fnr_arr.size), dtype=float)
 
         for idx, fnr in enumerate(fnr_arr):
@@ -1600,14 +1608,30 @@ def trifecta(runid, kind="non", draw=True):
                 )
                 for idx2, var in enumerate(var_list):
                     data_arr[:, idx2, idx] = (
-                        vlsvobj.read_variable(var, cellids=cellids, operator=ops[idx2])
+                        # vlsvobj.read_variable(var, cellids=cellids, operator=ops[idx2])
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    var, coord, operator=ops[idx2]
+                                )
+                                for coord in coords
+                            ]
+                        )
                         * scales[idx2]
                         / run_norm[idx2]
                     )
                 for idx2 in range(3):
                     data_arr[:, len(var_list) + idx2, idx] = (
-                        vlsvobj.read_variable(
-                            "v", cellids=cellids, operator=v_ops[idx2]
+                        # vlsvobj.read_variable(
+                        #     "v", cellids=cellids, operator=v_ops[idx2]
+                        # )
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    "v", coord, operator=v_ops[idx2]
+                                )
+                                for coord in coords
+                            ]
                         )
                         * scales[2]
                     )
@@ -1797,7 +1821,9 @@ def kind_timeseries(runid, kind="non"):
                 )
                 for idx2, var in enumerate(var_list):
                     data_arr[idx2, idx] = (
-                        vlsvobj.read_variable(var, cellids=cellid, operator=ops[idx2])
+                        vlsvobj.read_interpolated_variable(
+                            var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                        )
                         * scales[idx2]
                         / run_norm[idx2]
                     )
