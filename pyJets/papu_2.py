@@ -3596,7 +3596,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         # broken_streamlines=False,
         color="k",
         linewidth=0.8,
-        minlength=8,
+        # minlength=4,
     )
 
     jet_cont = ax.contour(
