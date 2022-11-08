@@ -3595,7 +3595,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         arrowstyle="-",
         # broken_streamlines=False,
         color="k",
-        linewidth=1.0,
+        linewidth=0.8,
+        minlength=8,
     )
 
     jet_cont = ax.contour(
@@ -3850,7 +3851,7 @@ def non_jet_omni(runid):
             ax_sw.grid()
             ax_sw.tick_params(labelsize=16)
             ax_sw.set_title("Trifecta timing analysis", fontsize=20, pad=10)
-            ax_ne.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+            ax_sw.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         except:
             ax_sw.set_axis_off()
 
@@ -3945,7 +3946,7 @@ def non_jet_omni(runid):
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
                 ax.annotate(
-                    annots[idx], (0.05, 0.85), xycoords="axes fraction", fontsize=20
+                    annots[idx], (0.05, 0.80), xycoords="axes fraction", fontsize=20
                 )
             ax_se_list[0].set_title("Timeseries", fontsize=20, pad=10)
         except:
