@@ -4310,6 +4310,7 @@ def timing_comp():
                     * Bsw
                     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
                     / vsw
+                    / 1.0e3
                 )
                 vay_avg_arr[idx] = (
                     vay_avg_arr[idx]
@@ -4317,6 +4318,7 @@ def timing_comp():
                     * Bsw
                     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
                     / vsw
+                    / 1.0e3
                 )
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
