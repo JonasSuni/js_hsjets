@@ -3587,8 +3587,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     CB_color_cycle = jx.CB_color_cycle
 
-    # start_points = np.array([np.ones(10) * x0, np.linspace(y0 - 0.9, y0 + 0.9, 10)]).T
-    start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
+    start_points = np.array(
+        [np.ones(20) * x0 + 0.9, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
+    ).T
+    # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
 
     stream = ax.streamplot(
         XmeshXY,
