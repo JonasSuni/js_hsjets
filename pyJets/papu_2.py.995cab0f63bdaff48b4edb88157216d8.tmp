@@ -3595,7 +3595,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         B[:, :, 0],
         B[:, :, 1],
-        arrowstyle="-",
+        #arrowstyle="-",
         # broken_streamlines=False,
         color="k",
         linewidth=0.8,
