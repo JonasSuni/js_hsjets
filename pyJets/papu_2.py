@@ -3587,6 +3587,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     CB_color_cycle = jx.CB_color_cycle
 
+    start_points = np.array([np.ones(10)*x0,np.linspace(y0-2,y0+2,10)]).T
+
     stream = ax.streamplot(
         XmeshXY,
         YmeshXY,
@@ -3597,6 +3599,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         color="k",
         linewidth=0.8,
         # minlength=4,
+        density=35,
+        start_points=start_points
     )
 
     jet_cont = ax.contour(
@@ -3714,6 +3718,7 @@ def non_jet_omni(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for non_id in non_ids:
+        global x0,y0
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         t0 = props.read("time")[0]
         x0 = props.read("x_mean")[0]
