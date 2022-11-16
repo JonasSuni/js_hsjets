@@ -3688,10 +3688,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         proxy,
         (
             "Jet",
-            "$T_\mathrm{core}=3T_\mathrm{sw}$",
+            "$T_{core}=3T_{sw}$",
             "FCS",
-            "$n=2n_\mathrm{sw}$",
-            "$M_{\mathrm{MS},x}=1$",
+            "$n=2n_{sw}$",
+            "$M_{MS,x}=1$",
             "Non-FCS jet",
             "FCS-jet",
         ),
