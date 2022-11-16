@@ -562,7 +562,7 @@ def plot_ballooning(
         cutpoint=-1 * cut * r_e,
         nocb=True,
         scale=0.8,
-        tickinterval=2.0,
+        tickinterval=1.0,
     )
 
     plt.close("all")
@@ -730,9 +730,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     Jcb.ax.tick_params(labelsize=6)
     Jcb.set_label("J [nA/m$^2$]", size=6)
 
-    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.6, zorder=1)
-    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4, zorder=1)
-    ax.set_yticks([-1, 0, 1])
+    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.6)
+    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4)
 
     # Balloon_im = ax.pcolormesh(
     #     XmeshXY,
@@ -785,7 +784,6 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
             arrowstyle="-",
             color="gray",
             density=1.5,
-            zorder=0,
         )
 
     if normal_g == "x" and op_g == "fa" and write_txt_g:
