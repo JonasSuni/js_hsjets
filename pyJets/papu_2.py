@@ -3768,7 +3768,7 @@ def non_jet_omni(runid):
             vmin=0,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_{dyn}$\n[nPa]",
+            cbtitle="$P_{bdyn}$\n[nPa]",
             usesci=0,
             scale=2,
             title="",
