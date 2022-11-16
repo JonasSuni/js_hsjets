@@ -43,6 +43,7 @@ def jet_pos_plot():
     CB_color_cycle = jx.CB_color_cycle
     # kinds = ["foreshock", "beam", "complex", "stripe"]
     kinds = ["foreshock", "beam"]
+    kinds_pub = ["Antisunward\njets", "Flankward\njets"]
     draw_labels = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
@@ -151,7 +152,7 @@ def jet_pos_plot():
                         y0,
                         "x",
                         color=CB_color_cycle[n2],
-                        label=kinds[n2].capitalize(),
+                        label=kinds_pub[n2].capitalize(),
                         rasterized=True,
                         zorder=2,
                     )
@@ -3685,18 +3686,27 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     ax.legend(
         proxy,
-        ("Jet", "BS CH", "FCS", "BS rho", "BS Mmsx", "Non-FCS jet", "FCS-jet"),
+        (
+            "Jet",
+            "$T_\mathrm{core}=3T_\mathrm{sw}$",
+            "FCS",
+            "$n=2n_\mathrm{sw}$",
+            "$M_{\mathrm{MS},x}=1$",
+            "Non-FCS jet",
+            "FCS-jet",
+        ),
         frameon=True,
         numpoints=1,
         markerscale=1,
-        loc="upper right",
-        fontsize=16,
+        loc="lower left",
+        fontsize=14,
     )
 
 
 def non_jet_omni(runid):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
+    runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g
     runid_g = runid
@@ -3758,7 +3768,7 @@ def non_jet_omni(runid):
             vmin=0,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            cbtitle="$P_\mathrm{dyn}$\n[nPa]",
             usesci=0,
             scale=2,
             title="",
@@ -3781,9 +3791,11 @@ def non_jet_omni(runid):
             ],
         )
         ax_nw.set_title(
-            "Run: {}, ID: {}\n t = {}s".format(runid, non_id, float(fnr0) / 2.0),
+            "Run: {}, ID: {}\n t = {}s".format(
+                runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            ),
             pad=10,
-            fontsize=20,
+            fontsize=24,
         )
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
@@ -3811,10 +3823,10 @@ def non_jet_omni(runid):
         ax_ne.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=[CB_color_cycle[3]])
         ax_ne.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
         ax_ne.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
-        ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=20, pad=10)
+        ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
         ax_ne.set_xlim(x_range[0], x_range[-1])
         ax_ne.set_ylim(t0 - 10, t0 + 10)
-        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
@@ -3851,14 +3863,14 @@ def non_jet_omni(runid):
                     scale=1,
                 )
             ax_sw.legend(fontsize=16)
-            ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24)
-            ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24)
+            ax_sw.set_xlabel("$V_X$ [km/s]", fontsize=24, labelpad=10)
+            ax_sw.set_ylabel("$V_Y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
             ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
             ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
             ax_sw.grid()
             ax_sw.tick_params(labelsize=16)
-            ax_sw.set_title("Trifecta timing analysis", fontsize=20, pad=10)
+            ax_sw.set_title("Timing analysis", fontsize=24, pad=10)
             ax_sw.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         except:
             ax_sw.set_axis_off()
@@ -3945,10 +3957,10 @@ def non_jet_omni(runid):
                 ax.set_xlim(t_arr[0], t_arr[-1])
                 if draw_legend[idx]:
                     ax.legend(loc="lower right")
-            ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=20)
+            ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=24)
             for idx, ax in enumerate(ax_se_list):
                 ax.grid()
-                ax.set_ylabel(ylabels[idx], fontsize=16)
+                ax.set_ylabel(ylabels[idx], fontsize=20)
                 ax.axvline(t0, linestyle="dashed")
                 ax.tick_params(labelsize=16)
                 if idx != len(ax_se_list) - 1:
@@ -3956,7 +3968,7 @@ def non_jet_omni(runid):
                 ax.annotate(
                     annots[idx], (0.05, 0.80), xycoords="axes fraction", fontsize=20
                 )
-            ax_se_list[0].set_title("Timeseries", fontsize=20, pad=10)
+            ax_se_list[0].set_title("Timeseries", fontsize=24, pad=10)
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
@@ -4209,7 +4221,7 @@ def SEA_timeseries_comp():
         avg_arr[idx] = avg_arr[idx] / counters[idx]
     fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(24, 16))
     for idx2, kind in enumerate(kinds):
-        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=24, pad=10)
+        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=32, pad=10)
         for idx in range(len(plot_labels)):
             ax = ax_list[plot_index[idx]][idx2]
             ax.plot(
@@ -4222,13 +4234,13 @@ def SEA_timeseries_comp():
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
                 ax.legend(loc="lower right", fontsize=16)
-        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=24, labelpad=10)
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=32, labelpad=10)
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
             ax.tick_params(labelsize=20)
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
             if idx2 == 0:
-                ax.set_ylabel(ylabels[idx], fontsize=24, labelpad=10)
+                ax.set_ylabel(ylabels[idx], fontsize=32, labelpad=10)
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
             ax.annotate(
