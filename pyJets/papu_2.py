@@ -3766,7 +3766,7 @@ def non_jet_omni(runid):
             filename=bulkpath + fname,
             var="Pdyn",
             vmin=0,
-            vmax=pdmax,
+            vmax=pdmax + 0.1,
             vscale=1e9,
             # cbtitle="$P_{dyn}$\n[nPa]",
             usesci=0,
