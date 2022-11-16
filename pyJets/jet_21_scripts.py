@@ -730,8 +730,8 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     Jcb.ax.tick_params(labelsize=6)
     Jcb.set_label("J [nA/m$^2$]", size=6)
 
-    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="cyan", linewidths=0.6)
-    # ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4)
+    ax.contour(XmeshXY, YmeshXY, vx, 0, colors="black", linewidths=0.6)
+    ax.contour(XmeshXY, YmeshXY, Bx, 0, colors="red", linewidths=0.4)
 
     # Balloon_im = ax.pcolormesh(
     #     XmeshXY,
@@ -744,14 +744,15 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
     # )
 
     if op_g == "mag":
-        ax.contour(
-            XmeshXY,
-            YmeshXY,
-            balloon_masked20.mask.astype(int),
-            [0.5],
-            colors=["magenta"],
-            linewidths=0.6,
-        )
+        print("mag")
+        # ax.contour(
+        #     XmeshXY,
+        #     YmeshXY,
+        #     balloon_masked20.mask.astype(int),
+        #     [0.5],
+        #     colors=["magenta"],
+        #     linewidths=0.6,
+        # )
         # ax.contour(
         #     XmeshXY,
         #     YmeshXY,
