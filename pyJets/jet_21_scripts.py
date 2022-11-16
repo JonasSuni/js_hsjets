@@ -102,7 +102,7 @@ def tail_sheet_jplot(xcut=20):
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
-            "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
+            "/wrk-vakka/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
                 fnr, fnr
             )
         )
@@ -150,7 +150,7 @@ def tail_sheet_jplot_y(xcut=20):
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
-            "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
+            "/wrk-vakka/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
                 fnr, fnr
             )
         )
@@ -179,20 +179,20 @@ def make_plots(cb=False):
     cmaps = ["warhol", "magma", "jet", "plasma", "viridis"]
 
     # bulk_paths = [
-    #     "/wrk/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv",
-    #     "/wrk/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
-    #     "/wrk/group/spacephysics/vlasiator/2D/AEA/round_3_boundary_sw/bulk.0001000.vlsv",
-    #     "/wrk/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
-    #     "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
-    #     "/wrk/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/ABA/bulk/bulk.0001000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/ABC/bulk/bulk.0001000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/AEA/round_3_boundary_sw/bulk.0001000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/AEC/bulk/bulk.0001000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
+    #     "/wrk-vakka/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
     # ]
     bulk_paths = [
-        "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
-        "/wrk/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
+        "/wrk-vakka/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
+        "/wrk-vakka/group/spacephysics/vlasiator/2D/BFD/bulk/bulk.0002000.vlsv",
     ]
     if cb:
         bulk_paths = [
-            "/wrk/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
+            "/wrk-vakka/group/spacephysics/vlasiator/2D/BCQ/bulk/bulk.0002000.vlsv",
         ]
         vars = ["v"]
         cmaps = ["warhol"]
@@ -419,19 +419,19 @@ def ballooning_liu(B, P, beta, vA, dr=1000e3, normal="y"):
 
     balloon = beta * kappaP - kappaC
     omega2 = (
-        vA ** 2
+        vA**2
         / (2 + gamma * beta)
         * (
-            (1 + gamma * beta) * kpar ** 2
+            (1 + gamma * beta) * kpar**2
             + kappaC * (2 * (kappaB - kappaC) + gamma * beta * (kappaB + kappaC))
             - np.sqrt(
                 (
-                    kpar ** 2
+                    kpar**2
                     + kappaC
                     * (2 * (kappaB - kappaC) + gamma * beta * (kappaB + kappaC))
                 )
                 ** 2
-                + 4 * gamma ** 2 * beta ** 2 * kpar ** 2 * kappaC ** 2
+                + 4 * gamma**2 * beta**2 * kpar**2 * kappaC**2
             )
         )
     )
@@ -452,7 +452,7 @@ def plot_ballooning(
     write_txt=False,
 ):
 
-    bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
+    bulkfile = "/wrk-vakka/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
     )
 
@@ -798,7 +798,9 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         txt_out = np.array([ymin, zmin, Jfa_min, Jfa_med])
 
         np.savetxt(
-            "/wrk/users/jesuni/Figures/sum21/fac_txt/x{}_t{}".format(cut_g, tstep_g),
+            "/wrk-vakka/users/jesuni/Figures/sum21/fac_txt/x{}_t{}".format(
+                cut_g, tstep_g
+            ),
             txt_out,
         )
 
@@ -815,7 +817,7 @@ def ext_plot_ballooning(ax, XmeshXY, YmeshXY, pass_maps):
         )
         txt_out = np.array([XmeshXY[0], Jsheet, Balloonsheet]).T
         np.savetxt(
-            "/wrk/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}".format(
+            "/wrk-vakka/users/jesuni/Figures/sum21/balloon_txt/x{}_t{}".format(
                 cut_g, tstep_g
             ),
             txt_out,
@@ -922,7 +924,7 @@ def tail_sheet_jplot_balloon(xcut=14):
 
     for fnr in fnr_range:
         ffjs = np.loadtxt(
-            "/wrk/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
+            "/wrk-vakka/group/spacephysics/vlasiator/3D/EGI/visualizations/FFJ/dx_2e6_series/{}/ascii_rxpoints_tail_neighbourhood_1_extend_4_4_4_000{}.dat".format(
                 fnr, fnr
             )
         )
@@ -943,7 +945,7 @@ def tail_sheet_jplot_balloon(xcut=14):
 
 def plot_residual_bz(tstep):
 
-    bulkfile = "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
+    bulkfile = "/wrk-vakka/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1.{}.vlsv".format(
         str(tstep).zfill(7)
     )
 
@@ -973,7 +975,7 @@ def ext_residual_bz(ax, XmeshXY, YmeshXY, pass_maps):
 
     Bz = pass_maps["vg_b_vol"][:, :, 2]
 
-    Bz_dipole = 3.12e-5 / np.sqrt(XmeshXY ** 2 + YmeshXY ** 2) ** 3
+    Bz_dipole = 3.12e-5 / np.sqrt(XmeshXY**2 + YmeshXY**2) ** 3
 
     residual_bz = (Bz - Bz_dipole) / 1e-9
 
