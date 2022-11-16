@@ -513,8 +513,9 @@ def plot_ballooning(
         idx_g = idx
         pt.plot.plot_colormap3dslice(
             filename=bulkfile,
+            outputfile=wrkdir_DNR + "balloon_testfig.png",
             var="proton/vg_rho",
-            draw=1,
+            # draw=1,
             external=ext_get_cuts,
             pass_vars=[
                 "vg_b_vol",
