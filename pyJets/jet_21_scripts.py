@@ -562,7 +562,7 @@ def plot_ballooning(
         cutpoint=-1 * cut * r_e,
         nocb=True,
         scale=0.8,
-        tickinterval=1.0,
+        tickinterval=2.0,
     )
 
     plt.close("all")
