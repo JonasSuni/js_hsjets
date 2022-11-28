@@ -4195,6 +4195,7 @@ def SEA_timeseries_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.array((len(kinds), len(ylabels) - 1, 1000), dtype=float)
+    print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
@@ -4217,6 +4218,7 @@ def SEA_timeseries_comp():
                 if np.isnan(data_arr).any():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
+                print(data_arr.shape)
                 epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 8]]
                 counters[idx] += 1
 
