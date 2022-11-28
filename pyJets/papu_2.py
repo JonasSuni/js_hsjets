@@ -4219,7 +4219,7 @@ def SEA_timeseries_comp():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 # print(data_arr.shape)
-                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 8]]
+                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
@@ -4254,6 +4254,7 @@ def SEA_timeseries_comp():
                     positions=[0],
                     manage_ticks=False,
                     widths=1.0,
+                    sym="",
                 )
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
