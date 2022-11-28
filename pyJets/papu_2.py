@@ -4195,7 +4195,7 @@ def SEA_timeseries_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.empty((len(kinds), len(ylabels) - 1, 1000), dtype=float)
-    #print(epoch_mag_arr.shape)
+    # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
@@ -4218,7 +4218,7 @@ def SEA_timeseries_comp():
                 if np.isnan(data_arr).any():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
-                #print(data_arr.shape)
+                # print(data_arr.shape)
                 epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 8]]
                 counters[idx] += 1
 
@@ -4250,7 +4250,10 @@ def SEA_timeseries_comp():
             ax.set_ylim(vmins[idx], vmaxs[idx])
             if idx != len(ylabels) - 1:
                 ax.boxplot(
-                    epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])]
+                    epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
+                    positions=[0],
+                    manage_ticks=False,
+                    widths=1.0,
                 )
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
