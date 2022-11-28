@@ -4219,7 +4219,8 @@ def SEA_timeseries_comp():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 # print(data_arr.shape)
-                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
+                # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
+                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20]
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
@@ -4236,6 +4237,19 @@ def SEA_timeseries_comp():
                 label=plot_labels[idx],
                 linewidth=2,
             )
+            ax.boxplot(
+                epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
+                positions=[0],
+                manage_ticks=False,
+                widths=1.0,
+                sym="",
+                notch=True,
+                boxprops=dict(color=plot_colors[idx]),
+                capprops=dict(color=plot_colors[idx]),
+                whiskerprops=dict(color=plot_colors[idx]),
+                # flierprops=dict(color=c, markeredgecolor=c),
+                medianprops=dict(color=plot_colors[idx]),
+            )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
                 ax.legend(loc="lower right", fontsize=16)
@@ -4248,14 +4262,15 @@ def SEA_timeseries_comp():
                 ax.set_ylabel(ylabels[idx], fontsize=32, labelpad=10)
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
-            if idx != len(ylabels) - 1:
-                ax.boxplot(
-                    epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
-                    positions=[0],
-                    manage_ticks=False,
-                    widths=1.0,
-                    sym="",
-                )
+            # if idx != len(ylabels) - 1:
+            #     ax.boxplot(
+            #         epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
+            #         positions=[0],
+            #         manage_ticks=False,
+            #         widths=1.0,
+            #         sym="",
+            #         notch=True,
+            #     )
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
             )
