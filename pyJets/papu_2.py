@@ -4194,6 +4194,8 @@ def SEA_timeseries_comp():
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
+    epoch_mag_arr = np.array((len(kinds), len(ylabels) - 1, 1000), dtype=float)
+    epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
         for idx, kind in enumerate(kinds):
@@ -4215,6 +4217,7 @@ def SEA_timeseries_comp():
                 if np.isnan(data_arr).any():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
+                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 8]]
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
@@ -4243,6 +4246,10 @@ def SEA_timeseries_comp():
                 ax.set_ylabel(ylabels[idx], fontsize=32, labelpad=10)
             ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
+            if idx != len(ylabels) - 1:
+                ax.boxplot(
+                    epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])]
+                )
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
             )

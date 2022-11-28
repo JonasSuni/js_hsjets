@@ -869,4 +869,6 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
         results["wave_velocity_plasma_frame"] = Vpl
         results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
 
+        results["bulk_velocity"] = V_bulk
+
     return results
