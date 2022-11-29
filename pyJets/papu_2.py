@@ -4315,7 +4315,8 @@ def kinds_pca():
                 if np.isnan(ts_data).any():
                     continue
                 # data_arr.append(ts_data[:, 20])
-                data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
+                data_arr.append(ts_data[:, [10, 20, 30]].flatten())
+                # data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
                 counters[idx] += 1
 
     Y = np.array(data_arr)
@@ -4346,7 +4347,7 @@ def kinds_pca():
     fig, ax = plt.subplots(1, 1)
 
     ax.set_xlabel("PCA1")
-    ax.set_xlabel("PCA2")
+    ax.set_ylabel("PCA2")
 
     for idx, row in enumerate(Z[:, 0]):
         ax.plot(
