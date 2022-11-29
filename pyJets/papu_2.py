@@ -4239,6 +4239,7 @@ def SEA_timeseries_comp():
                 label=plot_labels[idx],
                 linewidth=2,
             )
+            print(epoch_mag_arr[idx2, idx].shape)
             print(epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].shape)
             print(epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].T.shape)
             ax.boxplot(
