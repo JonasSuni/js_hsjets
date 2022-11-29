@@ -1,19 +1,21 @@
-from operator import ge
-import sys
-import matplotlib.style
-import matplotlib as mpl
+# from operator import ge
+# import sys
+# import matplotlib.style
+# import matplotlib as mpl
 import jet_aux as jx
 from pyJets.jet_aux import CB_color_cycle
 import pytools as pt
 import os
-import scipy
-import scipy.linalg
+
+# import scipy
+# import scipy.linalg
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
-from matplotlib.ticker import MaxNLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.lines import Line2D
+
+# from matplotlib.ticker import MaxNLocator
+# from mpl_toolkits.axes_grid1 import make_axes_locatable
+# from matplotlib.lines import Line2D
 from matplotlib.animation import FuncAnimation
 
 import plot_contours as pc
@@ -4194,7 +4196,7 @@ def SEA_timeseries_comp():
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
-    epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 1000), dtype=float)
+    epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 5, 1000), dtype=float)
     # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
@@ -4220,7 +4222,7 @@ def SEA_timeseries_comp():
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 # print(data_arr.shape)
                 # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
-                epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20]
+                epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 0::5]
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
@@ -4239,7 +4241,8 @@ def SEA_timeseries_comp():
             )
             ax.boxplot(
                 epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
-                positions=[0],
+                # positions=[0],
+                positions=range(0, 41, 5),
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
