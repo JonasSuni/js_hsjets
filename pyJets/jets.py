@@ -140,5 +140,5 @@ from papu_2 import (
     jmap_SEA_comp,
     SEA_timeseries_comp,
     timing_comp,
-    kinds_PCA,
+    kinds_pca,
 )
