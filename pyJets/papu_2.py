@@ -4243,7 +4243,7 @@ def SEA_timeseries_comp():
             print(epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].shape)
             print(epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].T.shape)
             ax.boxplot(
-                epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].T,
+                epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
                 positions=np.arange(0, 21, 5),
                 manage_ticks=False,
