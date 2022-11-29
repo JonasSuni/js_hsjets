@@ -4336,7 +4336,7 @@ def kinds_pca():
     X = Y - np.matmul(ones_arr, np.diag(mean_arr))
     V = np.diag(1.0 / std_arr)
     X = np.matmul(X, V)
-    S = np.matmul(X.T, X) / (np.sum(counters) - 1)
+    S = np.matmul(X.T, X) / (n - 1)
 
     lbd, U = np.linalg.eig(S)
     U = U.T
