@@ -4335,7 +4335,7 @@ def kinds_pca():
     X = np.matmul(X, V)
     S = np.matmul(X.T, X) / (np.sum(counters) - 1)
 
-    lbd = np.linalg.eig(S)
+    lbd,U = np.linalg.eig(S)
     U = U.T
     print(U.shape)
 
