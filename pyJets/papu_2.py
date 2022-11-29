@@ -4328,7 +4328,7 @@ def kinds_pca():
 
     mean_arr = np.mean(Y, axis=0)
     std_arr = np.std(Y, axis=0, ddof=1)
-    ones_arr = np.ones((p, p))
+    ones_arr = np.ones((n, p))
 
     X = Y - np.matmul(ones_arr, np.diag(mean_arr))
     V = np.diag(1.0 / std_arr)
