@@ -4222,7 +4222,7 @@ def SEA_timeseries_comp():
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 # print(data_arr.shape)
                 # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
-                epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 0::5]
+                epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 0::10]
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
@@ -4242,7 +4242,7 @@ def SEA_timeseries_comp():
             ax.boxplot(
                 epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
                 # positions=[0],
-                positions=range(0, 41, 5),
+                positions=range(0, 41, 10),
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
