@@ -4352,8 +4352,8 @@ def kinds_pca():
 
     for idx, row in enumerate(Z[:, 0]):
         ax.plot(
-            Z[idx, 0],
             Z[idx, 1],
+            Z[idx, 2],
             sym_arr[idx],
             color=color_arr[idx],
         )
