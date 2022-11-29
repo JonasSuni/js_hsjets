@@ -4314,7 +4314,8 @@ def kinds_pca():
                 )
                 if np.isnan(ts_data).any():
                     continue
-                data_arr.append(ts_data[:, 20])
+                # data_arr.append(ts_data[:, 20])
+                data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
                 counters[idx] += 1
 
     Y = np.array(data_arr)
@@ -4332,7 +4333,7 @@ def kinds_pca():
 
     X = Y - np.matmul(ones_arr, np.diag(mean_arr))
     V = np.diag(1.0 / std_arr)
-    # X = np.matmul(X, V)
+    X = np.matmul(X, V)
     S = np.matmul(X.T, X) / (np.sum(counters) - 1)
 
     lbd, U = np.linalg.eig(S)
