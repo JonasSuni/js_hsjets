@@ -4337,8 +4337,10 @@ def kinds_pca():
 
     U, lbd = np.linalg.eig(S)
     U = U.T
+    print(U.shape)
 
     Z = np.matmul(X, U)
+    print(Z.shape)
 
     fig, ax = plt.subplots(1, 1)
 
