@@ -4287,6 +4287,81 @@ def SEA_timeseries_comp():
     plt.close(fig)
 
 
+def kinds_pca():
+
+    kinds = ["beam", "foreshock", "fcs"]
+    kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+
+    data_arr = []
+    counters = [0, 0, 0]
+
+    for idx, kind in enumerate(kinds):
+        for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
+            if kind == "fcs":
+                non_ids = get_fcs_jets(runid)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+            for non_id in non_ids:
+                ts_data = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/timeseries_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                if np.isnan(ts_data).any():
+                    continue
+                data_arr.append(ts_data[:, 20])
+                counters[idx] += 1
+
+    Y = np.array(data_arr)
+    n, p = Y.shape
+    color_arr = (
+        [CB_color_cycle[0]] * counters[0]
+        + [CB_color_cycle[1]] * counters[1]
+        + [CB_color_cycle[2]] * counters[2]
+    )
+    sym_arr = ["o"] * counters[0] + ["x"] * counters[1] + ["^"] * counters[2]
+
+    mean_arr = np.mean(Y, axis=0)
+    std_arr = np.std(Y, axis=0, ddof=1)
+    ones_arr = np.ones((p, p))
+
+    X = Y - np.matmul(ones_arr, np.diag(mean_arr))
+    V = np.diag(1.0 / std_arr)
+    X = np.matmul(X, V)
+    S = np.matmul(X.T, X) / (np.sum(counters) - 1)
+
+    U, lbd = np.linalg.eig(S)
+    U = U.T
+
+    Z = np.matmul(X, U)
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.set_xlabel("PCA1")
+    ax.set_xlabel("PCA2")
+
+    for idx, row in enumerate(Z[:, 0]):
+        ax.plot(
+            Z[idx, 0],
+            Z[idx, 1],
+            sym_arr[idx],
+            color=color_arr[idx],
+        )
+
+    plt.tight_layout()
+
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/kinds_pca.pdf",
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def timing_comp():
 
     vsws = [750, 600, 750, 600]
