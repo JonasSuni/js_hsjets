@@ -4240,9 +4240,9 @@ def SEA_timeseries_comp():
                 linewidth=2,
             )
             ax.boxplot(
-                epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])],
+                epoch_mag_arr[idx2, idx][~np.isnan(epoch_mag_arr[idx2, idx])].T,
                 # positions=[0],
-                positions=range(0, 41, 10),
+                positions=range(0, 21, 5),
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
