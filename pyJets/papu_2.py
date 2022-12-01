@@ -4164,7 +4164,7 @@ def print_means_max():
                     epochval[idx2, idx] / means[idx2, idx],
                 )
             )
-            print("\n")
+        print("\n")
 
     return None
 
