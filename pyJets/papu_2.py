@@ -4444,7 +4444,7 @@ def timing_comp():
     ]
 
     fnr_arr = np.arange(0 - 20, 0 + 21)
-    avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
+    avg_arr = np.zeros((3, 3, len(ylabels) + 6 + 1, fnr_arr.size), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
