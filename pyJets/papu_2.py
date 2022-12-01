@@ -1667,7 +1667,7 @@ def trifecta(runid, kind="non", draw=True):
             ]
             for phi in [-120, 0, 120]
         ]
-        data_arr = np.zeros((3, len(var_list) + 3 + 1, fnr_arr.size), dtype=float)
+        data_arr = np.zeros((3, len(var_list) + 6 + 1, fnr_arr.size), dtype=float)
 
         for idx, fnr in enumerate(fnr_arr):
             try:
