@@ -4150,6 +4150,7 @@ def print_means_max():
         "Tpar",
         "Tperp",
     ]
+    print("test")
 
     kinds = ["Flankward", "Antisunward", "FCS"]
 
