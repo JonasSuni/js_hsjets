@@ -757,9 +757,9 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     phi = [-120, 0, 120]
     pos_jonas = np.array(
         [
-            [dcell*np.sin(np.deg2rad(phi[0])), dcell*np.cos(np.deg2rad(phi[0])), 0],
-            [dcell*np.sin(np.deg2rad(phi[1])), dcell*np.cos(np.deg2rad(phi[1])), 0],
-            [dcell*np.sin(np.deg2rad(phi[2])), dcell*np.cos(np.deg2rad(phi[2])), 0],
+            [dcell * np.sin(np.deg2rad(phi[0])), dcell * np.cos(np.deg2rad(phi[0])), 0],
+            [dcell * np.sin(np.deg2rad(phi[1])), dcell * np.cos(np.deg2rad(phi[1])), 0],
+            [dcell * np.sin(np.deg2rad(phi[2])), dcell * np.cos(np.deg2rad(phi[2])), 0],
         ]
     )
 
@@ -831,6 +831,14 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
             np.mean(data[ref_sc, 7]),
         ]
     )
+    V_A = np.array(
+        [
+            np.mean(data[ref_sc, 8]),
+            np.mean(data[ref_sc, 9]),
+            np.mean(data[ref_sc, 10]),
+        ]
+    )
+    results["alfven_velocity"] = V_A
     print("Bulk velocity: ", V_bulk, np.linalg.norm(V_bulk))
     Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
 

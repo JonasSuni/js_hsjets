@@ -1579,7 +1579,7 @@ def SEA_trifecta(kind):
     # print(
     #     "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
     # )
-    avg_res = avg_arr[0, 8]
+    avg_res = avg_arr[0, 11]
     print(
         "\nLUCILES AVGS\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s, VX_rel = {:.3g}, VY_rel = {:.3g}\n".format(
             kind,
@@ -1676,7 +1676,6 @@ def trifecta(runid, kind="non", draw=True):
                 )
                 for idx2, var in enumerate(var_list):
                     data_arr[:, idx2, idx] = (
-                        # vlsvobj.read_variable(var, cellids=cellids, operator=ops[idx2])
                         np.array(
                             [
                                 vlsvobj.read_interpolated_variable(
@@ -1690,9 +1689,6 @@ def trifecta(runid, kind="non", draw=True):
                     )
                 for idx2 in range(3):
                     data_arr[:, len(var_list) + idx2, idx] = (
-                        # vlsvobj.read_variable(
-                        #     "v", cellids=cellids, operator=v_ops[idx2]
-                        # )
                         np.array(
                             [
                                 vlsvobj.read_interpolated_variable(
@@ -1702,6 +1698,22 @@ def trifecta(runid, kind="non", draw=True):
                             ]
                         )
                         * scales[2]
+                    )
+                    data_arr[:, len(var_list) + 3 + idx2, idx] = np.array(
+                        [
+                            vlsvobj.read_interpolated_variable(
+                                "B", coords[idx3], operator=v_ops[idx2]
+                            )
+                            / np.sqrt(
+                                m_p
+                                * mu0
+                                * vlsvobj.read_interpolated_variable(
+                                    "rho", coords[idx3]
+                                )
+                            )
+                            * scales[2]
+                            for idx3 in range(3)
+                        ]
                     )
             except:
                 data_arr[:, :, idx] = np.nan
@@ -1715,10 +1727,12 @@ def trifecta(runid, kind="non", draw=True):
             wave_v_sc * wave_vector[1][0],
             results["wave_velocity_relative2sc"][0],
             results["wave_velocity_relative2sc"][1],
-            vpl * wave_vector[0][0],
-            vpl * wave_vector[1][0],
+            results["bulk_velocity"][0],
+            results["bulk_velocity"][1],
+            results["alfven_velocity"][0],
+            results["alfven_velocity"][1],
         ]
-        data_arr[0, 8, :6] = out_results
+        data_arr[0, len(var_list) + 6, :8] = out_results
 
         if draw:
             fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
@@ -3839,13 +3853,11 @@ def non_jet_omni(runid):
                 wrkdir_DNR
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
-            res = trifecta_data[0, 8]
-            bVx, bVy, bVz = vlsvobj.read_variable("v", cellids=cellid) / 1.0e3
+            res = trifecta_data[0, 11]
             B = vlsvobj.read_variable("B", cellids=cellid)
             n = vlsvobj.read_variable("rho", cellids=cellid)
-            vAx, vAy, vAz = B / np.sqrt(m_p * n * mu0) / 1.0e3
-            vx_arr = np.array([res[0], res[2], bVx, vAx])
-            vy_arr = np.array([res[1], res[3], bVy, vAy])
+            vx_arr = np.array([res[0], res[2], res[4], res[6]])
+            vy_arr = np.array([res[1], res[3], res[5], res[7]])
             arrow_labels = [
                 "$v_\mathrm{timing}$",
                 "$v_\mathrm{SC frame}$",
@@ -4434,15 +4446,15 @@ def timing_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 3 + 1, fnr_arr.size), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
-    vax_avg_arr = np.zeros((3, fnr_arr.size))
-    vay_avg_arr = np.zeros((3, fnr_arr.size))
+    # vax_avg_arr = np.zeros((3, fnr_arr.size))
+    # vay_avg_arr = np.zeros((3, fnr_arr.size))
     counters = [0, 0, 0]
 
     for idx, kind in enumerate(kinds):
         for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
             vsw = vsws[idx2]
-            Bsw = Bsws[idx2]
-            nsw = nsws[idx2]
+            # Bsw = Bsws[idx2]
+            # nsw = nsws[idx2]
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
@@ -4452,12 +4464,12 @@ def timing_comp():
                     ndmin=1,
                 )
             for non_id in non_ids:
-                ts_data = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/timeseries_txts/{}_{}.txt".format(
-                        runid, str(non_id).zfill(5)
-                    )
-                )
+                # ts_data = np.loadtxt(
+                #     wrkdir_DNR
+                #     + "papu22/timeseries_txts/{}_{}.txt".format(
+                #         runid, str(non_id).zfill(5)
+                #     )
+                # )
                 data_arr = np.load(
                     wrkdir_DNR
                     + "papu22/trifecta_txts/{}_{}.npy".format(
@@ -4466,106 +4478,49 @@ def timing_comp():
                 )
                 data_arr[:, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
-                vax_avg_arr[idx] = (
-                    vax_avg_arr[idx]
-                    + ts_data[6, :]
-                    * Bsw
-                    / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
-                    / vsw
-                    / 1.0e3
-                )
-                vay_avg_arr[idx] = (
-                    vay_avg_arr[idx]
-                    + ts_data[7, :]
-                    * Bsw
-                    / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
-                    / vsw
-                    / 1.0e3
-                )
+                # vax_avg_arr[idx] = (
+                #     vax_avg_arr[idx]
+                #     + ts_data[6, :]
+                #     * Bsw
+                #     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
+                #     / vsw
+                #     / 1.0e3
+                # )
+                # vay_avg_arr[idx] = (
+                #     vay_avg_arr[idx]
+                #     + ts_data[7, :]
+                #     * Bsw
+                #     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
+                #     / vsw
+                #     / 1.0e3
+                # )
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
-    for idx, kind in enumerate(kinds):
-        avg_arr[idx] = avg_arr[idx] / counters[idx]
-        # ts_avg_arr[idx] = ts_avg_arr[idx] / counters[idx]
-        vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
-        vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
+    # for idx, kind in enumerate(kinds):
+    #     avg_arr[idx] = avg_arr[idx] / counters[idx]
+    #     vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
+    #     vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
     )
-    # n_avg = [
-    #     np.nanmean(avg_arr[0, :, 0, :].flatten()),
-    #     np.nanmean(avg_arr[1, :, 0, :].flatten()),
-    #     np.nanmean(avg_arr[2, :, 0, :].flatten()),
-    # ]
-    vbx_avg = [
-        np.nanmean(avg_arr[0, :, 5, :].flatten()),
-        np.nanmean(avg_arr[1, :, 5, :].flatten()),
-        np.nanmean(avg_arr[2, :, 5, :].flatten()),
-    ]
-    vby_avg = [
-        np.nanmean(avg_arr[0, :, 6, :].flatten()),
-        np.nanmean(avg_arr[1, :, 6, :].flatten()),
-        np.nanmean(avg_arr[2, :, 6, :].flatten()),
-    ]
-    # n_avg = [
-    #     np.nanmean(ts_avg_arr[0, 0, :]),
-    #     np.nanmean(ts_avg_arr[1, 0, :]),
-    #     np.nanmean(ts_avg_arr[2, 0, :]),
-    # ]
-    # vbx_avg = [
-    #     np.nanmean(ts_avg_arr[0, 1, :]),
-    #     np.nanmean(ts_avg_arr[1, 1, :]),
-    #     np.nanmean(ts_avg_arr[2, 1, :]),
-    # ]
-    # vby_avg = [
-    #     np.nanmean(ts_avg_arr[0, 2, :]),
-    #     np.nanmean(ts_avg_arr[1, 2, :]),
-    #     np.nanmean(ts_avg_arr[2, 2, :]),
-    # ]
-    # bx_avg = [
-    #     np.nanmean(ts_avg_arr[0, 6, :]),
-    #     np.nanmean(ts_avg_arr[1, 6, :]),
-    #     np.nanmean(ts_avg_arr[2, 6, :]),
-    # ]
-    # by_avg = [
-    #     np.nanmean(ts_avg_arr[0, 7, :]),
-    #     np.nanmean(ts_avg_arr[1, 7, :]),
-    #     np.nanmean(ts_avg_arr[2, 7, :]),
-    # ]
-    vax_avg = [
-        np.nanmean(vax_avg_arr[0]),
-        np.nanmean(vax_avg_arr[1]),
-        np.nanmean(vax_avg_arr[2]),
-    ]
-    vay_avg = [
-        np.nanmean(vay_avg_arr[0]),
-        np.nanmean(vay_avg_arr[1]),
-        np.nanmean(vay_avg_arr[2]),
-    ]
-
     vx_all = []
     vy_all = []
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
-        avg_res = avg_arr[idx, 0, 8]
-        # results = jx.timing_analysis_datadict(avg_arr[idx])
+        avg_res = avg_arr[idx, 0, 11]
         vx = [
             avg_res[0],
             avg_res[2],
-            # results["wave_velocity_relative2sc"][0],
-            vbx_avg[idx],
-            vax_avg[idx],
-            # bx_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
+            avg_res[4],
+            avg_res[6],
         ]
         vy = [
             avg_res[1],
             avg_res[3],
-            # results["wave_velocity_relative2sc"][1],
-            vby_avg[idx],
-            vay_avg[idx],
-            # by_avg[idx] / np.sqrt(mu0 * m_p * n_avg[idx]),
+            avg_res[5],
+            avg_res[7],
         ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
