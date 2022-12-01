@@ -4158,10 +4158,11 @@ def print_means_max():
         for idx2, kind in enumerate(kinds):
             print(
                 kind
-                + ": Mean = {:.5g}, Epochval = {:.5g}, Enhancement = {:.5g}".format(
+                + ": Mean = {:.3g}, Epochval = {:.3g}, Enhancement = {:.3g}, Delta = {:.3g}".format(
                     means[idx2, idx],
                     epochval[idx2, idx],
                     epochval[idx2, idx] / means[idx2, idx],
+                    epochval[idx2, idx] - means[idx2, idx],
                 )
             )
         print("\n")
