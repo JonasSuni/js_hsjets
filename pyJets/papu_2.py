@@ -4130,6 +4130,45 @@ def jmap_SEA_comp(run_id):
     plt.close(fig)
 
 
+def print_means_max():
+
+    means_maxes = np.load(wrkdir_DNR + "papu22/SEA_timeseries_mean_max.npy")
+
+    means, epochval = means_maxes
+
+    varnames = [
+        "rho",
+        "vx",
+        "vy",
+        "vz",
+        "vmag",
+        "pdyn",
+        "Bx",
+        "By",
+        "Bz",
+        "Bmag",
+        "Tpar",
+        "Tperp",
+    ]
+
+    kinds = ["Flankward", "Antisunward", "FCS"]
+
+    for idx, var in enumerate(varnames):
+        print(var)
+        for idx2, kind in enumerate(kinds):
+            print(
+                kind
+                + ": Mean = {:.5g}, Epochval = {:.5g}, Enhancement = {:.5g}".format(
+                    means[idx2, idx],
+                    epochval[idx2, idx],
+                    epochval[idx2, idx] / means[idx2, idx],
+                )
+            )
+            print("\n")
+
+    return None
+
+
 def SEA_timeseries_comp():
 
     plot_labels = [
@@ -4227,6 +4266,13 @@ def SEA_timeseries_comp():
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
+
+    means = np.mean(avg_arr, axis=-1)
+    epochval = avg_arr[:, :, 20]
+
+    means_max_arr = np.array([means, epochval])
+    np.save(wrkdir_DNR + "papu22/SEA_timeseries_mean_max", means_max_arr)
+
     fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(24, 24))
     for idx2, kind in enumerate(kinds):
         ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=32, pad=10)

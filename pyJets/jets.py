@@ -141,4 +141,5 @@ from papu_2 import (
     SEA_timeseries_comp,
     timing_comp,
     kinds_pca,
+    print_means_max,
 )
