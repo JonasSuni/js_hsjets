@@ -4510,6 +4510,7 @@ def timing_comp():
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 11]
+        print(avg_res)
         vx = [
             avg_res[0],
             avg_res[2],
