@@ -4385,6 +4385,7 @@ def kinds_pca():
         + [CB_color_cycle[2]] * counters[2]
     )
     sym_arr = ["o"] * counters[0] + ["x"] * counters[1] + ["^"] * counters[2]
+    zorder_arr = [2] * counters[0] + [1] * counters[1] + [0] * counters[2]
 
     mean_arr = np.mean(Y, axis=0)
     mean_lda = [np.mean(arr, axis=0) for arr in Y_lda]
@@ -4447,12 +4448,14 @@ def kinds_pca():
             Z[idx, 1],
             sym_arr[idx],
             color=color_arr[idx],
+            zorder=zorder_arr[idx],
         )
         ax[1].plot(
             Z[idx, 0],
             Z[idx, 2],
             sym_arr[idx],
             color=color_arr[idx],
+            zorder=zorder_arr[idx],
         )
 
     plt.tight_layout()
@@ -4475,12 +4478,14 @@ def kinds_pca():
             Z_lda[idx, 1],
             sym_arr[idx],
             color=color_arr[idx],
+            zorder=zorder_arr[idx],
         )
         ax[1].plot(
             Z_lda[idx, 0],
             Z_lda[idx, 2],
             sym_arr[idx],
             color=color_arr[idx],
+            zorder=zorder_arr[idx],
         )
 
     plt.tight_layout()
