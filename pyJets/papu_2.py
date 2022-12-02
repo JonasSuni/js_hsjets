@@ -4367,9 +4367,12 @@ def kinds_pca():
                 )
                 if np.isnan(ts_data).any():
                     continue
-                data_arr.append(ts_data[:, 20])
-                classes_arr[idx].append(ts_data[:, 20])
-                
+                # data_arr.append(ts_data[:, 20])
+                # classes_arr[idx].append(ts_data[:, 20])
+
+                data_arr.append(ts_data[:, [10, 20, 30]])
+                classes_arr[idx].append(ts_data[:, [10, 20, 30]])
+
                 # data_arr.append(ts_data.flatten())
                 # classes_arr[idx].append(ts_data.flatten())
 
