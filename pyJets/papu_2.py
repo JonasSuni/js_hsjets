@@ -4476,7 +4476,7 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
-                print(data_arr[:, 11, :8])
+                # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 # vax_avg_arr[idx] = (
@@ -4498,10 +4498,10 @@ def timing_comp():
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
-    # for idx, kind in enumerate(kinds):
-    #     avg_arr[idx] = avg_arr[idx] / counters[idx]
-    #     vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
-    #     vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
+    for idx, kind in enumerate(kinds):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+        # vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
+        # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
@@ -4511,7 +4511,7 @@ def timing_comp():
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
         avg_res = avg_arr[idx, 0, 11]
-        print(avg_res)
+        # print(avg_res)
         vx = [
             avg_res[0],
             avg_res[2],
