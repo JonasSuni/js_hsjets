@@ -4420,6 +4420,8 @@ def kinds_pca():
         B_lda += n_lda[idx] * np.matmul(mean_lda[idx], mean_lda[idx].T)
 
     lbd, U = np.linalg.eig(S)
+    print(np.linalg.inv(W_lda).shape)
+    print(B_lda.shape)
     lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
 
     U = U.T
