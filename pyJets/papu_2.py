@@ -4452,7 +4452,7 @@ def kinds_pca():
     # lbd, U = np.linalg.eig(S)
     # U = U[:, np.argsort(lbd)]
     lbd, U = eig(S)
-    print("PCA diff: {}".format(S - (U.T @ np.diag(lbd) @ U)))
+    print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U.T @ np.diag(lbd) @ U)))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
     U = U[:, np.argsort(lbd)]
