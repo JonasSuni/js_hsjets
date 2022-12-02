@@ -4435,15 +4435,22 @@ def kinds_pca():
     Z_lda = np.matmul(X, U_lda)
     print(Z.shape)
 
-    fig, ax = plt.subplots(1, 1)
+    fig, ax = plt.subplots(2, 1)
 
-    ax.set_xlabel("PCA1")
-    ax.set_ylabel("PCA2")
+    ax[1].set_xlabel("PCA1")
+    ax[0].set_ylabel("PCA2")
+    ax[1].set_ylabel("PCA3")
 
     for idx, row in enumerate(Z[:, 0]):
-        ax.plot(
+        ax[0].plot(
             Z[idx, 0],
             Z[idx, 1],
+            sym_arr[idx],
+            color=color_arr[idx],
+        )
+        ax[1].plot(
+            Z[idx, 0],
+            Z[idx, 2],
             sym_arr[idx],
             color=color_arr[idx],
         )
@@ -4456,15 +4463,22 @@ def kinds_pca():
     )
     plt.close(fig)
 
-    fig, ax = plt.subplots(1, 1)
+    fig, ax = plt.subplots(2, 1)
 
-    ax.set_xlabel("LDA1")
-    ax.set_ylabel("LDA2")
+    ax[1].set_xlabel("LDA1")
+    ax[0].set_ylabel("LDA2")
+    ax[1].set_ylabel("LDA3")
 
     for idx, row in enumerate(Z[:, 0]):
-        ax.plot(
+        ax[0].plot(
             Z_lda[idx, 0],
             Z_lda[idx, 1],
+            sym_arr[idx],
+            color=color_arr[idx],
+        )
+        ax[1].plot(
+            Z_lda[idx, 0],
+            Z_lda[idx, 2],
             sym_arr[idx],
             color=color_arr[idx],
         )
