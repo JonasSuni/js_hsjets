@@ -4424,6 +4424,7 @@ def kinds_pca():
     # lbd, U = np.linalg.eig(S)
     # U = U[:, np.argsort(lbd)]
     lbd, U = eig(S)
+    U = U[:, np.argsort(lbd)]
 
     print(np.linalg.inv(W_lda).shape)
     print(B_lda.shape)
@@ -4431,6 +4432,7 @@ def kinds_pca():
     # lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
     # U_lda = U_lda[:, np.argsort(lbd_lda)]
     lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda))
+    U_lda = U_lda[:, np.argsort(lbd_lda)]
 
     U = U.T
     U_lda = U_lda.T
