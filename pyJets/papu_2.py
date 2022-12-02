@@ -4341,6 +4341,24 @@ def SEA_timeseries_comp():
 
 def kinds_pca():
 
+    var_names = np.array(
+        [
+            "rho",
+            "vx",
+            "vy",
+            "vz",
+            "vmag",
+            "pdyn",
+            "Bx",
+            "By",
+            "Bz",
+            "Bmag",
+            "TPar",
+            "TPerp",
+        ]
+    )
+    vars = np.array([])
+
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
 
@@ -4378,6 +4396,7 @@ def kinds_pca():
 
                 data_arr.append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
                 classes_arr[idx].append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
+                vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
 
                 # data_arr.append(ts_data[[0, 1, 2, 5, 6, 7, 11], :].flatten())
                 # data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
@@ -4433,6 +4452,8 @@ def kinds_pca():
     # lbd, U = np.linalg.eig(S)
     # U = U[:, np.argsort(lbd)]
     lbd, U = eig(S)
+    print("S residual: {}".format(np.linalg.norm(S - U.T @ np.diag(lbd) @ U)))
+    print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
     U = U[:, np.argsort(lbd)]
 
     print(np.linalg.inv(W_lda).shape)
@@ -4441,6 +4462,14 @@ def kinds_pca():
     # lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
     # U_lda = U_lda[:, np.argsort(lbd_lda)]
     lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda))
+    print(
+        "WinvB residual: {}".format(
+            np.linalg.norm(
+                np.linalg.inv(W_lda) @ B_lda - U_lda.T @ np.diag(lbd_lda) @ U_lda
+            )
+        )
+    )
+    print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)]))
     U_lda = U_lda[:, np.argsort(lbd_lda)]
 
     U = U.T
