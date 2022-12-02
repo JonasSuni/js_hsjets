@@ -4344,6 +4344,7 @@ def kinds_pca():
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
 
     data_arr = []
+    classes_arr = [[], [], []]
     counters = [0, 0, 0]
 
     for idx, kind in enumerate(kinds):
@@ -4367,12 +4368,17 @@ def kinds_pca():
                     continue
                 # data_arr.append(ts_data[:, 20])
                 data_arr.append(ts_data.flatten())
+                classes_arr[idx].append(ts_data.flatten())
                 # data_arr.append(ts_data[[0, 1, 2, 5, 6, 7, 11], :].flatten())
                 # data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
                 counters[idx] += 1
 
     Y = np.array(data_arr)
+    Y_lda = np.array(classes_arr)
+
     n, p = Y.shape
+    n_lda = [arr.shape[0] for arr in Y_lda]
+
     color_arr = (
         [CB_color_cycle[0]] * counters[0]
         + [CB_color_cycle[1]] * counters[1]
@@ -4381,19 +4387,47 @@ def kinds_pca():
     sym_arr = ["o"] * counters[0] + ["x"] * counters[1] + ["^"] * counters[2]
 
     mean_arr = np.mean(Y, axis=0)
+    mean_lda = [np.mean(arr, axis=0) for arr in Y_lda]
+
     std_arr = np.std(Y, axis=0, ddof=1)
+    std_lda = [np.std(arr, axis=0, ddof=1) for arr in Y_lda]
+
     ones_arr = np.ones((n, p))
+    ones_lda = [np.ones((nl, p)) for nl in n_lda]
 
     X = Y - np.matmul(ones_arr, np.diag(mean_arr))
+    X_lda = [
+        Y_lda[idx] - np.matmul(ones_lda[idx], np.diag(mean_lda[idx]))
+        for idx in range(len(kinds))
+    ]
+
     V = np.diag(1.0 / std_arr)
+    V_lda = [np.diag(1.0 / std_lda[idx]) for idx in range(len(kinds))]
+
     X = np.matmul(X, V)
+    X_lda = [np.matmul(X_lda[idx], V_lda[idx]) for idx in range(len(kinds))]
+
     S = np.matmul(X.T, X) / (n - 1)
+    S_lda = [
+        np.matmul(X_lda[idx].T, X_lda[idx]) / (n_lda[idx] - 1)
+        for idx in range(len(kinds))
+    ]
+
+    W_lda = np.zeros_like(S_lda[0])
+    B_lda = np.zeros_like(np.matmul(mean_lda[0], mean_lda[0].T))
+    for idx in range(len(kinds)):
+        W_lda += (n_lda[idx] - 1) * S_lda[idx]
+        B_lda += n_lda[idx] * np.matmul(mean_lda[idx], mean_lda[idx].T)
 
     lbd, U = np.linalg.eig(S)
+    lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
+
     U = U.T
+    U_lda = U_lda.T
     print(U.shape)
 
     Z = np.matmul(X, U)
+    Z_lda = np.matmul(X, U_lda)
     print(Z.shape)
 
     fig, ax = plt.subplots(1, 1)
@@ -4413,6 +4447,27 @@ def kinds_pca():
 
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/kinds_pca.pdf",
+        dpi=300,
+    )
+    plt.close(fig)
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.set_xlabel("LDA1")
+    ax.set_ylabel("LDA2")
+
+    for idx, row in enumerate(Z[:, 0]):
+        ax.plot(
+            Z_lda[idx, 0],
+            Z_lda[idx, 1],
+            sym_arr[idx],
+            color=color_arr[idx],
+        )
+
+    plt.tight_layout()
+
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/kinds_lda.pdf",
         dpi=300,
     )
     plt.close(fig)
