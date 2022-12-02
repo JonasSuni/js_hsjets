@@ -4452,7 +4452,7 @@ def kinds_pca():
     # lbd, U = np.linalg.eig(S)
     # U = U[:, np.argsort(lbd)]
     lbd, U = eig(S)
-    print("S residual: {}".format(np.linalg.norm(S - U.T @ np.diag(lbd) @ U)))
+    print("S residual: {}".format(np.linalg.norm((S - U.T @ np.diag(lbd) @ U) / (S))))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
     U = U[:, np.argsort(lbd)]
 
@@ -4465,7 +4465,8 @@ def kinds_pca():
     print(
         "WinvB residual: {}".format(
             np.linalg.norm(
-                np.linalg.inv(W_lda) @ B_lda - U_lda.T @ np.diag(lbd_lda) @ U_lda
+                (np.linalg.inv(W_lda) @ B_lda - U_lda.T @ np.diag(lbd_lda) @ U_lda)
+                / (np.linalg.inv(W_lda) @ B_lda)
             )
         )
     )
