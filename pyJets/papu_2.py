@@ -4476,6 +4476,7 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
+                print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 # vax_avg_arr[idx] = (
