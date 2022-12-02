@@ -4463,6 +4463,7 @@ def kinds_pca():
     # lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
     # U_lda = U_lda[:, np.argsort(lbd_lda)]
     lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda), left=True, right=False)
+    U_lda = U_lda.T
     print(
         "LDA diff: {}".format(
             np.matmul(np.linalg.inv(W_lda), B_lda)
