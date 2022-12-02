@@ -9,6 +9,7 @@ import os
 
 # import scipy
 # import scipy.linalg
+from scipy.linalg import eig
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -4420,13 +4421,16 @@ def kinds_pca():
         W_lda += (n_lda[idx] - 1) * S_lda[idx]
         B_lda += n_lda[idx] * np.outer(mean_lda[0], mean_lda[0])
 
-    lbd, U = np.linalg.eig(S)
-    U = U[:, np.argsort(lbd)]
+    # lbd, U = np.linalg.eig(S)
+    # U = U[:, np.argsort(lbd)]
+    lbd, U = eig(S)
 
     print(np.linalg.inv(W_lda).shape)
     print(B_lda.shape)
-    lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
-    U_lda = U_lda[:, np.argsort(lbd_lda)]
+
+    # lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
+    # U_lda = U_lda[:, np.argsort(lbd_lda)]
+    lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda))
 
     U = U.T
     U_lda = U_lda.T
