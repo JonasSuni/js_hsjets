@@ -4466,7 +4466,7 @@ def kinds_pca():
     print(
         "LDA diff: {}".format(
             np.matmul(np.linalg.inv(W_lda), B_lda)
-            - (U_lda.T @ np.diag(lbd_lda) @ U_lda)
+            - (U_lda @ np.diag(lbd_lda) @ U_lda.T)
         )
     )
     print(
