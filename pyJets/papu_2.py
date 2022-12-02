@@ -4414,10 +4414,10 @@ def kinds_pca():
     ]
 
     W_lda = np.zeros_like(S_lda[0])
-    B_lda = np.zeros_like(np.matmul(mean_lda[0], mean_lda[0].T))
+    B_lda = np.zeros_like(np.outer(mean_lda[0], mean_lda[0]))
     for idx in range(len(kinds)):
         W_lda += (n_lda[idx] - 1) * S_lda[idx]
-        B_lda += n_lda[idx] * np.matmul(mean_lda[idx], mean_lda[idx].T)
+        B_lda += n_lda[idx] * np.outer(mean_lda[0], mean_lda[0])
 
     lbd, U = np.linalg.eig(S)
     print(np.linalg.inv(W_lda).shape)
