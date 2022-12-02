@@ -4455,7 +4455,7 @@ def kinds_pca():
     # print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U @ np.diag(lbd) @ U.T)))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
-    # U = U[:, np.argsort(lbd)]
+    U = U[:, np.argsort(lbd)]
 
     print(np.linalg.inv(W_lda).shape)
     print(B_lda.shape)
@@ -4478,7 +4478,7 @@ def kinds_pca():
         )
     )
     print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)]))
-    # U_lda = U_lda[:, np.argsort(lbd_lda)]
+    U_lda = U_lda[:, np.argsort(lbd_lda)]
 
     # U = U.T
     # U_lda = U_lda.T
