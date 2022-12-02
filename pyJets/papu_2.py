@@ -4374,7 +4374,7 @@ def kinds_pca():
                 counters[idx] += 1
 
     Y = np.array(data_arr)
-    Y_lda = np.array(classes_arr)
+    Y_lda = [np.array(arr) for arr in classes_arr]
 
     n, p = Y.shape
     n_lda = [arr.shape[0] for arr in Y_lda]
