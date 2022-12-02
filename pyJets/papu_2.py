@@ -4466,21 +4466,22 @@ def kinds_pca():
     print(
         "LDA diff: {}".format(
             np.matmul(np.linalg.inv(W_lda), B_lda)
-            - (U_lda @ np.diag(lbd_lda) @ U_lda.T)
+            - (U_lda @ np.diag(lbd_lda) @ np.linalg.inv(U_lda))
         )
     )
     print(
         "WinvB residual: {}".format(
             np.linalg.norm(
-                np.linalg.inv(W_lda) @ B_lda - (U_lda @ np.diag(lbd_lda) @ U_lda.T)
+                np.linalg.inv(W_lda) @ B_lda
+                - (U_lda @ np.diag(lbd_lda) @ np.linalg.inv(U_lda))
             )
         )
     )
     print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)]))
     U_lda = U_lda[:, np.argsort(lbd_lda)]
 
-    U = U.T
-    U_lda = U_lda.T
+    # U = U.T
+    # U_lda = U_lda.T
     print(U.shape)
 
     Z = np.matmul(X, U)
