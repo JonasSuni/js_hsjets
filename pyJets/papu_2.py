@@ -4491,14 +4491,14 @@ def kinds_pca():
     Z_lda = np.matmul(X, U_lda)
     print(Z.shape)
 
-    fig, ax = plt.subplots(1, 3)
+    fig, ax = plt.subplots(1, 2)
 
     ax[0].set_xlabel("PCA1")
     ax[1].set_xlabel("PCA1")
-    ax[2].set_xlabel("PCA1")
+    # ax[2].set_xlabel("PCA1")
     ax[0].set_ylabel("PCA2")
     ax[1].set_ylabel("PCA3")
-    ax[2].set_ylabel("PCA4")
+    # ax[2].set_ylabel("PCA4")
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4515,13 +4515,13 @@ def kinds_pca():
             color=color_arr[idx],
             zorder=zorder_arr[idx],
         )
-        ax[2].plot(
-            Z[idx, 0],
-            Z[idx, 3],
-            sym_arr[idx],
-            color=color_arr[idx],
-            zorder=zorder_arr[idx],
-        )
+        # ax[2].plot(
+        #     Z[idx, 0],
+        #     Z[idx, 3],
+        #     sym_arr[idx],
+        #     color=color_arr[idx],
+        #     zorder=zorder_arr[idx],
+        # )
 
     plt.tight_layout()
 
@@ -4535,10 +4535,10 @@ def kinds_pca():
 
     ax[0].set_xlabel("LDA1")
     ax[1].set_xlabel("LDA1")
-    ax[2].set_xlabel("LDA1")
+    # ax[2].set_xlabel("LDA1")
     ax[0].set_ylabel("LDA2")
     ax[1].set_ylabel("LDA3")
-    ax[2].set_ylabel("LDA4")
+    # ax[2].set_ylabel("LDA4")
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4555,13 +4555,13 @@ def kinds_pca():
             color=color_arr[idx],
             zorder=zorder_arr[idx],
         )
-        ax[2].plot(
-            Z_lda[idx, 0],
-            Z_lda[idx, 3],
-            sym_arr[idx],
-            color=color_arr[idx],
-            zorder=zorder_arr[idx],
-        )
+        # ax[2].plot(
+        #     Z_lda[idx, 0],
+        #     Z_lda[idx, 3],
+        #     sym_arr[idx],
+        #     color=color_arr[idx],
+        #     zorder=zorder_arr[idx],
+        # )
 
     plt.tight_layout()
 
