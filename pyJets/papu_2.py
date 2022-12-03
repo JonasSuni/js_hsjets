@@ -4385,9 +4385,9 @@ def kinds_pca():
                 )
                 if np.isnan(ts_data).any():
                     continue
-                # data_arr.append(ts_data[:, 20])
-                # classes_arr[idx].append(ts_data[:, 20])
-                # vars = var_names[:]
+                data_arr.append(ts_data[:, 20])
+                classes_arr[idx].append(ts_data[:, 20])
+                vars = var_names[:]
 
                 # data_arr.append(ts_data[:, [0, 20, 40]].flatten())
                 # classes_arr[idx].append(ts_data[:, [0, 20, 40]].flatten())
@@ -4395,9 +4395,9 @@ def kinds_pca():
                 # data_arr.append(ts_data.flatten())
                 # classes_arr[idx].append(ts_data.flatten())
 
-                data_arr.append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
-                classes_arr[idx].append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
-                vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
+                # data_arr.append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
+                # classes_arr[idx].append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
+                # vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
 
                 # data_arr.append(ts_data[[0, 1, 2, 5, 6, 7, 11], :].flatten())
                 # data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
@@ -4451,9 +4451,6 @@ def kinds_pca():
         B_lda += n_lda[idx] * np.outer(mean_lda[0], mean_lda[0])
 
     lbd, U = np.linalg.eig(S)
-    # U = U[:, np.argsort(lbd)]
-    # lbd, U = eig(S, left=False, right=True)
-    # print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U @ np.diag(lbd) @ U.T)))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)[::-1]]))
     print("PCA lambdas: {}".format(lbd[np.argsort(lbd)[::-1]]))
@@ -4463,14 +4460,6 @@ def kinds_pca():
     print(B_lda.shape)
 
     lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
-    # U_lda = U_lda[:, np.argsort(lbd_lda)]
-    # lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda), left=False, right=True)
-    # print(
-    #     "LDA diff: {}".format(
-    #         np.matmul(np.linalg.inv(W_lda), B_lda)
-    #         - (U_lda @ np.diag(lbd_lda) @ np.linalg.inv(U_lda))
-    #     )
-    # )
     print(
         "WinvB residual: {}".format(
             np.linalg.norm(
@@ -4495,10 +4484,10 @@ def kinds_pca():
 
     ax[0].set_xlabel("PCA1")
     ax[1].set_xlabel("PCA1")
-    # ax[2].set_xlabel("PCA1")
     ax[0].set_ylabel("PCA2")
     ax[1].set_ylabel("PCA3")
-    # ax[2].set_ylabel("PCA4")
+    ax[0].grid()
+    ax[1].grid()
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4515,14 +4504,6 @@ def kinds_pca():
             color=color_arr[idx],
             zorder=zorder_arr[idx],
         )
-        # ax[2].plot(
-        #     Z[idx, 0],
-        #     Z[idx, 3],
-        #     sym_arr[idx],
-        #     color=color_arr[idx],
-        #     zorder=zorder_arr[idx],
-        # )
-
     plt.tight_layout()
 
     fig.savefig(
@@ -4535,10 +4516,10 @@ def kinds_pca():
 
     ax[0].set_xlabel("LDA1")
     ax[1].set_xlabel("LDA1")
-    # ax[2].set_xlabel("LDA1")
     ax[0].set_ylabel("LDA2")
     ax[1].set_ylabel("LDA3")
-    # ax[2].set_ylabel("LDA4")
+    ax[0].grid()
+    ax[1].grid()
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4555,13 +4536,6 @@ def kinds_pca():
             color=color_arr[idx],
             zorder=zorder_arr[idx],
         )
-        # ax[2].plot(
-        #     Z_lda[idx, 0],
-        #     Z_lda[idx, 3],
-        #     sym_arr[idx],
-        #     color=color_arr[idx],
-        #     zorder=zorder_arr[idx],
-        # )
 
     plt.tight_layout()
 
