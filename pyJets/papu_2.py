@@ -4455,9 +4455,9 @@ def kinds_pca():
     # lbd, U = eig(S, left=False, right=True)
     # print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U @ np.diag(lbd) @ U.T)))
-    print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
-    print("PCA lambdas: {}".format(lbd[np.argsort(lbd)]))
-    U = U[:, np.argsort(lbd)]
+    print("PCA var importance: {}".format(vars[np.argsort(lbd)[::-1]]))
+    print("PCA lambdas: {}".format(lbd[np.argsort(lbd)[::-1]]))
+    U = U[:, np.argsort(lbd)[::-1]]
 
     print(np.linalg.inv(W_lda).shape)
     print(B_lda.shape)
@@ -4479,9 +4479,9 @@ def kinds_pca():
             )
         )
     )
-    print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)]))
-    print("LDA lambdas: {}".format(lbd_lda[np.argsort(lbd_lda)]))
-    U_lda = U_lda[:, np.argsort(lbd_lda)]
+    print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)[::-1]]))
+    print("LDA lambdas: {}".format(lbd_lda[np.argsort(lbd_lda)[::-1]]))
+    U_lda = U_lda[:, np.argsort(lbd_lda)[::-1]]
 
     # U = U.T
     # U_lda = U_lda.T
