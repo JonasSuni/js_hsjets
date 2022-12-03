@@ -4456,7 +4456,7 @@ def kinds_pca():
     # print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U @ np.diag(lbd) @ U.T)))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
-    print("PCA lambdas: {}".format(lbd))
+    print("PCA lambdas: {}".format(lbd[np.argsort(lbd)]))
     U = U[:, np.argsort(lbd)]
 
     print(np.linalg.inv(W_lda).shape)
@@ -4480,7 +4480,7 @@ def kinds_pca():
         )
     )
     print("LDA var importance: {}".format(vars[np.argsort(lbd_lda)]))
-    print("LDA lambdas: {}".format(lbd_lda))
+    print("LDA lambdas: {}".format(lbd_lda[np.argsort(lbd_lda)]))
     U_lda = U_lda[:, np.argsort(lbd_lda)]
 
     # U = U.T
@@ -4491,11 +4491,14 @@ def kinds_pca():
     Z_lda = np.matmul(X, U_lda)
     print(Z.shape)
 
-    fig, ax = plt.subplots(2, 1)
+    fig, ax = plt.subplots(1, 3)
 
+    ax[0].set_xlabel("PCA1")
     ax[1].set_xlabel("PCA1")
+    ax[2].set_xlabel("PCA1")
     ax[0].set_ylabel("PCA2")
     ax[1].set_ylabel("PCA3")
+    ax[2].set_ylabel("PCA4")
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4508,6 +4511,13 @@ def kinds_pca():
         ax[1].plot(
             Z[idx, 0],
             Z[idx, 2],
+            sym_arr[idx],
+            color=color_arr[idx],
+            zorder=zorder_arr[idx],
+        )
+        ax[1].plot(
+            Z[idx, 0],
+            Z[idx, 3],
             sym_arr[idx],
             color=color_arr[idx],
             zorder=zorder_arr[idx],
