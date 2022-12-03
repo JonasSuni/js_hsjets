@@ -4491,8 +4491,8 @@ def kinds_pca():
     ax[1].set_xlabel("PCA1")
     ax[0].set_ylabel("PCA2")
     ax[1].set_ylabel("PCA3")
-    ax[0].grid()
-    ax[1].grid()
+    ax[0].grid(zorder=0)
+    ax[1].grid(zorder=0)
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
@@ -4523,8 +4523,8 @@ def kinds_pca():
     ax[1].set_xlabel("LDA1")
     ax[0].set_ylabel("LDA2")
     ax[1].set_ylabel("LDA3")
-    ax[0].grid()
-    ax[1].grid()
+    ax[0].grid(zorder=0)
+    ax[1].grid(zorder=0)
 
     for idx, row in enumerate(Z[:, 0]):
         ax[0].plot(
