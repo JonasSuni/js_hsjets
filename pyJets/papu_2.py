@@ -4366,6 +4366,9 @@ def kinds_pca():
     classes_arr = [[], [], []]
     counters = [0, 0, 0]
 
+    runid_arr = []
+    id_arr = []
+
     for idx, kind in enumerate(kinds):
         for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
             if kind == "fcs":
@@ -4385,9 +4388,9 @@ def kinds_pca():
                 )
                 if np.isnan(ts_data).any():
                     continue
-                data_arr.append(ts_data[:, 20])
-                classes_arr[idx].append(ts_data[:, 20])
-                vars = var_names[:]
+                # data_arr.append(ts_data[:, 20])
+                # classes_arr[idx].append(ts_data[:, 20])
+                # vars = var_names[:]
 
                 # data_arr.append(ts_data[:, [0, 20, 40]].flatten())
                 # classes_arr[idx].append(ts_data[:, [0, 20, 40]].flatten())
@@ -4395,9 +4398,11 @@ def kinds_pca():
                 # data_arr.append(ts_data.flatten())
                 # classes_arr[idx].append(ts_data.flatten())
 
-                # data_arr.append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
-                # classes_arr[idx].append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
-                # vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
+                data_arr.append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
+                classes_arr[idx].append(ts_data[[0, 1, 2, 6, 7, 10, 11], 20].flatten())
+                vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
+                runid_arr.append(runid)
+                id_arr.append(non_id)
 
                 # data_arr.append(ts_data[[0, 1, 2, 5, 6, 7, 11], :].flatten())
                 # data_arr.append(ts_data[[0, 1, 2, 3, 5, 6, 7, 8, 10, 11], 20])
@@ -4415,7 +4420,7 @@ def kinds_pca():
         + [CB_color_cycle[2]] * counters[2]
     )
     sym_arr = ["o"] * counters[0] + ["x"] * counters[1] + ["^"] * counters[2]
-    zorder_arr = [2] * counters[0] + [1] * counters[1] + [0] * counters[2]
+    zorder_arr = [3] * counters[0] + [2] * counters[1] + [1] * counters[2]
 
     mean_arr = np.mean(Y, axis=0)
     mean_lda = [np.mean(arr, axis=0) for arr in Y_lda]
@@ -4544,6 +4549,14 @@ def kinds_pca():
         dpi=300,
     )
     plt.close(fig)
+
+    for idx in range(counters[0]):
+        if Z[idx, 0] < 2.0:
+            print(
+                "Outlier: Runid = {}, ID = {}, PCA1 = {}".format(
+                    runid_arr[idx], id_arr[idx], Z[idx, 0]
+                )
+            )
 
 
 def timing_comp():
