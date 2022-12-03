@@ -4531,7 +4531,7 @@ def kinds_pca():
     )
     plt.close(fig)
 
-    fig, ax = plt.subplots(1, 3)
+    fig, ax = plt.subplots(1, 2)
 
     ax[0].set_xlabel("LDA1")
     ax[1].set_xlabel("LDA1")
