@@ -4449,9 +4449,9 @@ def kinds_pca():
         W_lda += (n_lda[idx] - 1) * S_lda[idx]
         B_lda += n_lda[idx] * np.outer(mean_lda[0], mean_lda[0])
 
-    # lbd, U = np.linalg.eig(S)
+    lbd, U = np.linalg.eig(S)
     # U = U[:, np.argsort(lbd)]
-    lbd, U = eig(S, left=False, right=True)
+    # lbd, U = eig(S, left=False, right=True)
     # print("PCA diff: {}".format(S - (U @ np.diag(lbd) @ U.T)))
     print("S residual: {}".format(np.linalg.norm(S - U @ np.diag(lbd) @ U.T)))
     print("PCA var importance: {}".format(vars[np.argsort(lbd)]))
@@ -4460,9 +4460,9 @@ def kinds_pca():
     print(np.linalg.inv(W_lda).shape)
     print(B_lda.shape)
 
-    # lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
+    lbd_lda, U_lda = np.linalg.eig(np.matmul(np.linalg.inv(W_lda), B_lda))
     # U_lda = U_lda[:, np.argsort(lbd_lda)]
-    lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda), left=False, right=True)
+    # lbd_lda, U_lda = eig(np.matmul(np.linalg.inv(W_lda), B_lda), left=False, right=True)
     # print(
     #     "LDA diff: {}".format(
     #         np.matmul(np.linalg.inv(W_lda), B_lda)
