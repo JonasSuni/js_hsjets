@@ -4515,7 +4515,7 @@ def kinds_pca():
             color=color_arr[idx],
             zorder=zorder_arr[idx],
         )
-        ax[1].plot(
+        ax[2].plot(
             Z[idx, 0],
             Z[idx, 3],
             sym_arr[idx],
