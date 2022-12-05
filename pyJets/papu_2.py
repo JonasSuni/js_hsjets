@@ -4235,7 +4235,7 @@ def SEA_timeseries_comp():
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    vmins = [1.5, -0.8, 0.4, -3.75, 10]
+    vmins = [1.5, -0.8, 0.4, -3.75, 0]
     vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
     plot_colors = [
