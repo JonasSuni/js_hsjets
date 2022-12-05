@@ -1312,7 +1312,7 @@ def P_jplots(runid):
         )
 
 
-def jet_avg_std(kind, version="2D"):
+def jet_avg_std(kind, version="squish"):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -1320,7 +1320,7 @@ def jet_avg_std(kind, version="2D"):
     v_sw = [750e3, 600e3, 750e3, 600e3]
     pdyn_sw = [m_p * rho_sw[idx] * v_sw[idx] * v_sw[idx] for idx in range(len(runids))]
 
-    data_arr = np.empty((3, 6000), dtype=float)
+    data_arr = np.empty((5, 6000), dtype=float)
     data_arr.fill(np.nan)
 
     counter = 0
@@ -1338,9 +1338,13 @@ def jet_avg_std(kind, version="2D"):
             duration = props.read("duration")[0]
             pendep = props.read("x_mean")[-1] - props.read("bs_distance")[-1]
             pd_max = np.max(props.read("pd_max")) / (pdyn_sw[runids.index(runid)] * 1e9)
+            first_cone = props.read("first_cone")[0]
+            min_r = np.min(props.read("r_mean"))
             data_arr[0][counter] = duration
             data_arr[1][counter] = pendep
             data_arr[2][counter] = pd_max
+            data_arr[3][counter] = first_cone
+            data_arr[4][counter] = min_r
             counter += 1
 
     print("\n")
@@ -1349,40 +1353,50 @@ def jet_avg_std(kind, version="2D"):
     print("N = {}".format(counter))
     print(
         "Duration = {:.3f} +- {:.3f} s".format(
-            np.nanmean(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
+            np.nanmedian(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
         )
     )
     print(
         "Penetration depth = {:.3f} +- {:.3f} RE".format(
-            np.nanmean(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
+            np.nanmedian(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
         )
     )
     print(
         "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
-            np.nanmean(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
+            np.nanmedian(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
+        )
+    )
+    print(
+        "First cone = {:.3f} +- {:.3f} deg".format(
+            np.nanmedian(data_arr[3]), np.nanstd(data_arr[3], ddof=1)
+        )
+    )
+    print(
+        "Min r = {:.3f} +- {:.3f} RE".format(
+            np.nanmedian(data_arr[4]), np.nanstd(data_arr[4], ddof=1)
         )
     )
     print("\n")
 
-    iqr_dur = np.subtract.reduce(np.nanpercentile(data_arr[0], [75, 25]))
-    iqr_pen = np.subtract.reduce(np.nanpercentile(data_arr[1], [75, 25]))
-    iqr_pd = np.subtract.reduce(np.nanpercentile(data_arr[2], [75, 25]))
+    # iqr_dur = np.subtract.reduce(np.nanpercentile(data_arr[0], [75, 25]))
+    # iqr_pen = np.subtract.reduce(np.nanpercentile(data_arr[1], [75, 25]))
+    # iqr_pd = np.subtract.reduce(np.nanpercentile(data_arr[2], [75, 25]))
 
-    bins_dur = (np.nanmax(data_arr[0]) - np.nanmin(data_arr[0])) / (
-        2 * iqr_dur / float(counter) ** (1.0 / 3)
-    )
-    bins_pen = (np.nanmax(data_arr[1]) - np.nanmin(data_arr[1])) / (
-        2 * iqr_pen / float(counter) ** (1.0 / 3)
-    )
-    bins_pd = (np.nanmax(data_arr[2]) - np.nanmin(data_arr[2])) / (
-        2 * iqr_pd / float(counter) ** (1.0 / 3)
-    )
+    # bins_dur = (np.nanmax(data_arr[0]) - np.nanmin(data_arr[0])) / (
+    #     2 * iqr_dur / float(counter) ** (1.0 / 3)
+    # )
+    # bins_pen = (np.nanmax(data_arr[1]) - np.nanmin(data_arr[1])) / (
+    #     2 * iqr_pen / float(counter) ** (1.0 / 3)
+    # )
+    # bins_pd = (np.nanmax(data_arr[2]) - np.nanmin(data_arr[2])) / (
+    #     2 * iqr_pd / float(counter) ** (1.0 / 3)
+    # )
 
-    return (
-        np.histogram(data_arr[0][:counter], bins=int(bins_dur)),
-        np.histogram(data_arr[1][:counter], bins=int(bins_pen)),
-        np.histogram(data_arr[0][:counter], bins=int(bins_pd)),
-    )
+    # return (
+    #     np.histogram(data_arr[0][:counter], bins=int(bins_dur)),
+    #     np.histogram(data_arr[1][:counter], bins=int(bins_pen)),
+    #     np.histogram(data_arr[0][:counter], bins=int(bins_pd)),
+    # )
 
 
 def kind_SEA_timeseries(kind):
