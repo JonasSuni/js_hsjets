@@ -3811,7 +3811,8 @@ def non_jet_omni(runid):
             vmin=0,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_{dyn}$ [nPa]",
+            # cbtitle="$P_{dyn}$ [nPa]",
+            cbtitle="",
             usesci=0,
             scale=2,
             title="",
@@ -3843,6 +3844,12 @@ def non_jet_omni(runid):
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+        ax_nw.annotate(
+            "$P_\mathrm{dyn}$ [nPa]",
+            (1.05, 1.05),
+            xycoords="axes fraction",
+            fontsize=20,
+        )
 
         rho_arr, v_arr, pdyn_arr, B_arr, T_arr, Tcore_arr, mmsx_arr = np.load(
             wrkdir_DNR
@@ -3886,8 +3893,8 @@ def non_jet_omni(runid):
             vx_arr = np.array([res[0], res[2], res[4], res[6]])
             vy_arr = np.array([res[1], res[3], res[5], res[7]])
             arrow_labels = [
-                "$v_\mathrm{timing}$",
-                "$v_\mathrm{SC frame}$",
+                "$v_\mathrm{p,n}$",
+                "$v_\mathrm{p,SC}$",
                 "$v_\mathrm{bulk}$",
                 "$v_\mathrm{A}$",
             ]
@@ -4602,8 +4609,8 @@ def timing_comp():
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     annot = ["a)", "b)", "c)"]
     arrow_labels = [
-        "$v_\mathrm{timing}$",
-        "$v_\mathrm{SC}$",
+        "$v_\mathrm{p,n}$",
+        "$v_\mathrm{p,SC}$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
         "$v_\mathrm{A}$",
