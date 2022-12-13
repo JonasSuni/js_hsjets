@@ -3846,7 +3846,7 @@ def non_jet_omni(runid):
         ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         ax_nw.annotate(
             "$P_\mathrm{dyn}$ [nPa]",
-            (1.05, 1.05),
+            (1.0, 1.05),
             xycoords="axes fraction",
             fontsize=20,
         )
