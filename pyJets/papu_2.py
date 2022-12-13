@@ -3711,18 +3711,30 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
+    itr_jumbled = [3, 1, 4, 0, 2]
+
     proxy = [
-        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr]) for itr in range(5)
+        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+        for itr in range(5)
     ] + [non_pos, sj_pos]
 
     ax.legend(
         proxy,
+        # (
+        #     "Jet",
+        #     "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        #     "FCS",
+        #     "$n=2n_\mathrm{sw}$",
+        #     "$M_{\mathrm{MS},x}=1$",
+        #     "Non-FCS jet",
+        #     "FCS-jet",
+        # ),
         (
-            "Jet",
-            "$T_\mathrm{core}=3T_\mathrm{sw}$",
-            "FCS",
             "$n=2n_\mathrm{sw}$",
+            "$T_\mathrm{core}=3T_\mathrm{sw}$",
             "$M_{\mathrm{MS},x}=1$",
+            "Jet",
+            "FCS",
             "Non-FCS jet",
             "FCS-jet",
         ),
@@ -4115,7 +4127,13 @@ def jmap_SEA_comp(run_id):
                     )
                 # cb_list[idx2 * len(varname_list) + idx].ax.tick_params(labelsize=20)
                 cb_list[idx].ax.tick_params(labelsize=20)
-            ax.contour(XmeshXY, YmeshXY, data_avg[idx2, 0, :, :], [2], colors=["black"])
+            ax.contour(
+                XmeshXY,
+                YmeshXY,
+                data_avg[idx2, 0, :, :],
+                [2],
+                colors=[CB_color_cycle[3]],
+            )
             ax.contour(
                 XmeshXY,
                 YmeshXY,
