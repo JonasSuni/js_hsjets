@@ -1353,7 +1353,7 @@ def jet_avg_std(kind, version="squish"):
     print("N = {}".format(counter))
     for idx, s in enumerate(["Duration", "Pendep", "Max pd", "First cone", "Min r"]):
         print(
-            "{}, q1 = {:.3f}, med = {:.3f}, q3 = {:.3f}".format(
+            "{}, q1,med,q3 = ({:.3g}, {:.3g}, {:.3g})".format(
                 s,
                 np.nanpercentile(data_arr[idx], 25),
                 np.nanmedian(data_arr[idx]),
