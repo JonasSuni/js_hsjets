@@ -1341,7 +1341,7 @@ def jet_avg_std(kind, version="squish"):
             first_cone = props.read("first_cone")[0]
             min_r = np.min(props.read("r_mean"))
             data_arr[0][counter] = duration
-            data_arr[1][counter] = pendep
+            data_arr[1][counter] = -pendep
             data_arr[2][counter] = pd_max
             data_arr[3][counter] = first_cone
             data_arr[4][counter] = min_r
@@ -1353,10 +1353,10 @@ def jet_avg_std(kind, version="squish"):
     print("N = {}".format(counter))
     for idx, s in enumerate(["Duration", "Pendep", "Max pd", "First cone", "Min r"]):
         print(
-            "{}, med = {:.3f}, q1 = {:.3f}, q3 = {:.3f}".format(
+            "{}, q1 = {:.3f}, med = {:.3f}, q3 = {:.3f}".format(
                 s,
-                np.nanmedian(data_arr[idx]),
                 np.nanpercentile(data_arr[idx], 25),
+                np.nanmedian(data_arr[idx]),
                 np.nanpercentile(data_arr[idx], 75),
             )
         )
