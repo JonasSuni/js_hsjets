@@ -1351,31 +1351,41 @@ def jet_avg_std(kind, version="squish"):
     # print("RUN: {}".format(runid))
     print("KIND: {}".format(kind.capitalize()))
     print("N = {}".format(counter))
-    print(
-        "Duration = {:.3f} +- {:.3f} s".format(
-            np.nanmedian(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
+    for idx, s in enumerate(["Duration", "Pendep", "Max pd", "First cone", "Min r"]):
+        print(
+            "{}, med = {:.3f}, q1 = {:.3f}, q3 = {:.3f}".format(
+                s,
+                np.nanmedian(data_arr[idx]),
+                np.nanpercentile(data_arr[idx], 25),
+                np.nanpercentile(data_arr[idx], 75),
+            )
         )
-    )
-    print(
-        "Penetration depth = {:.3f} +- {:.3f} RE".format(
-            np.nanmedian(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
-        )
-    )
-    print(
-        "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
-            np.nanmedian(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
-        )
-    )
-    print(
-        "First cone = {:.3f} +- {:.3f} deg".format(
-            np.nanmedian(data_arr[3]), np.nanstd(data_arr[3], ddof=1)
-        )
-    )
-    print(
-        "Min r = {:.3f} +- {:.3f} RE".format(
-            np.nanmedian(data_arr[4]), np.nanstd(data_arr[4], ddof=1)
-        )
-    )
+
+    # print(
+    #     "Duration = {:.3f} +- {:.3f} s".format(
+    #         np.nanmedian(data_arr[0]), np.nanstd(data_arr[0], ddof=1)
+    #     )
+    # )
+    # print(
+    #     "Penetration depth = {:.3f} +- {:.3f} RE".format(
+    #         np.nanmedian(data_arr[1]), np.nanstd(data_arr[1], ddof=1)
+    #     )
+    # )
+    # print(
+    #     "Max Pdyn = {:.3f} +- {:.3f} Pdyn_sw".format(
+    #         np.nanmedian(data_arr[2]), np.nanstd(data_arr[2], ddof=1)
+    #     )
+    # )
+    # print(
+    #     "First cone = {:.3f} +- {:.3f} deg".format(
+    #         np.nanmedian(data_arr[3]), np.nanstd(data_arr[3], ddof=1)
+    #     )
+    # )
+    # print(
+    #     "Min r = {:.3f} +- {:.3f} RE".format(
+    #         np.nanmedian(data_arr[4]), np.nanstd(data_arr[4], ddof=1)
+    #     )
+    # )
     print("\n")
 
     # iqr_dur = np.subtract.reduce(np.nanpercentile(data_arr[0], [75, 25]))
