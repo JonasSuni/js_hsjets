@@ -4099,7 +4099,7 @@ def jmap_SEA_comp(run_id):
         "$n$ [$n_\mathrm{sw}$]",
         "$v_x$ [$v_\mathrm{sw}$]",
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$B$ [$B_\mathrm{IMF}$]",
+        "$\\lvert \mathbf{B} \\rvert$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
         # "$M_{\mathrm{MS},x}$",
     ]
