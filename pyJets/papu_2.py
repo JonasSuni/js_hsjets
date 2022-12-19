@@ -3723,8 +3723,13 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     itr_jumbled = [3, 1, 4, 0, 2]
 
+    # proxy = [
+    #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
     proxy = [
-        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+        plt.plot([0, 0], [0, 0], color=CB_color_cycle[itr_jumbled[itr]])
         for itr in range(5)
     ] + [non_pos, sj_pos]
 
