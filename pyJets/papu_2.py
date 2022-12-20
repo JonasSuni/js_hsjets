@@ -4393,7 +4393,7 @@ def SEA_timeseries_comp():
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
-            ax.tick_params(labelsize=28)
+            ax.tick_params(labelsize=24)
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
             if idx2 == 0:
                 ax.set_ylabel(ylabels[idx], fontsize=40, labelpad=10)
