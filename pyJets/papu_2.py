@@ -4171,7 +4171,7 @@ def jmap_SEA_comp(run_id):
                 [1.0],
                 colors=[CB_color_cycle[4]],
             )
-            #ax.set_title(varname_list[idx], fontsize=24, pad=10)
+            # ax.set_title(varname_list[idx], fontsize=24, pad=10)
             ax.set_xlim(x_range[0], x_range[-1])
             ax.set_ylim(t_range[0], t_range[-1])
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
@@ -4179,9 +4179,7 @@ def jmap_SEA_comp(run_id):
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
             )
-        ax_list[0][idx2].set_title(
-            kind_names[idx2], fontsize=28, pad=10
-        )
+        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=28, pad=10)
         ax_list[-1][idx2].set_xlabel(
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10
         )
@@ -4365,7 +4363,7 @@ def SEA_timeseries_comp():
 
     fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(24, 24))
     for idx2, kind in enumerate(kinds):
-        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=32, pad=10)
+        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=48, pad=10)
         for idx in range(len(plot_labels)):
             ax = ax_list[plot_index[idx]][idx2]
             ax.plot(
@@ -4392,13 +4390,13 @@ def SEA_timeseries_comp():
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
                 ax.legend(loc="lower right", fontsize=16)
-        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=32, labelpad=10)
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=48, labelpad=10)
         for idx, ax in enumerate(ax_list[:, idx2]):
             ax.grid()
             ax.tick_params(labelsize=20)
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
             if idx2 == 0:
-                ax.set_ylabel(ylabels[idx], fontsize=32, labelpad=10)
+                ax.set_ylabel(ylabels[idx], fontsize=48, labelpad=10)
             # ax.axvline(0, linestyle="dashed")
             ax.set_ylim(vmins[idx], vmaxs[idx])
             ax.annotate(
@@ -4725,7 +4723,7 @@ def timing_comp():
     vx_all = []
     vy_all = []
     for idx, ax in enumerate(ax_list):
-        ax.set_title("{}".format(kind_labels[idx]), fontsize=24, pad=10)
+        ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
         avg_res = avg_arr[idx, 0, 11]
         # print(avg_res)
         vx = [
@@ -4756,12 +4754,12 @@ def timing_comp():
             )
         ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
-        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         if idx == 0:
-            ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=24, labelpad=10)
-            ax.legend(fontsize=16)
-        ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=24, labelpad=10)
-        ax.tick_params(labelsize=20)
+            ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
+            ax.legend(fontsize=24)
+        ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
+        ax.tick_params(labelsize=24)
         ax.grid()
     plt.tight_layout()
     fig.savefig(
