@@ -4187,7 +4187,25 @@ def jmap_SEA_comp(run_id):
         ax.set_ylabel(
             "{}\n\nEpoch time [s]".format(varname_list[idx]), fontsize=24, labelpad=10
         )
+    proxy = [
+        mlines.Line2D([], [], color=CB_color_cycle[3]),
+        mlines.Line2D([], [], color=CB_color_cycle[1]),
+        mlines.Line2D([], [], color=CB_color_cycle[4]),
+    ]
 
+    ax_list[0][0].legend(
+        proxy,
+        (
+            "$n=2n_\mathrm{sw}$",
+            "$T_\mathrm{core}=3T_\mathrm{sw}$",
+            "$M_{\mathrm{MS},x}=1$",
+        ),
+        frameon=True,
+        numpoints=1,
+        markerscale=1,
+        loc="lower left",
+        fontsize=14,
+    )
     # Save figure
     plt.tight_layout()
 
