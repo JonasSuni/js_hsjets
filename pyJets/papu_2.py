@@ -4179,13 +4179,13 @@ def jmap_SEA_comp(run_id):
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
             )
-        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=28, pad=10)
+        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
         ax_list[-1][idx2].set_xlabel(
-            "Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10
+            "Epoch $x$ [$R_\mathrm{E}$]", fontsize=32, labelpad=10
         )
     for idx, ax in enumerate(ax_list[:, 0]):
         ax.set_ylabel(
-            "{}\n\nEpoch time [s]".format(varname_list[idx]), fontsize=24, labelpad=10
+            "{}\nEpoch time [s]".format(varname_list[idx]), fontsize=28, labelpad=10
         )
     proxy = [
         mlines.Line2D([], [], color=CB_color_cycle[3]),
