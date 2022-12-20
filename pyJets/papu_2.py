@@ -4100,7 +4100,7 @@ def jmap_SEA_comp(run_id):
         "$n$ [$n_\mathrm{sw}$]",
         "$v_x$ [$v_\mathrm{sw}$]",
         "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$\\lvert \mathbf{B} \\rvert$ [$B_\mathrm{IMF}$]",
+        "$| \mathbf{B} |$ [$B_\mathrm{IMF}$]",
         "$T$ [$T_\mathrm{sw}$]",
         # "$M_{\mathrm{MS},x}$",
     ]
@@ -4179,7 +4179,9 @@ def jmap_SEA_comp(run_id):
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
             )
-        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=28, pad=10)
+        ax_list[0][idx2].set_title(
+            kind_names[idx2] + "\n$n$ [$n_\mathrm{sw}$]", fontsize=28, pad=10
+        )
         ax_list[-1][idx2].set_xlabel(
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10
         )
