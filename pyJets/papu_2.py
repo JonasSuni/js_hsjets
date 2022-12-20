@@ -13,6 +13,7 @@ from scipy.linalg import eig
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.lines as mlines
 
 # from matplotlib.ticker import MaxNLocator
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -3729,7 +3730,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     proxy = [
-        plt.plot([0, 0], [0, 0], color=CB_color_cycle[itr_jumbled[itr]])
+        mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
         for itr in range(5)
     ] + [non_pos, sj_pos]
 
