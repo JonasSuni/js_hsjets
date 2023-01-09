@@ -4760,7 +4760,7 @@ def timing_comp():
             for n in range(counters[idx]):
                 vx_one = timing_arrs[idx, :, n][2 * idx2]
                 vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                ax.plot(vx_one, vy_one, "x", color=CB_color_cycle[idx2])
+                ax.plot(vx_one, vy_one, "x", color=CB_color_cycle[idx2],alpha=0.5,zorder=0)
         ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
