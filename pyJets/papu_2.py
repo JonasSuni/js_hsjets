@@ -4661,6 +4661,7 @@ def timing_comp():
 
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 6 + 1, fnr_arr.size), dtype=float)
+    timing_arrs = np.zeros((3, fnr_arr.size, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
@@ -4711,6 +4712,7 @@ def timing_comp():
                 #     / vsw
                 #     / 1.0e3
                 # )
+                timing_arrs[idx, :, counters[idx]] = data_arr[0, 11, :]
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
@@ -4753,7 +4755,12 @@ def timing_comp():
                 angles="xy",
                 scale_units="xy",
                 scale=1,
+                zorder=1,
             )
+            for n in range(counters[idx]):
+                vx_one = timing_arrs[idx, idx2, n][2 * n]
+                vy_one = timing_arrs[idx, idx2, n][2 * n + 1]
+                ax.plot(vx_one, vy_one, "x", color=CB_color_cycle[idx2])
         ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
