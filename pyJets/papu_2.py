@@ -4758,8 +4758,8 @@ def timing_comp():
                 zorder=1,
             )
             for n in range(counters[idx]):
-                vx_one = timing_arrs[idx, idx2, n][2 * n]
-                vy_one = timing_arrs[idx, idx2, n][2 * n + 1]
+                vx_one = timing_arrs[idx, :, n][2 * idx2]
+                vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
                 ax.plot(vx_one, vy_one, "x", color=CB_color_cycle[idx2])
         ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
