@@ -46,8 +46,9 @@ def jet_pos_plot():
     runids = ["AEC", "AEA", "ABC", "ABA"]
     CB_color_cycle = jx.CB_color_cycle
     # kinds = ["foreshock", "beam", "complex", "stripe"]
-    kinds = ["foreshock", "beam"]
-    kinds_pub = ["Antisunward\njets", "Flankward\njets"]
+    kinds = ["beam", "foreshock"]
+    # kinds_pub = ["Antisunward\njets", "Flankward\njets"]
+    kinds_pub = ["Flankward\njets", "Antisunward\njets"]
     draw_labels = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
