@@ -4258,6 +4258,13 @@ def print_means_max():
     return None
 
 
+def calc_conv_ExB(v, B):
+
+    Bmag = np.linalg.norm(B, axis=-1)
+
+    return np.cross(-np.cross(v, B), B) / (Bmag**2)
+
+
 def SEA_timeseries_comp():
 
     plot_labels = [
@@ -4321,15 +4328,20 @@ def SEA_timeseries_comp():
 
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    vsw = [750e3, 600e3, 750e3, 600e3]
+    Bsw = [5e-9, 5e-9, 10e-9, 10e-9]
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 3, 1000), dtype=float)
+    v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
     # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
         for idx, kind in enumerate(kinds):
+            run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
@@ -4351,10 +4363,16 @@ def SEA_timeseries_comp():
                 # print(data_arr.shape)
                 # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
                 epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
+                data_v = run_vsw * data_arr[[1, 2, 3], :].T
+                data_B = run_Bsw * data_arr[[6, 7, 8], :].T
+                v_conv_ExB[idx] = (
+                    v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
+                )
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
+        v_conv_ExB[idx] = v_conv_ExB[idx]/counters[idx]
 
     means = np.mean(avg_arr, axis=-1)
     epochval = avg_arr[:, :, 20]
@@ -4373,6 +4391,14 @@ def SEA_timeseries_comp():
                 color=plot_colors[idx],
                 label=plot_labels[idx],
                 linewidth=2,
+            )
+            if idx in [1,2,3]:
+                ax.plot(
+                t_arr,
+                v_conv_ExB[idx2, idx-1],
+                color=plot_colors[idx],
+                linewidth=2,
+                linestyle="dashed"
             )
             ax.boxplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
