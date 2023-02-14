@@ -3730,31 +3730,45 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #     for itr in range(5)
     # ] + [non_pos, sj_pos]
 
+    # proxy = [
+    #     mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
+    # proxy_labs = (
+    #         "$n=2n_\mathrm{sw}$",
+    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$M_{\mathrm{MS},x}=1$",
+    #         "Jet",
+    #         "FCS",
+    #         "Non-FCS jet",
+    #         "FCS-jet"
+    #     )
     proxy = [
-        mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
-        for itr in range(5)
-    ] + [non_pos, sj_pos]
+        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+        for itr in range(3)
+    ]
+    proxy_labs = [
+        "$n=2n_\mathrm{sw}$",
+        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        "$M_{\mathrm{MS},x}=1$",
+    ]
+    if ~(jet_mask == 0).all():
+        proxy.append(plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[3]]))
+        proxy_labs.append("Jet")
+    if ~(slams_mask == 0).all():
+        proxy.append(plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[4]]))
+        proxy_labs.append("FCS")
+    if len(non_xlist) != 0:
+        proxy.append(non_pos)
+        proxy_labs.append("Non-FCS jet")
+    if len(sj_xlist) != 0:
+        proxy.append(sj_pos)
+        proxy_labs.append("FCS-jet")
 
     ax.legend(
         proxy,
-        # (
-        #     "Jet",
-        #     "$T_\mathrm{core}=3T_\mathrm{sw}$",
-        #     "FCS",
-        #     "$n=2n_\mathrm{sw}$",
-        #     "$M_{\mathrm{MS},x}=1$",
-        #     "Non-FCS jet",
-        #     "FCS-jet",
-        # ),
-        (
-            "$n=2n_\mathrm{sw}$",
-            "$T_\mathrm{core}=3T_\mathrm{sw}$",
-            "$M_{\mathrm{MS},x}=1$",
-            "Jet",
-            "FCS",
-            "Non-FCS jet",
-            "FCS-jet",
-        ),
+        proxy_labs,
         frameon=True,
         numpoints=1,
         markerscale=1,
