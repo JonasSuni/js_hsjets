@@ -3918,7 +3918,7 @@ def non_jet_omni(runid):
                 np.nanmean(np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :] / m_p))
                 / 1e3
             )
-            vms = np.sqrt(va**2+vs**2)
+            vms = np.sqrt(va**2 + vs**2)
             va_xy = (
                 va
                 * np.array(
@@ -3988,7 +3988,7 @@ def non_jet_omni(runid):
                     scale_units="xy",
                     scale=1,
                 )
-            ax_sw.legend(fontsize=16)
+            ax_sw.legend(fontsize=16, loc="lower right")
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
             ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
