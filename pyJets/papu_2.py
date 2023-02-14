@@ -3745,7 +3745,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #         "FCS-jet"
     #     )
     proxy = [
-        plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+        mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
         for itr in range(3)
     ]
     proxy_labs = [
@@ -3754,10 +3754,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         "$M_{\mathrm{MS},x}=1$",
     ]
     if ~(jet_mask == 0).all():
-        proxy.append(plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[3]]))
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append("Jet")
     if ~(slams_mask == 0).all():
-        proxy.append(plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[4]]))
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
         proxy_labs.append("FCS")
     if len(non_xlist) != 0:
         proxy.append(non_pos)
