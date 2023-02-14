@@ -4839,7 +4839,7 @@ def timing_comp():
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
-        ax.set_aspect(1.0)
+        ax.set_aspect("auto")
     plt.tight_layout()
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/timing_comp.pdf",
