@@ -3905,17 +3905,78 @@ def non_jet_omni(runid):
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             res = trifecta_data[0, 11]
+
+            va = (
+                np.nanmean(
+                    B_sw
+                    * trifecta_data[0, 1, :]
+                    / np.sqrt(mu0 * m_p * rho_sw * trifecta_data[0, 0, :])
+                )
+                / 1e3
+            )
+            vs = (
+                np.nanmean(np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :] / m_p))
+                / 1e3
+            )
+
+            va_xy = (
+                va
+                * np.array(
+                    [
+                        (np.cos(theta), np.sin(theta))
+                        for theta in np.arange(0, np.pi * 2, 0.01)
+                    ]
+                ).T
+            )
+            vms_xy = (
+                np.sqrt(va**2 + vs**2)
+                * np.array(
+                    [
+                        (np.cos(theta), np.sin(theta))
+                        for theta in np.arange(0, np.pi * 2, 0.01)
+                    ]
+                ).T
+            )
+
             B = vlsvobj.read_variable("B", cellids=cellid)
             n = vlsvobj.read_variable("rho", cellids=cellid)
-            vx_arr = np.array([res[0], res[2], res[4], res[6]])
-            vy_arr = np.array([res[1], res[3], res[5], res[7]])
+            ax_sw.plot(
+                vms_xy[0],
+                vms_xy[1],
+                color="k",
+                linestyle="dashed",
+                label="$v_{MS}$",
+            )
+            ax_sw.plot(
+                va_xy[0],
+                va_xy[1],
+                color=CB_color_cycle[3],
+                linestyle="dashed",
+                label="$v_A$",
+            )
+            vx_arr = np.array(
+                [
+                    res[0],
+                    res[2],
+                    res[4],
+                    # res[6],
+                ]
+            )
+            vy_arr = np.array(
+                [
+                    res[1],
+                    res[3],
+                    res[5],
+                    # res[7],
+                ]
+            )
             arrow_labels = [
                 "$v_\mathrm{p,n}$",
                 "$v_\mathrm{p,SC}$",
                 "$v_\mathrm{bulk}$",
-                "$v_\mathrm{A}$",
+                # "$v_\mathrm{A}$",
             ]
-            for idx in range(4):
+            for idx in range(len(vx_arr)):
                 ax_sw.quiver(
                     0,
                     0,
@@ -4778,14 +4839,18 @@ def timing_comp():
         ms_xy = circ_xy * ms_med
         a_xy = circ_xy * a_med
         ax.plot(
-            ms_xy.T[0], ms_xy.T[1], color="k", linestyle="dashed", label="Median vMS"
+            ms_xy.T[0],
+            ms_xy.T[1],
+            color="k",
+            linestyle="dashed",
+            label="$v_{MS}$",
         )
         ax.plot(
             a_xy.T[0],
             a_xy.T[1],
             color=CB_color_cycle[3],
             linestyle="dashed",
-            label="Median vA",
+            label="$v_A$",
         )
         vx = [
             # avg_res[0],
