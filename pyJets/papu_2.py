@@ -4777,8 +4777,16 @@ def timing_comp():
         )
         ms_xy = circ_xy * ms_med
         a_xy = circ_xy * a_med
-        ax.plot(ms_xy, color="k", linestyle="dashed", label="Median vMS")
-        ax.plot(a_xy, color=CB_color_cycle[3], linestyle="dashed", label="Median vA")
+        ax.plot(
+            ms_xy.T[0], ms_xy.T[1], color="k", linestyle="dashed", label="Median vMS"
+        )
+        ax.plot(
+            a_xy.T[0],
+            a_xy.T[1],
+            color=CB_color_cycle[3],
+            linestyle="dashed",
+            label="Median vA",
+        )
         vx = [
             # avg_res[0],
             # avg_res[2],
