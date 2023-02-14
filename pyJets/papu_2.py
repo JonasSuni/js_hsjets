@@ -4828,11 +4828,15 @@ def timing_comp():
                 ax.plot(
                     vx_one, vy_one, "x", color=CB_color_cycle[idx2], alpha=0.5, zorder=0
                 )
-        ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
-        ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
+        # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
+        # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
+        ax.set_xlim(-1, 1)
+        ax.set_ylim(-1, 1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         if idx == 0:
-            ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
+            ax.set_ylabel(
+                "$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10, loc="lower right"
+            )
             ax.legend(fontsize=24)
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
