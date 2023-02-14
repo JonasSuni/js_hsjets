@@ -4372,7 +4372,7 @@ def SEA_timeseries_comp():
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-        v_conv_ExB[idx] = v_conv_ExB[idx]/counters[idx]
+        v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
 
     means = np.mean(avg_arr, axis=-1)
     epochval = avg_arr[:, :, 20]
@@ -4392,14 +4392,14 @@ def SEA_timeseries_comp():
                 label=plot_labels[idx],
                 linewidth=2,
             )
-            if idx in [1,2,3]:
+            if idx in [1, 2, 3]:
                 ax.plot(
-                t_arr,
-                v_conv_ExB[idx2, idx-1],
-                color=plot_colors[idx],
-                linewidth=2,
-                linestyle="dashed"
-            )
+                    t_arr,
+                    v_conv_ExB[idx2, idx - 1],
+                    color=plot_colors[idx],
+                    linewidth=2,
+                    linestyle="dashed",
+                )
             ax.boxplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
@@ -4676,7 +4676,7 @@ def timing_comp():
         "$v_\mathrm{p,SC}$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
-        "$v_\mathrm{A}$",
+        # "$v_\mathrm{A}$",
     ]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
@@ -4689,6 +4689,8 @@ def timing_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 6 + 1, fnr_arr.size), dtype=float)
     timing_arrs = np.zeros((3, fnr_arr.size, 1000), dtype=float)
+    alfven_arrs = np.zeros((3, 1000), dtype=float)
+    sonic_arrs = np.zeros((3, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
@@ -4697,8 +4699,9 @@ def timing_comp():
     for idx, kind in enumerate(kinds):
         for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
             vsw = vsws[idx2]
-            # Bsw = Bsws[idx2]
-            # nsw = nsws[idx2]
+            Bsw = Bsws[idx2]
+            nsw = nsws[idx2]
+            Tsw = 0.5e6
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
@@ -4740,6 +4743,15 @@ def timing_comp():
                 #     / 1.0e3
                 # )
                 timing_arrs[idx, :, counters[idx]] = data_arr[0, 11, :]
+                alfven_arrs[idx, counters[idx]] = np.nanmean(
+                    Bsw
+                    * data_arr[0, 1, :]
+                    / np.sqrt(mu0 * m_p * nsw * data_arr[0, 0, :])
+                ) / (vsw * 1e3)
+                sonic_arrs[idx, counters[idx]] = np.nanmean(
+                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[0, 4, :] / m_p)
+                ) / (vsw * 1e3)
+
                 avg_arr[idx] = avg_arr[idx] + data_arr
                 counters[idx] += 1
 
@@ -4751,12 +4763,22 @@ def timing_comp():
     fig, ax_list = plt.subplots(
         1, len(kinds), sharex=True, sharey=True, figsize=(24, 8)
     )
+    magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
     for idx, ax in enumerate(ax_list):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
         avg_res = avg_arr[idx, 0, 11]
         # print(avg_res)
+        a_med = np.nanmedian(alfven_arrs[idx, : counters[idx]])
+        ms_med = np.nanmedian(magnetosonic_arrs[idx, : counters[idx]])
+        circ_xy = np.array(
+            [(np.cos(theta), np.sin(theta)) for theta in np.arange(0, np.pi * 2, 0.01)]
+        )
+        ms_xy = circ_xy * ms_med
+        a_xy = circ_xy * a_med
+        ax.plot(ms_xy, color="k", linestyle="dashed", label="Median vMS")
+        ax.plot(a_xy, color=CB_color_cycle[3], linestyle="dashed", label="Median vA")
         vx = [
             # avg_res[0],
             # avg_res[2],
@@ -4765,7 +4787,7 @@ def timing_comp():
             np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 2, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 4, : counters[idx]]),
-            np.nanmedian(timing_arrs[idx, 6, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 6, : counters[idx]]),
         ]
         vy = [
             # avg_res[1],
@@ -4775,7 +4797,7 @@ def timing_comp():
             np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
-            np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
         ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
