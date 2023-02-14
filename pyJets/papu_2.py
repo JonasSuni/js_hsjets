@@ -3918,7 +3918,7 @@ def non_jet_omni(runid):
                 np.nanmean(np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :] / m_p))
                 / 1e3
             )
-
+            vms = np.sqrt(va**2+vs**2)
             va_xy = (
                 va
                 * np.array(
@@ -3929,7 +3929,7 @@ def non_jet_omni(runid):
                 ).T
             )
             vms_xy = (
-                np.sqrt(va**2 + vs**2)
+                vms
                 * np.array(
                     [
                         (np.cos(theta), np.sin(theta))
@@ -3992,9 +3992,10 @@ def non_jet_omni(runid):
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
             ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
-            ax_sw.set_xlim(-1.1 * maxv, 1.1 * maxv)
-            ax_sw.set_ylim(-1.1 * maxv, 1.1 * maxv)
+            ax_sw.set_xlim(-1.1 * vms, 1.1 * vms)
+            ax_sw.set_ylim(-1.1 * vms, 1.1 * vms)
             ax_sw.grid()
+            ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
             ax_sw.set_title("Timing analysis", fontsize=24, pad=10)
             ax_sw.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
