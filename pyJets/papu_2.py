@@ -4761,7 +4761,7 @@ def timing_comp():
         # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
-        1, len(kinds), sharex=True, sharey=True, figsize=(24, 10)
+        1, len(kinds), sharex=True, sharey=True, figsize=(24, 12)
     )
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
