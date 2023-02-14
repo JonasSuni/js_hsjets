@@ -4835,7 +4835,7 @@ def timing_comp():
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         if idx == 0:
             ax.set_ylabel(
-                "$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10, loc="lower right"
+                "$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10, loc="bottom right"
             )
             ax.legend(fontsize=24)
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
