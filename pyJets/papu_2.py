@@ -3872,7 +3872,7 @@ def jet_var_plotter(runid, var):
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
             usesci=1,
-            scale=2,
+            # scale=2,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
