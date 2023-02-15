@@ -142,4 +142,5 @@ from papu_2 import (
     timing_comp,
     kinds_pca,
     print_means_max,
+    jet_var_plotter,
 )

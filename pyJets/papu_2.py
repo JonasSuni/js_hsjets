@@ -3791,6 +3791,121 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
 
+def jet_var_plotter(runid, var):
+
+    vars_list = [
+        "Pdyn",
+        "RhoNonBackstream",
+        "RhoBackstream",
+        "B",
+        "vNonBackstream",
+        "vBackstream",
+    ]
+    vscale = [1e9, 1e6, 1e6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    runids_pub = ["HM30", "HM05", "LM30", "LM05"]
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    runid_g = runid
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    non_ids = get_non_jets(runid)
+    sj_ids = get_fcs_jets(runid)
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    for non_id in non_ids:
+
+        print("Jet {} in run {}".format(non_id, runid))
+
+        global x0, y0
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        t0 = props.read("time")[0]
+        x0 = props.read("x_mean")[0]
+        y0 = props.read("y_mean")[0]
+        fnr0 = int(t0 * 2)
+
+        filenr_g = fnr0
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr0)).zfill(7))
+
+        fnr_range = np.arange(fnr0 - 30, fnr0 + 30 + 1)
+        t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        # Get cellid of initial position
+        cellid = vlsvobj.get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+        dx = 227e3 / r_e
+
+        cell_range = np.arange(cellid - 20, cellid + 20 + 1)
+        x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+
+        pt.plot.plot_colormap(
+            axes=ax,
+            filename=bulkpath + fname,
+            var=var,
+            # vmin=0,
+            # vmax=pdmax,
+            vscale=vscale,
+            # cbtitle="$P_{dyn}$ [nPa]",
+            # cbtitle="",
+            usesci=0,
+            scale=2,
+            title="",
+            boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
+            # internalcb=True,
+            lin=1,
+            colormap="Blues_r",
+            tickinterval=1.0,
+            external=ext_jet,
+            pass_vars=[
+                "RhoNonBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+                "Pdyn",
+            ],
+        )
+
+        ax.set_title(
+            "Run: {}, ID: {}\n t = {}s".format(
+                runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            ),
+            pad=10,
+            fontsize=24,
+        )
+
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
+                runid, str(non_id).zfill(5), var
+            )
+        )
+
+        plt.close(fig)
+
+
 def non_jet_omni(runid):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -3819,6 +3934,9 @@ def non_jet_omni(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for non_id in non_ids:
+
+        print("Jet {} in run {}".format(non_id, runid))
+
         global x0, y0
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         t0 = props.read("time")[0]
