@@ -3893,7 +3893,8 @@ def jet_var_plotter(runid, var):
             expression=expr_rhoratio,
             pass_vars=[
                 "RhoNonBackstream",
-                "RhoBackstream" "PTensorNonBackstreamDiagonal",
+                "RhoBackstream",
+                "PTensorNonBackstreamDiagonal",
                 "B",
                 "v",
                 "rho",
