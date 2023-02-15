@@ -3802,9 +3802,7 @@ def jet_var_plotter(runid, var):
         "vBackstream",
     ]
     vscale = [1e9, 1e-6, 1e-6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
-    vmax = [10, 10, 10, 10, 250, 250][1e9, 1e-6, 1e-6, 1e9, 1e-3, 1e-3][
-        vars_list.index(var)
-    ]
+    vmax = [10, 10, 10, 10, 250, 250][vars_list.index(var)]
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
