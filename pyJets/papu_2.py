@@ -3873,9 +3873,9 @@ def jet_var_plotter(runid, var):
             # cbtitle="",
             usesci=1,
             scale=2,
-            title="Run: {}, ID: {}\n t = {}s".format(
-                runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
-            ),
+            # title="Run: {}, ID: {}\n t = {}s".format(
+            #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            # ),
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             # internalcb=True,
             # lin=1,
