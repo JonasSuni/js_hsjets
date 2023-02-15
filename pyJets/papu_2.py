@@ -3856,15 +3856,15 @@ def jet_var_plotter(runid, var):
         cell_range = np.arange(cellid - 20, cellid + 20 + 1)
         x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
 
-        # fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 
         pt.plot.plot_colormap(
-            # axes=ax,
+            axes=ax,
             filename=bulkpath + fname,
-            outputfile=wrkdir_DNR
-            + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
-                runid, str(non_id).zfill(5), var
-            ),
+            # outputfile=wrkdir_DNR
+            # + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
+            #     runid, str(non_id).zfill(5), var
+            # ),
             var=var,
             vmin=0.001,
             vmax=vmax,
@@ -3872,12 +3872,12 @@ def jet_var_plotter(runid, var):
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
             usesci=1,
-            # scale=2,
+            scale=2,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
-            # internalcb=True,
+            internalcb=True,
             # lin=1,
             colormap="batlow",
             tickinterval=1.0,
@@ -3895,22 +3895,22 @@ def jet_var_plotter(runid, var):
             ],
         )
 
-        # ax.set_title(
-        #     "Run: {}, ID: {}\n t = {}s".format(
-        #         runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
-        #     ),
-        #     pad=10,
-        #     fontsize=24,
-        # )
-        # plt.tight_layout()
-        # fig.savefig(
-        #     wrkdir_DNR
-        #     + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
-        #         runid, str(non_id).zfill(5), var
-        #     )
-        # )
+        ax.set_title(
+            "Run: {}, ID: {}\n t = {}s".format(
+                runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            ),
+            pad=10,
+            fontsize=24,
+        )
+        plt.tight_layout()
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
+                runid, str(non_id).zfill(5), var
+            )
+        )
 
-        # plt.close(fig)
+        plt.close(fig)
 
 
 def non_jet_omni(runid):
