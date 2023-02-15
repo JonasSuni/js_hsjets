@@ -3791,6 +3791,14 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
 
+def expr_rhoratio(pass_maps):
+
+    rho_th = pass_maps["RhoNonBackstream"]
+    rho_st = pass_maps["RhoBackstream"]
+
+    return rho_st / (rho_st + rho_th + 1e-27)
+
+
 def jet_var_plotter(runid, var):
 
     vars_list = [
@@ -3866,25 +3874,26 @@ def jet_var_plotter(runid, var):
             #     runid, str(non_id).zfill(5), var
             # ),
             var=var,
-            vmin=0.1,
-            vmax=vmax,
-            vscale=vscale,
+            vmin=0,
+            vmax=1,
+            # vscale=vscale,
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
-            usesci=1,
+            # usesci=1,
             scale=2,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             internalcb=True,
-            # lin=1,
+            lin=1,
             colormap="batlow",
             tickinterval=1.0,
             external=ext_jet,
+            expression=expr_rhoratio,
             pass_vars=[
                 "RhoNonBackstream",
-                "PTensorNonBackstreamDiagonal",
+                "RhoBackstream" "PTensorNonBackstreamDiagonal",
                 "B",
                 "v",
                 "rho",
