@@ -3866,7 +3866,7 @@ def jet_var_plotter(runid, var):
             #     runid, str(non_id).zfill(5), var
             # ),
             var=var,
-            vmin=0.001,
+            vmin=0.1,
             vmax=vmax,
             vscale=vscale,
             # cbtitle="$P_{dyn}$ [nPa]",
