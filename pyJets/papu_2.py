@@ -3753,16 +3753,30 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         "$T_\mathrm{core}=3T_\mathrm{sw}$",
         "$M_{\mathrm{MS},x}=1$",
     ]
+
+    xmin, xmax, ymin, ymax = (
+        np.min(XmeshXY),
+        np.max(XmeshXY),
+        np.min(YmeshXY),
+        np.max(YmeshXY),
+    )
+
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append("Jet")
     if ~(slams_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
         proxy_labs.append("FCS")
-    if len(non_xlist) != 0:
+    if np.logical_and(
+        np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
+        np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
+    ).any():
         proxy.append(non_pos)
         proxy_labs.append("Non-FCS jet")
-    if len(sj_xlist) != 0:
+    if np.logical_and(
+        np.logical_and(sj_xlist >= xmin, sj_xlist <= xmax),
+        np.logical_and(sj_ylist >= ymin, sj_ylist <= ymax),
+    ).any():
         proxy.append(sj_pos)
         proxy_labs.append("FCS-jet")
 
