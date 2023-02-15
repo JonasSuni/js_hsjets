@@ -3801,7 +3801,7 @@ def jet_var_plotter(runid, var):
         "vNonBackstream",
         "vBackstream",
     ]
-    vscale = [1e9, 1e6, 1e6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
+    vscale = [1e9, 1e-6, 1e-6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
@@ -3895,7 +3895,7 @@ def jet_var_plotter(runid, var):
             pad=10,
             fontsize=24,
         )
-
+        plt.tight_layout()
         fig.savefig(
             wrkdir_DNR
             + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
