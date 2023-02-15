@@ -3862,7 +3862,7 @@ def jet_var_plotter(runid, var):
             axes=ax,
             filename=bulkpath + fname,
             var=var,
-            vmin=0.1,
+            vmin=0.001,
             vmax=vmax,
             vscale=vscale,
             # cbtitle="$P_{dyn}$ [nPa]",
