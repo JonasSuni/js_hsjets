@@ -4476,8 +4476,8 @@ def SEA_timeseries_comp():
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    vmins = [1.5, -0.8, 0.4, -3.75, 0]
-    vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
+    vmins = [1.3, -0.8, 0.3, -3.75, 0]
+    vmaxs = [5, 0.9, 1.7, 3.75, 35]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
     plot_colors = [
         "k",
@@ -4566,14 +4566,14 @@ def SEA_timeseries_comp():
                 label=plot_labels[idx],
                 linewidth=2,
             )
-            if idx in [1, 2, 3]:
-                ax.plot(
-                    t_arr,
-                    v_conv_ExB[idx2, idx - 1],
-                    color=plot_colors[idx],
-                    linewidth=2,
-                    linestyle="dashed",
-                )
+            # if idx in [1, 2, 3]:
+            #     ax.plot(
+            #         t_arr,
+            #         v_conv_ExB[idx2, idx - 1],
+            #         color=plot_colors[idx],
+            #         linewidth=2,
+            #         linestyle="dashed",
+            #     )
             ax.boxplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
@@ -4581,6 +4581,7 @@ def SEA_timeseries_comp():
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
+                whis=0,
                 notch=True,
                 boxprops=dict(color=plot_colors[idx]),
                 capprops=dict(color=plot_colors[idx]),
