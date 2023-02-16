@@ -3838,7 +3838,7 @@ def jet_var_plotter(runid, var):
             # ),
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             internalcb=True,
-            # lin=1,
+            lin=1,
             colormap="batlow",
             tickinterval=1.0,
             external=ext_jet,
