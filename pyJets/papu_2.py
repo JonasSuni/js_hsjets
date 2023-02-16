@@ -4508,7 +4508,7 @@ def SEA_timeseries_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 3, 1000), dtype=float)
-    v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
+    # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
     # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
@@ -4539,14 +4539,14 @@ def SEA_timeseries_comp():
                 epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
                 data_v = run_vsw * data_arr[[1, 2, 3], :].T
                 data_B = run_Bsw * data_arr[[6, 7, 8], :].T
-                v_conv_ExB[idx] = (
-                    v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
-                )
+                # v_conv_ExB[idx] = (
+                #     v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
+                # )
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-        v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
+        # v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
 
     means = np.mean(avg_arr, axis=-1)
     epochval = avg_arr[:, :, 20]
