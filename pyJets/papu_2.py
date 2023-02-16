@@ -3644,7 +3644,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         # arrowstyle="-",
         # broken_streamlines=False,
         color="k",
-        linewidth=0.8,
+        linewidth=0.6,
         # minlength=4,
         density=35,
         start_points=start_points,
@@ -3655,7 +3655,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         jet_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.5,
         colors=CB_color_cycle[0],
         linestyles=["solid"],
     )
@@ -3665,7 +3665,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         ch_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.5,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
@@ -3675,7 +3675,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         slams_mask,
         [0.5],
-        linewidths=1.2,
+        linewidths=1.5,
         colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
@@ -3685,7 +3685,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         rho_mask,
         [0.5],
-        linewidths=1.2,
+        linewidths=1.5,
         colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
@@ -3695,7 +3695,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         mach_mask,
         [0.5],
-        linewidths=1.2,
+        linewidths=1.5,
         colors=CB_color_cycle[4],
         linestyles=["solid"],
     )
@@ -3723,7 +3723,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 0, 2]
+    itr_jumbled = [3, 1, 4, 2, 0]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -3876,21 +3876,21 @@ def jet_var_plotter(runid, var):
             var=var,
             vmin=0,
             vmax=1,
-            # vscale=vscale,
+            vscale=vscale,
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
-            usesci=0,
+            #usesci=0,
             scale=2,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             internalcb=True,
-            lin=1,
+            #lin=1,
             colormap="batlow",
             tickinterval=1.0,
             external=ext_jet,
-            expression=expr_rhoratio,
+            #expression=expr_rhoratio,
             pass_vars=[
                 "RhoNonBackstream",
                 "RhoBackstream",
@@ -3989,8 +3989,10 @@ def non_jet_omni(runid):
             filename=bulkpath + fname,
             var="Pdyn",
             vmin=0,
-            vmax=pdmax,
-            vscale=1e9,
+            #vmax=pdmax,
+            vmax=1,
+            # vscale=1e9,
+            vscale=1.0/Pdyn_sw,
             # cbtitle="$P_{dyn}$ [nPa]",
             cbtitle="",
             usesci=0,
@@ -3999,7 +4001,8 @@ def non_jet_omni(runid):
             boxre=[x0 - 1, x0 + 1, y0 - 1, y0 + 1],
             # internalcb=True,
             lin=1,
-            colormap="batlow",
+            #colormap="batlow",
+            colormap="Blues_r",
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -4025,7 +4028,8 @@ def non_jet_omni(runid):
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         ax_nw.annotate(
-            "$P_\mathrm{dyn}$ [nPa]",
+            #"$P_\mathrm{dyn}$ [nPa]",
+            "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
             (0.95, 1.05),
             xycoords="axes fraction",
             fontsize=20,
