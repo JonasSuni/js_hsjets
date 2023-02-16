@@ -3416,9 +3416,9 @@ def kind_animations(runid):
     # for sj_id in sj_ids:
     #     jet_animator(runid, sj_id, "FCS-jet")
 
-    for kind in ["foreshock", "beam", "stripe", "complex"]:
+    for kind in ["foreshock", "beam"]:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
@@ -3430,10 +3430,11 @@ def kind_animations(runid):
 
 def jet_animator(runid, jetid, kind):
     global ax, x0, y0, pdmax, bulkpath, jetid_g
-    global runid_g, sj_ids_g, non_ids_g, kind_g
+    global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
     kind_g = kind
     jetid_g = jetid
     runid_g = runid
+    Blines_g = False
     runids = ["ABA", "ABC", "AEA", "AEC"]
     sw_pars = [
         [1e6, 750e3, 5e-9, 0.5e6],
@@ -3482,9 +3483,9 @@ def jet_update(fnr):
         filename=bulkpath + fname,
         var="Pdyn",
         vmin=0,
-        vmax=pdmax,
-        vscale=1e9,
-        cbtitle="$P_\mathrm{dyn}$ [nPa]",
+        vmax=1,
+        # vscale=1e9,
+        cbtitle="$\\rho_s/\\rho_t",
         usesci=0,
         scale=2,
         title="",
@@ -3494,8 +3495,10 @@ def jet_update(fnr):
         colormap="batlow",
         tickinterval=1.0,
         external=ext_jet,
+        expression=expr_rhoratio,
         pass_vars=[
             "RhoNonBackstream",
+            "RhoBackstream",
             "PTensorNonBackstreamDiagonal",
             "B",
             "v",
