@@ -3590,19 +3590,20 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     ).T
     # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
 
-    stream = ax.streamplot(
-        XmeshXY,
-        YmeshXY,
-        B[:, :, 0],
-        B[:, :, 1],
-        # arrowstyle="-",
-        # broken_streamlines=False,
-        color="k",
-        linewidth=0.6,
-        # minlength=4,
-        density=35,
-        start_points=start_points,
-    )
+    if Blines_g:
+        stream = ax.streamplot(
+            XmeshXY,
+            YmeshXY,
+            B[:, :, 0],
+            B[:, :, 1],
+            # arrowstyle="-",
+            # broken_streamlines=False,
+            color="k",
+            linewidth=0.6,
+            # minlength=4,
+            density=35,
+            start_points=start_points,
+        )
 
     jet_cont = ax.contour(
         XmeshXY,
@@ -3763,12 +3764,15 @@ def jet_var_plotter(runid, var):
     ]
     vscale = [1e9, 1e-6, 1e-6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
     vmax = [1.5, 10, 10, 10, 250, 250][vars_list.index(var)]
+    if runid in ["ABC", "AEC"]:
+        vmax = [3, 10, 10, 10, 250, 250][vars_list.index(var)]
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
+    Blines_g = False
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -3839,7 +3843,7 @@ def jet_var_plotter(runid, var):
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             internalcb=True,
             lin=1,
-            colormap="batlow",
+            colormap="Grays_r",
             tickinterval=1.0,
             external=ext_jet,
             # expression=expr_rhoratio,
@@ -3879,8 +3883,10 @@ def non_jet_omni(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
+
+    Blines_g = True
 
     bulkpath = jx.find_bulkpath(runid)
 
