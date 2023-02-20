@@ -4944,9 +4944,7 @@ def timing_comp():
         # vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
         # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
-    fig, ax_list = plt.subplots(
-        2, len(kinds), sharex=True, sharey=True, figsize=(24, 15)
-    )
+    fig, ax_list = plt.subplots(2, len(kinds), figsize=(24, 15))
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
@@ -5039,7 +5037,7 @@ def timing_comp():
     top_axes[1].set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
     top_axes[1].set_xticklabels([])
     top_axes[1].set_yticklabels([])
-    top_axes[1].tick_params(which="minor", labelsize=16)
+    top_axes[1].tick_params(which="minor", labelsize=32)
     top_axes[1].xaxis.set_major_formatter(ticker.NullFormatter())
     top_axes[1].yaxis.set_major_formatter(ticker.NullFormatter())
 
