@@ -5035,8 +5035,7 @@ def timing_comp():
     top_axes[1].grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
     top_axes[1].set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
     top_axes[1].set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    # top_axes[1].set_xticklabels([])
-    # top_axes[1].set_yticklabels([])
+    
     top_axes[1].tick_params(which="minor", labelsize=32)
     top_axes[1].xaxis.set_major_formatter(ticker.NullFormatter())
     top_axes[1].yaxis.set_major_formatter(ticker.NullFormatter())
@@ -5063,6 +5062,8 @@ def timing_comp():
     top_axes[1].set_title("VSC formation", fontsize=32, pad=10)
     top_axes[1].set_xlim(-2.5, 2.5)
     top_axes[1].set_ylim(-2.5, 2.5)
+    top_axes[1].set_xticklabels([-2,-1,0,1,2])
+    top_axes[1].set_yticklabels([-2,-1,0,1,2])
 
     plt.tight_layout()
     fig.savefig(
