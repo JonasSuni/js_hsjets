@@ -4986,12 +4986,12 @@ def timing_comp():
         # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
     fig, ax_list = plt.subplots(
-        1, len(kinds), sharex=True, sharey=True, figsize=(24, 10)
+        2, len(kinds), sharex=True, sharey=True, figsize=(24, 15)
     )
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
-    for idx, ax in enumerate(ax_list):
+    for idx, ax in enumerate(ax_list[1]):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
         avg_res = avg_arr[idx, 0, 11]
         # print(avg_res)
@@ -5069,6 +5069,23 @@ def timing_comp():
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
+
+    top_axes = ax_list[0]
+    top_axes[0].set_axis_off()
+    top_axes[2].set_axis_off()
+
+    top_axes[1].grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
+    for idx, phi in enumerate([-120, 0, 120]):
+        top_axes[1].plot(
+            np.sin(np.deg2rad(phi)),
+            np.cos(np.deg2rad(phi)),
+            "o",
+            color="C2",
+        )
+    top_axes[1].set_xlabel("$X-X_0$ [cells]", fontsize=32, labelpad=10)
+    top_axes[1].set_ylabel("$Y-Y_0$ [cells]", fontsize=32, labelpad=10)
+    top_axes[1].set_title("VSC formation", fontsize=32, pad=10)
+
     plt.tight_layout()
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/timing_comp.pdf",
