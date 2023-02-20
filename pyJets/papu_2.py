@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.lines as mlines
+import matplotlib.ticker as ticker
 
 # from matplotlib.ticker import MaxNLocator
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -5032,7 +5033,25 @@ def timing_comp():
     top_axes[0].set_axis_off()
     top_axes[2].set_axis_off()
 
+    # draw gridlines
     top_axes[1].grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
+    top_axes[1].set_xticks([-1.5, -0.5, 0.5, 1.5, 2.5])
+    top_axes[1].set_yticks([-1.5, -0.5, 0.5, 1.5, 2.5])
+    top_axes[1].set_xticklabels([])
+    top_axes[1].set_yticklabels([])
+    top_axes[1].tick_params(which="minor", labelsize=16)
+    top_axes[1].xaxis.set_major_formatter(ticker.NullFormatter())
+    top_axes[1].yaxis.set_major_formatter(ticker.NullFormatter())
+
+    # Customize minor tick labels
+    top_axes[1].xaxis.set_minor_locator(
+        ticker.FixedLocator([-1.5, -0.5, 0.5, 1.5, 2.5])
+    )
+    top_axes[1].xaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
+    top_axes[1].yaxis.set_minor_locator(
+        ticker.FixedLocator([-1.5, -0.5, 0.5, 1.5, 2.5])
+    )
+    top_axes[1].yaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
     for idx, phi in enumerate([-120, 0, 120]):
         top_axes[1].plot(
             np.sin(np.deg2rad(phi)),
@@ -5040,6 +5059,7 @@ def timing_comp():
             "o",
             color="C2",
         )
+
     top_axes[1].set_xlabel("$X-X_0$ [cells]", fontsize=32, labelpad=10)
     top_axes[1].set_ylabel("$Y-Y_0$ [cells]", fontsize=32, labelpad=10)
     top_axes[1].set_title("VSC formation", fontsize=32, pad=10)
