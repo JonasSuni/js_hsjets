@@ -247,13 +247,11 @@ def jet_pos_plot():
 
 
 def get_fcs_jets(runid):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     fcs_ids = []
 
     for n1 in range(6000):
-
         try:
             props = jio.PropReader(str(n1).zfill(5), runid, transient="jet")
         except:
@@ -277,13 +275,11 @@ def get_fcs_jets(runid):
 
 
 def get_non_jets(runid):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     non_ids = []
 
     for n1 in range(6000):
-
         try:
             props = jio.PropReader(str(n1).zfill(5), runid, transient="jet")
         except:
@@ -307,7 +303,6 @@ def get_non_jets(runid):
 
 
 def foreshock_jplot_SEA(run_id):
-
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -544,7 +539,6 @@ def foreshock_jplot_SEA(run_id):
 
 
 def types_jplot_SEA(run_id, kind="beam", version="new"):
-
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -691,7 +685,6 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
 
 
 def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
-
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -846,7 +839,6 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
 
 
 def fcs_jet_jplot_txtonly(runid):
-
     dx = 227e3 / r_e
 
     # Solar wind parameters for the different runs
@@ -924,7 +916,6 @@ def fcs_jet_jplot_txtonly(runid):
 
 
 def non_jet_jplots(runid, txt=False):
-
     CB_color_cycle = jx.CB_color_cycle
 
     dx = 227e3 / r_e
@@ -1176,7 +1167,6 @@ def non_jet_jplots(runid, txt=False):
 
 
 def P_jplots(runid):
-
     CB_color_cycle = jx.CB_color_cycle
 
     dx = 227e3 / r_e
@@ -1315,7 +1305,6 @@ def P_jplots(runid):
 
 
 def jet_avg_std(kind, version="squish"):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
@@ -1412,7 +1401,6 @@ def jet_avg_std(kind, version="squish"):
 
 
 def kind_SEA_timeseries(kind):
-
     plot_labels = [
         None,
         "$v_x$",
@@ -1516,7 +1504,6 @@ def kind_SEA_timeseries(kind):
 
 
 def SEA_trifecta(kind):
-
     plot_labels = ["VS1", "VS2", "VS3"]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
@@ -1630,7 +1617,6 @@ def SEA_trifecta(kind):
 
 
 def trifecta(runid, kind="non", draw=True):
-
     bulkpath = jx.find_bulkpath(runid)
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -1804,7 +1790,6 @@ def trifecta(runid, kind="non", draw=True):
 
 
 def kind_timeseries(runid, kind="non"):
-
     bulkpath = jx.find_bulkpath(runid)
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -2015,7 +2000,6 @@ def sj_non_timeseries(runid):
 
         # Loop through filenumbers in time series
         for fnr in fnr_arr:
-
             # Try if file exists
             try:
                 vlsvobj = pt.vlsvfile.VlsvReader(
@@ -2081,7 +2065,6 @@ def sj_non_timeseries(runid):
 
         # Loop through filenumbers in time series
         for fnr in fnr_arr:
-
             # Try if file exists
             try:
                 vlsvobj = pt.vlsvfile.VlsvReader(
@@ -2174,7 +2157,6 @@ def SEA_types(run_id="all"):
 
     # Loop over runs
     for runid in runid_list:
-
         jet_ids = np.loadtxt(
             wrkdir_DNR + "papu22/id_txts/new/{}_beam.txt".format(runid),
             dtype=int,
@@ -2189,7 +2171,6 @@ def SEA_types(run_id="all"):
 
             # Loop over n,v,pdyn,B,Tperp,Tpar
             for n2 in range(6):
-
                 # Plot timeseries of deltas relative to epoch time
                 ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
 
@@ -2210,7 +2191,6 @@ def SEA_types(run_id="all"):
 
             # Loop over n,v,pdyn,B,Tperp,Tpar
             for n2 in range(6):
-
                 # Plot timeseries of deltas relative to epoch time
                 ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
 
@@ -2231,7 +2211,6 @@ def SEA_types(run_id="all"):
 
             # Loop over n,v,pdyn,B,Tperp,Tpar
             for n2 in range(6):
-
                 # Plot timeseries of deltas relative to epoch time
                 ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
 
@@ -2252,7 +2231,6 @@ def SEA_types(run_id="all"):
 
             # Loop over n,v,pdyn,B,Tperp,Tpar
             for n2 in range(6):
-
                 # Plot timeseries of deltas relative to epoch time
                 ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
 
@@ -2273,7 +2251,6 @@ def SEA_types(run_id="all"):
 
             # Loop over n,v,pdyn,B,Tperp,Tpar
             for n2 in range(6):
-
                 # Plot timeseries of deltas relative to epoch time
                 ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
 
@@ -2405,10 +2382,8 @@ def SEA_plots(zero_level=False, run_id="all"):
 
     # Loop over runs
     for runid in runid_list:
-
         # Loop over arbitrary large number
         for n1 in range(4000):
-
             # Try reading fcs-jet timeseries
             try:
                 data = np.loadtxt(
@@ -2419,7 +2394,6 @@ def SEA_plots(zero_level=False, run_id="all"):
 
                 # Loop over n,v,pdyn,B,Tperp,Tpar
                 for n2 in range(6):
-
                     # Plot timeseries of deltas relative to epoch time
                     if not zero_level:
                         ax_list[n2].plot(t_arr, data[n2], color="darkgray", zorder=0)
@@ -2446,7 +2420,6 @@ def SEA_plots(zero_level=False, run_id="all"):
 
                 # Loop over n,v,pdyn,B,Tperp,Tpar
                 for n2 in range(6):
-
                     # Plot timeseries of deltas relative to epoch time
                     if not zero_level:
                         ax_list[n2].plot(t_arr, data[n2], color="lightgray", zorder=1)
@@ -2583,7 +2556,6 @@ def non_type_hist(run_id="all"):
 
     # Loop over runs
     for runid in run_arr:
-
         # Get solar wind values and make normalisation array
         n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
         sw_norm = [
@@ -2609,7 +2581,6 @@ def non_type_hist(run_id="all"):
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # ...or at the time of maximum area?
                 beam_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
 
@@ -2623,7 +2594,6 @@ def non_type_hist(run_id="all"):
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # ...or at the time of maximum area?
                 stripe_props[n1].append(props.read_at_amax(vars_list[n1]) / sw_norm[n1])
 
@@ -2637,7 +2607,6 @@ def non_type_hist(run_id="all"):
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # ...or at the time of maximum area?
                 reformation_props[n1].append(
                     props.read_at_amax(vars_list[n1]) / sw_norm[n1]
@@ -2653,7 +2622,6 @@ def non_type_hist(run_id="all"):
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # ...or at the time of maximum area?
                 foreshock_props[n1].append(
                     props.read_at_amax(vars_list[n1]) / sw_norm[n1]
@@ -2669,7 +2637,6 @@ def non_type_hist(run_id="all"):
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # ...or at the time of maximum area?
                 complex_props[n1].append(
                     props.read_at_amax(vars_list[n1]) / sw_norm[n1]
@@ -2746,7 +2713,6 @@ def non_type_hist(run_id="all"):
 
 
 def fcs_non_jet_hist(lastbs=False, run_id="all"):
-
     if run_id == "all":
         run_arr = ["ABA", "ABC", "AEA", "AEC"]
     elif run_id == "30":
@@ -2822,7 +2788,6 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
     # Loop over runs
     for runid in run_arr:
-
         # Get solar wind values and make normalisation array
         n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
         sw_norm = [
@@ -2844,13 +2809,11 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
         # Loop over fcs-jets
         for sj_id in sj_jet_ids:
-
             # Read properties
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # Should properties be taken at last time at bow shock...
                 if lastbs:
                     fcs_jet_props[n1].append(
@@ -2865,13 +2828,11 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
         # Loop over non-fcs-jets
         for non_id in non_sj_ids:
-
             # Read properties
             props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
 
             # Loop over variables
             for n1 in range(len(vars_list)):
-
                 # Should properties be taken at last time at bow shock...
                 if lastbs:
                     non_jet_props[n1].append(
@@ -2931,7 +2892,6 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
 
 def papu22_mov_script(runid):
-
     sj_jet_ids, jet_ids, slams_ids = jh20.separate_jets_god(runid, False)
     non_sj_ids = jet_ids[np.in1d(jet_ids, sj_jet_ids) == False]
 
@@ -2943,7 +2903,6 @@ def papu22_mov_script(runid):
 
 
 def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
-
     global runid_g, filenr_g, sj_ids_g, non_ids_g
     runid_g = runid
     filenr_g = filenr
@@ -3005,7 +2964,6 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
 
 
 def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
-
     B = pass_maps["B"]
     rho = pass_maps["rho"]
     cellids = pass_maps["CellID"]
@@ -3205,7 +3163,6 @@ def ext_contours(ax, XmeshXY, YmeshXY, pass_maps):
 
 
 def vdf_plotter(runid, cellid, t0, zoom=1):
-
     # make outputdir if it doesn't already exist
     if not os.path.exists(wrkdir_DNR + "papu22/VDFs/{}/{}/".format(runid, cellid)):
         try:
@@ -3344,7 +3301,6 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
 
 
 def jet_vdf_plotter(runid):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
@@ -3456,14 +3412,13 @@ def jet_vdf_plotter(runid):
 
 
 def kind_animations(runid):
-
     # sj_ids = get_fcs_jets(runid)
     # for sj_id in sj_ids:
     #     jet_animator(runid, sj_id, "FCS-jet")
 
-    for kind in ["foreshock", "beam", "stripe", "complex"]:
+    for kind in ["foreshock", "beam"]:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/new/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
@@ -3475,10 +3430,11 @@ def kind_animations(runid):
 
 def jet_animator(runid, jetid, kind):
     global ax, x0, y0, pdmax, bulkpath, jetid_g
-    global runid_g, sj_ids_g, non_ids_g, kind_g
+    global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
     kind_g = kind
     jetid_g = jetid
     runid_g = runid
+    Blines_g = False
     runids = ["ABA", "ABC", "AEA", "AEC"]
     sw_pars = [
         [1e6, 750e3, 5e-9, 0.5e6],
@@ -3527,20 +3483,22 @@ def jet_update(fnr):
         filename=bulkpath + fname,
         var="Pdyn",
         vmin=0,
-        vmax=pdmax,
-        vscale=1e9,
-        cbtitle="$P_\mathrm{dyn}$ [nPa]",
+        vmax=1,
+        # vscale=1e9,
+        cbtitle="$\\rho_{st}/\\rho_{th}",
         usesci=0,
         scale=2,
         title="",
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
         # internalcb=True,
         lin=1,
-        colormap="batlow",
+        colormap="Greys",
         tickinterval=1.0,
         external=ext_jet,
+        expression=expr_rhoratio,
         pass_vars=[
             "RhoNonBackstream",
+            "RhoBackstream",
             "PTensorNonBackstreamDiagonal",
             "B",
             "v",
@@ -3564,7 +3522,6 @@ def jet_update(fnr):
 
 
 def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
-
     B = pass_maps["B"]
     rho = pass_maps["rho"]
     cellids = pass_maps["CellID"]
@@ -3636,27 +3593,28 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     ).T
     # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
 
-    stream = ax.streamplot(
-        XmeshXY,
-        YmeshXY,
-        B[:, :, 0],
-        B[:, :, 1],
-        # arrowstyle="-",
-        # broken_streamlines=False,
-        color="k",
-        linewidth=0.8,
-        # minlength=4,
-        density=35,
-        start_points=start_points,
-    )
+    if Blines_g:
+        stream = ax.streamplot(
+            XmeshXY,
+            YmeshXY,
+            B[:, :, 0],
+            B[:, :, 1],
+            # arrowstyle="-",
+            # broken_streamlines=False,
+            color="k",
+            linewidth=0.6,
+            # minlength=4,
+            density=35,
+            start_points=start_points,
+        )
 
     jet_cont = ax.contour(
         XmeshXY,
         YmeshXY,
         jet_mask,
         [0.5],
-        linewidths=1.0,
-        colors=CB_color_cycle[0],
+        linewidths=1.5,
+        colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
 
@@ -3665,7 +3623,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         ch_mask,
         [0.5],
-        linewidths=1.0,
+        linewidths=1.5,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
@@ -3675,8 +3633,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         slams_mask,
         [0.5],
-        linewidths=1.2,
-        colors=CB_color_cycle[2],
+        linewidths=1.5,
+        colors=CB_color_cycle[0],
         linestyles=["solid"],
     )
 
@@ -3685,7 +3643,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         rho_mask,
         [0.5],
-        linewidths=1.2,
+        linewidths=1.5,
         colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
@@ -3695,7 +3653,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         mach_mask,
         [0.5],
-        linewidths=1.2,
+        linewidths=1.5,
         colors=CB_color_cycle[4],
         linestyles=["solid"],
     )
@@ -3723,7 +3681,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 0, 2]
+    itr_jumbled = [3, 1, 4, 2, 0]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -3792,7 +3750,6 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
 
 def expr_rhoratio(pass_maps):
-
     rho_th = pass_maps["RhoNonBackstream"]
     rho_st = pass_maps["RhoBackstream"]
 
@@ -3800,7 +3757,6 @@ def expr_rhoratio(pass_maps):
 
 
 def jet_var_plotter(runid, var):
-
     vars_list = [
         "Pdyn",
         "RhoNonBackstream",
@@ -3810,13 +3766,16 @@ def jet_var_plotter(runid, var):
         "vBackstream",
     ]
     vscale = [1e9, 1e-6, 1e-6, 1e9, 1e-3, 1e-3][vars_list.index(var)]
-    vmax = [10, 10, 10, 10, 250, 250][vars_list.index(var)]
+    vmax = [1.5, 10, 10, 10, 250, 250][vars_list.index(var)]
+    if runid in ["ABC", "AEC"]:
+        vmax = [3, 10, 10, 10, 250, 250][vars_list.index(var)]
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
+    Blines_g = False
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -3838,7 +3797,6 @@ def jet_var_plotter(runid, var):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for non_id in non_ids:
-
         print("Jet {} in run {}".format(non_id, runid))
 
         global x0, y0
@@ -3875,8 +3833,9 @@ def jet_var_plotter(runid, var):
             # ),
             var=var,
             vmin=0,
-            vmax=1,
-            # vscale=vscale,
+            # vmax=1,
+            vmax=vmax,
+            vscale=vscale,
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
             usesci=0,
@@ -3887,10 +3846,10 @@ def jet_var_plotter(runid, var):
             boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
             internalcb=True,
             lin=1,
-            colormap="batlow",
+            colormap="Greys_r",
             tickinterval=1.0,
             external=ext_jet,
-            expression=expr_rhoratio,
+            # expression=expr_rhoratio,
             pass_vars=[
                 "RhoNonBackstream",
                 "RhoBackstream",
@@ -3924,12 +3883,13 @@ def jet_var_plotter(runid, var):
 
 
 def non_jet_omni(runid):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
+
+    Blines_g = True
 
     bulkpath = jx.find_bulkpath(runid)
 
@@ -3951,7 +3911,6 @@ def non_jet_omni(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for non_id in non_ids:
-
         print("Jet {} in run {}".format(non_id, runid))
 
         global x0, y0
@@ -3989,8 +3948,10 @@ def non_jet_omni(runid):
             filename=bulkpath + fname,
             var="Pdyn",
             vmin=0,
-            vmax=pdmax,
-            vscale=1e9,
+            # vmax=pdmax,
+            vmax=1,
+            # vscale=1e9,
+            vscale=1.0 / Pdyn_sw,
             # cbtitle="$P_{dyn}$ [nPa]",
             cbtitle="",
             usesci=0,
@@ -3999,7 +3960,8 @@ def non_jet_omni(runid):
             boxre=[x0 - 1, x0 + 1, y0 - 1, y0 + 1],
             # internalcb=True,
             lin=1,
-            colormap="batlow",
+            # colormap="batlow",
+            colormap="Blues_r",
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -4025,7 +3987,8 @@ def non_jet_omni(runid):
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         ax_nw.annotate(
-            "$P_\mathrm{dyn}$ [nPa]",
+            # "$P_\mathrm{dyn}$ [nPa]",
+            "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
             (0.95, 1.05),
             xycoords="axes fraction",
             fontsize=20,
@@ -4274,7 +4237,6 @@ def non_jet_omni(runid):
 
 
 def jmap_SEA_comp(run_id):
-
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -4443,7 +4405,6 @@ def jmap_SEA_comp(run_id):
 
 
 def print_means_max():
-
     means_maxes = np.load(wrkdir_DNR + "papu22/SEA_timeseries_mean_max.npy")
 
     means, epochval = means_maxes
@@ -4484,14 +4445,12 @@ def print_means_max():
 
 
 def calc_conv_ExB(v, B):
-
     Bmag = np.linalg.norm(B, axis=-1)
 
     return np.cross(-np.cross(v, B), B) / (Bmag**2)
 
 
 def SEA_timeseries_comp():
-
     plot_labels = [
         None,
         "$v_x$",
@@ -4527,8 +4486,8 @@ def SEA_timeseries_comp():
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    vmins = [1.5, -0.8, 0.4, -3.75, 0]
-    vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
+    vmins = [1.3, -0.8, 0.3, -3.75, 0]
+    vmaxs = [5, 0.9, 1.7, 3.75, 35]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
     plot_colors = [
         "k",
@@ -4559,7 +4518,7 @@ def SEA_timeseries_comp():
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 3, 1000), dtype=float)
-    v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
+    # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
     # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
     counters = [0, 0, 0]
@@ -4590,14 +4549,14 @@ def SEA_timeseries_comp():
                 epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
                 data_v = run_vsw * data_arr[[1, 2, 3], :].T
                 data_B = run_Bsw * data_arr[[6, 7, 8], :].T
-                v_conv_ExB[idx] = (
-                    v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
-                )
+                # v_conv_ExB[idx] = (
+                #     v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
+                # )
                 counters[idx] += 1
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
-        v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
+        # v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
 
     means = np.mean(avg_arr, axis=-1)
     epochval = avg_arr[:, :, 20]
@@ -4617,14 +4576,14 @@ def SEA_timeseries_comp():
                 label=plot_labels[idx],
                 linewidth=2,
             )
-            if idx in [1, 2, 3]:
-                ax.plot(
-                    t_arr,
-                    v_conv_ExB[idx2, idx - 1],
-                    color=plot_colors[idx],
-                    linewidth=2,
-                    linestyle="dashed",
-                )
+            # if idx in [1, 2, 3]:
+            #     ax.plot(
+            #         t_arr,
+            #         v_conv_ExB[idx2, idx - 1],
+            #         color=plot_colors[idx],
+            #         linewidth=2,
+            #         linestyle="dashed",
+            #     )
             ax.boxplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
@@ -4632,6 +4591,7 @@ def SEA_timeseries_comp():
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
+                whis=0,
                 notch=True,
                 boxprops=dict(color=plot_colors[idx]),
                 capprops=dict(color=plot_colors[idx]),
@@ -4667,7 +4627,6 @@ def SEA_timeseries_comp():
 
 
 def kinds_pca():
-
     var_names = np.array(
         [
             "rho",
@@ -4887,7 +4846,6 @@ def kinds_pca():
 
 
 def timing_comp():
-
     vsws = [750, 600, 750, 600]
 
     nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
