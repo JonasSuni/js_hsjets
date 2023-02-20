@@ -5035,8 +5035,8 @@ def timing_comp():
     top_axes[1].grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
     top_axes[1].set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
     top_axes[1].set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    top_axes[1].set_xticklabels()
-    top_axes[1].set_yticklabels()
+    top_axes[1].set_xticklabels([])
+    top_axes[1].set_yticklabels([])
 
     top_axes[1].tick_params(which="minor", labelsize=32)
     top_axes[1].xaxis.set_major_formatter(ticker.NullFormatter())
