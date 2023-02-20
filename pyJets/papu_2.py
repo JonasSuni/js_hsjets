@@ -5053,7 +5053,7 @@ def timing_comp():
             np.cos(np.deg2rad(phi)),
             "o",
             color="C2",
-            markersize=32,
+            markersize=20,
         )
 
     top_axes[1].set_xlabel("$X-X_0$ [cells]", fontsize=32, labelpad=10)
