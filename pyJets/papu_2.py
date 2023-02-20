@@ -5055,6 +5055,7 @@ def timing_comp():
             np.cos(np.deg2rad(phi)),
             "o",
             color="C2",
+            markersize=32,
         )
 
     top_axes[1].set_xlabel("$X-X_0$ [cells]", fontsize=32, labelpad=10)
@@ -5062,8 +5063,8 @@ def timing_comp():
     top_axes[1].set_title("VSC formation", fontsize=32, pad=10)
     top_axes[1].set_xlim(-2.5, 2.5)
     top_axes[1].set_ylim(-2.5, 2.5)
-    top_axes[1].set_xticklabels(["-2", "-1", "0", "1", "2", ""])
-    top_axes[1].set_yticklabels(["-2", "-1", "0", "1", "2", ""])
+    top_axes[1].set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
+    top_axes[1].set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
 
     plt.tight_layout()
     fig.savefig(
