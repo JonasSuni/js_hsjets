@@ -4332,7 +4332,7 @@ def jmap_SEA_comp(run_id="all"):
                 )
             )
             if idx2 == 2:
-                if idx == 1:
+                if idx == 11:  # Disabled
                     cb_list.append(
                         fig.colorbar(
                             im_list[idx2 * len(varname_list) + idx], ax=ax, extend="max"
