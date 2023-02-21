@@ -4300,8 +4300,15 @@ def jmap_SEA_comp(run_id="all"):
     im_list = []
     cb_list = []
     vmin = [0, -1, 0.25, 0, 10]
-    vmax = [4, 0, 1, 4, 30]
-    cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
+    vmax = [4, 0, 1.2, 4, 30]
+    # cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
+    cmap = [
+        "Greys_r",
+        "Greys_r",
+        "Greys_r",
+        "Greys_r",
+        "Greys_r",
+    ]
     annot = [
         ["a)", "b)", "c)", "d)", "e)"],
         ["f)", "g)", "h)", "i)", "j)"],
