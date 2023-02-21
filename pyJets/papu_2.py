@@ -4315,11 +4315,11 @@ def jmap_SEA_comp(run_id="all"):
     vmax = [4, 0, 1.2, 4, 30]
     # cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     cmap = [
-        "Greys_r",
-        "Greys_r",
-        "Greys_r",
-        "Greys_r",
-        "Greys_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
     ]
     annot = [
         ["a)", "b)", "c)", "d)", "e)"],
