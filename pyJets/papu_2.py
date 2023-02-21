@@ -4616,7 +4616,7 @@ def SEA_timeseries_comp():
             if draw_legend[idx] and idx2 == 0:
                 ax.legend(loc="lower right", fontsize=16)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
-        for idx, ax in enumerate(ax_list[:-2, idx2]):
+        for idx, ax in enumerate(ax_list[:-1, idx2]):
             ax.grid()
             # ax.set_xticks(np.arange(-10, 10.1, 2.5))
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
@@ -4635,7 +4635,7 @@ def SEA_timeseries_comp():
             t_arr,
             Tani_avg_arr[idx2],
             color="k",
-            label="$T_\perp/T_\parallel$",
+            # label="$T_\perp/T_\parallel$",
             linewidth=2,
         )
         ax.boxplot(
@@ -4653,6 +4653,18 @@ def SEA_timeseries_comp():
             # flierprops=dict(color=c, markeredgecolor=c),
             medianprops=dict(color="k"),
         )
+        ax.grid()
+        # ax.set_xticks(np.arange(-10, 10.1, 2.5))
+        ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
+        # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
+        ax.tick_params(labelsize=20)
+        if idx2 == 0:
+            ax.set_ylabel("$T_\perp/T_\parallel$", fontsize=40, labelpad=10)
+        # ax.axvline(0, linestyle="dashed")
+        # ax.set_ylim(vmins[idx], vmaxs[idx])
+        # ax.annotate(
+        #     annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
+        # )
     for ax in ax_list.flat:
         ax.label_outer()
     plt.tight_layout()
