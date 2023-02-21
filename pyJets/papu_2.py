@@ -4237,7 +4237,7 @@ def non_jet_omni(runid):
         plt.close(fig)
 
 
-def jmap_SEA_comp(run_id):
+def jmap_SEA_comp(run_id="all"):
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -4518,6 +4518,7 @@ def SEA_timeseries_comp():
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
+    Tani_avg_arr = np.zeros((len(kinds), fnr_arr.size), dtype=float)
     epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 3, 1000), dtype=float)
     # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
     # print(epoch_mag_arr.shape)
@@ -4545,6 +4546,9 @@ def SEA_timeseries_comp():
                 if np.isnan(data_arr).any():
                     continue
                 avg_arr[idx] = avg_arr[idx] + data_arr
+                Tani_avg_arr[idx] = (
+                    Tani_avg_arr[idx] + data_arr[-1, :] / data_arr[-2, :]
+                )
                 # print(data_arr.shape)
                 # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
                 epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
@@ -4557,6 +4561,7 @@ def SEA_timeseries_comp():
 
     for idx in range(len(kinds)):
         avg_arr[idx] = avg_arr[idx] / counters[idx]
+        Tani_avg_arr[idx] = Tani_avg_arr[idx] / counters[idx]
         # v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
 
     means = np.mean(avg_arr, axis=-1)
@@ -4565,7 +4570,14 @@ def SEA_timeseries_comp():
     means_max_arr = np.array([means, epochval])
     np.save(wrkdir_DNR + "papu22/SEA_timeseries_mean_max", means_max_arr)
 
-    fig, ax_list = plt.subplots(len(ylabels), 3, sharex=True, figsize=(24, 24))
+    T_ani = np.zeros((len(kinds), 3, 1000), dtype=float)
+    for idx in range(len(kinds)):
+        T_ani[idx, :, : counters[idx]] = (
+            epoch_mag_arr[idx, -1, :, : counters[idx]]
+            / epoch_mag_arr[idx, -2, :, : counters[idx]]
+        )
+
+    fig, ax_list = plt.subplots(len(ylabels) + 1, 3, sharex=True, figsize=(24, 24))
     for idx2, kind in enumerate(kinds):
         ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=40, pad=10)
         for idx in range(len(plot_labels)):
@@ -4604,7 +4616,7 @@ def SEA_timeseries_comp():
             if draw_legend[idx] and idx2 == 0:
                 ax.legend(loc="lower right", fontsize=16)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
-        for idx, ax in enumerate(ax_list[:, idx2]):
+        for idx, ax in enumerate(ax_list[:-2, idx2]):
             ax.grid()
             # ax.set_xticks(np.arange(-10, 10.1, 2.5))
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
@@ -4617,6 +4629,30 @@ def SEA_timeseries_comp():
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
             )
+    for idx2, kind in enumerate(kinds):
+        ax = ax_list[-1][idx2]
+        ax.plot(
+            t_arr,
+            Tani_avg_arr[idx2],
+            color="k",
+            label="$T_\perp/T_\parallel$",
+            linewidth=2,
+        )
+        ax.boxplot(
+            T_ani[idx2, :, : counters[idx2]].T,
+            # positions=[0],
+            positions=np.arange(-6.5, 7.5, 6.5),
+            manage_ticks=False,
+            widths=1.0,
+            sym="",
+            whis=0,
+            notch=True,
+            boxprops=dict(color="k"),
+            capprops=dict(color="k"),
+            whiskerprops=dict(color="k"),
+            # flierprops=dict(color=c, markeredgecolor=c),
+            medianprops=dict(color="k"),
+        )
     for ax in ax_list.flat:
         ax.label_outer()
     plt.tight_layout()
