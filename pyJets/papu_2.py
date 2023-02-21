@@ -3986,7 +3986,13 @@ def non_jet_omni(runid):
         )
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
-        ax_nw.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+        ax_nw.annotate(
+            "a)",
+            (0.05, 0.90),
+            xycoords="axes fraction",
+            fontsize=20,
+            bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
+        )
         ax_nw.annotate(
             # "$P_\mathrm{dyn}$ [nPa]",
             "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
@@ -4023,7 +4029,13 @@ def non_jet_omni(runid):
         ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
-        ax_ne.annotate("b)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+        ax_ne.annotate(
+            "b)",
+            (0.05, 0.90),
+            xycoords="axes fraction",
+            fontsize=20,
+            bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
+        )
         ax_ne.set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
 
         try:
@@ -4373,7 +4385,11 @@ def jmap_SEA_comp(run_id="all"):
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(
-                annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=24
+                annot[idx2][idx],
+                (0.05, 0.85),
+                xycoords="axes fraction",
+                fontsize=24,
+                bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
             )
         ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
         ax_list[-1][idx2].set_xlabel(
