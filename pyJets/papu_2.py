@@ -4232,7 +4232,7 @@ def non_jet_omni(runid):
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
                 ax.annotate(
-                    annots[idx], (0.05, 0.80), xycoords="axes fraction", fontsize=20
+                    annots[idx], (0.05, 0.75), xycoords="axes fraction", fontsize=20
                 )
             ax_se_list[0].set_title("Timeseries", fontsize=24, pad=10)
         except:
