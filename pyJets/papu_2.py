@@ -4506,9 +4506,9 @@ def SEA_timeseries_comp():
     ]
 
     annot = [
-        ["a)", "b)", "c)", "d)", "e)"],
-        ["f)", "g)", "h)", "i)", "j)"],
-        ["k)", "l)", "m)", "n)", "o)"],
+        ["a)", "b)", "c)", "d)", "e)", "f)"],
+        ["g)", "h)", "i)", "j)", "k)", "l)"],
+        ["m)", "n)", "o)", "p)", "q)", "r)"],
     ]
 
     kinds = ["beam", "foreshock", "fcs"]
@@ -4662,9 +4662,9 @@ def SEA_timeseries_comp():
             ax.set_ylabel("$T_\perp/T_\parallel$", fontsize=40, labelpad=10)
         # ax.axvline(0, linestyle="dashed")
         ax.set_ylim(0.5, 2.4)
-        # ax.annotate(
-        #     annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
-        # )
+        ax.annotate(
+            annot[idx2][-1], (0.05, 0.85), xycoords="axes fraction", fontsize=32
+        )
     for ax in ax_list.flat:
         ax.label_outer()
     plt.tight_layout()
