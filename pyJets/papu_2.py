@@ -4497,6 +4497,7 @@ def SEA_timeseries_comp():
     vmins = [0.8, -1.0, 0.1, -3.8, -5]
     vmaxs = [5, 1.0, 2.0, 3.8, 40]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    offsets = np.array([0, 0, 0.1, 0.2, 0.3, 0, 0, 0.1, 0.2, 0.3, 0, 0.1]) - 0.2
     plot_colors = [
         "k",
         CB_color_cycle[0],
@@ -4607,7 +4608,7 @@ def SEA_timeseries_comp():
             ax.boxplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
-                positions=np.arange(-6.49, 7.51, 6.51),
+                positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
@@ -4648,7 +4649,7 @@ def SEA_timeseries_comp():
         ax.boxplot(
             T_ani[idx2, :, : counters[idx2]].T,
             # positions=[0],
-            positions=np.arange(-6.49, 7.51, 6.51),
+            positions=np.arange(-6.5, 7.5, 6.5) - 0.2,
             manage_ticks=False,
             widths=1.0,
             sym="",
