@@ -4389,7 +4389,7 @@ def jmap_SEA_comp(run_id="all"):
                 (0.05, 0.85),
                 xycoords="axes fraction",
                 fontsize=24,
-                bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
+                bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
             )
         ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
         ax_list[-1][idx2].set_xlabel(
