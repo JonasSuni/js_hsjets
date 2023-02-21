@@ -3991,7 +3991,7 @@ def non_jet_omni(runid):
             (0.05, 0.90),
             xycoords="axes fraction",
             fontsize=20,
-            bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
+            bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
         )
         ax_nw.annotate(
             # "$P_\mathrm{dyn}$ [nPa]",
@@ -4034,7 +4034,7 @@ def non_jet_omni(runid):
             (0.05, 0.90),
             xycoords="axes fraction",
             fontsize=20,
-            bbox=dict(boxstyle="square,pad=0.3", fc="white", ec="k", lw=2),
+            bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
         )
         ax_ne.set_ylabel("Simulation time [s]", fontsize=24, labelpad=10)
 
