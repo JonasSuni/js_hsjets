@@ -4999,11 +4999,12 @@ def timing_comp():
         # vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
         # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
-    fig, ax_list = plt.subplots(2, len(kinds), figsize=(24, 15))
+    fig, ax_list = plt.subplots(2, 2, figsize=(24, 24))
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
-    for idx, ax in enumerate(ax_list[1]):
+    ax_flat = ax_list.flatten()
+    for idx, ax in enumerate(ax_flat[1:]):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
         avg_res = avg_arr[idx, 0, 11]
         # print(avg_res)
@@ -5074,36 +5075,34 @@ def timing_comp():
         ax.set_xlim(-1.1, 1.1)
         ax.set_ylim(-1.1, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
+        ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 0:
-            ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
             ax.legend(fontsize=24, loc="lower right")
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
 
-    top_axes = ax_list[0]
-    top_axes[0].set_axis_off()
-    top_axes[2].set_axis_off()
+    top_ax = ax_flat[0]
 
     # draw gridlines
-    top_axes[1].grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
-    top_axes[1].set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    top_axes[1].set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    top_axes[1].set_xticklabels([])
-    top_axes[1].set_yticklabels([])
+    top_ax.grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
+    top_ax.set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
+    top_ax.set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
+    top_ax.set_xticklabels([])
+    top_ax.set_yticklabels([])
 
-    top_axes[1].tick_params(which="minor", labelsize=24)
-    top_axes[1].xaxis.set_major_formatter(ticker.NullFormatter())
-    top_axes[1].yaxis.set_major_formatter(ticker.NullFormatter())
+    top_ax.tick_params(which="minor", labelsize=24)
+    top_ax.xaxis.set_major_formatter(ticker.NullFormatter())
+    top_ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
     # Customize minor tick labels
-    top_axes[1].xaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
-    top_axes[1].xaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
-    top_axes[1].yaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
-    top_axes[1].yaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
+    top_ax.xaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
+    top_ax.xaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
+    top_ax.yaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
+    top_ax.yaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
     for idx, phi in enumerate([-120, 0, 120]):
-        top_axes[1].plot(
+        top_ax.plot(
             np.sin(np.deg2rad(phi)),
             np.cos(np.deg2rad(phi)),
             "o",
@@ -5111,14 +5110,14 @@ def timing_comp():
             markersize=20,
         )
 
-    top_axes[1].set_xlabel("$X-X_0$ [cells]", fontsize=32, labelpad=10)
-    top_axes[1].set_ylabel("$Y-Y_0$ [cells]", fontsize=32, labelpad=10)
-    top_axes[1].set_title("VSC formation", fontsize=32, pad=10)
-    top_axes[1].set_xlim(-2.5, 2.5)
-    top_axes[1].set_ylim(-2.5, 2.5)
-    # top_axes[1].set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
-    # top_axes[1].set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
-    top_axes[1].annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
+    top_ax.set_xlabel("$x-x_0$ [cells]", fontsize=32, labelpad=10)
+    top_ax.set_ylabel("$y-y_0$ [cells]", fontsize=32, labelpad=10)
+    top_ax.set_title("VSC formation", fontsize=32, pad=10)
+    top_ax.set_xlim(-2.5, 2.5)
+    top_ax.set_ylim(-2.5, 2.5)
+    # top_ax.set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
+    # top_ax.set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
+    top_ax.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
 
     plt.tight_layout()
     fig.savefig(
