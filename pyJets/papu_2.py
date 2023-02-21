@@ -4902,7 +4902,7 @@ def timing_comp():
 
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
-    annot = ["a)", "b)", "c)"]
+    annot = ["b)", "c)", "d)"]
     arrow_labels = [
         "$v_\mathrm{p,n}$",
         "$v_\mathrm{p,SC}$",
@@ -5111,6 +5111,7 @@ def timing_comp():
     top_axes[1].set_ylim(-2.5, 2.5)
     # top_axes[1].set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     # top_axes[1].set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
+    top_axes[1].annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
 
     plt.tight_layout()
     fig.savefig(
