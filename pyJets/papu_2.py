@@ -3614,7 +3614,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         jet_mask,
         [0.5],
-        linewidths=3,
+        linewidths=2,
         colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
@@ -3624,7 +3624,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         ch_mask,
         [0.5],
-        linewidths=3,
+        linewidths=2,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
@@ -3634,7 +3634,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         slams_mask,
         [0.5],
-        linewidths=3,
+        linewidths=2,
         colors=CB_color_cycle[0],
         linestyles=["solid"],
     )
@@ -3644,7 +3644,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         rho_mask,
         [0.5],
-        linewidths=3,
+        linewidths=2,
         colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
@@ -3654,7 +3654,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         mach_mask,
         [0.5],
-        linewidths=3,
+        linewidths=2,
         colors=CB_color_cycle[4],
         linestyles=["solid"],
     )
@@ -4021,10 +4021,20 @@ def non_jet_omni(runid):
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
         ax_ne.contour(
-            XmeshXY, YmeshXY, rho_arr, [2], colors=[CB_color_cycle[3]], linewidths=[3]
+            XmeshXY,
+            YmeshXY,
+            rho_arr,
+            [2],
+            colors=[CB_color_cycle[3]],
+            linewidths=[2],
         )
         ax_ne.contour(
-            XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]], linewidths=[3]
+            XmeshXY,
+            YmeshXY,
+            Tcore_arr,
+            [3],
+            colors=[CB_color_cycle[1]],
+            linewidths=[2],
         )
         ax_ne.contour(
             XmeshXY,
@@ -4032,7 +4042,7 @@ def non_jet_omni(runid):
             mmsx_arr,
             [1.0],
             colors=[CB_color_cycle[4]],
-            linewidths=[3],
+            linewidths=[2],
         )
         ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
         ax_ne.set_xlim(x_range[0], x_range[-1])
