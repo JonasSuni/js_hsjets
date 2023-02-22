@@ -4513,7 +4513,7 @@ def SEA_timeseries_comp():
     vmins = [0.8, -1.0, 0.1, -3.8, -5]
     vmaxs = [5, 1.0, 2.0, 3.8, 40]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
-    offsets = np.array([0, 0, -0.2, 0.2, 0.4, 0, 0, -0.2, 0.2, 0.4, 0, -0.2]) - 0.1
+    offsets = np.array([0, -0.4, -0.2, 0.2, 0, 0, -0.4, -0.2, 0.2, 0, 0, -0.2]) - 0.1
     plot_colors = [
         "k",
         CB_color_cycle[0],
@@ -4628,13 +4628,13 @@ def SEA_timeseries_comp():
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
-                whis=0.5,
+                whis=1.0,
                 notch=False,
-                boxprops=dict(color=plot_colors[idx]),
-                capprops=dict(color=plot_colors[idx]),
-                whiskerprops=dict(color=plot_colors[idx]),
+                boxprops=dict(color=plot_colors[idx], linewidth=1.5),
+                capprops=dict(color=plot_colors[idx], linewidth=1.5),
+                whiskerprops=dict(color=plot_colors[idx], linewidth=1.5),
                 # flierprops=dict(color=c, markeredgecolor=c),
-                medianprops=dict(color=plot_colors[idx]),
+                medianprops=dict(color=plot_colors[idx], linewidth=1.5),
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
@@ -4669,13 +4669,13 @@ def SEA_timeseries_comp():
             manage_ticks=False,
             widths=1.0,
             sym="",
-            whis=0.5,
+            whis=1.0,
             notch=False,
-            boxprops=dict(color="k"),
-            capprops=dict(color="k"),
-            whiskerprops=dict(color="k"),
+            boxprops=dict(color="k", linewidth=1.5),
+            capprops=dict(color="k", linewidth=1.5),
+            whiskerprops=dict(color="k", linewidth=1.5),
             # flierprops=dict(color=c, markeredgecolor=c),
-            medianprops=dict(color="k"),
+            medianprops=dict(color="k", linewidth=1.5),
         )
         ax.grid()
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
