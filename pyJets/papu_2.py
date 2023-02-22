@@ -4364,7 +4364,7 @@ def jmap_SEA_comp(run_id="all"):
                 data_avg[idx2, 0, :, :],
                 [2],
                 colors=[CB_color_cycle[3]],
-                linewidths=[1.5],
+                linewidths=[1],
             )
             ax.contour(
                 XmeshXY,
@@ -4372,7 +4372,7 @@ def jmap_SEA_comp(run_id="all"):
                 data_avg[idx2, 5, :, :],
                 [3],
                 colors=[CB_color_cycle[1]],
-                linewidths=[1.5],
+                linewidths=[2],
             )
             ax.contour(
                 XmeshXY,
@@ -4380,7 +4380,7 @@ def jmap_SEA_comp(run_id="all"):
                 data_avg[idx2, 6, :, :],
                 [1.0],
                 colors=[CB_color_cycle[4]],
-                linewidths=[1.5],
+                linewidths=[3],
             )
             # ax.set_title(varname_list[idx], fontsize=24, pad=10)
             ax.set_xlim(x_range[0], x_range[-1])
