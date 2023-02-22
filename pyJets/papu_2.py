@@ -1745,8 +1745,12 @@ def trifecta(runid, kind="non", draw=True):
             results["bulk_velocity"][1],
             results["alfven_velocity"][0],
             results["alfven_velocity"][1],
+            wave_v_sc * wave_vector[2][0],
+            results["wave_velocity_relative2sc"][2],
+            results["bulk_velocity"][2],
+            results["alfven_velocity"][2],
         ]
-        data_arr[0, len(var_list) + 6, :8] = out_results
+        data_arr[0, len(var_list) + 6, :12] = out_results
 
         if draw:
             fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
@@ -1955,6 +1959,94 @@ def kind_timeseries(runid, kind="non"):
         )
         plt.close(fig)
 
+def vz_timeseries(runid,kind="non"):
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    if kind == "fcs":
+        non_ids = get_fcs_jets(runid)
+    else:
+        non_ids = get_non_jets(runid)
+
+    var_list = [
+        "rho",
+        "v",
+        "v",
+        "v",
+        "Pdyn",
+        "B",
+        "B",
+        "B",
+        "TParallel",
+        "TPerpendicular",
+    ]
+    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e-6, 1e-6]
+    norm = [
+        [1, 750, 750, 750, 0.9408498320756251, 5, 5, 5, 0.5, 0.5],
+        [3.3, 600, 600, 600, 1.9870748453437201, 5, 5, 5, 0.5, 0.5],
+        [1, 750, 750, 750, 0.9408498320756251, 10, 10, 10, 0.5, 0.5],
+        [3.3, 600, 600, 600, 1.9870748453437201, 10, 10, 10, 0.5, 0.5],
+    ]
+    ops = [
+        "pass",
+        "x",
+        "yz",
+        "magnitude",
+        "pass",
+        "x",
+        "yz",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+
+    run_norm = norm[runids.index(runid)]
+    for non_id in non_ids:
+        print("Jet {} in run {}".format(non_id, runid))
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+        fnr0 = int(t0 * 2)
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+        cellid = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+        data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+
+        for idx, fnr in enumerate(fnr_arr):
+            try:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                for idx2, var in enumerate(var_list):
+                    if ops[idx2] == "yz":
+                        data_arr[idx2, idx] = (
+                            np.sqrt(vlsvobj.read_interpolated_variable(
+                                var, [x0 * r_e, y0 * r_e, 0], operator="y"
+                            )**2+vlsvobj.read_interpolated_variable(
+                                var, [x0 * r_e, y0 * r_e, 0], operator="z"
+                            )**2)
+                            * scales[idx2]
+                            / run_norm[idx2]
+                        )
+                    else:
+                        data_arr[idx2, idx] = (
+                            vlsvobj.read_interpolated_variable(
+                                var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                            )
+                            * scales[idx2]
+                            / run_norm[idx2]
+                        )
+            except:
+                data_arr[:, idx] = np.nan
+
+        np.savetxt(
+            wrkdir_DNR
+            + "papu22/timeseries_yz_txts/{}_{}.txt".format(runid, str(non_id).zfill(5)),
+            data_arr,
+        )
 
 def sj_non_timeseries(runid):
     """
@@ -4652,7 +4744,7 @@ def SEA_timeseries_comp():
                 manage_ticks=False,
                 widths=1.0,
                 sym="",
-                whis=(0, 100),
+                whis=1.5,
                 notch=False,
                 boxprops=dict(color=plot_colors[idx]),
                 capprops=dict(color=plot_colors[idx]),
@@ -4693,7 +4785,7 @@ def SEA_timeseries_comp():
             manage_ticks=False,
             widths=1.0,
             sym="",
-            whis=(0, 100),
+            whis=1.5,
             notch=False,
             boxprops=dict(color="k"),
             capprops=dict(color="k"),
