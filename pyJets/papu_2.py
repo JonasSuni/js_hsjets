@@ -4630,11 +4630,11 @@ def SEA_timeseries_comp():
                 sym="",
                 whis=1.0,
                 notch=False,
-                boxprops=dict(color=plot_colors[idx], linewidth=1.5),
-                capprops=dict(color=plot_colors[idx], linewidth=1.5),
-                whiskerprops=dict(color=plot_colors[idx], linewidth=1.5),
+                boxprops=dict(color=plot_colors[idx]),
+                capprops=dict(color=plot_colors[idx]),
+                whiskerprops=dict(color=plot_colors[idx]),
                 # flierprops=dict(color=c, markeredgecolor=c),
-                medianprops=dict(color=plot_colors[idx], linewidth=1.5),
+                medianprops=dict(color=plot_colors[idx]),
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
@@ -4671,11 +4671,11 @@ def SEA_timeseries_comp():
             sym="",
             whis=1.0,
             notch=False,
-            boxprops=dict(color="k", linewidth=1.5),
-            capprops=dict(color="k", linewidth=1.5),
-            whiskerprops=dict(color="k", linewidth=1.5),
+            boxprops=dict(color="k"),
+            capprops=dict(color="k"),
+            whiskerprops=dict(color="k"),
             # flierprops=dict(color=c, markeredgecolor=c),
-            medianprops=dict(color="k", linewidth=1.5),
+            medianprops=dict(color="k"),
         )
         ax.grid()
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
