@@ -4765,7 +4765,7 @@ def SEA_timeseries_comp():
             if idx2 == 0:
                 ax.set_ylabel(ylabels[idx], fontsize=40, labelpad=10)
             # ax.axvline(0, linestyle="dashed")
-            # ax.set_ylim(vmins[idx], vmaxs[idx])
+            ax.set_ylim(vmins[idx], vmaxs[idx])
             ax.annotate(
                 annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
             )
