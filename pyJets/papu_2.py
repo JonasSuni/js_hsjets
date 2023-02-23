@@ -4222,9 +4222,9 @@ def non_jet_omni(runid):
             )
             vy_arr = np.array(
                 [
-                    np.sqrt(res[1] ** 2 + res[8] ** 2),
-                    np.sqrt(res[3] ** 2 + res[9] ** 2),
-                    np.sqrt(res[5] ** 2 + res[10] ** 2),
+                    res[1],
+                    res[3],
+                    res[5],
                     # res[7],
                 ]
             )
@@ -4248,10 +4248,10 @@ def non_jet_omni(runid):
                 )
             ax_sw.legend(fontsize=16, loc="lower right")
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
-            ax_sw.set_ylabel("$|v_{yz}|$ [km/s]", fontsize=24, labelpad=10)
+            ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
             ax_sw.set_xlim(-1.2 * vms, 1.2 * vms)
-            ax_sw.set_ylim(0, 1.2 * vms)
+            ax_sw.set_ylim(-1.2 * vms, 1.2 * vms)
             ax_sw.grid()
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
@@ -5124,7 +5124,7 @@ def timing_comp():
         # vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
         # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(24, 18))
+    fig, ax_list = plt.subplots(2, 2, figsize=(18, 18))
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
@@ -5169,24 +5169,9 @@ def timing_comp():
             # avg_res[3],
             # avg_res[5],
             # avg_res[7],
-            np.nanmedian(
-                np.sqrt(
-                    timing_arrs[idx, 1, : counters[idx]] ** 2
-                    + timing_arrs[idx, 8, : counters[idx]] ** 2
-                )
-            ),
-            np.nanmedian(
-                np.sqrt(
-                    timing_arrs[idx, 3, : counters[idx]] ** 2
-                    + timing_arrs[idx, 9, : counters[idx]] ** 2
-                )
-            ),
-            np.nanmedian(
-                np.sqrt(
-                    timing_arrs[idx, 5, : counters[idx]] ** 2
-                    + timing_arrs[idx, 10, : counters[idx]] ** 2
-                )
-            ),
+            np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
             # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
         ]
         vx_all = vx_all + vx
@@ -5206,19 +5191,16 @@ def timing_comp():
             )
             for n in range(counters[idx]):
                 vx_one = timing_arrs[idx, :, n][2 * idx2]
-                vy_one = np.sqrt(
-                    timing_arrs[idx, :, n][2 * idx2 + 1] ** 2
-                    + timing_arrs[idx, :, n][idx2 + 8] ** 2
-                )
+                vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
                 ax.plot(
                     vx_one, vy_one, "x", color=CB_color_cycle[idx2], alpha=0.5, zorder=0
                 )
         # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.set_xlim(-1.1, 1.1)
-        ax.set_ylim(0, 1.1)
+        ax.set_ylim(-1.1, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
-        ax.set_ylabel("$|v_{yz}|$ [$v_{sw}$]", fontsize=32, labelpad=10)
+        ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 0:
             ax.legend(fontsize=24, loc="lower right")
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
@@ -5231,7 +5213,7 @@ def timing_comp():
     # draw gridlines
     top_ax.grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
     top_ax.set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    top_ax.set_yticks([-1.5, -0.5, 0.5, 1.5])
+    top_ax.set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
     top_ax.set_xticklabels([])
     top_ax.set_yticklabels([])
 
@@ -5242,8 +5224,8 @@ def timing_comp():
     # Customize minor tick labels
     top_ax.xaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
     top_ax.xaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
-    top_ax.yaxis.set_minor_locator(ticker.FixedLocator([-1, 0, 1]))
-    top_ax.yaxis.set_minor_formatter(ticker.FixedFormatter([-1, 0, 1]))
+    top_ax.yaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
+    top_ax.yaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
     for idx, phi in enumerate([-120, 0, 120]):
         top_ax.plot(
             np.sin(np.deg2rad(phi)),
@@ -5257,7 +5239,7 @@ def timing_comp():
     top_ax.set_ylabel("$y-y_0$ [cells]", fontsize=32, labelpad=10)
     top_ax.set_title("VSC formation", fontsize=32, pad=10)
     top_ax.set_xlim(-2.5, 2.5)
-    top_ax.set_ylim(-1.5, 1.5)
+    top_ax.set_ylim(-2.5, 2.5)
     top_ax.set_aspect("equal")
     # top_ax.set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     # top_ax.set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
