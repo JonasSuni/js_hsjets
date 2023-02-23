@@ -5266,6 +5266,7 @@ def timing_comp():
     top_ax.set_title("VSC formation", fontsize=32, pad=10)
     top_ax.set_xlim(-2.5, 2.5)
     top_ax.set_ylim(-1.5, 1.5)
+    top_ax.set_aspect("equal")
     # top_ax.set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     # top_ax.set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     top_ax.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
