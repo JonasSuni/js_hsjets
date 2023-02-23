@@ -1959,8 +1959,8 @@ def kind_timeseries(runid, kind="non"):
         )
         plt.close(fig)
 
-def vz_timeseries(runid,kind="non"):
 
+def vz_timeseries(runid, kind="non"):
     bulkpath = jx.find_bulkpath(runid)
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -2023,11 +2023,16 @@ def vz_timeseries(runid,kind="non"):
                 for idx2, var in enumerate(var_list):
                     if ops[idx2] == "yz":
                         data_arr[idx2, idx] = (
-                            np.sqrt(vlsvobj.read_interpolated_variable(
-                                var, [x0 * r_e, y0 * r_e, 0], operator="y"
-                            )**2+vlsvobj.read_interpolated_variable(
-                                var, [x0 * r_e, y0 * r_e, 0], operator="z"
-                            )**2)
+                            np.sqrt(
+                                vlsvobj.read_interpolated_variable(
+                                    var, [x0 * r_e, y0 * r_e, 0], operator="y"
+                                )
+                                ** 2
+                                + vlsvobj.read_interpolated_variable(
+                                    var, [x0 * r_e, y0 * r_e, 0], operator="z"
+                                )
+                                ** 2
+                            )
                             * scales[idx2]
                             / run_norm[idx2]
                         )
@@ -2047,6 +2052,7 @@ def vz_timeseries(runid,kind="non"):
             + "papu22/timeseries_yz_txts/{}_{}.txt".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
+
 
 def sj_non_timeseries(runid):
     """
@@ -4595,12 +4601,11 @@ def SEA_timeseries_comp():
         None,
         "$v_x$",
         "$v_y$",
-        "$v_z$",
+        "$v_{yz}$",
         "$|v|$",
         None,
         "$B_x$",
-        "$B_y$",
-        "$B_z$",
+        "$B_{yz}$",
         "$|B|$",
         "TPar",
         "TPerp",
@@ -4609,9 +4614,7 @@ def SEA_timeseries_comp():
         False,
         False,
         False,
-        False,
         True,
-        False,
         False,
         False,
         False,
@@ -4628,18 +4631,16 @@ def SEA_timeseries_comp():
     ]
     vmins = [0.8, -1.0, 0.1, -3.8, -5]
     vmaxs = [5, 1.0, 2.0, 3.8, 40]
-    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
-    offsets = np.array([0, -0.4, -0.2, 0.2, 0, 0, -0.4, -0.2, 0.2, 0, 0, -0.2]) - 0.1
+    plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
+    offsets = np.array([0, -0.2, 0.2, 0, 0, -0.2, 0.2, 0, 0, -0.2]) - 0.1
     plot_colors = [
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
-        CB_color_cycle[2],
         "k",
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
-        CB_color_cycle[2],
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
@@ -4666,8 +4667,8 @@ def SEA_timeseries_comp():
     counters = [0, 0, 0]
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
         for idx, kind in enumerate(kinds):
-            run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
-            run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            # run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            # run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
@@ -4692,8 +4693,8 @@ def SEA_timeseries_comp():
                 # print(data_arr.shape)
                 # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
                 epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
-                data_v = run_vsw * data_arr[[1, 2, 3], :].T
-                data_B = run_Bsw * data_arr[[6, 7, 8], :].T
+                # data_v = run_vsw * data_arr[[1, 2, 3], :].T
+                # data_B = run_Bsw * data_arr[[6, 7, 8], :].T
                 # v_conv_ExB[idx] = (
                 #     v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
                 # )
