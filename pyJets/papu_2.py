@@ -4222,9 +4222,9 @@ def non_jet_omni(runid):
             )
             vy_arr = np.array(
                 [
-                    res[1],
-                    res[3],
-                    res[5],
+                    np.sqrt(res[1] ** 2 + res[8] ** 2),
+                    np.sqrt(res[3] ** 2 + res[9] ** 2),
+                    np.sqrt(res[5] ** 2 + res[10] ** 2),
                     # res[7],
                 ]
             )
@@ -4251,7 +4251,7 @@ def non_jet_omni(runid):
             ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
             ax_sw.set_xlim(-1.1 * vms, 1.1 * vms)
-            ax_sw.set_ylim(-1.1 * vms, 1.1 * vms)
+            ax_sw.set_ylim(0, 1.1 * vms)
             ax_sw.grid()
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
@@ -4270,9 +4270,7 @@ def non_jet_omni(runid):
                 "v",
                 "v",
                 "v",
-                "v",
                 "Pdyn",
-                "B",
                 "B",
                 "B",
                 "B",
@@ -4282,13 +4280,11 @@ def non_jet_omni(runid):
             plot_labels = [
                 None,
                 "$v_x$",
-                "$v_y$",
-                "$v_z$",
+                "$v_{yz}$",
                 "$|v|$",
                 None,
                 "$B_x$",
-                "$B_y$",
-                "$B_z$",
+                "$B_{yz}$",
                 "$|B|$",
                 "TPar",
                 "TPerp",
@@ -4297,9 +4293,7 @@ def non_jet_omni(runid):
                 False,
                 False,
                 False,
-                False,
                 True,
-                False,
                 False,
                 False,
                 False,
@@ -4315,17 +4309,15 @@ def non_jet_omni(runid):
                 "$T~[T_\mathrm{sw}]$",
             ]
             annots = ["d)", "e)", "f)", "g)", "h)"]
-            plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+            plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
             plot_colors = [
                 "k",
                 CB_color_cycle[0],
                 CB_color_cycle[1],
-                CB_color_cycle[2],
                 "k",
                 "k",
                 CB_color_cycle[0],
                 CB_color_cycle[1],
-                CB_color_cycle[2],
                 "k",
                 CB_color_cycle[0],
                 CB_color_cycle[1],
