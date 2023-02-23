@@ -4600,7 +4600,6 @@ def SEA_timeseries_comp():
     plot_labels = [
         None,
         "$v_x$",
-        "$v_y$",
         "$v_{yz}$",
         "$|v|$",
         None,
