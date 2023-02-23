@@ -5177,9 +5177,24 @@ def timing_comp():
             # avg_res[3],
             # avg_res[5],
             # avg_res[7],
-            np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
-            np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
-            np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
+            np.nanmedian(
+                np.sqrt(
+                    timing_arrs[idx, 1, : counters[idx]] ** 2
+                    + timing_arrs[idx, 8, : counters[idx]] ** 2
+                )
+            ),
+            np.nanmedian(
+                np.sqrt(
+                    timing_arrs[idx, 3, : counters[idx]] ** 2
+                    + timing_arrs[idx, 9, : counters[idx]] ** 2
+                )
+            ),
+            np.nanmedian(
+                np.sqrt(
+                    timing_arrs[idx, 5, : counters[idx]] ** 2
+                    + timing_arrs[idx, 10, : counters[idx]] ** 2
+                )
+            ),
             # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
         ]
         vx_all = vx_all + vx
@@ -5199,14 +5214,17 @@ def timing_comp():
             )
             for n in range(counters[idx]):
                 vx_one = timing_arrs[idx, :, n][2 * idx2]
-                vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
+                vy_one = np.sqrt(
+                    timing_arrs[idx, :, n][2 * idx2 + 1] ** 2
+                    + timing_arrs[idx, :, n][idx2 + 8] ** 2
+                )
                 ax.plot(
                     vx_one, vy_one, "x", color=CB_color_cycle[idx2], alpha=0.5, zorder=0
                 )
         # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.set_xlim(-1.1, 1.1)
-        ax.set_ylim(-1.1, 1.1)
+        ax.set_ylim(0, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 0:
@@ -5221,7 +5239,7 @@ def timing_comp():
     # draw gridlines
     top_ax.grid(which="major", axis="both", linestyle="-", color="k", linewidth=1)
     top_ax.set_xticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
-    top_ax.set_yticks([-2.5, -1.5, -0.5, 0.5, 1.5, 2.5])
+    top_ax.set_yticks([-1.5, -0.5, 0.5, 1.5])
     top_ax.set_xticklabels([])
     top_ax.set_yticklabels([])
 
@@ -5232,8 +5250,8 @@ def timing_comp():
     # Customize minor tick labels
     top_ax.xaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
     top_ax.xaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
-    top_ax.yaxis.set_minor_locator(ticker.FixedLocator([-2, -1, 0, 1, 2]))
-    top_ax.yaxis.set_minor_formatter(ticker.FixedFormatter([-2, -1, 0, 1, 2]))
+    top_ax.yaxis.set_minor_locator(ticker.FixedLocator([-1, 0, 1]))
+    top_ax.yaxis.set_minor_formatter(ticker.FixedFormatter([-1, 0, 1]))
     for idx, phi in enumerate([-120, 0, 120]):
         top_ax.plot(
             np.sin(np.deg2rad(phi)),
@@ -5247,7 +5265,7 @@ def timing_comp():
     top_ax.set_ylabel("$y-y_0$ [cells]", fontsize=32, labelpad=10)
     top_ax.set_title("VSC formation", fontsize=32, pad=10)
     top_ax.set_xlim(-2.5, 2.5)
-    top_ax.set_ylim(-2.5, 2.5)
+    top_ax.set_ylim(-1.5, 1.5)
     # top_ax.set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     # top_ax.set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     top_ax.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
