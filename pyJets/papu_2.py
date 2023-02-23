@@ -4248,10 +4248,10 @@ def non_jet_omni(runid):
                 )
             ax_sw.legend(fontsize=16, loc="lower right")
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
-            ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
+            ax_sw.set_ylabel("$|v_{yz}|$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
-            ax_sw.set_xlim(-1.1 * vms, 1.1 * vms)
-            ax_sw.set_ylim(0, 1.1 * vms)
+            ax_sw.set_xlim(-1.2 * vms, 1.2 * vms)
+            ax_sw.set_ylim(0, 1.2 * vms)
             ax_sw.grid()
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
@@ -4280,7 +4280,7 @@ def non_jet_omni(runid):
             plot_labels = [
                 None,
                 "$v_x$",
-                "$v_{yz}$",
+                "$|v_{yz}|$",
                 "$|v|$",
                 None,
                 "$B_x$",
@@ -4592,7 +4592,7 @@ def SEA_timeseries_comp():
     plot_labels = [
         None,
         "$v_x$",
-        "$v_{yz}$",
+        "$|v_{yz}|$",
         "$|v|$",
         None,
         "$B_x$",
@@ -5218,7 +5218,7 @@ def timing_comp():
         ax.set_xlim(-1.1, 1.1)
         ax.set_ylim(0, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
-        ax.set_ylabel("$v_{yz}$ [$v_{sw}$]", fontsize=32, labelpad=10)
+        ax.set_ylabel("$|v_{yz}|$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 0:
             ax.legend(fontsize=24, loc="lower right")
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
