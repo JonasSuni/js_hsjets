@@ -4680,7 +4680,7 @@ def SEA_timeseries_comp():
             for non_id in non_ids:
                 data_arr = np.loadtxt(
                     wrkdir_DNR
-                    + "papu22/timeseries_txts/{}_{}.txt".format(
+                    + "papu22/timeseries_yz_txts/{}_{}.txt".format(
                         runid, str(non_id).zfill(5)
                     )
                 )
