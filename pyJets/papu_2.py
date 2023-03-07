@@ -4867,7 +4867,7 @@ def kinds_pca():
 
                 data_arr.append(ts_data[[0, 1, 2, 5, 6, 8, 9], 20].flatten())
                 classes_arr[idx].append(ts_data[[0, 1, 2, 5, 6, 8, 9], 20].flatten())
-                vars = var_names[[0, 1, 2, 6, 7, 10, 11]]
+                vars = var_names[[0, 1, 2, 5, 6, 8, 9]]
                 runid_arr.append(runid)
                 id_arr.append(non_id)
 
