@@ -4263,7 +4263,9 @@ def non_jet_omni(runid):
         try:
             timeseries_data = np.loadtxt(
                 wrkdir_DNR
-                + "papu22/timeseries_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
+                + "papu22/timeseries_yz_txts/{}_{}.txt".format(
+                    runid, str(non_id).zfill(5)
+                )
             )
             var_list = [
                 "rho",
