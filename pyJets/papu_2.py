@@ -5514,7 +5514,6 @@ def fecta_9(runid, kind="non"):
         data_arr[0, len(var_list) + 6, :12] = out_results
 
         np.save(
-            wrkdir_DNR
-            + "papu22/quadfecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
+            wrkdir_DNR + "papu22/9fecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
