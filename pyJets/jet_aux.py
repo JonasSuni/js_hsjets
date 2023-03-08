@@ -78,7 +78,6 @@ def ext_magpause(ax, XmeshXY, YmeshXY, pass_maps):
 
 
 def legend_compact(leg):
-
     for n, item in enumerate(leg.legendHandles):
         try:
             color = item.get_color()
@@ -89,7 +88,6 @@ def legend_compact(leg):
 
 
 def transfer_tavg(runid, start, stop):
-
     time_s = time.time()
 
     inputdir = "/scratch/project_2000203/sunijona/tavg/{}/".format(runid)
@@ -114,7 +112,6 @@ def transfer_tavg(runid, start, stop):
 
 
 def xyz_reconstruct(vlsvobj, cellids=-1):
-
     if type(cellids) == int and cellids == -1:
         ci = vlsvobj.read_variable("CellID")
     else:
@@ -131,7 +128,6 @@ def xyz_reconstruct(vlsvobj, cellids=-1):
 
 
 def restrict_area(vlsvobj, boxre):
-
     if len(boxre) == 4:
         boxre = [boxre[0], boxre[1], boxre[2], boxre[3], 0, 0]
 
@@ -214,7 +210,6 @@ def MP_xy():
 
 
 def bs_norm(runid="ABC", filenr=825, vlsvobj=None, boxre=[6, 18, -8, 8]):
-
     if vlsvobj is None:
         bulkpath = find_bulkpath(runid)
         bulkname = "bulk.{}.vlsv".format(str(filenr).zfill(7))
@@ -253,7 +248,6 @@ def bs_norm(runid="ABC", filenr=825, vlsvobj=None, boxre=[6, 18, -8, 8]):
 
 
 def bs_nonloc(vlsvobj, rho_sw, boxre=[6, 18, -8, 8]):
-
     cellids = restrict_area(vlsvobj, boxre)
     rho = vlsvobj.read_variable("rho", cellids=cellids)
     pr_rhonbs = vlsvobj.read_variable("RhoNonBackstream", cellids=cellids)
@@ -294,7 +288,6 @@ def bs_nonloc(vlsvobj, rho_sw, boxre=[6, 18, -8, 8]):
 
 
 def bs_mp_fit(runid, file_nr, boxre=[6, 18, -8, 6]):
-
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk.{}.vlsv".format(str(file_nr).zfill(7))
 
@@ -332,7 +325,6 @@ def bs_mp_fit(runid, file_nr, boxre=[6, 18, -8, 6]):
 
 
 def make_bs_fit(runid, start, stop):
-
     bs_fit_arr = np.zeros(6)
     mp_fit_arr = np.zeros(3)
     for n in range(start, stop + 1):
@@ -360,7 +352,6 @@ def make_bs_fit(runid, start, stop):
 
 
 def bow_shock_jonas(runid, filenr):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
     r_id = runids.index(runid)
     maxtime_list = [839, 1179, 1339, 879]
@@ -377,7 +368,6 @@ def bow_shock_jonas(runid, filenr):
 
 
 def mag_pause_jonas(runid, filenr):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
     r_id = runids.index(runid)
     maxtime_list = [839, 1179, 1339, 879]
@@ -389,7 +379,6 @@ def mag_pause_jonas(runid, filenr):
 
 
 def bow_shock_markus(runid, filenr):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
     start_time = [580, 580, 580, 580]
     stop_time = [839, 1179, 1339, 879]
@@ -482,7 +471,6 @@ def bow_shock_markus(runid, filenr):
 
 
 def bs_rd(runid, time_arr, x_arr, y_arr):
-
     filenr_arr = (time_arr * 2).astype(int)
 
     bs_rd_arr = np.zeros_like(time_arr)
@@ -506,7 +494,6 @@ def bs_rd(runid, time_arr, x_arr, y_arr):
 
 
 def bs_dist(runid, time_arr, x_arr, y_arr):
-
     filenr_arr = (time_arr * 2).astype(int)
 
     bs_x_arr = np.zeros_like(time_arr)
@@ -521,7 +508,6 @@ def bs_dist(runid, time_arr, x_arr, y_arr):
 
 
 def get_cell_coordinates(runid, cellid):
-
     spatmesh = spatmesh_get(runid)
 
     xmin, ymin, zmin, xmax, ymax, zmax = spatmesh[0]
@@ -548,7 +534,6 @@ def get_cell_coordinates(runid, cellid):
 
 
 def spatmesh_get(runid):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     spat_extent = [
@@ -604,7 +589,6 @@ def spatmesh_get(runid):
 
 
 def get_neighs(runid, cells, neighborhood_reach=[1, 1, 0]):
-
     xn = neighborhood_reach[0]
     yn = neighborhood_reach[1]
     zn = neighborhood_reach[2]
@@ -613,7 +597,6 @@ def get_neighs(runid, cells, neighborhood_reach=[1, 1, 0]):
 
 
 def get_neighs_asym(runid, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
-
     spat_ext, spat_size = spatmesh_get(runid)
     x_size, y_size, z_size = spat_size
 
@@ -640,7 +623,6 @@ def get_neighs_asym(runid, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
 
 
 def find_bulkpath(runid):
-
     runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD"]
     path_list = ["bulk/", "bulk/", "round_3_boundary_sw/", "bulk/", "bulk/"]
 
@@ -655,7 +637,6 @@ def find_bulkpath(runid):
 
 
 def read_bulkfile(runid, fnr):
-
     bulkpath = find_bulkpath(runid)
     return pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7)))
 
@@ -686,12 +667,10 @@ def sw_par_dict(runid):
 
 
 def division_ste(a, b, stea, steb):
-
     return (a / b) * np.sqrt((stea / a) ** 2 + (steb / b) ** 2)
 
 
 def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
-
     # Adapted from code created by Lucile Turc
 
     # Inputs:
@@ -716,7 +695,6 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     ref_sc = ind_sc[0]
 
     for isc in ind_sc[1:]:
-
         # To obtain a normalized crosscorrelation:
         a = (data[ref_sc, var_ind] - np.mean(data[ref_sc, var_ind])) / (
             np.std(data[ref_sc, var_ind], ddof=1) * len(data[ref_sc, var_ind])
@@ -786,7 +764,6 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
 
     ind = 0
     for isc in ind_sc[1:]:
-
         # Position of the second spacecraft from the considered pair
         R2 = [pos_jonas[isc, 0], pos_jonas[isc, 1], pos_jonas[isc, 2]]
         R2 = np.array(R2) * Re
@@ -804,6 +781,192 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
 
     result = np.dot(np.linalg.inv(matrix_positions[0:2, 0:2]), time_difference[0:2])
+    result.shape = (2, 1)
+
+    norm_result = np.linalg.norm(result)
+
+    wave_velocity_sc_frame = 1.0 / norm_result
+
+    print(result)
+
+    wave_vector = np.zeros((3, 1))
+    wave_vector[0:2] = result / norm_result
+
+    print("Wave phase velocity ", wave_velocity_sc_frame)
+    print("Wave vector ", wave_vector)
+
+    results = {}
+    results["wave_vector"] = wave_vector
+    results["wave_velocity_sc_frame"] = wave_velocity_sc_frame
+    results["cross_corr_values"] = cross_corr_values
+    print("Correlation coefficients: ", cross_corr_values)
+
+    V_bulk = np.array(
+        [
+            np.mean(data[ref_sc, 5]),
+            np.mean(data[ref_sc, 6]),
+            np.mean(data[ref_sc, 7]),
+        ]
+    )
+    V_A = np.array(
+        [
+            np.mean(data[ref_sc, 8]),
+            np.mean(data[ref_sc, 9]),
+            np.mean(data[ref_sc, 10]),
+        ]
+    )
+    results["alfven_velocity"] = V_A
+    print("Bulk velocity: ", V_bulk, np.linalg.norm(V_bulk))
+    Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
+
+    # if "proton/V.x" in data:
+    #     V_bulk = np.array(
+    #         [
+    #             np.mean(data["proton/V.x"][min_time:max_time, ref_sc]),
+    #             np.mean(data["proton/V.y"][min_time:max_time, ref_sc]),
+    #             np.mean(data["proton/V.z"][min_time:max_time, ref_sc]),
+    #         ]
+    #     )
+    #
+
+    # elif "V.x" in data:
+    #     V_bulk = np.array(
+    #         [
+    #             np.mean(data["V.x"][min_time:max_time, ref_sc]),
+    #             np.mean(data["V.y"][min_time:max_time, ref_sc]),
+    #             np.mean(data["V.z"][min_time:max_time, ref_sc]),
+    #         ]
+    #     )
+    #     Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
+    # else:
+    #     print("No bulk velocity found - wave velocity only in simulation frame")
+
+    if "Vpl" in locals():
+        print("Wave phase velocity in plasma frame ", Vpl)
+
+        wave_velocity_relative2sc = (
+            V_bulk.reshape((3, 1))
+            + (wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)) * wave_vector
+        )
+        wave_velocity_relative2sc.shape = 3
+        print("Wave velocity relative to spacecraft ", wave_velocity_relative2sc)
+
+        results["wave_velocity_plasma_frame"] = Vpl
+        results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
+
+        results["bulk_velocity"] = V_bulk
+
+    return results
+
+
+def timing_analysis_quad(data, ind_sc=[0, 2, 1, 3], var_ind=3):
+    # Adapted from code created by Lucile Turc
+
+    # Inputs:
+    # data is a list of dictionaries containing the virtual spacecraft time series
+    # ind_sc selects one virtual spacecraft from the list of dictionaries
+    # min_time and max_time indicate between which time steps we perform the timing analysis
+    # var4analysis is a dictionary key which selects the time series on which timing analysis is performed
+    # Output:
+    # results is a dictionary containing the results of the timing analysis
+
+    Re = 6371.0  # Earth radius in km
+    time_difference = []
+    dt = 0.5  # Time step dt = 0.5 in all Vlasiator runs
+
+    # ******************************************************************************#
+    # Calculate the correlation function between two times series
+    # ******************************************************************************#
+    cross_corr_values = []
+
+    # print(min_time,max_time)
+
+    ref_sc = ind_sc[0]
+
+    for isc in ind_sc[1:]:
+        # To obtain a normalized crosscorrelation:
+        a = (data[ref_sc, var_ind] - np.mean(data[ref_sc, var_ind])) / (
+            np.std(data[ref_sc, var_ind], ddof=1) * len(data[ref_sc, var_ind])
+        )
+
+        b = (data[isc, var_ind] - np.mean(data[isc, var_ind])) / (
+            np.std(data[isc, var_ind], ddof=1)
+        )
+
+        c = np.correlate(b, a, "full")
+
+        # This gives the offset with the same time resolution as in the Vlasiator data set, so it as a 0.5 s error in the estimate
+        offset = np.argmax(c)
+
+        alpha = c[offset - 1]
+        beta = c[offset]
+        gamma = c[offset + 1]
+
+        # Here we fit the data points at and surrounding the selected offset time with a parabola, to improve on the time resolution
+        # It is this offset value that is then used in the remainder of the script
+        offset2 = (
+            offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+        )
+
+        print("offset", offset, offset2)
+
+        cross_corr_values.append(np.max(c))
+
+        # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
+        time_difference.append(offset2 * dt)
+
+    # ******************************************************************************#
+
+    time_difference = np.array(time_difference)
+    print("Time differences: ", time_difference)
+
+    dcell = 227.0 / Re
+    phi = [-120, 0, 120]
+    pos_jonas = np.array(
+        [
+            [0, 0, 0],
+            [dcell * np.sin(np.deg2rad(phi[0])), dcell * np.cos(np.deg2rad(phi[0])), 0],
+            [dcell * np.sin(np.deg2rad(phi[1])), dcell * np.cos(np.deg2rad(phi[1])), 0],
+            [dcell * np.sin(np.deg2rad(phi[2])), dcell * np.cos(np.deg2rad(phi[2])), 0],
+        ]
+    )
+
+    matrix_positions = np.zeros((6, 3))
+    pos_ref_sc = np.zeros((6, 3))
+    R2_arr = np.zeros((6, 3))
+
+    pos_ref_sc[0, :] = pos_jonas[ref_sc, :]
+    pos_ref_sc[1, :] = pos_jonas[ref_sc, :]
+    pos_ref_sc[2, :] = pos_jonas[ref_sc, :]
+    pos_ref_sc[3, :] = pos_jonas[ind_sc[1], :]
+    pos_ref_sc[4, :] = pos_jonas[ind_sc[1], :]
+    pos_ref_sc[5, :] = pos_jonas[ind_sc[2], :]
+
+    R2_arr[0, :] = pos_jonas[ind_sc[1], :]
+    R2_arr[1, :] = pos_jonas[ind_sc[2], :]
+    R2_arr[2, :] = pos_jonas[ind_sc[3], :]
+    R2_arr[3, :] = pos_jonas[ind_sc[2], :]
+    R2_arr[4, :] = pos_jonas[ind_sc[3], :]
+    R2_arr[5, :] = pos_jonas[ind_sc[3], :]
+
+    pos_ref_sc = pos_ref_sc * Re
+    R2_arr = R2_arr * Re
+
+    ind = 0
+    for isc in range(6):
+        matrix_positions[isc, :] = R2_arr[isc, :] - pos_ref_sc[isc, :]
+
+        ind = ind + 1
+
+    # matrix_positions[2, :] = R2 - pos_ref_sc[2, :]
+
+    print("Timing analysis Vlasiator")
+    print(matrix_positions)
+    # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
+    # of equations for the wave vector
+    # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
+
+    result = np.dot(np.linalg.pinv(matrix_positions[0:3, 0:2]), time_difference[0:3])
     result.shape = (2, 1)
 
     norm_result = np.linalg.norm(result)

@@ -144,4 +144,5 @@ from papu_2 import (
     print_means_max,
     jet_var_plotter,
     vz_timeseries,
+    quadfecta,
 )
