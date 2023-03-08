@@ -139,7 +139,7 @@ def jet_pos_plot():
         for n2, kind in enumerate(kinds):
             label_bool = draw_labels[n1]
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -338,7 +338,7 @@ def foreshock_jplot_SEA(run_id):
 
     for runid in runid_list:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, "foreshock"),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, "foreshock"),
             dtype=int,
             ndmin=1,
         )
@@ -570,7 +570,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         elif version == "new":
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1469,7 +1469,7 @@ def kind_SEA_timeseries(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1532,7 +1532,7 @@ def SEA_trifecta(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1625,7 +1625,7 @@ def trifecta(runid, kind="non", draw=True):
         non_ids = get_fcs_jets(runid)
     else:
         # non_ids = np.loadtxt(
-        #     wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+        #     wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
         #     dtype=int,
         #     ndmin=1,
         # )
@@ -1802,7 +1802,7 @@ def kind_timeseries(runid, kind="non"):
         non_ids = get_fcs_jets(runid)
     else:
         # non_ids = np.loadtxt(
-        #     wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+        #     wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
         #     dtype=int,
         #     ndmin=1,
         # )
@@ -3517,7 +3517,7 @@ def kind_animations(runid):
 
     for kind in ["foreshock", "beam"]:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
@@ -4250,8 +4250,8 @@ def non_jet_omni(runid):
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
             ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
-            ax_sw.set_xlim(-1.2 * vms, 1.2 * vms)
-            ax_sw.set_ylim(-1.2 * vms, 1.2 * vms)
+            ax_sw.set_xlim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
+            ax_sw.set_ylim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
             ax_sw.grid()
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
@@ -4388,7 +4388,7 @@ def jmap_SEA_comp(run_id="all"):
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -4426,14 +4426,20 @@ def jmap_SEA_comp(run_id="all"):
     cb_list = []
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, 0, 1.2, 4, 30]
-    # cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     cmap = [
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
+        "batlow",
+        "batlow",
+        "batlow",
+        "batlow",
+        "batlow",
     ]
+    # cmap = [
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    # ]
     annot = [
         ["a)", "b)", "c)", "d)", "e)"],
         ["f)", "g)", "h)", "i)", "j)"],
@@ -4666,7 +4672,7 @@ def SEA_timeseries_comp():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -4842,7 +4848,7 @@ def kinds_pca():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -5070,7 +5076,7 @@ def timing_comp():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/final/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/squish/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
