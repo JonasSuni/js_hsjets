@@ -145,4 +145,5 @@ from papu_2 import (
     jet_var_plotter,
     vz_timeseries,
     quadfecta,
+    fecta_9,
 )
