@@ -4223,8 +4223,8 @@ def non_jet_omni(runid):
             ax_sw.quiver(
                 0,
                 0,
-                np.array(propvx, ndmin=1)[0],
-                np.array(propvy, ndmin=1)[0],
+                np.nanmean(np.array(propvx, ndmin=1)[:20]),
+                np.nanmean(np.array(propvy, ndmin=1)[:20]),
                 color=CB_color_cycle[4],
                 label="$v_\mathrm{tr}$",
                 angles="xy",
@@ -5123,8 +5123,8 @@ def timing_comp():
                 propvy = np.array(propvy, ndmin=1)
 
                 propv_arrs[idx, :, counters[idx]] = [
-                    np.nanmean(propvx[:10]) / vsw,
-                    np.nanmean(propvy[:10]) / vsw,
+                    np.nanmean(propvx[:20]) / vsw,
+                    np.nanmean(propvy[:20]) / vsw,
                 ]
                 # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
