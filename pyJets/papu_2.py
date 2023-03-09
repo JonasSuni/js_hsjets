@@ -4223,10 +4223,21 @@ def non_jet_omni(runid):
             ax_sw.quiver(
                 0,
                 0,
-                np.nanmean(np.array(propvx, ndmin=1)[:20]),
-                np.nanmean(np.array(propvy, ndmin=1)[:20]),
+                np.nanmean(np.array(propvx, ndmin=1)[:4]),
+                np.nanmean(np.array(propvy, ndmin=1)[:4]),
                 color=CB_color_cycle[5],
                 label="$v_\mathrm{tr}$",
+                angles="xy",
+                scale_units="xy",
+                scale=1,
+            )
+            ax_sw.quiver(
+                0,
+                0,
+                np.nanmean(np.array(propvx, ndmin=1)),
+                np.nanmean(np.array(propvy, ndmin=1)),
+                color=CB_color_cycle[6],
+                label="$v_\mathrm{tr,full}$",
                 angles="xy",
                 scale_units="xy",
                 scale=1,
@@ -5081,6 +5092,7 @@ def timing_comp():
     alfven_arrs = np.zeros((3, 1000), dtype=float)
     sonic_arrs = np.zeros((3, 1000), dtype=float)
     propv_arrs = np.zeros((3, 2, 1000), dtype=float)
+    propv_arrs_full = np.zeros((3, 2, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
@@ -5123,8 +5135,12 @@ def timing_comp():
                 propvy = np.array(propvy, ndmin=1)
 
                 propv_arrs[idx, :, counters[idx]] = [
-                    np.nanmean(propvx[:20]) / vsw,
-                    np.nanmean(propvy[:20]) / vsw,
+                    np.nanmean(propvx[:4]) / vsw,
+                    np.nanmean(propvy[:4]) / vsw,
+                ]
+                propv_arrs_full[idx, :, counters[idx]] = [
+                    np.nanmean(propvx) / vsw,
+                    np.nanmean(propvy) / vsw,
                 ]
                 # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
@@ -5231,7 +5247,19 @@ def timing_comp():
             np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
             color=CB_color_cycle[5],
-            label="$v_{tr}$",
+            label="$v_\mathrm{tr}$",
+            angles="xy",
+            scale_units="xy",
+            scale=1,
+            zorder=2,
+        )
+        ax.quiver(
+            0,
+            0,
+            np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
+            np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
+            color=CB_color_cycle[6],
+            label="$v_\mathrm{tr,full}$",
             angles="xy",
             scale_units="xy",
             scale=1,
