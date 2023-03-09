@@ -5702,3 +5702,46 @@ def weighted_propagation_velocity(runid, kind="non"):
             + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(jetid).zfill(5)),
             prop_v,
         )
+
+
+def auto_classifier(runid):
+
+    non_ids = get_non_jets(runid)
+    flankward_list = []
+    antisunward_list = []
+
+    for non_id in non_ids:
+
+        data_arr = np.load(
+            wrkdir_DNR
+            + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
+        )
+
+        tlist, xlist, ylist = np.loadtxt(
+            wrkdir_DNR
+            + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
+        ).T
+
+        res_arr = data_arr[0, 11, :]
+
+        t0, x0, y0 = tlist[0], xlist[0], ylist[0]
+
+        propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
+            tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+        )
+        propvy = (ylist[tlist - t0 < 2.5][-1] - y0) / (
+            tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+        )
+        propvx_full = (xlist[-1] - x0) / (tlist[-1] - t0 + 1e-27)
+        propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
+
+    np.savetxt(
+        wrkdir_DNR + "papu22/idx_txts/auto/{}_foreshock.txt".format(runid),
+        antisunward_list,
+        fmt="%.1d",
+    )
+    np.savetxt(
+        wrkdir_DNR + "papu22/idx_txts/auto/{}_beam.txt".format(runid),
+        flankward_list,
+        fmt="%.1d",
+    )
