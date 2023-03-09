@@ -5232,7 +5232,7 @@ def timing_comp():
             angles="xy",
             scale_units="xy",
             scale=1,
-            zorder=1,
+            zorder=2,
         )
         for idx2 in range(len(vx)):
             ax.quiver(
