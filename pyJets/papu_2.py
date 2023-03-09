@@ -5598,7 +5598,12 @@ def weighted_propagation_velocity(runid, kind="non"):
             xlist.append(xavg / 1000)
             ylist.append(yavg / 1000)
 
-        prop_v = np.array([np.ediff1d(xlist), np.ediff1d(ylist)]).T
+        prop_v = np.array(
+            [
+                np.ediff1d(xlist) / np.ediff1d(t_list),
+                np.ediff1d(ylist) / np.ediff1d(t_list),
+            ]
+        ).T
         np.savetxt(
             wrkdir_DNR
             + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(jetid).zfill(5)),
