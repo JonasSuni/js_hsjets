@@ -5218,7 +5218,7 @@ def timing_comp():
                 propv_arrs[idx, 0, n],
                 propv_arrs[idx, 1, n],
                 "x",
-                CB_color_cycle[4],
+                color=CB_color_cycle[4],
                 alpha=0.5,
                 zorder=0,
             )
