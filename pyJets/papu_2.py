@@ -3582,19 +3582,19 @@ def jet_update(fnr):
         filename=bulkpath + fname,
         var="Pdyn",
         vmin=0,
-        vmax=1,
-        # vscale=1e9,
-        cbtitle="$\\rho_{st}/\\rho_{th}",
+        vmax=3.5,
+        vscale=1e9,
+        # cbtitle="$\\rho_{st}/\\rho_{th}",
         usesci=0,
         scale=2,
         title="",
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
         # internalcb=True,
         lin=1,
-        colormap="Greys",
+        colormap="Blues_r",
         tickinterval=1.0,
         external=ext_jet,
-        expression=expr_rhoratio,
+        # expression=expr_rhoratio,
         pass_vars=[
             "RhoNonBackstream",
             "RhoBackstream",
@@ -5623,7 +5623,6 @@ def fecta_9(runid, kind="non"):
 
 
 def weighted_propagation_velocity(runid, kind="non"):
-
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
@@ -5705,13 +5704,11 @@ def weighted_propagation_velocity(runid, kind="non"):
 
 
 def auto_classifier(runid):
-
     non_ids = get_non_jets(runid)
     flankward_list = []
     antisunward_list = []
 
     for non_id in non_ids:
-
         data_arr = np.load(
             wrkdir_DNR
             + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
