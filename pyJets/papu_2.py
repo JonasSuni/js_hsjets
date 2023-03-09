@@ -5535,7 +5535,7 @@ def weighted_propagation_velocity(runid,kind="non"):
         jet_ids = get_fcs_jets(runid)
 
     for jetid in jet_ids:
-
+        print("Jet {} in run {}".format(jetid,runid))
         props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
 
         t_list = props.get_times()
