@@ -4167,6 +4167,10 @@ def non_jet_omni(runid):
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             res = trifecta_data[0, 11]
+            propvx, propvy = np.loadtxt(
+                wrkdir_DNR
+                + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
+            ).T
 
             va = (
                 np.nanmean(
@@ -4215,6 +4219,17 @@ def non_jet_omni(runid):
                 color=CB_color_cycle[3],
                 linestyle="dashed",
                 label="$v_A$",
+            )
+            ax_sw.quiver(
+                0,
+                0,
+                np.nanmean(propvx),
+                np.nanmean(propvy),
+                color=CB_color_cycle[4],
+                label="$v_\mathrm{tr}$",
+                angles="xy",
+                scale_units="xy",
+                scale=1,
             )
             vx_arr = np.array(
                 [
