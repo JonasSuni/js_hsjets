@@ -4223,8 +4223,8 @@ def non_jet_omni(runid):
             ax_sw.quiver(
                 0,
                 0,
-                np.array(propvx,ndmin=1)[0],
-                np.array(propvy,ndmin=1)[0],
+                np.array(propvx, ndmin=1)[0],
+                np.array(propvy, ndmin=1)[0],
                 color=CB_color_cycle[4],
                 label="$v_\mathrm{tr}$",
                 angles="xy",
