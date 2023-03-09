@@ -5123,8 +5123,8 @@ def timing_comp():
                 propvy = np.array(propvy, ndmin=1)
 
                 propv_arrs[idx, :, counters[idx]] = [
-                    np.nanmean(propvx[:3]) / vsw,
-                    np.nanmean(propvy[:3]) / vsw,
+                    np.nanmean(propvx[:10]) / vsw,
+                    np.nanmean(propvy[:10]) / vsw,
                 ]
                 # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
