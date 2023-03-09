@@ -5228,7 +5228,7 @@ def timing_comp():
             np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
             color=CB_color_cycle[4],
-            label="$v_\mathrm{tr}$",
+            label="$v_{tr}$",
             angles="xy",
             scale_units="xy",
             scale=1,
