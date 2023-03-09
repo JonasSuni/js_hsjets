@@ -5518,7 +5518,8 @@ def fecta_9(runid, kind="non"):
             data_arr,
         )
 
-def weighted_propagation_velocity(runid,kind="non"):
+
+def weighted_propagation_velocity(runid, kind="non"):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -5535,44 +5536,54 @@ def weighted_propagation_velocity(runid,kind="non"):
         jet_ids = get_fcs_jets(runid)
 
     for jetid in jet_ids:
-        print("Jet {} in run {}".format(jetid,runid))
+        print("Jet {} in run {}".format(jetid, runid))
         props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
 
         t_list = props.get_times()
         cell_list = props.get_cells()
 
         if len(t_list) == 1:
-            prop_v = [[np.nan,np.nan]]
-            np.savetxt(wrkdir_DNR + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid,str(jet_ids).zfill(5)),prop_v)
+            prop_v = [[np.nan, np.nan]]
+            np.savetxt(
+                wrkdir_DNR
+                + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(jetid).zfill(5)),
+                prop_v,
+            )
             continue
-        
+
         xlist = []
         ylist = []
-        for idx,t in enumerate(t_list):
-            fnr = int(t*2)
+        for idx, t in enumerate(t_list):
+            fnr = int(t * 2)
 
             wsum = 0
             wxsum = 0
             wysum = 0
             vlsvobj = pt.vlsvfile.VlsvReader(
-                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-                )
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
             cells = cell_list[idx]
-            tpdynavg = np.load(wrkdir_DNR+"tavg/"+runid+"/"+str(fnr)+"_pdyn.npy")
+            tpdynavg = np.load(
+                wrkdir_DNR + "tavg/" + runid + "/" + str(fnr) + "_pdyn.npy"
+            )
             for c in cells:
-                x,y,z = vlsvobj.get_cell_coordinates(c)
-                pdyn = vlsvobj.read_variable("Pdyn",cellids=c)
-                pdyn_tavg = tpdynavg[c-1] + 1e-27
-                w = pdyn/pdyn_tavg - 2
+                x, y, z = vlsvobj.get_cell_coordinates(c)
+                pdyn = vlsvobj.read_variable("Pdyn", cellids=c)
+                pdyn_tavg = tpdynavg[c - 1] + 1e-27
+                w = pdyn / pdyn_tavg - 2
 
                 wsum += w
-                wxsum += w*x
-                wysum += w*y
+                wxsum += w * x
+                wysum += w * y
 
-            xavg = wxsum/wsum
-            yavg = wysum/wsum
-            xlist.append(xavg/1000)
-            ylist.append(yavg/1000)
+            xavg = wxsum / wsum
+            yavg = wysum / wsum
+            xlist.append(xavg / 1000)
+            ylist.append(yavg / 1000)
 
-        prop_v = np.array([np.ediff1d(xlist),np.ediff1d(ylist)]).T
-        np.savetxt(wrkdir_DNR + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid,str(jet_ids).zfill(5)),prop_v)
+        prop_v = np.array([np.ediff1d(xlist), np.ediff1d(ylist)]).T
+        np.savetxt(
+            wrkdir_DNR
+            + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(jetid).zfill(5)),
+            prop_v,
+        )
