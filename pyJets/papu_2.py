@@ -5566,6 +5566,8 @@ def weighted_propagation_velocity(runid, kind="non"):
             tpdynavg = np.load(
                 wrkdir_DNR + "tavg/" + runid + "/" + str(fnr) + "_pdyn.npy"
             )
+            print(type(cells))
+            print(cells)
             for c in cells:
                 x, y, z = vlsvobj.get_cell_coordinates(c)
                 pdyn = vlsvobj.read_variable("Pdyn", cellids=c)
