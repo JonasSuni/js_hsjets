@@ -4167,10 +4167,21 @@ def non_jet_omni(runid):
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             res = trifecta_data[0, 11]
-            propvx, propvy = np.loadtxt(
+            tlist, xlist, ylist = np.loadtxt(
                 wrkdir_DNR
                 + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
             ).T
+
+            t0, x0, y0 = tlist[0], xlist[0], ylist[0]
+
+            propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
+                tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+            )
+            propvy = (ylist[tlist - t0 < 2.5][-1] - y0) / (
+                tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+            )
+            propvx_full = (xlist[-1] - x0) / (tlist[-1] - t0 + 1e-27)
+            propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
 
             va = (
                 np.nanmean(
@@ -4223,8 +4234,8 @@ def non_jet_omni(runid):
             ax_sw.quiver(
                 0,
                 0,
-                np.nanmean(np.array(propvx, ndmin=1)[:4]),
-                np.nanmean(np.array(propvy, ndmin=1)[:4]),
+                propvx,
+                propvy,
                 color=CB_color_cycle[5],
                 label="$v_\mathrm{tr}$",
                 angles="xy",
@@ -4234,8 +4245,8 @@ def non_jet_omni(runid):
             ax_sw.quiver(
                 0,
                 0,
-                np.nanmean(np.array(propvx, ndmin=1)),
-                np.nanmean(np.array(propvy, ndmin=1)),
+                propvx_full,
+                propvy_full,
                 color=CB_color_cycle[6],
                 label="$v_\mathrm{tr,full}$",
                 angles="xy",
@@ -5125,22 +5136,34 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
-                propvx, propvy = np.loadtxt(
+                tlist, xlist, ylist = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/jet_prop_v_txts/{}_{}.txt".format(
                         runid, str(non_id).zfill(5)
                     )
                 ).T
-                propvx = np.array(propvx, ndmin=1)
-                propvy = np.array(propvy, ndmin=1)
+
+                t0, x0, y0 = tlist[0], xlist[0], ylist[0]
+
+                propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
+                    tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+                )
+                propvy = (ylist[tlist - t0 < 2.5][-1] - y0) / (
+                    tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+                )
+                propvx_full = (xlist[-1] - x0) / (tlist[-1] - t0 + 1e-27)
+                propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
+
+                # propvx = np.array(propvx, ndmin=1)
+                # propvy = np.array(propvy, ndmin=1)
 
                 propv_arrs[idx, :, counters[idx]] = [
-                    np.nanmean(propvx[:4]) / vsw,
-                    np.nanmean(propvy[:4]) / vsw,
+                    propvx / vsw,
+                    propvy / vsw,
                 ]
                 propv_arrs_full[idx, :, counters[idx]] = [
-                    np.nanmean(propvx) / vsw,
-                    np.nanmean(propvy) / vsw,
+                    propvx_full / vsw,
+                    propvy_full / vsw,
                 ]
                 # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
@@ -5663,12 +5686,17 @@ def weighted_propagation_velocity(runid, kind="non"):
             xlist.append(xavg / 1000)
             ylist.append(yavg / 1000)
 
-        prop_v = np.array(
-            [
-                np.ediff1d(xlist) / np.ediff1d(t_list),
-                np.ediff1d(ylist) / np.ediff1d(t_list),
-            ]
-        ).T
+            xlist = np.array(xlist)
+            ylist = np.array(ylist)
+            t_list = np.array(t_list)
+
+        # prop_v = np.array(
+        #     [
+        #         np.ediff1d(xlist) / np.ediff1d(t_list),
+        #         np.ediff1d(ylist) / np.ediff1d(t_list),
+        #     ]
+        # ).T
+        prop_v = np.array([t_list, xlist, ylist]).T
         np.savetxt(
             wrkdir_DNR
             + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(jetid).zfill(5)),
