@@ -5080,6 +5080,7 @@ def timing_comp():
     timing_arrs = np.zeros((3, fnr_arr.size, 1000), dtype=float)
     alfven_arrs = np.zeros((3, 1000), dtype=float)
     sonic_arrs = np.zeros((3, 1000), dtype=float)
+    propv_arrs = np.zeros((3, 2, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
@@ -5112,6 +5113,16 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 )
+                propvx, propvy = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                ).T
+                propvx = np.array(propvx, ndmin=1)
+                propvy = np.array(propvy, ndmin=1)
+
+                propv_arrs[3, :, counters[idx]] = [propvx[0] / vsw, propvy[0] / vsw]
                 # print(data_arr[:, 11, :8])
                 data_arr[:, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
@@ -5179,6 +5190,7 @@ def timing_comp():
             linestyle="dashed",
             label="$v_A$",
         )
+
         vx = [
             # avg_res[0],
             # avg_res[2],
@@ -5201,6 +5213,27 @@ def timing_comp():
         ]
         vx_all = vx_all + vx
         vy_all = vy_all + vy
+        for n in range(counters[idx]):
+            ax.plot(
+                propv_arrs[idx, 0, n],
+                propv_arrs[idx, 1, n],
+                "x",
+                CB_color_cycle[4],
+                alpha=0.5,
+                zorder=0,
+            )
+        ax.quiver(
+            0,
+            0,
+            np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
+            np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
+            color=CB_color_cycle[4],
+            label="$v_\mathrm{tr}$",
+            angles="xy",
+            scale_units="xy",
+            scale=1,
+            zorder=1,
+        )
         for idx2 in range(len(vx)):
             ax.quiver(
                 0,
@@ -5220,6 +5253,7 @@ def timing_comp():
                 ax.plot(
                     vx_one, vy_one, "x", color=CB_color_cycle[idx2], alpha=0.5, zorder=0
                 )
+
         # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.set_xlim(-1.1, 1.1)
