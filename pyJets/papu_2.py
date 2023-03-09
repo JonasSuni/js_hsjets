@@ -5686,9 +5686,9 @@ def weighted_propagation_velocity(runid, kind="non"):
             xlist.append(xavg / 1000)
             ylist.append(yavg / 1000)
 
-            xlist = np.array(xlist)
-            ylist = np.array(ylist)
-            t_list = np.array(t_list)
+        xlist = np.array(xlist)
+        ylist = np.array(ylist)
+        t_list = np.array(t_list)
 
         # prop_v = np.array(
         #     [
