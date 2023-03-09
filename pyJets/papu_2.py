@@ -4164,7 +4164,7 @@ def non_jet_omni(runid):
             # )
             trifecta_data = np.load(
                 wrkdir_DNR
-                + "papu22/quadfecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
+                + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             res = trifecta_data[0, 11]
 
@@ -5517,3 +5517,62 @@ def fecta_9(runid, kind="non"):
             wrkdir_DNR + "papu22/9fecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
             data_arr,
         )
+
+def weighted_propagation_velocity(runid,kind="non"):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+
+    rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
+    v_sw = [750e3, 600e3, 750e3, 600e3]
+    pdyn_sws = [m_p * rho_sw[idx] * v_sw[idx] * v_sw[idx] for idx in range(len(runids))]
+    pdyn_sw = pdyn_sws[runids.index(runid)]
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    if kind == "non":
+        jet_ids = get_non_jets(runid)
+    elif kind == "fcs":
+        jet_ids = get_fcs_jets(runid)
+
+    for jetid in jet_ids:
+
+        props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+
+        t_list = props.get_times()
+        cell_list = props.get_cells()
+
+        if len(t_list) == 1:
+            prop_v = [[np.nan,np.nan]]
+            np.savetxt(wrkdir_DNR + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid,str(jet_ids).zfill(5)),prop_v)
+            continue
+        
+        xlist = []
+        ylist = []
+        for idx,t in enumerate(t_list):
+            fnr = int(t*2)
+
+            wsum = 0
+            wxsum = 0
+            wysum = 0
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+            cells = cell_list[idx]
+            tpdynavg = np.load(wrkdir_DNR+"tavg/"+runid+"/"+str(fnr)+"_pdyn.npy")
+            for c in cells:
+                x,y,z = vlsvobj.get_cell_coordinates(c)
+                pdyn = vlsvobj.read_variable("Pdyn",cellids=c)
+                pdyn_tavg = tpdynavg[c-1] + 1e-27
+                w = pdyn/pdyn_tavg - 2
+
+                wsum += w
+                wxsum += w*x
+                wysum += w*y
+
+            xavg = wxsum/wsum
+            yavg = wysum/wsum
+            xlist.append(xavg/1000)
+            ylist.append(yavg/1000)
+
+        prop_v = np.array([np.ediff1d(xlist),np.ediff1d(ylist)]).T
+        np.savetxt(wrkdir_DNR + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid,str(jet_ids).zfill(5)),prop_v)

@@ -21,7 +21,7 @@ except:
 try:
     tavgdir = os.environ["TAVG"]
 except:
-    tavgdir = wrkdir_DNR
+    tavgdir = wrkdir_DNR + "tavg/"
 
 def find_bulkpath(runid):
 

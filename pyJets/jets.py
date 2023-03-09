@@ -146,4 +146,5 @@ from papu_2 import (
     vz_timeseries,
     quadfecta,
     fecta_9,
+    weighted_propagation_velocity,
 )
