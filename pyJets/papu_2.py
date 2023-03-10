@@ -5704,6 +5704,15 @@ def weighted_propagation_velocity(runid, kind="non"):
 
 
 def auto_classifier(runid):
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+
+    rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
+    v_sw = [750e3, 600e3, 750e3, 600e3]
+    pdyn_sws = [m_p * rho_sw[idx] * v_sw[idx] * v_sw[idx] for idx in range(len(runids))]
+    pdyn_sw = pdyn_sws[runids.index(runid)]
+    v_sw_run = v_sw[runids.index(runid)] / 1e3
+
     non_ids = get_non_jets(runid)
     flankward_list = []
     antisunward_list = []
@@ -5731,6 +5740,72 @@ def auto_classifier(runid):
         )
         propvx_full = (xlist[-1] - x0) / (tlist[-1] - t0 + 1e-27)
         propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
+
+        vnx, vny, vscx, vscy, vbx, vby = res_arr[:6]
+
+        mod_arg_pvfull = [
+            np.sqrt(propvx_full**2 + propvy_full**2),
+            (np.arctan2(propvy_full, propvx_full) + 2 * np.pi) % (2 * np.pi),
+        ]
+        mod_arg_pv = [
+            np.sqrt(propvx**2 + propvy**2),
+            (np.arctan2(propvy, propvx) + 2 * np.pi) % (2 * np.pi),
+        ]
+        mod_arg_vn = [
+            np.sqrt(vnx**2 + vny**2),
+            (np.arctan2(vny, vnx) + 2 * np.pi) % (2 * np.pi),
+        ]
+        mod_arg_vsc = [
+            np.sqrt(vscx**2 + vscy**2),
+            (np.arctan2(vscy, vscx) + 2 * np.pi) % (2 * np.pi),
+        ]
+        mod_arg_vb = [
+            np.sqrt(vbx**2 + vby**2),
+            (np.arctan2(vby, vbx) + 2 * np.pi) % (2 * np.pi),
+        ]
+
+        if (
+            ~np.isnan(mod_arg_vsc[0])
+            and mod_arg_vsc[0] < v_sw_run
+            and np.abs(mod_arg_vsc[1] - np.pi) < np.pi / 4
+        ):
+            antisunward_list.append(non_id)
+            continue
+        elif (
+            ~np.isnan(mod_arg_vsc[0])
+            and mod_arg_vsc[0] < v_sw_run
+            and np.abs(mod_arg_vsc[1] - np.pi) >= np.pi / 4
+        ):
+            flankward_list.append(non_id)
+            continue
+        elif (
+            ~np.isnan(mod_arg_pv[0])
+            and mod_arg_pv[0] < v_sw_run
+            and np.abs(mod_arg_pv[1] - np.pi) < np.pi / 4
+        ):
+            antisunward_list.append(non_id)
+            continue
+        elif (
+            ~np.isnan(mod_arg_pv[0])
+            and mod_arg_pv[0] < v_sw_run
+            and np.abs(mod_arg_pv[1] - np.pi) >= np.pi / 4
+        ):
+            flankward_list.append(non_id)
+            continue
+        elif (
+            ~np.isnan(mod_arg_vn[0])
+            and mod_arg_vn[0] < v_sw_run
+            and np.abs(mod_arg_vn[1] - np.pi) < np.pi / 4
+        ):
+            antisunward_list.append(non_id)
+            continue
+        elif (
+            ~np.isnan(mod_arg_vn[0])
+            and mod_arg_vn[0] < v_sw_run
+            and np.abs(mod_arg_vn[1] - np.pi) >= np.pi / 4
+        ):
+            flankward_list.append(non_id)
+            continue
 
     np.savetxt(
         wrkdir_DNR + "papu22/idx_txts/auto/{}_foreshock.txt".format(runid),

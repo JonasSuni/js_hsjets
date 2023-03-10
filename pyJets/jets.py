@@ -147,4 +147,5 @@ from papu_2 import (
     quadfecta,
     fecta_9,
     weighted_propagation_velocity,
+    auto_classifier,
 )
