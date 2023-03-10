@@ -5808,12 +5808,12 @@ def auto_classifier(runid):
             continue
 
     np.savetxt(
-        wrkdir_DNR + "papu22/idx_txts/auto/{}_foreshock.txt".format(runid),
+        wrkdir_DNR + "papu22/id_txts/auto/{}_foreshock.txt".format(runid),
         antisunward_list,
         fmt="%d",
     )
     np.savetxt(
-        wrkdir_DNR + "papu22/idx_txts/auto/{}_beam.txt".format(runid),
+        wrkdir_DNR + "papu22/id_txts/auto/{}_beam.txt".format(runid),
         flankward_list,
         fmt="%d",
     )
