@@ -5703,7 +5703,7 @@ def weighted_propagation_velocity(runid, kind="non"):
         )
 
 
-def auto_classifier(runid):
+def auto_classifier(runid, threshold_angle=np.pi / 4):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -5767,42 +5767,42 @@ def auto_classifier(runid):
         if (
             ~np.isnan(mod_arg_vsc[0])
             and mod_arg_vsc[0] < v_sw_run
-            and np.abs(mod_arg_vsc[1] - np.pi) < np.pi / 4
+            and np.abs(mod_arg_vsc[1] - np.pi) < threshold_angle
         ):
             antisunward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_vsc[0])
             and mod_arg_vsc[0] < v_sw_run
-            and np.abs(mod_arg_vsc[1] - np.pi) >= np.pi / 4
+            and np.abs(mod_arg_vsc[1] - np.pi) >= threshold_angle
         ):
             flankward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
             and mod_arg_pv[0] < v_sw_run
-            and np.abs(mod_arg_pv[1] - np.pi) < np.pi / 4
+            and np.abs(mod_arg_pv[1] - np.pi) < threshold_angle
         ):
             antisunward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
             and mod_arg_pv[0] < v_sw_run
-            and np.abs(mod_arg_pv[1] - np.pi) >= np.pi / 4
+            and np.abs(mod_arg_pv[1] - np.pi) >= threshold_angle
         ):
             flankward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_vn[0])
             and mod_arg_vn[0] < v_sw_run
-            and np.abs(mod_arg_vn[1] - np.pi) < np.pi / 4
+            and np.abs(mod_arg_vn[1] - np.pi) < threshold_angle
         ):
             antisunward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_vn[0])
             and mod_arg_vn[0] < v_sw_run
-            and np.abs(mod_arg_vn[1] - np.pi) >= np.pi / 4
+            and np.abs(mod_arg_vn[1] - np.pi) >= threshold_angle
         ):
             flankward_list.append(non_id)
             continue
