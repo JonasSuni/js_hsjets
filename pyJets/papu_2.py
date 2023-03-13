@@ -4242,17 +4242,17 @@ def non_jet_omni(runid):
                 scale_units="xy",
                 scale=1,
             )
-            ax_sw.quiver(
-                0,
-                0,
-                propvx_full,
-                propvy_full,
-                color=CB_color_cycle[6],
-                label="$v_\mathrm{tr,full}$",
-                angles="xy",
-                scale_units="xy",
-                scale=1,
-            )
+            # ax_sw.quiver(
+            #     0,
+            #     0,
+            #     propvx_full,
+            #     propvy_full,
+            #     color=CB_color_cycle[6],
+            #     label="$v_\mathrm{tr,full}$",
+            #     angles="xy",
+            #     scale_units="xy",
+            #     scale=1,
+            # )
             vx_arr = np.array(
                 [
                     res[0],
@@ -5276,18 +5276,18 @@ def timing_comp():
             scale=1,
             zorder=2,
         )
-        ax.quiver(
-            0,
-            0,
-            np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
-            np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
-            color=CB_color_cycle[6],
-            label="$v_\mathrm{tr,full}$",
-            angles="xy",
-            scale_units="xy",
-            scale=1,
-            zorder=2,
-        )
+        # ax.quiver(
+        #     0,
+        #     0,
+        #     np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
+        #     np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
+        #     color=CB_color_cycle[6],
+        #     label="$v_\mathrm{tr,full}$",
+        #     angles="xy",
+        #     scale_units="xy",
+        #     scale=1,
+        #     zorder=2,
+        # )
         for idx2 in range(len(vx)):
             ax.quiver(
                 0,
