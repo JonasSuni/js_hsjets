@@ -146,8 +146,8 @@ def jet_pos_plot():
             for non_id in non_ids:
                 props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
                 x0, y0, t0 = (
-                    props.read("x_wmean")[0],
-                    props.read("y_wmean")[0],
+                    props.read("x_mean")[0],
+                    props.read("y_mean")[0],
                     props.read("time")[0],
                 )
                 # bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
@@ -178,8 +178,8 @@ def jet_pos_plot():
         for sj_id in fcs_jet_ids:
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
             x0, y0, t0 = (
-                props.read("x_wmean")[0],
-                props.read("y_wmean")[0],
+                props.read("x_mean")[0],
+                props.read("y_mean")[0],
                 props.read("time")[0],
             )
             # bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
@@ -863,7 +863,7 @@ def fcs_jet_jplot_txtonly(runid):
     for sj_id in sj_ids:
         print("Non-FCS jets for run {}: {}".format(runid, sj_id))
         props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
@@ -916,7 +916,7 @@ def fcs_jet_jplot_txtonly(runid):
         )
 
 
-def non_jet_jplots(runid, txt=False, draw=False):
+def non_jet_jplots(runid, txt=False):
     CB_color_cycle = jx.CB_color_cycle
 
     dx = 227e3 / r_e
@@ -954,7 +954,7 @@ def non_jet_jplots(runid, txt=False, draw=False):
     for non_id in non_sj_ids:
         print("Non-FCS jets for run {}: {}".format(runid, non_id))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
@@ -1088,81 +1088,74 @@ def non_jet_jplots(runid, txt=False, draw=False):
         # fig, ax_list = plt.subplots(
         #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
         # )
-        if draw:
-            fig, ax_list = plt.subplots(
-                2,
-                int(np.ceil(len(varname_list) / 2.0)),
-                figsize=(20, 10),
-                sharex=True,
-                sharey=True,
+        fig, ax_list = plt.subplots(
+            2,
+            int(np.ceil(len(varname_list) / 2.0)),
+            figsize=(20, 10),
+            sharex=True,
+            sharey=True,
+        )
+        ax_list = ax_list.flatten()
+        im_list = []
+        cb_list = []
+        fig.suptitle(
+            "Run: {}, JetID: {}, $y$ = {:.3f} ".format(
+                runids_paper[runid_list.index(runid)], non_id, y0
             )
-            ax_list = ax_list.flatten()
-            im_list = []
-            cb_list = []
-            fig.suptitle(
-                "Run: {}, JetID: {}, $y$ = {:.3f} ".format(
-                    runids_paper[runid_list.index(runid)], non_id, y0
+            + "$R_\mathrm{E}$",
+            fontsize=28,
+        )
+        for idx in range(len(varname_list)):
+            ax = ax_list[idx]
+            ax.tick_params(labelsize=20)
+            im_list.append(
+                ax.pcolormesh(
+                    x_range,
+                    t_range,
+                    data_arr[idx],
+                    shading="nearest",
+                    cmap=cmap[idx],
+                    vmin=vmin[idx],
+                    vmax=vmax[idx],
+                    rasterized=True,
                 )
-                + "$R_\mathrm{E}$",
-                fontsize=28,
             )
-            for idx in range(len(varname_list)):
-                ax = ax_list[idx]
-                ax.tick_params(labelsize=20)
-                im_list.append(
-                    ax.pcolormesh(
-                        x_range,
-                        t_range,
-                        data_arr[idx],
-                        shading="nearest",
-                        cmap=cmap[idx],
-                        vmin=vmin[idx],
-                        vmax=vmax[idx],
-                        rasterized=True,
-                    )
-                )
-                if idx == 1:
-                    cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
-                    cb_list[idx].cmap.set_over("red")
-                else:
-                    cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-                # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-                cb_list[idx].ax.tick_params(labelsize=20)
-                ax.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
-                ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
-                ax.contour(
-                    XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]]
-                )
-                ax.set_title(varname_list[idx], fontsize=24, pad=10)
-                ax.set_xlim(x_range[0], x_range[-1])
-                ax.set_ylim(t_range[0], t_range[-1])
-                ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
-                ax.axhline(t0, linestyle="dashed", linewidth=0.6)
-                ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-                ax.annotate(
-                    annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24
-                )
-            ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
-            ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
-                "Simulation time [s]", fontsize=28, labelpad=10
-            )
-            ax_list[-1].set_axis_off()
+            if idx == 1:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+                cb_list[idx].cmap.set_over("red")
+            else:
+                cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            cb_list[idx].ax.tick_params(labelsize=20)
+            ax.contour(XmeshXY, YmeshXY, rho_arr, [2], colors=["black"])
+            ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
+            ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
+            ax.set_title(varname_list[idx], fontsize=24, pad=10)
+            ax.set_xlim(x_range[0], x_range[-1])
+            ax.set_ylim(t_range[0], t_range[-1])
+            ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+            ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+            ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+        ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
+            "Simulation time [s]", fontsize=28, labelpad=10
+        )
+        ax_list[-1].set_axis_off()
 
-            # Save figure
-            plt.tight_layout()
+        # Save figure
+        plt.tight_layout()
 
-            # fig.savefig(
-            #     wrkdir_DNR
-            #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
-            # )
-            fig.savefig(
-                wrkdir_DNR
-                + "papu22/Figures/jmaps/{}_{}_jm.png".format(
-                    runid, str(non_id).zfill(5)
-                ),
-                dpi=300,
-            )
-            plt.close(fig)
+        # fig.savefig(
+        #     wrkdir_DNR
+        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        # )
+        fig.savefig(
+            wrkdir_DNR
+            + "papu22/Figures/jmaps/{}_{}_jm.png".format(runid, str(non_id).zfill(5)),
+            dpi=300,
+        )
+        plt.close(fig)
 
         if not txt:
             np.save(
@@ -1207,7 +1200,7 @@ def P_jplots(runid):
     for non_id in non_sj_ids:
         print("Non-FCS jets for run {}: {}".format(runid, non_id))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
@@ -1335,7 +1328,7 @@ def jet_avg_std(kind, version="squish"):
         for jet_id in jet_ids:
             props = jio.PropReader(str(jet_id).zfill(5), runid, transient="jet")
             duration = props.read("duration")[0]
-            pendep = props.read("x_wmean")[-1] - props.read("bs_distance")[-1]
+            pendep = props.read("x_mean")[-1] - props.read("bs_distance")[-1]
             pd_max = np.max(props.read("pd_max")) / (pdyn_sw[runids.index(runid)] * 1e9)
             first_cone = props.read("first_cone")[0]
             min_r = np.min(props.read("r_mean"))
@@ -1666,7 +1659,7 @@ def trifecta(runid, kind="non", draw=True):
     for non_id in non_ids:
         print("Jet {} in run {}".format(non_id, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
         fnr0 = int(t0 * 2)
@@ -1910,7 +1903,7 @@ def kind_timeseries(runid, kind="non"):
     for non_id in non_ids:
         print("Jet {} in run {}".format(non_id, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
         fnr0 = int(t0 * 2)
@@ -2012,7 +2005,7 @@ def vz_timeseries(runid, kind="non"):
     for non_id in non_ids:
         print("Jet {} in run {}".format(non_id, runid))
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
         fnr0 = int(t0 * 2)
@@ -2092,7 +2085,7 @@ def sj_non_timeseries(runid):
 
         # Read jet position, time and filenumber at time of birth
         props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
@@ -2157,7 +2150,7 @@ def sj_non_timeseries(runid):
 
         # Read jet position, time and filenumber at time of birth
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
-        x0, y0 = (props.read("x_wmean")[0], props.read("y_wmean")[0])
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
         t0 = props.read("time")[0]
         fnr0 = int(t0 * 2)
 
@@ -3561,8 +3554,8 @@ def jet_animator(runid, jetid, kind):
 
     props = jio.PropReader(str(jetid).zfill(5), runid)
     t0 = props.read("time")[0]
-    x0 = props.read("x_wmean")[0]
-    y0 = props.read("y_wmean")[0]
+    x0 = props.read("x_mean")[0]
+    y0 = props.read("y_mean")[0]
 
     fnr0 = int(t0 * 2)
 
@@ -3908,8 +3901,8 @@ def jet_var_plotter(runid, var):
         global x0, y0
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         t0 = props.read("time")[0]
-        x0 = props.read("x_wmean")[0]
-        y0 = props.read("y_wmean")[0]
+        x0 = props.read("x_mean")[0]
+        y0 = props.read("y_mean")[0]
         fnr0 = int(t0 * 2)
 
         filenr_g = fnr0
@@ -4022,8 +4015,8 @@ def non_jet_omni(runid):
         global x0, y0
         props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
         t0 = props.read("time")[0]
-        x0 = props.read("x_wmean")[0]
-        y0 = props.read("y_wmean")[0]
+        x0 = props.read("x_mean")[0]
+        y0 = props.read("y_mean")[0]
         fnr0 = int(t0 * 2)
 
         filenr_g = fnr0
@@ -5375,6 +5368,262 @@ def timing_comp():
         dpi=300,
     )
     plt.close(fig)
+
+
+def quadfecta(runid, kind="non"):
+    bulkpath = jx.find_bulkpath(runid)
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    if kind == "fcs":
+        non_ids = get_fcs_jets(runid)
+    else:
+        # non_ids = np.loadtxt(
+        #     wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+        #     dtype=int,
+        #     ndmin=1,
+        # )
+        non_ids = get_non_jets(runid)
+
+    var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
+    scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6]
+    norm = [
+        [1, 5, 750, 0.9408498320756251, 0.5],
+        [3.3, 5, 600, 1.9870748453437201, 0.5],
+        [1, 10, 750, 0.9408498320756251, 0.5],
+        [3.3, 10, 600, 1.9870748453437201, 0.5],
+    ]
+    ops = ["pass", "magnitude", "magnitude", "pass", "pass"]
+    v_ops = ["x", "y", "z"]
+    run_norm = norm[runids.index(runid)]
+
+    for non_id in non_ids:
+        print("Jet {} in run {}".format(non_id, runid))
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+        fnr0 = int(t0 * 2)
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+        d_cell = 227e3
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        cellids = [
+            vlsvobj.get_cellid([x0 * r_e, y0 * r_e, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e - d_cell, y0 * r_e - d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e, y0 * r_e + d_cell, 0 * r_e]),
+            vlsvobj.get_cellid([x0 * r_e + d_cell, y0 * r_e - d_cell, 0 * r_e]),
+        ]
+        coords = [[x0 * r_e, y0 * r_e, 0]] + [
+            [
+                x0 * r_e + np.sin(np.deg2rad(phi)) * d_cell,
+                y0 * r_e + np.cos(np.deg2rad(phi)) * d_cell,
+                0,
+            ]
+            for phi in [-120, 0, 120]
+        ]
+        data_arr = np.zeros((4, len(var_list) + 6 + 1, fnr_arr.size), dtype=float)
+
+        for idx, fnr in enumerate(fnr_arr):
+            try:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                for idx2, var in enumerate(var_list):
+                    data_arr[:, idx2, idx] = (
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    var, coords[idx3], operator=ops[idx2]
+                                )
+                                for idx3 in range(4)
+                            ]
+                        )
+                        * scales[idx2]
+                        / run_norm[idx2]
+                    )
+                for idx2 in range(3):
+                    data_arr[:, len(var_list) + idx2, idx] = (
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    "v", coords[idx3], operator=v_ops[idx2]
+                                )
+                                for idx3 in range(4)
+                            ]
+                        )
+                        * scales[2]
+                    )
+                    data_arr[:, len(var_list) + 3 + idx2, idx] = np.array(
+                        [
+                            vlsvobj.read_interpolated_variable(
+                                "B", coords[idx3], operator=v_ops[idx2]
+                            )
+                            / np.sqrt(
+                                m_p
+                                * mu0
+                                * vlsvobj.read_interpolated_variable(
+                                    "rho", coords[idx3]
+                                )
+                            )
+                            * scales[2]
+                            for idx3 in range(4)
+                        ]
+                    )
+            except:
+                data_arr[:, :, idx] = np.nan
+
+        results = jx.timing_analysis_quad(data_arr)
+        wave_vector = results["wave_vector"]
+        wave_v_sc = results["wave_velocity_sc_frame"]
+        vpl = results["wave_velocity_plasma_frame"]
+        out_results = [
+            wave_v_sc * wave_vector[0][0],
+            wave_v_sc * wave_vector[1][0],
+            results["wave_velocity_relative2sc"][0],
+            results["wave_velocity_relative2sc"][1],
+            results["bulk_velocity"][0],
+            results["bulk_velocity"][1],
+            results["alfven_velocity"][0],
+            results["alfven_velocity"][1],
+            wave_v_sc * wave_vector[2][0],
+            results["wave_velocity_relative2sc"][2],
+            results["bulk_velocity"][2],
+            results["alfven_velocity"][2],
+        ]
+        data_arr[0, len(var_list) + 6, :12] = out_results
+
+        np.save(
+            wrkdir_DNR
+            + "papu22/quadfecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
+            data_arr,
+        )
+
+
+def fecta_9(runid, kind="non"):
+    bulkpath = jx.find_bulkpath(runid)
+
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    if kind == "fcs":
+        non_ids = get_fcs_jets(runid)
+    else:
+        # non_ids = np.loadtxt(
+        #     wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+        #     dtype=int,
+        #     ndmin=1,
+        # )
+        non_ids = get_non_jets(runid)
+
+    var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
+    scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6]
+    norm = [
+        [1, 5, 750, 0.9408498320756251, 0.5],
+        [3.3, 5, 600, 1.9870748453437201, 0.5],
+        [1, 10, 750, 0.9408498320756251, 0.5],
+        [3.3, 10, 600, 1.9870748453437201, 0.5],
+    ]
+    ops = ["pass", "magnitude", "magnitude", "pass", "pass"]
+    v_ops = ["x", "y", "z"]
+    run_norm = norm[runids.index(runid)]
+
+    for non_id in non_ids:
+        print("Jet {} in run {}".format(non_id, runid))
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+        x0, y0 = (props.read("x_mean")[0], props.read("y_mean")[0])
+        t0 = props.read("time")[0]
+        t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+        fnr0 = int(t0 * 2)
+        fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+        d_cell = 227e3
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        coords = [
+            [x0 * r_e - d_cell, y0 * r_e - d_cell, 0],
+            [x0 * r_e, y0 * r_e - d_cell, 0],
+            [x0 * r_e + d_cell, y0 * r_e - d_cell, 0],
+            [x0 * r_e - d_cell, y0 * r_e, 0],
+            [x0 * r_e, y0 * r_e - d_cell, 0],
+            [x0 * r_e + d_cell, y0 * r_e, 0],
+            [x0 * r_e - d_cell, y0 * r_e + d_cell, 0],
+            [x0 * r_e, y0 * r_e + d_cell, 0],
+            [x0 * r_e + d_cell, y0 * r_e + d_cell, 0],
+        ]
+        data_arr = np.zeros((9, len(var_list) + 6 + 1, fnr_arr.size), dtype=float)
+
+        for idx, fnr in enumerate(fnr_arr):
+            try:
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                for idx2, var in enumerate(var_list):
+                    data_arr[:, idx2, idx] = (
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    var, coords[idx3], operator=ops[idx2]
+                                )
+                                for idx3 in range(9)
+                            ]
+                        )
+                        * scales[idx2]
+                        / run_norm[idx2]
+                    )
+                for idx2 in range(3):
+                    data_arr[:, len(var_list) + idx2, idx] = (
+                        np.array(
+                            [
+                                vlsvobj.read_interpolated_variable(
+                                    "v", coords[idx3], operator=v_ops[idx2]
+                                )
+                                for idx3 in range(9)
+                            ]
+                        )
+                        * scales[2]
+                    )
+                    data_arr[:, len(var_list) + 3 + idx2, idx] = np.array(
+                        [
+                            vlsvobj.read_interpolated_variable(
+                                "B", coords[idx3], operator=v_ops[idx2]
+                            )
+                            / np.sqrt(
+                                m_p
+                                * mu0
+                                * vlsvobj.read_interpolated_variable(
+                                    "rho", coords[idx3]
+                                )
+                            )
+                            * scales[2]
+                            for idx3 in range(9)
+                        ]
+                    )
+            except:
+                data_arr[:, :, idx] = np.nan
+
+        results = jx.timing_analysis_quad(data_arr)
+        wave_vector = results["wave_vector"]
+        wave_v_sc = results["wave_velocity_sc_frame"]
+        vpl = results["wave_velocity_plasma_frame"]
+        out_results = [
+            wave_v_sc * wave_vector[0][0],
+            wave_v_sc * wave_vector[1][0],
+            results["wave_velocity_relative2sc"][0],
+            results["wave_velocity_relative2sc"][1],
+            results["bulk_velocity"][0],
+            results["bulk_velocity"][1],
+            results["alfven_velocity"][0],
+            results["alfven_velocity"][1],
+            wave_v_sc * wave_vector[2][0],
+            results["wave_velocity_relative2sc"][2],
+            results["bulk_velocity"][2],
+            results["alfven_velocity"][2],
+        ]
+        data_arr[0, len(var_list) + 6, :12] = out_results
+
+        np.save(
+            wrkdir_DNR + "papu22/9fecta_txts/{}_{}".format(runid, str(non_id).zfill(5)),
+            data_arr,
+        )
 
 
 def weighted_propagation_velocity(runid, kind="non"):

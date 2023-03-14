@@ -175,6 +175,20 @@ class PropReader:
             return self.read(self.davg_list[self.delta_list.index(name)]) - self.read(
                 self.sheath_list[self.delta_list.index(name)]
             )
+        elif name == "x_wmean":
+            return np.loadtxt(
+                wrkdir_DNR
+                + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                    self.runid, str(self.ID).zfill(5)
+                )
+            ).T[1]
+        elif name == "y_wmean":
+            return np.loadtxt(
+                wrkdir_DNR
+                + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                    self.runid, str(self.ID).zfill(5)
+                )
+            ).T[2]
         elif name == "pdyn_vmax":
             return 1.0e21 * m_p * self.read("rho_vmax") * self.read("v_max") ** 2
         elif name == "duration":
@@ -1189,7 +1203,7 @@ def calc_event_props(
     b_vmax = beta[vmag == max(vmag)][0]
 
     # calculate jet size
-    A = dA * len(cells) / (r_e ** 2)
+    A = dA * len(cells) / (r_e**2)
     Nr_cells = len(cells)
 
     # calculate linear sizes of jet
