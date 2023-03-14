@@ -176,19 +176,27 @@ class PropReader:
                 self.sheath_list[self.delta_list.index(name)]
             )
         elif name == "x_wmean":
-            return np.loadtxt(
-                wrkdir_DNR
-                + "papu22/jet_prop_v_txts/{}_{}.txt".format(
-                    self.runid, str(self.ID).zfill(5)
-                )
-            ).T[1]
+            return (
+                np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        self.runid, str(self.ID).zfill(5)
+                    )
+                ).T[1]
+                * 1e3
+                / r_e
+            )
         elif name == "y_wmean":
-            return np.loadtxt(
-                wrkdir_DNR
-                + "papu22/jet_prop_v_txts/{}_{}.txt".format(
-                    self.runid, str(self.ID).zfill(5)
-                )
-            ).T[2]
+            return (
+                np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        self.runid, str(self.ID).zfill(5)
+                    )
+                ).T[2]
+                * 1e3
+                / r_e
+            )
         elif name == "pdyn_vmax":
             return 1.0e21 * m_p * self.read("rho_vmax") * self.read("v_max") ** 2
         elif name == "duration":
