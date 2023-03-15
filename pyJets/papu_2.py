@@ -5282,6 +5282,8 @@ def timing_comp():
             scale_units="xy",
             scale=1,
             zorder=2,
+            linewidth=1,
+            edgecolor="k",
         )
         # ax.quiver(
         #     0,
@@ -5307,6 +5309,8 @@ def timing_comp():
                 scale_units="xy",
                 scale=1,
                 zorder=1,
+                linewidth=1,
+                edgecolor="k",
             )
             for n in range(counters[idx]):
                 vx_one = timing_arrs[idx, :, n][2 * idx2]
