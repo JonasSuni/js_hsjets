@@ -4248,6 +4248,8 @@ def non_jet_omni(runid):
                 angles="xy",
                 scale_units="xy",
                 scale=1,
+                linewidth=1,
+                edgecolor="k",
             )
             # ax_sw.quiver(
             #     0,
@@ -4293,6 +4295,8 @@ def non_jet_omni(runid):
                     angles="xy",
                     scale_units="xy",
                     scale=1,
+                    linewidth=1,
+                    edgecolor="k",
                 )
             ax_sw.legend(fontsize=16, loc="lower right")
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
@@ -4334,7 +4338,7 @@ def non_jet_omni(runid):
                 "$|v|$",
                 None,
                 "$B_x$",
-                "$B_{yz}$",
+                "$|B_{yz}|$",
                 "$|B|$",
                 "TPar",
                 "TPerp",
@@ -4652,7 +4656,7 @@ def SEA_timeseries_comp():
         "$|v|$",
         None,
         "$B_x$",
-        "$B_{yz}$",
+        "$|B_{yz}|$",
         "$|B|$",
         "TPar",
         "TPerp",
