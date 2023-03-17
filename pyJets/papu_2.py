@@ -45,6 +45,9 @@ except:
 
 def jet_pos_plot():
     runids = ["AEC", "AEA", "ABC", "ABA"]
+    runid_labels = ["LM05", "LM30", "HM05", "HM30"]
+    rect_anchor = [(6, -6), (6, -8), (6, -6), (6, -8)]
+    rect_ex = [(12, 12), (12, 14), (12, 12), (12, 14)]
     CB_color_cycle = jx.CB_color_cycle
     # kinds = ["foreshock", "beam", "complex", "stripe"]
     kinds = ["beam", "foreshock"]
@@ -213,6 +216,18 @@ def jet_pos_plot():
         ax.set_xlim(6, 18)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
+        ax.set_title("{}".format(runid_labels[n1]), fontsize=20, pad=10)
+        ax.add_patch(
+            plt.Rectangle(
+                rect_anchor[n1],
+                rect_ex[n1][0],
+                rect_ex[n1][0],
+                fill=None,
+                linestyle="dashed",
+                color="k",
+            ),
+            linewidth=0.5,
+        )
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-10, 10)
             ax.set_aspect("equal", adjustable="box")
