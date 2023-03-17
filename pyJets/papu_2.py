@@ -225,8 +225,8 @@ def jet_pos_plot():
                 fill=None,
                 linestyle="dashed",
                 color="k",
-            ),
-            linewidth=0.5,
+                linewidth=0.5,
+            )
         )
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-10, 10)
