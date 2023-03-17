@@ -4127,7 +4127,7 @@ def non_jet_omni(runid):
                 facecolor="k",
                 shrink=0.1,
                 width=2,
-                headwidth=4,
+                headwidth=6,
             ),
             bbox=dict(
                 boxstyle="square,pad=0.2",
