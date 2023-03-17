@@ -221,7 +221,7 @@ def jet_pos_plot():
             plt.Rectangle(
                 rect_anchor[n1],
                 rect_ex[n1][0],
-                rect_ex[n1][0],
+                rect_ex[n1][1],
                 fill=None,
                 linestyle="dashed",
                 color="k",
