@@ -4117,7 +4117,13 @@ def non_jet_omni(runid):
             "jet",
             xy=(x0, y0),
             xytext=(x0 - 0.5, y0 + 0.25),
-            arrowprops=dict(facecolor="k", shrink=0.05),
+            fontsize=20,
+            arrowprops=dict(
+                facecolor="k",
+                shrink=0.1,
+                width=1,
+                headwidth=1,
+            ),
         )
         ax_nw.annotate(
             # "$P_\mathrm{dyn}$ [nPa]",
