@@ -4111,7 +4111,12 @@ def non_jet_omni(runid):
             (0.05, 0.90),
             xycoords="axes fraction",
             fontsize=20,
-            bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
+            bbox=dict(
+                boxstyle="square,pad=0.2",
+                fc="white",
+                ec="k",
+                lw=1,
+            ),
         )
         ax_nw.annotate(
             "jet",
@@ -4121,8 +4126,14 @@ def non_jet_omni(runid):
             arrowprops=dict(
                 facecolor="k",
                 shrink=0.1,
-                width=1,
-                headwidth=1,
+                width=2,
+                headwidth=4,
+            ),
+            bbox=dict(
+                boxstyle="square,pad=0.2",
+                fc="white",
+                ec="k",
+                lw=1,
             ),
         )
         ax_nw.annotate(
