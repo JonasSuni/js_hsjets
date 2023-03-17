@@ -223,7 +223,7 @@ def jet_pos_plot():
                 rect_ex[n1][0],
                 rect_ex[n1][1],
                 fill=None,
-                linestyle="dashed",
+                linestyle="dotted",
                 color="k",
                 linewidth=0.5,
             )
