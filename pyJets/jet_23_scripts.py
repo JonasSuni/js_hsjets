@@ -164,6 +164,8 @@ def ani_timeseries():
     ts_v_labels = ["", "x", "y", "z", "tot", "", "x", "y", "z", "tot", "par", "perp"]
 
     props = jio.PropReader(str(jetid).zfill(5), runid)
+    global lines
+    lines = []
 
     x0 = 10.5
     y0 = -2.4
@@ -177,6 +179,17 @@ def ani_timeseries():
             a.xaxis.set_ticklabels([])
         else:
             a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
+
+    for idx2, ax_idx in enumerate(var_ax_idx):
+        a = [axr0, axr1, axr2, axr3, axr4][var_ax_idx]
+        lines.append(
+            a.plot(
+                ts_t_arr,
+                ts_v_arrs[idx2],
+                color=ts_v_colors[idx2],
+                label=ts_v_labels[idx2],
+            )
+        )
 
     ani = FuncAnimation(
         fig,
@@ -257,18 +270,20 @@ def jet_ts_update(fnr):
     for idx2, ax_idx in enumerate(var_ax_idx):
         # print(ax_idx)
         a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
-        a.clear()
-        a.plot(
-            ts_t_arr, ts_v_arrs[idx2], color=ts_v_colors[idx2], label=ts_v_labels[idx2]
-        )
-        a.set_ylabel(ax_ylabels[var_ax_idx[idx2]], labelpad=10, fontsize=20)
-        a.set_xlim(t0 - pm_g / 2.0, t0 + pm_g / 2.0)
-        a.set_ylim(vmins[var_ax_idx[idx2]], vmaxs[var_ax_idx[idx2]])
-        a.tick_params(labelsize=16)
-        if ax_idx < 4:
-            a.xaxis.set_ticklabels([])
-        else:
-            a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
+        lines[idx2].set_xdata(ts_t_arr)
+        lines[idx2].set_ydata(ts_v_arrs[idx2])
+        # a.clear()
+        # a.plot(
+        #     ts_t_arr, ts_v_arrs[idx2], color=ts_v_colors[idx2], label=ts_v_labels[idx2]
+        # )
+        # a.set_ylabel(ax_ylabels[var_ax_idx[idx2]], labelpad=10, fontsize=20)
+        # a.set_xlim(t0 - pm_g / 2.0, t0 + pm_g / 2.0)
+        # a.set_ylim(vmins[var_ax_idx[idx2]], vmaxs[var_ax_idx[idx2]])
+        # a.tick_params(labelsize=16)
+        # if ax_idx < 4:
+        #     a.xaxis.set_ticklabels([])
+        # else:
+        #     a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
 
     axr1.legend()
     axr3.legend()
