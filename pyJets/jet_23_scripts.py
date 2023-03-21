@@ -50,7 +50,7 @@ def ani_timeseries():
     runid = "ABC"
     kind = ""
 
-    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g, pm_g
+    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g, pm_g, ax_ylabels, vmaxs, vmins, t0
     global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
     kind_g = kind
     jetid_g = jetid
@@ -254,13 +254,21 @@ def jet_ts_update(fnr):
         # ts_v_arrs[idx].append(val)
         ts_v_arrs[idx][idx3] = val
 
-    for idx2, a in enumerate(
-        [axr0, axr1, axr1, axr1, axr1, axr2, axr3, axr3, axr3, axr3, axr4, axr4]
-    ):
+    for idx2, ax_idx in enumerate(var_ax_idx):
+        a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
         a.clear()
         a.plot(
             ts_t_arr, ts_v_arrs[idx2], color=ts_v_colors[idx2], label=ts_v_labels[idx2]
         )
+        a.set_ylabel(ax_ylabels[var_ax_idx[idx2]], labelpad=10, fontsize=20)
+        a.set_xlim(t0 - 50, t0 + 50)
+        a.set_ylim(vmins[var_ax_idx[idx2]], vmaxs[var_ax_idx[idx2]])
+        a.tick_params(labelsize=16)
+        if var_ax_idx[idx2] < 4:
+            a.xaxis.set_ticklabels([])
+        else:
+            a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
+
     axr1.legend()
     axr3.legend()
     axr4.legend()
