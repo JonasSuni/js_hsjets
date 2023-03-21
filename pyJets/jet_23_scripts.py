@@ -50,7 +50,7 @@ def ani_timeseries():
     runid = "ABC"
     kind = ""
 
-    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g
+    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g, pm_g
     global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
     kind_g = kind
     jetid_g = jetid
@@ -95,13 +95,14 @@ def ani_timeseries():
     t0 = 475
     fnr0 = int(t0 * 2)
     fnr0_g = fnr0
+    pm_g = 10
 
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
     # ts_t_arr = []
-    ts_t_arr = np.empty(np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size)
+    ts_t_arr = np.empty(np.arange(fnr0 - pm_g, fnr0 + pm_g + 0.1, 1).size)
     ts_t_arr.fill(np.nan)
     # ts_v_arrs = [[], [], [], [], [], [], [], [], [], [], [], []]
-    ts_v_arrs = np.empty((12, np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size))
+    ts_v_arrs = np.empty((12, np.arange(fnr0 - pm_g, fnr0 + pm_g + 0.1, 1).size))
     ts_v_arrs.fill(np.nan)
     ts_v_norm = [
         rho_sw,
@@ -180,7 +181,7 @@ def ani_timeseries():
     ani = FuncAnimation(
         fig,
         jet_ts_update,
-        frames=np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1),
+        frames=np.arange(fnr0 - pm_g, fnr0 + pm_g + 0.1, 1),
         blit=False,
     )
     ani.save(
@@ -194,7 +195,7 @@ def ani_timeseries():
 
 
 def jet_ts_update(fnr):
-    idx3 = int(fnr - (fnr0_g - 100))
+    idx3 = int(fnr - (fnr0_g - pm_g))
     print("t = {}s".format(float(fnr) / 2.0))
     ax.clear()
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
