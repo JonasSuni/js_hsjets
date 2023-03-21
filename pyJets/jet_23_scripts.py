@@ -194,7 +194,7 @@ def ani_timeseries():
 
 
 def jet_ts_update(fnr):
-    idx3 = fnr - (fnr0_g - 100)
+    idx3 = int(fnr - (fnr0_g - 100))
     print("t = {}s".format(float(fnr) / 2.0))
     ax.clear()
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
