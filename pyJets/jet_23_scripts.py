@@ -50,7 +50,7 @@ def ani_timeseries():
     runid = "ABC"
     kind = ""
 
-    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4
+    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g
     global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
     kind_g = kind
     jetid_g = jetid
@@ -93,8 +93,12 @@ def ani_timeseries():
     vmaxs = [6, 1, 3, 4, 25]
 
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
-    ts_t_arr = []
-    ts_v_arrs = [[], [], [], [], [], [], [], [], [], [], [], []]
+    # ts_t_arr = []
+    ts_arr = np.empty(np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size)
+    ts_arr.fill(np.nan)
+    # ts_v_arrs = [[], [], [], [], [], [], [], [], [], [], [], []]
+    ts_v_arrs = np.empty((12, np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size))
+    ts_v_arrs.fill(np.nan)
     ts_v_norm = [
         rho_sw,
         v_sw,
@@ -170,6 +174,7 @@ def ani_timeseries():
             a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
 
     fnr0 = int(t0 * 2)
+    fnr0_g = fnr0
 
     ani = FuncAnimation(
         fig,
@@ -188,6 +193,8 @@ def ani_timeseries():
 
 
 def jet_ts_update(fnr):
+    idx3 = fnr - (fnr0_g - 100)
+    print("t = {}s".format(float(fnr) / 2.0))
     ax.clear()
     fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
     global filenr_g
@@ -234,7 +241,7 @@ def jet_ts_update(fnr):
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
-    ts_t_arr.append(float(fnr) / 2.0)
+    ts_t_arr[idx3] = float(fnr) / 2.0
     for idx in range(len(ts_v_ops)):
         val = (
             vlsvobj.read_interpolated_variable(
@@ -242,7 +249,8 @@ def jet_ts_update(fnr):
             )
             / ts_v_norm[idx]
         )
-        ts_v_arrs[idx].append(val)
+        # ts_v_arrs[idx].append(val)
+        ts_v_arrs[idx][idx3] = val
 
     for idx2, a in enumerate(
         [axr0, axr1, axr1, axr1, axr1, axr2, axr3, axr3, axr3, axr3, axr4, axr4]
