@@ -255,17 +255,17 @@ def jet_ts_update(fnr):
         ts_v_arrs[idx][idx3] = val
 
     for idx2, ax_idx in enumerate(var_ax_idx):
-        print(ax_idx)
+        # print(ax_idx)
         a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
         a.clear()
         a.plot(
             ts_t_arr, ts_v_arrs[idx2], color=ts_v_colors[idx2], label=ts_v_labels[idx2]
         )
         a.set_ylabel(ax_ylabels[var_ax_idx[idx2]], labelpad=10, fontsize=20)
-        a.set_xlim(t0 - 50, t0 + 50)
+        a.set_xlim(t0 - pm_g / 2.0, t0 + pm_g / 2.0)
         a.set_ylim(vmins[var_ax_idx[idx2]], vmaxs[var_ax_idx[idx2]])
         a.tick_params(labelsize=16)
-        if var_ax_idx[idx2] < 4:
+        if ax_idx < 4:
             a.xaxis.set_ticklabels([])
         else:
             a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
