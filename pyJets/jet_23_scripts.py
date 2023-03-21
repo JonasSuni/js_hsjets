@@ -44,7 +44,7 @@ except:
     vlasdir = "/proj/vlasov"
 
 
-def ani_timeseries():
+def ani_timeseries(time0=475, x=10.5, y=-2.4, pm=100):
 
     jetid = 596
     runid = "ABC"
@@ -92,10 +92,10 @@ def ani_timeseries():
     vmins = [0, -1, 0, -4, 0]
     vmaxs = [6, 1, 3, 4, 25]
 
-    t0 = 475
+    t0 = time0
     fnr0 = int(t0 * 2)
     fnr0_g = fnr0
-    pm_g = 5
+    pm_g = pm
 
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
     # ts_t_arr = []
@@ -167,8 +167,8 @@ def ani_timeseries():
     global lines
     lines = []
 
-    x0 = 10.5
-    y0 = -2.4
+    x0 = x
+    y0 = y
 
     for idx, a in enumerate([axr0, axr1, axr2, axr3, axr4]):
         a.set_ylabel(ax_ylabels[idx], labelpad=10, fontsize=20)
