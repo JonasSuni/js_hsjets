@@ -270,8 +270,8 @@ def jet_ts_update(fnr):
     for idx2, ax_idx in enumerate(var_ax_idx):
         # print(ax_idx)
         a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
-        lines[idx2].set_xdata(ts_t_arr)
-        lines[idx2].set_ydata(ts_v_arrs[idx2])
+        lines[idx2][0].set_xdata(ts_t_arr)
+        lines[idx2][0].set_ydata(ts_v_arrs[idx2])
         # a.clear()
         # a.plot(
         #     ts_t_arr, ts_v_arrs[idx2], color=ts_v_colors[idx2], label=ts_v_labels[idx2]
