@@ -85,7 +85,7 @@ def ani_timeseries():
     ax_ylabels = [
         "$n~[n_{sw}]$",
         "$v~[v_{sw}]$",
-        "$P_{dyn}~[P_{dyn,sw}]$",
+        "$P_{dyn}\\[P_{dyn,sw}]$",
         "$B~[B_{IMF}]$",
         "$T~[T_{sw}]$",
     ]
@@ -172,9 +172,10 @@ def ani_timeseries():
 
     for idx, a in enumerate([axr0, axr1, axr2, axr3, axr4]):
         a.set_ylabel(ax_ylabels[idx], labelpad=10, fontsize=20)
-        a.set_xlim(t0 - 50, t0 + 50)
+        a.set_xlim(t0 - pm_g / 2.0, t0 + pm_g / 2.0)
         a.set_ylim(vmins[idx], vmaxs[idx])
         a.tick_params(labelsize=16)
+        a.grid()
         if idx < 4:
             a.xaxis.set_ticklabels([])
         else:
