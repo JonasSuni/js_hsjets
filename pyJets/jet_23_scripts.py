@@ -85,7 +85,7 @@ def ani_timeseries():
     ax_ylabels = [
         "$n~[n_{sw}]$",
         "$v~[v_{sw}]$",
-        "$P_{dyn}\\[P_{dyn,sw}]$",
+        "$P_{dyn}$\n$[P_{dyn,sw}]$",
         "$B~[B_{IMF}]$",
         "$T~[T_{sw}]$",
     ]
