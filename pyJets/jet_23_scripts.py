@@ -92,6 +92,10 @@ def ani_timeseries():
     vmins = [0, -1, 0, -4, 0]
     vmaxs = [6, 1, 3, 4, 25]
 
+    t0 = 475
+    fnr0 = int(t0 * 2)
+    fnr0_g = fnr0
+
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
     # ts_t_arr = []
     ts_arr = np.empty(np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size)
@@ -159,7 +163,7 @@ def ani_timeseries():
     ts_v_labels = ["", "x", "y", "z", "tot", "", "x", "y", "z", "tot", "par", "perp"]
 
     props = jio.PropReader(str(jetid).zfill(5), runid)
-    t0 = 475
+
     x0 = 10.5
     y0 = -2.4
 
@@ -172,9 +176,6 @@ def ani_timeseries():
             a.xaxis.set_ticklabels([])
         else:
             a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
-
-    fnr0 = int(t0 * 2)
-    fnr0_g = fnr0
 
     ani = FuncAnimation(
         fig,
