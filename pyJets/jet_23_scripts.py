@@ -181,7 +181,7 @@ def ani_timeseries():
             a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
 
     for idx2, ax_idx in enumerate(var_ax_idx):
-        a = [axr0, axr1, axr2, axr3, axr4][var_ax_idx]
+        a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
         lines.append(
             a.plot(
                 ts_t_arr,
