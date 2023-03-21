@@ -232,7 +232,7 @@ def jet_ts_update(fnr):
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
 
     vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
     ts_t_arr.append(float(fnr) / 2.0)
     for idx in range(len(ts_v_ops)):
