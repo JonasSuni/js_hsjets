@@ -255,7 +255,7 @@ def jet_ts_update(fnr):
     axr3.legend()
     axr4.legend()
 
-    plt.tight_layout()
+    # plt.tight_layout()
 
 
 def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
