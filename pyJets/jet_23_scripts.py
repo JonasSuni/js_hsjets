@@ -98,8 +98,8 @@ def ani_timeseries():
 
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
     # ts_t_arr = []
-    ts_arr = np.empty(np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size)
-    ts_arr.fill(np.nan)
+    ts_t_arr = np.empty(np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size)
+    ts_t_arr.fill(np.nan)
     # ts_v_arrs = [[], [], [], [], [], [], [], [], [], [], [], []]
     ts_v_arrs = np.empty((12, np.arange(fnr0 - 100, fnr0 + 100 + 0.1, 1).size))
     ts_v_arrs.fill(np.nan)
