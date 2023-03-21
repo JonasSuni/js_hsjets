@@ -95,7 +95,7 @@ def ani_timeseries():
     t0 = 475
     fnr0 = int(t0 * 2)
     fnr0_g = fnr0
-    pm_g = 10
+    pm_g = 5
 
     global ts_t_arr, ts_v_arrs, ts_v_vars, ts_v_ops, var_ax_idx, ts_v_norm, ts_v_colors, ts_v_labels
     # ts_t_arr = []
@@ -255,6 +255,7 @@ def jet_ts_update(fnr):
         ts_v_arrs[idx][idx3] = val
 
     for idx2, ax_idx in enumerate(var_ax_idx):
+        print(ax_idx)
         a = [axr0, axr1, axr2, axr3, axr4][ax_idx]
         a.clear()
         a.plot(
