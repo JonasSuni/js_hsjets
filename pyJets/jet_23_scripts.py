@@ -204,7 +204,7 @@ def jet_ts_update(fnr):
         scale=2,
         title="",
         boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
-        # internalcb=True,
+        internalcb=True,
         lin=1,
         colormap="Blues_r",
         tickinterval=1.0,
