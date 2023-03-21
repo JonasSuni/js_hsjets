@@ -118,7 +118,7 @@ def ani_timeseries():
         T_sw,
         T_sw,
     ]
-    var_ax_idx = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4]
+    var_ax_idx = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
     ts_v_vars = [
         "rho",
         "v",
