@@ -149,3 +149,7 @@ from papu_2 import (
     weighted_propagation_velocity,
     auto_classifier,
 )
+
+from jet_23_scripts import (
+    ani_timeseries,
+)
