@@ -89,8 +89,8 @@ def ani_timeseries(time0=475, x=10.5, y=-2.4, pm=100):
         "$B~[B_{IMF}]$",
         "$T~[T_{sw}]$",
     ]
-    vmins = [0, -1, 0, -4, 0]
-    vmaxs = [6, 1, 3, 4, 25]
+    vmins = [1, -1, 0, -6, 0]
+    vmaxs = [8, 1, 4, 6, 30]
 
     t0 = time0
     fnr0 = int(t0 * 2)
