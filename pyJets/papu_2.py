@@ -5332,7 +5332,7 @@ def timing_comp():
                 linewidth=1,
                 edgecolor="k",
             )
-            if idx2 == 1:
+            if idx2 != 1:
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
