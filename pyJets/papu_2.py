@@ -5287,7 +5287,7 @@ def timing_comp():
             # avg_res[2],
             # avg_res[4],
             # avg_res[6],
-            # np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 2, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 4, : counters[idx]]),
             # np.nanmedian(timing_arrs[idx, 6, : counters[idx]]),
@@ -5297,7 +5297,7 @@ def timing_comp():
             # avg_res[3],
             # avg_res[5],
             # avg_res[7],
-            # np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
             # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
@@ -5317,7 +5317,7 @@ def timing_comp():
         #     scale=1,
         #     zorder=2,
         # )
-        for idx2 in range(len(vx)):
+        for idx2 in range(1, len(vx)):
             ax.quiver(
                 0,
                 0,
@@ -5332,7 +5332,7 @@ def timing_comp():
                 linewidth=1,
                 edgecolor="k",
             )
-            if idx2 != 1:
+            if idx2 != 2:
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
@@ -5350,7 +5350,7 @@ def timing_comp():
                 propv_arrs[idx, 0, n],
                 propv_arrs[idx, 1, n],
                 "o",
-                color=CB_color_cycle[2],
+                color=CB_color_cycle[0],
                 alpha=0.5,
                 zorder=0,
                 markersize=10,
@@ -5360,7 +5360,7 @@ def timing_comp():
             0,
             np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
-            color=CB_color_cycle[2],
+            color=CB_color_cycle[0],
             label="$v_\mathrm{tr}$",
             angles="xy",
             scale_units="xy",
