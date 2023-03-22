@@ -5339,7 +5339,7 @@ def timing_comp():
                     ax.plot(
                         vx_one,
                         vy_one,
-                        "x",
+                        "^",
                         color=CB_color_cycle[idx2],
                         alpha=0.5,
                         zorder=0,
