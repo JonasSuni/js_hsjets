@@ -279,6 +279,9 @@ def get_fcs_jets(runid):
         if props.read("time")[0] == 290.0:
             continue
 
+        if props.read("time")[-1] - props.read("time")[0] == 0:
+            continue
+
         if "splinter" in props.meta:
             continue
 
@@ -305,6 +308,9 @@ def get_non_jets(runid):
             continue
 
         if props.read("time")[0] == 290.0:
+            continue
+
+        if props.read("time")[-1] - props.read("time")[0] == 0:
             continue
 
         if "splinter" in props.meta:
