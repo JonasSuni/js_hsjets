@@ -5132,8 +5132,8 @@ def timing_comp():
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     annot = ["b)", "c)", "d)"]
     arrow_labels = [
-        "$v_\mathrm{p,n}$",
-        "$v_\mathrm{p,SC}$",
+        # "$v_\mathrm{p,n}$",
+        "$v_\mathrm{SC}$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
         # "$v_\mathrm{A}$",
@@ -5287,7 +5287,7 @@ def timing_comp():
             # avg_res[2],
             # avg_res[4],
             # avg_res[6],
-            np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 2, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 4, : counters[idx]]),
             # np.nanmedian(timing_arrs[idx, 6, : counters[idx]]),
@@ -5297,7 +5297,7 @@ def timing_comp():
             # avg_res[3],
             # avg_res[5],
             # avg_res[7],
-            np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
             np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
             # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
@@ -5354,12 +5354,18 @@ def timing_comp():
                 linewidth=1,
                 edgecolor="k",
             )
-            for n in range(counters[idx]):
-                vx_one = timing_arrs[idx, :, n][2 * idx2]
-                vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                ax.plot(
-                    vx_one, vy_one, "x", color=CB_color_cycle[idx2], alpha=0.5, zorder=0
-                )
+            if idx2 == 1:
+                for n in range(counters[idx]):
+                    vx_one = timing_arrs[idx, :, n][2 * idx2]
+                    vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
+                    ax.plot(
+                        vx_one,
+                        vy_one,
+                        "x",
+                        color=CB_color_cycle[idx2],
+                        alpha=0.5,
+                        zorder=0,
+                    )
 
         # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))

@@ -44,7 +44,7 @@ except:
     vlasdir = "/proj/vlasov"
 
 
-def ani_timeseries(time0=475, x=10.5, y=-2.4, pm=100):
+def ani_timeseries(time0=475, x=10.5, y=-2.2, pm=100):
 
     jetid = 596
     runid = "ABC"
@@ -192,6 +192,10 @@ def ani_timeseries(time0=475, x=10.5, y=-2.4, pm=100):
             )
         )
 
+    axr1.legend()
+    axr3.legend()
+    axr4.legend()
+
     ani = FuncAnimation(
         fig,
         jet_ts_update,
@@ -286,9 +290,9 @@ def jet_ts_update(fnr):
         # else:
         #     a.set_xlabel("Simulation time [s]", labelpad=10, fontsize=20)
 
-    axr1.legend()
-    axr3.legend()
-    axr4.legend()
+    # axr1.legend()
+    # axr3.legend()
+    # axr4.legend()
 
     # plt.tight_layout()
 
