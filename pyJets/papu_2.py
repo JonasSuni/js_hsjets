@@ -225,7 +225,7 @@ def jet_pos_plot():
                 fill=None,
                 linestyle="dotted",
                 color="k",
-                linewidth=0.5,
+                linewidth=0.6,
             )
         )
         if runid in ["ABA", "AEA"]:
@@ -4521,7 +4521,7 @@ def jmap_SEA_comp(run_id="all"):
     im_list = []
     cb_list = []
     vmin = [0, -1, 0.25, 0, 10]
-    vmax = [4, 0, 1.2, 4, 30]
+    vmax = [4, -0.25, 1.2, 4, 30]
     cmap = [
         "batlow",
         "batlow",
