@@ -5532,6 +5532,9 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
             + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
         ).T
 
+        if tlist[-1] - tlist[0] < 2:
+            continue
+
         res_arr = data_arr[0, 11, :]
 
         t0, x0, y0 = tlist[0], xlist[0], ylist[0]
