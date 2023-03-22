@@ -4281,7 +4281,7 @@ def non_jet_omni(runid):
                 0,
                 propvx,
                 propvy,
-                color=CB_color_cycle[5],
+                color=CB_color_cycle[0],
                 label="$v_\mathrm{tr}$",
                 angles="xy",
                 scale_units="xy",
@@ -4317,12 +4317,12 @@ def non_jet_omni(runid):
                 ]
             )
             arrow_labels = [
-                "$v_\mathrm{p,n}$",
-                "$v_\mathrm{p,SC}$",
+                "$v_\mathrm{n}$",
+                "$v_\mathrm{SC}$",
                 "$v_\mathrm{bulk}$",
                 # "$v_\mathrm{A}$",
             ]
-            for idx in range(len(vx_arr)):
+            for idx in range(1, len(vx_arr)):
                 ax_sw.quiver(
                     0,
                     0,
