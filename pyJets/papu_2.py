@@ -5343,7 +5343,7 @@ def timing_comp():
                         color=CB_color_cycle[idx2],
                         alpha=0.5,
                         zorder=0,
-                        markersize=2,
+                        markersize=10,
                     )
         for n in range(counters[idx]):
             ax.plot(
@@ -5353,7 +5353,7 @@ def timing_comp():
                 color=CB_color_cycle[2],
                 alpha=0.5,
                 zorder=0,
-                markersize=2,
+                markersize=10,
             )
         ax.quiver(
             0,
