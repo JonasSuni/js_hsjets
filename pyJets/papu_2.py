@@ -5132,7 +5132,7 @@ def timing_comp():
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     annot = ["b)", "c)", "d)"]
     arrow_labels = [
-        # "$v_\mathrm{p,n}$",
+        "$v_\mathrm{n}$",
         "$v_\mathrm{SC}$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
