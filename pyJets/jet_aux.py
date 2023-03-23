@@ -744,31 +744,37 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
     matrix_positions = np.zeros((3, 3))
     pos_ref_sc = np.zeros((3, 3))
 
-    pos_ref_sc[0, :] = [
-        pos_jonas[ref_sc, 0],
-        pos_jonas[ref_sc, 1],
-        pos_jonas[ref_sc, 2],
-    ]
-    pos_ref_sc[1, :] = [
-        pos_jonas[ref_sc, 0],
-        pos_jonas[ref_sc, 1],
-        pos_jonas[ref_sc, 2],
-    ]
-    pos_ref_sc[2, :] = [
-        pos_jonas[ind_sc[1], 0],
-        pos_jonas[ind_sc[1], 1],
-        pos_jonas[ind_sc[1], 2],
-    ]
+    # pos_ref_sc[0, :] = [
+    #     pos_jonas[ref_sc, 0],
+    #     pos_jonas[ref_sc, 1],
+    #     pos_jonas[ref_sc, 2],
+    # ]
+    # pos_ref_sc[1, :] = [
+    #     pos_jonas[ref_sc, 0],
+    #     pos_jonas[ref_sc, 1],
+    #     pos_jonas[ref_sc, 2],
+    # ]
+    # pos_ref_sc[2, :] = [
+    #     pos_jonas[ind_sc[1], 0],
+    #     pos_jonas[ind_sc[1], 1],
+    #     pos_jonas[ind_sc[1], 2],
+    # ]
+
+    pos_ref_sc[0] = pos_jonas[ref_sc]
+    pos_ref_sc[1] = pos_jonas[ref_sc]
+    pos_ref_sc[2] = pos_jonas[ind_sc[1]]
 
     pos_ref_sc = pos_ref_sc * Re
 
     ind = 0
     for isc in ind_sc[1:]:
         # Position of the second spacecraft from the considered pair
-        R2 = [pos_jonas[isc, 0], pos_jonas[isc, 1], pos_jonas[isc, 2]]
-        R2 = np.array(R2) * Re
+        # R2 = [pos_jonas[isc, 0], pos_jonas[isc, 1], pos_jonas[isc, 2]]
+        R2 = pos_jonas[isc]
+        # R2 = np.array(R2) * Re
+        R2 = R2 * Re
 
-        matrix_positions[ind, :] = R2 - pos_ref_sc[ind, :]
+        matrix_positions[ind] = R2 - pos_ref_sc[ind]
 
         ind = ind + 1
 
@@ -803,16 +809,16 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
 
     V_bulk = np.array(
         [
-            np.mean(data[ref_sc, 5]),
-            np.mean(data[ref_sc, 6]),
-            np.mean(data[ref_sc, 7]),
+            np.mean(data[ref_sc, 5][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, 6][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, 7][data[ref_sc,4]>=3]),
         ]
     )
     V_A = np.array(
         [
-            np.mean(data[ref_sc, 8]),
-            np.mean(data[ref_sc, 9]),
-            np.mean(data[ref_sc, 10]),
+            np.mean(data[ref_sc, 8][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, 9][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, 10][data[ref_sc,4]>=3]),
         ]
     )
     results["alfven_velocity"] = V_A

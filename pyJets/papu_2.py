@@ -1645,7 +1645,7 @@ def SEA_trifecta(kind):
     )
 
 
-def trifecta(runid, kind="non", draw=True):
+def trifecta(runid, kind="non", draw=False):
     bulkpath = jx.find_bulkpath(runid)
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -1659,7 +1659,7 @@ def trifecta(runid, kind="non", draw=True):
         # )
         non_ids = get_non_jets(runid)
 
-    var_list = ["rho", "B", "v", "Pdyn", "Temperature"]
+    var_list = ["rho", "B", "v", "Pdyn", "core_heating"]
     plot_labels = ["VS1", "VS2", "VS3"]
     scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6]
     ylabels = [
@@ -1667,7 +1667,7 @@ def trifecta(runid, kind="non", draw=True):
         "$B~[B_\mathrm{IMF}]$",
         "$v~[v_\mathrm{sw}]$",
         "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$T~[T_\mathrm{sw}]$",
+        "$T_{core}~[T_\mathrm{sw}]$",
     ]
     norm = [
         [1, 5, 750, 0.9408498320756251, 0.5],
