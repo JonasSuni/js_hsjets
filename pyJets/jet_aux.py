@@ -809,16 +809,16 @@ def timing_analysis_datadict(data, ind_sc=[1, 0, 2], var_ind=3):
 
     V_bulk = np.array(
         [
-            np.mean(data[ref_sc, 5][data[ref_sc,4]>=3]),
-            np.mean(data[ref_sc, 6][data[ref_sc,4]>=3]),
-            np.mean(data[ref_sc, 7][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, -7][data[ref_sc, 5] >= 3]),
+            np.mean(data[ref_sc, -6][data[ref_sc, 5] >= 3]),
+            np.mean(data[ref_sc, -5][data[ref_sc, 5] >= 3]),
         ]
     )
     V_A = np.array(
         [
-            np.mean(data[ref_sc, 8][data[ref_sc,4]>=3]),
-            np.mean(data[ref_sc, 9][data[ref_sc,4]>=3]),
-            np.mean(data[ref_sc, 10][data[ref_sc,4]>=3]),
+            np.mean(data[ref_sc, -4][data[ref_sc, 5] >= 3]),
+            np.mean(data[ref_sc, -3][data[ref_sc, 5] >= 3]),
+            np.mean(data[ref_sc, -2][data[ref_sc, 5] >= 3]),
         ]
     )
     results["alfven_velocity"] = V_A

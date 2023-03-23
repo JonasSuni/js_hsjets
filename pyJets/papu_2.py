@@ -1622,7 +1622,7 @@ def SEA_trifecta(kind):
     # print(
     #     "KIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s".format(kind, vx / 1e3, vy / 1e3)
     # )
-    avg_res = avg_arr[0, 11]
+    avg_res = avg_arr[0, -1]
     print(
         "\nLUCILES AVGS\nKIND: {}, VX = {:.3g} km/s, VY = {:.3g} km/s, VX_rel = {:.3g}, VY_rel = {:.3g}\n".format(
             kind,
@@ -1659,23 +1659,24 @@ def trifecta(runid, kind="non", draw=False):
         # )
         non_ids = get_non_jets(runid)
 
-    var_list = ["rho", "B", "v", "Pdyn", "core_heating"]
+    var_list = ["rho", "B", "v", "Pdyn", "Temperature", "core_heating"]
     plot_labels = ["VS1", "VS2", "VS3"]
-    scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6]
+    scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6, 1e-6]
     ylabels = [
         "$\\rho~[\\rho_\mathrm{sw}]$",
         "$B~[B_\mathrm{IMF}]$",
         "$v~[v_\mathrm{sw}]$",
         "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$T~[T_\mathrm{sw}]$",
         "$T_{core}~[T_\mathrm{sw}]$",
     ]
     norm = [
-        [1, 5, 750, 0.9408498320756251, 0.5],
-        [3.3, 5, 600, 1.9870748453437201, 0.5],
-        [1, 10, 750, 0.9408498320756251, 0.5],
-        [3.3, 10, 600, 1.9870748453437201, 0.5],
+        [1, 5, 750, 0.9408498320756251, 0.5, 0.5],
+        [3.3, 5, 600, 1.9870748453437201, 0.5, 0.5],
+        [1, 10, 750, 0.9408498320756251, 0.5, 0.5],
+        [3.3, 10, 600, 1.9870748453437201, 0.5, 0.5],
     ]
-    ops = ["pass", "magnitude", "magnitude", "pass", "pass"]
+    ops = ["pass", "magnitude", "magnitude", "pass", "pass", "pass"]
     plot_colors = [
         CB_color_cycle[0],
         CB_color_cycle[1],
@@ -4217,11 +4218,13 @@ def non_jet_omni(runid):
                 wrkdir_DNR
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
-            res = trifecta_data[0, 11]
+            res = trifecta_data[0, -1]
             tlist, xlist, ylist = np.loadtxt(
                 wrkdir_DNR
                 + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
             ).T
+
+            ch_mask = trifecta_data[0, 5, :] >= 3
 
             t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
@@ -4237,13 +4240,15 @@ def non_jet_omni(runid):
             va = (
                 np.nanmean(
                     B_sw
-                    * trifecta_data[0, 1, :]
-                    / np.sqrt(mu0 * m_p * rho_sw * trifecta_data[0, 0, :])
+                    * trifecta_data[0, 1, :][ch_mask]
+                    / np.sqrt(mu0 * m_p * rho_sw * trifecta_data[0, 0, :][ch_mask])
                 )
                 / 1e3
             )
             vs = (
-                np.nanmean(np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :] / m_p))
+                np.nanmean(
+                    np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :][ch_mask] / m_p)
+                )
                 / 1e3
             )
             vms = np.sqrt(va**2 + vs**2)
@@ -5220,7 +5225,7 @@ def timing_comp():
                     propvx_full / vsw,
                     propvy_full / vsw,
                 ]
-                # print(data_arr[:, 11, :8])
+                # print(data_arr[:, -1, :8])
                 data_arr[:, 5:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 # vax_avg_arr[idx] = (
@@ -5239,14 +5244,15 @@ def timing_comp():
                 #     / vsw
                 #     / 1.0e3
                 # )
-                timing_arrs[idx, :, counters[idx]] = data_arr[0, 11, :]
+                ch_mask = data_arr[0, 5, :] >= 3
+                timing_arrs[idx, :, counters[idx]] = data_arr[0, -1, :]
                 alfven_arrs[idx, counters[idx]] = np.nanmean(
                     Bsw
-                    * data_arr[0, 1, :]
-                    / np.sqrt(mu0 * m_p * nsw * data_arr[0, 0, :])
+                    * data_arr[0, 1, :][ch_mask]
+                    / np.sqrt(mu0 * m_p * nsw * data_arr[0, 0, :][ch_mask])
                 ) / (vsw * 1e3)
                 sonic_arrs[idx, counters[idx]] = np.nanmean(
-                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[0, 4, :] / m_p)
+                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[0, 4, :][ch_mask] / m_p)
                 ) / (vsw * 1e3)
 
                 avg_arr[idx] = avg_arr[idx] + data_arr
@@ -5264,7 +5270,7 @@ def timing_comp():
     ax_flat = ax_list.flatten()
     for idx, ax in enumerate(ax_flat[1:]):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
-        avg_res = avg_arr[idx, 0, 11]
+        avg_res = avg_arr[idx, 0, -1]
         # print(avg_res)
         a_med = np.nanmedian(alfven_arrs[idx, : counters[idx]])
         ms_med = np.nanmedian(magnetosonic_arrs[idx, : counters[idx]])
@@ -5541,7 +5547,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
         if tlist[-1] - tlist[0] == 0:
             continue
 
-        res_arr = data_arr[0, 11, :]
+        res_arr = data_arr[0, -1, :]
 
         t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
