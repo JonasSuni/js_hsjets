@@ -4224,7 +4224,7 @@ def non_jet_omni(runid):
                 + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
             ).T
 
-            ch_mask = trifecta_data[0, 5, :] >= 3
+            ch_mask = trifecta_data[1, 5, :] >= 3
 
             t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
@@ -4240,14 +4240,14 @@ def non_jet_omni(runid):
             va = (
                 np.nanmean(
                     B_sw
-                    * trifecta_data[0, 1, :][ch_mask]
-                    / np.sqrt(mu0 * m_p * rho_sw * trifecta_data[0, 0, :][ch_mask])
+                    * trifecta_data[1, 1, :][ch_mask]
+                    / np.sqrt(mu0 * m_p * rho_sw * trifecta_data[1, 0, :][ch_mask])
                 )
                 / 1e3
             )
             vs = (
                 np.nanmean(
-                    np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[0, 4, :][ch_mask] / m_p)
+                    np.sqrt(5.0 / 3 * kb * T_sw * trifecta_data[1, 4, :][ch_mask] / m_p)
                 )
                 / 1e3
             )
@@ -5245,15 +5245,15 @@ def timing_comp():
                 #     / vsw
                 #     / 1.0e3
                 # )
-                ch_mask = data_arr[0, 5, :] >= 3
+                ch_mask = data_arr[1, 5, :] >= 3
                 timing_arrs[idx, :, counters[idx]] = data_arr[0, -1, :]
                 alfven_arrs[idx, counters[idx]] = np.nanmean(
                     Bsw
-                    * data_arr[0, 1, :][ch_mask]
-                    / np.sqrt(mu0 * m_p * nsw * data_arr[0, 0, :][ch_mask])
+                    * data_arr[1, 1, :][ch_mask]
+                    / np.sqrt(mu0 * m_p * nsw * data_arr[1, 0, :][ch_mask])
                 ) / (vsw * 1e3)
                 sonic_arrs[idx, counters[idx]] = np.nanmean(
-                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[0, 4, :][ch_mask] / m_p)
+                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[1, 4, :][ch_mask] / m_p)
                 ) / (vsw * 1e3)
 
                 avg_arr[idx] = avg_arr[idx] + data_arr
