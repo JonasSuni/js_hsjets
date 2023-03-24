@@ -5227,7 +5227,7 @@ def timing_comp():
                     propvy_full / vsw,
                 ]
                 # print(data_arr[:, -1, :8])
-                data_arr[:, 5:, :] /= vsw
+                data_arr[:, 6:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 # vax_avg_arr[idx] = (
                 #     vax_avg_arr[idx]
