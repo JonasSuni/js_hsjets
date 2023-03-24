@@ -5155,6 +5155,7 @@ def timing_comp():
         "$v~[v_\mathrm{sw}]$",
         "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
         "$T~[T_\mathrm{sw}]$",
+        "$T_{core}~[T_\mathrm{sw}]$",
     ]
 
     fnr_arr = np.arange(0 - 20, 0 + 21)
