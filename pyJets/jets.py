@@ -148,6 +148,7 @@ from papu_2 import (
     # fecta_9,
     weighted_propagation_velocity,
     auto_classifier,
+    fig0,
 )
 
 from jet_23_scripts import (

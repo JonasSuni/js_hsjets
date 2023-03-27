@@ -3884,6 +3884,178 @@ def expr_rhoratio(pass_maps):
     return rho_st / (rho_st + rho_th + 1e-27)
 
 
+def fig0(runid="ABC", jetid=596):
+
+    var = "Pdyn"
+    vscale = 1e9
+    vmax = 1.5
+    if runid in ["ABC", "AEC"]:
+        vmax = 3
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    runids_pub = ["HM30", "HM05", "LM30", "LM05"]
+
+    rect_anchor = [(6, -6), (6, -8), (6, -6), (6, -8)]
+    rect_ex = [(12, 12), (12, 14), (12, 12), (12, 14)]
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
+    runid_g = runid
+    Blines_g = False
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    non_ids = get_non_jets(runid)
+    sj_ids = get_fcs_jets(runid)
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    print("Jet {} in run {}".format(jetid, runid))
+
+    global x0, y0
+    props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+    t0 = props.read("time")[0]
+    x0 = props.read("x_wmean")[0]
+    y0 = props.read("y_wmean")[0]
+    fnr0 = int(t0 * 2)
+
+    filenr_g = fnr0
+
+    fname = "bulk.{}.vlsv".format(str(int(fnr0)).zfill(7))
+
+    fnr_range = np.arange(fnr0 - 30, fnr0 + 30 + 1)
+    t_range = np.arange(t0 - 15, t0 + 15 + 0.1, 0.5)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+    # Get cellid of initial position
+    cellid = vlsvobj.get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    dx = 227e3 / r_e
+
+    cell_range = np.arange(cellid - 20, cellid + 20 + 1)
+    x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
+
+    fig, ax = plt.subplots(1, 2, figsize=(16, 8))
+
+    pt.plot.plot_colormap(
+        axes=ax[0],
+        filename=bulkpath + fname,
+        # outputfile=wrkdir_DNR
+        # + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
+        #     runid, str(non_id).zfill(5), var
+        # ),
+        var=var,
+        vmin=0,
+        # vmax=1,
+        vmax=vmax,
+        vscale=vscale,
+        # cbtitle="$P_{dyn}$ [nPa]",
+        # cbtitle="",
+        usesci=0,
+        scale=2,
+        # title="Run: {}, ID: {}\n t = {}s".format(
+        #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+        # ),
+        # boxre=[x0 - 2, x0 + 2, y0 - 2, y0 + 2],
+        internalcb=True,
+        lin=1,
+        colormap="batlow",
+        tickinterval=1.0,
+        # external=ext_jet,
+        # expression=expr_rhoratio,
+        pass_vars=[
+            "RhoNonBackstream",
+            "RhoBackstream",
+            "PTensorNonBackstreamDiagonal",
+            "B",
+            "v",
+            "rho",
+            "core_heating",
+            "CellID",
+            "Mmsx",
+            "Pdyn",
+        ],
+    )
+
+    ax[0].set_title(
+        "Run: {}, t = {}s".format(runids_pub[runids.index(runid)], float(fnr0) / 2.0),
+        pad=10,
+        fontsize=24,
+    )
+
+    ax[0].add_patch(
+        plt.Rectangle(
+            rect_anchor[runids.index(runid)],
+            rect_ex[runids.index(runid)][0],
+            rect_ex[runids.index(runid)][1],
+            fill=None,
+            linestyle="dotted",
+            color="k",
+            linewidth=0.6,
+        )
+    )
+
+    pt.plot.plot_colormap(
+        axes=ax[1],
+        filename=bulkpath + fname,
+        # outputfile=wrkdir_DNR
+        # + "papu22/Figures/var_plots/{}_{}_var_{}.png".format(
+        #     runid, str(non_id).zfill(5), var
+        # ),
+        var=var,
+        vmin=0,
+        # vmax=1,
+        vmax=vmax,
+        vscale=vscale,
+        # cbtitle="$P_{dyn}$ [nPa]",
+        # cbtitle="",
+        usesci=0,
+        scale=2,
+        # title="Run: {}, ID: {}\n t = {}s".format(
+        #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+        # ),
+        boxre=[
+            rect_anchor[runids.index(runid)][0],
+            rect_anchor[runids.index(runid)][0] + rect_ex[runids.index(runid)][0],
+            rect_anchor[runids.index(runid)][1],
+            rect_anchor[runids.index(runid)][1] + rect_ex[runids.index(runid)][1],
+        ],
+        # internalcb=True,
+        lin=1,
+        colormap="batlow",
+        tickinterval=1.0,
+        external=ext_jet,
+        # expression=expr_rhoratio,
+        pass_vars=[
+            "RhoNonBackstream",
+            "RhoBackstream",
+            "PTensorNonBackstreamDiagonal",
+            "B",
+            "v",
+            "rho",
+            "core_heating",
+            "CellID",
+            "Mmsx",
+            "Pdyn",
+        ],
+    )
+
+    plt.tight_layout()
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig0.png")
+
+    plt.close(fig)
+
+
 def jet_var_plotter(runid, var):
     vars_list = [
         "Pdyn",
