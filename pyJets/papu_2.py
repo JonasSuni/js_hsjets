@@ -3894,8 +3894,8 @@ def fig0(runid="ABC", jetid=596):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
-    rect_anchor = [(6, -6), (6, -8), (6, -6), (6, -8)]
-    rect_ex = [(12, 12), (12, 14), (12, 12), (12, 14)]
+    rect_anchor = [(6, -8), (6, -6), (6, -8), (6, -6)]
+    rect_ex = [(12, 14), (12, 12), (12, 14), (12, 12)]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
