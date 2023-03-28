@@ -4186,7 +4186,7 @@ def jet_var_plotter(runid, var):
         plt.close(fig)
 
 
-def non_jet_omni(runid):
+def non_jet_omni(runid, only_man_figs=True):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
@@ -4215,6 +4215,12 @@ def non_jet_omni(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for non_id in non_ids:
+        if only_man_figs:
+            if (runid == "ABC" and non_id == 153) or (runid == "AEA" and non_id == 920):
+                pass
+            else:
+                continue
+
         print("Jet {} in run {}".format(non_id, runid))
 
         global x0, y0
