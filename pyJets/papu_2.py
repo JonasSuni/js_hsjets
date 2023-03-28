@@ -3945,7 +3945,7 @@ def fig0(runid="ABC", jetid=596):
     cell_range = np.arange(cellid - 20, cellid + 20 + 1)
     x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
 
-    fig, ax = plt.subplots(1, 2, figsize=(16, 8))
+    fig, ax = plt.subplots(1, 2, figsize=(16, 8), constrained_layout=True)
 
     pt.plot.plot_colormap(
         axes=ax[0],
@@ -4051,7 +4051,7 @@ def fig0(runid="ABC", jetid=596):
         ],
     )
 
-    plt.tight_layout()
+    # plt.tight_layout()
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig0.png")
 
     plt.close(fig)
