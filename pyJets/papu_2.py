@@ -4551,6 +4551,7 @@ def non_jet_omni(runid, only_man_figs=True):
                     runid, str(non_id).zfill(5)
                 )
             )
+            timeseries_data[5,:] = np.abs(timeseries_data[5,:]) # Use |Bx|
             var_list = [
                 "rho",
                 "v",
