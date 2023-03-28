@@ -4551,7 +4551,7 @@ def non_jet_omni(runid, only_man_figs=True):
                     runid, str(non_id).zfill(5)
                 )
             )
-            timeseries_data[5,:] = np.abs(timeseries_data[5,:]) # Use |Bx|
+            timeseries_data[5, :] = np.abs(timeseries_data[5, :])  # Use |Bx|
             var_list = [
                 "rho",
                 "v",
@@ -4570,7 +4570,7 @@ def non_jet_omni(runid, only_man_figs=True):
                 "$|v_{yz}|$",
                 "$|v|$",
                 None,
-                "$B_x$",
+                "$|B_x|$",
                 "$|B_{yz}|$",
                 "$|B|$",
                 "TPar",
@@ -4899,7 +4899,7 @@ def SEA_timeseries_comp():
         "$|v_{yz}|$",
         "$|v|$",
         None,
-        "$B_x$",
+        "$|B_x|$",
         "$|B_{yz}|$",
         "$|B|$",
         "TPar",
