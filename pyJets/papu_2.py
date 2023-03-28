@@ -258,7 +258,7 @@ def jet_pos_plot():
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/BS_plot.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig7.pdf", dpi=300)
     plt.close(fig)
 
 
@@ -4055,7 +4055,7 @@ def fig0(runid="ABC", jetid=596):
     )
 
     # plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig0.pdf")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig1.pdf")
 
     plt.close(fig)
 
@@ -4262,6 +4262,7 @@ def non_jet_omni(runid):
             scale=2,
             title="",
             boxre=[x0 - 1, x0 + 1, y0 - 1, y0 + 1],
+            useimshow=True,
             # internalcb=True,
             lin=1,
             # colormap="batlow",
@@ -4635,6 +4636,16 @@ def non_jet_omni(runid):
             wrkdir_DNR
             + "papu22/Figures/omni/{}_{}_omni.png".format(runid, str(non_id).zfill(5))
         )
+        if runid == "ABC" and non_id == 153:
+            fig.savefig(
+                wrkdir_DNR
+                + "papu22/Figures/fig4.pdf".format(runid, str(non_id).zfill(5))
+            )
+        elif runid == "AEA" and non_id == 920:
+            fig.savefig(
+                wrkdir_DNR
+                + "papu22/Figures/fig3.pdf".format(runid, str(non_id).zfill(5))
+            )
 
         plt.close(fig)
 
@@ -4822,7 +4833,7 @@ def jmap_SEA_comp(run_id="all"):
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/jmap_SEA_comp_{}.pdf".format(run_id),
+        wrkdir_DNR + "papu22/Figures/fig5.pdf".format(run_id),
         dpi=300,
     )
     plt.close(fig)
@@ -5088,7 +5099,7 @@ def SEA_timeseries_comp():
         ax.label_outer()
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/timeseries_SEA_comp.pdf",
+        wrkdir_DNR + "papu22/Figures/fig6.pdf",
         dpi=300,
     )
     plt.close(fig)
@@ -5614,7 +5625,7 @@ def timing_comp():
 
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/timing_comp.pdf",
+        wrkdir_DNR + "papu22/Figures/fig2.pdf",
         dpi=300,
     )
     plt.close(fig)
