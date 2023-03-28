@@ -4036,6 +4036,7 @@ def fig0(runid="ABC", jetid=596):
         colormap="batlow",
         tickinterval=2.0,
         external=ext_jet,
+        nocb=True,
         # expression=expr_rhoratio,
         pass_vars=[
             "RhoNonBackstream",
