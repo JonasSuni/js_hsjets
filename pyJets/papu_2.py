@@ -3971,6 +3971,7 @@ def fig0(runid="ABC", jetid=596):
         lin=1,
         colormap="batlow",
         tickinterval=5.0,
+        useimshow=True,
         # external=ext_jet,
         # expression=expr_rhoratio,
         pass_vars=[
@@ -4017,6 +4018,7 @@ def fig0(runid="ABC", jetid=596):
         # vmax=1,
         vmax=vmax,
         vscale=vscale,
+        useimshow=True,
         # cbtitle="$P_{dyn}$ [nPa]",
         # cbtitle="",
         usesci=0,
@@ -4053,7 +4055,7 @@ def fig0(runid="ABC", jetid=596):
     )
 
     # plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig0.png")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig0.pdf")
 
     plt.close(fig)
 
