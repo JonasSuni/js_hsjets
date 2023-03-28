@@ -4923,7 +4923,7 @@ def SEA_timeseries_comp():
         "$B~[B_\mathrm{IMF}]$",
         "$T~[T_\mathrm{sw}]$",
     ]
-    vmins = [0.2, -1.1, 0, 0, 0]
+    vmins = [0.2, -1.1, 0, -0.5, 0]
     vmaxs = [7, 1.1, 2.3, 5, 55]
     plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
     offsets = np.array([0, -0.2, 0.2, 0, 0, -0.2, 0.2, 0, 0, -0.2]) - 0.1
