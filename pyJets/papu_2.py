@@ -3970,7 +3970,7 @@ def fig0(runid="ABC", jetid=596):
         internalcb=True,
         lin=1,
         colormap="batlow",
-        tickinterval=1.0,
+        tickinterval=5.0,
         # external=ext_jet,
         # expression=expr_rhoratio,
         pass_vars=[
@@ -4001,7 +4001,7 @@ def fig0(runid="ABC", jetid=596):
             fill=None,
             linestyle="dotted",
             color="k",
-            linewidth=0.6,
+            linewidth=1.0,
         )
     )
 
@@ -4024,6 +4024,7 @@ def fig0(runid="ABC", jetid=596):
         # title="Run: {}, ID: {}\n t = {}s".format(
         #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
         # ),
+        title="",
         boxre=[
             rect_anchor[runids.index(runid)][0],
             rect_anchor[runids.index(runid)][0] + rect_ex[runids.index(runid)][0],
@@ -4033,7 +4034,7 @@ def fig0(runid="ABC", jetid=596):
         # internalcb=True,
         lin=1,
         colormap="batlow",
-        tickinterval=1.0,
+        tickinterval=2.0,
         external=ext_jet,
         # expression=expr_rhoratio,
         pass_vars=[
