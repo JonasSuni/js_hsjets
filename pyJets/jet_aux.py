@@ -630,6 +630,8 @@ def find_bulkpath(runid):
 
     if runid in runid_list:
         bulkpath = vlpath + path_list[runid_list.index(runid)]
+    elif runid == "DCB":
+        bulkpath = vlasdir + "/3D/DCB/bulk/"
     else:
         bulkpath = vlpath + "bulk/"
 

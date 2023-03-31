@@ -1,7 +1,8 @@
 import numpy as np
 import pytools as pt
-import linecache as lc
-import pandas as pd
+
+# import linecache as lc
+# import pandas as pd
 import os
 import jet_aux as jx
 import matplotlib.pyplot as plt
@@ -9,61 +10,87 @@ import matplotlib.pyplot as plt
 m_p = 1.672621898e-27
 r_e = 6.371e6
 
-#wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
-wrkdir_DNR = os.environ["WRK"]+"/"
+# wrkdir_DNR = "/wrk/sunijona/DONOTREMOVE/"
+wrkdir_DNR = os.environ["WRK"] + "/"
 try:
     vlasdir = os.environ["VLAS"]
 except:
-    vlasdir="/proj/vlasov"
+    vlasdir = "/proj/vlasov"
 
 try:
     tavgdir = os.environ["TAVG"]
 except:
-    tavgdir = wrkdir_DNR
+    tavgdir = wrkdir_DNR + "tavg/"
 
-def testplot_vavg(runid,start,stop,step=1,density=1):
 
-    inputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
+def extract_var(runid, fnr, var):
+
+    bulkpath = jx.find_bulkpath(runid)
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    )
+
+    pdyn = vlsvobj.read_variable("Pdyn")
+    cellids = vlsvobj.read_variable("CellID")
+
+    pdyn_sorted = pdyn[np.argsort(cellids)]
+
+    outputdir = wrkdir_DNR + "extracted_vars/{}/{}/".format(runid, var)
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    np.savetxt(outputdir + "{}.txt".format(fnr), pdyn_sorted)
+
+
+def testplot_vavg(runid, start, stop, step=1, density=1):
+
+    inputdir = wrkdir_DNR + "tavg/velocities/" + runid + "/"
     bulkpath = jx.find_bulkpath(runid)
 
     try:
-        v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
+        v = np.load(inputdir + "{}_{}_v.npy".format(start, stop))
     except:
-        v_avg_maker(runid,start,stop,step)
-        v = np.load(inputdir+"{}_{}_v.npy".format(start,stop))
+        v_avg_maker(runid, start, stop, step)
+        v = np.load(inputdir + "{}_{}_v.npy".format(start, stop))
 
-    vlsvobj=pt.vlsvfile.VlsvReader(bulkpath+"bulk.0000580.vlsv")
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
 
-    vx = v[:,0]
-    vy = v[:,1]
+    vx = v[:, 0]
+    vy = v[:, 1]
 
-    ci=vlsvobj.read_variable("CellID")
-    X=vlsvobj.read_variable("X")[ci.argsort()]/r_e
-    Y=vlsvobj.read_variable("Y")[ci.argsort()]/r_e
+    ci = vlsvobj.read_variable("CellID")
+    X = vlsvobj.read_variable("X")[ci.argsort()] / r_e
+    Y = vlsvobj.read_variable("Y")[ci.argsort()] / r_e
 
-    x_mask = np.logical_and(X>0,X<15)
-    y_mask=np.logical_and(Y>-10,Y<10)
-    boxmask=np.logical_and(x_mask,y_mask)
+    x_mask = np.logical_and(X > 0, X < 15)
+    y_mask = np.logical_and(Y > -10, Y < 10)
+    boxmask = np.logical_and(x_mask, y_mask)
 
-    X=X[boxmask]
-    Y=Y[boxmask]
-    vx=vx[boxmask]
-    vy=vy[boxmask]
+    X = X[boxmask]
+    Y = Y[boxmask]
+    vx = vx[boxmask]
+    vy = vy[boxmask]
 
     x_arr = np.unique(X)
-    y_arr=np.unique(Y)
+    y_arr = np.unique(Y)
 
-    vxmesh=np.reshape(vx,(y_arr.size,x_arr.size))
-    vymesh=np.reshape(vy,(y_arr.size,x_arr.size))
+    vxmesh = np.reshape(vx, (y_arr.size, x_arr.size))
+    vymesh = np.reshape(vy, (y_arr.size, x_arr.size))
 
     plt.ion()
-    plt.streamplot(x_arr,y_arr,vxmesh,vymesh,density=density)
-    plt.savefig(wrkdir_DNR+"testvavg.png")
+    plt.streamplot(x_arr, y_arr, vxmesh, vymesh, density=density)
+    plt.savefig(wrkdir_DNR + "testvavg.png")
     plt.close("all")
 
-def v_avg_maker(runid,start,stop,step=1):
 
-    outputdir = wrkdir_DNR+"tavg/velocities/"+runid+"/"
+def v_avg_maker(runid, start, stop, step=1):
+
+    outputdir = wrkdir_DNR + "tavg/velocities/" + runid + "/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -74,12 +101,12 @@ def v_avg_maker(runid,start,stop,step=1):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    for n in range(start,stop+1,step):
-        print("n = {}/{}".format(n,stop))
+    for n in range(start, stop + 1, step):
+        print("n = {}/{}".format(n, stop))
 
-        bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+        bulkname = "bulk." + str(n).zfill(7) + ".vlsv"
 
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
         cellids = vlsvobj.read_variable("CellID")
         v = vlsvobj.read_variable("v")[cellids.argsort()]
 
@@ -88,17 +115,18 @@ def v_avg_maker(runid,start,stop,step=1):
 
         avg_arr += v
 
-    avg_arr /= float(len(range(start,stop+1,step)))
+    avg_arr /= float(len(range(start, stop + 1, step)))
 
     avg_arr = np.array(avg_arr)
 
-    np.save(outputdir+"{}_{}_v.npy".format(start,stop),avg_arr)
+    np.save(outputdir + "{}_{}_v.npy".format(start, stop), avg_arr)
 
-def avg_maker_slow(runid,start,stop):
+
+def avg_maker_slow(runid, start, stop):
 
     # Creates files for 3-minute time averages of dynamic pressure and density
 
-    outputdir = wrkdir_DNR+"tavg/"+runid+"/"
+    outputdir = wrkdir_DNR + "tavg/" + runid + "/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -108,15 +136,15 @@ def avg_maker_slow(runid,start,stop):
             pass
 
     # find correct file based on file number and run id
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    if runid in ["AEC", "AEF", "BEA", "BEB"]:
+        bulkpath = "/proj/vlasov/2D/" + runid + "/"
     elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+        bulkpath = "/proj/vlasov/2D/" + runid + "/round_3_boundary_sw/"
     else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+        bulkpath = "/proj/vlasov/2D/" + runid + "/bulk/"
 
     # range from first filenumber to last
-    for n in range(start,stop+1):
+    for n in range(start, stop + 1):
         print("n = {}".format(n))
 
         # Initialise dynamic pressure and density arrays
@@ -132,12 +160,12 @@ def avg_maker_slow(runid,start,stop):
         missing_file_counter = 0
 
         # skip process if corresponding file doesn't exist
-        if "bulk."+str(n).zfill(7)+".vlsv" not in os.listdir(bulkpath):
-            print("Bulk file "+str(n)+" not found, continuing")
+        if "bulk." + str(n).zfill(7) + ".vlsv" not in os.listdir(bulkpath):
+            print("Bulk file " + str(n) + " not found, continuing")
             continue
 
         # range from current filenumber-180 to current filenumber+180
-        for t in range(n-180,n+180+1):
+        for t in range(n - 180, n + 180 + 1):
 
             # exclude current filenumber from time average
             if t == n:
@@ -145,18 +173,18 @@ def avg_maker_slow(runid,start,stop):
 
             # find correct file for current time step
             if runid == "AED":
-                bulkname = "bulk.old."+str(t).zfill(7)+".vlsv"
+                bulkname = "bulk.old." + str(t).zfill(7) + ".vlsv"
             else:
-                bulkname = "bulk."+str(t).zfill(7)+".vlsv"
+                bulkname = "bulk." + str(t).zfill(7) + ".vlsv"
 
             # iterate correction and skip processs if corresponding file doesn't exist
             if bulkname not in os.listdir(bulkpath):
-                print("Bulk file "+str(t)+" not found, continuing")
+                print("Bulk file " + str(t) + " not found, continuing")
                 missing_file_counter += 1
                 continue
 
             # Open file and read cell IDs
-            vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+            vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
             cellids = vlsvobj.read_variable("CellID")
 
             # If file has separate populations, read the proton population
@@ -172,7 +200,7 @@ def avg_maker_slow(runid,start,stop):
                 # T,TPar,TPerp = [vlsvobj.read_variable("Temperature")[cellids.argsort()],vlsvobj.read_variable("TParallel")[cellids.argsort()],vlsvobj.read_variable("TPerpendicular")[cellids.argsort()]]
 
             # Dynamic pressure for current time step
-            pdyn = m_p*rho*(np.linalg.norm(v,axis=-1)**2)
+            pdyn = m_p * rho * (np.linalg.norm(v, axis=-1) ** 2)
             # Bmag = np.linalg.norm(B,axis=-1)
 
             # Add to time average
@@ -194,8 +222,8 @@ def avg_maker_slow(runid,start,stop):
                 # T_arr += np.linalg.norm(v,axis=-1)**2
 
         # Calculate time average
-        rho_arr /= (360 - missing_file_counter)
-        pdyn_arr /= (360 - missing_file_counter)
+        rho_arr /= 360 - missing_file_counter
+        pdyn_arr /= 360 - missing_file_counter
         # B_arr /= (360 - missing_file_counter)
         # T_arr /= (360 - missing_file_counter)
         # TPar_arr /= (360 - missing_file_counter)
@@ -203,8 +231,8 @@ def avg_maker_slow(runid,start,stop):
         # v2_arr /= (360 - missing_file_counter)
 
         # Save time averages to files
-        np.savetxt(outputdir+str(n)+"_rho.tavg",rho_arr)
-        np.savetxt(outputdir+str(n)+"_pdyn.tavg",pdyn_arr)
+        np.savetxt(outputdir + str(n) + "_rho.tavg", rho_arr)
+        np.savetxt(outputdir + str(n) + "_pdyn.tavg", pdyn_arr)
         # np.savetxt(outputdir+str(n)+"_B.tavg",B_arr)
         # np.savetxt(outputdir+str(n)+"_T.tavg",T_arr)
         # np.savetxt(outputdir+str(n)+"_TPar.tavg",TPar_arr)
@@ -213,10 +241,11 @@ def avg_maker_slow(runid,start,stop):
 
     return None
 
-def TP_maker(runid,start,stop):
+
+def TP_maker(runid, start, stop):
     # Create files for parallel and perpendicular temperature
 
-    outputdir = wrkdir_DNR+"TP/"+runid+"/"
+    outputdir = wrkdir_DNR + "TP/" + runid + "/"
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(outputdir):
@@ -226,29 +255,29 @@ def TP_maker(runid,start,stop):
             pass
 
     # find correct file based on file number and run id
-    if runid in ["AEC","AEF","BEA","BEB"]:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/"
+    if runid in ["AEC", "AEF", "BEA", "BEB"]:
+        bulkpath = "/proj/vlasov/2D/" + runid + "/"
     elif runid == "AEA":
-        bulkpath = "/proj/vlasov/2D/"+runid+"/round_3_boundary_sw/"
+        bulkpath = "/proj/vlasov/2D/" + runid + "/round_3_boundary_sw/"
     else:
-        bulkpath = "/proj/vlasov/2D/"+runid+"/bulk/"
+        bulkpath = "/proj/vlasov/2D/" + runid + "/bulk/"
 
     # range from first filenumber to last
-    for n in range(start,stop+1):
+    for n in range(start, stop + 1):
 
         # find correct file for current time step
         if runid == "AED":
-            bulkname = "bulk.old."+str(n).zfill(7)+".vlsv"
+            bulkname = "bulk.old." + str(n).zfill(7) + ".vlsv"
         else:
-            bulkname = "bulk."+str(n).zfill(7)+".vlsv"
+            bulkname = "bulk." + str(n).zfill(7) + ".vlsv"
 
         # stop process for current filenumber if corresponding file doesn't exist
         if bulkname not in os.listdir(bulkpath):
-            print("Bulk file "+str(n)+" not found, continuing.")
+            print("Bulk file " + str(n) + " not found, continuing.")
             continue
 
         # Open file and read cell IDs
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+bulkname)
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
         cellids = vlsvobj.read_variable("CellID")
 
         # If file has separate populations, read the proton population
@@ -264,7 +293,7 @@ def TP_maker(runid,start,stop):
         TPerp = TPerp[cellids.argsort()]
 
         # Save to file
-        np.savetxt(outputdir+str(n)+".tpar",TPar)
-        np.savetxt(outputdir+str(n)+".tperp",TPerp)
+        np.savetxt(outputdir + str(n) + ".tpar", TPar)
+        np.savetxt(outputdir + str(n) + ".tperp", TPerp)
 
     return None
