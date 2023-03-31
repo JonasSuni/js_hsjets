@@ -6,6 +6,7 @@ import pytools as pt
 import os
 import jet_aux as jx
 import matplotlib.pyplot as plt
+import multiprocessing
 
 m_p = 1.672621898e-27
 r_e = 6.371e6
@@ -21,6 +22,21 @@ try:
     tavgdir = os.environ["TAVG"]
 except:
     tavgdir = wrkdir_DNR + "tavg/"
+
+
+def tavg_maker_2023(runid, fnr):
+
+    nprocs = multiprocessing.cpu_count()
+
+    outputdir = tavgdir + "{}/".format(runid)
+
+    pdyn_avg = np.zeros_like(
+        np.loadtxt(
+            wrkdir_DNR
+            + "extracted_vars/{}/{}/".format(runid, "Pdyn")
+            + "{}.txt".format(fnr)
+        )
+    )
 
 
 def extract_var(runid, fnr, var):
