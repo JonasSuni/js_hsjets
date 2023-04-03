@@ -104,6 +104,8 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
     print("delta t = {}".format(time.time() - t))
 
+    return pd_zeros
+
 
 def extract_var(runid, fnr, var):
 
