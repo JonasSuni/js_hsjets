@@ -39,7 +39,7 @@ def loadtxt(filename, numpyhelp=False):
     return out
 
 
-def add_pdyn_to_array(arr, fnr0, fnr):
+def add_pdyn_to_array(arr, fnr0, fnr, sema):
 
     print(fnr)
 
@@ -53,6 +53,7 @@ def add_pdyn_to_array(arr, fnr0, fnr):
     )
 
     arr[:] += pdyn_data[:]
+    sema.release()
 
 
 def tavg_maker_2023(runid, fnr, parallel=True):
@@ -83,7 +84,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
         for i in range(fnr - 180, fnr + 180 + 1):
             sema.acquire()
             process = multiprocessing.Process(
-                target=add_pdyn_to_array, args=(pdyn_avg, fnr, i)
+                target=add_pdyn_to_array, args=(pdyn_avg, fnr, i, sema)
             )
             all_processes.append(process)
             process.start()
