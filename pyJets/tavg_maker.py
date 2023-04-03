@@ -7,6 +7,7 @@ import os
 import jet_aux as jx
 import matplotlib.pyplot as plt
 import multiprocessing
+import time
 
 m_p = 1.672621898e-27
 r_e = 6.371e6
@@ -37,7 +38,11 @@ def add_pdyn_to_array(arr, fnr0, fnr):
     arr[:] += pdyn_data[:]
 
 
-def tavg_maker_2023(runid, fnr):
+def tavg_maker_2023(runid, fnr, parallel=True):
+
+    print("Parallel = {}".format(parallel))
+
+    print(time.time)
 
     nprocs = multiprocessing.cpu_count()
 
@@ -51,20 +56,35 @@ def tavg_maker_2023(runid, fnr):
 
     pd_zeros = np.zeros((pd_size), dtype=float)
 
-    pdyn_avg = multiprocessing.Array("f", pd_zeros)
+    if parallel:
 
-    processes = [
-        multiprocessing.Process(target=add_pdyn_to_array, args=(pdyn_avg, fnr, i))
-        for i in range(fnr - 180, fnr + 180 + 1)
-    ]
-    for p in processes:
-        p.start()
+        pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-    pd_zeros[:] = pdyn_avg[:]
+        processes = [
+            multiprocessing.Process(target=add_pdyn_to_array, args=(pdyn_avg, fnr, i))
+            for i in range(fnr - 180, fnr + 180 + 1)
+        ]
+        for p in processes:
+            p.start()
+
+        pd_zeros[:] = pdyn_avg[:]
+
+    else:
+
+        for i in range(fnr - 180, fnr + 180 + 1):
+            if i == fnr:
+                continue
+            pd_zeros += np.loadtxt(
+                wrkdir_DNR
+                + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+                + "{}.txt".format(i)
+            )
 
     pd_zeros /= 360
 
     np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pd_zeros)
+
+    print(time.time)
 
 
 def extract_var(runid, fnr, var):
