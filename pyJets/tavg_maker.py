@@ -24,19 +24,41 @@ except:
     tavgdir = wrkdir_DNR + "tavg/"
 
 
+def add_pdyn_to_array(arr, fnr0, fnr):
+
+    pdyn_data = np.loadtxt(
+        wrkdir_DNR
+        + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+        + "{}.txt".format(fnr)
+    )
+
+    arr[:] += pdyn_data[:]
+
+
 def tavg_maker_2023(runid, fnr):
 
     nprocs = multiprocessing.cpu_count()
 
     outputdir = tavgdir + "{}/".format(runid)
 
-    pdyn_avg = np.zeros_like(
-        np.loadtxt(
-            wrkdir_DNR
-            + "extracted_vars/{}/{}/".format(runid, "Pdyn")
-            + "{}.txt".format(fnr)
-        )
-    )
+    pd_size = np.loadtxt(
+        wrkdir_DNR
+        + "extracted_vars/{}/{}/".format(runid, "Pdyn")
+        + "{}.txt".format(fnr)
+    ).size
+
+    pdyn_avg = multiprocessing.Array(float, pd_size)
+
+    processes = [
+        multiprocessing.Process(target=add_pdyn_to_array, args=(pdyn_avg, fnr, i))
+        for i in range(fnr - 180, fnr + 180 + 1)
+    ]
+    for p in processes:
+        p.start()
+
+    pdyn_avg /= 360
+
+    np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pdyn_avg)
 
 
 def extract_var(runid, fnr, var):

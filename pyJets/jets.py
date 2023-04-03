@@ -65,7 +65,14 @@ from jet_scripts import (
     rev1_jetcone_all,
 )
 from plot_contours import expr_pdyn_gen, expr_pdyn, expr_srho
-from tavg_maker import avg_maker_slow, TP_maker, v_avg_maker, testplot_vavg,extract_var
+from tavg_maker import (
+    avg_maker_slow,
+    TP_maker,
+    v_avg_maker,
+    testplot_vavg,
+    extract_var,
+    tavg_maker_2023,
+)
 
 # from vspacecraft import jet_sc,jet_spacecrafts,slams_spacecraft,wave_spacecraft
 from jet_aux import (
