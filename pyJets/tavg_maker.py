@@ -103,10 +103,11 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pool = multiprocessing.Pool(nprocs)
         for i in range(fnr - 180, fnr + 180 + 1):
-            if i == fnr:
-                continue
-            res = pool.apply_async(get_pdyn, args=(i,)).get()
-            pdyn_avg[:] += res[:]
+            # if i == fnr:
+            #     continue
+            # res = pool.apply_async(get_pdyn, args=(i,)).get()
+            # pdyn_avg[:] += res[:]
+            pool.apply_async(add_pdyn_to_array, args=(pdyn_avg, fnr, i, None))
         pool.close()
         pool.join()
 
