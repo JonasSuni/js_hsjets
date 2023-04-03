@@ -39,6 +39,15 @@ def loadtxt(filename, numpyhelp=False):
     return out
 
 
+def get_pdyn(fnr):
+
+    return loadtxt(
+        wrkdir_DNR
+        + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+        + "{}.txt".format(fnr)
+    )
+
+
 def add_pdyn_to_array(arr, fnr0, fnr, sema=None):
 
     print(fnr)
@@ -79,24 +88,27 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-        sema = multiprocessing.Semaphore(nprocs)
+        # sema = multiprocessing.Semaphore(nprocs)
 
-        all_processes = []
-        for i in range(fnr - 180, fnr + 180 + 1):
-            sema.acquire()
-            process = multiprocessing.Process(
-                target=add_pdyn_to_array, args=(pdyn_avg, fnr, i, sema)
-            )
-            all_processes.append(process)
-            process.start()
-        for p in all_processes:
-            p.join()
-
-        # pool = multiprocessing.Pool(nprocs)
+        # all_processes = []
         # for i in range(fnr - 180, fnr + 180 + 1):
-        #     pool.apply_async(add_pdyn_to_array, args=(pdyn_avg, fnr, i, None))
-        # pool.close()
-        # pool.join()
+        #     sema.acquire()
+        #     process = multiprocessing.Process(
+        #         target=add_pdyn_to_array, args=(pdyn_avg, fnr, i, sema)
+        #     )
+        #     all_processes.append(process)
+        #     process.start()
+        # for p in all_processes:
+        #     p.join()
+
+        pool = multiprocessing.Pool(nprocs)
+        for i in range(fnr - 180, fnr + 180 + 1):
+            if i == fnr:
+                continue
+            res = pool.apply_async(add_pdyn_to_array, args=(pdyn_avg, fnr, i, None))
+            pdyn_avg[:] += res.get(timeout=1)
+        pool.close()
+        pool.join()
 
         pd_zeros[:] = pdyn_avg[:]
 
