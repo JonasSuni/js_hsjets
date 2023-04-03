@@ -42,7 +42,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
     print("Parallel = {}".format(parallel))
 
-    print(time.time)
+    print(time.time())
 
     nprocs = multiprocessing.cpu_count()
 
@@ -84,7 +84,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
     np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pd_zeros)
 
-    print(time.time)
+    print(time.time())
 
 
 def extract_var(runid, fnr, var):
