@@ -44,6 +44,7 @@ def add_pdyn_to_array(arr, fnr0, fnr, sema):
     print(fnr)
 
     if fnr == fnr0:
+        sema.release()
         return
 
     pdyn_data = loadtxt(
