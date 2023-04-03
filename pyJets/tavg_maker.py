@@ -25,11 +25,14 @@ except:
     tavgdir = wrkdir_DNR + "tavg/"
 
 
-def loadtxt(filename):
+def loadtxt(filename, numpyhelp=False):
 
     f = open(filename, "r")
 
-    out = np.array(f.read().split("\n")[:-1], dtype=float)
+    if numpyhelp:
+        out = np.fromstring(f.read(), dtype=float, sep="\n")
+    else:
+        out = np.array(f.read().split("\n")[:-1], dtype=float)
 
     f.close()
 
