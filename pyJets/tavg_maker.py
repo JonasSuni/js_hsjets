@@ -26,6 +26,8 @@ except:
 
 def add_pdyn_to_array(arr, fnr0, fnr):
 
+    print(fnr)
+
     pdyn_data = np.loadtxt(
         wrkdir_DNR
         + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
