@@ -105,8 +105,8 @@ def tavg_maker_2023(runid, fnr, parallel=True):
         for i in range(fnr - 180, fnr + 180 + 1):
             if i == fnr:
                 continue
-            res = pool.apply_async(get_pdyn(i))
-            pdyn_avg[:] += res.get(timeout=1)[:]
+            res = pool.apply_async(get_pdyn(i)).get()
+            pdyn_avg[:] += res[:]
         pool.close()
         pool.join()
 
