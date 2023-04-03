@@ -77,12 +77,18 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-        processes = [
-            multiprocessing.Process(target=add_pdyn_to_array, args=(pdyn_avg, fnr, i))
-            for i in range(fnr - 180, fnr + 180 + 1)
-        ]
-        for p in processes:
-            p.start()
+        sema = multiprocessing.Semaphore(nprocs)
+
+        all_processes = []
+        for i in range(fnr - 180, fnr + 180 + 1):
+            sema.acquire()
+            process = multiprocessing.Process(
+                target=add_pdyn_to_array, args=(pdyn_avg, fnr, i)
+            )
+            all_processes.append(process)
+            process.start()
+        for p in all_processes:
+            p.join()
 
         pd_zeros[:] = pdyn_avg[:]
 
