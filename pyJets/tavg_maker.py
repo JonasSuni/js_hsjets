@@ -47,7 +47,9 @@ def tavg_maker_2023(runid, fnr):
         + "{}.txt".format(fnr)
     ).size
 
-    pdyn_avg = multiprocessing.Array(float, pd_size)
+    pd_zeros = np.zeros((pd_size), dtype=float)
+
+    pdyn_avg = multiprocessing.Array(float, pd_zeros)
 
     processes = [
         multiprocessing.Process(target=add_pdyn_to_array, args=(pdyn_avg, fnr, i))
