@@ -27,7 +27,10 @@ except:
 
 def add_pdyn_to_array(arr, fnr0, fnr):
 
-    # print(fnr)
+    print(fnr)
+
+    if fnr == fnr0:
+        return
 
     pdyn_data = np.loadtxt(
         wrkdir_DNR
@@ -72,6 +75,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
     else:
 
         for i in range(fnr - 180, fnr + 180 + 1):
+            print(i)
             if i == fnr:
                 continue
             pd_zeros += np.loadtxt(
