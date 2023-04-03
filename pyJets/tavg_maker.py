@@ -25,6 +25,17 @@ except:
     tavgdir = wrkdir_DNR + "tavg/"
 
 
+def loadtxt(filename):
+
+    f = open(filename, "r")
+
+    out = np.array(f.read().split("\n")[:-1], dtype=float)
+
+    f.close()
+
+    return out
+
+
 def add_pdyn_to_array(arr, fnr0, fnr):
 
     print(fnr)
@@ -32,7 +43,7 @@ def add_pdyn_to_array(arr, fnr0, fnr):
     if fnr == fnr0:
         return
 
-    pdyn_data = np.loadtxt(
+    pdyn_data = loadtxt(
         wrkdir_DNR
         + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
         + "{}.txt".format(fnr)
@@ -51,7 +62,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
     outputdir = tavgdir + "{}/".format(runid)
 
-    pd_size = np.loadtxt(
+    pd_size = loadtxt(
         wrkdir_DNR
         + "extracted_vars/{}/{}/".format(runid, "Pdyn")
         + "{}.txt".format(fnr)
@@ -78,7 +89,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
             print(i)
             if i == fnr:
                 continue
-            pd_zeros += np.loadtxt(
+            pd_zeros += loadtxt(
                 wrkdir_DNR
                 + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
                 + "{}.txt".format(i)
