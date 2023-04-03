@@ -20,7 +20,7 @@ except:
     vlasdir = "/proj/vlasov"
 
 try:
-    tavgdir = os.environ["TAVG"]
+    tavgdir = os.environ["TAVG"] + "/"
 except:
     tavgdir = wrkdir_DNR + "tavg/"
 

@@ -213,6 +213,9 @@ def ani_timeseries(time0=475, x=10.5, y=-2.2, pm=100):
 
 
 def jet_ts_update(fnr):
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
     idx3 = int(fnr - (fnr0_g - pm_g))
     print("t = {}s".format(float(fnr) / 2.0))
     ax.clear()
@@ -221,7 +224,8 @@ def jet_ts_update(fnr):
     filenr_g = fnr
     pt.plot.plot_colormap(
         axes=ax,
-        filename=bulkpath + fname,
+        vlsvobj=vlsvobj,
+        # filename=bulkpath + fname,
         var="Pdyn",
         vmin=0,
         vmax=3.5,
@@ -258,9 +262,9 @@ def jet_ts_update(fnr):
     ax.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
     ax.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
 
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
-    )
+    # vlsvobj = pt.vlsvfile.VlsvReader(
+    #     bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+    # )
     ts_t_arr[idx3] = float(fnr) / 2.0
     for idx in range(len(ts_v_ops)):
         val = (
