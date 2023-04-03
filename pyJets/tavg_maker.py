@@ -60,9 +60,11 @@ def tavg_maker_2023(runid, fnr):
     for p in processes:
         p.start()
 
-    pdyn_avg /= 360
+    pd_zeros[:] = pdyn_avg[:]
 
-    np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pdyn_avg)
+    pd_zeros /= 360
+
+    np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pd_zeros)
 
 
 def extract_var(runid, fnr, var):
