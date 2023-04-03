@@ -94,7 +94,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pool = multiprocessing.Pool(nprocs)
         for i in range(fnr - 180, fnr + 180 + 1):
-            pool.apply_async(add_pdyn_to_array, args=(pdyn_avg, fnr, i, None))
+            pool.apply(add_pdyn_to_array, args=(pdyn_avg, fnr, i, None))
         pool.close()
         pool.join()
 
