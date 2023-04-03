@@ -82,7 +82,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
     pd_zeros /= 360
 
-    np.savetxt(tavgdir + "{}_pdyn.tavg".format(fnr), pd_zeros)
+    np.savetxt(outputdir + "{}_pdyn.tavg".format(fnr), pd_zeros)
 
     print("delta t = {}".format(time.time() - t))
 
