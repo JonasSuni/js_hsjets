@@ -85,7 +85,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-        sema = multiprocessing.Semaphore(2 * nprocs)
+        sema = multiprocessing.Semaphore(5 * nprocs)
         lock = multiprocessing.Lock()
 
         all_processes = []
