@@ -85,10 +85,10 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-        sema = multiprocessing.Semaphore(5 * nprocs)
+        sema = multiprocessing.Semaphore(nprocs)
         lock = multiprocessing.Lock()
 
-        all_processes = []
+        # all_processes = []
         for i in range(fnr - 180, fnr + 180 + 1):
             if i == fnr:
                 continue
@@ -96,10 +96,11 @@ def tavg_maker_2023(runid, fnr, parallel=True):
             process = multiprocessing.Process(
                 target=add_pdyn_to_array, args=(pdyn_avg, i, sema, lock)
             )
-            all_processes.append(process)
+            # all_processes.append(process)
             process.start()
-        for p in all_processes:
-            p.join()
+            process.join()
+        # for p in all_processes:
+        #     p.join()
 
         # pool = multiprocessing.Pool(nprocs)
         # for i in range(fnr - 180, fnr + 180 + 1):
