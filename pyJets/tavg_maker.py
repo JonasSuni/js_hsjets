@@ -50,7 +50,7 @@ def get_pdyn(fnr):
 
 def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
 
-    print(fnr)
+    # print(fnr)
 
     pdyn_data = loadtxt(
         wrkdir_DNR
@@ -116,7 +116,7 @@ def tavg_maker_2023(runid, fnr, parallel=True):
     else:
 
         for i in range(fnr - 180, fnr + 180 + 1):
-            print(i)
+            # print(i)
             if i == fnr:
                 continue
             pd_zeros += loadtxt(
