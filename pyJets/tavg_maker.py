@@ -48,13 +48,9 @@ def get_pdyn(fnr):
     )
 
 
-def add_pdyn_to_array(arr, fnr0, fnr, sema=None, lock=None):
+def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
 
     print(fnr)
-
-    if fnr == fnr0:
-        sema.release()
-        return
 
     pdyn_data = loadtxt(
         wrkdir_DNR
@@ -89,14 +85,16 @@ def tavg_maker_2023(runid, fnr, parallel=True):
 
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
-        sema = multiprocessing.Semaphore(nprocs)
+        sema = multiprocessing.Semaphore(2 * nprocs)
         lock = multiprocessing.Lock()
 
         all_processes = []
         for i in range(fnr - 180, fnr + 180 + 1):
+            if i == fnr:
+                continue
             sema.acquire()
             process = multiprocessing.Process(
-                target=add_pdyn_to_array, args=(pdyn_avg, fnr, i, sema, lock)
+                target=add_pdyn_to_array, args=(pdyn_avg, i, sema, lock)
             )
             all_processes.append(process)
             process.start()
