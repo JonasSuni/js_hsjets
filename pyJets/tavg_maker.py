@@ -63,7 +63,7 @@ def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
     sema.release()
 
 
-def tavg_maker_2023(runid, fnr, parallel=True):
+def tavg_maker_2023(runid, fnr, parallel=False):
 
     print("Parallel = {}".format(parallel))
 
@@ -119,11 +119,21 @@ def tavg_maker_2023(runid, fnr, parallel=True):
             # print(i)
             if i == fnr:
                 continue
-            pd_zeros += loadtxt(
-                wrkdir_DNR
-                + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
-                + "{}.txt".format(i)
-            )
+            try:
+                data = loadtxt(
+                    wrkdir_DNR
+                    + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+                    + "{}.txt".format(i)
+                )
+
+            except:
+                time.sleep(3)
+                data = loadtxt(
+                    wrkdir_DNR
+                    + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+                    + "{}.txt".format(i)
+                )
+            pd_zeros += data
 
     pd_zeros /= 360
 
