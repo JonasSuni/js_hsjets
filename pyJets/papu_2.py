@@ -4721,20 +4721,20 @@ def jmap_SEA_comp(run_id="all"):
     cb_list = []
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, -0.25, 1.2, 4, 30]
-    cmap = [
-        "batlow",
-        "batlow",
-        "batlow",
-        "batlow",
-        "batlow",
-    ]
     # cmap = [
-    #     "Blues_r",
-    #     "Blues_r",
-    #     "Blues_r",
-    #     "Blues_r",
-    #     "Blues_r",
+    #     "batlow",
+    #     "batlow",
+    #     "batlow",
+    #     "batlow",
+    #     "batlow",
     # ]
+    cmap = [
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+    ]
     annot = [
         ["a)", "b)", "c)", "d)", "e)"],
         ["f)", "g)", "h)", "i)", "j)"],
@@ -4772,6 +4772,7 @@ def jmap_SEA_comp(run_id="all"):
                     )
                 # cb_list[idx2 * len(varname_list) + idx].ax.tick_params(labelsize=20)
                 cb_list[idx].ax.tick_params(labelsize=20)
+                cb_list[idx].set_label(varname_list[idx], fontsize=28, labelpad=10)
             ax.contour(
                 XmeshXY,
                 YmeshXY,
@@ -4813,9 +4814,10 @@ def jmap_SEA_comp(run_id="all"):
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=32, labelpad=10
         )
     for idx, ax in enumerate(ax_list[:, 0]):
-        ax.set_ylabel(
-            "{}\nEpoch time [s]".format(varname_list[idx]), fontsize=28, labelpad=10
-        )
+        # ax.set_ylabel(
+        #     "{}\nEpoch time [s]".format(varname_list[idx]), fontsize=28, labelpad=10
+        # )
+        ax.set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
     proxy = [
         mlines.Line2D([], [], color=CB_color_cycle[3]),
         mlines.Line2D([], [], color=CB_color_cycle[1]),
@@ -4833,7 +4835,8 @@ def jmap_SEA_comp(run_id="all"):
         numpoints=1,
         markerscale=1,
         loc="lower left",
-        fontsize=14,
+        fontsize=20,
+        framealpha=0.5,
     )
     # Save figure
     plt.tight_layout()
