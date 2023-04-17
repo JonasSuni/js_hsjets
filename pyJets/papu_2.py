@@ -4344,7 +4344,7 @@ def non_jet_omni(runid, only_man_figs=True):
             t_range,
             pdyn_arr,
             shading="nearest",
-            cmap="batlow",
+            cmap="Blues_r",
             vmin=1.0 / 6,
             vmax=2,
             rasterized=True,
