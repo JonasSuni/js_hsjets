@@ -5051,14 +5051,14 @@ def SEA_timeseries_comp():
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
-                ax.legend(loc="lower right", fontsize=20, ncols=3, framealpha=0.5)
+                ax.legend(loc="lower right", fontsize=24, ncols=3, framealpha=0.5)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
         for idx, ax in enumerate(ax_list[:-1, idx2]):
             ax.grid()
             # ax.set_xticks(np.arange(-10, 10.1, 2.5))
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
             # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
-            ax.tick_params(labelsize=20)
+            ax.tick_params(labelsize=24)
             if idx2 == 0:
                 ax.set_ylabel(ylabels[idx], fontsize=40, labelpad=10)
             # ax.axvline(0, linestyle="dashed")
@@ -5094,7 +5094,7 @@ def SEA_timeseries_comp():
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
         ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
         # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
-        ax.tick_params(labelsize=20)
+        ax.tick_params(labelsize=24)
         if idx2 == 0:
             ax.set_ylabel("$T_\perp/T_\parallel$", fontsize=40, labelpad=10)
         # ax.axvline(0, linestyle="dashed")
