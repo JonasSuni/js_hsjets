@@ -4625,7 +4625,7 @@ def non_jet_omni(runid, only_man_figs=True):
                 )
                 ax.set_xlim(t_arr[0], t_arr[-1])
                 if draw_legend[idx]:
-                    ax.legend(loc=(1.05, 0))
+                    ax.legend(loc=(1.01, 0), fontsize=16)
             ax_se_list[-1].set_xlabel("Simulation time [s]", fontsize=24)
             for idx, ax in enumerate(ax_se_list):
                 ax.grid()
