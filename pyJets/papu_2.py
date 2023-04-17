@@ -4357,7 +4357,7 @@ def non_jet_omni(runid, only_man_figs=True):
         cb = fig.colorbar(im, ax=ax_ne, location="top")
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
-        cb.set_label("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, labelpad=10)
+        cb.set_label("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24)
         ax_ne.contour(
             XmeshXY,
             YmeshXY,
