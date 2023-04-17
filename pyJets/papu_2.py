@@ -4578,8 +4578,8 @@ def non_jet_omni(runid, only_man_figs=True):
                 "$|B_x|$",
                 "$|B_{yz}|$",
                 "$|B|$",
-                "TPar",
-                "TPerp",
+                "$T_\\parallel$",
+                "$T_\\perp$",
             ]
             draw_legend = [
                 False,
