@@ -4835,7 +4835,7 @@ def jmap_SEA_comp(run_id="all"):
         numpoints=1,
         markerscale=1,
         loc="lower left",
-        fontsize=20,
+        fontsize=18,
         framealpha=0.5,
     )
     # Save figure
