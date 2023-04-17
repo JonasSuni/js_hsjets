@@ -5051,7 +5051,7 @@ def SEA_timeseries_comp():
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == 0:
-                ax.legend(loc="lower right", fontsize=16, ncols=3)
+                ax.legend(loc="lower right", fontsize=20, ncols=3)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
         for idx, ax in enumerate(ax_list[:-1, idx2]):
             ax.grid()
