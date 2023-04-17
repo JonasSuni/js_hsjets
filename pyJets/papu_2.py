@@ -4902,7 +4902,7 @@ def SEA_timeseries_comp():
         "$|B_{yz}|$",
         "$|B|$",
         "$T_\\parallel$",
-        "T_\\perp",
+        "$T_\\perp$",
     ]
     draw_legend = [
         False,
