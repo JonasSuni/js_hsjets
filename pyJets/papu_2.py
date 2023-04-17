@@ -4349,9 +4349,10 @@ def non_jet_omni(runid, only_man_figs=True):
             vmax=2,
             rasterized=True,
         )
-        cb = fig.colorbar(im, ax=ax_ne)
+        cb = fig.colorbar(im, ax=ax_ne, location="top")
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
+        cb.set_label("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, labelpad=10)
         ax_ne.contour(
             XmeshXY,
             YmeshXY,
@@ -4376,7 +4377,7 @@ def non_jet_omni(runid, only_man_figs=True):
             colors=[CB_color_cycle[4]],
             linewidths=[2],
         )
-        ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
+        # ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
         ax_ne.set_xlim(x_range[0], x_range[-1])
         ax_ne.set_ylim(t0 - 10, t0 + 10)
         ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
@@ -4629,7 +4630,13 @@ def non_jet_omni(runid, only_man_figs=True):
                 if idx != len(ax_se_list) - 1:
                     ax.set_xticklabels([])
                 ax.annotate(
-                    annots[idx], (0.05, 0.75), xycoords="axes fraction", fontsize=20
+                    annots[idx],
+                    (0.05, 0.75),
+                    xycoords="axes fraction",
+                    fontsize=20,
+                    bbox=dict(
+                        boxstyle="square,pad=0.2", fc="white", ec="k", lw=1, alpha=0.5
+                    ),
                 )
             ax_se_list[0].set_title("Timeseries", fontsize=24, pad=10)
         except:
