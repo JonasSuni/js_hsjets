@@ -4319,6 +4319,7 @@ def non_jet_omni(runid, only_man_figs=True):
             fontsize=20,
             arrowprops=dict(
                 facecolor=CB_color_cycle[2],
+                ec=CB_color_cycle[2],
                 shrink=0.1,
                 width=2,
                 headwidth=6,
@@ -4328,7 +4329,6 @@ def non_jet_omni(runid, only_man_figs=True):
                 fc="white",
                 ec=CB_color_cycle[2],
                 lw=1,
-                alpha=0.5,
             ),
         )
         ax_nw.annotate(
@@ -4650,6 +4650,8 @@ def non_jet_omni(runid, only_man_figs=True):
                 ax.set_axis_off()
 
         # plt.tight_layout()
+
+        fig.get_layout_engine().set(w_pad=4 / 72, h_pad=4 / 72, hspace=0.2, wspace=0.2)
 
         fig.savefig(
             wrkdir_DNR
