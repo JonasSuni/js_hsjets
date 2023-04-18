@@ -53,6 +53,7 @@ def jet_pos_plot():
     kinds = ["beam", "foreshock"]
     # kinds_pub = ["Antisunward\njets", "Flankward\njets"]
     kinds_pub = ["Flankward\njets", "Antisunward\njets"]
+    marker = ["^","o"]
     draw_labels = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
@@ -159,7 +160,7 @@ def jet_pos_plot():
                         # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
                         x0,
                         y0,
-                        "x",
+                        marker[n2],
                         color=CB_color_cycle[n2],
                         label=kinds_pub[n2].capitalize(),
                         rasterized=True,
@@ -171,7 +172,7 @@ def jet_pos_plot():
                         # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
                         x0,
                         y0,
-                        "x",
+                        marker[n2],
                         color=CB_color_cycle[n2],
                         rasterized=True,
                         zorder=2,
