@@ -266,6 +266,7 @@ def get_fcs_jets(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     fcs_ids = []
+    singular_counter = 0
 
     for n1 in range(6000):
         try:
@@ -280,6 +281,7 @@ def get_fcs_jets(runid):
             continue
 
         if props.read("time")[-1] - props.read("time")[0] == 0:
+            singular_counter += 1
             continue
 
         if "splinter" in props.meta:
@@ -290,6 +292,8 @@ def get_fcs_jets(runid):
         else:
             fcs_ids.append(n1)
 
+    print("Run {} singular non jets: {}".format(runid,singular_counter))
+
     return np.unique(fcs_ids)
 
 
@@ -297,6 +301,8 @@ def get_non_jets(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     non_ids = []
+
+    singular_counter = 0
 
     for n1 in range(6000):
         try:
@@ -311,6 +317,7 @@ def get_non_jets(runid):
             continue
 
         if props.read("time")[-1] - props.read("time")[0] == 0:
+            singular_counter += 1
             continue
 
         if "splinter" in props.meta:
@@ -320,6 +327,8 @@ def get_non_jets(runid):
             continue
         else:
             non_ids.append(n1)
+
+    print("Run {} singular non jets: {}".format(runid,singular_counter))
 
     return np.unique(non_ids)
 
