@@ -4539,6 +4539,14 @@ def non_jet_omni(runid, only_man_figs=True):
                     edgecolor="k",
                 )
             ax_sw.legend(fontsize=16, loc="lower right")
+            lhand, llab = ax_sw.get_legend_handles_labels()
+            order = [3, 2, 4, 0, 1]
+            ax_sw.legend(
+                [lhand[idx3] for idx3 in order],
+                [llab[idx3] for idx3 in order],
+                fontsize=16,
+                loc="lower right",
+            )
             ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
             ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
