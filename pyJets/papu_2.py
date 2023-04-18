@@ -5783,7 +5783,9 @@ def jet_counter(runid="all"):
         fcs_counter += fcs_jets.size
         total_non += non_jets.size
 
-    return (total_non,flank_counter, antisunward_counter, fcs_counter)
+        print("{} {} {} {}".format(non_jets.size,len(flankward),len(antisunward),fcs_jets.size))
+
+    return (total_non, flank_counter, antisunward_counter, fcs_counter)
 
 
 def auto_classifier(runid, threshold_angle=np.pi / 4):
