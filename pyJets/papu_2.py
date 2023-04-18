@@ -3741,7 +3741,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         jet_mask,
         [0.5],
-        linewidths=2,
+        linewidths=2.2,
         colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
@@ -3751,7 +3751,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         ch_mask,
         [0.5],
-        linewidths=2,
+        linewidths=2.2,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
@@ -3761,7 +3761,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         slams_mask,
         [0.5],
-        linewidths=2,
+        linewidths=2.2,
         colors=CB_color_cycle[7],
         linestyles=["solid"],
     )
@@ -3771,7 +3771,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         rho_mask,
         [0.5],
-        linewidths=2,
+        linewidths=2.2,
         colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
@@ -3781,7 +3781,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         mach_mask,
         [0.5],
-        linewidths=2,
+        linewidths=2.2,
         colors=CB_color_cycle[4],
         linestyles=["solid"],
     )
@@ -4315,10 +4315,10 @@ def non_jet_omni(runid, only_man_figs=True):
         ax_nw.annotate(
             "jet",
             xy=(x0, y0),
-            xytext=(x0 - 0.5, y0 + 0.25),
+            xytext=(x0 - 0.5, y0),
             fontsize=20,
             arrowprops=dict(
-                facecolor="k",
+                facecolor=CB_color_cycle[2],
                 shrink=0.1,
                 width=2,
                 headwidth=6,
@@ -4326,8 +4326,9 @@ def non_jet_omni(runid, only_man_figs=True):
             bbox=dict(
                 boxstyle="square,pad=0.2",
                 fc="white",
-                ec="k",
+                ec=CB_color_cycle[2],
                 lw=1,
+                framealpha=0.5,
             ),
         )
         ax_nw.annotate(
@@ -4544,7 +4545,7 @@ def non_jet_omni(runid, only_man_figs=True):
             ax_sw.grid()
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
-            ax_sw.set_title("Timing analysis", fontsize=24, pad=10)
+            # ax_sw.set_title("Timing analysis", fontsize=24, pad=10)
             ax_sw.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         except:
             ax_sw.set_axis_off()
@@ -4643,7 +4644,7 @@ def non_jet_omni(runid, only_man_figs=True):
                         boxstyle="square,pad=0.2", fc="white", ec="k", lw=1, alpha=0.5
                     ),
                 )
-            ax_se_list[0].set_title("Timeseries", fontsize=24, pad=10)
+            # ax_se_list[0].set_title("Timeseries", fontsize=24, pad=10)
         except:
             for ax in ax_se_list:
                 ax.set_axis_off()
