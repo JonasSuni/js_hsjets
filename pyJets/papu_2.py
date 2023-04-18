@@ -5649,7 +5649,7 @@ def timing_comp():
                 [llab[idx3] for idx3 in order],
                 fontsize=24,
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.1),
+                bbox_to_anchor=(0.5, -0.15),
                 ncols=3,
             )
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
