@@ -4469,14 +4469,14 @@ def non_jet_omni(runid, only_man_figs=True):
                 vms_xy[1],
                 color="k",
                 linestyle="dashed",
-                label="$v_{MS}$",
+                label="$v_\mathrm{MS}$",
             )
             ax_sw.plot(
                 va_xy[0],
                 va_xy[1],
                 color=CB_color_cycle[3],
                 linestyle="dashed",
-                label="$v_A$",
+                label="$v_\mathrm{A}$",
             )
             ax_sw.quiver(
                 0,
@@ -5503,14 +5503,14 @@ def timing_comp():
             ms_xy.T[1],
             color="k",
             linestyle="dashed",
-            label="$v_{MS}$",
+            label="$v_\mathrm{MS}$",
         )
         ax.plot(
             a_xy.T[0],
             a_xy.T[1],
             color=CB_color_cycle[3],
             linestyle="dashed",
-            label="$v_A$",
+            label="$v_\mathrm{A}$",
         )
 
         vx = [
@@ -5608,6 +5608,14 @@ def timing_comp():
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 0:
             ax.legend(fontsize=24, loc="lower right")
+            lhand, llab = ax.get_legend_handles_labels()
+            order = [2, 4, 3, 0, 1]
+            ax.legend(
+                [lhand[idx3] for idx3 in order],
+                [llab[idx3] for idx3 in order],
+                fontsize=24,
+                loc="lower right",
+            )
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
