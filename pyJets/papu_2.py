@@ -261,7 +261,6 @@ def jet_pos_plot():
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig7.pdf", dpi=300)
     plt.close(fig)
 
-
 def get_fcs_jets(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -5761,6 +5760,27 @@ def weighted_propagation_velocity(runid, kind="non"):
             prop_v,
         )
 
+def jet_counter(runid="all"):
+    if runid == "all":
+        runids = ["ABA","ABC","AEA","AEC"]
+    else:
+        runids = [runid]
+
+    flank_counter = 0
+    antisunward_counter = 0
+    fcs_counter = 0
+
+    for run_id in runids:
+        antisunward,flankward = auto_classifier(run_id)
+        fcs_jets = get_fcs_jets(run_id)
+
+        flank_counter += len(flankward)
+        antisunward_counter += len(antisunward)
+        fcs_counter += fcs_jets.size
+
+    return (flank_counter,antisunward_counter,fcs_counter)
+
+
 
 def auto_classifier(runid, threshold_angle=np.pi / 4):
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -5878,3 +5898,5 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
         flankward_list,
         fmt="%d",
     )
+
+    return (antisunward_list,flankward_list)

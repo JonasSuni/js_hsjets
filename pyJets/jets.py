@@ -156,6 +156,7 @@ from papu_2 import (
     weighted_propagation_velocity,
     auto_classifier,
     fig0,
+    jet_counter,
 )
 
 from jet_23_scripts import (
