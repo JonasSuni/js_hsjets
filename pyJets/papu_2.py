@@ -3876,6 +3876,11 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         fontsize=14,
     )
 
+    global gprox, gprox_labs
+
+    gprox = proxy
+    gprox_labs = proxy_labs
+
 
 def expr_rhoratio(pass_maps):
     rho_th = pass_maps["RhoNonBackstream"]
@@ -4053,8 +4058,7 @@ def fig0(runid="ABC", jetid=596):
         ],
     )
 
-    lhand, llab = ax[1].get_legend_handles_labels()
-    ax[1].legend(lhand, llab, fontsize=24, loc="upper right")
+    ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right")
 
     # plt.tight_layout()
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig1.pdf")
