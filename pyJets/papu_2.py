@@ -5646,7 +5646,7 @@ def timing_comp():
                 [llab[idx3] for idx3 in order],
                 fontsize=24,
                 loc=(0, -0.3),
-                ncols=5,
+                ncols=3,
             )
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
