@@ -53,7 +53,7 @@ def jet_pos_plot():
     kinds = ["beam", "foreshock"]
     # kinds_pub = ["Antisunward\njets", "Flankward\njets"]
     kinds_pub = ["Flankward\njets", "Antisunward\njets"]
-    marker = ["^","o"]
+    marker = ["^", "o"]
     draw_labels = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
@@ -5631,8 +5631,9 @@ def timing_comp():
         ax.set_ylim(-1.1, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
-        if idx == 0:
-            ax.legend(fontsize=24, loc="lower right")
+        if idx == 1:
+            # ax.legend(fontsize=24, loc="lower right")
+            ax.legend(fontsize=24, loc=(0, -0.3))
             lhand, llab = ax.get_legend_handles_labels()
             order = [2, 4, 3, 0, 1]
             ax.legend(
