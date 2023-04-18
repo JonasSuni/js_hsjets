@@ -292,7 +292,7 @@ def get_fcs_jets(runid):
         else:
             fcs_ids.append(n1)
 
-    print("Run {} singular non jets: {}".format(runid,singular_counter))
+    print("Run {} singular non jets: {}".format(runid, singular_counter))
 
     return np.unique(fcs_ids)
 
@@ -328,7 +328,7 @@ def get_non_jets(runid):
         else:
             non_ids.append(n1)
 
-    print("Run {} singular non jets: {}".format(runid,singular_counter))
+    print("Run {} singular non jets: {}".format(runid, singular_counter))
 
     return np.unique(non_ids)
 
@@ -5792,7 +5792,11 @@ def jet_counter(runid="all"):
         fcs_counter += fcs_jets.size
         total_non += non_jets.size
 
-        print("{} {} {} {}".format(non_jets.size,len(flankward),len(antisunward),fcs_jets.size))
+        print(
+            "{} {} {} {}".format(
+                non_jets.size, len(flankward), len(antisunward), fcs_jets.size
+            )
+        )
 
     return (total_non, flank_counter, antisunward_counter, fcs_counter)
 
