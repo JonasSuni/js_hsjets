@@ -4328,7 +4328,7 @@ def non_jet_omni(runid, only_man_figs=True):
                 fc="white",
                 ec=CB_color_cycle[2],
                 lw=1,
-                framealpha=0.5,
+                alpha=0.5,
             ),
         )
         ax_nw.annotate(
