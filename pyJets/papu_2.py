@@ -3742,7 +3742,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         jet_mask,
         [0.5],
         linewidths=2,
-        colors=CB_color_cycle[2],
+        colors=CB_color_cycle[8],
         linestyles=["solid"],
     )
 
@@ -3809,7 +3809,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 2, 0]
+    itr_jumbled = [3, 1, 4, 8, 0]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -4343,7 +4343,7 @@ def non_jet_omni(runid, only_man_figs=True):
             + "papu22/jmap_txts/{}/{}_{}.npy".format(runid, runid, str(non_id).zfill(5))
         )
         XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
-        ax_ne.tick_params(labelsize=20)
+        ax_ne.tick_params(labelsize=18)
         im = ax_ne.pcolormesh(
             x_range,
             t_range,
@@ -4385,7 +4385,7 @@ def non_jet_omni(runid, only_man_figs=True):
         # ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
         ax_ne.set_xlim(x_range[0], x_range[-1])
         ax_ne.set_ylim(t0 - 10, t0 + 10)
-        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=22, labelpad=10)
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_ne.annotate(
@@ -4649,6 +4649,8 @@ def non_jet_omni(runid, only_man_figs=True):
                 ax.set_axis_off()
 
         # plt.tight_layout()
+
+        fig.subplots_adjust(hspace=0.3)
 
         fig.savefig(
             wrkdir_DNR
