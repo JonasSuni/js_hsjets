@@ -4252,11 +4252,11 @@ def non_jet_omni(runid, only_man_figs=True):
         # ax_sw = fig.add_subplot(gs[6:11, 0:5])
         # ax_se_list = [fig.add_subplot(gs[6 + n, 6:11]) for n in range(5)]
         gs = fig.add_gridspec(20, 2)
-        ax_nw = fig.add_subplot(gs[0:10, 0])
-        ax_ne = fig.add_subplot(gs[0:10, 1])
-        ax_sw = fig.add_subplot(gs[11:20, 0])
+        ax_nw = fig.add_subplot(gs[0:9, 0])
+        ax_ne = fig.add_subplot(gs[0:9, 1])
+        ax_sw = fig.add_subplot(gs[10:20, 0])
         ax_se_list = [
-            fig.add_subplot(gs[11 + 2 * n : 11 + 2 * n + 2, 1]) for n in range(5)
+            fig.add_subplot(gs[10 + 2 * n : 10 + 2 * n + 2, 1]) for n in range(5)
         ]
 
         pt.plot.plot_colormap(
