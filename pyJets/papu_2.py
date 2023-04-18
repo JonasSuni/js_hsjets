@@ -292,7 +292,7 @@ def get_fcs_jets(runid):
         else:
             fcs_ids.append(n1)
 
-    print("Run {} singular non jets: {}".format(runid, singular_counter))
+    print("Run {} singular FCS jets: {}".format(runid, singular_counter))
 
     return np.unique(fcs_ids)
 
