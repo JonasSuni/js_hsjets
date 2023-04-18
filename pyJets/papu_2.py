@@ -120,8 +120,8 @@ def jet_pos_plot():
             linewidths=[0.6, 0.6],
             zorder=1,
         )
-        for c in cont.collections:
-            c.set_rasterized(True)
+        # for c in cont.collections:
+        #     c.set_rasterized(True)
         cont = ax.contour(
             # Xun_arr[idx] - bs_fit[idx][-1],
             Xun_arr[idx],
