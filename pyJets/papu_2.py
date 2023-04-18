@@ -5095,8 +5095,9 @@ def SEA_timeseries_comp():
                 medianprops=dict(color=plot_colors[idx]),
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
-            if draw_legend[idx] and idx2 == 0:
+            if draw_legend[idx] and idx2 == 2:
                 ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
+                ax.legend(loc=(1.01, 0), fontsize=22)
         ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
         for idx, ax in enumerate(ax_list[:-1, idx2]):
             ax.grid()
