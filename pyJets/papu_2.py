@@ -3762,7 +3762,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         slams_mask,
         [0.5],
         linewidths=2,
-        colors=CB_color_cycle[8],
+        colors=CB_color_cycle[7],
         linestyles=["solid"],
     )
 
@@ -3809,7 +3809,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 2, 8]
+    itr_jumbled = [3, 1, 4, 2, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -4343,7 +4343,7 @@ def non_jet_omni(runid, only_man_figs=True):
             + "papu22/jmap_txts/{}/{}_{}.npy".format(runid, runid, str(non_id).zfill(5))
         )
         XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
-        ax_ne.tick_params(labelsize=18)
+        ax_ne.tick_params(labelsize=16)
         im = ax_ne.pcolormesh(
             x_range,
             t_range,
