@@ -5632,15 +5632,21 @@ def timing_comp():
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
-            # ax.legend(fontsize=24, loc="lower right")
-            ax.legend(fontsize=24, loc=(0, -0.3))
+            ax.legend(fontsize=24, loc="lower right")
             lhand, llab = ax.get_legend_handles_labels()
             order = [2, 4, 3, 0, 1]
+            # ax.legend(
+            #     [lhand[idx3] for idx3 in order],
+            #     [llab[idx3] for idx3 in order],
+            #     fontsize=24,
+            #     loc="lower right",
+            # )
             ax.legend(
                 [lhand[idx3] for idx3 in order],
                 [llab[idx3] for idx3 in order],
                 fontsize=24,
-                loc="lower right",
+                loc=(0, -0.3),
+                ncols=3,
             )
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
