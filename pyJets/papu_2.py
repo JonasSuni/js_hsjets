@@ -5808,15 +5808,15 @@ def jet_counter(runid="all"):
         total_non += non_jets.size
 
         print(
-            "{} {} {} {}".format(
-                non_jets.size, len(flankward), len(antisunward), fcs_jets.size
+            "{}: {} {} {} {}".format(
+                run_id, non_jets.size, len(flankward), len(antisunward), fcs_jets.size
             )
         )
 
     return (total_non, flank_counter, antisunward_counter, fcs_counter)
 
 
-def auto_classifier(runid, threshold_angle=np.pi / 4):
+def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
@@ -5857,6 +5857,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
         propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
 
         vnx, vny, vscx, vscy, vbx, vby = res_arr[:6]
+        c = res_arr[-1]
 
         mod_arg_pvfull = [
             np.sqrt(propvx_full**2 + propvy_full**2),
@@ -5883,6 +5884,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
             ~np.isnan(mod_arg_vsc[0])
             and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) < threshold_angle
+            and c >= cross_corr_threshold
         ):
             antisunward_list.append(non_id)
             continue
@@ -5890,6 +5892,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4):
             ~np.isnan(mod_arg_vsc[0])
             and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) >= threshold_angle
+            and c >= cross_corr_threshold
         ):
             flankward_list.append(non_id)
             continue
