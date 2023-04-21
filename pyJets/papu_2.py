@@ -1791,6 +1791,7 @@ def trifecta(runid, kind="non", draw=False):
             results["alfven_velocity"][2],
             c,
         ]
+        
         data_arr[0, len(var_list) + 6, :13] = out_results
 
         if draw:
