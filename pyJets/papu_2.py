@@ -120,8 +120,8 @@ def jet_pos_plot():
             linewidths=[0.6, 0.6],
             zorder=1,
         )
-        for c in cont.collections:
-            c.set_rasterized(True)
+        # for c in cont.collections:
+        #     c.set_rasterized(True)
         cont = ax.contour(
             # Xun_arr[idx] - bs_fit[idx][-1],
             Xun_arr[idx],
@@ -133,8 +133,8 @@ def jet_pos_plot():
             linestyles=["dashed"],
             zorder=1,
         )
-        for c in cont.collections:
-            c.set_rasterized(True)
+        # for c in cont.collections:
+        # c.set_rasterized(True)
         # ax.plot(bs_x[idx], yarr, color="black")
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
 
@@ -163,7 +163,7 @@ def jet_pos_plot():
                         marker[n2],
                         color=CB_color_cycle[n2],
                         label=kinds_pub[n2].capitalize(),
-                        rasterized=True,
+                        # rasterized=True,
                         zorder=2,
                     )
                     label_bool = False
@@ -174,7 +174,7 @@ def jet_pos_plot():
                         y0,
                         marker[n2],
                         color=CB_color_cycle[n2],
-                        rasterized=True,
+                        # rasterized=True,
                         zorder=2,
                     )
         label_bool = draw_labels[n1]
@@ -195,7 +195,7 @@ def jet_pos_plot():
                     "x",
                     color="gray",
                     label="FCS-jets",
-                    rasterized=True,
+                    # rasterized=True,
                     zorder=0,
                     alpha=0.3,
                 )
@@ -207,7 +207,7 @@ def jet_pos_plot():
                     y0,
                     "x",
                     color="gray",
-                    rasterized=True,
+                    # rasterized=True,
                     zorder=0,
                     alpha=0.3,
                 )
@@ -4376,7 +4376,7 @@ def non_jet_omni(runid, only_man_figs=True):
             vmax=2,
             rasterized=True,
         )
-        cb = fig.colorbar(im, ax=ax_ne, location="top", pad=0.01)
+        cb = fig.colorbar(im, ax=ax_ne, location="top", pad=-0.05)
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
         cb.set_label("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, labelpad=10)
