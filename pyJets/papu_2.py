@@ -1775,7 +1775,7 @@ def trifecta(runid, kind="non", draw=False):
         wave_vector = results["wave_vector"]
         wave_v_sc = results["wave_velocity_sc_frame"]
         vpl = results["wave_velocity_plasma_frame"]
-        c = results["cross_corr_values"]
+        c = results["cross_corr_values"][0]
         out_results = [
             wave_v_sc * wave_vector[0][0],
             wave_v_sc * wave_vector[1][0],
