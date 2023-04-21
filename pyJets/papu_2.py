@@ -1775,6 +1775,7 @@ def trifecta(runid, kind="non", draw=False):
         wave_vector = results["wave_vector"]
         wave_v_sc = results["wave_velocity_sc_frame"]
         vpl = results["wave_velocity_plasma_frame"]
+        c = results["cross_corr_values"]
         out_results = [
             wave_v_sc * wave_vector[0][0],
             wave_v_sc * wave_vector[1][0],
@@ -1788,8 +1789,9 @@ def trifecta(runid, kind="non", draw=False):
             results["wave_velocity_relative2sc"][2],
             results["bulk_velocity"][2],
             results["alfven_velocity"][2],
+            c,
         ]
-        data_arr[0, len(var_list) + 6, :12] = out_results
+        data_arr[0, len(var_list) + 6, :13] = out_results
 
         if draw:
             fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 6))
