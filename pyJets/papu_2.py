@@ -1789,7 +1789,7 @@ def trifecta(runid, kind="non", draw=False):
             results["wave_velocity_relative2sc"][2],
             results["bulk_velocity"][2],
             results["alfven_velocity"][2],
-            np.min(results["cross_corr_values"]),
+            c,
         ]
 
         data_arr[0, len(var_list) + 6, :13] = out_results
