@@ -1775,7 +1775,7 @@ def trifecta(runid, kind="non", draw=False):
         wave_vector = results["wave_vector"]
         wave_v_sc = results["wave_velocity_sc_frame"]
         vpl = results["wave_velocity_plasma_frame"]
-        c = results["cross_corr_values"][0]
+        c = np.min(results["cross_corr_values"])
         out_results = [
             wave_v_sc * wave_vector[0][0],
             wave_v_sc * wave_vector[1][0],
@@ -1789,7 +1789,7 @@ def trifecta(runid, kind="non", draw=False):
             results["wave_velocity_relative2sc"][2],
             results["bulk_velocity"][2],
             results["alfven_velocity"][2],
-            c,
+            np.min(results["cross_corr_values"]),
         ]
 
         data_arr[0, len(var_list) + 6, :13] = out_results
@@ -5896,7 +5896,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
         propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
 
         vnx, vny, vscx, vscy, vbx, vby = res_arr[:6]
-        c = res_arr[-1]
+        c = res_arr[12]
         print(c)
 
         mod_arg_pvfull = [
