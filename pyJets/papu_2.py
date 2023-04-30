@@ -5897,6 +5897,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
 
         vnx, vny, vscx, vscy, vbx, vby = res_arr[:6]
         c = res_arr[-1]
+        print(c)
 
         mod_arg_pvfull = [
             np.sqrt(propvx_full**2 + propvy_full**2),
