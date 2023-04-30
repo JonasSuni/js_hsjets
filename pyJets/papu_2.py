@@ -5786,7 +5786,7 @@ def weighted_propagation_velocity(runid, kind="non"):
         )
 
 
-def jet_counter(runid="all"):
+def jet_counter(runid="all", cc_thresh=0.0):
     if runid == "all":
         runids = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -5798,7 +5798,7 @@ def jet_counter(runid="all"):
     total_non = 0
 
     for run_id in runids:
-        antisunward, flankward = auto_classifier(run_id)
+        antisunward, flankward = auto_classifier(run_id, cross_corr_threshold=cc_thresh)
         fcs_jets = get_fcs_jets(run_id)
         non_jets = get_non_jets(run_id)
 
@@ -5830,6 +5830,45 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
     antisunward_list = []
 
     for non_id in non_ids:
+
+        if runid == "ABA" and non_id in [157, 257, 586, 800]:
+            continue
+        elif runid == "ABC" and non_id in [
+            93,
+            176,
+            231,
+            273,
+            285,
+            458,
+            620,
+            686,
+            691,
+            724,
+            732,
+        ]:
+            continue
+        elif runid == "AEA" and non_id in [
+            878,
+            1073,
+            1251,
+            1340,
+            1354,
+            1404,
+            1498,
+            1566,
+            1592,
+            2698,
+        ]:
+            continue
+        elif runid == "AEC" and non_id in [
+            59,
+            64,
+            266,
+            332,
+            430,
+        ]:
+            continue
+
         data_arr = np.load(
             wrkdir_DNR
             + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
@@ -5882,7 +5921,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
 
         if (
             ~np.isnan(mod_arg_vsc[0])
-            and mod_arg_vsc[0] < v_sw_run
+            # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) < threshold_angle
             and c >= cross_corr_threshold
         ):
@@ -5890,7 +5929,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
             continue
         elif (
             ~np.isnan(mod_arg_vsc[0])
-            and mod_arg_vsc[0] < v_sw_run
+            # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) >= threshold_angle
             and c >= cross_corr_threshold
         ):
@@ -5898,14 +5937,14 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
-            and mod_arg_pv[0] < v_sw_run
+            # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) < threshold_angle
         ):
             antisunward_list.append(non_id)
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
-            and mod_arg_pv[0] < v_sw_run
+            # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) >= threshold_angle
         ):
             flankward_list.append(non_id)
