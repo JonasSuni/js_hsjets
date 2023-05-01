@@ -293,7 +293,7 @@ def get_fcs_jets(runid):
         else:
             fcs_ids.append(n1)
 
-    print("Run {} singular FCS jets: {}".format(runid, singular_counter))
+    # print("Run {} singular FCS jets: {}".format(runid, singular_counter))
 
     return np.unique(fcs_ids)
 
@@ -329,7 +329,7 @@ def get_non_jets(runid):
         else:
             non_ids.append(n1)
 
-    print("Run {} singular non jets: {}".format(runid, singular_counter))
+    # print("Run {} singular non jets: {}".format(runid, singular_counter))
 
     return np.unique(non_ids)
 
@@ -5897,7 +5897,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
 
         vnx, vny, vscx, vscy, vbx, vby = res_arr[:6]
         c = res_arr[12]
-        print(c)
+        # print(c)
 
         mod_arg_pvfull = [
             np.sqrt(propvx_full**2 + propvy_full**2),
