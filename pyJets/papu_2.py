@@ -4432,6 +4432,9 @@ def non_jet_omni(runid, only_man_figs=True):
                 + "papu22/trifecta_txts/{}_{}.npy".format(runid, str(non_id).zfill(5))
             )
             res = trifecta_data[0, -1]
+            c = res[12]
+            if c < 0.8:
+                res[[0, 1, 2, 3]] = np.nan
             tlist, xlist, ylist = np.loadtxt(
                 wrkdir_DNR
                 + "papu22/jet_prop_v_txts/{}_{}.txt".format(runid, str(non_id).zfill(5))
