@@ -143,7 +143,7 @@ def jet_pos_plot():
         for n2, kind in enumerate(kinds):
             label_bool = draw_labels[n1]
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -369,7 +369,7 @@ def foreshock_jplot_SEA(run_id):
 
     for runid in runid_list:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, "foreshock"),
+            wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, "foreshock"),
             dtype=int,
             ndmin=1,
         )
@@ -601,7 +601,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
             )
         elif version == "new":
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1507,7 +1507,7 @@ def kind_SEA_timeseries(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1570,7 +1570,7 @@ def SEA_trifecta(kind):
             non_ids = get_fcs_jets(runid)
         else:
             non_ids = np.loadtxt(
-                wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                 dtype=int,
                 ndmin=1,
             )
@@ -1663,7 +1663,7 @@ def trifecta(runid, kind="non", draw=False):
         non_ids = get_fcs_jets(runid)
     else:
         # non_ids = np.loadtxt(
-        #     wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+        #     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
         #     dtype=int,
         #     ndmin=1,
         # )
@@ -1844,7 +1844,7 @@ def kind_timeseries(runid, kind="non"):
         non_ids = get_fcs_jets(runid)
     else:
         # non_ids = np.loadtxt(
-        #     wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+        #     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
         #     dtype=int,
         #     ndmin=1,
         # )
@@ -3559,7 +3559,7 @@ def kind_animations(runid):
 
     for kind in ["foreshock", "beam"]:
         non_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+            wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
@@ -4729,8 +4729,7 @@ def jmap_SEA_comp(run_id="all"):
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -5017,8 +5016,7 @@ def SEA_timeseries_comp():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -5196,8 +5194,7 @@ def kinds_pca():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -5428,8 +5425,7 @@ def timing_comp():
                 non_ids = get_fcs_jets(runid)
             else:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR
-                    + "papu22/id_txts/semiauto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
@@ -5786,7 +5782,7 @@ def weighted_propagation_velocity(runid, kind="non"):
         )
 
 
-def jet_counter(runid="all", cc_thresh=0.0):
+def jet_counter(runid="all", cc_thresh=0.8):
     if runid == "all":
         runids = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -5816,7 +5812,7 @@ def jet_counter(runid="all", cc_thresh=0.0):
     return (total_non, flank_counter, antisunward_counter, fcs_counter)
 
 
-def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.0):
+def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
