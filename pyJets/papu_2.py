@@ -165,6 +165,7 @@ def jet_pos_plot():
                         label=kinds_pub[n2].capitalize(),
                         # rasterized=True,
                         zorder=2,
+                        alpha=0.7,
                     )
                     label_bool = False
                 else:
@@ -176,6 +177,7 @@ def jet_pos_plot():
                         color=CB_color_cycle[n2],
                         # rasterized=True,
                         zorder=2,
+                        alpha=0.7,
                     )
         label_bool = draw_labels[n1]
         fcs_jet_ids = get_fcs_jets(runid)
