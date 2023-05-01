@@ -5474,6 +5474,7 @@ def timing_comp():
                     propvy_full / vsw,
                 ]
                 # print(data_arr[:, -1, :8])
+                c = data_arr[0, -1, 12]
                 data_arr[:, 6:, :] /= vsw
                 # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
                 # vax_avg_arr[idx] = (
@@ -5494,6 +5495,8 @@ def timing_comp():
                 # )
                 ch_mask = data_arr[1, 5, :] >= 3
                 timing_arrs[idx, :, counters[idx]] = data_arr[0, -1, :]
+                if c < 0.8:
+                    timing_arrs[idx, [0, 1, 2, 3], counters[idx]] = np.nan
                 alfven_arrs[idx, counters[idx]] = np.nanmean(
                     Bsw
                     * data_arr[1, 1, :][ch_mask]
