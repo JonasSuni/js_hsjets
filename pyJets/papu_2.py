@@ -4770,7 +4770,7 @@ def jmap_SEA_comp(run_id="all"):
     )
     im_list = []
     cb_list = []
-    vmin = [1, -1, 0.25, 1, 15]
+    vmin = [1.5, -1, 0.25, 1, 15]
     vmax = [4, -0.25, 1.2, 3.5, 25]
     # cmap = [
     #     "batlow",
@@ -5834,7 +5834,6 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
     antisunward_list = []
 
     for non_id in non_ids:
-
         if runid == "ABA" and non_id in [157, 257, 586, 800]:
             continue
         elif runid == "ABC" and non_id in [
