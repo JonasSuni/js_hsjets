@@ -4770,7 +4770,7 @@ def jmap_SEA_comp(run_id="all"):
     )
     im_list = []
     cb_list = []
-    vmin = [1.5, -1, 0.25, 1, 15]
+    vmin = [1.5, -1, 0.25, 1.5, 15]
     vmax = [4, -0.25, 1.2, 3.5, 25]
     # cmap = [
     #     "batlow",
