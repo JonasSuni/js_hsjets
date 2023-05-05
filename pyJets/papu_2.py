@@ -5691,8 +5691,10 @@ def timing_comp():
         )
         # ax.set_xlim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
         # ax.set_ylim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
-        ax.set_xlim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
-        ax.set_ylim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        # ax.set_xlim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        # ax.set_ylim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        ax.set_xlim(-1.1,1.1)
+        ax.set_xlim(-1.1,1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
