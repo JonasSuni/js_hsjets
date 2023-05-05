@@ -56,7 +56,7 @@ def jet_pos_plot():
     marker = ["^", "o"]
     draw_labels = [False, True, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(9, 12), sharex=True, sharey=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), sharex=True, sharey=True)
     ax_flat = ax_list.flatten()
 
     yarr = np.arange(-15, 15, 0.1)
