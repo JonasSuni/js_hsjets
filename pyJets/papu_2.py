@@ -5718,12 +5718,12 @@ def timing_comp():
 
     for ax in ax_flat[1:]:
         ax.set_xlim(
-            -1.1 * np.max(np.abs(vx_all + vy_all)),
-            1.1 * np.max(np.abs(vx_all + vy_all)),
+            -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+            1.1 * np.nanmax(np.abs(vx_all + vy_all)),
         )
         ax.set_ylim(
-            -1.1 * np.max(np.abs(vx_all + vy_all)),
-            1.1 * np.max(np.abs(vx_all + vy_all)),
+            -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+            1.1 * np.nanmax(np.abs(vx_all + vy_all)),
         )
 
     top_ax = ax_flat[0]
