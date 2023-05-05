@@ -169,16 +169,30 @@ def jet_pos_plot():
                     )
                     label_bool = False
                 else:
-                    ax.plot(
-                        # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
-                        x0,
-                        y0,
-                        marker[n2],
-                        color=CB_color_cycle[n2],
-                        # rasterized=True,
-                        zorder=2,
-                        alpha=0.7,
-                    )
+                    if (kind == "beam" and runid == "AEA" and non_id == 920) or (
+                        kind == "foreshock" and runid == "ABC" and non_id == 153
+                    ):
+                        ax.plot(
+                            # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                            x0,
+                            y0,
+                            "*",
+                            color=CB_color_cycle[n2],
+                            # rasterized=True,
+                            zorder=3,
+                            alpha=1,
+                        )
+                    else:
+                        ax.plot(
+                            # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                            x0,
+                            y0,
+                            marker[n2],
+                            color=CB_color_cycle[n2],
+                            # rasterized=True,
+                            zorder=2,
+                            alpha=0.7,
+                        )
         label_bool = draw_labels[n1]
         fcs_jet_ids = get_fcs_jets(runid)
         for sj_id in fcs_jet_ids:
@@ -216,7 +230,7 @@ def jet_pos_plot():
         label_bool = draw_labels[n1]
         ax.grid()
         # ax.set_xlim(-3, 2)
-        ax.set_xlim(6, 18)
+        ax.set_xlim(4, 18)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         ax.set_title("{}".format(runid_labels[n1]), fontsize=20, pad=10)
@@ -228,7 +242,7 @@ def jet_pos_plot():
                 fill=None,
                 linestyle="dotted",
                 color="k",
-                linewidth=0.6,
+                linewidth=0.8,
             )
         )
         if runid in ["ABA", "AEA"]:
