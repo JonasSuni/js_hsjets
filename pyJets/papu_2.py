@@ -4316,7 +4316,7 @@ def non_jet_omni(runid, only_man_figs=True):
             ],
         )
         ax_nw.set_title(
-            "Run: {}, ID: {}\n t = {}s".format(
+            "Run: {}, ID: {}\n $t_0$ = {}s".format(
                 runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             ),
             pad=10,
