@@ -5615,7 +5615,7 @@ def timing_comp():
                             color=CB_color_cycle[idx2],
                             alpha=1,
                             zorder=3,
-                            markersize=12,
+                            markersize=15,
                         )
                     else:
                         ax.plot(
@@ -5636,7 +5636,7 @@ def timing_comp():
                     color=CB_color_cycle[0],
                     alpha=1,
                     zorder=3,
-                    markersize=12,
+                    markersize=15,
                 )
             else:
                 ax.plot(
