@@ -5413,6 +5413,7 @@ def timing_comp():
     timing_arrs = np.zeros((3, fnr_arr.size, 1000), dtype=float)
     alfven_arrs = np.zeros((3, 1000), dtype=float)
     sonic_arrs = np.zeros((3, 1000), dtype=float)
+    special_arrs = np.zeros((3, 1000), dtype=float)
     propv_arrs = np.zeros((3, 2, 1000), dtype=float)
     propv_arrs_full = np.zeros((3, 2, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
@@ -5453,6 +5454,10 @@ def timing_comp():
                         runid, str(non_id).zfill(5)
                     )
                 ).T
+                if kind == "beam" and runid == "AEA" and non_id == 920:
+                    special_arrs[idx, counters[idx]] = 1
+                elif kind == "foreshock" and runid == "ABC" and non_id == 153:
+                    special_arrs[idx, counters[idx]] = 1
 
                 t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
@@ -5602,25 +5607,47 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                    ax.plot(
-                        vx_one,
-                        vy_one,
-                        "^",
-                        color=CB_color_cycle[idx2],
-                        alpha=0.5,
-                        zorder=0,
-                        markersize=10,
-                    )
+                    if special_arrs[idx, counters[idx]] == 1.0:
+                        ax.plot(
+                            vx_one,
+                            vy_one,
+                            "*",
+                            color=CB_color_cycle[idx2],
+                            alpha=1,
+                            zorder=3,
+                            markersize=12,
+                        )
+                    else:
+                        ax.plot(
+                            vx_one,
+                            vy_one,
+                            "^",
+                            color=CB_color_cycle[idx2],
+                            alpha=0.5,
+                            zorder=0,
+                            markersize=10,
+                        )
         for n in range(counters[idx]):
-            ax.plot(
-                propv_arrs[idx, 0, n],
-                propv_arrs[idx, 1, n],
-                "o",
-                color=CB_color_cycle[0],
-                alpha=0.5,
-                zorder=0,
-                markersize=10,
-            )
+            if special_arrs[idx, counters[idx]] == 1.0:
+                ax.plot(
+                    propv_arrs[idx, 0, n],
+                    propv_arrs[idx, 1, n],
+                    "*",
+                    color=CB_color_cycle[0],
+                    alpha=1,
+                    zorder=3,
+                    markersize=12,
+                )
+            else:
+                ax.plot(
+                    propv_arrs[idx, 0, n],
+                    propv_arrs[idx, 1, n],
+                    "o",
+                    color=CB_color_cycle[0],
+                    alpha=0.5,
+                    zorder=0,
+                    markersize=10,
+                )
         ax.quiver(
             0,
             0,
