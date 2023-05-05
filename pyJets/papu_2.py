@@ -5607,7 +5607,7 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                    if special_arrs[idx, counters[idx]] == 1.0:
+                    if special_arrs[idx, n] == 1.0:
                         ax.plot(
                             vx_one,
                             vy_one,
@@ -5628,7 +5628,7 @@ def timing_comp():
                             markersize=10,
                         )
         for n in range(counters[idx]):
-            if special_arrs[idx, counters[idx]] == 1.0:
+            if special_arrs[idx, n] == 1.0:
                 ax.plot(
                     propv_arrs[idx, 0, n],
                     propv_arrs[idx, 1, n],
