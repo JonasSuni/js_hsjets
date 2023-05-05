@@ -182,7 +182,8 @@ def jet_pos_plot():
                             zorder=3,
                             alpha=1,
                             markersize=10,
-                            mec = "k",
+                            mec="k",
+                            mew=0.1,
                         )
                     else:
                         ax.plot(
