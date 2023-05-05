@@ -5633,6 +5633,8 @@ def timing_comp():
                             alpha=1,
                             zorder=3,
                             markersize=20,
+                            mec="k",
+                            mew=1,
                         )
                     else:
                         ax.plot(
@@ -5654,6 +5656,8 @@ def timing_comp():
                     alpha=1,
                     zorder=3,
                     markersize=20,
+                    mec="k",
+                    mew=1,
                 )
             else:
                 ax.plot(
