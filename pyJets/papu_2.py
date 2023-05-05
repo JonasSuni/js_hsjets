@@ -5555,7 +5555,7 @@ def timing_comp():
             [(np.cos(theta), np.sin(theta)) for theta in np.arange(0, np.pi * 2, 0.01)]
         )
         ms_xy = circ_xy * ms_med
-        vms_all = vms_all + [ms_med]
+        # vms_all = vms_all + [ms_med]
         a_xy = circ_xy * a_med
         ax.plot(
             ms_xy.T[0],
@@ -5626,8 +5626,8 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                    vx_all = vx_all + [vx_one]
-                    vy_all = vy_all + [vy_one]
+                    # vx_all = vx_all + [vx_one]
+                    # vy_all = vy_all + [vy_one]
                     if special_arrs[idx, n] == 1.0:
                         ax.plot(
                             vx_one,
@@ -5673,8 +5673,8 @@ def timing_comp():
                     zorder=0,
                     markersize=10,
                 )
-            vx_all = vx_all + [propv_arrs[idx, 0, n]]
-            vy_all = vy_all + [propv_arrs[idx, 1, n]]
+            # vx_all = vx_all + [propv_arrs[idx, 0, n]]
+            # vy_all = vy_all + [propv_arrs[idx, 1, n]]
         ax.quiver(
             0,
             0,
