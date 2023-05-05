@@ -5543,6 +5543,7 @@ def timing_comp():
     magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
     vx_all = []
     vy_all = []
+    vms_all = []
     ax_flat = ax_list.flatten()
     for idx, ax in enumerate(ax_flat[1:]):
         ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
@@ -5554,6 +5555,7 @@ def timing_comp():
             [(np.cos(theta), np.sin(theta)) for theta in np.arange(0, np.pi * 2, 0.01)]
         )
         ms_xy = circ_xy * ms_med
+        vms_all = vms_all + [ms_med]
         a_xy = circ_xy * a_med
         ax.plot(
             ms_xy.T[0],
@@ -5687,10 +5689,10 @@ def timing_comp():
             linewidth=1,
             edgecolor="k",
         )
-        # ax.set_xlim(-1.1 * np.max(np.abs(vx_all+vy_all)), 1.1 * np.max(np.abs(vx_all+vy_all)))
-        # ax.set_ylim(-1.1 * np.max(np.abs(vx_all+vy_all)), 1.1 * np.max(np.abs(vx_all+vy_all)))
-        # ax.set_xlim(-1.5, 1.5)
-        # ax.set_ylim(-1.5, 1.5)
+        # ax.set_xlim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
+        # ax.set_ylim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
+        ax.set_xlim(-1.0 + np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        ax.set_ylim(-1.0 + np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
@@ -5716,15 +5718,15 @@ def timing_comp():
         ax.grid()
         ax.set_aspect("equal")
 
-    for ax in ax_flat[1:]:
-        ax.set_xlim(
-            -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
-            1.1 * np.nanmax(np.abs(vx_all + vy_all)),
-        )
-        ax.set_ylim(
-            -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
-            1.1 * np.nanmax(np.abs(vx_all + vy_all)),
-        )
+    # for ax in ax_flat[1:]:
+    #     ax.set_xlim(
+    #         -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #         1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #     )
+    #     ax.set_ylim(
+    #         -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #         1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #     )
 
     top_ax = ax_flat[0]
 
