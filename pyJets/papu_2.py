@@ -181,6 +181,7 @@ def jet_pos_plot():
                             # rasterized=True,
                             zorder=3,
                             alpha=1,
+                            markersize=10,
                         )
                     else:
                         ax.plot(
@@ -230,7 +231,7 @@ def jet_pos_plot():
         label_bool = draw_labels[n1]
         ax.grid()
         # ax.set_xlim(-3, 2)
-        ax.set_xlim(4, 18)
+        ax.set_xlim(4, 20)
         # ax.set_aspect("equal")
         ax.tick_params(labelsize=16)
         ax.set_title("{}".format(runid_labels[n1]), fontsize=20, pad=10)
