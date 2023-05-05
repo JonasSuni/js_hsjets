@@ -5624,6 +5624,8 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
+                    vx_all = vx_all + [vx_one]
+                    vy_all = vy_all + [vy_one]
                     if special_arrs[idx, n] == 1.0:
                         ax.plot(
                             vx_one,
@@ -5669,6 +5671,8 @@ def timing_comp():
                     zorder=0,
                     markersize=10,
                 )
+            vx_all = vx_all + [propv_arrs[idx, 0, n]]
+            vy_all = vy_all + [propv_arrs[idx, 1, n]]
         ax.quiver(
             0,
             0,
@@ -5683,10 +5687,10 @@ def timing_comp():
             linewidth=1,
             edgecolor="k",
         )
-        # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
-        # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
+        # ax.set_xlim(-1.1 * np.max(np.abs(vx_all+vy_all)), 1.1 * np.max(np.abs(vx_all+vy_all)))
+        # ax.set_ylim(-1.1 * np.max(np.abs(vx_all+vy_all)), 1.1 * np.max(np.abs(vx_all+vy_all)))
+        # ax.set_xlim(-1.5, 1.5)
+        # ax.set_ylim(-1.5, 1.5)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
@@ -5711,6 +5715,16 @@ def timing_comp():
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
+
+    for ax in ax_flat[1:]:
+        ax.set_xlim(
+            -1.1 * np.max(np.abs(vx_all + vy_all)),
+            1.1 * np.max(np.abs(vx_all + vy_all)),
+        )
+        ax.set_ylim(
+            -1.1 * np.max(np.abs(vx_all + vy_all)),
+            1.1 * np.max(np.abs(vx_all + vy_all)),
+        )
 
     top_ax = ax_flat[0]
 
