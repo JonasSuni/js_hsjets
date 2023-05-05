@@ -5685,8 +5685,8 @@ def timing_comp():
         )
         # ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
         # ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
-        # ax.set_xlim(-1.1, 1.1)
-        # ax.set_ylim(-1.1, 1.1)
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
@@ -5707,8 +5707,6 @@ def timing_comp():
                 bbox_to_anchor=(0.5, -0.15),
                 ncols=3,
             )
-        ax.set_xlim(-1.1 * np.max(np.abs(vx_all)), 1.1 * np.max(np.abs(vx_all)))
-        ax.set_ylim(-1.1 * np.max(np.abs(vy_all)), 1.1 * np.max(np.abs(vy_all)))
         ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
