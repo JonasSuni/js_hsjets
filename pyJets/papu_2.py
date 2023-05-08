@@ -254,6 +254,18 @@ def jet_pos_plot():
                 [0, 0],
                 1,
                 1,
+                fill=None,
+                color="k",
+                linestyle="dashed",
+                label="Foreshock edge",
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                fill=None,
                 color=CB_color_cycle[4],
                 label="$B_z = -0.5~\mathrm{nT}$",
             )
@@ -263,10 +275,12 @@ def jet_pos_plot():
                 [0, 0],
                 1,
                 1,
+                fill=None,
                 color=CB_color_cycle[5],
                 label="$B_z = 0.5~\mathrm{nT}$",
             )
         )
+
         if runid in ["ABA", "AEA"]:
             ax.set_ylim(-10, 10)
             ax.set_aspect("equal", adjustable="box")
@@ -274,7 +288,7 @@ def jet_pos_plot():
             ax.set_ylim(-10, 10)
             ax.set_aspect("equal", adjustable="box")
         if label_bool:
-            ax.legend(fontsize=12, loc="center left")
+            ax.legend(fontsize=11, loc="center left")
     ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
@@ -4061,7 +4075,7 @@ def fig0(runid="ABC", jetid=596):
             linewidth=1.0,
         )
     )
-    ax[0].legend(loc="lower right", fontsize=24)
+    ax[0].legend(loc="lower right", fontsize=24, framealpha=0.5)
 
     pt.plot.plot_colormap(
         axes=ax[1],
@@ -4111,7 +4125,7 @@ def fig0(runid="ABC", jetid=596):
         ],
     )
 
-    ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right")
+    ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.5)
 
     # plt.tight_layout()
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig1.pdf")
