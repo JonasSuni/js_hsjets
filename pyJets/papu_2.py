@@ -3799,7 +3799,6 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # minlength=4,
             density=35,
             start_points=start_points,
-            label="$B$",
         )
 
     jet_cont = ax.contour(
