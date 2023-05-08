@@ -5834,6 +5834,10 @@ def timing_comp():
         wrkdir_DNR + "papu22/Figures/fig2.pdf",
         dpi=300,
     )
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/fig02.png",
+        dpi=300,
+    )
     plt.close(fig)
 
 
