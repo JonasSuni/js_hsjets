@@ -31,7 +31,14 @@ import jet_jh2020 as jh20
 # plt.rcParams.update(params)
 
 plt.rcParams.update(
-    {"text.usetex": True, "font.family": "Helvetica", "mathtext.fontset": "dejavusans"}
+    {
+        "text.usetex": True,
+        "font.family": "Helvetica",
+        "mathtext.fontset": "custom",
+        "mathtext.rm": "Helvetica",
+        "mathtext.it": "Helvetica:italic",
+        "mathtext.bf": "Helvetica:bold",
+    }
 )
 
 r_e = 6.371e6
