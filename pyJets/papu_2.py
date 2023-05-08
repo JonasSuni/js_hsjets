@@ -30,7 +30,9 @@ import jet_jh2020 as jh20
 # params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
 # plt.rcParams.update(params)
 
-plt.rcParams.update({"text.usetex": True, "font.family": "Helvetica"})
+plt.rcParams.update(
+    {"text.usetex": True, "font.family": "Helvetica", "mathtext.fontset": "Helvetica"}
+)
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
