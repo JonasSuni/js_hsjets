@@ -3980,7 +3980,7 @@ def fig0(runid="ABC", jetid=596):
     vscale = 1e9
     vmax = 1.5
     if runid in ["ABC", "AEC"]:
-        vmax = 3.1
+        vmax = 3
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
@@ -4049,7 +4049,7 @@ def fig0(runid="ABC", jetid=596):
         # vmax=1,
         vmax=vmax,
         vscale=vscale,
-        cbtitle="$P_{dyn}$ [nPa]",
+        cbtitle="",
         # cbtitle="",
         usesci=0,
         scale=3,
@@ -4088,6 +4088,12 @@ def fig0(runid="ABC", jetid=596):
             ec="k",
             lw=1,
         ),
+    )
+    ax[0].annotate(
+        "$P_{dyn}$ [nPa]",
+        (0.80, 0.90),
+        xycoords="axes fraction",
+        fontsize=20,
     )
 
     ax[0].set_title(
