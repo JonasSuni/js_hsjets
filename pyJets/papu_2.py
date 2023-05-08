@@ -244,8 +244,27 @@ def jet_pos_plot():
                 rect_ex[n1][1],
                 fill=None,
                 linestyle="dotted",
+                label="Search box",
                 color="k",
                 linewidth=0.8,
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                color=CB_color_cycle[4],
+                label="$B_z = -0.5~\mathrm{nT}$",
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                color=CB_color_cycle[5],
+                label="$B_z = 0.5~\mathrm{nT}$",
             )
         )
         if runid in ["ABA", "AEA"]:
@@ -4037,10 +4056,12 @@ def fig0(runid="ABC", jetid=596):
             rect_ex[runids.index(runid)][1],
             fill=None,
             linestyle="dotted",
+            label="Search box",
             color="k",
             linewidth=1.0,
         )
     )
+    ax[0].legend(loc="lower right", fontsize=24)
 
     pt.plot.plot_colormap(
         axes=ax[1],
