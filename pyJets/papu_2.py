@@ -5763,7 +5763,7 @@ def timing_comp():
         ax.set_xlim(-1.1, 1.1)
         ax.set_ylim(-1.1, 1.1)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
-        ax.set_ylabel("$v_y$ [$v_{sw}$]", fontsize=32, labelpad=10)
+        ax.set_ylabel("$v_y$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
             ax.legend(fontsize=24, loc="lower right")
             lhand, llab = ax.get_legend_handles_labels()
@@ -5782,7 +5782,7 @@ def timing_comp():
                 bbox_to_anchor=(0.5, -0.15),
                 ncols=3,
             )
-        ax.set_xlabel("$v_x$ [$v_{sw}$]", fontsize=32, labelpad=10)
+        ax.set_xlabel("$v_x$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
