@@ -3980,7 +3980,7 @@ def fig0(runid="ABC", jetid=596):
     vscale = 1e9
     vmax = 1.5
     if runid in ["ABC", "AEC"]:
-        vmax = 3
+        vmax = 3.1
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
