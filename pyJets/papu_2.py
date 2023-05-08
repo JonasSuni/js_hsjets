@@ -4049,10 +4049,10 @@ def fig0(runid="ABC", jetid=596):
         # vmax=1,
         vmax=vmax,
         vscale=vscale,
-        # cbtitle="$P_{dyn}$ [nPa]",
+        cbtitle="$P_{dyn}$ [nPa]",
         # cbtitle="",
         usesci=0,
-        scale=2,
+        scale=4,
         # title="Run: {}, ID: {}\n t = {}s".format(
         #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
         # ),
@@ -4060,7 +4060,7 @@ def fig0(runid="ABC", jetid=596):
         internalcb=True,
         lin=1,
         colormap="batlow",
-        tickinterval=5.0,
+        tickinterval=10.0,
         useimshow=True,
         # external=ext_jet,
         # expression=expr_rhoratio,
@@ -4114,7 +4114,7 @@ def fig0(runid="ABC", jetid=596):
         # cbtitle="$P_{dyn}$ [nPa]",
         # cbtitle="",
         usesci=0,
-        scale=2,
+        scale=4,
         # title="Run: {}, ID: {}\n t = {}s".format(
         #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
         # ),
@@ -4149,7 +4149,7 @@ def fig0(runid="ABC", jetid=596):
     ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.5)
 
     # plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig1.pdf")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.pdf")
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.png")
 
     plt.close(fig)
