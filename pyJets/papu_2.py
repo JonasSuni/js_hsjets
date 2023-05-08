@@ -43,13 +43,9 @@ plt.rcParams.update(
         "font.sans-serif": "Helvetica",
     }
 )
-mpl.rcParams["text.latex.preamble"] = [
-    r"\usepackage{siunitx}",  # i need upright \micro symbols, but you need...
-    r"\sisetup{detect-all}",  # ...this to force siunitx to actually use your fonts
-    r"\usepackage{helvet}",  # set the normal font here
-    r"\usepackage{sansmath}",  # load up the sansmath so that math -> helvet
-    r"\sansmath",  # <- tricky! -- gotta actually tell tex to use!
-]
+mpl.rcParams[
+    "text.latex.preamble"
+] = r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath"
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
