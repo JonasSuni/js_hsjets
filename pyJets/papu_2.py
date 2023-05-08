@@ -3799,6 +3799,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # minlength=4,
             density=35,
             start_points=start_points,
+            label="$B$",
         )
 
     jet_cont = ax.contour(
@@ -3918,6 +3919,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if ~(slams_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
         proxy_labs.append("FCS")
+    if Blines_g:
+        proxy.append(mlines.Line2D([], [], color="k"))
+        proxy_labs.append("$B$")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
@@ -4366,6 +4370,16 @@ def non_jet_omni(runid, only_man_figs=True):
                 "Mmsx",
                 "Pdyn",
             ],
+        )
+        ax_nw.legend(
+            gprox,
+            gprox_labs,
+            frameon=True,
+            numpoints=1,
+            markerscale=1,
+            loc="lower left",
+            fontsize=14,
+            ncols=2,
         )
         ax_nw.set_title(
             "Run: {}, ID: {}\n $t_0$ = {}s".format(
