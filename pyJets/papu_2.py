@@ -37,6 +37,7 @@ plt.rcParams.update(
         "mathtext.rm": "Helvetica",
         "mathtext.it": "Helvetica:italic",
         "mathtext.bf": "Helvetica:bold",
+        "mathtext.fallback": None,
         "font.family": "sans-serif",
         "font.sans-serif": "Helvetica",
     }
