@@ -41,11 +41,12 @@ plt.rcParams.update(
         "mathtext.fallback": None,
         "font.family": "sans-serif",
         "font.sans-serif": "Helvetica",
+        "text.latex.preamble": r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath",
     }
 )
-mpl.rcParams[
-    "text.latex.preamble"
-] = r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath"
+# mpl.rcParams[
+#     "text.latex.preamble"
+# ] = r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath"
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
