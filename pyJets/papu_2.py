@@ -32,6 +32,7 @@ import jet_jh2020 as jh20
 
 plt.rcParams.update(
     {
+        "font": {"family": "sans-serif", "sans-serif": ["Helvetica"]},
         "text.usetex": True,
         "font.family": "Helvetica",
         "mathtext.fontset": "custom",
