@@ -5151,7 +5151,9 @@ def SEA_timeseries_comp():
             / epoch_mag_arr[idx, -2, :, : counters[idx]]
         )
 
-    fig, ax_list = plt.subplots(len(ylabels) + 1, 3, sharex=True, figsize=(24, 24))
+    fig, ax_list = plt.subplots(
+        len(ylabels) + 1, 3, sharex=True, figsize=(25, 24), constrained_layout=True
+    )
     for idx2, kind in enumerate(kinds):
         ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=40, pad=10)
         for idx in range(len(plot_labels)):
@@ -5242,7 +5244,7 @@ def SEA_timeseries_comp():
         )
     for ax in ax_list.flat:
         ax.label_outer()
-    plt.tight_layout()
+    # plt.tight_layout()
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/fig6.pdf",
         dpi=300,
