@@ -4090,8 +4090,8 @@ def fig0(runid="ABC", jetid=596):
         ),
     )
     ax[0].annotate(
-        "$P_{dyn}$ [nPa]",
-        (0.80, 0.90),
+        "$P_\mathrm{dyn}$ [nPa]",
+        (0.80, 0.95),
         xycoords="axes fraction",
         fontsize=20,
     )
