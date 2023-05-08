@@ -4144,6 +4144,7 @@ def fig0(runid="ABC", jetid=596):
 
     # plt.tight_layout()
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig1.pdf")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.png")
 
     plt.close(fig)
 
