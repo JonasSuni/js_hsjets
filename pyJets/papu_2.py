@@ -97,7 +97,7 @@ def jet_pos_plot():
         for idx in range(len(runids))
     ]
 
-    annot = ["a)", "b)", "c)", "d)"]
+    annot = ["(a)", "(b)", "(c)", "(d)"]
 
     for idx, ax in enumerate(ax_flat):
         print(Xun_arr[idx].shape)
@@ -534,8 +534,8 @@ def foreshock_jplot_SEA(run_id):
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, 0, 1, 4, 30]
     cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
-    annot = ["a)", "b)", "c)", "d)", "e)"]
-    annot_sj = ["f)", "g)", "h)", "i)", "j)"]
+    annot = ["(a)", "(b)", "(c)", "(d)", "(e)"]
+    annot_sj = ["(f)", "(g)", "(h)", "(i)", "(j)"]
 
     for idx, ax in enumerate(ax_list[0]):
         ax.tick_params(labelsize=20)
@@ -702,7 +702,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
     vmin = [0, -1, 0.25, 0, 10]
     vmax = [4, 0, 1, 4, 30]
-    annot = ["a)", "b)", "c)", "d)", "e)"]
+    annot = ["(a)", "(b)", "(c)", "(d)", "(e)"]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
 
@@ -1166,7 +1166,7 @@ def non_jet_jplots(runid, txt=False, draw=False):
 
         data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
         cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
-        annot = ["a)", "b)", "c)", "d)", "e)"]
+        annot = ["(a)", "(b)", "(c)", "(d)", "(e)"]
 
         # fig, ax_list = plt.subplots(
         #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
@@ -4377,7 +4377,7 @@ def non_jet_omni(runid, only_man_figs=True):
         ax_nw.axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
         ax_nw.annotate(
-            "a)",
+            "(a)",
             (0.05, 0.90),
             xycoords="axes fraction",
             fontsize=20,
@@ -4466,7 +4466,7 @@ def non_jet_omni(runid, only_man_figs=True):
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_ne.annotate(
-            "b)",
+            "(b)",
             (0.05, 0.90),
             xycoords="axes fraction",
             fontsize=20,
@@ -4633,7 +4633,7 @@ def non_jet_omni(runid, only_man_figs=True):
             ax_sw.set_aspect("equal")
             ax_sw.tick_params(labelsize=16)
             # ax_sw.set_title("Timing analysis", fontsize=24, pad=10)
-            ax_sw.annotate("c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+            ax_sw.annotate("(c)", (0.05, 0.90), xycoords="axes fraction", fontsize=20)
         except:
             ax_sw.set_axis_off()
 
@@ -4688,7 +4688,7 @@ def non_jet_omni(runid, only_man_figs=True):
                 "$B~[B_\mathrm{IMF}]$",
                 "$T~[T_\mathrm{sw}]$",
             ]
-            annots = ["d)", "e)", "f)", "g)", "h)"]
+            annots = ["(d)", "(e)", "(f)", "(g)", "(h)"]
             plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
             plot_colors = [
                 "k",
@@ -4839,11 +4839,11 @@ def jmap_SEA_comp(run_id="all"):
         "Blues_r",
     ]
     annot = [
-        ["a)", "b)", "c)", "d)", "e)"],
-        ["f)", "g)", "h)", "i)", "j)"],
-        ["k)", "l)", "m)", "n)", "o)"],
+        ["(a)", "(b)", "(c)", "(d)", "(e)"],
+        ["(f)", "(g)", "(h)", "(i)", "(j)"],
+        ["(k)", "(l)", "(m)", "(n)", "(o)"],
     ]
-    annot_sj = ["f)", "g)", "h)", "i)", "j)"]
+    annot_sj = ["(f)", "(g)", "(h)", "(i)", "(j)"]
 
     for idx2 in range(len(kinds)):
         for idx, ax in enumerate(ax_list[:, idx2]):
@@ -5047,9 +5047,9 @@ def SEA_timeseries_comp():
     ]
 
     annot = [
-        ["a)", "b)", "c)", "d)", "e)", "f)"],
-        ["g)", "h)", "i)", "j)", "k)", "l)"],
-        ["m)", "n)", "o)", "p)", "q)", "r)"],
+        ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
+        ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
+        ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
     ]
 
     kinds = ["beam", "foreshock", "fcs"]
@@ -5443,7 +5443,7 @@ def timing_comp():
 
     kinds = ["beam", "foreshock", "fcs"]
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
-    annot = ["b)", "c)", "d)"]
+    annot = ["(b)", "(c)", "(d)"]
     arrow_labels = [
         "$v_\mathrm{n}$",
         "$v_\mathrm{SC}$",
@@ -5800,7 +5800,7 @@ def timing_comp():
     top_ax.set_aspect("equal")
     # top_ax.set_xticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
     # top_ax.set_yticklabels(["-2", "-1", "0", "1", "2", ""], minor=True)
-    top_ax.annotate("a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
+    top_ax.annotate("(a)", (0.05, 0.90), xycoords="axes fraction", fontsize=32)
 
     plt.tight_layout()
     fig.savefig(
