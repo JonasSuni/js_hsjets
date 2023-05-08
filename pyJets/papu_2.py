@@ -4052,7 +4052,7 @@ def fig0(runid="ABC", jetid=596):
         cbtitle="$P_{dyn}$ [nPa]",
         # cbtitle="",
         usesci=0,
-        scale=4,
+        scale=3,
         # title="Run: {}, ID: {}\n t = {}s".format(
         #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
         # ),
@@ -4076,6 +4076,18 @@ def fig0(runid="ABC", jetid=596):
             "Mmsx",
             "Pdyn",
         ],
+    )
+    ax[0].annotate(
+        "(a)",
+        (0.05, 0.90),
+        xycoords="axes fraction",
+        fontsize=20,
+        bbox=dict(
+            boxstyle="square,pad=0.2",
+            fc="white",
+            ec="k",
+            lw=1,
+        ),
     )
 
     ax[0].set_title(
@@ -4114,7 +4126,7 @@ def fig0(runid="ABC", jetid=596):
         # cbtitle="$P_{dyn}$ [nPa]",
         # cbtitle="",
         usesci=0,
-        scale=4,
+        scale=3,
         # title="Run: {}, ID: {}\n t = {}s".format(
         #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
         # ),
@@ -4144,6 +4156,19 @@ def fig0(runid="ABC", jetid=596):
             "Mmsx",
             "Pdyn",
         ],
+    )
+
+    ax[1].annotate(
+        "(b)",
+        (0.05, 0.90),
+        xycoords="axes fraction",
+        fontsize=20,
+        bbox=dict(
+            boxstyle="square,pad=0.2",
+            fc="white",
+            ec="k",
+            lw=1,
+        ),
     )
 
     ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.5)
