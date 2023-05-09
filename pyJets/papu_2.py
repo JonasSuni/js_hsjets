@@ -5500,7 +5500,7 @@ def kinds_pca():
             )
 
 
-def timing_comp():
+def timing_comp(vlim=1.1):
     vsws = [750, 600, 750, 600]
 
     nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
@@ -5728,7 +5728,7 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > 1.5:
+                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > vlim:
                         vsc_counter[idx] += 1
                     # vx_all = vx_all + [vx_one]
                     # vy_all = vy_all + [vy_one]
@@ -5757,7 +5757,7 @@ def timing_comp():
         for n in range(counters[idx]):
             if (
                 np.max([np.abs(propv_arrs[idx, 0, n]), np.abs(propv_arrs[idx, 1, n])])
-                > 1.5
+                > vlim
             ):
                 vtr_counter[idx] += 1
             if special_arrs[idx, n] == 1.0:
@@ -5802,8 +5802,8 @@ def timing_comp():
         # ax.set_ylim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
         # ax.set_xlim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
         # ax.set_ylim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
-        ax.set_xlim(-1.5, 1.5)
-        ax.set_ylim(-1.5, 1.5)
+        ax.set_xlim(-vlim, vlim)
+        ax.set_ylim(-vlim, vlim)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
         ax.set_ylabel("$v_y$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
