@@ -4687,8 +4687,8 @@ def non_jet_omni(runid, only_man_figs=True):
                 fontsize=16,
                 loc="lower right",
             )
-            ax_sw.set_xlabel("$v_x$ [km/s]", fontsize=24, labelpad=10)
-            ax_sw.set_ylabel("$v_y$ [km/s]", fontsize=24, labelpad=10)
+            ax_sw.set_xlabel("$v_x~[\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
+            ax_sw.set_ylabel("$v_y~[\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
             ax_sw.set_xlim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
             ax_sw.set_ylim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
