@@ -5525,6 +5525,8 @@ def timing_comp():
         "$T_{core}~[T_\mathrm{sw}]$",
     ]
 
+    vsc_counter = [0, 0, 0]
+    vtr_counter = [0, 0, 0]
     fnr_arr = np.arange(0 - 20, 0 + 21)
     avg_arr = np.zeros((3, 3, len(ylabels) + 6 + 1, fnr_arr.size), dtype=float)
     timing_arrs = np.zeros((3, fnr_arr.size, 1000), dtype=float)
@@ -5726,6 +5728,8 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
+                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > 1.1:
+                        vsc_counter[idx] += 1
                     # vx_all = vx_all + [vx_one]
                     # vy_all = vy_all + [vy_one]
                     if special_arrs[idx, n] == 1.0:
@@ -5751,6 +5755,11 @@ def timing_comp():
                             markersize=10,
                         )
         for n in range(counters[idx]):
+            if (
+                np.max([np.abs(propv_arrs[idx, 0, n]), np.abs(propv_arrs[idx, 1, n])])
+                > 1.1
+            ):
+                vtr_counter[idx] += 1
             if special_arrs[idx, n] == 1.0:
                 ax.plot(
                     propv_arrs[idx, 0, n],
@@ -5876,6 +5885,12 @@ def timing_comp():
         wrkdir_DNR + "papu22/Figures/fig02.png",
         dpi=300,
     )
+
+    print("\n VSC outliers:")
+    print(vsc_counter)
+    print("\n Vtr outliers:")
+    print(vtr_counter)
+
     plt.close(fig)
 
 
