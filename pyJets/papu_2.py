@@ -329,7 +329,7 @@ def jet_pos_plot():
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig7.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig07.pdf", dpi=300)
     plt.close(fig)
 
 
@@ -4812,12 +4812,12 @@ def non_jet_omni(runid, only_man_figs=True):
         if runid == "ABC" and non_id == 153:
             fig.savefig(
                 wrkdir_DNR
-                + "papu22/Figures/fig4.pdf".format(runid, str(non_id).zfill(5))
+                + "papu22/Figures/fig04.pdf".format(runid, str(non_id).zfill(5))
             )
         elif runid == "AEA" and non_id == 920:
             fig.savefig(
                 wrkdir_DNR
-                + "papu22/Figures/fig3.pdf".format(runid, str(non_id).zfill(5))
+                + "papu22/Figures/fig03.pdf".format(runid, str(non_id).zfill(5))
             )
 
         plt.close(fig)
@@ -5008,7 +5008,7 @@ def jmap_SEA_comp(run_id="all"):
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig5.pdf".format(run_id),
+        wrkdir_DNR + "papu22/Figures/fig05.pdf".format(run_id),
         dpi=300,
     )
     plt.close(fig)
@@ -5277,7 +5277,7 @@ def SEA_timeseries_comp():
         ax.label_outer()
     # plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig6.pdf",
+        wrkdir_DNR + "papu22/Figures/fig06.pdf",
         dpi=300,
     )
     plt.close(fig)
