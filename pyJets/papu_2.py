@@ -5869,7 +5869,7 @@ def timing_comp():
 
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig2.pdf",
+        wrkdir_DNR + "papu22/Figures/fig02.pdf",
         dpi=300,
     )
     fig.savefig(
