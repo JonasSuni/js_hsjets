@@ -5728,7 +5728,7 @@ def timing_comp():
                 for n in range(counters[idx]):
                     vx_one = timing_arrs[idx, :, n][2 * idx2]
                     vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
-                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > 1.1:
+                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > 1.5:
                         vsc_counter[idx] += 1
                     # vx_all = vx_all + [vx_one]
                     # vy_all = vy_all + [vy_one]
@@ -5757,7 +5757,7 @@ def timing_comp():
         for n in range(counters[idx]):
             if (
                 np.max([np.abs(propv_arrs[idx, 0, n]), np.abs(propv_arrs[idx, 1, n])])
-                > 1.1
+                > 1.5
             ):
                 vtr_counter[idx] += 1
             if special_arrs[idx, n] == 1.0:
