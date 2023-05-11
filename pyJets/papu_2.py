@@ -5883,6 +5883,7 @@ def timing_comp(vlim=1.3):
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/fig02.pdf",
         dpi=300,
+        format="pdf",
     )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/fig02.png",
