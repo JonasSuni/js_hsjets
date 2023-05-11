@@ -5502,7 +5502,7 @@ def kinds_pca():
             )
 
 
-def timing_comp(vlim=1.1):
+def timing_comp(vlim=1.3):
     vsws = [750, 600, 750, 600]
 
     nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
