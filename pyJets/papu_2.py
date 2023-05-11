@@ -42,8 +42,10 @@ plt.rcParams.update(
         "font.family": "sans-serif",
         "font.sans-serif": "Helvetica",
         "text.latex.preamble": r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath",
+        "pdf.fonttype": 42,
     }
 )
+
 # mpl.rcParams[
 #     "text.latex.preamble"
 # ] = r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath"
