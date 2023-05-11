@@ -33,6 +33,7 @@ import jet_jh2020 as jh20
 
 plt.rcParams.update(
     {
+        "pdf.use14corefonts": True,
         "text.usetex": True,
         "mathtext.fontset": "custom",
         "mathtext.rm": "Helvetica",
