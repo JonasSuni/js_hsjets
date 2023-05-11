@@ -33,6 +33,7 @@ import jet_jh2020 as jh20
 
 plt.rcParams.update(
     {
+        "ps.useafm": True,
         "pdf.use14corefonts": True,
         "text.usetex": True,
         "mathtext.fontset": "custom",
@@ -44,6 +45,7 @@ plt.rcParams.update(
         "font.sans-serif": "Helvetica",
         "text.latex.preamble": r"\usepackage{siunitx} \sisetup{detect-all} \usepackage{helvet} \usepackage{sansmath} \sansmath",
         "pdf.fonttype": 42,
+        "ps.fonttype": 42,
     }
 )
 
@@ -332,7 +334,7 @@ def jet_pos_plot():
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig07.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig07.eps", dpi=300)
     plt.close(fig)
 
 
@@ -637,7 +639,7 @@ def foreshock_jplot_SEA(run_id):
 
     fig.savefig(
         wrkdir_DNR
-        + "papu22/Figures/jmap_SEA_foreshock_comparison_{}.pdf".format(run_id),
+        + "papu22/Figures/jmap_SEA_foreshock_comparison_{}.eps".format(run_id),
         dpi=300,
     )
     plt.close(fig)
@@ -784,7 +786,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.pdf".format(run_id, kind), dpi=300
+        wrkdir_DNR + "papu22/Figures/jmap_SEA_{}_{}.eps".format(run_id, kind), dpi=300
     )
     plt.close(fig)
 
@@ -1257,7 +1259,7 @@ def non_jet_jplots(runid, txt=False, draw=False):
 
             # fig.savefig(
             #     wrkdir_DNR
-            #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+            #     + "papu22/Figures/jmaps/{}_{}.eps".format(runid, str(non_id).zfill(5))
             # )
             fig.savefig(
                 wrkdir_DNR
@@ -1398,7 +1400,7 @@ def P_jplots(runid):
 
         # fig.savefig(
         #     wrkdir_DNR
-        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        #     + "papu22/Figures/jmaps/{}_{}.eps".format(runid, str(non_id).zfill(5))
         # )
         fig.savefig(
             wrkdir_DNR
@@ -1609,7 +1611,7 @@ def kind_SEA_timeseries(kind):
         ax.set_ylim(vmins[idx], vmaxs[idx])
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/timeseries_SEA_{}.pdf".format(kind),
+        wrkdir_DNR + "papu22/Figures/timeseries_SEA_{}.eps".format(kind),
         dpi=300,
     )
     plt.close(fig)
@@ -1678,7 +1680,7 @@ def SEA_trifecta(kind):
         ax.set_ylim(vmins[idx], vmaxs[idx])
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/trifecta_SEA_{}.pdf".format(kind),
+        wrkdir_DNR + "papu22/Figures/trifecta_SEA_{}.eps".format(kind),
         dpi=300,
     )
     plt.close(fig)
@@ -2542,7 +2544,7 @@ def SEA_types(run_id="all"):
     # Save as pdf and png and close figure
     plt.tight_layout()
 
-    # fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.pdf".format(run_id))
+    # fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.eps".format(run_id))
     fig.savefig(wrkdir_DNR + "papu22/Figures/SEA_types_{}.png".format(run_id), dpi=300)
     plt.close(fig)
 
@@ -2679,7 +2681,7 @@ def SEA_plots(zero_level=False, run_id="all"):
     plt.tight_layout()
 
     # fig.savefig(
-    #    wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.pdf".format(zero_level, run_id)
+    #    wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.eps".format(zero_level, run_id)
     # )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/SEA_plot_zl{}_{}.png".format(zero_level, run_id),
@@ -2919,7 +2921,7 @@ def non_type_hist(run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    # fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.pdf".format(run_id))
+    # fig.savefig(wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.eps".format(run_id))
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/FCS_type_hist_{}.png".format(run_id), dpi=300
     )
@@ -3095,7 +3097,7 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
 
     # fig.savefig(
     #    wrkdir_DNR
-    #    + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.pdf".format(lastbs, run_id)
+    #    + "papu22/Figures/FCS_non_hist_lastbs_{}_{}.eps".format(lastbs, run_id)
     # )
     fig.savefig(
         wrkdir_DNR
@@ -4183,7 +4185,7 @@ def fig0(runid="ABC", jetid=596):
     ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.5)
 
     # plt.tight_layout()
-    fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.pdf")
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.eps")
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.png")
 
     plt.close(fig)
@@ -4815,12 +4817,12 @@ def non_jet_omni(runid, only_man_figs=True):
         if runid == "ABC" and non_id == 153:
             fig.savefig(
                 wrkdir_DNR
-                + "papu22/Figures/fig04.pdf".format(runid, str(non_id).zfill(5))
+                + "papu22/Figures/fig04.eps".format(runid, str(non_id).zfill(5))
             )
         elif runid == "AEA" and non_id == 920:
             fig.savefig(
                 wrkdir_DNR
-                + "papu22/Figures/fig03.pdf".format(runid, str(non_id).zfill(5))
+                + "papu22/Figures/fig03.eps".format(runid, str(non_id).zfill(5))
             )
 
         plt.close(fig)
@@ -5011,7 +5013,7 @@ def jmap_SEA_comp(run_id="all"):
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig05.pdf".format(run_id),
+        wrkdir_DNR + "papu22/Figures/fig05.eps".format(run_id),
         dpi=300,
     )
     plt.close(fig)
@@ -5280,7 +5282,7 @@ def SEA_timeseries_comp():
         ax.label_outer()
     # plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig06.pdf",
+        wrkdir_DNR + "papu22/Figures/fig06.eps",
         dpi=300,
     )
     plt.close(fig)
@@ -5456,7 +5458,7 @@ def kinds_pca():
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/kinds_pca.pdf",
+        wrkdir_DNR + "papu22/Figures/kinds_pca.eps",
         dpi=300,
     )
     plt.close(fig)
@@ -5489,7 +5491,7 @@ def kinds_pca():
     plt.tight_layout()
 
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/kinds_lda.pdf",
+        wrkdir_DNR + "papu22/Figures/kinds_lda.eps",
         dpi=300,
     )
     plt.close(fig)
@@ -5881,9 +5883,8 @@ def timing_comp(vlim=1.3):
 
     plt.tight_layout()
     fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig02.pdf",
+        wrkdir_DNR + "papu22/Figures/fig02.eps",
         dpi=300,
-        format="pdf",
     )
     fig.savefig(
         wrkdir_DNR + "papu22/Figures/fig02.png",
