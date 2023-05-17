@@ -115,7 +115,7 @@ def mask_maker(runid,filenr,boxre=[6,18,-8,6],avgfile=True,mag_thresh=1.5):
     vlsvobj_list = []
 
     if avgfile:
-        tpdynavg = np.load(tavgdir+"/"+runid+"/"+str(filenr)+"_pdyn.npy")
+        tpdynavg = np.loadtxt(tavgdir+"/"+runid+"/"+str(filenr)+"_pdyn.tavg")
     else:
 
         for n_t in timerange:
