@@ -97,7 +97,7 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
     pr_pressurenbs = (1.0 / 3.0) * (pr_PTDNBS.sum(-1))
     pr_TNBS = pr_pressurenbs / ((pr_rhonbs + epsilon) * kb)
 
-    mmsx = vlsvreader.read_variable("Mmsx")[np.argsort(origid)]
+    mmsx = vlsvreader.read_variable("proton/vg_mmsx")[np.argsort(origid)]
 
     Bmag = np.linalg.norm(B, axis=-1)
 
