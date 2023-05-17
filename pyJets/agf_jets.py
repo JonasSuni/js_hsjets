@@ -4,6 +4,7 @@
 # import matplotlib as mpl
 # import jet_aux as jx
 from pyJets.jet_aux import CB_color_cycle, find_bulkpath, restrict_area
+from pyJets.jet_io import eventprop_write, jet_sorter
 import pytools as pt
 import os
 
@@ -66,7 +67,7 @@ try:
 except:
     tavgdir = wrkdir_DNR + "tavg/"
 
-FBUB_DIR = wrkdir_DNR + "foreshock_bubble/"
+wrkdir_DNR = wrkdir_DNR + "foreshock_bubble/"
 
 
 def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5):
@@ -166,7 +167,7 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
     slamsjet = np.logical_or(slams, jet)
 
     if not os.path.exists(
-        FBUB_DIR + "up_down_stream/" + runid + "/{}.up".format(str(filenr))
+        wrkdir_DNR + "up_down_stream/" + runid + "/{}.up".format(str(filenr))
     ):
         upstream = np.ma.masked_less(pr_TNBS, 3.0 * T_sw)
         upstream_ci = np.ma.array(sorigid, mask=~upstream.mask).compressed()
@@ -180,45 +181,48 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
 
     restr_ci = restrict_area(vlsvreader, boxre)
 
-    if not os.path.exists(FBUB_DIR + "working/jets/Masks/" + runid):
-        os.makedirs(FBUB_DIR + "working/jets/Masks/" + runid)
-        os.makedirs(FBUB_DIR + "working/SLAMS/Masks/" + runid)
-        os.makedirs(FBUB_DIR + "working/SLAMSJETS/Masks/" + runid)
+    if not os.path.exists(wrkdir_DNR + "working/jets/Masks/" + runid):
+        os.makedirs(wrkdir_DNR + "working/jets/Masks/" + runid)
+        os.makedirs(wrkdir_DNR + "working/SLAMS/Masks/" + runid)
+        os.makedirs(wrkdir_DNR + "working/SLAMSJETS/Masks/" + runid)
 
-    if not os.path.exists(FBUB_DIR + "up_down_stream/" + runid):
-        os.makedirs(FBUB_DIR + "up_down_stream/" + runid)
+    if not os.path.exists(wrkdir_DNR + "up_down_stream/" + runid):
+        os.makedirs(wrkdir_DNR + "up_down_stream/" + runid)
 
     np.savetxt(
-        FBUB_DIR + "working/jets/Masks/" + runid + "/{}.mask".format(str(filenr)),
+        wrkdir_DNR + "working/jets/Masks/" + runid + "/{}.mask".format(str(filenr)),
         np.intersect1d(jet_ci, restr_ci),
     )
     np.savetxt(
-        FBUB_DIR + "working/SLAMS/Masks/" + runid + "/{}.mask".format(str(filenr)),
+        wrkdir_DNR + "working/SLAMS/Masks/" + runid + "/{}.mask".format(str(filenr)),
         np.intersect1d(slams_ci, restr_ci),
     )
     np.savetxt(
-        FBUB_DIR + "working/SLAMSJETS/Masks/" + runid + "/{}.mask".format(str(filenr)),
+        wrkdir_DNR
+        + "working/SLAMSJETS/Masks/"
+        + runid
+        + "/{}.mask".format(str(filenr)),
         np.intersect1d(slamsjet_ci, restr_ci),
     )
 
     if not os.path.exists(
-        FBUB_DIR + "up_down_stream/" + runid + "/{}.up".format(str(filenr))
+        wrkdir_DNR + "up_down_stream/" + runid + "/{}.up".format(str(filenr))
     ):
         np.savetxt(
-            FBUB_DIR + "up_down_stream/" + runid + "/{}.up".format(str(filenr)),
+            wrkdir_DNR + "up_down_stream/" + runid + "/{}.up".format(str(filenr)),
             np.intersect1d(upstream_ci, restr_ci),
         )
         np.savetxt(
-            FBUB_DIR + "up_down_stream/" + runid + "/{}.down".format(str(filenr)),
+            wrkdir_DNR + "up_down_stream/" + runid + "/{}.down".format(str(filenr)),
             restr_ci[~np.in1d(restr_ci, upstream_ci)],
         )
 
         np.savetxt(
-            FBUB_DIR + "up_down_stream/" + runid + "/{}.up.mms".format(str(filenr)),
+            wrkdir_DNR + "up_down_stream/" + runid + "/{}.up.mms".format(str(filenr)),
             np.intersect1d(upstream_mms_ci, restr_ci),
         )
         np.savetxt(
-            FBUB_DIR + "up_down_stream/" + runid + "/{}.down.mms".format(str(filenr)),
+            wrkdir_DNR + "up_down_stream/" + runid + "/{}.down.mms".format(str(filenr)),
             restr_ci[~np.in1d(restr_ci, upstream_mms_ci)],
         )
 
@@ -227,3 +231,231 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
         np.intersect1d(slams_ci, restr_ci),
         np.intersect1d(slamsjet_ci, restr_ci),
     )
+
+
+def jet_creator(
+    runid,
+    start,
+    stop,
+    boxre=[6, 18, -8, 6],
+    maskfile=False,
+    avgfile=True,
+    nbrs=[2, 2, 0],
+    mag_thresh=1.5,
+):
+    runid_list = ["ABA", "ABC", "AEA", "AEC"]
+    maxfnr_list = [839, 1179, 1339, 879]
+    if start > maxfnr_list[runid_list.index(runid)]:
+        return 0
+
+    global runid_g
+    global filenr_g
+    runid_g = runid
+
+    global rho_sw_g
+
+    rho_sw_g = 1e6
+
+    # make outputdir if it doesn't already exist
+    if not os.path.exists(wrkdir_DNR + "working/jets/events/" + runid + "/"):
+        try:
+            os.makedirs(wrkdir_DNR + "working/jets/events/" + runid + "/")
+            os.makedirs(wrkdir_DNR + "working/SLAMS/events/" + runid + "/")
+            os.makedirs(wrkdir_DNR + "working/SLAMSJETS/events/" + runid + "/")
+        except OSError:
+            pass
+
+    bulkpath = find_bulkpath(runid)
+
+    for file_nr in range(start, stop + 1):
+        filenr_g = file_nr
+
+        # find correct file based on file number and run id
+
+        bulkname = "bulk." + str(file_nr).zfill(7) + ".vlsv"
+
+        if bulkname not in os.listdir(bulkpath):
+            print("Bulk file " + str(file_nr) + " not found, continuing")
+            continue
+
+        # open vlsv file for reading
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
+
+        vlsvobj.optimize_open_file()
+
+        # create mask
+        if maskfile:
+            jet_msk = np.loadtxt(
+                wrkdir_DNR
+                + "working/jets/Masks/"
+                + runid
+                + "/"
+                + str(file_nr)
+                + ".mask"
+            ).astype(int)
+            slams_msk = np.loadtxt(
+                wrkdir_DNR
+                + "working/SLAMS/Masks/"
+                + runid
+                + "/"
+                + str(file_nr)
+                + ".mask"
+            ).astype(int)
+            slamsjet_msk = np.loadtxt(
+                wrkdir_DNR
+                + "working/SLAMSJETS/Masks/"
+                + runid
+                + "/"
+                + str(file_nr)
+                + ".mask"
+            ).astype(int)
+        else:
+            jet_msk, slams_msk, slamsjet_msk = mask_maker(
+                runid, file_nr, boxre, avgfile, mag_thresh=mag_thresh
+            )
+
+        print("Current file number is " + str(file_nr))
+
+        up_cells = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + runid + "/" + str(file_nr) + ".up"
+        ).astype(int)
+        down_cells = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + runid + "/" + str(file_nr) + ".down"
+        ).astype(int)
+
+        up_cells_mms = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + runid + "/" + str(file_nr) + ".up.mms"
+        ).astype(int)
+        down_cells_mms = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + runid + "/" + str(file_nr) + ".down.mms"
+        ).astype(int)
+
+        # sort jets
+        jets, props_inc = jet_sorter(
+            vlsvobj,
+            jet_msk,
+            slams_msk,
+            slamsjet_msk,
+            up_cells,
+            down_cells,
+            up_cells_mms,
+            down_cells_mms,
+            neighborhood_reach=nbrs,
+        )
+        jet_jets, jet_props_inc = jet_sorter(
+            vlsvobj,
+            jet_msk,
+            slams_msk,
+            jet_msk,
+            up_cells,
+            down_cells,
+            up_cells_mms,
+            down_cells_mms,
+            neighborhood_reach=nbrs,
+        )
+        slams_jets, slams_props_inc = jet_sorter(
+            vlsvobj,
+            jet_msk,
+            slams_msk,
+            slams_msk,
+            up_cells,
+            down_cells,
+            up_cells_mms,
+            down_cells_mms,
+            neighborhood_reach=nbrs,
+        )
+
+        props = [[float(file_nr) / 2.0] + line for line in props_inc]
+        jet_props = [[float(file_nr) / 2.0] + line for line in jet_props_inc]
+        slams_props = [[float(file_nr) / 2.0] + line for line in slams_props_inc]
+
+        # print(len(jet_props))
+        # print(len(jet_jets))
+        #
+        # print(len(slams_props))
+        # print(len(slams_jets))
+
+        eventprop_write(runid, file_nr, props, transient="slamsjet")
+        eventprop_write(runid, file_nr, slams_props, transient="slams")
+        eventprop_write(runid, file_nr, jet_props, transient="jet")
+
+        # erase contents of output file
+
+        open(
+            wrkdir_DNR
+            + "working/SLAMSJETS/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "w",
+        ).close()
+
+        # open output file
+        fileobj = open(
+            wrkdir_DNR
+            + "working/SLAMSJETS/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "a",
+        )
+
+        # write jets to outputfile
+        for jet in jets:
+            fileobj.write(",".join(list(map(str, jet))) + "\n")
+
+        fileobj.close()
+
+        open(
+            wrkdir_DNR
+            + "working/SLAMS/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "w",
+        ).close()
+        fileobj_slams = open(
+            wrkdir_DNR
+            + "working/SLAMS/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "a",
+        )
+
+        for slams_jet in slams_jets:
+            fileobj_slams.write(",".join(list(map(str, slams_jet))) + "\n")
+
+        fileobj_slams.close()
+
+        open(
+            wrkdir_DNR
+            + "working/jets/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "w",
+        ).close()
+        fileobj_jet = open(
+            wrkdir_DNR
+            + "working/jets/events/"
+            + runid
+            + "/"
+            + str(file_nr)
+            + ".events",
+            "a",
+        )
+
+        for jet_jet in jet_jets:
+            fileobj_jet.write(",".join(list(map(str, jet_jet))) + "\n")
+
+        fileobj_jet.close()
+
+        vlsvobj.optimize_close_file()
+
+    return None
