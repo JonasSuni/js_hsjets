@@ -82,7 +82,6 @@ class PropReader:
     # Class for reading jet property files
 
     def __init__(self, ID, runid, start=580, fname=None, transient="jet"):
-
         # Check for transient type
         if transient == "jet":
             inputdir = wrkdir_DNR + "working/jets/jets"
@@ -153,7 +152,6 @@ class PropReader:
         ]
 
     def get_splin_times(self):
-
         splin_arr = [s for s in self.meta if s != "splinter"]
         splin_arr = [s[-5:] for s in splin_arr if "splin" in s]
         splin_arr = list(map(float, splin_arr))
@@ -290,7 +288,6 @@ class PropReader:
         return self.read(var)[self.time_index(time)]
 
     def read_at_randt(self, var):
-
         time_arr = self.read("time")
         randt = random.choice(time_arr)
 
@@ -302,17 +299,14 @@ class PropReader:
         return self.read(name)[self.amax_index()]
 
     def read_at_lastbs(self, name):
-
         t0 = self.read("time")[self.read("at_bow_shock") == 1][-1]
         return self.read_at_time(name, t0)
 
 
 class NeoTransient:
-
     # Class for identifying and handling individual jets and their properties
 
     def __init__(self, ID, runid, birthday, transient="jet"):
-
         self.ID = ID  # Should be a string of 5 digits
         self.runid = runid  # Should be a string of 3 letters
         self.birthday = birthday  # Should be a float of accuracy to half a second
@@ -338,7 +332,6 @@ class NeoTransient:
         return "\n".join(list(map(str, self.times)))
 
     def jetprops_write(self, start):
-
         if self.times[-1] - self.times[0] >= 0:
             t_arr = np.array(self.times)
             splinter_arr = (t_arr >= self.splinter_time).astype(int)
@@ -369,7 +362,6 @@ class Transient:
     # Class for identifying and handling individual jets and their properties
 
     def __init__(self, ID, runid, birthday, transient="jet"):
-
         self.ID = ID  # Should be a string of 5 digits
         self.runid = runid  # Should be a string of 3 letters
         self.birthday = birthday  # Should be a float of accuracy to half a second
@@ -392,7 +384,6 @@ class Transient:
         return "\n".join(list(map(str, self.times)))
 
     def jetprops_write(self, start):
-
         if self.transient != "slamsjet":
             if self.times[-1] - self.times[0] >= 4.5:
                 propfile_write(
@@ -470,7 +461,6 @@ def jet_creator(
     nbrs=[2, 2, 0],
     mag_thresh=1.5,
 ):
-
     runid_list = ["ABA", "ABC", "AEA", "AEC"]
     maxfnr_list = [839, 1179, 1339, 879]
     if start > maxfnr_list[runid_list.index(runid)]:
@@ -496,7 +486,6 @@ def jet_creator(
     bulkpath = ja.find_bulkpath(runid)
 
     for file_nr in range(start, stop + 1):
-
         filenr_g = file_nr
 
         # find correct file based on file number and run id
@@ -633,7 +622,6 @@ def jet_creator(
 
         # write jets to outputfile
         for jet in jets:
-
             fileobj.write(",".join(list(map(str, jet))) + "\n")
 
         fileobj.close()
@@ -658,7 +646,6 @@ def jet_creator(
         )
 
         for slams_jet in slams_jets:
-
             fileobj_slams.write(",".join(list(map(str, slams_jet))) + "\n")
 
         fileobj_slams.close()
@@ -683,7 +670,6 @@ def jet_creator(
         )
 
         for jet_jet in jet_jets:
-
             fileobj_jet.write(",".join(list(map(str, jet_jet))) + "\n")
 
         fileobj_jet.close()
@@ -703,7 +689,6 @@ def jet_maker(
     nbrs=[2, 2, 0],
     transient="jet",
 ):
-
     if transient == "jet":
         outputdir = wrkdir_DNR + "working/jets/events/" + runid + "/"
         maskdir = wrkdir_DNR + "working/jets/Masks/" + runid + "/"
@@ -734,7 +719,6 @@ def jet_maker(
     bulkpath = ja.find_bulkpath(runid)
 
     for file_nr in range(start, stop + 1):
-
         # find correct file based on file number and run id
 
         bulkname = "bulk." + str(file_nr).zfill(7) + ".vlsv"
@@ -774,7 +758,6 @@ def jet_maker(
 
         # write jets to outputfile
         for jet in jets:
-
             fileobj.write(",".join(list(map(str, jet))) + "\n")
 
         fileobj.close()
@@ -825,7 +808,6 @@ def jetfile_read(runid, filenr, key, transient="jet"):
     lines = contents.split("\n")
 
     for line in lines:
-
         outputlist.append(list(map(int, line.split(","))))
 
     return outputlist
@@ -851,14 +833,12 @@ def eventfile_read(runid, filenr, transient="jet"):
     lines = contents.split("\n")
 
     for line in lines:
-
         outputlist.append(list(map(int, line.split(","))))
 
     return outputlist
 
 
 def eventprop_write(runid, filenr, props, transient="jet"):
-
     if transient == "jet":
         outputdir = wrkdir_DNR + "working/jets/event_props/" + runid
     elif transient == "slams":
@@ -885,7 +865,6 @@ def eventprop_write(runid, filenr, props, transient="jet"):
 
 
 def eventprop_read(runid, filenr, transient="jet"):
-
     if transient == "jet":
         inputname = wrkdir_DNR + "working/jets/event_props/{}/{}.eventprops".format(
             runid, str(filenr)
@@ -959,7 +938,6 @@ def calc_event_props(
     up_cells_mms=[],
     down_cells_mms=[],
 ):
-
     is_merger = 0
     is_splinter = 0
     is_slams = 0
@@ -1308,7 +1286,6 @@ def calc_event_props(
 
 
 def get_sheath_cells(vlsvobj, cells, neighborhood_reach=[2, 2, 0]):
-
     plus_sheath_cells = get_neighbors(vlsvobj, cells, neighborhood_reach)
     sheath_cells = plus_sheath_cells[~np.in1d(plus_sheath_cells, cells)]
 
@@ -1316,7 +1293,6 @@ def get_sheath_cells(vlsvobj, cells, neighborhood_reach=[2, 2, 0]):
 
 
 def get_sheath_cells_asym(vlsvobj, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
-
     plus_sheath_cells = get_neighbors_asym(vlsvobj, cells, neighborhood_reach)
     sheath_cells = plus_sheath_cells[~np.in1d(plus_sheath_cells, cells)]
 
@@ -1324,7 +1300,6 @@ def get_sheath_cells_asym(vlsvobj, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0
 
 
 def get_neighbors_asym(vlsvobj, c_i, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
-
     # finds the neighbors of the specified cells within the maximum offsets in neighborhood_reach
 
     # initialise array of neighbors
@@ -1336,7 +1311,6 @@ def get_neighbors_asym(vlsvobj, c_i, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
     z_r = range(neighborhood_reach[4], neighborhood_reach[5] + 1)
 
     for n in c_i:
-
         # append cellids of neighbors, cast as int, to array of neighbors
         for a in x_r:
             for b in y_r:
@@ -1374,7 +1348,6 @@ def get_neighbors(vlsvobj, c_i, neighborhood_reach=[1, 1, 0]):
 def sort_jets_2(
     vlsvobj, cells, min_size=0, max_size=3000, neighborhood_reach=[1, 1, 0]
 ):
-
     cells = np.array(cells, ndmin=1, dtype=int)
 
     events = []
@@ -1389,7 +1362,6 @@ def sort_jets_2(
         )
 
         while curr_event.size != curr_event_size:
-
             curr_event_size = curr_event.size
 
             curr_event = np.intersect1d(
@@ -1421,7 +1393,6 @@ def jet_sorter(
     max_size=100000000,
     neighborhood_reach=[2, 2, 0],
 ):
-
     cells = np.array(sj_cells, ndmin=1, dtype=int)
     events = []
     curr_event = np.array([], dtype=int)
@@ -1435,7 +1406,6 @@ def jet_sorter(
         )
 
         while curr_event.size != curr_event_size:
-
             # print(curr_event.size)
             # print(curr_event_size)
 
@@ -1470,7 +1440,6 @@ def jet_sorter(
 
 
 def mean_med_max(var):
-
     var_mean = np.nanmean(var)
     var_med = np.median(var)
     var_max = np.max(var)
@@ -1479,12 +1448,10 @@ def mean_med_max(var):
 
 
 def check_threshold(A, B, thresh):
-
     return np.intersect1d(A, B).size > thresh * min(len(A), len(B))
 
 
 def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=False):
-
     if transient == "slamsjet":
         outputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets/" + runid
     elif transient == "jet":
@@ -1521,11 +1488,8 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
 
     # Look for jets at bow shock
     for event in events_unsrt:
-
         for old_event in events_old:
-
             if check_threshold(old_event, event, threshold):
-
                 # Create unique ID
                 curr_id = str(counter).zfill(5)
 
@@ -1555,7 +1519,6 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
 
     # Track jets
     for n in range(start + 2, stop + 1):
-
         for jetobj in jetobj_list:
             if float(n) / 2 - jetobj.times[-1] + 0.5 > 2.5:
                 if dbg:
@@ -1584,13 +1547,9 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
 
         # Update existing jets
         for event in events:
-
             for jetobj in jetobj_list:
-
                 if jetobj.ID not in flags:
-
                     if check_threshold(jetobj.cellids[-1], event, threshold):
-
                         # Append event to jet object properties
                         jetobj.cellids.append(event)
                         jetobj.props.append(props_unsrt[events_unsrt.index(event)])
@@ -1607,9 +1566,7 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
 
                 else:
                     if event not in curr_jet_temp_list:
-
                         if check_threshold(jetobj.cellids[-2], event, threshold):
-
                             curr_id = str(counter).zfill(5)
                             # Iterate counter
                             counter += 1
@@ -1637,13 +1594,9 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
 
         # Look for new jets at bow shock
         for event in events:
-
             if event not in curr_jet_temp_list:
-
                 for old_event in events_old:
-
                     if check_threshold(old_event, event, threshold):
-
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
 
@@ -1669,7 +1622,6 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=Fal
     jetobj_list = jetobj_list + dead_jetobj_list
 
     for jetobj in jetobj_list:
-
         # Write jet object cellids and times to files
         jetfile = open(
             outputdir + "/" + str(start) + "." + jetobj.ID + "." + transient, "w"
@@ -1695,7 +1647,6 @@ def track_jets(
     transient="jet",
     sj_fulltrack=False,
 ):
-
     if transient == "jet":
         outputdir = wrkdir_DNR + "working/jets/jets/" + runid
         extension = ".jet"
@@ -1758,11 +1709,8 @@ def track_jets(
 
     # Look for jets at bow shock
     for event in events_unsrt:
-
         for bs_event in bs_events:
-
             if check_threshold(bs_event, event, threshold):
-
                 # Create unique ID
                 curr_id = str(counter).zfill(5)
 
@@ -1785,7 +1733,6 @@ def track_jets(
 
     # Track jets
     for n in range(start + 2, stop + 1):
-
         for jetobj in jetobj_list:
             if float(n) / 2 - jetobj.times[-1] + 0.5 > 10:
                 print("Killing jet {}".format(jetobj.ID))
@@ -1826,15 +1773,10 @@ def track_jets(
 
         # Update existing jets
         for event in events:
-
             for jetobj in jetobj_list:
-
                 if jetobj.ID not in flags:
-
                     if event not in curr_jet_temp_list:
-
                         if check_threshold(jetobj.cellids[-1], event, threshold):
-
                             # Append event to jet object properties
                             jetobj.cellids.append(event)
                             jetobj.props.append(props_unsrt[events_unsrt.index(event)])
@@ -1874,9 +1816,7 @@ def track_jets(
 
                 else:
                     if event not in curr_jet_temp_list:
-
                         if check_threshold(jetobj.cellids[-2], event, threshold):
-
                             curr_id = str(counter).zfill(5)
                             # Iterate counter
                             counter += 1
@@ -1913,13 +1853,9 @@ def track_jets(
 
         # Look for new jets at bow shock
         for event in events:
-
             if event not in curr_jet_temp_list:
-
                 for bs_event in bs_events:
-
                     if check_threshold(bs_event, event, threshold):
-
                         # Create unique ID
                         curr_id = str(counter).zfill(5)
 
@@ -1949,7 +1885,6 @@ def track_jets(
     jetobj_list = jetobj_list + dead_jetobj_list
 
     for jetobj in jetobj_list:
-
         # Write jet object cellids and times to files
         jetfile = open(outputdir + "/" + str(start) + "." + jetobj.ID + extension, "w")
         timefile = open(outputdir + "/" + str(start) + "." + jetobj.ID + ".times", "w")

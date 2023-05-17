@@ -45,7 +45,6 @@ except:
 
 
 def ani_timeseries(time0=475, x=10.5, y=-2.2, pm=100):
-
     jetid = 596
     runid = "ABC"
     kind = ""
