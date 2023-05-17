@@ -85,10 +85,8 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
 
     pdyn = vlsvreader.read_variable("proton/vg_Pdyn")[np.argsort(origid)]
     B = vlsvreader.read_variable("vg_b_vol")[np.argsort(origid)]
-    pr_rhonbs = vlsvreader.read_variable("proton/vg_RhoNonBackstream")[
-        np.argsort(origid)
-    ]
-    pr_PTDNBS = vlsvreader.read_variable("proton/vg_PTensorNonBackstreamDiagonal")[
+    pr_rhonbs = vlsvreader.read_variable("proton/vg_rho_thermal")[np.argsort(origid)]
+    pr_PTDNBS = vlsvreader.read_variable("proton/vg_ptensor_thermal_diagonal")[
         np.argsort(origid)
     ]
 
