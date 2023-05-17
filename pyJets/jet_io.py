@@ -928,6 +928,325 @@ def propfile_write(runid, filenr, key, props, meta, transient="jet"):
         )
 
 
+def calc_event_props_agf(
+    vlsvobj,
+    cells,
+    jet_cells=[],
+    slams_cells=[],
+    up_cells=[],
+    down_cells=[],
+    up_cells_mms=[],
+    down_cells_mms=[],
+):
+    is_merger = 0
+    is_splinter = 0
+    is_slams = 0
+    is_jet = 0
+    at_jet = 0
+    at_slams = 0
+    at_bow_shock = 0
+
+    upstream_slice = jx.get_neighs_asym(
+        runid_g, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+    )
+    downstream_slice = jx.get_neighs_asym(
+        runid_g, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+    )
+
+    upstream_slice_mms = jx.get_neighs_asym(
+        runid_g, down_cells_mms, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+    )
+    downstream_slice_mms = jx.get_neighs_asym(
+        runid_g, up_cells_mms, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+    )
+
+    bs_slice = np.intersect1d(upstream_slice, downstream_slice)
+    bs_slice_mms = np.intersect1d(upstream_slice_mms, downstream_slice_mms)
+
+    bs_slice_tot = np.union1d(bs_slice, bs_slice_mms)
+
+    if np.intersect1d(cells, bs_slice_tot).size > 0:
+        at_bow_shock = 1
+    if np.intersect1d(cells, slams_cells).size > 0:
+        is_slams = 1
+    if np.intersect1d(cells, jet_cells).size > 0:
+        is_jet = 1
+    if (
+        np.intersect1d(
+            cells, jx.get_neighs(runid_g, slams_cells, neighborhood_reach=[2, 2, 0])
+        ).size
+        > 0
+    ):
+        at_slams = 1
+    if (
+        np.intersect1d(
+            cells, jx.get_neighs(runid_g, jet_cells, neighborhood_reach=[2, 2, 0])
+        ).size
+        > 0
+    ):
+        at_jet = 1
+
+    if np.argmin(vlsvobj.get_spatial_mesh_size()) == 1:
+        sheath_cells = get_sheath_cells(vlsvobj, cells, neighborhood_reach=[2, 0, 2])
+        ssh_cells = get_sheath_cells(vlsvobj, cells, neighborhood_reach=[1, 0, 1])
+    else:
+        sheath_cells = get_sheath_cells(vlsvobj, cells)
+        ssh_cells = get_sheath_cells(vlsvobj, cells, neighborhood_reach=[1, 1, 0])
+
+    up_cells_all = np.union1d(up_cells, up_cells_mms)
+    down_cells_all = np.union1d(down_cells, down_cells_mms)
+    if is_jet and not is_slams:
+        sheath_cells = np.intersect1d(sheath_cells, down_cells_all)
+    elif is_slams and not is_jet:
+        sheath_cells = np.intersect1d(sheath_cells, up_cells_all)
+
+    ew_cells = get_sheath_cells_asym(
+        vlsvobj, cells, neighborhood_reach=[-10, 0, 0, 0, 0, 0]
+    )
+
+    # read variables
+    X, Y, Z = ja.xyz_reconstruct(vlsvobj, cellids=cells)
+    X = np.array(X, ndmin=1)
+    Y = np.array(Y, ndmin=1)
+    Z = np.array(Z, ndmin=1)
+    dA = ja.get_cell_volume(vlsvobj)
+
+    var_list_v5 = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "vg_b_vol",
+        "proton/vg_temperature",
+        "CellID",
+        "proton/vg_beta",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+
+    sheath_list_v5 = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "vg_b_vol",
+        "proton/vg_temperature",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+        "proton/vg_Pdyn",
+    ]
+
+    rho, v, B, T, cellids, beta, TParallel, TPerpendicular = [
+        np.array(vlsvobj.read_variable(s, cellids=cells), ndmin=1) for s in var_list_v5
+    ]
+    (
+        rho_sheath,
+        v_sheath,
+        B_sheath,
+        T_sheath,
+        TPar_sheath,
+        TPerp_sheath,
+        pd_sheath,
+    ) = [
+        np.array(vlsvobj.read_variable(s, cellids=sheath_cells), ndmin=1)
+        for s in sheath_list_v5
+    ]
+
+    pr_rhonbs = np.array(
+        vlsvobj.read_variable("proton/vg_rho_thermal", cellids=ssh_cells), ndmin=1
+    )
+    pr_PTDNBS = np.array(
+        vlsvobj.read_variable("proton/vg_ptensor_thermal_diagonal", cellids=ssh_cells),
+        ndmin=1,
+    )
+    ew_pdyn = np.array(
+        vlsvobj.read_variable("proton/vg_Pdyn", cellids=ew_cells), ndmin=1
+    )
+    mmsx_ssh = np.array(
+        vlsvobj.read_variable("proton/vg_mmsx", cellids=ssh_cells), ndmin=1
+    )
+
+    # rho_sw = rho_sw_g
+    T_sw = 0.5e6
+
+    epsilon = 1.0e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0 / 3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs / ((pr_rhonbs + epsilon) * kb)
+
+    # is_upstream = int(np.all(rho_ssh < 2*rho_sw))
+    is_upstream = int(np.all(pr_TNBS < 3 * T_sw))
+    # is_upstream = int(np.all(mmsx_ssh >= 1))
+
+    pdyn = m_p * rho * (np.array(np.linalg.norm(v, axis=-1), ndmin=1) ** 2)
+
+    # Scale variables
+    rho /= 1.0e6
+    v /= 1.0e3
+    B /= 1.0e-9
+    B_sheath /= 1.0e-9
+    pdyn /= 1.0e-9
+    T /= 1.0e6
+    TParallel /= 1.0e6
+    TPerpendicular /= 1.0e6
+    TPar_sheath /= 1.0e6
+    TPerp_sheath /= 1.0e6
+    T_sheath /= 1.0e6
+    rho_sheath /= 1.0e6
+    v_sheath /= 1.0e3
+    pd_sheath /= 1.0e-9
+    ew_pdyn /= 1.0e-9
+
+    ew_pd_enh = np.nanmean(ew_pdyn)
+
+    # Calculate magnitudes of v and B
+    vmag = np.array(np.linalg.norm(v, axis=-1), ndmin=1)
+    Bmag = np.array(np.linalg.norm(B, axis=-1), ndmin=1)
+    B_sheath_mag = np.array(np.linalg.norm(B_sheath, axis=-1), ndmin=1)
+    v_sheath_mag = np.array(np.linalg.norm(v_sheath, axis=-1), ndmin=1)
+
+    if type(vmag) == float:
+        vmag = np.array(vmag, ndmin=1)
+    if type(Bmag) == float:
+        Bmag = np.array(Bmag, ndmin=1)
+    if type(B_sheath_mag) == float:
+        B_sheath_mag = np.array(B_sheath_mag, ndmin=1)
+
+    n_avg, n_med, n_max = mean_med_max(rho)
+
+    v_avg, v_med, v_max = mean_med_max(vmag)
+
+    B_avg, B_med, B_max = mean_med_max(Bmag)
+
+    pd_avg, pd_med, pd_max = mean_med_max(pdyn)
+
+    T_avg, T_med, T_max = mean_med_max(T)
+
+    TPar_avg, TPar_med, TPar_max = mean_med_max(TParallel)
+
+    TPerp_avg, TPerp_med, TPerp_max = mean_med_max(TPerpendicular)
+
+    beta_avg, beta_med, beta_max = mean_med_max(beta)
+
+    # Convert X,Y,Z to spherical coordinates
+    # r = np.linalg.norm(np.array([X,Y,Z]),axis=0)
+    # theta = np.rad2deg(np.arccos(Z/r))
+    # phi = np.rad2deg(np.arctan(Y/X))
+    #
+    # # calculate geometric center of jet
+    # r_mean = np.mean(r)/r_e
+    # theta_mean = np.mean(theta)
+    # phi_mean = np.mean(phi)
+
+    # Geometric center of jet in cartesian coordinates
+    x_mean = np.nanmean(X) / r_e
+    y_mean = np.nanmean(Y) / r_e
+    z_mean = np.nanmean(Z) / r_e
+
+    # Position of maximum velocity in cartesian coordinates
+    x_max = X[vmag == max(vmag)][0] / r_e
+    y_max = Y[vmag == max(vmag)][0] / r_e
+    z_max = Z[vmag == max(vmag)][0] / r_e
+
+    # Minimum x and density at maximum velocity
+    x_min = min(X) / r_e
+    rho_vmax = rho[vmag == max(vmag)][0]
+    b_vmax = beta[vmag == max(vmag)][0]
+
+    # calculate jet size
+    A = dA * len(cells) / (r_e**2)
+    Nr_cells = len(cells)
+
+    # calculate linear sizes of jet
+    size_rad = (max(X) - min(X)) / r_e + np.sqrt(dA) / r_e
+    size_tan = A / size_rad
+
+    # calculate distance of bow shock at y_mean
+    # bs_ch,bs_rho,bs_mms = jx.bs_nonloc(vlsvobj,rho_sw_g)
+    # xbs_ch = np.polyval(bs_ch,y_mean)
+    # xbs_rho = np.polyval(bs_rho,y_mean)
+    # xbs_mms = np.polyval(bs_mms,y_mean)
+    # bs_pol = jx.bow_shock_jonas(runid_g,filenr_g)[::-1]
+    # x_bs = np.polyval(bs_pol,y_mean)
+    # at_bow_shock = int(np.intersect1d(cells,bs_slice).size > 0)
+
+    [
+        B_sheath_avg,
+        TPar_sheath_avg,
+        TPerp_sheath_avg,
+        T_sheath_avg,
+        n_sheath_avg,
+        v_sheath_avg,
+        pd_sheath_avg,
+    ] = [
+        np.nanmean(v)
+        for v in [
+            B_sheath_mag,
+            TPar_sheath,
+            TPerp_sheath,
+            T_sheath,
+            rho_sheath,
+            v_sheath_mag,
+            pd_sheath,
+        ]
+    ]
+
+    temp_arr = [
+        x_mean,
+        y_mean,
+        z_mean,
+        A,
+        Nr_cells,
+        size_rad,
+        size_tan,
+        x_max,
+        y_max,
+        z_max,
+        n_avg,
+        n_med,
+        n_max,
+        v_avg,
+        v_med,
+        v_max,
+        B_avg,
+        B_med,
+        B_max,
+        T_avg,
+        T_med,
+        T_max,
+        TPar_avg,
+        TPar_med,
+        TPar_max,
+        TPerp_avg,
+        TPerp_med,
+        TPerp_max,
+        beta_avg,
+        beta_med,
+        beta_max,
+        x_min,
+        rho_vmax,
+        b_vmax,
+        pd_avg,
+        pd_med,
+        pd_max,
+        B_sheath_avg,
+        TPar_sheath_avg,
+        TPerp_sheath_avg,
+        T_sheath_avg,
+        n_sheath_avg,
+        v_sheath_avg,
+        pd_sheath_avg,
+        is_upstream,
+        ew_pd_enh,
+        is_slams,
+        is_jet,
+        is_merger,
+        is_splinter,
+        at_bow_shock,
+        at_slams,
+        at_jet,
+    ]
+
+    return temp_arr
+
+
 def calc_event_props(
     vlsvobj,
     cells,
