@@ -26,7 +26,6 @@ except:
 
 
 def loadtxt(filename, numpyhelp=False):
-
     f = open(filename, "r")
 
     if numpyhelp:
@@ -40,7 +39,6 @@ def loadtxt(filename, numpyhelp=False):
 
 
 def get_pdyn(fnr):
-
     return loadtxt(
         wrkdir_DNR
         + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
@@ -49,7 +47,6 @@ def get_pdyn(fnr):
 
 
 def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
-
     # print(fnr)
 
     pdyn_data = loadtxt(
@@ -64,7 +61,6 @@ def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
 
 
 def tavg_maker_2023(runid, fnr, parallel=False):
-
     print("Parallel = {}".format(parallel))
 
     t = time.time()
@@ -82,7 +78,6 @@ def tavg_maker_2023(runid, fnr, parallel=False):
     pd_zeros = np.zeros((pd_size), dtype=float)
 
     if parallel:
-
         pdyn_avg = multiprocessing.Array("f", pd_zeros)
 
         sema = multiprocessing.Semaphore(nprocs)
@@ -114,7 +109,6 @@ def tavg_maker_2023(runid, fnr, parallel=False):
         pd_zeros[:] = pdyn_avg[:]
 
     else:
-
         for i in range(fnr - 180, fnr + 180 + 1):
             # print(i)
             if i == fnr:
@@ -145,14 +139,13 @@ def tavg_maker_2023(runid, fnr, parallel=False):
 
 
 def extract_var(runid, fnr, var):
-
     bulkpath = jx.find_bulkpath(runid)
 
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
     )
 
-    pdyn = vlsvobj.read_variable("Pdyn")
+    pdyn = vlsvobj.read_variable(var)
     cellids = vlsvobj.read_variable("CellID")
 
     pdyn_sorted = pdyn[np.argsort(cellids)]
@@ -169,7 +162,6 @@ def extract_var(runid, fnr, var):
 
 
 def testplot_vavg(runid, start, stop, step=1, density=1):
-
     inputdir = wrkdir_DNR + "tavg/velocities/" + runid + "/"
     bulkpath = jx.find_bulkpath(runid)
 
@@ -210,7 +202,6 @@ def testplot_vavg(runid, start, stop, step=1, density=1):
 
 
 def v_avg_maker(runid, start, stop, step=1):
-
     outputdir = wrkdir_DNR + "tavg/velocities/" + runid + "/"
 
     # make outputdir if it doesn't already exist
@@ -244,7 +235,6 @@ def v_avg_maker(runid, start, stop, step=1):
 
 
 def avg_maker_slow(runid, start, stop):
-
     # Creates files for 3-minute time averages of dynamic pressure and density
 
     outputdir = wrkdir_DNR + "tavg/" + runid + "/"
@@ -287,7 +277,6 @@ def avg_maker_slow(runid, start, stop):
 
         # range from current filenumber-180 to current filenumber+180
         for t in range(n - 180, n + 180 + 1):
-
             # exclude current filenumber from time average
             if t == n:
                 continue
@@ -385,7 +374,6 @@ def TP_maker(runid, start, stop):
 
     # range from first filenumber to last
     for n in range(start, stop + 1):
-
         # find correct file for current time step
         if runid == "AED":
             bulkname = "bulk.old." + str(n).zfill(7) + ".vlsv"
