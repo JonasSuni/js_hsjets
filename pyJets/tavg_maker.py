@@ -60,7 +60,7 @@ def add_pdyn_to_array(arr, fnr, sema=None, lock=None):
     sema.release()
 
 
-def tavg_maker_2023(runid, fnr, parallel=False):
+def tavg_maker_2023(runid, fnr, var="Pdyn", parallel=False):
     print("Parallel = {}".format(parallel))
 
     t = time.time()
@@ -69,10 +69,14 @@ def tavg_maker_2023(runid, fnr, parallel=False):
 
     outputdir = tavgdir + "{}/".format(runid)
 
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
     pd_size = loadtxt(
-        wrkdir_DNR
-        + "extracted_vars/{}/{}/".format(runid, "Pdyn")
-        + "{}.txt".format(fnr)
+        wrkdir_DNR + "extracted_vars/{}/{}/".format(runid, var) + "{}.txt".format(fnr)
     ).size
 
     pd_zeros = np.zeros((pd_size), dtype=float)
@@ -116,7 +120,7 @@ def tavg_maker_2023(runid, fnr, parallel=False):
             try:
                 data = loadtxt(
                     wrkdir_DNR
-                    + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+                    + "extracted_vars/{}/{}/".format(runid, var)
                     + "{}.txt".format(i)
                 )
 
@@ -124,7 +128,7 @@ def tavg_maker_2023(runid, fnr, parallel=False):
                 time.sleep(3)
                 data = loadtxt(
                     wrkdir_DNR
-                    + "extracted_vars/{}/{}/".format("DCB", "Pdyn")
+                    + "extracted_vars/{}/{}/".format(runid, var)
                     + "{}.txt".format(i)
                 )
             pd_zeros += data
