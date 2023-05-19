@@ -534,7 +534,7 @@ def get_cell_coordinates(runid, cellid):
 
 
 def spatmesh_get(runid):
-    runids = ["ABA", "ABC", "AEA", "AEC"]
+    runids = ["ABA", "ABC", "AEA", "AEC", "AGF"]
 
     spat_extent = [
         np.array(
@@ -577,12 +577,23 @@ def spatmesh_get(runid):
                 1.13907257e05,
             ]
         ),
+        np.array(
+            [
+                -6.3780e07,
+                -2.5500e08,
+                -1.5000e05,
+                1.9122e08,
+                2.5500e08,
+                1.5000e05,
+            ]
+        ),
     ]
     spat_size = [
         np.array([1530, 1750, 1], dtype=np.uint64),
         np.array([2000, 1750, 1], dtype=np.uint64),
         np.array([1530, 1750, 1], dtype=np.uint64),
         np.array([2000, 1750, 1], dtype=np.uint64),
+        np.array([850, 1700, 1], dtype=np.uint64),
     ]
 
     return (spat_extent[runids.index(runid)], spat_size[runids.index(runid)])
