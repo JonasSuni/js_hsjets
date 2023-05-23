@@ -625,7 +625,7 @@ def jet_creator(
     bulkpath = find_bulkpath(runid)
 
     for file_nr in range(start, stop + 1):
-        if runid == "AGF" and file_nr > 1193:
+        if file_nr > maxfnr_list[runid_list.index(runid)]:
             break
 
         filenr_g = file_nr
