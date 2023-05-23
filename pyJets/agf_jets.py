@@ -1139,9 +1139,9 @@ def calc_event_props(
     ).T
     dist_vpar = np.dot(coords_shifted, avg_vu)
     dist_Bpar = np.dot(coords_shifted, avg_Bu)
-    size_vpar = np.max(dist_vpar) - np.min(dist_vpar)
+    size_vpar = np.max(dist_vpar) - np.min(dist_vpar) + np.sqrt(dA) / r_e
     size_vperp = A / size_vpar
-    size_Bpar = np.max(dist_Bpar) - np.min(dist_Bpar)
+    size_Bpar = np.max(dist_Bpar) - np.min(dist_Bpar) + np.sqrt(dA) / r_e
     size_Bperp = A / size_Bpar
 
     [
