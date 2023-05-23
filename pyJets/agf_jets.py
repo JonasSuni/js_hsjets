@@ -1104,7 +1104,7 @@ def calc_event_props(
 
     # Weighted geometric center of jet in cartesian coordinates
     tavg_pdyn = np.loadtxt(
-        np.loadtxt(tavgdir + "/" + runid_g + "/" + str(filenr_g) + "_pdyn.tavg")
+        tavgdir + "/" + runid_g + "/" + str(filenr_g) + "_pdyn.tavg"
     )[np.array(cells) - 1]
     w = pdyn / tavg_pdyn - 2.0
     x_wmean = np.sum(X * w) / np.sum(w) / r_e
