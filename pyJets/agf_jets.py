@@ -1397,7 +1397,7 @@ def check_threshold(A, B, thresh):
     return np.intersect1d(A, B).size > thresh * min(len(A), len(B))
 
 
-def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=False):
+def jet_tracker(runid, start, stop, threshold=0.5, transient="jet", dbg=False):
     if transient == "slamsjet":
         outputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets/" + runid
     elif transient == "jet":
