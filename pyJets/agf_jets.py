@@ -988,7 +988,8 @@ def calc_event_props(
         "vg_b_vol",
         "proton/vg_temperature",
         "CellID",
-        "proton/vg_Pdyn" "proton/vg_beta",
+        "proton/vg_Pdyn",
+        "proton/vg_beta",
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
