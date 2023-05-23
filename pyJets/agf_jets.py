@@ -594,11 +594,11 @@ def jet_creator(
     runid,
     start,
     stop,
-    boxre=[6, 18, -8, 6],
+    boxre=[6, 18, -6, 6],
     maskfile=False,
     avgfile=True,
     nbrs=[2, 2, 0],
-    mag_thresh=1.5,
+    mag_thresh=1.1,
 ):
     runid_list = ["ABA", "ABC", "AEA", "AEC", "AGF"]
     maxfnr_list = [839, 1179, 1339, 879, 1193]
@@ -688,17 +688,17 @@ def jet_creator(
         ).astype(int)
 
         # sort jets
-        jets, props_inc = jet_sorter(
-            vlsvobj,
-            jet_msk,
-            slams_msk,
-            slamsjet_msk,
-            up_cells,
-            down_cells,
-            up_cells_mms,
-            down_cells_mms,
-            neighborhood_reach=nbrs,
-        )
+        # jets, props_inc = jet_sorter(
+        #     vlsvobj,
+        #     jet_msk,
+        #     slams_msk,
+        #     slamsjet_msk,
+        #     up_cells,
+        #     down_cells,
+        #     up_cells_mms,
+        #     down_cells_mms,
+        #     neighborhood_reach=nbrs,
+        # )
         jet_jets, jet_props_inc = jet_sorter(
             vlsvobj,
             jet_msk,
@@ -710,21 +710,21 @@ def jet_creator(
             down_cells_mms,
             neighborhood_reach=nbrs,
         )
-        slams_jets, slams_props_inc = jet_sorter(
-            vlsvobj,
-            jet_msk,
-            slams_msk,
-            slams_msk,
-            up_cells,
-            down_cells,
-            up_cells_mms,
-            down_cells_mms,
-            neighborhood_reach=nbrs,
-        )
+        # slams_jets, slams_props_inc = jet_sorter(
+        #     vlsvobj,
+        #     jet_msk,
+        #     slams_msk,
+        #     slams_msk,
+        #     up_cells,
+        #     down_cells,
+        #     up_cells_mms,
+        #     down_cells_mms,
+        #     neighborhood_reach=nbrs,
+        # )
 
-        props = [[float(file_nr) / 2.0] + line for line in props_inc]
+        # props = [[float(file_nr) / 2.0] + line for line in props_inc]
         jet_props = [[float(file_nr) / 2.0] + line for line in jet_props_inc]
-        slams_props = [[float(file_nr) / 2.0] + line for line in slams_props_inc]
+        # slams_props = [[float(file_nr) / 2.0] + line for line in slams_props_inc]
 
         # print(len(jet_props))
         # print(len(jet_jets))
@@ -732,62 +732,62 @@ def jet_creator(
         # print(len(slams_props))
         # print(len(slams_jets))
 
-        eventprop_write(runid, file_nr, props, transient="slamsjet")
-        eventprop_write(runid, file_nr, slams_props, transient="slams")
+        # eventprop_write(runid, file_nr, props, transient="slamsjet")
+        # eventprop_write(runid, file_nr, slams_props, transient="slams")
         eventprop_write(runid, file_nr, jet_props, transient="jet")
 
         # erase contents of output file
 
-        open(
-            wrkdir_DNR
-            + "working/SLAMSJETS/events/"
-            + runid
-            + "/"
-            + str(file_nr)
-            + ".events",
-            "w",
-        ).close()
+        # open(
+        #     wrkdir_DNR
+        #     + "working/SLAMSJETS/events/"
+        #     + runid
+        #     + "/"
+        #     + str(file_nr)
+        #     + ".events",
+        #     "w",
+        # ).close()
 
-        # open output file
-        fileobj = open(
-            wrkdir_DNR
-            + "working/SLAMSJETS/events/"
-            + runid
-            + "/"
-            + str(file_nr)
-            + ".events",
-            "a",
-        )
+        # # open output file
+        # fileobj = open(
+        #     wrkdir_DNR
+        #     + "working/SLAMSJETS/events/"
+        #     + runid
+        #     + "/"
+        #     + str(file_nr)
+        #     + ".events",
+        #     "a",
+        # )
 
-        # write jets to outputfile
-        for jet in jets:
-            fileobj.write(",".join(list(map(str, jet))) + "\n")
+        # # write jets to outputfile
+        # for jet in jets:
+        #     fileobj.write(",".join(list(map(str, jet))) + "\n")
 
-        fileobj.close()
+        # fileobj.close()
 
-        open(
-            wrkdir_DNR
-            + "working/SLAMS/events/"
-            + runid
-            + "/"
-            + str(file_nr)
-            + ".events",
-            "w",
-        ).close()
-        fileobj_slams = open(
-            wrkdir_DNR
-            + "working/SLAMS/events/"
-            + runid
-            + "/"
-            + str(file_nr)
-            + ".events",
-            "a",
-        )
+        # open(
+        #     wrkdir_DNR
+        #     + "working/SLAMS/events/"
+        #     + runid
+        #     + "/"
+        #     + str(file_nr)
+        #     + ".events",
+        #     "w",
+        # ).close()
+        # fileobj_slams = open(
+        #     wrkdir_DNR
+        #     + "working/SLAMS/events/"
+        #     + runid
+        #     + "/"
+        #     + str(file_nr)
+        #     + ".events",
+        #     "a",
+        # )
 
-        for slams_jet in slams_jets:
-            fileobj_slams.write(",".join(list(map(str, slams_jet))) + "\n")
+        # for slams_jet in slams_jets:
+        #     fileobj_slams.write(",".join(list(map(str, slams_jet))) + "\n")
 
-        fileobj_slams.close()
+        # fileobj_slams.close()
 
         open(
             wrkdir_DNR
