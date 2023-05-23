@@ -323,14 +323,55 @@ def bs_mp_fit(runid, file_nr, boxre=[6, 18, -8, 6]):
 
     return (mp_fit, bs_fit)
 
+def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
+    bulkpath = find_bulkpath(runid)
+    bulkname = "bulk.{}.vlsv".format(str(file_nr).zfill(7))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
+
+    cellids = restrict_area(vlsvobj, boxre)
+    rho = vlsvobj.read_variable("proton/vg_rho", cellids=cellids)
+    X, Y, Z = xyz_reconstruct(vlsvobj, cellids)
+
+    T_sw = 0.5e6
+
+    pr_rhonbs = vlsvobj.read_variable("proton/vg_rho_thermal", cellids=cellids)
+    pr_PTDNBS = vlsvobj.read_variable("proton/vg_ptensor_thermal_diagonal", cellids=cellids)
+
+    epsilon = 1.0e-10
+    kb = 1.38065e-23
+
+    pr_pressurenbs = (1.0 / 3.0) * (pr_PTDNBS.sum(-1))
+    pr_TNBS = pr_pressurenbs / ((pr_rhonbs + epsilon) * kb)
+
+    mask = pr_TNBS >= 3 * T_sw
+
+    X_masked = X[mask]
+    Y_masked = Y[mask]
+
+    Y_unique = np.unique(Y_masked)
+    Yun2 = Y_unique[np.logical_and(Y_unique >= -4 * r_e, Y_unique <= 4 * r_e)]
+    X_min = np.array([np.min(X_masked[Y_masked == y]) for y in Yun2])
+    X_max = np.array([np.max(X_masked[Y_masked == y]) for y in Y_unique])
+
+    bs_fit = np.polyfit(Y_unique / r_e, X_max / r_e, deg=4)
+    mp_fit = np.polyfit(Yun2 / r_e, X_min / r_e, deg=2)
+
+    return (mp_fit, bs_fit)
 
 def make_bs_fit(runid, start, stop):
     bs_fit_arr = np.zeros(6)
     mp_fit_arr = np.zeros(3)
-    for n in range(start, stop + 1):
-        mp_fit, bs_fit = bs_mp_fit(runid, n, boxre=[6, 18, -8, 6])
-        bs_fit_arr = np.vstack((bs_fit_arr, bs_fit))
-        mp_fit_arr = np.vstack((mp_fit_arr, mp_fit))
+    if runid == "AGF":
+        for n in range(start, stop + 1):
+            mp_fit, bs_fit = bs_mp_fit_v5(runid, n, boxre=[6, 18, -8, 6])
+            bs_fit_arr = np.vstack((bs_fit_arr, bs_fit))
+            mp_fit_arr = np.vstack((mp_fit_arr, mp_fit))
+    else:
+        for n in range(start, stop + 1):
+            mp_fit, bs_fit = bs_mp_fit(runid, n, boxre=[6, 18, -8, 6])
+            bs_fit_arr = np.vstack((bs_fit_arr, bs_fit))
+            mp_fit_arr = np.vstack((mp_fit_arr, mp_fit))
 
     bs_fit_arr = bs_fit_arr[1:]
     mp_fit_arr = mp_fit_arr[1:]

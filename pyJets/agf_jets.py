@@ -10,10 +10,14 @@ from pyJets.jet_aux import (
     get_neighs,
     get_neighs_asym,
     xyz_reconstruct,
+    bow_shock_jonas,
+    mag_pause_jonas,
 )
-from pyJets.jet_analyser import get_cell_volume
+from pyJets.jet_analyser import get_cell_volume, sw_par_dict
 import pytools as pt
 import os
+from random import choice
+from copy import deepcopy
 
 # import scipy
 # import scipy.linalg
@@ -142,6 +146,286 @@ propfile_var_list = [
 propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],x_wmean [R_e],y_wmean [R_e],z_wmean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],size_vpar [R_e],size_vperp [R_e],size_Bpar [R_e],size_Bperp [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool],is_merger [bool],is_splinter [bool],at_bow_shock [bool],at_jet [bool],at_jet [bool]"
 
 
+class NeoTransient:
+    # Class for identifying and handling individual jets and their properties
+
+    def __init__(self, ID, runid, birthday, transient="jet"):
+        self.ID = ID  # Should be a string of 5 digits
+        self.runid = runid  # Should be a string of 3 letters
+        self.birthday = birthday  # Should be a float of accuracy to half a second
+        self.cellids = []
+        self.times = [birthday]
+        self.props = []
+        self.meta = ["META"]
+        self.merge_time = np.inf
+        self.splinter_time = np.inf
+        self.transient = transient
+
+        if debug_g:
+            print("Created transient with ID " + self.ID)
+
+    def return_cellid_string(self):
+        # Return string of lists of cellids for printing to file
+
+        return "\n".join([",".join(list(map(str, l))) for l in self.cellids])
+
+    def return_time_string(self):
+        # Return string of times for printing to file
+
+        return "\n".join(list(map(str, self.times)))
+
+    def jetprops_write(self, start):
+        if self.times[-1] - self.times[0] >= 0:
+            t_arr = np.array(self.times)
+            splinter_arr = (t_arr >= self.splinter_time).astype(int)
+            merge_arr = (t_arr >= self.merge_time).astype(int)
+            for n in range(t_arr.size):
+                self.props[n][-5] = merge_arr[n]
+                self.props[n][-4] = splinter_arr[n]
+            propfile_write(
+                self.runid,
+                start,
+                self.ID,
+                self.props,
+                self.meta,
+                transient=self.transient,
+            )
+        else:
+            if debug_g:
+                print(
+                    "Transient {} too short-lived, propfile not written!".format(
+                        self.ID
+                    )
+                )
+
+        return None
+
+
+class PropReader:
+    # Class for reading jet property files
+
+    def __init__(self, ID, runid, start=580, fname=None, transient="jet"):
+        # Check for transient type
+        if transient == "jet":
+            inputdir = wrkdir_DNR + "working/jets/jets"
+        elif transient == "slamsjet":
+            inputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets"
+        elif transient == "slams":
+            inputdir = wrkdir_DNR + "working/SLAMS/slams"
+
+        self.ID = ID  # Should be a string of 5 digits
+        self.runid = runid  # Should be a string of 3 letters
+        self.start = start  # Should be a float of accuracy to half a second
+        self.transient = transient
+        self.meta = []
+        self.sw_pars = sw_par_dict(runid)  # Solar wind parameters for run
+        self.sw_pars[0] /= 1.0e6  # rho in 1/cm^3
+        self.sw_pars[1] /= 1.0e3  # v in km/s
+        self.sw_pars[2] /= 1.0e-9  # Pdyn in nPa
+        self.sw_pars[3] /= 1.0e-9  # B in nT
+
+        # Check if passing free-form filename to function
+        if type(fname) is not str:
+            self.fname = str(start) + "." + ID + ".props"
+        else:
+            self.fname = fname
+
+        # Try opening file
+        try:
+            props_f = open(inputdir + "/" + runid + "/" + self.fname)
+        except IOError:
+            raise IOError("File not found!")
+
+        props = props_f.read()
+        props_f.close()
+        props = props.split("\n")
+        if "META" in props[0]:
+            self.meta = props[0].split(",")[1:]
+            props = props[2:]
+        else:
+            props = props[1:]
+        props = [line.split(",") for line in props]
+        self.props = np.asarray(props, dtype="float")
+        # self.times = timefile_read(self.runid,self.start,self.ID,transient=self.transient)
+        # self.cells = jetfile_read(self.runid,self.start,self.ID,transient=self.transient)
+
+        # Initialise list of variable names and associated dictionary
+        var_list = propfile_var_list
+        n_list = list(range(len(var_list)))
+        self.var_dict = dict(zip(var_list, n_list))
+
+        self.delta_list = ["DT", "Dn", "Dv", "Dpd", "DB", "DTPar", "DTPerp"]
+        self.davg_list = [
+            "T_avg",
+            "n_max",
+            "v_max",
+            "pd_max",
+            "B_max",
+            "TPar_avg",
+            "TPerp_avg",
+        ]
+        self.sheath_list = [
+            "T_sheath",
+            "n_sheath",
+            "v_sheath",
+            "pd_sheath",
+            "B_sheath",
+            "TPar_sheath",
+            "TPerp_sheath",
+        ]
+
+    def get_splin_times(self):
+        splin_arr = [s for s in self.meta if s != "splinter"]
+        splin_arr = [s[-5:] for s in splin_arr if "splin" in s]
+        splin_arr = list(map(float, splin_arr))
+
+        return splin_arr
+
+    def get_times(self):
+        return timefile_read(self.runid, self.start, self.ID, transient=self.transient)
+
+    def get_cells(self):
+        return jetfile_read(self.runid, self.start, self.ID, transient=self.transient)
+
+    def read(self, name):
+        # Read data of specified variable
+
+        if name in self.var_dict:
+            return self.props[:, self.var_dict[name]]
+        elif name in self.delta_list:
+            return self.read(self.davg_list[self.delta_list.index(name)]) - self.read(
+                self.sheath_list[self.delta_list.index(name)]
+            )
+        elif name == "x_wmean":
+            return (
+                np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        self.runid, str(self.ID).zfill(5)
+                    )
+                ).T[1]
+                * 1e3
+                / r_e
+            )
+        elif name == "y_wmean":
+            return (
+                np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        self.runid, str(self.ID).zfill(5)
+                    )
+                ).T[2]
+                * 1e3
+                / r_e
+            )
+        elif name == "pdyn_vmax":
+            return 1.0e21 * m_p * self.read("rho_vmax") * self.read("v_max") ** 2
+        elif name == "duration":
+            t = self.read("time")
+            return np.ones(t.shape) * (t[-1] - t[0] + 0.5)
+        elif name == "size_ratio":
+            return self.read("size_rad") / self.read("size_tan")
+        elif name == "death_distance":
+            x, y, z = (
+                self.read("x_vmax")[-1],
+                self.read("y_vmax")[-1],
+                self.read("z_vmax")[-1],
+            )
+            t = self.read("time")[-1]
+            outp = np.ones(t.shape)
+            pfit = bow_shock_jonas(self.runid, int(t * 2))[::-1]
+            x_bs = np.polyval(pfit, np.linalg.norm([y, z]))
+            return outp * (x - x_bs)
+        elif name == "bs_distance":
+            y, t = self.read("y_mean"), self.read("time")
+            x_bs = np.zeros_like(y)
+            for n in range(y.size):
+                p = bow_shock_jonas(self.runid, int(t[n] * 2))[::-1]
+                x_bs[n] = np.polyval(p, y[n])
+            return x_bs
+        elif name == "mp_distance":
+            y, t = self.read("y_mean"), self.read("time")
+            x_mp = np.zeros_like(y)
+            for n in range(y.size):
+                p = mag_pause_jonas(self.runid, int(t[n] * 2))[::-1]
+                x_mp[n] = np.polyval(p, y[n])
+            return x_mp
+        elif name == "r_mean":
+            x, y, z = self.read("x_mean"), self.read("y_mean"), self.read("z_mean")
+            return np.linalg.norm([x, y, z], axis=0)
+        elif name == "sep_from_bs":
+            x, x_size, x_bs = (
+                self.read("x_mean"),
+                self.read("size_rad"),
+                self.read("bs_distance"),
+            )
+            return np.abs(np.abs(x - x_bs) - x_size / 2.0)
+        elif name == "parcel_speed":
+            x, y = self.read("x_mean"), self.read("y_mean")
+            vx = np.gradient(x, 0.5)
+            vy = np.gradient(y, 0.5)
+            return np.array([vx, vy]).T
+        elif name == "first_cone":
+            t = self.read("time")
+            x, y = self.read("x_mean")[0], self.read("y_mean")[0]
+            cone_angle = np.rad2deg(np.arctan2(y, x))
+            return np.ones_like(t) * cone_angle
+        elif name == "first_y":
+            t = self.read("time")
+            y = self.read("y_mean")[0]
+            return np.ones_like(t) * y
+        elif name == "final_cone":
+            t = self.read("time")
+            x, y = self.read("x_mean")[-1], self.read("y_mean")[-1]
+            cone_angle = np.rad2deg(np.arctan2(y, x))
+            return np.ones_like(t) * cone_angle
+        elif name == "leaves_bs":
+            at_bow_shock = self.read("at_bow_shock")
+            leaves_bs = int((at_bow_shock == 0).any())
+            return np.ones_like(at_bow_shock) * leaves_bs
+        elif name == "dies_at_bs":
+            at_bow_shock = self.read("at_bow_shock")
+            dies_at_bs = int(at_bow_shock[-1] == 1)
+            return np.ones_like(at_bow_shock) * dies_at_bs
+        else:
+            print("Variable not found!")
+            return None
+
+    def amax_index(self):
+        # Return list index of time when area is largest
+
+        return self.read("A").argmax()
+
+    def time_index(self, time):
+        # Return list index of specified time
+
+        time_arr = self.read("time")
+        if time not in time_arr:
+            raise IOError("Time not found!")
+        else:
+            return time_arr.tolist().index(time)
+
+    def read_at_time(self, var, time):
+        # Return variable data at specified time
+
+        return self.read(var)[self.time_index(time)]
+
+    def read_at_randt(self, var):
+        time_arr = self.read("time")
+        randt = choice(time_arr)
+
+        return self.read_at_time(var, randt)
+
+    def read_at_amax(self, name):
+        # Return variable data at time when area is largest
+
+        return self.read(name)[self.amax_index()]
+
+    def read_at_lastbs(self, name):
+        t0 = self.read("time")[self.read("at_bow_shock") == 1][-1]
+        return self.read_at_time(name, t0)
+
+
 def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5):
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk." + str(filenr).zfill(7) + ".vlsv"
@@ -174,10 +458,11 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
 
     Bmag = np.linalg.norm(B, axis=-1)
 
-    rho_sw = 1e6
-    v_sw = 750e3
-    pdyn_sw = m_p * rho_sw * v_sw * v_sw
-    B_sw = 3e-9
+    sw_pars = sw_par_dict(runid)
+    rho_sw = sw_pars[0]
+    v_sw = sw_pars[1]
+    pdyn_sw = sw_pars[3]
+    B_sw = sw_pars[2]
 
     # initialise time average of dynamic pressure
     tpdynavg = np.zeros(pdyn.shape)
@@ -326,7 +611,7 @@ def jet_creator(
 
     global rho_sw_g
 
-    rho_sw_g = 1e6
+    rho_sw_g = sw_par_dict(runid)[0]
 
     # make outputdir if it doesn't already exist
     if not os.path.exists(wrkdir_DNR + "working/jets/events/" + runid + "/"):
@@ -353,7 +638,7 @@ def jet_creator(
         # open vlsv file for reading
         vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
 
-        vlsvobj.optimize_open_file()
+        # vlsvobj.optimize_open_file()
 
         # create mask
         if maskfile:
@@ -528,7 +813,7 @@ def jet_creator(
 
         fileobj_jet.close()
 
-        vlsvobj.optimize_close_file()
+        # vlsvobj.optimize_close_file()
 
     return None
 
@@ -943,3 +1228,356 @@ def calc_event_props(
     ]
 
     return temp_arr
+
+
+def eventprop_write(runid, filenr, props, transient="jet"):
+    if transient == "jet":
+        outputdir = wrkdir_DNR + "working/jets/event_props/" + runid
+    elif transient == "slams":
+        outputdir = wrkdir_DNR + "working/SLAMS/event_props/" + runid
+    elif transient == "slamsjet":
+        outputdir = wrkdir_DNR + "working/SLAMSJETS/event_props/" + runid
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # print(len(props))
+
+    open(outputdir + "/{}.eventprops".format(str(filenr)), "w").close()
+    epf = open(outputdir + "/{}.eventprops".format(str(filenr)), "a")
+
+    epf.write(propfile_header_list + "\n")
+
+    epf.write("\n".join([",".join(list(map(str, line))) for line in props]))
+    epf.close()
+    print("Wrote to " + outputdir + "/{}.eventprops".format(str(filenr)))
+
+
+def timefile_read(runid, filenr, key, transient="jet"):
+    # Read array of times from file
+
+    # Check for transient type
+    if transient == "jet":
+        inputdir = wrkdir_DNR + "working/jets/jets"
+    elif transient == "slamsjet":
+        inputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets"
+    elif transient == "slams":
+        inputdir = wrkdir_DNR + "working/SLAMS/slams"
+
+    tf = open("{}/{}/{}.{}.times".format(inputdir, runid, str(filenr), key), "r")
+    contents = tf.read().split("\n")
+    tf.close()
+
+    return list(map(float, contents))
+
+
+def jetfile_read(runid, filenr, key, transient="jet"):
+    # Read array of cellids from file
+
+    # Check for transient type
+    if transient == "jet":
+        inputdir = wrkdir_DNR + "working/jets/jets"
+        extension = "jet"
+    elif transient == "slamsjet":
+        inputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets"
+        extension = "slamsjet"
+    elif transient == "slams":
+        inputdir = wrkdir_DNR + "working/SLAMS/slams"
+        extension = "slams"
+
+    outputlist = []
+
+    jf = open(
+        "{}/{}/{}.{}.{}".format(inputdir, runid, str(filenr), key, extension), "r"
+    )
+    contents = jf.read()
+    jf.close()
+    lines = contents.split("\n")
+
+    for line in lines:
+        outputlist.append(list(map(int, line.split(","))))
+
+    return outputlist
+
+
+def eventfile_read(runid, filenr, transient="jet"):
+    # Read array of arrays of cellids from file
+
+    if transient == "jet":
+        inputdir = wrkdir_DNR + "working/jets/events"
+    elif transient == "slams":
+        inputdir = wrkdir_DNR + "working/SLAMS/events"
+    elif transient == "slamsjet":
+        inputdir = wrkdir_DNR + "working/SLAMSJETS/events"
+
+    outputlist = []
+
+    ef = open("{}/{}/{}.events".format(inputdir, runid, str(filenr)), "r")
+    contents = ef.read().strip("\n")
+    ef.close()
+    if contents == "":
+        return []
+    lines = contents.split("\n")
+
+    for line in lines:
+        outputlist.append(list(map(int, line.split(","))))
+
+    return outputlist
+
+
+def eventprop_read(runid, filenr, transient="jet"):
+    if transient == "jet":
+        inputname = wrkdir_DNR + "working/jets/event_props/{}/{}.eventprops".format(
+            runid, str(filenr)
+        )
+    elif transient == "slams":
+        inputname = wrkdir_DNR + "working/SLAMS/event_props/{}/{}.eventprops".format(
+            runid, str(filenr)
+        )
+    elif transient == "slamsjet":
+        inputname = (
+            wrkdir_DNR
+            + "working/SLAMSJETS/event_props/{}/{}.eventprops".format(
+                runid, str(filenr)
+            )
+        )
+
+    try:
+        props_f = open(inputname)
+    except IOError:
+        raise IOError("File not found!")
+
+    props = props_f.read()
+    props_f.close()
+    props = props.split("\n")[1:]
+    if props == [] or props == [""]:
+        return []
+    props = [list(map(float, line.split(","))) for line in props]
+
+    return props
+
+
+def propfile_write(runid, filenr, key, props, meta, transient="jet"):
+    # Write jet properties to file
+
+    if transient == "jet":
+        outputdir = wrkdir_DNR + "working/jets/jets"
+    elif transient == "slams":
+        outputdir = wrkdir_DNR + "working/SLAMS/slams"
+    elif transient == "slamsjet":
+        outputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets"
+
+    open(
+        outputdir + "/" + runid + "/" + str(filenr) + "." + key + ".props", "w"
+    ).close()
+    pf = open(outputdir + "/" + runid + "/" + str(filenr) + "." + key + ".props", "a")
+    pf.write(",".join(meta) + "\n")
+    pf.write(propfile_header_list + "\n")
+    pf.write("\n".join([",".join(list(map(str, line))) for line in props]))
+    pf.close()
+    if debug_g:
+        print(
+            "Wrote to "
+            + outputdir
+            + "/"
+            + runid
+            + "/"
+            + str(filenr)
+            + "."
+            + key
+            + ".props"
+        )
+
+
+def check_threshold(A, B, thresh):
+    return np.intersect1d(A, B).size > thresh * min(len(A), len(B))
+
+
+def jet_tracker(runid, start, stop, threshold=0.5, transient="slamsjet", dbg=False):
+    if transient == "slamsjet":
+        outputdir = wrkdir_DNR + "working/SLAMSJETS/slamsjets/" + runid
+    elif transient == "jet":
+        outputdir = wrkdir_DNR + "working/jets/jets/" + runid
+    elif transient == "slams":
+        outputdir = wrkdir_DNR + "working/SLAMS/slams/" + runid
+
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    global debug_g
+
+    debug_g = dbg
+
+    # Read initial event files
+    events_old = eventfile_read(runid, start, transient=transient)
+    old_props = eventprop_read(runid, start, transient=transient)
+    events_unsrt = eventfile_read(runid, start + 1, transient=transient)
+    props_unsrt = eventprop_read(runid, start + 1, transient=transient)
+
+    # Initialise list of jet objects
+    jetobj_list = []
+    dead_jetobj_list = []
+
+    # Initialise unique ID counter
+    counter = 1
+
+    # Print current time
+    if dbg:
+        print("t = " + str(float(start + 1) / 2) + "s")
+
+    # Look for jets at bow shock
+    for event in events_unsrt:
+        for old_event in events_old:
+            if check_threshold(old_event, event, threshold):
+                # Create unique ID
+                curr_id = str(counter).zfill(5)
+
+                # Create new jet object
+
+                jetobj_new = NeoTransient(
+                    curr_id, runid, float(start) / 2, transient=transient
+                )
+
+                # print(len(props_unsrt))
+                # print(len(events_unsrt))
+                # print(events_unsrt.index(event))
+
+                # Append current events to jet object properties
+                jetobj_new.cellids.append(old_event)
+                jetobj_new.cellids.append(event)
+                jetobj_new.props.append(old_props[events_old.index(old_event)])
+                jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                jetobj_new.times.append(float(start + 1) / 2)
+
+                jetobj_list.append(jetobj_new)
+
+                # Iterate counter
+                counter += 1
+
+                break
+
+    # Track jets
+    for n in range(start + 2, stop + 1):
+        for jetobj in jetobj_list:
+            if float(n) / 2 - jetobj.times[-1] + 0.5 > 2.5:
+                if dbg:
+                    print("Killing jet {}".format(jetobj.ID))
+                dead_jetobj_list.append(jetobj)
+                jetobj_list.remove(jetobj)
+
+        # Print  current time
+        if dbg:
+            print("t = " + str(float(n) / 2) + "s")
+
+        events_old = events_unsrt
+        old_props = props_unsrt
+
+        # Initialise flags for finding splintering jets
+        flags = []
+
+        # Read event file for current time step
+        events_unsrt = eventfile_read(runid, n, transient=transient)
+        props_unsrt = eventprop_read(runid, n, transient=transient)
+        events = sorted(events_unsrt, key=len)
+        events = events[::-1]
+
+        # Iniatilise list of cells currently being tracked
+        curr_jet_temp_list = []
+
+        # Update existing jets
+        for event in events:
+            for jetobj in jetobj_list:
+                if jetobj.ID not in flags:
+                    if check_threshold(jetobj.cellids[-1], event, threshold):
+                        # Append event to jet object properties
+                        jetobj.cellids.append(event)
+                        jetobj.props.append(props_unsrt[events_unsrt.index(event)])
+                        jetobj.times.append(float(n) / 2)
+                        # print("Updated jet "+jetobj.ID)
+
+                        flags.append(jetobj.ID)
+                        if event in curr_jet_temp_list:
+                            if "merger" not in jetobj.meta:
+                                jetobj.meta.append("merger")
+                                jetobj.merge_time = float(n) / 2
+                        else:
+                            curr_jet_temp_list.append(event)
+
+                else:
+                    if event not in curr_jet_temp_list:
+                        if check_threshold(jetobj.cellids[-2], event, threshold):
+                            curr_id = str(counter).zfill(5)
+                            # Iterate counter
+                            counter += 1
+
+                            jetobj_new = deepcopy(jetobj)
+                            jetobj_new.ID = curr_id
+                            if "splinter" not in jetobj_new.meta:
+                                jetobj_new.meta.append("splinter")
+                                jetobj_new.splinter_time = float(n) / 2
+                            else:
+                                jetobj.meta.append("splin{}".format(str(float(n) / 2)))
+                            jetobj_new.cellids[-1] = event
+                            jetobj_new.props[-1] = props_unsrt[
+                                events_unsrt.index(event)
+                            ]
+                            jetobj_list.append(jetobj_new)
+                            curr_jet_temp_list.append(event)
+
+                            break
+                        else:
+                            continue
+
+                    else:
+                        continue
+
+        # Look for new jets at bow shock
+        for event in events:
+            if event not in curr_jet_temp_list:
+                for old_event in events_old:
+                    if check_threshold(old_event, event, threshold):
+                        # Create unique ID
+                        curr_id = str(counter).zfill(5)
+
+                        # Create new jet object
+                        jetobj_new = NeoTransient(
+                            curr_id, runid, float(n - 1) / 2, transient=transient
+                        )
+
+                        # Append current events to jet object properties
+                        jetobj_new.cellids.append(old_event)
+                        jetobj_new.cellids.append(event)
+                        jetobj_new.props.append(old_props[events_old.index(old_event)])
+                        jetobj_new.props.append(props_unsrt[events_unsrt.index(event)])
+                        jetobj_new.times.append(float(n) / 2)
+
+                        jetobj_list.append(jetobj_new)
+
+                        # Iterate counter
+                        counter += 1
+
+                        break
+
+    jetobj_list = jetobj_list + dead_jetobj_list
+
+    for jetobj in jetobj_list:
+        # Write jet object cellids and times to files
+        jetfile = open(
+            outputdir + "/" + str(start) + "." + jetobj.ID + "." + transient, "w"
+        )
+        timefile = open(outputdir + "/" + str(start) + "." + jetobj.ID + ".times", "w")
+
+        jetfile.write(jetobj.return_cellid_string())
+        timefile.write(jetobj.return_time_string())
+        jetobj.jetprops_write(start)
+
+        jetfile.close()
+        timefile.close()
+
+    return None

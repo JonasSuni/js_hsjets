@@ -287,11 +287,11 @@ def sw_par_dict(runid):
     # Returns solar wind parameters for specified run
     # Output is 0: density, 1: velocity, 2: IMF strength 3: dynamic pressure 4: plasma beta
 
-    runs = ["ABA", "ABC", "AEA", "AEC", "BFD"]
-    sw_rho = [1e6, 3.3e6, 1.0e6, 3.3e6, 1.0e6]
-    sw_v = [750e3, 600e3, 750e3, 600e3, 750e3]
-    sw_B = [5.0e-9, 5.0e-9, 10.0e-9, 10.0e-9, 5.0e-9]
-    sw_T = [500e3, 500e3, 500e3, 500e3, 500e3]
+    runs = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF"]
+    sw_rho = [1e6, 3.3e6, 1.0e6, 3.3e6, 1.0e6, 1.0e6]
+    sw_v = [750e3, 600e3, 750e3, 600e3, 750e3, 750e3]
+    sw_B = [5.0e-9, 5.0e-9, 10.0e-9, 10.0e-9, 5.0e-9, 3.0e-9]
+    sw_T = [500e3, 500e3, 500e3, 500e3, 500e3, 500e3]
     sw_pdyn = [m_p * sw_rho[n] * (sw_v[n] ** 2) for n in range(len(runs))]
     sw_beta = [
         2 * sc.mu_0 * sw_rho[n] * sc.k * sw_T[n] / (sw_B[n] ** 2)
@@ -508,7 +508,7 @@ def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5
     else:
         for n_t in timerange:
             # exclude the main timestep
-            if n_t == filenumber:
+            if n_t == filenr:
                 continue
 
             # find correct file path for current time step
