@@ -426,7 +426,7 @@ class PropReader:
         return self.read_at_time(name, t0)
 
 
-def mask_maker(runid, filenr, boxre=[6, 18, -8, 6], avgfile=True, mag_thresh=1.5):
+def mask_maker(runid, filenr, boxre=[6, 18, -10, 10], avgfile=True, mag_thresh=1.5):
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk." + str(filenr).zfill(7) + ".vlsv"
 
@@ -594,7 +594,7 @@ def jet_creator(
     runid,
     start,
     stop,
-    boxre=[6, 18, -6, 6],
+    boxre=[6, 18, -10, 10],
     maskfile=False,
     avgfile=True,
     nbrs=[2, 2, 0],
@@ -1657,7 +1657,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
     # ).T
-    start_points = np.array([np.ones(20) * 17, np.linspace(-6, 6, 20)]).T
+    start_points = np.array([np.ones(20) * 17, np.linspace(-10, 10, 20)]).T
 
     if Blines_g:
         stream = ax.streamplot(
@@ -1919,7 +1919,7 @@ def v5_plotter(runid, start, stop):
             usesci=0,
             # scale=3,
             title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
-            boxre=[6, 18, -6, 6],
+            boxre=[6, 18, -10, 10],
             internalcb=False,
             lin=1,
             colormap="batlow",
