@@ -1908,7 +1908,7 @@ def v5_plotter(runid, start, stop):
 
         pt.plot.plot_colormap(
             filename=bulkpath + fname,
-            outputfile=outputdir + "pdyn_{}.png".format(fnr),
+            outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
             var=var,
             vmin=0,
             # vmax=1,
