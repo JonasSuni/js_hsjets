@@ -1913,7 +1913,7 @@ def v5_plotter(runid, start, stop):
             cbtitle="",
             # cbtitle="",
             usesci=0,
-            scale=3,
+            # scale=3,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
