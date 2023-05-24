@@ -1940,3 +1940,159 @@ def v5_plotter(runid, start, stop):
                 "proton/vg_Pdyn",
             ],
         )
+
+
+def VSC_timeseries(runid, x0, y0, t0):
+    bulkpath = find_bulkpath(runid)
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        None,
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e9, 1e-6, 1e-6]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        # "$\\rho~[\mathrm{cm}^{-3}]$",
+        # "$v~[\mathrm{km/s}]$",
+        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        # "$B~[\mathrm{nT}]$",
+        # "$T~[\mathrm{MK}]$",
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    norm = [
+        [1, 750, 750, 750, 750, 0.9408498320756251, 3, 3, 3, 3, 0.5, 0.5],
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    run_norm = norm[0]
+
+    x0, y0
+    t_arr = np.arange(t0 - 10.0, t0 + 10.1, 0.5)
+    fnr0 = int(t0 * 2)
+    fnr_arr = np.arange(fnr0 - 20, fnr0 + 21)
+    cellid = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+
+    for idx, fnr in enumerate(fnr_arr):
+        try:
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
+            for idx2, var in enumerate(var_list):
+                data_arr[idx2, idx] = (
+                    vlsvobj.read_interpolated_variable(
+                        var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                    )
+                    * scales[idx2]
+                    / run_norm[idx2]
+                )
+        except:
+            data_arr[:, idx] = np.nan
+
+    fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
+    ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
+    for idx in range(len(var_list)):
+        ax = ax_list[plot_index[idx]]
+        ax.plot(t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
+        ax.set_xlim(t_arr[0], t_arr[-1])
+        if draw_legend[idx]:
+            ax.legend()
+    ax_list[-1].set_xlabel("Simulation time [s]")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.axvline(t0, linestyle="dashed")
+    plt.tight_layout()
+    figdir = wrkdir_DNR + "Figs/timeseries/"
+    txtdir = wrkdir_DNR + "txts/timeseries/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+    if not os.path.exists(txtdir):
+        try:
+            os.makedirs(txtdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir + "{}_x{}_y{}_t{}.png".format(runid, x0, y0, t0),
+        dpi=300,
+    )
+    np.savetxt(
+        txtdir + "{}_x{}_y{}_t{}.txt".format(runid, x0, y0, t0),
+        data_arr,
+    )
+    plt.close(fig)
