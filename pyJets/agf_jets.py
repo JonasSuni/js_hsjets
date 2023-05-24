@@ -1859,7 +1859,7 @@ def get_jets(runid):
 
 
 def v5_plotter(runid, start, stop):
-    var = "Pdyn"
+    var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.5
     runids = ["AGF"]
