@@ -1817,7 +1817,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         numpoints=1,
         markerscale=1,
         loc="lower right",
-        fontsize=8,
+        fontsize=5,
     )
 
     global gprox, gprox_labs
@@ -1917,9 +1917,7 @@ def v5_plotter(runid, start, stop):
             # cbtitle="",
             usesci=0,
             # scale=3,
-            # title="Run: {}, ID: {}\n t = {}s".format(
-            #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
-            # ),
+            title="Run: {} t = {}s".format(runid, float(fnr) / 2.0),
             boxre=[6, 18, -6, 6],
             internalcb=False,
             lin=1,
