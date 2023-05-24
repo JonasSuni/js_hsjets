@@ -1657,25 +1657,26 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
     # ).T
-    # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
+    start_points = np.array([np.ones(20) * 17, np.linspace(-6, 6, 20)]).T
 
-    # if Blines_g:
-    #     stream = ax.streamplot(
-    #         XmeshXY,
-    #         YmeshXY,
-    #         B[:, :, 0],
-    #         B[:, :, 1],
-    #         # arrowstyle="-",
-    #         # broken_streamlines=False,
-    #         color="k",
-    #         linewidth=0.6,
-    #         # minlength=4,
-    #         density=35,
-    #         start_points=start_points,
-    #     )
+    if Blines_g:
+        stream = ax.streamplot(
+            XmeshXY,
+            YmeshXY,
+            B[:, :, 0],
+            B[:, :, 1],
+            # arrowstyle="-",
+            # broken_streamlines=False,
+            color="k",
+            linewidth=0.4,
+            # minlength=4,
+            density=35,
+            start_points=start_points,
+        )
 
     lws = 0.6
     mrks = 2
+    mews = 0.2
 
     jet_cont = ax.contour(
         XmeshXY,
@@ -1735,7 +1736,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         markersize=mrks,
         markeredgecolor="white",
         fillstyle="full",
-        mew=1,
+        mew=mews,
         label="Non-FCS-jet",
     )
     (sj_pos,) = ax.plot(
@@ -1746,7 +1747,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         markersize=mrks,
         markeredgecolor="white",
         fillstyle="full",
-        mew=1,
+        mew=mews,
         label="FCS-jet",
     )
 
@@ -1794,9 +1795,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if ~(slams_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
         proxy_labs.append("FCS")
-    # if Blines_g:
-    #     proxy.append(mlines.Line2D([], [], color="k"))
-    #     proxy_labs.append("$B$")
+    if Blines_g:
+        proxy.append(mlines.Line2D([], [], color="k"))
+        proxy_labs.append("$B$")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
@@ -1869,7 +1870,7 @@ def v5_plotter(runid, start, stop):
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
     runid_g = runid
-    Blines_g = False
+    Blines_g = True
 
     bulkpath = find_bulkpath(runid)
 
