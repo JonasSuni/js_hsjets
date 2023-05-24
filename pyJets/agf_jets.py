@@ -1652,7 +1652,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
     diamag_mask[Bmag > B_sw] = 0
 
-    CB_color_cycle = CB_color_cycle
+    CB_color_cycle
 
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
