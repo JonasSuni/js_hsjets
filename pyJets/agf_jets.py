@@ -1923,7 +1923,7 @@ def v5_plotter(runid, start, stop):
             colormap="batlow",
             tickinterval=2.0,
             # useimshow=True,
-            # external=ext_jet,
+            external=ext_jet,
             # expression=expr_rhoratio,
             pass_vars=[
                 "proton/vg_rho_thermal",
