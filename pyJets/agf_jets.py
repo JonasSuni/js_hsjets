@@ -1926,7 +1926,7 @@ def v5_plotter(runid, start, stop):
             # external=ext_jet,
             # expression=expr_rhoratio,
             pass_vars=[
-                "proton/vg_rho_therma",
+                "proton/vg_rho_thermal",
                 "proton/vg_rho_nonthermal",
                 "proton/vg_ptensor_thermal_diagonal",
                 "vg_b_vol",
