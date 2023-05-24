@@ -1676,7 +1676,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     lws = 0.6
     mrks = 2
-    mews = 0.2
+    mews = 0.4
 
     jet_cont = ax.contour(
         XmeshXY,
