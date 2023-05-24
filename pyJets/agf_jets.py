@@ -204,7 +204,7 @@ class NeoTransient:
 class PropReader:
     # Class for reading jet property files
 
-    def __init__(self, ID, runid, start=580, fname=None, transient="jet"):
+    def __init__(self, ID, runid, start=781, fname=None, transient="jet"):
         # Check for transient type
         if transient == "jet":
             inputdir = wrkdir_DNR + "working/jets/jets"
@@ -1652,27 +1652,27 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
     diamag_mask[Bmag > B_sw] = 0
 
-    CB_color_cycle = jx.CB_color_cycle
+    CB_color_cycle = CB_color_cycle
 
-    start_points = np.array(
-        [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
-    ).T
+    # start_points = np.array(
+    #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
+    # ).T
     # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
 
-    if Blines_g:
-        stream = ax.streamplot(
-            XmeshXY,
-            YmeshXY,
-            B[:, :, 0],
-            B[:, :, 1],
-            # arrowstyle="-",
-            # broken_streamlines=False,
-            color="k",
-            linewidth=0.6,
-            # minlength=4,
-            density=35,
-            start_points=start_points,
-        )
+    # if Blines_g:
+    #     stream = ax.streamplot(
+    #         XmeshXY,
+    #         YmeshXY,
+    #         B[:, :, 0],
+    #         B[:, :, 1],
+    #         # arrowstyle="-",
+    #         # broken_streamlines=False,
+    #         color="k",
+    #         linewidth=0.6,
+    #         # minlength=4,
+    #         density=35,
+    #         start_points=start_points,
+    #     )
 
     jet_cont = ax.contour(
         XmeshXY,
@@ -1791,9 +1791,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if ~(slams_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
         proxy_labs.append("FCS")
-    if Blines_g:
-        proxy.append(mlines.Line2D([], [], color="k"))
-        proxy_labs.append("$B$")
+    # if Blines_g:
+    #     proxy.append(mlines.Line2D([], [], color="k"))
+    #     proxy_labs.append("$B$")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
@@ -1821,3 +1821,120 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     gprox = proxy
     gprox_labs = proxy_labs
+
+
+def get_jets(runid):
+    non_ids = []
+
+    singular_counter = 0
+
+    for n1 in range(6000):
+        try:
+            props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        # if props.read("time")[0] == 290.0:
+        #     continue
+
+        # if props.read("time")[-1] - props.read("time")[0] == 0:
+        #     singular_counter += 1
+        #     continue
+
+        # if "splinter" in props.meta:
+        #     continue
+
+        # if (props.read("at_slams") == 1).any():
+        #     continue
+        # else:
+        #     non_ids.append(n1)
+        non_ids.append(n1)
+
+    # print("Run {} singular non jets: {}".format(runid, singular_counter))
+
+    return np.unique(non_ids)
+
+
+def v5_plotter(runid, start, stop):
+    var = "Pdyn"
+    vscale = 1e9
+    vmax = 1.5
+    runids = ["AGF"]
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
+    runid_g = runid
+    Blines_g = False
+
+    bulkpath = find_bulkpath(runid)
+
+    non_ids = get_jets(runid)
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    pdmax = [1.5][runids.index(runid)]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    outputdir = wrkdir_DNR + "Figs/cmaps/"
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # global x0, y0
+    # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+    # t0 = props.read("time")[0]
+    # x0 = props.read("x_wmean")[0]
+    # y0 = props.read("y_wmean")[0]
+    # fnr0 = int(t0 * 2)
+
+    for fnr in range(start, stop + 1):
+        filenr_g = fnr
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        pt.plot.plot_colormap(
+            filename=bulkpath + fname,
+            outputfile=outputdir + "pdyn_{}.png".format(fnr),
+            var=var,
+            vmin=0,
+            # vmax=1,
+            vmax=vmax,
+            vscale=vscale,
+            cbtitle="",
+            # cbtitle="",
+            usesci=0,
+            scale=3,
+            # title="Run: {}, ID: {}\n t = {}s".format(
+            #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            # ),
+            boxre=[6, 18, -6, 6],
+            internalcb=False,
+            lin=1,
+            colormap="batlow",
+            tickinterval=10.0,
+            # useimshow=True,
+            # external=ext_jet,
+            # expression=expr_rhoratio,
+            pass_vars=[
+                "proton/vg_rho_therma",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+            ],
+        )
