@@ -1918,7 +1918,7 @@ def v5_plotter(runid, start, stop):
             # cbtitle="",
             usesci=0,
             # scale=3,
-            title="Run: {} t = {}s".format(runid, float(fnr) / 2.0),
+            title="Run: {}    t = {}s".format(runid, float(fnr) / 2.0),
             boxre=[6, 18, -6, 6],
             internalcb=False,
             lin=1,
