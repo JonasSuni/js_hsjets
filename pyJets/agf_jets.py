@@ -426,7 +426,7 @@ class PropReader:
         return self.read_at_time(name, t0)
 
 
-def mask_maker(runid, filenr, boxre=[6, 18, -10, 10], avgfile=True, mag_thresh=1.5):
+def mask_maker(runid, filenr, boxre=[0, 20, -15, 15], avgfile=True, mag_thresh=1.5):
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk." + str(filenr).zfill(7) + ".vlsv"
 
@@ -594,7 +594,7 @@ def jet_creator(
     runid,
     start,
     stop,
-    boxre=[6, 18, -10, 10],
+    boxre=[0, 20, -15, 15],
     maskfile=False,
     avgfile=True,
     nbrs=[2, 2, 0],
@@ -1919,7 +1919,7 @@ def v5_plotter(runid, start, stop):
             usesci=0,
             # scale=3,
             title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
-            boxre=[6, 18, -10, 10],
+            boxre=[0, 20, -15, 15],
             internalcb=False,
             lin=1,
             colormap="batlow",
