@@ -1867,10 +1867,12 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def v5_plotter(runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0, blines=True):
+def v5_plotter(
+    runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0, blines=True, pdynmax=1.5
+):
     var = "proton/vg_Pdyn"
     vscale = 1e9
-    vmax = 1.5
+    vmax = pdynmax
     runids = ["AGF"]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points
