@@ -1657,7 +1657,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
     # ).T
-    start_points = np.array([np.ones(20) * 17, np.linspace(-20, 20, 40)]).T
+    start_points = np.array([np.ones(40) * 17, np.linspace(-20, 20, 40)]).T
 
     if Blines_g:
         stream = ax.streamplot(
