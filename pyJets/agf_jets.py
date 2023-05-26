@@ -1863,7 +1863,7 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def v5_plotter(runid, start, stop):
+def v5_plotter(runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.5
@@ -1920,11 +1920,11 @@ def v5_plotter(runid, start, stop):
             usesci=0,
             # scale=3,
             title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
-            boxre=[-10, 20, -20, 20],
+            boxre=boxre,
             internalcb=False,
             lin=1,
             colormap="batlow",
-            tickinterval=5.0,
+            tickinterval=tickint,
             # useimshow=True,
             external=ext_jet,
             # expression=expr_rhoratio,
