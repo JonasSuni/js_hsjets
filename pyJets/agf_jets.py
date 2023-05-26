@@ -1868,7 +1868,14 @@ def get_jets(runid):
 
 
 def v5_plotter(
-    runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0, blines=True, pdynmax=1.5
+    runid,
+    start,
+    stop,
+    boxre=[-10, 20, -20, 20],
+    tickint=5.0,
+    blines=True,
+    nstp=40,
+    pdynmax=1.5,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
