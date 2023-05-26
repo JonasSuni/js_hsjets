@@ -1966,7 +1966,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "$v_y$",
         "$v_z$",
         "$|v|$",
-        None,
+        "$P_\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
