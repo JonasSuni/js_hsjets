@@ -2047,7 +2047,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
 
     for idx, fnr in enumerate(fnr_arr):
         tavg_pdyn = np.loadtxt(tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg")[
-            cellid - 1
+            int(cellid) - 1
         ]
         tavg_arr[idx] = tavg_pdyn * scales[5] / run_norm[5]
         try:
