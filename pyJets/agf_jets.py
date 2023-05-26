@@ -1876,6 +1876,7 @@ def v5_plotter(
     blines=True,
     nstp=40,
     pdynmax=1.5,
+    outdir="cmaps",
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -1906,7 +1907,7 @@ def v5_plotter(
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
-    outputdir = wrkdir_DNR + "Figs/cmaps/"
+    outputdir = wrkdir_DNR + "Figs/{}/".format(outdir)
     if not os.path.exists(outputdir):
         try:
             os.makedirs(outputdir)
