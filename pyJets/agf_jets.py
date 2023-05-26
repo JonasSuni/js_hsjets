@@ -2046,9 +2046,12 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
     for idx, fnr in enumerate(fnr_arr):
-        tavg_pdyn = np.loadtxt(tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg")[
-            int(cellid) - 1
-        ]
+        try:
+            tavg_pdyn = np.loadtxt(
+                tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+            )[int(cellid) - 1]
+        except:
+            tavg_pdyn = np.nan
         tavg_arr[idx] = tavg_pdyn * scales[5] / run_norm[5]
         try:
             vlsvobj = pt.vlsvfile.VlsvReader(
