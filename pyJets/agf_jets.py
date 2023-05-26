@@ -1924,7 +1924,7 @@ def v5_plotter(runid, start, stop):
             internalcb=False,
             lin=1,
             colormap="batlow",
-            tickinterval=2.0,
+            tickinterval=5.0,
             # useimshow=True,
             external=ext_jet,
             # expression=expr_rhoratio,
