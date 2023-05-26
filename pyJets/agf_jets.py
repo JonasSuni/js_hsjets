@@ -2099,10 +2099,10 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         if idx == 5:
             ax.plot(
                 t_arr,
-                tavg_arr,
+                2 * tavg_arr,
                 color=CB_color_cycle[0],
                 linestyle="dashed",
-                label="$\\langle P_\mathrm{dyn}\\rangle$",
+                label="$2\\langle P_\mathrm{dyn}\\rangle$",
             )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
