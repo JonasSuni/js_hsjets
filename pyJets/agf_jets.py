@@ -1709,25 +1709,25 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    rho_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        rho_mask,
-        [0.5],
-        linewidths=lws,
-        colors=CB_color_cycle[3],
-        linestyles=["solid"],
-    )
+    # rho_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     rho_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[3],
+    #     linestyles=["solid"],
+    # )
 
-    mach_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        mach_mask,
-        [0.5],
-        linewidths=lws,
-        colors=CB_color_cycle[4],
-        linestyles=["solid"],
-    )
+    # mach_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     mach_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[4],
+    #     linestyles=["solid"],
+    # )
 
     (non_pos,) = ax.plot(
         non_xlist,
@@ -1752,7 +1752,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 2, 7]
+    # itr_jumbled = [3, 1, 4, 2, 7]
+
+    itr_jumbled = [1, 1, 4, 2, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -1773,14 +1775,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #         "Non-FCS jet",
     #         "FCS-jet"
     #     )
+
+    proxy_labs = [
+        # "$n=2n_\mathrm{sw}$",
+        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        # "$M_{\mathrm{MS},x}=1$",
+    ]
+
     proxy = [
         mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
-        for itr in range(3)
-    ]
-    proxy_labs = [
-        "$n=2n_\mathrm{sw}$",
-        "$T_\mathrm{core}=3T_\mathrm{sw}$",
-        "$M_{\mathrm{MS},x}=1$",
+        for itr in range(len(proxy_labs))
     ]
 
     xmin, xmax, ymin, ymax = (
