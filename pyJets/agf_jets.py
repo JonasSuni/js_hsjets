@@ -1981,7 +1981,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         False,
         False,
         True,
-        False,
+        True,
         False,
         False,
         False,
@@ -2043,8 +2043,13 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
     data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+    tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
     for idx, fnr in enumerate(fnr_arr):
+        tavg_pdyn = np.loadtxt(tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg")[
+            cellid - 1
+        ]
+        tavg_arr[idx] = tavg_pdyn * scales[5] / run_norm[5]
         try:
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
@@ -2065,9 +2070,17 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
         ax.plot(t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
+        if idx == 5:
+            ax.plot(
+                t_arr,
+                tavg_arr,
+                color=CB_color_cycle[0],
+                linestyle="dashed",
+                label="$\\langle P_\mathrm{dyn}\\rangle$",
+            )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
-            ax.legend()
+            ax.legend(loc="center left")
     ax_list[-1].set_xlabel("Simulation time [s]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
