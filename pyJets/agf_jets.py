@@ -1657,8 +1657,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
     # ).T
-    nstp = 40
-    start_points = np.array([np.ones(nstp) * 17, np.linspace(-20, 20, nstp)]).T
+    # nstp = 40
+    # start_points = np.array([np.ones(nstp) * 17, np.linspace(-20, 20, nstp)]).T
 
     if Blines_g:
         stream = ax.streamplot(
@@ -1867,15 +1867,20 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def v5_plotter(runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0):
+def v5_plotter(runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0, blines=True):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.5
     runids = ["AGF"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points
     runid_g = runid
-    Blines_g = True
+    Blines_g = blines
+
+    nstp = 40
+    start_points = np.array(
+        [np.ones(nstp) * boxre[1] - 1, np.linspace([boxre[2]], boxre[3], nstp)]
+    ).T
 
     bulkpath = find_bulkpath(runid)
 
