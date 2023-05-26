@@ -1879,7 +1879,7 @@ def v5_plotter(runid, start, stop, boxre=[-10, 20, -20, 20], tickint=5.0, blines
 
     nstp = 40
     start_points = np.array(
-        [np.ones(nstp) * boxre[1] - 1, np.linspace([boxre[2]], boxre[3], nstp)]
+        [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
     ).T
 
     bulkpath = find_bulkpath(runid)
