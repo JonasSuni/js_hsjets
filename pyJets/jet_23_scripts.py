@@ -54,7 +54,7 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
     nvsc = len(x)
     coords = np.array([[x[k] * r_e, y[k] * r_e, 0] for k in range(nvsc)])
     t_arr = np.arange(time0 - pm / 2.0, time0 + pm / 2.0 + 0.1, 0.5)
-    fnr_arr = np.arange(time0 * 2 - pm, time0 * 2 + pm + 0.1, 1)
+    fnr_arr = np.arange(time0 * 2 - pm, time0 * 2 + pm + 0.1, 1, dtype=int)
     nt = len(t_arr)
 
     ts_v_vars = [
@@ -105,7 +105,7 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
     for idx, fnr in enumerate(fnr_arr):
         bulkpath = jx.find_bulkpath(runid)
         vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
         )
         for idx2 in range(nvsc):
             coord = coords[idx2]
