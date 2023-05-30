@@ -1636,6 +1636,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             non_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
             non_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
 
+    for idx in range(len(xg)):
+        ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
+
     slams_mask = np.in1d(cellids, slams_cells).astype(int)
     slams_mask = np.reshape(slams_mask, cellids.shape)
 
@@ -1877,15 +1880,25 @@ def v5_plotter(
     nstp=40,
     pdynmax=1.5,
     outdir="cmaps",
+    pointsx=[],
+    pointsy=[],
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = pdynmax
     runids = ["AGF"]
 
+    if len(pointsx) != len(pointsy):
+        print("x and y must have same length!")
+        return 1
+
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points
     runid_g = runid
     Blines_g = blines
+
+    global xg, yg
+    xg = pointsx
+    yg = pointsy
 
     # nstp = 40
     start_points = np.array(
@@ -2137,7 +2150,13 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     plt.close(fig)
 
 
-def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60):
+def multi_VSC_timeseries(
+    runid="AGF",
+    time0=480,
+    x=[8],
+    y=[7],
+    pm=60,
+):
     if len(x) != len(y):
         print("x and y must have same length!")
         return 1
