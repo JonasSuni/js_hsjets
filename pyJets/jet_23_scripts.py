@@ -131,7 +131,7 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
             )
 
     ax_list[0].legend()
-    ax_list[0].set_title("VSC: {}".format(coords[:, :2]))
+    ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
 
     fig.savefig(wrkdir_DNR + "savvas.png")
 
