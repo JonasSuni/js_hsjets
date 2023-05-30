@@ -114,12 +114,13 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
                     ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
                 )
 
-    fig, ax_list = plt.subplots(nrows, 1,figsize=(10,20), constrained_layout=True)
+    fig, ax_list = plt.subplots(nrows, 1, figsize=(10, 20), constrained_layout=True)
 
     ax_list[-1].set_xlabel("Time [s]")
     for idx in range(nrows):
         a = ax_list[idx]
         a.grid()
+        a.set_xlim(t_arr[0], t_arr[-1])
         a.set_ylabel(ts_v_labels[idx])
         for idx2 in range(nvsc):
             a.plot(
@@ -130,6 +131,7 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
             )
 
     ax_list[0].legend()
+    ax_list[0].set_title("VSC: {}".format(coords[:, :2]))
 
     fig.savefig(wrkdir_DNR + "savvas.png")
 
