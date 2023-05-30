@@ -2135,3 +2135,97 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         data_arr,
     )
     plt.close(fig)
+
+
+def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60):
+    if len(x) != len(y):
+        print("x and y must have same length!")
+        return 1
+
+    nvsc = len(x)
+    coords = np.array([[x[k] * r_e, y[k] * r_e, 0] for k in range(nvsc)])
+    t_arr = np.arange(time0 - pm / 2.0, time0 + pm / 2.0 + 0.1, 0.5)
+    fnr_arr = np.arange(time0 * 2 - pm, time0 * 2 + pm + 0.1, 1, dtype=int)
+    nt = len(t_arr)
+
+    ts_v_vars = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    ts_v_ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    ts_v_labels = [
+        "$n~[m^{-3}]$",
+        "$v_x~[m/s]$",
+        "$v_y~[m/s]$",
+        "$v_z~[m/s]$",
+        "$v~[m/s]$",
+        "$P_\mathrm{dyn}~[Pa]$",
+        "$B_x~[T]$",
+        "$B_y~[T]$",
+        "$B_z~[T]$",
+        "$B~[T]$",
+        "$T_\parallel~[K]$",
+        "$T_\perp~[K]$",
+    ]
+    nrows = len(ts_v_labels)
+
+    ts_arr = np.zeros((nvsc, nrows, nt), dtype=float)
+    for idx, fnr in enumerate(fnr_arr):
+        bulkpath = find_bulkpath(runid)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+        )
+        for idx2 in range(nvsc):
+            coord = coords[idx2]
+            for idx3 in range(nrows):
+                ts_arr[idx2, idx3, idx] = vlsvobj.read_interpolated_variable(
+                    ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
+                )
+
+    fig, ax_list = plt.subplots(nrows, 1, figsize=(10, 20), constrained_layout=True)
+
+    ax_list[-1].set_xlabel("Time [s]")
+    for idx in range(nrows):
+        a = ax_list[idx]
+        a.grid()
+        a.set_xlim(t_arr[0], t_arr[-1])
+        a.set_ylabel(ts_v_labels[idx])
+        for idx2 in range(nvsc):
+            a.plot(
+                t_arr,
+                ts_arr[idx2, idx, :],
+                color=CB_color_cycle[idx2],
+                label="VSC {}".format(idx2),
+            )
+
+    ax_list[0].legend()
+    ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
+
+    fig.savefig(
+        wrkdir_DNR + "Figs/vsc_{}_x{}_y{}_t{}.png".format(nvsc, x[0], y[0], time0)
+    )
+
+    plt.close(fig)
