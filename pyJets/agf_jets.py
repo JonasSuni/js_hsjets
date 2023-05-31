@@ -2150,13 +2150,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     plt.close(fig)
 
 
-def multi_VSC_timeseries(
-    runid="AGF",
-    time0=480,
-    x=[8],
-    y=[7],
-    pm=60,
-):
+def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=False):
     if len(x) != len(y):
         print("x and y must have same length!")
         return 1
@@ -2209,6 +2203,9 @@ def multi_VSC_timeseries(
         "$T_\parallel~[K]$",
         "$T_\perp~[K]$",
     ]
+    if delta:
+        for idx, lab in enumerate(ts_v_labels):
+            ts_v_labels[idx] = "$\\delta$" + lab
     nrows = len(ts_v_labels)
 
     ts_arr = np.zeros((nvsc, nrows, nt), dtype=float)
@@ -2233,12 +2230,20 @@ def multi_VSC_timeseries(
         a.set_xlim(t_arr[0], t_arr[-1])
         a.set_ylabel(ts_v_labels[idx])
         for idx2 in range(nvsc):
-            a.plot(
-                t_arr,
-                ts_arr[idx2, idx, :],
-                color=CB_color_cycle[idx2],
-                label="VSC {}".format(idx2),
-            )
+            if delta:
+                a.plot(
+                    t_arr,
+                    ts_arr[idx2, idx, :] - np.mean(ts_arr[idx2, idx, :]),
+                    color=CB_color_cycle[idx2],
+                    label="VSC {}".format(idx2),
+                )
+            else:
+                a.plot(
+                    t_arr,
+                    ts_arr[idx2, idx, :],
+                    color=CB_color_cycle[idx2],
+                    label="VSC {}".format(idx2),
+                )
 
     ax_list[0].legend()
     ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
@@ -2265,6 +2270,8 @@ def multi_VSC_timeseries(
     #     data_arr,
     # )
 
-    fig.savefig(figdir + "vsc_{}_x{}_y{}_t{}.png".format(nvsc, x[0], y[0], time0))
+    fig.savefig(
+        figdir + "vsc_{}_x{}_y{}_t{}_delta{}.png".format(nvsc, x[0], y[0], time0, delta)
+    )
 
     plt.close(fig)
