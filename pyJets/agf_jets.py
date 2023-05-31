@@ -2209,7 +2209,7 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
             # ts_v_labels[idx] = (
             #     "$\\delta$" + lnew + "/ | \\langle {} \\rangle | $".format(lnew[1:])
             # )
-            ts_v_labels[idx] = "$\\delta$" + lnew
+            ts_v_labels[idx] = "$\\delta " + lnew[1:]
     nrows = len(ts_v_labels)
 
     ts_arr = np.zeros((nvsc, nrows, nt), dtype=float)
