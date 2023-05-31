@@ -2207,7 +2207,7 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         for idx, lab in enumerate(ts_v_labels):
             lnew = lab.split("~")[0]
             ts_v_labels[idx] = (
-                "$\\delta$" + lnew + "/ \langle {} \rangle $".format(lnew[1:])
+                "$\\delta$" + lnew + "/ \\langle {} \\rangle $".format(lnew[1:])
             )
     nrows = len(ts_v_labels)
 
