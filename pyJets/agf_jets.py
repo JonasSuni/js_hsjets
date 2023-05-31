@@ -2271,7 +2271,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     # )
 
     fig.savefig(
-        figdir + "vsc_{}_x{}_y{}_t{}_delta{}.png".format(nvsc, x[0], y[0], time0, delta)
+        figdir
+        + "vsc_{}_x{}_y{}_t{}_pm{}_delta{}.png".format(
+            nvsc, x[0], y[0], time0, pm, delta
+        )
     )
 
     plt.close(fig)
