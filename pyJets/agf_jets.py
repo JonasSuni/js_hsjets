@@ -2256,24 +2256,27 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     for idx2 in range(nvsc):
         ax_list[-3].plot(
             t_arr,
-            np.correlate(ts_arr[idx2, 0, :], ts_arr[idx2, 4, :], mode="same"),
+            (ts_arr[idx2, 0, :] - np.mean(ts_arr[idx2, 0, :]))
+            * (ts_arr[idx2, 4, :] - np.mean(ts_arr[idx2, 4, :])),
             color=CB_color_cycle[idx2],
         )
-        ax_list[-3].set_ylabel("$n \star v$")
+        ax_list[-3].set_ylabel("$\\delta n \times \\delta v$")
 
         ax_list[-2].plot(
             t_arr,
-            np.correlate(ts_arr[idx2, 0, :], ts_arr[idx2, 9, :], mode="same"),
+            (ts_arr[idx2, 0, :] - np.mean(ts_arr[idx2, 0, :]))
+            * (ts_arr[idx2, 9, :] - np.mean(ts_arr[idx2, 9, :])),
             color=CB_color_cycle[idx2],
         )
-        ax_list[-2].set_ylabel("$n \star B$")
+        ax_list[-2].set_ylabel("$\\delta n \times \\delta B$")
 
         ax_list[-1].plot(
             t_arr,
-            np.correlate(ts_arr[idx2, 9, :], ts_arr[idx2, 4, :], mode="same"),
+            (ts_arr[idx2, 9, :] - np.mean(ts_arr[idx2, 9, :]))
+            * (ts_arr[idx2, 4, :] - np.mean(ts_arr[idx2, 4, :])),
             color=CB_color_cycle[idx2],
         )
-        ax_list[-1].set_ylabel("$B \star v$")
+        ax_list[-1].set_ylabel("$\\delta B \times \\delta v$")
 
     ax_list[0].legend(loc="lower left")
     ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
