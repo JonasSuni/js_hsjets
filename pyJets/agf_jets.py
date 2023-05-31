@@ -2104,7 +2104,9 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         except:
             data_arr[:, idx] = np.nan
 
-    fig, ax_list = plt.subplots(len(ylabels), 1, sharex=True, figsize=(6, 8))
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
+    )
     ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
@@ -2125,7 +2127,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
         ax.axvline(t0, linestyle="dashed")
-    plt.tight_layout()
+    # plt.tight_layout()
     figdir = wrkdir_DNR + "Figs/timeseries/"
     txtdir = wrkdir_DNR + "txts/timeseries/"
     if not os.path.exists(figdir):
@@ -2225,7 +2227,7 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
                     ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
                 )
 
-    fig, ax_list = plt.subplots(nrows, 1, figsize=(10, 20), constrained_layout=True)
+    fig, ax_list = plt.subplots(nrows + 3, 1, figsize=(12, 24), constrained_layout=True)
 
     ax_list[-1].set_xlabel("Time [s]")
     for idx in range(nrows):
@@ -2251,7 +2253,29 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
                     label="VSC {}".format(idx2),
                 )
 
-    ax_list[0].legend()
+    for idx2 in range(nvsc):
+        ax_list[-3].plot(
+            t_arr,
+            np.correlate(ts_arr[idx2, 0, :], ts_arr[idx2, 4, :], mode="same"),
+            color=CB_color_cycle[idx2],
+        )
+        ax_list[-3].set_ylabel("$n \star v$")
+
+        ax_list[-2].plot(
+            t_arr,
+            np.correlate(ts_arr[idx2, 0, :], ts_arr[idx2, 9, :], mode="same"),
+            color=CB_color_cycle[idx2],
+        )
+        ax_list[-2].set_ylabel("$n \star B$")
+
+        ax_list[-1].plot(
+            t_arr,
+            np.correlate(ts_arr[idx2, 9, :], ts_arr[idx2, 4, :], mode="same"),
+            color=CB_color_cycle[idx2],
+        )
+        ax_list[-1].set_ylabel("$B \star v$")
+
+    ax_list[0].legend(loc="lower left")
     ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
 
     figdir = wrkdir_DNR + "Figs/multi_vsc/"
