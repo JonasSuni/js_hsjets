@@ -2254,6 +2254,8 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
                 )
 
     for idx2 in range(nvsc):
+        ax_list[-3].grid()
+        ax_list[-3].set_xlim(t_arr[0], t_arr[-1])
         ax_list[-3].plot(
             t_arr,
             (ts_arr[idx2, 0, :] - np.mean(ts_arr[idx2, 0, :]))
@@ -2262,6 +2264,8 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         )
         ax_list[-3].set_ylabel("$\\delta n \\times \\delta v$")
 
+        ax_list[-2].grid()
+        ax_list[-2].set_xlim(t_arr[0], t_arr[-1])
         ax_list[-2].plot(
             t_arr,
             (ts_arr[idx2, 0, :] - np.mean(ts_arr[idx2, 0, :]))
@@ -2270,6 +2274,8 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         )
         ax_list[-2].set_ylabel("$\\delta n \\times \\delta B$")
 
+        ax_list[-1].grid()
+        ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
         ax_list[-1].plot(
             t_arr,
             (ts_arr[idx2, 9, :] - np.mean(ts_arr[idx2, 9, :]))
