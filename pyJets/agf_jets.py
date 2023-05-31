@@ -2243,8 +2243,28 @@ def multi_VSC_timeseries(
     ax_list[0].legend()
     ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
 
-    fig.savefig(
-        wrkdir_DNR + "Figs/vsc_{}_x{}_y{}_t{}.png".format(nvsc, x[0], y[0], time0)
-    )
+    figdir = wrkdir_DNR + "Figs/multi_vsc/"
+    # txtdir = wrkdir_DNR + "txts/timeseries/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+    # if not os.path.exists(txtdir):
+    #     try:
+    #         os.makedirs(txtdir)
+    #     except OSError:
+    #         pass
+
+    # fig.savefig(
+    #     figdir + "{}_x{}_y{}_t{}.png".format(runid, x0, y0, t0),
+    #     dpi=300,
+    # )
+    # np.savetxt(
+    #     txtdir + "{}_x{}_y{}_t{}.txt".format(runid, x0, y0, t0),
+    #     data_arr,
+    # )
+
+    fig.savefig(figdir + "vsc_{}_x{}_y{}_t{}.png".format(nvsc, x[0], y[0], time0))
 
     plt.close(fig)
