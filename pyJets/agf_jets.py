@@ -2206,9 +2206,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     if delta:
         for idx, lab in enumerate(ts_v_labels):
             lnew = lab.split("~")[0]
-            ts_v_labels[idx] = (
-                "$\\delta$" + lnew + "/ | \\langle {} \\rangle | $".format(lnew[1:])
-            )
+            # ts_v_labels[idx] = (
+            #     "$\\delta$" + lnew + "/ | \\langle {} \\rangle | $".format(lnew[1:])
+            # )
+            ts_v_labels[idx] = "$\\delta$" + lnew
     nrows = len(ts_v_labels)
 
     ts_arr = np.zeros((nvsc, nrows, nt), dtype=float)
@@ -2236,8 +2237,9 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
             if delta:
                 a.plot(
                     t_arr,
-                    (ts_arr[idx2, idx, :] - np.mean(ts_arr[idx2, idx, :]))
-                    / np.abs(np.mean(ts_arr[idx2, idx, :])),
+                    # (ts_arr[idx2, idx, :] - np.mean(ts_arr[idx2, idx, :]))
+                    # / np.abs(np.mean(ts_arr[idx2, idx, :])),
+                    ts_arr[idx2, idx, :] - np.mean(ts_arr[idx2, idx, :]),
                     color=CB_color_cycle[idx2],
                     label="VSC {}".format(idx2),
                 )
