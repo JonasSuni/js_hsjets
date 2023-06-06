@@ -2019,7 +2019,24 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "$T_\\parallel$",
         "$T_\\perp$",
     ]
-    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e9,1e3, 1e3, 1e3, 1e3, 1e-6, 1e-6]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
     draw_legend = [
         False,
         False,
@@ -2052,9 +2069,26 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         # "$E~[E_\mathrm{sw}]$",
         # "$T~[T_\mathrm{sw}]$",
     ]
-    e_sw = 750e3*3e-9*q_p/m_p*1e3
+    e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     norm = [
-        [1, 750, 750, 750, 750, 0.9408498320756251, 3, 3, 3, 3, e_sw, e_sw, e_sw, e_sw, 0.5, 0.5],
+        [
+            1,
+            750,
+            750,
+            750,
+            750,
+            0.9408498320756251,
+            3,
+            3,
+            3,
+            3,
+            e_sw,
+            e_sw,
+            e_sw,
+            e_sw,
+            0.5,
+            0.5,
+        ],
     ]
     ops = [
         "pass",
@@ -2067,16 +2101,24 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "y",
         "z",
         "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
         "pass",
         "pass",
     ]
-    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5]
     plot_colors = [
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
         CB_color_cycle[2],
         "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
@@ -2104,7 +2146,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
             )[int(cellid) - 1]
         except:
             tavg_pdyn = np.nan
-        tavg_arr[idx] = tavg_pdyn * scales[5] #/ run_norm[5]
+        tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
         try:
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
