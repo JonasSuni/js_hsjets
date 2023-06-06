@@ -63,6 +63,7 @@ plt.rcParams.update(
 
 r_e = 6.371e6
 m_p = 1.672621898e-27
+q_p = 1.602176634e-19
 mu0 = 1.25663706212e-06
 kb = 1.380649e-23
 
@@ -1993,6 +1994,10 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "vg_b_vol",
         "vg_b_vol",
         "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
@@ -2007,10 +2012,14 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "$B_y$",
         "$B_z$",
         "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
         "$T_\\parallel$",
         "$T_\\perp$",
     ]
-    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e9, 1e-6, 1e-6]
+    scales = [1e-6, 1e-3, 1e-3, 1e-3, 1e-3, 1e9, 1e9, 1e9, 1e9, 1e9,1e3, 1e3, 1e3, 1e3, 1e-6, 1e-6]
     draw_legend = [
         False,
         False,
@@ -2023,22 +2032,29 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         False,
         True,
         False,
+        False,
+        False,
+        True,
+        False,
         True,
     ]
     ylabels = [
-        # "$\\rho~[\mathrm{cm}^{-3}]$",
-        # "$v~[\mathrm{km/s}]$",
-        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        # "$B~[\mathrm{nT}]$",
-        # "$T~[\mathrm{MK}]$",
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$T~[T_\mathrm{sw}]$",
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B~[\mathrm{nT}]$",
+        "$E~[\mathrm{mV}]$",
+        "$T~[\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\mathrm{sw}]$",
+        # "$v~[v_\mathrm{sw}]$",
+        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        # "$B~[B_\mathrm{IMF}]$",
+        # "$E~[E_\mathrm{sw}]$",
+        # "$T~[T_\mathrm{sw}]$",
     ]
+    e_sw = 750e3*3e-9*q_p/m_p*1e3
     norm = [
-        [1, 750, 750, 750, 750, 0.9408498320756251, 3, 3, 3, 3, 0.5, 0.5],
+        [1, 750, 750, 750, 750, 0.9408498320756251, 3, 3, 3, 3, e_sw, e_sw, e_sw, e_sw, 0.5, 0.5],
     ]
     ops = [
         "pass",
@@ -2088,7 +2104,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
             )[int(cellid) - 1]
         except:
             tavg_pdyn = np.nan
-        tavg_arr[idx] = tavg_pdyn * scales[5] / run_norm[5]
+        tavg_arr[idx] = tavg_pdyn * scales[5] #/ run_norm[5]
         try:
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
@@ -2099,7 +2115,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
                         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
                     )
                     * scales[idx2]
-                    / run_norm[idx2]
+                    # / run_norm[idx2]
                 )
         except:
             data_arr[:, idx] = np.nan
