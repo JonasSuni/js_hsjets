@@ -1596,15 +1596,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     core_heating = pass_maps["proton/vg_core_heating"]
     Bmag = np.linalg.norm(B, axis=-1)
     Pdyn = pass_maps["proton/vg_Pdyn"]
+    Pdynx = pass_maps["proton/vg_Pdynx"]
 
-    try:
-        slams_cells = np.loadtxt(
-            "/wrk-vakka/users/jesuni/foreshock_bubble/working/SLAMS/Masks/{}/{}.mask".format(
-                runid_g, int(filenr_g)
-            )
-        ).astype(int)
-    except:
-        slams_cells = []
+    # try:
+    #     slams_cells = np.loadtxt(
+    #         "/wrk-vakka/users/jesuni/foreshock_bubble/working/SLAMS/Masks/{}/{}.mask".format(
+    #             runid_g, int(filenr_g)
+    #         )
+    #     ).astype(int)
+    # except:
+    #     slams_cells = []
     try:
         jet_cells = np.loadtxt(
             "/wrk-vakka/users/jesuni/foreshock_bubble/working/jets/Masks/{}/{}.mask".format(
@@ -1614,10 +1615,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     except:
         jet_cells = []
 
-    sj_jetobs = [
-        PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
-        for sj_id in sj_ids_g
-    ]
+    # sj_jetobs = [
+    #     PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
+    #     for sj_id in sj_ids_g
+    # ]
     non_sjobs = [
         PropReader(str(int(non_id)).zfill(5), runid_g, transient="jet")
         for non_id in non_ids_g
@@ -1628,10 +1629,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     non_xlist = []
     non_ylist = []
 
-    for jetobj in sj_jetobs:
-        if filenr_g / 2.0 in jetobj.read("time"):
-            sj_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
-            sj_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
+    # for jetobj in sj_jetobs:
+    #     if filenr_g / 2.0 in jetobj.read("time"):
+    #         sj_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
+    #         sj_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
     for jetobj in non_sjobs:
         if filenr_g / 2.0 in jetobj.read("time"):
             non_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
@@ -1640,8 +1641,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     for idx in range(len(xg)):
         ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
 
-    slams_mask = np.in1d(cellids, slams_cells).astype(int)
-    slams_mask = np.reshape(slams_mask, cellids.shape)
+    # slams_mask = np.in1d(cellids, slams_cells).astype(int)
+    # slams_mask = np.reshape(slams_mask, cellids.shape)
 
     jet_mask = np.in1d(cellids, jet_cells).astype(int)
     jet_mask = np.reshape(jet_mask, cellids.shape)
@@ -1650,13 +1651,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     mach_mask = (mmsx < 1).astype(int)
     rho_mask = (rho > 2 * rho_sw).astype(int)
 
+    plaschke_mask = (Pdynx > 0.25 * Pdyn_sw).astype(int)
+    plaschke_mask[core_heating < 3 * T_sw] = 0
+
     cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
     cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
 
     diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
     diamag_mask[Bmag > B_sw] = 0
 
-    CB_color_cycle
+    # CB_color_cycle
 
     # start_points = np.array(
     #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
@@ -1703,15 +1707,25 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    slams_cont = ax.contour(
+    plaschke_cont = ax.contour(
         XmeshXY,
         YmeshXY,
-        slams_mask,
+        plaschke_mask,
         [0.5],
         linewidths=lws,
         colors=CB_color_cycle[7],
         linestyles=["solid"],
     )
+
+    # slams_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     slams_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[7],
+    #     linestyles=["solid"],
+    # )
 
     # rho_cont = ax.contour(
     #     XmeshXY,
@@ -1742,23 +1756,24 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         markeredgecolor="white",
         fillstyle="full",
         mew=mews,
-        label="Non-FCS-jet",
+        label="Tracked jet",
     )
-    (sj_pos,) = ax.plot(
-        sj_xlist,
-        sj_ylist,
-        "o",
-        color="red",
-        markersize=mrks,
-        markeredgecolor="white",
-        fillstyle="full",
-        mew=mews,
-        label="FCS-jet",
-    )
+    # (sj_pos,) = ax.plot(
+    #     sj_xlist,
+    #     sj_ylist,
+    #     "o",
+    #     color="red",
+    #     markersize=mrks,
+    #     markeredgecolor="white",
+    #     fillstyle="full",
+    #     mew=mews,
+    #     label="FCS-jet",
+    # )
 
     # itr_jumbled = [3, 1, 4, 2, 7]
 
     itr_jumbled = [1, 1, 4, 2, 7]
+    itr_jumbled = [1, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -1784,6 +1799,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         # "$n=2n_\mathrm{sw}$",
         "$T_\mathrm{core}=3T_\mathrm{sw}$",
         # "$M_{\mathrm{MS},x}=1$",
+        "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
     ]
 
     proxy = [
@@ -1801,9 +1817,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append("Jet")
-    if ~(slams_mask == 0).all():
-        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
-        proxy_labs.append("FCS")
+    # if ~(slams_mask == 0).all():
+    #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
+    #     proxy_labs.append("FCS")
     if Blines_g:
         proxy.append(mlines.Line2D([], [], color="k"))
         proxy_labs.append("$B$")
@@ -1812,13 +1828,13 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
     ).any():
         proxy.append(non_pos)
-        proxy_labs.append("Non-FCS jet")
-    if np.logical_and(
-        np.logical_and(sj_xlist >= xmin, sj_xlist <= xmax),
-        np.logical_and(sj_ylist >= ymin, sj_ylist <= ymax),
-    ).any():
-        proxy.append(sj_pos)
-        proxy_labs.append("FCS-jet")
+        proxy_labs.append("Tracked jet")
+    # if np.logical_and(
+    #     np.logical_and(sj_xlist >= xmin, sj_xlist <= xmax),
+    #     np.logical_and(sj_ylist >= ymin, sj_ylist <= ymax),
+    # ).any():
+    #     proxy.append(sj_pos)
+    #     proxy_labs.append("FCS-jet")
 
     ax.legend(
         proxy,
@@ -1976,6 +1992,7 @@ def v5_plotter(
                 "CellID",
                 "proton/vg_mmsx",
                 "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
             ],
         )
 
