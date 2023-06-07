@@ -2217,11 +2217,11 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
             pass
 
     fig.savefig(
-        figdir + "{}_x{}_y{}_t{}.png".format(runid, x0, y0, t0),
+        figdir + "{}_x{}_y{}_t{}_pm{}.png".format(runid, x0, y0, t0, tpm),
         dpi=300,
     )
     np.savetxt(
-        txtdir + "{}_x{}_y{}_t{}.txt".format(runid, x0, y0, t0),
+        txtdir + "{}_x{}_y{}_t{}_pm{}.txt".format(runid, x0, y0, t0, tpm),
         data_arr,
     )
     plt.close(fig)
