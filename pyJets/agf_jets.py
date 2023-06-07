@@ -1773,7 +1773,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # itr_jumbled = [3, 1, 4, 2, 7]
 
     itr_jumbled = [1, 1, 4, 2, 7]
-    itr_jumbled = [1, 7]
+    itr_jumbled = [1, 7, 4, 2, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
