@@ -2077,7 +2077,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
         "$v~[\mathrm{km/s}]$",
         "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
         "$B~[\mathrm{nT}]$",
-        "$E~[\mathrm{mV}]$",
+        "$E~[\mathrm{mV/m}]$",
         "$T~[\mathrm{MK}]$",
         # "$\\rho~[\\rho_\mathrm{sw}]$",
         # "$v~[v_\mathrm{sw}]$",
@@ -2249,6 +2249,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "vg_b_vol",
         "vg_b_vol",
         "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
@@ -2259,6 +2263,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "z",
         "magnitude",
         "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
         "x",
         "y",
         "z",
@@ -2277,6 +2285,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "$B_y~[T]$",
         "$B_z~[T]$",
         "$B~[T]$",
+        "$E_x~[V/m]$",
+        "$E_y~[V/m]$",
+        "$E_z~[V/m]$",
+        "$E~[V/m]$",
         "$T_\parallel~[K]$",
         "$T_\perp~[K]$",
     ]
@@ -2302,7 +2314,10 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
                     ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
                 )
 
-    fig, ax_list = plt.subplots(nrows + 3, 1, figsize=(12, 24), constrained_layout=True)
+    fig, ax_list = plt.subplots(
+        int(np.ceil((nrows + 3) / 3)), 3, figsize=(24, 24), constrained_layout=True
+    )
+    ax_list = (ax_list.T).flatten()
 
     ax_list[-1].set_xlabel("Time [s]")
     for idx in range(nrows):
