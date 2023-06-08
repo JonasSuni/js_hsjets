@@ -2256,6 +2256,24 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
     ts_v_ops = [
         "pass",
         "x",
@@ -2310,12 +2328,15 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         for idx2 in range(nvsc):
             coord = coords[idx2]
             for idx3 in range(nrows):
-                ts_arr[idx2, idx3, idx] = vlsvobj.read_interpolated_variable(
-                    ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
+                ts_arr[idx2, idx3, idx] = (
+                    vlsvobj.read_interpolated_variable(
+                        ts_v_vars[idx3], coord, operator=ts_v_ops[idx3]
+                    )
+                    * scales[idx3]
                 )
 
     fig, ax_list = plt.subplots(
-        int(np.ceil((nrows + 3) / 3)), 3, figsize=(24, 24), constrained_layout=True
+        int(np.ceil((nrows + 4) / 3)), 3, figsize=(24, 24), constrained_layout=True
     )
     ax_list = (ax_list.T).flatten()
 
@@ -2373,6 +2394,16 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
             color=CB_color_cycle[idx2],
         )
         ax_list[nrows + 2].set_ylabel("$\\delta B \\times \\delta v$")
+
+        ax_list[nrows + 3].grid()
+        ax_list[nrows + 3].set_xlim(t_arr[0], t_arr[-1])
+        ax_list[nrows + 3].plot(
+            t_arr,
+            (ts_arr[idx2, 9, :] - np.mean(ts_arr[idx2, 9, :]))
+            * (ts_arr[idx2, 13, :] - np.mean(ts_arr[idx2, 13, :])),
+            color=CB_color_cycle[idx2],
+        )
+        ax_list[nrows + 3].set_ylabel("$\\delta B \\times \\delta E$")
 
     ax_list[0].legend(loc="lower left")
     ax_list[0].set_title("VSC: {}".format(coords[:, :2] / r_e))
