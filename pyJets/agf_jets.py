@@ -2469,7 +2469,7 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
-    pdyn_sw = m_p * rho_sw * v_sw * v_sw
+    pdyn_sw = m_p * n_sw * v_sw * v_sw
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
