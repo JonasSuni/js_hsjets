@@ -2440,7 +2440,9 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     plt.close(fig)
 
 
-def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
+def jplots(
+    x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30, bs_thresh=0.5
+):
     dr = 300e3 / r_e
     varname_list = [
         "$n$ [cm$^{-3}$]",
@@ -2571,7 +2573,7 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
-            ax.contour(XmeshXY, YmeshXY, data_arr[-1].T, [0.1], colors=["black"])
+            ax.contour(XmeshXY, YmeshXY, data_arr[-1].T, [bs_thresh], colors=["black"])
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
