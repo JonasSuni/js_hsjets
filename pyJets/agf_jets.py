@@ -2571,7 +2571,7 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
-            ax.contour(XmeshXY, YmeshXY, data_arr[-1], [1], colors=["black"])
+            ax.contour(XmeshXY, YmeshXY, data_arr[-1].T, [1], colors=["black"])
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
