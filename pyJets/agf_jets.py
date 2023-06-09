@@ -2004,6 +2004,7 @@ def v5_plotter(
                 "proton/vg_mmsx",
                 "proton/vg_Pdyn",
                 "proton/vg_Pdynx",
+                "proton/vg_beta_star",
             ],
         )
 
