@@ -2493,7 +2493,7 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
     fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
 
     cellids = [
-        int(fobj.get_cellid(xlist[idx] * r_e, ylist[idx] * r_e, 0))
+        int(fobj.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
         for idx in range(xlist.size)
     ]
     cellnr = range(xlist.size)
