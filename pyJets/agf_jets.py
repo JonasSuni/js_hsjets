@@ -2455,7 +2455,8 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
         "proton/vg_pdyn",
         "vg_b_vol",
         "proton/vg_temperature",
-        "proton/vg_core_heating" "proton/vg_mmsx",
+        "proton/vg_core_heating",
+        "proton/vg_mmsx",
         "proton/vg_beta_star",
     ]
     ops_list = ["pass", "x", "pass", "magnitude", "pass", "pass", "pass", "pass"]
