@@ -2556,7 +2556,7 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
                 ax.pcolormesh(
                     XmeshXY,
                     YmeshXY,
-                    data_arr[idx],
+                    data_arr[idx].T,
                     shading="nearest",
                     cmap=cmap[idx],
                     # vmin=vmin[idx],
