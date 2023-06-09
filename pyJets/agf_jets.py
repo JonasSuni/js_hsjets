@@ -2578,8 +2578,8 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
             ax.set_xlim(cellnr[0], cellnr[-1])
             ax.set_ylim(t_range[0], t_range[-1])
             ax.set_xlabel("CellNR", fontsize=24, labelpad=10)
-            ax.axhline(t0, linestyle="dashed", linewidth=0.6)
-            ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+            # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+            # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
