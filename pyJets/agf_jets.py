@@ -2441,7 +2441,17 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
 
 
 def jplots(
-    x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30, bs_thresh=0.5
+    x0,
+    y0,
+    x1,
+    y1,
+    t0,
+    runid="AGF",
+    txt=False,
+    draw=False,
+    pm=30,
+    bs_thresh=0.5,
+    intpol=False,
 ):
     dr = 300e3 / r_e
     varname_list = [
@@ -2493,6 +2503,9 @@ def jplots(
     xlist = np.linspace(x0, x1, npoints)
     ylist = np.linspace(y0, y1, npoints)
 
+    if intpol:
+        coords = [[xlist[idx] * r_e, ylist[idx] * r_e, 0] for idx in range(xlist.size)]
+
     fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
 
     cellids = [
@@ -2522,12 +2535,21 @@ def jplots(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
             for idx2 in range(len(vars_list)):
-                data_arr[idx2, :, idx] = (
-                    vlsvobj.read_variable(
-                        vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                if intpol:
+                    data_arr[idx2, :, idx] = [
+                        vlsvobj.read_interpolated_variable(
+                            vars_list[idx2], coords[idx3], operator=ops_list[idx2]
+                        )
+                        * scale_list[idx2]
+                        for idx3 in range(xlist.size)
+                    ]
+                else:
+                    data_arr[idx2, :, idx] = (
+                        vlsvobj.read_variable(
+                            vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                        )
+                        * scale_list[idx2]
                     )
-                    * scale_list[idx2]
-                )
 
     # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
