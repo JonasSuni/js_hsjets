@@ -2498,7 +2498,7 @@ def jplots(
     t_range = np.arange(t0 - pm, t0 + pm + 0.1, 0.5)
     # Get cellid of initial position
 
-    npoints = int(np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2) / dr)
+    npoints = int(np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2) / dr) + 1
 
     xlist = np.linspace(x0, x1, npoints)
     ylist = np.linspace(y0, y1, npoints)
