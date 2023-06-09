@@ -2554,9 +2554,9 @@ def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
             ax.tick_params(labelsize=20)
             im_list.append(
                 ax.pcolormesh(
-                    cellnr,
-                    t_range,
-                    data_arr[idx].T,
+                    XmeshXY,
+                    YmeshXY,
+                    data_arr[idx],
                     shading="nearest",
                     cmap=cmap[idx],
                     # vmin=vmin[idx],
