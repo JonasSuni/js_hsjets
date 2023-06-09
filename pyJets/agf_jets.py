@@ -2438,3 +2438,187 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     )
 
     plt.close(fig)
+
+
+def jplots(x0, y0, x1, y1, t0, runid="AGF", txt=False, draw=False, pm=30):
+    dr = 300e3 / r_e
+    varname_list = [
+        "$n$ [cm$^{-3}$]",
+        "$v_x$ [km/s]",
+        "$P_\mathrm{dyn}$ [nPa]",
+        "$B$ [nT]",
+        "$T$ [MK]",
+    ]
+    vars_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_pdyn",
+        "vg_b_vol",
+        "proton/vg_temperature",
+        "proton/vg_core_heating" "proton/vg_mmsx",
+        "proton/vg_beta_star",
+    ]
+    ops_list = ["pass", "x", "pass", "magnitude", "pass", "pass", "pass", "pass"]
+    scale_list = [1e-6, 1e-3, 1e9, 1e9, 1e-6, 1, 1, 1]
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["AGF"]
+    runids_paper = ["FSB"]
+    sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
+    ]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+    pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
+    # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
+    # vmin = [0, -1, 0.25, 0, 10]
+    # vmax = [4, 0, 1, 4, 30]
+
+    # Path to vlsv files for current run
+    bulkpath = find_bulkpath(runid)
+
+    fnr0 = int(t0 * 2)
+
+    fnr_range = np.arange(fnr0 - pm * 2, fnr0 + pm * 2 + 1)
+    t_range = np.arange(t0 - pm, t0 + pm + 0.1, 0.5)
+    # Get cellid of initial position
+
+    npoints = int(np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2) / dr)
+
+    xlist = np.linspace(x0, x1, npoints)
+    ylist = np.linspace(y0, y1, npoints)
+
+    fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
+
+    cellids = [
+        int(fobj.get_cellid(xlist[idx] * r_e, ylist[idx] * r_e, 0))
+        for idx in range(xlist.size)
+    ]
+    cellnr = range(xlist.size)
+
+    XmeshXY, YmeshXY = np.meshgrid(cellnr, t_range)
+
+    data_arr = np.zeros((len(vars_list), len(cellnr), len(t_range)), dtype=float)
+
+    figdir = wrkdir_DNR + "Figs/jmaps/"
+    txtdir = wrkdir_DNR + "txts/jmaps/"
+
+    if txt:
+        data_arr = np.load(
+            txtdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.npy".format(
+                runid, x0, y0, x1, y1, t0, pm
+            )
+        )
+    else:
+        for idx in range(fnr_range.size):
+            fnr = fnr_range[idx]
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
+            for idx2 in range(len(vars_list)):
+                data_arr[idx2, :, idx] = (
+                    vlsvobj.read_variable(
+                        vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                    )
+                    * scale_list[idx2]
+                )
+
+    # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
+    cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
+    annot = ["(a)", "(b)", "(c)", "(d)", "(e)"]
+
+    # fig, ax_list = plt.subplots(
+    #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
+    # )
+    if draw:
+        fig, ax_list = plt.subplots(
+            1,
+            len(varname_list),
+            figsize=(20, 10),
+            sharex=True,
+            sharey=True,
+        )
+        ax_list = ax_list.flatten()
+        im_list = []
+        cb_list = []
+        fig.suptitle(
+            "Run: {}, x0: {}, y0: {}, x1: {}, y1: {}".format(runid, x0, y0, x1, y1),
+            fontsize=28,
+        )
+        for idx in range(len(varname_list)):
+            ax = ax_list[idx]
+            ax.tick_params(labelsize=20)
+            im_list.append(
+                ax.pcolormesh(
+                    cellnr,
+                    t_range,
+                    data_arr[idx],
+                    shading="nearest",
+                    cmap=cmap[idx],
+                    # vmin=vmin[idx],
+                    # vmax=vmax[idx],
+                    rasterized=True,
+                )
+            )
+            # if idx == 1:
+            #     cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+            #     cb_list[idx].cmap.set_over("red")
+            # else:
+            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            cb_list[idx].ax.tick_params(labelsize=20)
+            ax.contour(XmeshXY, YmeshXY, data_arr[-1], [1], colors=["black"])
+            # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
+            # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
+            ax.set_title(varname_list[idx], fontsize=24, pad=10)
+            ax.set_xlim(cellnr[0], cellnr[-1])
+            ax.set_ylim(t_range[0], t_range[-1])
+            ax.set_xlabel("CellNR", fontsize=24, labelpad=10)
+            ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+            ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+        ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+        # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
+        #     "Simulation time [s]", fontsize=28, labelpad=10
+        # )
+        # ax_list[-1].set_axis_off()
+
+        # Save figure
+        plt.tight_layout()
+
+        # fig.savefig(
+        #     wrkdir_DNR
+        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        # )
+        if not os.path.exists(figdir):
+            try:
+                os.makedirs(figdir)
+            except OSError:
+                pass
+
+        fig.savefig(
+            figdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.png".format(
+                runid, x0, y0, x1, y1, t0, pm
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
+
+    if not txt:
+        if not os.path.exists(txtdir):
+            try:
+                os.makedirs(txtdir)
+            except OSError:
+                pass
+
+        np.save(
+            txtdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.npy".format(
+                runid, x0, y0, x1, y1, t0, pm
+            ),
+            data_arr,
+        )
