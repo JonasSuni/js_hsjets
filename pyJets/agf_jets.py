@@ -1597,6 +1597,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     Bmag = np.linalg.norm(B, axis=-1)
     Pdyn = pass_maps["proton/vg_Pdyn"]
     Pdynx = pass_maps["proton/vg_Pdynx"]
+    beta_star = pass_maps["proton/vg_beta_star"]
 
     # try:
     #     slams_cells = np.loadtxt(
@@ -1697,11 +1698,20 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    ch_cont = ax.contour(
+    # ch_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     ch_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[1],
+    #     linestyles=["solid"],
+    # )
+    bs_cont = ax.contour(
         XmeshXY,
         YmeshXY,
-        ch_mask,
-        [0.5],
+        beta_star,
+        [0.3],
         linewidths=lws,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
@@ -1797,7 +1807,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     proxy_labs = [
         # "$n=2n_\mathrm{sw}$",
-        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        # "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        "$\\beta^* = 0.3$",
         # "$M_{\mathrm{MS},x}=1$",
         "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
     ]
@@ -1842,7 +1853,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         frameon=True,
         numpoints=1,
         markerscale=1,
-        loc="lower right",
+        loc="lower left",
         fontsize=5,
     )
 
