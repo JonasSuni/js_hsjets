@@ -2462,7 +2462,7 @@ def jplots(
     txt=False,
     draw=False,
     pm=30,
-    bs_thresh=0.5,
+    bs_thresh=0.3,
     intpol=False,
 ):
     dr = 300e3 / r_e
