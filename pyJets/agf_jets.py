@@ -2452,6 +2452,52 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     plt.close(fig)
 
 
+def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
+
+    Bmag = np.sqrt(Bx**2 + By**2)
+    vmag = np.sqrt(vx**2 + vy**2)
+
+    vax = va * Bx / Bmag
+    vay = va * By / Bmag
+
+    vsx = vs * Bx / Bmag
+    vsy = vs * By / Bmag
+
+    vmsx = vms * By / Bmag
+    vmsy = vms * Bx / Bmag
+
+    vpvax = vx + vax
+    vpvay = vy + vay
+
+    vpvsx = vx + vsx
+    vpvsy = vy + vsy
+
+    vpvmsx = vx + vmsx
+    vpvmsy = vy + vmsy
+
+    vmvax = vx - vax
+    vmvay = vy - vay
+
+    vmvsx = vx - vsx
+    vmvsy = vy - vsy
+
+    vmvmsx = vx - vmsx
+    vmvmsy = vy - vmsy
+
+    vpvapar = (dx * vpvax + dy * vpvay) / (np.sqrt(dx**2 + dy**2))
+    vmvapar = (dx * vmvax + dy * vmvay) / (np.sqrt(dx**2 + dy**2))
+
+    vpvspar = (dx * vpvsx + dy * vpvsy) / (np.sqrt(dx**2 + dy**2))
+    vmvspar = (dx * vmvsx + dy * vmvsy) / (np.sqrt(dx**2 + dy**2))
+
+    vpvmspar = (dx * vpvmsx + dy * vpvmsy) / (np.sqrt(dx**2 + dy**2))
+    vmvmspar = (dx * vmvmsx + dy * vmvmsy) / (np.sqrt(dx**2 + dy**2))
+
+    vpar = (dx * vx + dy * vy) / (np.sqrt(dx**2 + dy**2))
+
+    return (vpar, vpvapar, vmvapar, vpvspar, vmvspar, vpvmspar, vmvmspar)
+
+
 def jplots(
     x0,
     y0,
@@ -2460,12 +2506,14 @@ def jplots(
     t0,
     runid="AGF",
     txt=False,
-    draw=False,
+    draw=True,
     pm=30,
     bs_thresh=0.3,
     intpol=False,
+    vel_lines=None,
 ):
     dr = 300e3 / r_e
+    dr_km = 300
     varname_list = [
         "$n$ [cm$^{-3}$]",
         "$v_x$ [km/s]",
@@ -2479,17 +2527,56 @@ def jplots(
         "proton/vg_pdyn",
         "vg_b_vol",
         "proton/vg_temperature",
-        "proton/vg_core_heating",
-        "proton/vg_mmsx",
+        # "proton/vg_core_heating",
+        # "proton/vg_mmsx",
         "proton/vg_beta_star",
+        "vg_va",
+        "vg_vs",
+        "vg_vms",
+        "proton/vg_v",
+        "proton/vg_v",
+        "vg_b_vol",
+        "vg_b_vol",
     ]
-    ops_list = ["pass", "x", "pass", "magnitude", "pass", "pass", "pass", "pass"]
-    scale_list = [1e-6, 1e-3, 1e9, 1e9, 1e-6, 1, 1, 1]
+    ops_list = [
+        "pass",
+        "x",
+        "pass",
+        "magnitude",
+        "pass",
+        # "pass",
+        # "pass",
+        "pass",
+        "pass",
+        "pass",
+        "pass",
+        "x",
+        "y",
+        "x",
+        "y",
+    ]
+    scale_list = [
+        1e-6,
+        1e-3,
+        1e9,
+        1e9,
+        1e-6,
+        # 1,
+        # 1,
+        1,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+    ]
 
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
     runid_list = ["AGF"]
-    runids_paper = ["FSB"]
+    runids_paper = ["RDC"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
@@ -2529,6 +2616,9 @@ def jplots(
     XmeshXY, YmeshXY = np.meshgrid(cellnr, t_range)
 
     data_arr = np.zeros((len(vars_list), len(cellnr), len(t_range)), dtype=float)
+    vt_arr = np.ones((len(cellnr), len(t_range)), dtype=float)
+    dx_arr = (x1 - x0) * vt_arr
+    dy_arr = (y1 - y0) * vt_arr
 
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
@@ -2562,6 +2652,29 @@ def jplots(
                         )
                         * scale_list[idx2]
                     )
+
+    # vpar,vpvapar,vmvapar,vpvspar,vmvspar,vpvmspar,vmvmspar
+    outvels = calc_velocities(
+        dx_arr,
+        dy_arr,
+        data_arr[9],
+        data_arr[10],
+        data_arr[11],
+        data_arr[12],
+        data_arr[6],
+        data_arr[7],
+        data_arr[8],
+    )
+    vels_list = ["vb", "vb+va", "vb-va", "vb+vs", "vb-vs", "vb+vms", "vb-vms"]
+    if vel_lines:
+        vel_to_plot = outvels[vels_list.index(vel_lines)] / dr_km
+        nstp = 10
+        start_points = np.array(
+            [
+                np.ones(nstp) * int(len(cellnr) / 2),
+                np.linspace(t_range[1], t_range[-2], nstp),
+            ]
+        ).T
 
     # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
@@ -2607,7 +2720,23 @@ def jplots(
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
-            ax.contour(XmeshXY, YmeshXY, data_arr[-1].T, [bs_thresh], colors=["black"])
+            ax.contour(
+                XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=[CB_color_cycle[1]]
+            )
+            if vel_lines:
+                ax.streamplot(
+                    XmeshXY,
+                    YmeshXY,
+                    vel_to_plot,
+                    vt_arr,
+                    arrowstyle="-",
+                    broken_streamlines=False,
+                    color="k",
+                    linewidth=0.4,
+                    # minlength=4,
+                    density=35,
+                    start_points=start_points,
+                )
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
