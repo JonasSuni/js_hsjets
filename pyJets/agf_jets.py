@@ -2741,7 +2741,7 @@ def jplots(
                     ax.streamplot(
                         XmeshXY,
                         YmeshXY,
-                        vel.T,
+                        vel.T / dr_km,
                         vt_arr.T,
                         arrowstyle="-",
                         broken_streamlines=False,
