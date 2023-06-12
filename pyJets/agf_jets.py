@@ -2511,6 +2511,7 @@ def jplots(
     bs_thresh=0.3,
     intpol=False,
     vel_lines=None,
+    wavefan=None,
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -2720,9 +2721,7 @@ def jplots(
             cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
-            ax.contour(
-                XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=[CB_color_cycle[1]]
-            )
+            ax.contour(XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=["k"])
             if vel_lines:
                 ax.streamplot(
                     XmeshXY,
@@ -2731,12 +2730,28 @@ def jplots(
                     vt_arr.T,
                     arrowstyle="-",
                     broken_streamlines=False,
-                    color="k",
+                    color=CB_color_cycle[1],
                     linewidth=0.4,
                     # minlength=4,
                     density=35,
                     start_points=start_points,
                 )
+            if wavefan:
+                for itr, vel in enumerate(outvels):
+                    ax.streamplot(
+                        XmeshXY,
+                        YmeshXY,
+                        vel.T,
+                        vt_arr.T,
+                        arrowstyle="-",
+                        broken_streamlines=False,
+                        color=CB_color_cycle[itr],
+                        linewidth=0.4,
+                        # minlength=4,
+                        maxlength=10,
+                        density=35,
+                        start_points=np.array([wavefan]),
+                    )
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
