@@ -2727,8 +2727,8 @@ def jplots(
                 ax.streamplot(
                     XmeshXY,
                     YmeshXY,
-                    vel_to_plot,
-                    vt_arr,
+                    vel_to_plot.T,
+                    vt_arr.T,
                     arrowstyle="-",
                     broken_streamlines=False,
                     color="k",
