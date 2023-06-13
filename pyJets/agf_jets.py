@@ -2718,8 +2718,8 @@ def jplots(
                     data_arr[idx].T,
                     shading="nearest",
                     cmap=cmap[idx],
-                    # vmin=vmin[idx],
-                    # vmax=vmax[idx],
+                    vmin=vmin[idx],
+                    vmax=vmax[idx],
                     rasterized=True,
                 )
             )
