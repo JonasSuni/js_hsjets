@@ -2586,8 +2586,8 @@ def jplots(
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
-    vmin = [0, -600, 0.0, 0, 10]
-    vmax = [5, -100, 1.0, 40, 50]
+    vmin = [0, -500, 0.2, 0, 10]
+    vmax = [5, -100, 1.0, 40, 40]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
