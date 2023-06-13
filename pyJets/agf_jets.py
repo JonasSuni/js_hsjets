@@ -2749,6 +2749,7 @@ def jplots(
                         linewidth=0.4,
                         # minlength=4,
                         maxlength=10,
+                        integration_direction="forward",
                         density=35,
                         start_points=np.array([wavefan]),
                     )
