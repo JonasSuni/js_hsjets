@@ -1944,7 +1944,7 @@ def v5_plotter(
     sj_ids_g = []
     non_ids_g = non_ids
 
-    pdmax = [1.5][runids.index(runid)]
+    pdmax = [1.5, 1.5][runids.index(runid)]
     sw_pars = [
         [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
