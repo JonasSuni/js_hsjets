@@ -2744,7 +2744,7 @@ def jplots(
                         vel.T / dr_km,
                         vt_arr.T,
                         arrowstyle="-",
-                        broken_streamlines=False,
+                        broken_streamlines=True,
                         color=CB_color_cycle[itr],
                         linewidth=0.4,
                         # minlength=4,
