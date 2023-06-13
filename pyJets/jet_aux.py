@@ -323,6 +323,7 @@ def bs_mp_fit(runid, file_nr, boxre=[6, 18, -8, 6]):
 
     return (mp_fit, bs_fit)
 
+
 def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
     bulkpath = find_bulkpath(runid)
     bulkname = "bulk.{}.vlsv".format(str(file_nr).zfill(7))
@@ -336,7 +337,9 @@ def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
     T_sw = 0.5e6
 
     pr_rhonbs = vlsvobj.read_variable("proton/vg_rho_thermal", cellids=cellids)
-    pr_PTDNBS = vlsvobj.read_variable("proton/vg_ptensor_thermal_diagonal", cellids=cellids)
+    pr_PTDNBS = vlsvobj.read_variable(
+        "proton/vg_ptensor_thermal_diagonal", cellids=cellids
+    )
 
     epsilon = 1.0e-10
     kb = 1.38065e-23
@@ -358,6 +361,7 @@ def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
     mp_fit = np.polyfit(Yun2 / r_e, X_min / r_e, deg=2)
 
     return (mp_fit, bs_fit)
+
 
 def make_bs_fit(runid, start, stop):
     bs_fit_arr = np.zeros(6)
@@ -675,8 +679,16 @@ def get_neighs_asym(runid, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
 
 
 def find_bulkpath(runid):
-    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF"]
-    path_list = ["bulk/", "bulk/", "round_3_boundary_sw/", "bulk/", "bulk/", "bulk/"]
+    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF", "AIA"]
+    path_list = [
+        "bulk/",
+        "bulk/",
+        "round_3_boundary_sw/",
+        "bulk/",
+        "bulk/",
+        "bulk/",
+        "bulk/",
+    ]
 
     vlpath = "{}/2D/{}/".format(vlasdir, runid)
 

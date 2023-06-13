@@ -2576,9 +2576,10 @@ def jplots(
 
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
-    runid_list = ["AGF"]
-    runids_paper = ["RDC"]
+    runid_list = ["AGF", "AIA"]
+    runids_paper = ["RDC", "RDC2"]
     sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
