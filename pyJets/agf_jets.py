@@ -1914,7 +1914,7 @@ def v5_plotter(
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = pdynmax
-    runids = ["AGF"]
+    runids = ["AGF", "AIA"]
 
     if len(pointsx) != len(pointsy):
         print("x and y must have same length!")
@@ -1946,6 +1946,7 @@ def v5_plotter(
 
     pdmax = [1.5][runids.index(runid)]
     sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
     ]
     global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
