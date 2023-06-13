@@ -2757,7 +2757,7 @@ def jplots(
                         color=CB_color_cycle[itr],
                         linewidth=0.6,
                         # minlength=4,
-                        maxlength=0.1,
+                        maxlength=1,
                         integration_direction="forward",
                         density=35,
                         start_points=np.array([wavefan]),
