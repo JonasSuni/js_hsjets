@@ -2778,8 +2778,8 @@ def jplots(
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
-        ax_list[0].legend(
-            fontsize=28, bbox_to_anchor=(0.5, -0.05), loc="upper center", ncols=2
+        ax_list[1].legend(
+            fontsize=12, bbox_to_anchor=(0.5, -0.05), loc="upper center", ncols=2
         )
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
