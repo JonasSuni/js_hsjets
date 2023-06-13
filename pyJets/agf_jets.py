@@ -2667,6 +2667,15 @@ def jplots(
         data_arr[8],
     )
     vels_list = ["vb", "vb+va", "vb-va", "vb+vs", "vb-vs", "vb+vms", "vb-vms"]
+    vels_labels = [
+        "$v_b$",
+        "$v_b+v_a$",
+        "$v_b-v_a$",
+        "$v_b+v_s$",
+        "$v_b-v_s$",
+        "$v_b+v_{ms}$",
+        "$v_b-v_{ms}$",
+    ]
     if vel_lines:
         vel_to_plot = outvels[vels_list.index(vel_lines)] / dr_km
         nstp = 10
@@ -2688,7 +2697,7 @@ def jplots(
         fig, ax_list = plt.subplots(
             1,
             len(varname_list),
-            figsize=(20, 10),
+            figsize=(18, 10),
             sharex=True,
             sharey=True,
         )
@@ -2753,16 +2762,25 @@ def jplots(
                         density=35,
                         start_points=np.array([wavefan]),
                     )
+                    ax.plot(
+                        [1, 2],
+                        [0, 1],
+                        color=CB_color_cycle[itr],
+                        label=vels_labels[itr],
+                    )
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
             ax.set_xlim(cellnr[0], cellnr[-1])
             ax.set_ylim(t_range[0], t_range[-1])
-            ax.set_xlabel("CellNR", fontsize=24, labelpad=10)
+            # ax.set_xlabel("CellNR", fontsize=24, labelpad=10)
             # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+        ax_list[0].legend(
+            fontsize=28, bbox_to_anchor=(0.5, -0.05), loc="upper center", ncols=2
+        )
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
         # )
