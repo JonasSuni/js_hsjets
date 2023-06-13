@@ -2586,8 +2586,8 @@ def jplots(
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
-    vmin = [0, -500, 0.2, 0, 10]
-    vmax = [5, -100, 1.0, 40, 40]
+    vmin = [0, -500, 0, 0, 0]
+    vmax = [5, -100, 0.8, 40, 25]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
@@ -2731,6 +2731,7 @@ def jplots(
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[idx].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=["k"])
+            ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
                 ax.streamplot(
                     XmeshXY,
