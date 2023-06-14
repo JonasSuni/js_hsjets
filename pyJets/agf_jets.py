@@ -1991,6 +1991,7 @@ def v5_plotter(
                 lin=1,
                 colormap="batlow",
                 tickinterval=tickint,
+                fsaved="r",
                 # useimshow=True,
                 external=ext_jet,
                 # expression=expr_rhoratio,
@@ -2468,8 +2469,8 @@ def moving_avg(A, w):
 
 
 def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
-    Bx = moving_avg(Bx, 5)
-    By = moving_avg(By, 5)
+    # Bx = moving_avg(Bx, 5)
+    # By = moving_avg(By, 5)
 
     Bmag = np.sqrt(Bx**2 + By**2)
     vmag = np.sqrt(vx**2 + vy**2)
