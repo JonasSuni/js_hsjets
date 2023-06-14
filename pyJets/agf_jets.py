@@ -2456,7 +2456,20 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
     plt.close(fig)
 
 
+def moving_avg(A, w):
+    ncols = A.shape[0]
+
+    B = np.zeros_like(A)
+
+    for idx in range(ncols):
+        B[idx, :] = np.convolve(A[idx, :], np.ones(w), mode="same") / w
+
+    return B
+
+
 def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
+    Bx = moving_avg(Bx, 5)
+    By = moving_avg(By, 5)
 
     Bmag = np.sqrt(Bx**2 + By**2)
     vmag = np.sqrt(vx**2 + vy**2)
