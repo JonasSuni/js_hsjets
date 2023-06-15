@@ -1910,6 +1910,7 @@ def v5_plotter(
     outdir="cmaps",
     pointsx=[],
     pointsy=[],
+    fsaved=None,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -1991,7 +1992,7 @@ def v5_plotter(
                 lin=1,
                 colormap="batlow",
                 tickinterval=tickint,
-                fsaved="r",
+                fsaved=fsaved,
                 # useimshow=True,
                 external=ext_jet,
                 # expression=expr_rhoratio,
