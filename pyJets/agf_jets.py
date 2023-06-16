@@ -2017,7 +2017,7 @@ def v5_plotter(
             pass
 
 
-def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=False):
+def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=True):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
