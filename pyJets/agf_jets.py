@@ -1911,6 +1911,7 @@ def v5_plotter(
     pointsx=[],
     pointsy=[],
     fsaved=None,
+    lin=1,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -1978,7 +1979,7 @@ def v5_plotter(
                 filename=bulkpath + fname,
                 outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
                 var=var,
-                vmin=0,
+                vmin=0.001,
                 # vmax=1,
                 vmax=vmax,
                 vscale=vscale,
@@ -1989,7 +1990,7 @@ def v5_plotter(
                 title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
-                lin=1,
+                lin=lin,
                 colormap="batlow",
                 tickinterval=tickint,
                 fsaved=fsaved,
