@@ -2017,7 +2017,7 @@ def v5_plotter(
             pass
 
 
-def VSC_timeseries(runid, x0, y0, t0, tpm=20):
+def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=False):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -2177,13 +2177,14 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
     for idx, fnr in enumerate(fnr_arr):
-        try:
-            tavg_pdyn = np.loadtxt(
-                tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
-            )[int(cellid) - 1]
-        except:
-            tavg_pdyn = np.nan
-        tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
+        if pdavg:
+            try:
+                tavg_pdyn = np.loadtxt(
+                    tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+                )[int(cellid) - 1]
+            except:
+                tavg_pdyn = np.nan
+            tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
         try:
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
@@ -2206,7 +2207,7 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20):
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
         ax.plot(t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
-        if idx == 5:
+        if idx == 5 and pdavg:
             ax.plot(
                 t_arr,
                 2 * tavg_arr,
