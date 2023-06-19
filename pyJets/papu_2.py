@@ -4949,7 +4949,7 @@ def jmap_SEA_comp(run_id="all"):
                 YmeshXY,
                 data_avg[idx2, 0, :, :],
                 [2],
-                colors=[CB_color_cycle[1]],
+                colors=[CB_color_cycle[0]],
                 linewidths=[3],
             )
             ax.contour(
@@ -4990,7 +4990,7 @@ def jmap_SEA_comp(run_id="all"):
         # )
         ax.set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
     proxy = [
-        mlines.Line2D([], [], color=CB_color_cycle[1]),
+        mlines.Line2D([], [], color=CB_color_cycle[0]),
         mlines.Line2D([], [], color=CB_color_cycle[3]),
         mlines.Line2D([], [], color=CB_color_cycle[8]),
     ]
