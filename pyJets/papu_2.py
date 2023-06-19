@@ -3840,7 +3840,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         ch_mask,
         [0.5],
         linewidths=2.2,
-        colors=CB_color_cycle[9],
+        colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
 
@@ -3860,7 +3860,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         rho_mask,
         [0.5],
         linewidths=2.2,
-        colors=CB_color_cycle[0],
+        colors=CB_color_cycle[9],
         linestyles=["solid"],
     )
 
