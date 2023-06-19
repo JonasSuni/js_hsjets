@@ -6010,7 +6010,9 @@ def jet_counter(runid="all", cc_thresh=0.8):
     return (total_non, flank_counter, antisunward_counter, fcs_counter)
 
 
-def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
+def auto_classifier(
+    runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8, min_A=0
+):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
@@ -6122,6 +6124,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) < threshold_angle
             and c >= cross_corr_threshold
+            and props.read_at_amax("Nr_cells") > min_A
         ):
             antisunward_list.append(non_id)
             antisunward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -6131,6 +6134,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) >= threshold_angle
             and c >= cross_corr_threshold
+            and props.read_at_amax("Nr_cells") > min_A
         ):
             flankward_list.append(non_id)
             flankward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -6139,6 +6143,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             ~np.isnan(mod_arg_pv[0])
             # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) < threshold_angle
+            and props.read_at_amax("Nr_cells") > min_A
         ):
             antisunward_list.append(non_id)
             antisunward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -6147,6 +6152,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             ~np.isnan(mod_arg_pv[0])
             # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) >= threshold_angle
+            and props.read_at_amax("Nr_cells") > min_A
         ):
             flankward_list.append(non_id)
             flankward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -6178,13 +6184,17 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
     )
 
     print(
-        "Flankward max size distribution (25%, 50%, 75%): {}\n".format(
-            np.quantile(flankward_max_size, [0.25, 0.50, 0.75])
+        "{} Flankward N = {}, max size distribution (25%, 50%, 75%): {}".format(
+            runid,
+            len(flankward_max_size),
+            np.quantile(flankward_max_size, [0.25, 0.50, 0.75]),
         )
     )
     print(
-        "Antisunward max size distribution (25%, 50%, 75%): {}".format(
-            np.quantile(antisunward_max_size, [0.25, 0.50, 0.75])
+        "{} Antisunward N = {}, max size distribution (25%, 50%, 75%): {}\n".format(
+            runid,
+            len(antisunward_max_size),
+            np.quantile(antisunward_max_size, [0.25, 0.50, 0.75]),
         )
     )
 
