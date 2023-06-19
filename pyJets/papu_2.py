@@ -4410,7 +4410,7 @@ def non_jet_omni(runid, only_man_figs=True):
             # internalcb=True,
             lin=1,
             # colormap="batlow",
-            colormap="Blues_r",
+            colormap="batlow",
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -4494,7 +4494,7 @@ def non_jet_omni(runid, only_man_figs=True):
             t_range,
             pdyn_arr,
             shading="nearest",
-            cmap="Blues_r",
+            cmap="batlow",
             vmin=1.0 / 6,
             vmax=2,
             rasterized=True,
