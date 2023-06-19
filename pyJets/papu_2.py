@@ -4397,7 +4397,7 @@ def non_jet_omni(runid, only_man_figs=True):
             var="Pdyn",
             vmin=0,
             # vmax=pdmax,
-            vmax=1,
+            vmax=1.2,
             # vscale=1e9,
             vscale=1.0 / Pdyn_sw,
             # cbtitle="$P_{dyn}$ [nPa]",
@@ -4508,7 +4508,7 @@ def non_jet_omni(runid, only_man_figs=True):
             YmeshXY,
             rho_arr,
             [2],
-            colors=[CB_color_cycle[3]],
+            colors=[CB_color_cycle[0]],
             linewidths=[2],
         )
         ax_ne.contour(
@@ -4524,7 +4524,7 @@ def non_jet_omni(runid, only_man_figs=True):
             YmeshXY,
             mmsx_arr,
             [1.0],
-            colors=[CB_color_cycle[4]],
+            colors=[CB_color_cycle[8]],
             linewidths=[2],
         )
         # ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
