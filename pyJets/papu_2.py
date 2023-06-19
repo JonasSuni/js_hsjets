@@ -4892,20 +4892,20 @@ def jmap_SEA_comp(run_id="all"):
     cb_list = []
     vmin = [1.25, -1, 0.25, 1.3, 15]
     vmax = [4, -0.25, 1.2, 3.5, 25]
-    # cmap = [
-    #     "batlow",
-    #     "batlow",
-    #     "batlow",
-    #     "batlow",
-    #     "batlow",
-    # ]
     cmap = [
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
+        "batlow",
+        "batlow",
+        "batlow",
+        "batlow",
+        "batlow",
     ]
+    # cmap = [
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    #     "Blues_r",
+    # ]
     annot = [
         ["(a)", "(b)", "(c)", "(d)", "(e)"],
         ["(f)", "(g)", "(h)", "(i)", "(j)"],
@@ -4949,7 +4949,7 @@ def jmap_SEA_comp(run_id="all"):
                 YmeshXY,
                 data_avg[idx2, 0, :, :],
                 [2],
-                colors=[CB_color_cycle[3]],
+                colors=[CB_color_cycle[1]],
                 linewidths=[3],
             )
             ax.contour(
@@ -4957,7 +4957,7 @@ def jmap_SEA_comp(run_id="all"):
                 YmeshXY,
                 data_avg[idx2, 5, :, :],
                 [3],
-                colors=[CB_color_cycle[1]],
+                colors=[CB_color_cycle[3]],
                 linewidths=[3],
             )
             ax.contour(
@@ -4965,7 +4965,7 @@ def jmap_SEA_comp(run_id="all"):
                 YmeshXY,
                 data_avg[idx2, 6, :, :],
                 [1.0],
-                colors=[CB_color_cycle[4]],
+                colors=[CB_color_cycle[8]],
                 linewidths=[3],
             )
             # ax.set_title(varname_list[idx], fontsize=24, pad=10)
@@ -4990,9 +4990,9 @@ def jmap_SEA_comp(run_id="all"):
         # )
         ax.set_ylabel("Epoch time [s]", fontsize=28, labelpad=10)
     proxy = [
-        mlines.Line2D([], [], color=CB_color_cycle[3]),
         mlines.Line2D([], [], color=CB_color_cycle[1]),
-        mlines.Line2D([], [], color=CB_color_cycle[4]),
+        mlines.Line2D([], [], color=CB_color_cycle[3]),
+        mlines.Line2D([], [], color=CB_color_cycle[8]),
     ]
 
     ax_list[0][0].legend(
