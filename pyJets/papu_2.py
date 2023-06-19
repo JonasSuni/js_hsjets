@@ -6022,6 +6022,8 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
     non_ids = get_non_jets(runid)
     flankward_list = []
     antisunward_list = []
+    flankward_max_size = []
+    antisunward_max_size = []
 
     for non_id in non_ids:
         if runid == "ABA" and non_id in [157, 257, 586, 800]:
@@ -6061,6 +6063,8 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             430,
         ]:
             continue
+
+        props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
 
         data_arr = np.load(
             wrkdir_DNR
@@ -6120,6 +6124,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             and c >= cross_corr_threshold
         ):
             antisunward_list.append(non_id)
+            antisunward_max_size.append(props.read_at_amax("Nr_cells"))
             continue
         elif (
             ~np.isnan(mod_arg_vsc[0])
@@ -6128,6 +6133,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             and c >= cross_corr_threshold
         ):
             flankward_list.append(non_id)
+            flankward_max_size.append(props.read_at_amax("Nr_cells"))
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
@@ -6135,6 +6141,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             and np.abs(mod_arg_pv[1] - np.pi) < threshold_angle
         ):
             antisunward_list.append(non_id)
+            antisunward_max_size.append(props.read_at_amax("Nr_cells"))
             continue
         elif (
             ~np.isnan(mod_arg_pv[0])
@@ -6142,6 +6149,7 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
             and np.abs(mod_arg_pv[1] - np.pi) >= threshold_angle
         ):
             flankward_list.append(non_id)
+            flankward_max_size.append(props.read_at_amax("Nr_cells"))
             continue
         # elif (
         #     ~np.isnan(mod_arg_vn[0])
@@ -6167,6 +6175,17 @@ def auto_classifier(runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8):
         wrkdir_DNR + "papu22/id_txts/" + "auto/{}_beam.txt".format(runid),
         flankward_list,
         fmt="%d",
+    )
+
+    print(
+        "Flankward max size distribution (25%, 50%, 75%): {}\n".format(
+            np.quantile(flankward_max_size, [0.25, 0.50, 0.75])
+        )
+    )
+    print(
+        "Antisunward max size distribution (25%, 50%, 75%): {}".format(
+            np.quantile(antisunward_max_size, [0.25, 0.50, 0.75])
+        )
     )
 
     return (antisunward_list, flankward_list)
