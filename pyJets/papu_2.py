@@ -3840,7 +3840,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         ch_mask,
         [0.5],
         linewidths=2.2,
-        colors=CB_color_cycle[1],
+        colors=CB_color_cycle[3],
         linestyles=["solid"],
     )
 
@@ -3897,7 +3897,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [0, 1, 8, 2, 7]
+    itr_jumbled = [0, 3, 8, 2, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
@@ -4516,7 +4516,7 @@ def non_jet_omni(runid, only_man_figs=True):
             YmeshXY,
             Tcore_arr,
             [3],
-            colors=[CB_color_cycle[1]],
+            colors=[CB_color_cycle[3]],
             linewidths=[2],
         )
         ax_ne.contour(
