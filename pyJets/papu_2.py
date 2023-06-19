@@ -3897,7 +3897,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         label="FCS-jet",
     )
 
-    itr_jumbled = [3, 1, 4, 2, 7]
+    itr_jumbled = [0, 1, 8, 2, 7]
 
     # proxy = [
     #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
