@@ -3708,7 +3708,7 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
-                    scale=1.3,
+                    # scale=1.3,
                 )
                 pt.plot.plot_vdf_profiles(
                     axes=ax_list[1][0],
@@ -3721,7 +3721,7 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
-                    scale=1.3,
+                    # scale=1.3,
                 )
                 pt.plot.plot_vdf_profiles(
                     axes=ax_list[1][1],
@@ -3734,7 +3734,7 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
-                    scale=1.3,
+                    # scale=1.3,
                 )
 
                 # plt.subplots_adjust(wspace=1, hspace=1)
