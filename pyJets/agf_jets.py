@@ -2618,7 +2618,7 @@ def jplots(
     fnr0 = int(t0 * 2)
     fnr1 = int(t1 * 2)
 
-    fnr_range = np.arange(fnr0, fnr1 + 0.5, 1)
+    fnr_range = np.arange(fnr0, fnr1 + 1, 1, dtype=int)
     t_range = np.arange(t0, t1 + 0.1, 0.5)
     # Get cellid of initial position
 
