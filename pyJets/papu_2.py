@@ -3708,6 +3708,11 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
+                    lin = 5,
+                    fmin = 0,
+                    fmax = 5e-10,
+                    vmin = -2000,
+                    vmax = 2000,
                     # scale=1.3,
                 )
                 pt.plot.plot_vdf_profiles(
@@ -3721,6 +3726,11 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
+                    lin = 5,
+                    fmin = 0,
+                    fmax = 5e-10,
+                    vmin = -2000,
+                    vmax = 2000,
                     # scale=1.3,
                 )
                 pt.plot.plot_vdf_profiles(
@@ -3734,6 +3744,11 @@ def jet_vdf_profile_plotter(runid):
                     # box=[-2e6, 2e6, -2e6, 2e6],
                     # internalcb=True,
                     setThreshold=1e-15,
+                    lin = 5,
+                    fmin = 0,
+                    fmax = 5e-10,
+                    vmin = -2000,
+                    vmax = 2000,
                     # scale=1.3,
                 )
 
