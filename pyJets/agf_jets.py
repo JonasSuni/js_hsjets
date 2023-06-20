@@ -2526,10 +2526,10 @@ def jplots(
     x1,
     y1,
     t0,
+    t1,
     runid="AGF",
     txt=False,
     draw=True,
-    pm=30,
     bs_thresh=0.3,
     intpol=False,
     vel_lines=None,
@@ -2616,9 +2616,10 @@ def jplots(
     bulkpath = find_bulkpath(runid)
 
     fnr0 = int(t0 * 2)
+    fnr1 = int(t1 * 2)
 
-    fnr_range = np.arange(fnr0 - pm * 2, fnr0 + pm * 2 + 1)
-    t_range = np.arange(t0 - pm, t0 + pm + 0.1, 0.5)
+    fnr_range = np.arange(fnr0, fnr1 + 0.5, 1)
+    t_range = np.arange(t0, t1 + 0.1, 0.5)
     # Get cellid of initial position
 
     npoints = int(np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2) / dr) + 1
@@ -2636,11 +2637,17 @@ def jplots(
         for idx in range(xlist.size)
     ]
     cellnr = range(xlist.size)
+    if xlist[-1] != xlist[0]:
+        xplot_list = xlist
+        xlab = "$X~[R_\mathrm{E}]$"
+    else:
+        xplot_list = ylist
+        xlab = "$Y~[R_\mathrm{E}]$"
 
-    XmeshXY, YmeshXY = np.meshgrid(cellnr, t_range)
+    XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
 
-    data_arr = np.zeros((len(vars_list), len(cellnr), len(t_range)), dtype=float)
-    vt_arr = np.ones((len(cellnr), len(t_range)), dtype=float)
+    data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
+    vt_arr = np.ones((xplot_list.size, t_range.size), dtype=float)
     dx_arr = (x1 - x0) * vt_arr
     dy_arr = (y1 - y0) * vt_arr
 
@@ -2650,8 +2657,8 @@ def jplots(
     if txt:
         data_arr = np.load(
             txtdir
-            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.npy".format(
-                runid, x0, y0, x1, y1, t0, pm
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.npy".format(
+                runid, x0, y0, x1, y1, t0, t1
             )
         )
     else:
@@ -2704,7 +2711,7 @@ def jplots(
         nstp = 10
         start_points = np.array(
             [
-                np.ones(nstp) * int(len(cellnr) / 2),
+                np.ones(nstp) * int(xplot_list.size / 2),
                 np.linspace(t_range[1], t_range[-2], nstp),
             ]
         ).T
@@ -2795,15 +2802,15 @@ def jplots(
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
             # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
-            ax.set_xlim(cellnr[0], cellnr[-1])
+            ax.set_xlim(xplot_list[0], xplot_list[-1])
             ax.set_ylim(t_range[0], t_range[-1])
-            # ax.set_xlabel("CellNR", fontsize=24, labelpad=10)
+            ax.set_xlabel(xlab, fontsize=24, labelpad=10)
             # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         ax_list[1].legend(
-            fontsize=12, bbox_to_anchor=(0.5, -0.05), loc="upper center", ncols=2
+            fontsize=12, bbox_to_anchor=(0.5, -0.1), loc="upper center", ncols=2
         )
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
@@ -2825,8 +2832,8 @@ def jplots(
 
         fig.savefig(
             figdir
-            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.png".format(
-                runid, x0, y0, x1, y1, t0, pm
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.png".format(
+                runid, x0, y0, x1, y1, t0, t1
             ),
             dpi=300,
         )
@@ -2841,8 +2848,8 @@ def jplots(
 
         np.save(
             txtdir
-            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_pm{}.npy".format(
-                runid, x0, y0, x1, y1, t0, pm
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.npy".format(
+                runid, x0, y0, x1, y1, t0, t1
             ),
             data_arr,
         )
