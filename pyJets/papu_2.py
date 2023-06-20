@@ -3671,7 +3671,7 @@ def jet_vdf_profile_plotter(runid):
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
 
                 fig, ax_list = plt.subplots(
-                    1, 2, figsize=(11, 10), constrained_layout=True
+                    1, 2, figsize=(11, 5), constrained_layout=True
                 )
 
                 pt.plot.plot_colormap(
@@ -3706,7 +3706,7 @@ def jet_vdf_profile_plotter(runid):
                     setThreshold=1e-15,
                     lin=5,
                     fmin=0,
-                    fmax=5e-10,
+                    fmax=4e-10,
                     vmin=-2000,
                     vmax=2000,
                     # scale=1.3,
