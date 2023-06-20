@@ -3741,18 +3741,21 @@ def jet_vdf_profile_plotter(runid):
 
                 fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, tc))
                 if not os.path.exists(
-                    wrkdir_DNR + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                    wrkdir_DNR
+                    + "papu22/VDFs/{}/jet_vdf_profile_{}".format(runid, jet_id)
                 ):
                     try:
                         os.makedirs(
                             wrkdir_DNR
-                            + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                            + "papu22/VDFs/{}/jet_vdf_profile_{}".format(runid, jet_id)
                         )
                     except OSError:
                         pass
                 fig.savefig(
                     wrkdir_DNR
-                    + "papu22/VDFs/{}/jet_vdf_{}/{}.png".format(runid, jet_id, fnr)
+                    + "papu22/VDFs/{}/jet_vdf_profile_{}/{}.png".format(
+                        runid, jet_id, fnr
+                    )
                 )
                 plt.close(fig)
             break
