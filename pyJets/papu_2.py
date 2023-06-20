@@ -3587,6 +3587,8 @@ def jet_vdf_plotter(runid):
                     # internalcb=True,
                     setThreshold=1e-15,
                     scale=1.3,
+                    fmin=1e-10,
+                    fmax=1e-4,
                 )
                 pt.plot.plot_vdf(
                     axes=ax_list[1][0],
@@ -3600,6 +3602,8 @@ def jet_vdf_plotter(runid):
                     # internalcb=True,
                     setThreshold=1e-15,
                     scale=1.3,
+                    fmin=1e-10,
+                    fmax=1e-4,
                 )
                 pt.plot.plot_vdf(
                     axes=ax_list[1][1],
@@ -3613,6 +3617,8 @@ def jet_vdf_plotter(runid):
                     # internalcb=True,
                     setThreshold=1e-15,
                     scale=1.3,
+                    fmin=1e-10,
+                    fmax=1e-4,
                 )
 
                 # plt.subplots_adjust(wspace=1, hspace=1)
