@@ -3529,7 +3529,8 @@ def jet_vdf_plotter(runid):
 
     vdf_cells = cellids[fsaved == 1]
 
-    sj_ids, jet_ids, fcs_ids = jh20.separate_jets_god(runid, False)
+    asw_list, fw_list = auto_classifier(runid)
+    jet_ids = asw_list + fw_list
 
     for jet_id in jet_ids:
         props = jio.PropReader(str(jet_id).zfill(5), runid)
@@ -3617,9 +3618,19 @@ def jet_vdf_plotter(runid):
                 # plt.subplots_adjust(wspace=1, hspace=1)
 
                 fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, tc))
+                if not os.path.exists(
+                    wrkdir_DNR + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                ):
+                    try:
+                        os.makedirs(
+                            wrkdir_DNR
+                            + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                        )
+                    except OSError:
+                        pass
                 fig.savefig(
                     wrkdir_DNR
-                    + "papu22/VDFs/{}/jet_vdf_{}_{}.png".format(runid, jet_id, fnr)
+                    + "papu22/VDFs/{}/jet_vdf_{}/{}.png".format(runid, jet_id, fnr)
                 )
                 plt.close(fig)
             break
