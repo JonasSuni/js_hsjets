@@ -3671,11 +3671,11 @@ def jet_vdf_profile_plotter(runid):
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
 
                 fig, ax_list = plt.subplots(
-                    2, 2, figsize=(11, 10), constrained_layout=True
+                    1, 2, figsize=(11, 10), constrained_layout=True
                 )
 
                 pt.plot.plot_colormap(
-                    axes=ax_list[0][0],
+                    axes=ax_list[0],
                     filename=bulkpath + fname,
                     var="Pdyn",
                     vmin=0,
@@ -3690,15 +3690,11 @@ def jet_vdf_profile_plotter(runid):
                     scale=1.3,
                     tickinterval=1.0,
                 )
-                ax_list[0][0].axhline(
-                    y_re, linestyle="dashed", linewidth=0.6, color="k"
-                )
-                ax_list[0][0].axvline(
-                    x_re, linestyle="dashed", linewidth=0.6, color="k"
-                )
+                ax_list[0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
+                ax_list[0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
 
                 pt.plot.plot_vdf_profiles(
-                    axes=ax_list[0][1],
+                    axes=ax_list[1],
                     filename=bulkpath + fname,
                     cellids=[vdf_cellid],
                     # colormap="batlow",
@@ -3715,42 +3711,42 @@ def jet_vdf_profile_plotter(runid):
                     vmax=2000,
                     # scale=1.3,
                 )
-                pt.plot.plot_vdf_profiles(
-                    axes=ax_list[1][0],
-                    filename=bulkpath + fname,
-                    cellids=[vdf_cellid],
-                    # colormap="batlow",
-                    # bvector=1,
-                    xz=1,
-                    # slicethick=1e9,
-                    # box=[-2e6, 2e6, -2e6, 2e6],
-                    # internalcb=True,
-                    setThreshold=1e-15,
-                    lin=5,
-                    fmin=0,
-                    fmax=5e-10,
-                    vmin=-2000,
-                    vmax=2000,
-                    # scale=1.3,
-                )
-                pt.plot.plot_vdf_profiles(
-                    axes=ax_list[1][1],
-                    filename=bulkpath + fname,
-                    cellids=[vdf_cellid],
-                    # colormap="batlow",
-                    # bvector=1,
-                    yz=1,
-                    # slicethick=1e9,
-                    # box=[-2e6, 2e6, -2e6, 2e6],
-                    # internalcb=True,
-                    setThreshold=1e-15,
-                    lin=5,
-                    fmin=0,
-                    fmax=5e-10,
-                    vmin=-2000,
-                    vmax=2000,
-                    # scale=1.3,
-                )
+                # pt.plot.plot_vdf_profiles(
+                #     axes=ax_list[1][0],
+                #     filename=bulkpath + fname,
+                #     cellids=[vdf_cellid],
+                #     # colormap="batlow",
+                #     # bvector=1,
+                #     xz=1,
+                #     # slicethick=1e9,
+                #     # box=[-2e6, 2e6, -2e6, 2e6],
+                #     # internalcb=True,
+                #     setThreshold=1e-15,
+                #     lin=5,
+                #     fmin=0,
+                #     fmax=5e-10,
+                #     vmin=-2000,
+                #     vmax=2000,
+                #     # scale=1.3,
+                # )
+                # pt.plot.plot_vdf_profiles(
+                #     axes=ax_list[1][1],
+                #     filename=bulkpath + fname,
+                #     cellids=[vdf_cellid],
+                #     # colormap="batlow",
+                #     # bvector=1,
+                #     yz=1,
+                #     # slicethick=1e9,
+                #     # box=[-2e6, 2e6, -2e6, 2e6],
+                #     # internalcb=True,
+                #     setThreshold=1e-15,
+                #     lin=5,
+                #     fmin=0,
+                #     fmax=5e-10,
+                #     vmin=-2000,
+                #     vmax=2000,
+                #     # scale=1.3,
+                # )
 
                 # plt.subplots_adjust(wspace=1, hspace=1)
 
