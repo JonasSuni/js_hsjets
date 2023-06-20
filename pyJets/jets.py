@@ -157,6 +157,7 @@ from papu_2 import (
     auto_classifier,
     fig0,
     jet_counter,
+    jet_vdf_profile_plotter,
 )
 
 from jet_23_scripts import (

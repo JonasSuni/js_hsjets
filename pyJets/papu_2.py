@@ -3638,6 +3638,128 @@ def jet_vdf_plotter(runid):
     return None
 
 
+def jet_vdf_profile_plotter(runid):
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    bulkpath = jx.find_bulkpath(runid)
+    obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000580.vlsv")
+    cellids = obj_580.read_variable("CellID")
+    if obj_580.check_variable("fSaved"):
+        fsaved = obj_580.read_variable("fSaved")
+    else:
+        fsaved = obj_580.read_variable("vg_f_saved")
+
+    vdf_cells = cellids[fsaved == 1]
+
+    asw_list, fw_list = auto_classifier(runid)
+    jet_ids = asw_list + fw_list
+
+    for jet_id in jet_ids:
+        props = jio.PropReader(str(jet_id).zfill(5), runid)
+        jet_times = props.get_times()
+        jet_cells = props.get_cells()
+
+        for idx, t in enumerate(jet_times):
+            if np.intersect1d(jet_cells[idx], vdf_cells).size == 0:
+                continue
+            else:
+                vdf_cellid = np.intersect1d(jet_cells[idx], vdf_cells)[0]
+
+            for tc in np.arange(t - 10, t + 10.01, 0.5):
+                fnr = int(tc * 2)
+                fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+
+                fig, ax_list = plt.subplots(
+                    2, 2, figsize=(11, 10), constrained_layout=True
+                )
+
+                pt.plot.plot_colormap(
+                    axes=ax_list[0][0],
+                    filename=bulkpath + fname,
+                    var="Pdyn",
+                    vmin=0,
+                    vmax=pdmax,
+                    vscale=1e9,
+                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    usesci=0,
+                    boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+                    # internalcb=True,
+                    lin=1,
+                    colormap="batlow",
+                    scale=1.3,
+                    tickinterval=1.0,
+                )
+                ax_list[0][0].axhline(
+                    y_re, linestyle="dashed", linewidth=0.6, color="k"
+                )
+                ax_list[0][0].axvline(
+                    x_re, linestyle="dashed", linewidth=0.6, color="k"
+                )
+
+                pt.plot.plot_vdf_profiles(
+                    axes=ax_list[0][1],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    # colormap="batlow",
+                    # bvector=1,
+                    xy=1,
+                    # slicethick=1e9,
+                    # box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
+                pt.plot.plot_vdf_profiles(
+                    axes=ax_list[1][0],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    # colormap="batlow",
+                    # bvector=1,
+                    xz=1,
+                    # slicethick=1e9,
+                    # box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
+                pt.plot.plot_vdf_profiles(
+                    axes=ax_list[1][1],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    # colormap="batlow",
+                    # bvector=1,
+                    yz=1,
+                    # slicethick=1e9,
+                    # box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                )
+
+                # plt.subplots_adjust(wspace=1, hspace=1)
+
+                fig.suptitle("Run: {}, Jet: {}, Time: {}s".format(runid, jet_id, tc))
+                if not os.path.exists(
+                    wrkdir_DNR + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                ):
+                    try:
+                        os.makedirs(
+                            wrkdir_DNR
+                            + "papu22/VDFs/{}/jet_vdf_{}".format(runid, jet_id)
+                        )
+                    except OSError:
+                        pass
+                fig.savefig(
+                    wrkdir_DNR
+                    + "papu22/VDFs/{}/jet_vdf_{}/{}.png".format(runid, jet_id, fnr)
+                )
+                plt.close(fig)
+            break
+
+    return None
+
+
 def kind_animations(runid):
     # sj_ids = get_fcs_jets(runid)
     # for sj_id in sj_ids:
