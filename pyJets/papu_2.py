@@ -3516,6 +3516,24 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
     return None
 
 
+def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
+    op_list = ["x", "y", "z"]
+
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys())) * 1e-3
+    vc_vals = np.array(list(velcels.keys()))
+
+    vc_coord_arr = vc_coords[:, op_list.index(operator)]
+
+    vbins = np.linspace(vmin, vmax, nbins + 1)
+
+    dv = 30
+
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals * dv * dv)
+
+    return (hist, bin_edges)
+
+
 def jet_vdf_plotter(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
@@ -3532,7 +3550,7 @@ def jet_vdf_plotter(runid):
     asw_list, fw_list = auto_classifier(runid)
     jet_ids = asw_list + fw_list
 
-    jet_ids = np.append(np.array(jet_ids,dtype=int),get_fcs_jets(runid))
+    jet_ids = np.append(np.array(jet_ids, dtype=int), get_fcs_jets(runid))
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
     runid_g = runid
@@ -3699,7 +3717,7 @@ def jet_vdf_profile_plotter(runid):
 
     asw_list, fw_list = auto_classifier(runid)
     jet_ids = asw_list + fw_list
-    jet_ids = np.append(np.array(jet_ids,dtype=int),get_fcs_jets(runid))
+    jet_ids = np.append(np.array(jet_ids, dtype=int), get_fcs_jets(runid))
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
     runid_g = runid
@@ -3738,6 +3756,17 @@ def jet_vdf_profile_plotter(runid):
                 filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+                vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+                xhist, bin_edges = vspace_reducer(
+                    vobj, vdf_cellid, -2000, 2000, 50, operator="x"
+                )
+                yhist, bin_edges = vspace_reducer(
+                    vobj, vdf_cellid, -2000, 2000, 50, operator="y"
+                )
+                zhist, bin_edges = vspace_reducer(
+                    vobj, vdf_cellid, -2000, 2000, 50, operator="z"
+                )
+                bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
 
                 x0 = x_re
                 y0 = y_re
@@ -3778,24 +3807,30 @@ def jet_vdf_profile_plotter(runid):
                 ax_list[0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
                 ax_list[0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
 
-                pt.plot.plot_vdf_profiles(
-                    axes=ax_list[1],
-                    filename=bulkpath + fname,
-                    cellids=[vdf_cellid],
-                    # colormap="batlow",
-                    # bvector=1,
-                    xy=1,
-                    # slicethick=1e9,
-                    # box=[-2e6, 2e6, -2e6, 2e6],
-                    # internalcb=True,
-                    setThreshold=1e-15,
-                    lin=None,
-                    fmin=1e-15,
-                    fmax=4e-10,
-                    vmin=-2000,
-                    vmax=2000,
-                    # scale=1.3,
-                )
+                # pt.plot.plot_vdf_profiles(
+                #     axes=ax_list[1],
+                #     filename=bulkpath + fname,
+                #     cellids=[vdf_cellid],
+                #     # colormap="batlow",
+                #     # bvector=1,
+                #     xy=1,
+                #     # slicethick=1e9,
+                #     # box=[-2e6, 2e6, -2e6, 2e6],
+                #     # internalcb=True,
+                #     setThreshold=1e-15,
+                #     lin=None,
+                #     fmin=1e-15,
+                #     fmax=4e-10,
+                #     vmin=-2000,
+                #     vmax=2000,
+                #     # scale=1.3,
+                # )
+
+                ax_list[1].plot(bin_centers, xhist, "k", label="vx")
+                ax_list[1].plot(bin_centers, yhist, "r", label="vy")
+                ax_list[1].plot(bin_centers, zhist, "b", label="vz")
+                ax_list[1].legend(loc="upper right")
+
                 # pt.plot.plot_vdf_profiles(
                 #     axes=ax_list[1][0],
                 #     filename=bulkpath + fname,
