@@ -3515,6 +3515,7 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
 
     return None
 
+
 def jet_vdf_plotter(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
@@ -3682,6 +3683,7 @@ def jet_vdf_plotter(runid):
 
     return None
 
+
 def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
     op_list = ["x", "y", "z"]
 
@@ -3695,11 +3697,12 @@ def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
 
     dv = 30e3
 
-    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals*dv*dv)
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals * dv * dv)
 
     return (hist, bin_edges)
 
-def jet_vdf_profile_plotter(runid,nbins=20):
+
+def jet_vdf_profile_plotter(runid, nbins=20):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
@@ -3804,29 +3807,29 @@ def jet_vdf_profile_plotter(runid,nbins=20):
                 ax_list[0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
                 ax_list[0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
 
-                # pt.plot.plot_vdf_profiles(
-                #     axes=ax_list[1],
-                #     filename=bulkpath + fname,
-                #     cellids=[vdf_cellid],
-                #     # colormap="batlow",
-                #     # bvector=1,
-                #     xy=1,
-                #     # slicethick=1e9,
-                #     # box=[-2e6, 2e6, -2e6, 2e6],
-                #     # internalcb=True,
-                #     setThreshold=1e-15,
-                #     lin=None,
-                #     fmin=1e-15,
-                #     fmax=4e-10,
-                #     vmin=-2000,
-                #     vmax=2000,
-                #     # scale=1.3,
-                # )
+                pt.plot.plot_vdf_profiles(
+                    axes=ax_list[1],
+                    filename=bulkpath + fname,
+                    cellids=[vdf_cellid],
+                    # colormap="batlow",
+                    # bvector=1,
+                    xy=1,
+                    # slicethick=1e9,
+                    # box=[-2e6, 2e6, -2e6, 2e6],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    lin=None,
+                    fmin=1e-15,
+                    fmax=4e-10,
+                    vmin=-2000,
+                    vmax=2000,
+                    # scale=1.3,
+                )
 
-                ax_list[1].step(bin_centers, xhist, "k", label="vx")
-                ax_list[1].step(bin_centers, yhist, "r", label="vy")
-                ax_list[1].step(bin_centers, zhist, "b", label="vz")
-                ax_list[1].legend(loc="upper right")
+                # ax_list[1].step(bin_centers, xhist, "k", label="vx")
+                # ax_list[1].step(bin_centers, yhist, "r", label="vy")
+                # ax_list[1].step(bin_centers, zhist, "b", label="vz")
+                # ax_list[1].legend(loc="upper right")
 
                 # pt.plot.plot_vdf_profiles(
                 #     axes=ax_list[1][0],
