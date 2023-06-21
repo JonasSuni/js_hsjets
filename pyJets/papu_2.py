@@ -3532,6 +3532,27 @@ def jet_vdf_plotter(runid):
     asw_list, fw_list = auto_classifier(runid)
     jet_ids = asw_list + fw_list
 
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
+    runid_g = runid
+    Blines_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
     for jet_id in jet_ids:
         props = jio.PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
@@ -3545,6 +3566,7 @@ def jet_vdf_plotter(runid):
 
             for tc in np.arange(t - 10, t + 10.01, 0.5):
                 fnr = int(tc * 2)
+                filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
 
@@ -3567,6 +3589,19 @@ def jet_vdf_plotter(runid):
                     colormap="batlow",
                     scale=1.3,
                     tickinterval=1.0,
+                    external=ext_jet,
+                    pass_vars=[
+                        "RhoNonBackstream",
+                        "RhoBackstream",
+                        "PTensorNonBackstreamDiagonal",
+                        "B",
+                        "v",
+                        "rho",
+                        "core_heating",
+                        "CellID",
+                        "Mmsx",
+                        "Pdyn",
+                    ],
                 )
                 ax_list[0][0].axhline(
                     y_re, linestyle="dashed", linewidth=0.6, color="k"
