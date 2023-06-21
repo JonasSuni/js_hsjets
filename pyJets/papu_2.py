@@ -3529,7 +3529,7 @@ def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
 
     dv = 30
 
-    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals * dv * dv)
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals)
 
     return (hist, bin_edges)
 
@@ -3826,9 +3826,9 @@ def jet_vdf_profile_plotter(runid):
                 #     # scale=1.3,
                 # )
 
-                ax_list[1].plot(bin_centers, xhist, "k", label="vx")
-                ax_list[1].plot(bin_centers, yhist, "r", label="vy")
-                ax_list[1].plot(bin_centers, zhist, "b", label="vz")
+                ax_list[1].step(bin_centers, xhist, "k", label="vx")
+                ax_list[1].step(bin_centers, yhist, "r", label="vy")
+                ax_list[1].step(bin_centers, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
 
                 # pt.plot.plot_vdf_profiles(
