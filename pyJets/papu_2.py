@@ -3532,7 +3532,7 @@ def jet_vdf_plotter(runid):
     asw_list, fw_list = auto_classifier(runid)
     jet_ids = asw_list + fw_list
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
     runid_g = runid
     Blines_g = False
 
@@ -3569,6 +3569,9 @@ def jet_vdf_plotter(runid):
                 filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+
+                x0 = x_re
+                y0 = y_re
 
                 fig, ax_list = plt.subplots(
                     2, 2, figsize=(11, 10), constrained_layout=True
