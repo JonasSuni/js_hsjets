@@ -3515,25 +3515,6 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
 
     return None
 
-
-def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
-    op_list = ["x", "y", "z"]
-
-    velcels = vlsvobj.read_velocity_cells(cellid)
-    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys())) * 1e-3
-    vc_vals = np.array(list(velcels.keys()))
-
-    vc_coord_arr = vc_coords[:, op_list.index(operator)]
-
-    vbins = np.linspace(vmin, vmax, nbins + 1)
-
-    dv = 30
-
-    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals)
-
-    return (hist, bin_edges)
-
-
 def jet_vdf_plotter(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
@@ -3701,8 +3682,24 @@ def jet_vdf_plotter(runid):
 
     return None
 
+def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
+    op_list = ["x", "y", "z"]
 
-def jet_vdf_profile_plotter(runid):
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys())) * 1e-3
+    vc_vals = np.array(list(velcels.keys()))
+
+    vc_coord_arr = vc_coords[:, op_list.index(operator)]
+
+    vbins = np.linspace(vmin, vmax, nbins + 1)
+
+    dv = 30e3
+
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals*dv*dv)
+
+    return (hist, bin_edges)
+
+def jet_vdf_profile_plotter(runid,nbins=20):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
@@ -3758,13 +3755,13 @@ def jet_vdf_profile_plotter(runid):
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
                 xhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, 50, operator="x"
+                    vobj, vdf_cellid, -2000, 2000, nbins, operator="x"
                 )
                 yhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, 50, operator="y"
+                    vobj, vdf_cellid, -2000, 2000, nbins, operator="y"
                 )
                 zhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, 50, operator="z"
+                    vobj, vdf_cellid, -2000, 2000, nbins, operator="z"
                 )
                 bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
 
