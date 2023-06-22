@@ -2914,6 +2914,7 @@ def jet_vdf_plotter(runid):
             vobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(int(t * 2)).zfill(7))
             )
+            cellids = vobj.read_variable("CellID")
             fsaved = vobj.read_variable("vg_f_saved")
             vdf_cells = cellids[fsaved == 1]
             if np.intersect1d(jet_cells[idx], vdf_cells).size == 0:
@@ -3117,6 +3118,7 @@ def jet_vdf_profile_plotter(runid):
             vobj_t = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(int(t * 2)).zfill(7))
             )
+            cellids = vobj_t.read_variable("CellID")
             fsaved = vobj_t.read_variable("vg_f_saved")
             vdf_cells = cellids[fsaved == 1]
             if np.intersect1d(jet_cells[idx], vdf_cells).size == 0:
