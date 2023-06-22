@@ -2926,7 +2926,7 @@ def jet_vdf_plotter(runid):
                 filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
 
-                x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+                x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
                 x0 = x_re
                 y0 = y_re
@@ -3128,7 +3128,7 @@ def jet_vdf_profile_plotter(runid):
                 fnr = int(tc * 2)
                 filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
-                x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
+                x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
                 xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
                 yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
