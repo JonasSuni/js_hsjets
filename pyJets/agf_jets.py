@@ -2868,6 +2868,11 @@ def jet_vdf_plotter(runid):
 
     vdf_cells = cellids[fsaved == 1]
 
+    global xg, yg
+
+    xg = []
+    yg = []
+
     # asw_list, fw_list = auto_classifier(runid)
     # jet_ids = asw_list + fw_list
 
@@ -3064,6 +3069,11 @@ def jet_vdf_profile_plotter(runid):
         fsaved = obj_580.read_variable("fSaved")
     else:
         fsaved = obj_580.read_variable("vg_f_saved")
+
+    global xg, yg
+
+    xg = []
+    yg = []
 
     vdf_cells = cellids[fsaved == 1]
 
