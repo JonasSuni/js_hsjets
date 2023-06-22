@@ -3684,16 +3684,17 @@ def jet_vdf_plotter(runid):
     return None
 
 
-def vspace_reducer(vlsvobj, cellid, vmin, vmax, nbins, operator):
+def vspace_reducer(vlsvobj, cellid, operator):
     op_list = ["x", "y", "z"]
 
     velcels = vlsvobj.read_velocity_cells(cellid)
-    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys())) * 1e-3
-    vc_vals = np.array(list(velcels.keys()))
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
 
     vc_coord_arr = vc_coords[:, op_list.index(operator)]
 
-    vbins = np.linspace(vmin, vmax, nbins + 1)
+    vbins = np.sort(np.unique(vc_coord_arr))
+    vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
 
     dv = 30e3
 
@@ -3757,15 +3758,9 @@ def jet_vdf_profile_plotter(runid, nbins=20):
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 x_re, y_re, z_re = obj_580.get_cell_coordinates(vdf_cellid) / r_e
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
-                xhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, nbins, operator="x"
-                )
-                yhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, nbins, operator="y"
-                )
-                zhist, bin_edges = vspace_reducer(
-                    vobj, vdf_cellid, -2000, 2000, nbins, operator="z"
-                )
+                xhist, bin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+                yhist, bin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+                zhist, bin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
                 bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
 
                 x0 = x_re
@@ -3807,29 +3802,30 @@ def jet_vdf_profile_plotter(runid, nbins=20):
                 ax_list[0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
                 ax_list[0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
 
-                pt.plot.plot_vdf_profiles(
-                    axes=ax_list[1],
-                    filename=bulkpath + fname,
-                    cellids=[vdf_cellid],
-                    # colormap="batlow",
-                    # bvector=1,
-                    xy=1,
-                    # slicethick=1e9,
-                    # box=[-2e6, 2e6, -2e6, 2e6],
-                    # internalcb=True,
-                    setThreshold=1e-15,
-                    lin=None,
-                    fmin=1e-15,
-                    fmax=4e-10,
-                    vmin=-2000,
-                    vmax=2000,
-                    # scale=1.3,
-                )
+                # pt.plot.plot_vdf_profiles(
+                #     axes=ax_list[1],
+                #     filename=bulkpath + fname,
+                #     cellids=[vdf_cellid],
+                #     # colormap="batlow",
+                #     # bvector=1,
+                #     xy=1,
+                #     # slicethick=1e9,
+                #     # box=[-2e6, 2e6, -2e6, 2e6],
+                #     # internalcb=True,
+                #     setThreshold=1e-15,
+                #     lin=None,
+                #     fmin=1e-15,
+                #     fmax=4e-10,
+                #     vmin=-2000,
+                #     vmax=2000,
+                #     # scale=1.3,
+                # )
 
-                # ax_list[1].step(bin_centers, xhist, "k", label="vx")
-                # ax_list[1].step(bin_centers, yhist, "r", label="vy")
-                # ax_list[1].step(bin_centers, zhist, "b", label="vz")
-                # ax_list[1].legend(loc="upper right")
+                ax_list[1].step(bin_centers, xhist, "k", label="vx")
+                ax_list[1].step(bin_centers, yhist, "r", label="vy")
+                ax_list[1].step(bin_centers, zhist, "b", label="vz")
+                ax_list[1].legend(loc="upper right")
+                ax_list[1].set_xlim(-2000, 2000)
 
                 # pt.plot.plot_vdf_profiles(
                 #     axes=ax_list[1][0],
