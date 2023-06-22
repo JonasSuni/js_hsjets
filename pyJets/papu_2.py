@@ -3823,9 +3823,9 @@ def jet_vdf_profile_plotter(runid):
                 #     # scale=1.3,
                 # )
 
-                ax_list[1].step(xbin_centers / r_e, xhist, "k", label="vx")
-                ax_list[1].step(ybin_centers / r_e, yhist, "r", label="vy")
-                ax_list[1].step(zbin_centers / r_e, zhist, "b", label="vz")
+                ax_list[1].step(xbin_centers * 1e-3, xhist, "k", label="vx")
+                ax_list[1].step(ybin_centers * 1e-3, yhist, "r", label="vy")
+                ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
                 ax_list[1].set_xlim(-2000, 2000)
 
