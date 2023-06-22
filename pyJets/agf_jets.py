@@ -2855,7 +2855,7 @@ def jplots(
         )
 
 
-def jet_vdf_plotter(runid):
+def jet_vdf_plotter(runid, skip=[]):
     runids = ["AGF", "AIA"]
     pdmax = [1.5, 1.5][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -2906,6 +2906,8 @@ def jet_vdf_plotter(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for jet_id in jet_ids:
+        if runid == "AGF" and jet_id in skip:
+            continue
         props = PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
         jet_cells = props.get_cells()
@@ -3060,7 +3062,7 @@ def vspace_reducer(vlsvobj, cellid, operator):
     return (hist, bin_edges)
 
 
-def jet_vdf_profile_plotter(runid):
+def jet_vdf_profile_plotter(runid, skip=[]):
     runids = ["AGF", "AIA"]
     pdmax = [1.5, 1.5][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3110,6 +3112,8 @@ def jet_vdf_profile_plotter(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for jet_id in jet_ids:
+        if runid == "AGF" and jet_id in skip:
+            continue
         props = PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
         jet_cells = props.get_cells()
