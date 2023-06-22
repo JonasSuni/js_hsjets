@@ -3830,6 +3830,7 @@ def jet_vdf_profile_plotter(runid):
                 ax_list[1].set_xlim(-1000, 1000)
                 ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
                 ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
+                ax_list[1].set_ylim(0, 30)
 
                 # pt.plot.plot_vdf_profiles(
                 #     axes=ax_list[1][0],
