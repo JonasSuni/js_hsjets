@@ -2935,7 +2935,7 @@ def jet_vdf_plotter(runid, skip=[]):
                 y0 = y_re
 
                 fig, ax_list = plt.subplots(
-                    2, 2, figsize=(7, 6), constrained_layout=True
+                    2, 2, figsize=(11, 10), constrained_layout=True
                 )
 
                 pt.plot.plot_colormap(
@@ -3147,7 +3147,7 @@ def jet_vdf_profile_plotter(runid, skip=[]):
                 y0 = y_re
 
                 fig, ax_list = plt.subplots(
-                    1, 2, figsize=(8, 3), constrained_layout=True
+                    1, 2, figsize=(11, 5), constrained_layout=True
                 )
 
                 pt.plot.plot_colormap(
