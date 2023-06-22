@@ -3114,10 +3114,10 @@ def jet_vdf_profile_plotter(runid):
         jet_cells = props.get_cells()
 
         for idx, t in enumerate(jet_times):
-            vobj = pt.vlsvfile.VlsvReader(
+            vobj_t = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(int(t * 2)).zfill(7))
             )
-            fsaved = vobj.read_variable("vg_f_saved")
+            fsaved = vobj_t.read_variable("vg_f_saved")
             vdf_cells = cellids[fsaved == 1]
             if np.intersect1d(jet_cells[idx], vdf_cells).size == 0:
                 continue
@@ -3128,8 +3128,8 @@ def jet_vdf_profile_plotter(runid):
                 fnr = int(tc * 2)
                 filenr_g = fnr
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
-                x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+                x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
                 xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
                 yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
                 zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
