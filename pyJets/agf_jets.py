@@ -3187,7 +3187,7 @@ def jet_vdf_profile_plotter(runid):
                 #     # colormap="batlow",
                 #     # bvector=1,
                 #     xy=1,
-                #     # slicethick=1e9,
+                #     # slicethick=0,
                 #     # box=[-2e6, 2e6, -2e6, 2e6],
                 #     # internalcb=True,
                 #     setThreshold=1e-15,
@@ -3203,10 +3203,10 @@ def jet_vdf_profile_plotter(runid):
                 ax_list[1].step(ybin_centers * 1e-3, yhist, "r", label="vy")
                 ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
-                ax_list[1].set_xlim(-1000, 1000)
+                ax_list[1].set_xlim(-1500, 1500)
                 ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
                 ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
-                ax_list[1].set_ylim(0, 30)
+                # ax_list[1].set_ylim(0, 30)
 
                 # pt.plot.plot_vdf_profiles(
                 #     axes=ax_list[1][0],
@@ -3215,7 +3215,7 @@ def jet_vdf_profile_plotter(runid):
                 #     # colormap="batlow",
                 #     # bvector=1,
                 #     xz=1,
-                #     # slicethick=1e9,
+                #     # slicethick=0,
                 #     # box=[-2e6, 2e6, -2e6, 2e6],
                 #     # internalcb=True,
                 #     setThreshold=1e-15,
@@ -3233,7 +3233,7 @@ def jet_vdf_profile_plotter(runid):
                 #     # colormap="batlow",
                 #     # bvector=1,
                 #     yz=1,
-                #     # slicethick=1e9,
+                #     # slicethick=0,
                 #     # box=[-2e6, 2e6, -2e6, 2e6],
                 #     # internalcb=True,
                 #     setThreshold=1e-15,
