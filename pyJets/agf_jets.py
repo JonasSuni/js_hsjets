@@ -2933,7 +2933,7 @@ def jet_vdf_plotter(runid):
                 pt.plot.plot_colormap(
                     axes=ax_list[0][0],
                     filename=bulkpath + fname,
-                    var="Pdyn",
+                    var="proton/vg_Pdyn",
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
@@ -3137,7 +3137,7 @@ def jet_vdf_profile_plotter(runid):
                 pt.plot.plot_colormap(
                     axes=ax_list[0],
                     filename=bulkpath + fname,
-                    var="Pdyn",
+                    var="proton/vg_Pdyn",
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
