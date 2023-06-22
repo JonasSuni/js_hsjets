@@ -3827,7 +3827,7 @@ def jet_vdf_profile_plotter(runid):
                 ax_list[1].step(ybin_centers * 1e-3, yhist, "r", label="vy")
                 ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
-                ax_list[1].set_xlim(-2000, 2000)
+                ax_list[1].set_xlim(-1000, 1000)
                 ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
                 ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
 
