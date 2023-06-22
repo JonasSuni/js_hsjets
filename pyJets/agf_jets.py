@@ -2856,8 +2856,8 @@ def jplots(
 
 
 def jet_vdf_plotter(runid):
-    runids = ["ABA", "ABC", "AEA", "AEC"]
-    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    runids = ["AGF", "AIA"]
+    pdmax = [1.5, 1.5][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000781.vlsv")
     cellids = obj_580.read_variable("CellID")
@@ -2886,11 +2886,15 @@ def jet_vdf_plotter(runid):
     non_ids_g = non_ids
 
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
     sw_pars = [
-        [1e6, 750e3, 5e-9, 0.5e6],
-        [3.3e6, 600e3, 5e-9, 0.5e6],
-        [1e6, 750e3, 10e-9, 0.5e6],
-        [3.3e6, 600e3, 10e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
     ]
     global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
@@ -3051,8 +3055,8 @@ def vspace_reducer(vlsvobj, cellid, operator):
 
 
 def jet_vdf_profile_plotter(runid):
-    runids = ["ABA", "ABC", "AEA", "AEC"]
-    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    runids = ["AGF", "AIA"]
+    pdmax = [1.5, 1.5][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000781.vlsv")
     cellids = obj_580.read_variable("CellID")
@@ -3080,11 +3084,15 @@ def jet_vdf_profile_plotter(runid):
     non_ids_g = non_ids
 
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
     sw_pars = [
-        [1e6, 750e3, 5e-9, 0.5e6],
-        [3.3e6, 600e3, 5e-9, 0.5e6],
-        [1e6, 750e3, 10e-9, 0.5e6],
-        [3.3e6, 600e3, 10e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
     ]
     global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
