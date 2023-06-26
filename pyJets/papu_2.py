@@ -5475,7 +5475,7 @@ def SEA_timeseries_comp(full_set=False):
                 else:
                     k2 = kind
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, k2),
                     dtype=int,
                     ndmin=1,
                 )
