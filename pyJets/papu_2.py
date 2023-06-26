@@ -5117,6 +5117,7 @@ def jmap_SEA_comp(run_id="all"):
     data_avg = np.zeros((3, 7, XmeshXY.shape[0], XmeshXY.shape[1]))
 
     for runid in runid_list:
+        fcs_ids = get_fcs_jets(runid)
         for idx, kind in enumerate(kinds):
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
@@ -5128,10 +5129,14 @@ def jmap_SEA_comp(run_id="all"):
                 )
 
             for non_id in non_ids:
+                if non_id in fcs_ids:
+                    pref = "sj_"
+                else:
+                    pref = ""
                 data = np.load(
                     wrkdir_DNR
                     + "papu22/{}jmap_txts/{}/{}_{}.npy".format(
-                        prefix[idx], runid, runid, str(non_id).zfill(5)
+                        pref, runid, runid, str(non_id).zfill(5)
                     )
                 )
                 data_avg[idx, :, :, :] = data_avg[idx, :, :, :] + data
@@ -6279,7 +6284,11 @@ def jet_counter(runid="all", cc_thresh=0.8):
 
 
 def auto_classifier(
-    runid, threshold_angle=np.pi / 4, cross_corr_threshold=0.8, min_A=0
+    runid,
+    threshold_angle=np.pi / 4,
+    cross_corr_threshold=0.8,
+    min_A=0,
+    include_fcs=False,
 ):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -6290,6 +6299,9 @@ def auto_classifier(
     v_sw_run = v_sw[runids.index(runid)] / 1e3
 
     non_ids = get_non_jets(runid)
+    if include_fcs:
+        non_ids = np.append(non_ids, get_fcs_jets(runid))
+
     flankward_list = []
     antisunward_list = []
     flankward_max_size = []
