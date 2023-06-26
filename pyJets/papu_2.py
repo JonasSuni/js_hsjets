@@ -5096,7 +5096,7 @@ def non_jet_omni(runid, only_man_figs=True):
         plt.close(fig)
 
 
-def jmap_SEA_comp(run_id="all", fcs_only=False):
+def jmap_SEA_comp(run_id="all", full_set=False):
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -5109,8 +5109,18 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
     x_range = np.arange(x0 - 20 * dx, x0 + 20 * dx + 0.5 * dx, dx)
     XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
-    kinds = ["beam", "foreshock", "fcs"]
-    kind_names = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    if full_set:
+        kinds = ["beam", "foreshock", "fcs", "fcs_beam", "fcs_foreshock"]
+        kind_names = [
+            "Non-FCS\nFlankward jets",
+            "Non-FCS\nAntisunward jets",
+            "FCS-jets",
+            "FCS\nflankward jets",
+            "FCS\nantisunward jets",
+        ]
+    else:
+        kinds = ["beam", "foreshock", "fcs"]
+        kind_names = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     prefix = ["", "", "sj_"]
     counts = [0, 0, 0]
 
@@ -5127,8 +5137,10 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
                     dtype=int,
                     ndmin=1,
                 )
-            if fcs_only:
+            if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
+            elif kind in ["beam", "foreshock"]:
+                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
             for non_id in non_ids:
                 if non_id in fcs_ids:
                     pref = "sj_"
@@ -5159,9 +5171,14 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
         # "$M_{\mathrm{MS},x}$",
     ]
 
-    fig, ax_list = plt.subplots(
-        len(varname_list), len(kinds), figsize=(24, 16), sharex=True, sharey=True
-    )
+    if full_set:
+        fig, ax_list = plt.subplots(
+            len(varname_list), len(kinds), figsize=(32, 16), sharex=True, sharey=True
+        )
+    else:
+        fig, ax_list = plt.subplots(
+            len(varname_list), len(kinds), figsize=(24, 16), sharex=True, sharey=True
+        )
     im_list = []
     cb_list = []
     vmin = [1.25, -1, 0.25, 1.3, 15]
@@ -5180,11 +5197,20 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
     #     "Blues_r",
     #     "Blues_r",
     # ]
-    annot = [
-        ["(a)", "(b)", "(c)", "(d)", "(e)"],
-        ["(f)", "(g)", "(h)", "(i)", "(j)"],
-        ["(k)", "(l)", "(m)", "(n)", "(o)"],
-    ]
+    if full_set:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)"],
+            ["(f)", "(g)", "(h)", "(i)", "(j)"],
+            ["(k)", "(l)", "(m)", "(n)", "(o)"],
+            ["(p)", "(q)", "(r)", "(s)", "(t)"],
+            ["(u)", "(v)", "(w)", "(x)", "(y)"],
+        ]
+    else:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)"],
+            ["(f)", "(g)", "(h)", "(i)", "(j)"],
+            ["(k)", "(l)", "(m)", "(n)", "(o)"],
+        ]
     annot_sj = ["(f)", "(g)", "(h)", "(i)", "(j)"]
 
     for idx2 in range(len(kinds)):
@@ -5202,7 +5228,7 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
                     rasterized=True,
                 )
             )
-            if idx2 == 2:
+            if idx2 == len(kinds) - 1:
                 if idx == 11:  # Disabled
                     cb_list.append(
                         fig.colorbar(
@@ -5286,9 +5312,9 @@ def jmap_SEA_comp(run_id="all", fcs_only=False):
     # Save figure
     plt.tight_layout()
 
-    if fcs_only:
+    if full_set:
         fig.savefig(
-            wrkdir_DNR + "papu22/Figures/fig05_fcsonly.pdf",
+            wrkdir_DNR + "papu22/Figures/fig05_fullset.pdf",
             dpi=300,
         )
     else:
