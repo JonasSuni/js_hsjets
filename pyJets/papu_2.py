@@ -5127,7 +5127,8 @@ def jmap_SEA_comp(run_id="all"):
                     dtype=int,
                     ndmin=1,
                 )
-
+            if fcs_only:
+                non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
             for non_id in non_ids:
                 if non_id in fcs_ids:
                     pref = "sj_"
@@ -5285,10 +5286,16 @@ def jmap_SEA_comp(run_id="all"):
     # Save figure
     plt.tight_layout()
 
-    fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig05.pdf".format(run_id),
-        dpi=300,
-    )
+    if fcs_only:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig05_fcsonly.pdf",
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig05.pdf",
+            dpi=300,
+        )
     plt.close(fig)
 
 
@@ -5338,7 +5345,7 @@ def calc_conv_ExB(v, B):
     return np.cross(-np.cross(v, B), B) / (Bmag**2)
 
 
-def SEA_timeseries_comp():
+def SEA_timeseries_comp(fcs_only=False):
     plot_labels = [
         None,
         "$v_x$",
@@ -5418,6 +5425,9 @@ def SEA_timeseries_comp():
                     dtype=int,
                     ndmin=1,
                 )
+            if fcs_only:
+                non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
+
             for non_id in non_ids:
                 data_arr = np.loadtxt(
                     wrkdir_DNR
@@ -5554,10 +5564,16 @@ def SEA_timeseries_comp():
     for ax in ax_list.flat:
         ax.label_outer()
     # plt.tight_layout()
-    fig.savefig(
-        wrkdir_DNR + "papu22/Figures/fig06.pdf",
-        dpi=300,
-    )
+    if fcs_only:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig06_fcsonly.pdf",
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig06.pdf",
+            dpi=300,
+        )
     plt.close(fig)
 
 
