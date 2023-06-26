@@ -16,6 +16,7 @@ from pyJets.jet_aux import (
 from pyJets.jet_analyser import get_cell_volume, sw_par_dict
 import pytools as pt
 import os
+import sys
 from random import choice
 from copy import deepcopy
 
@@ -2853,6 +2854,172 @@ def jplots(
             ),
             data_arr,
         )
+
+
+def getNearestCellWithVspace(vlsvReader, cid):
+    cell_candidates = vlsvReader.read(mesh="SpatialGrid", tag="CELLSWITHBLOCKS")
+    if len(cell_candidates) == 0:
+        print("Error: No velocity distributions found!")
+        sys.exit()
+    cell_candidate_coordinates = [
+        vlsvReader.get_cell_coordinates(cell_candidate)
+        for cell_candidate in cell_candidates
+    ]
+    cell_coordinates = vlsvReader.get_cell_coordinates(cid)
+    norms = np.sum((cell_candidate_coordinates - cell_coordinates) ** 2, axis=-1) ** (
+        1.0 / 2
+    )
+    norm, i = min((norm, idx) for (idx, norm) in enumerate(norms))
+    return cell_candidates[i]
+
+
+def pos_vdf_plotter(runid, x, y, t0, t1):
+    runids = ["AGF", "AIA"]
+    pdmax = [1.5, 1.5][runids.index(runid)]
+    bulkpath = find_bulkpath(runid)
+
+    global xg, yg
+
+    xg = []
+    yg = []
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
+    runid_g = runid
+    Blines_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    for t in np.arange(t0, t1 + 0.1, 0.5):
+        fnr = int(t * 2)
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+
+        x0 = x_re
+        y0 = y_re
+
+        fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
+
+        pt.plot.plot_colormap(
+            axes=ax_list[0][0],
+            vlsvobj=vobj,
+            var="proton/vg_Pdyn",
+            vmin=0,
+            vmax=pdmax,
+            vscale=1e9,
+            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+            # internalcb=True,
+            lin=1,
+            colormap="batlow",
+            scale=1.3,
+            tickinterval=1.0,
+            external=ext_jet,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+        )
+        ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
+        ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
+
+        pt.plot.plot_vdf(
+            axes=ax_list[0][1],
+            vlsvobj=vobj,
+            cellids=[vdf_cellid],
+            colormap="batlow",
+            bvector=1,
+            xy=1,
+            slicethick=0,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+            fmin=1e-10,
+            fmax=1e-4,
+        )
+        pt.plot.plot_vdf(
+            axes=ax_list[1][0],
+            vlsvobj=vobj,
+            cellids=[vdf_cellid],
+            colormap="batlow",
+            bvector=1,
+            xz=1,
+            slicethick=0,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+            fmin=1e-10,
+            fmax=1e-4,
+        )
+        pt.plot.plot_vdf(
+            axes=ax_list[1][1],
+            vlsvobj=vobj,
+            cellids=[vdf_cellid],
+            colormap="batlow",
+            bvector=1,
+            yz=1,
+            slicethick=0,
+            box=[-2e6, 2e6, -2e6, 2e6],
+            # internalcb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+            fmin=1e-10,
+            fmax=1e-4,
+        )
+
+        # plt.subplots_adjust(wspace=1, hspace=1)
+
+        outdir = wrkdir_DNR + "VDFs/{}/x_{}_y_{}_t0_{}_t1_{}".format(
+            runid, x_re, y_re, t0, t1
+        )
+
+        fig.suptitle("Run: {}, x: {}, y: {}, Time: {}s".format(runid, x_re, y_re, t))
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
+        fig.savefig(outdir)
+        plt.close(fig)
+
+    return None
 
 
 def jet_vdf_plotter(runid, skip=[]):
