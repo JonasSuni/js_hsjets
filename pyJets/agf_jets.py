@@ -2875,7 +2875,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
 
 def pos_vdf_profile_plotter(runid, x, y, t0, t1):
     runids = ["AGF", "AIA"]
-    pdmax = [1.5, 1.5][runids.index(runid)]
+    pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -3013,7 +3013,7 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1):
 
 def pos_vdf_plotter(runid, x, y, t0, t1):
     runids = ["AGF", "AIA"]
-    pdmax = [1.5, 1.5][runids.index(runid)]
+    pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -3164,7 +3164,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
 
 def jet_vdf_plotter(runid, skip=[]):
     runids = ["AGF", "AIA"]
-    pdmax = [1.5, 1.5][runids.index(runid)]
+    pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000781.vlsv")
     cellids = obj_580.read_variable("CellID")
@@ -3197,7 +3197,7 @@ def jet_vdf_plotter(runid, skip=[]):
     sj_ids_g = sj_ids
     non_ids_g = non_ids
 
-    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     # sw_pars = [
     #     [1e6, 750e3, 5e-9, 0.5e6],
     #     [3.3e6, 600e3, 5e-9, 0.5e6],
@@ -3371,7 +3371,7 @@ def vspace_reducer(vlsvobj, cellid, operator):
 
 def jet_vdf_profile_plotter(runid, skip=[]):
     runids = ["AGF", "AIA"]
-    pdmax = [1.5, 1.5][runids.index(runid)]
+    pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
     obj_580 = pt.vlsvfile.VlsvReader(bulkpath + "bulk.0000781.vlsv")
     cellids = obj_580.read_variable("CellID")
@@ -3403,7 +3403,7 @@ def jet_vdf_profile_plotter(runid, skip=[]):
     sj_ids_g = sj_ids
     non_ids_g = non_ids
 
-    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     # sw_pars = [
     #     [1e6, 750e3, 5e-9, 0.5e6],
     #     [3.3e6, 600e3, 5e-9, 0.5e6],
