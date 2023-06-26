@@ -5132,8 +5132,12 @@ def jmap_SEA_comp(run_id="all", full_set=False):
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
+                if kind in ["fcs_beam", "fcs_foreshock"]:
+                    k2 = kind[4:]
+                else:
+                    k2 = kind
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, k2),
                     dtype=int,
                     ndmin=1,
                 )
