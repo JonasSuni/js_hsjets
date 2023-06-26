@@ -3016,7 +3016,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
                 os.makedirs(outdir)
             except OSError:
                 pass
-        fig.savefig(outdir)
+        fig.savefig(outdir + "/{}.png".format(fnr))
         plt.close(fig)
 
     return None
