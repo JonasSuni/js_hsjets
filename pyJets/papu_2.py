@@ -5124,7 +5124,7 @@ def jmap_SEA_comp(run_id="all", full_set=False):
     prefix = ["", "", "sj_"]
     counts = [0, 0, 0]
 
-    data_avg = np.zeros((3, 7, XmeshXY.shape[0], XmeshXY.shape[1]))
+    data_avg = np.zeros((len(kinds), 7, XmeshXY.shape[0], XmeshXY.shape[1]))
 
     for runid in runid_list:
         fcs_ids = get_fcs_jets(runid)
