@@ -5122,7 +5122,8 @@ def jmap_SEA_comp(run_id="all", full_set=False):
         kinds = ["beam", "foreshock", "fcs"]
         kind_names = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     prefix = ["", "", "sj_"]
-    counts = [0, 0, 0]
+
+    counts = [0] * len(kinds)
 
     data_avg = np.zeros((len(kinds), 7, XmeshXY.shape[0], XmeshXY.shape[1]))
 
