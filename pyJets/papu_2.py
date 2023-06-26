@@ -5096,7 +5096,7 @@ def non_jet_omni(runid, only_man_figs=True):
         plt.close(fig)
 
 
-def jmap_SEA_comp(run_id="all"):
+def jmap_SEA_comp(run_id="all", fcs_only=False):
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
