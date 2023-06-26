@@ -2873,6 +2873,144 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
+def pos_vdf_profile_plotter(runid, x, y, t0, t1):
+    runids = ["AGF", "AIA"]
+    pdmax = [1.5, 1.5][runids.index(runid)]
+    bulkpath = find_bulkpath(runid)
+
+    global xg, yg
+
+    xg = []
+    yg = []
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
+    runid_g = runid
+    Blines_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    for t in np.arange(t0, t1 + 0.1, 0.5):
+        fnr = int(t * 2)
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+        xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+        yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+        zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+        xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
+        ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
+        zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
+
+        x0 = x_re
+        y0 = y_re
+
+        fig, ax_list = plt.subplots(1, 2, figsize=(11, 5), constrained_layout=True)
+
+        pt.plot.plot_colormap(
+            axes=ax_list[0],
+            vlsvobj=vobj,
+            var="proton/vg_Pdyn",
+            vmin=0,
+            vmax=pdmax,
+            vscale=1e9,
+            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+            # internalcb=True,
+            lin=1,
+            colormap="batlow",
+            scale=1.3,
+            tickinterval=1.0,
+            external=ext_jet,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+        )
+        ax_list[0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
+        ax_list[0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
+
+        # pt.plot.plot_vdf_profiles(
+        #     axes=ax_list[1],
+        #     filename=bulkpath + fname,
+        #     cellids=[vdf_cellid],
+        #     # colormap="batlow",
+        #     # bvector=1,
+        #     xy=1,
+        #     # slicethick=0,
+        #     # box=[-2e6, 2e6, -2e6, 2e6],
+        #     # internalcb=True,
+        #     setThreshold=1e-15,
+        #     lin=None,
+        #     fmin=1e-15,
+        #     fmax=4e-10,
+        #     vmin=-2000,
+        #     vmax=2000,
+        #     # scale=1.3,
+        # )
+
+        ax_list[1].step(xbin_centers * 1e-3, xhist, "k", label="vx")
+        ax_list[1].step(ybin_centers * 1e-3, yhist, "r", label="vy")
+        ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
+        ax_list[1].legend(loc="upper right")
+        ax_list[1].set_xlim(-2000, 2000)
+        ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
+        ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
+
+        # plt.subplots_adjust(wspace=1, hspace=1)
+
+        outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}_profile".format(
+            runid, x_re, y_re, t0, t1
+        )
+
+        fig.suptitle(
+            "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t)
+        )
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
+        fig.savefig(outdir + "/{}.png".format(fnr))
+        plt.close(fig)
+
+    return None
+
+
 def pos_vdf_plotter(runid, x, y, t0, t1):
     runids = ["AGF", "AIA"]
     pdmax = [1.5, 1.5][runids.index(runid)]
