@@ -5376,7 +5376,7 @@ def calc_conv_ExB(v, B):
     return np.cross(-np.cross(v, B), B) / (Bmag**2)
 
 
-def SEA_timeseries_comp(fcs_only=False):
+def SEA_timeseries_comp(full_set=False):
     plot_labels = [
         None,
         "$v_x$",
@@ -5425,14 +5425,33 @@ def SEA_timeseries_comp(fcs_only=False):
         CB_color_cycle[1],
     ]
 
-    annot = [
-        ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
-        ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
-        ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
-    ]
+    if full_set:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
+            ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
+            ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
+            ["(s)", "(t)", "(u)", "(v)", "(w)", "(x)"],
+            ["(y)", "(z)", "(aa)", "(ab)", "(ac)", "(ad)"],
+        ]
+    else:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
+            ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
+            ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
+        ]
 
-    kinds = ["beam", "foreshock", "fcs"]
-    kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    if full_set:
+        kinds = ["beam", "foreshock", "fcs", "fcs_beam", "fcs_foreshock"]
+        kind_labels = [
+            "Non-FCS\nflankward jets",
+            "Non-FCS\nantisunward jets",
+            "FCS-jets",
+            "FCS\nflankward jets",
+            "FCS\nantisunward jets",
+        ]
+    else:
+        kinds = ["beam", "foreshock", "fcs"]
+        kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     vsw = [750e3, 600e3, 750e3, 600e3]
     Bsw = [5e-9, 5e-9, 10e-9, 10e-9]
     t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
@@ -5443,7 +5462,7 @@ def SEA_timeseries_comp(fcs_only=False):
     # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
     # print(epoch_mag_arr.shape)
     epoch_mag_arr.fill(np.nan)
-    counters = [0, 0, 0]
+    counters = [0] * len(kinds)
     for runid in ["ABA", "ABC", "AEA", "AEC"]:
         for idx, kind in enumerate(kinds):
             # run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
@@ -5451,14 +5470,19 @@ def SEA_timeseries_comp(fcs_only=False):
             if kind == "fcs":
                 non_ids = get_fcs_jets(runid)
             else:
+                if kind in ["fcs_beam", "fcs_foreshock"]:
+                    k2 = kind[4:]
+                else:
+                    k2 = kind
                 non_ids = np.loadtxt(
                     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
-            if fcs_only:
+            if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
-
+            elif kind in ["beam", "foreshock"]:
+                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
             for non_id in non_ids:
                 data_arr = np.loadtxt(
                     wrkdir_DNR
@@ -5501,9 +5525,22 @@ def SEA_timeseries_comp(fcs_only=False):
             / epoch_mag_arr[idx, -2, :, : counters[idx]]
         )
 
-    fig, ax_list = plt.subplots(
-        len(ylabels) + 1, 3, sharex=True, figsize=(25, 24), constrained_layout=True
-    )
+    if full_set:
+        fig, ax_list = plt.subplots(
+            len(ylabels) + 1,
+            len(kinds),
+            sharex=True,
+            figsize=(32, 24),
+            constrained_layout=True,
+        )
+    else:
+        fig, ax_list = plt.subplots(
+            len(ylabels) + 1,
+            len(kinds),
+            sharex=True,
+            figsize=(25, 24),
+            constrained_layout=True,
+        )
     for idx2, kind in enumerate(kinds):
         ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=40, pad=10)
         for idx in range(len(plot_labels)):
@@ -5595,9 +5632,9 @@ def SEA_timeseries_comp(fcs_only=False):
     for ax in ax_list.flat:
         ax.label_outer()
     # plt.tight_layout()
-    if fcs_only:
+    if full_set:
         fig.savefig(
-            wrkdir_DNR + "papu22/Figures/fig06_fcsonly.pdf",
+            wrkdir_DNR + "papu22/Figures/fig06_fullset.pdf",
             dpi=300,
         )
     else:
