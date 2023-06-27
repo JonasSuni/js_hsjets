@@ -5485,8 +5485,8 @@ def kind_size_hist():
         ax_list[idx].set_title(
             kind_labels[idx] + "\nN = {}".format(len(sizes[idx])), pad=10
         )
-        ax_list.set_ylabel("# counts")
-        ax_list.set_xlabel("# cells max")
+        ax_list[idx].set_ylabel("# counts")
+        ax_list[idx].set_xlabel("# cells max")
     for ax in ax_list:
         ax.label_outer()
 
