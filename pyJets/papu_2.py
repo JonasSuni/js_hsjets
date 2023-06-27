@@ -5410,11 +5410,17 @@ def jmap_SEA_comp(run_id="all", full_set=False):
     XmeshXY, YmeshXY = np.meshgrid(x_range, t_range)
 
     if full_set:
-        kinds = ["beam", "foreshock", "fcs", "fcs_beam", "fcs_foreshock"]
+        kinds = [
+            "beam",
+            "foreshock",
+            # "fcs",
+            "fcs_beam",
+            "fcs_foreshock",
+        ]
         kind_names = [
             "Non-FCS\nFlankward jets",
             "Non-FCS\nAntisunward jets",
-            "FCS-jets",
+            # "FCS-jets",
             "FCS\nflankward jets",
             "FCS\nantisunward jets",
         ]
@@ -5820,11 +5826,17 @@ def SEA_timeseries_comp(full_set=False):
         ]
 
     if full_set:
-        kinds = ["beam", "foreshock", "fcs", "fcs_beam", "fcs_foreshock"]
+        kinds = [
+            "beam",
+            "foreshock",
+            # "fcs",
+            "fcs_beam",
+            "fcs_foreshock",
+        ]
         kind_labels = [
             "Non-FCS\nflankward jets",
             "Non-FCS\nantisunward jets",
-            "FCS-jets",
+            # "FCS-jets",
             "FCS\nflankward jets",
             "FCS\nantisunward jets",
         ]
