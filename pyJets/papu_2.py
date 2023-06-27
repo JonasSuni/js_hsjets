@@ -338,6 +338,49 @@ def jet_pos_plot():
     plt.close(fig)
 
 
+def filter_fcs_jets(runid, Bthresh=1.5):
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    Bimf = [5e-9, 5e-9, 10e-9, 10e-9][runids.index(runid)]
+    fcs_ids = get_fcs_jets(runid)
+    filtered_ids = []
+    bulkpath = jx.find_bulkpath(runid)
+
+    for jetid in fcs_ids:
+        props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+        jet_times = props.get_times()
+        jet_cells = props.get_cells()
+        fnr_list = [int(t * 2) for t in jet_times]
+        for idx, fnr in enumerate(fnr_list):
+            vobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
+            cellids = vobj.read_variable("CellID")
+            Bmag = vobj.read_variable("B", operator="magnitude")
+            slams_cells = np.loadtxt(
+                "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+                    runid, int(fnr)
+                )
+            ).astype(int)
+            strong_slams_cells = np.intersect1d(
+                slams_cells, cellids[Bmag >= Bthresh * Bimf]
+            )
+            if (
+                np.intersect1d(
+                    jet_cells[idx],
+                    jx.get_neighs(
+                        runid, strong_slams_cells, neighborhood_reach=[2, 2, 0]
+                    ),
+                ).size
+                > 0
+            ):
+                filtered_ids.append(jetid)
+                break
+
+    np.savetxt(
+        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid), filtered_ids, fmt="%d"
+    )
+
+
 def get_fcs_jets(runid):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
