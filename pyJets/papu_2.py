@@ -65,6 +65,255 @@ try:
 except:
     vlasdir = "/proj/vlasov"
 
+def fig07_alt():
+    runids = ["AEC", "AEA", "ABC", "ABA"]
+    runid_labels = ["LM05", "LM30", "HM05", "HM30"]
+    rect_anchor = [(6, -6), (6, -8), (6, -6), (6, -8)]
+    rect_ex = [(12, 12), (12, 14), (12, 12), (12, 14)]
+    CB_color_cycle = jx.CB_color_cycle
+    # kinds = ["foreshock", "beam", "complex", "stripe"]
+    kinds = ["beam", "foreshock","fcs_beam","fcs_foreshock"]
+    # kinds_pub = ["Antisunward\njets", "Flankward\njets"]
+    kinds_pub = ["Non-FCS\nflankward jets", "Non-FCS\nantisunward\njets","FCS\nflankward jets", "FCS\nantisunward\njets"]
+    marker = ["^", "o","x","+"]
+    draw_labels = [False, True, False, False]
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(11, 12), sharex=True, sharey=True)
+    ax_flat = ax_list.flatten()
+
+    yarr = np.arange(-15, 15, 0.1)
+    bs_fit = [jx.bs_mp_fit(runid, 800, boxre=[6, 18, -15, 15])[1] for runid in runids]
+    bs_x = [
+        np.polyval(bs_fit[idx], yarr) - bs_fit[idx][-1] for idx in range(len(runids))
+    ]
+
+    vlsvobj_arr = [jx.read_bulkfile(runid, 800) for runid in runids]
+    cellid_arr = [
+        vlsvobj_arr[idx].read_variable("CellID") for idx in range(len(runids))
+    ]
+    Yun_arr = [
+        np.unique(jx.xyz_reconstruct(vlsvobj_arr[idx])[1][np.argsort(cellid_arr[idx])])
+        / r_e
+        for idx in range(len(runids))
+    ]
+    Xun_arr = [
+        np.unique(jx.xyz_reconstruct(vlsvobj_arr[idx])[0][np.argsort(cellid_arr[idx])])
+        / r_e
+        for idx in range(len(runids))
+    ]
+    Bz_arr = [
+        vlsvobj_arr[idx].read_variable("B", operator="z")[np.argsort(cellid_arr[idx])]
+        for idx in range(len(runids))
+    ]
+    RhoBS_arr = [
+        vlsvobj_arr[idx].read_variable("RhoBackstream")[np.argsort(cellid_arr[idx])]
+        for idx in range(len(runids))
+    ]
+
+    Bz_arr = [
+        np.reshape(Bz_arr[idx], (Yun_arr[idx].size, Xun_arr[idx].size))
+        for idx in range(len(runids))
+    ]
+    RhoBS_arr = [
+        np.reshape(RhoBS_arr[idx], (Yun_arr[idx].size, Xun_arr[idx].size))
+        for idx in range(len(runids))
+    ]
+
+    annot = ["(a)", "(b)", "(c)", "(d)"]
+
+    for idx, ax in enumerate(ax_flat):
+        print(Xun_arr[idx].shape)
+        print(Yun_arr[idx].shape)
+        Xun_minus_bs = np.array(
+            [
+                Xun_arr[idx] - np.polyval(bs_fit[idx], Yun_arr[idx][i2])
+                for i2 in range(len(Yun_arr[idx]))
+            ]
+        )
+        print(Xun_minus_bs.shape)
+
+        cont = ax.contour(
+            # Xun_arr[idx] - bs_fit[idx][-1],
+            Xun_arr[idx],
+            Yun_arr[idx],
+            np.ma.masked_where(Xun_minus_bs < 0, Bz_arr[idx]),
+            [-0.5e-9, 0.5e-9],
+            colors=[CB_color_cycle[4], CB_color_cycle[5]],
+            linewidths=[0.6, 0.6],
+            zorder=1,
+        )
+        # for c in cont.collections:
+        #     c.set_rasterized(True)
+        cont = ax.contour(
+            # Xun_arr[idx] - bs_fit[idx][-1],
+            Xun_arr[idx],
+            Yun_arr[idx],
+            np.ma.masked_where(Xun_minus_bs < 0, np.abs(RhoBS_arr[idx])),
+            [1],
+            colors=["black"],
+            linewidths=[0.6],
+            linestyles=["dashed"],
+            zorder=1,
+        )
+        # for c in cont.collections:
+        # c.set_rasterized(True)
+        # ax.plot(bs_x[idx], yarr, color="black")
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=20)
+
+    for n1, runid in enumerate(runids):
+        fcs_filtered = np.loadtxt(
+                wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                dtype=int,
+            )
+        ax = ax_flat[n1]
+        for n2, kind in enumerate(kinds):
+            label_bool = draw_labels[n1]
+            if kind in ["fcs_beam","fcs_foreshock"]:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind[4:]),
+                    dtype=int,
+                    ndmin=1,
+                )
+                non_ids = np.intersect1d(non_ids,fcs_filtered)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+                non_ids = np.setdiff1d(non_ids,fcs_filtered)
+            for non_id in non_ids:
+                props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
+                x0, y0, t0 = (
+                    props.read("x_wmean")[0],
+                    props.read("y_wmean")[0],
+                    props.read("time")[0],
+                )
+                # bs_x_y0 = np.polyval(jx.bs_mp_fit(runid, int(t0 * 2))[1], y0)
+                if label_bool:
+                    ax.plot(
+                        # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                        x0,
+                        y0,
+                        marker[n2],
+                        color=CB_color_cycle[n2],
+                        label=kinds_pub[n2].capitalize(),
+                        # rasterized=True,
+                        zorder=2,
+                        alpha=0.7,
+                    )
+                    label_bool = False
+                else:
+                    if (kind == "beam" and runid == "AEA" and non_id == 920) or (
+                        kind == "foreshock" and runid == "ABC" and non_id == 153
+                    ):
+                        ax.plot(
+                            # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                            x0,
+                            y0,
+                            "*",
+                            color=CB_color_cycle[n2],
+                            # rasterized=True,
+                            zorder=3,
+                            alpha=1,
+                            markersize=10,
+                            mec="k",
+                            mew=0.02,
+                        )
+                    else:
+                        ax.plot(
+                            # np.polyval(bs_fit[n1], y0) - bs_fit[n1][-1] + (x0 - bs_x_y0),
+                            x0,
+                            y0,
+                            marker[n2],
+                            color=CB_color_cycle[n2],
+                            # rasterized=True,
+                            zorder=2,
+                            alpha=0.7,
+                        )
+        label_bool = draw_labels[n1]
+        ax.grid()
+        # ax.set_xlim(-3, 2)
+        ax.set_xlim(4, 20)
+        # ax.set_aspect("equal")
+        ax.tick_params(labelsize=16)
+        ax.set_title("{}".format(runid_labels[n1]), fontsize=20, pad=10)
+        ax.add_patch(
+            plt.Rectangle(
+                rect_anchor[n1],
+                rect_ex[n1][0],
+                rect_ex[n1][1],
+                fill=None,
+                linestyle="dotted",
+                label="Search box",
+                color="k",
+                linewidth=0.8,
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                fill=None,
+                color="k",
+                linestyle="dashed",
+                label="Foreshock edge",
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                fill=None,
+                color=CB_color_cycle[4],
+                label="$B_z = -0.5~\mathrm{nT}$",
+            )
+        )
+        ax.add_patch(
+            plt.Rectangle(
+                [0, 0],
+                1,
+                1,
+                fill=None,
+                color=CB_color_cycle[5],
+                label="$B_z = 0.5~\mathrm{nT}$",
+            )
+        )
+
+        if runid in ["ABA", "AEA"]:
+            ax.set_ylim(-10, 10)
+            ax.set_aspect("equal", adjustable="box")
+        else:
+            ax.set_ylim(-10, 10)
+            ax.set_aspect("equal", adjustable="box")
+        if label_bool:
+            ax.legend(fontsize=11, loc="center left")
+    ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
+    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
+    # ax_flat[2].set_xlabel(
+    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+    #     fontsize=20,
+    # )
+    # ax_flat[3].set_xlabel(
+    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+    #     fontsize=20,
+    # )
+    ax_flat[2].set_xlabel(
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        fontsize=20,
+    )
+    ax_flat[3].set_xlabel(
+        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        fontsize=20,
+    )
+
+    # Save figure
+    plt.tight_layout()
+
+    fig.savefig(wrkdir_DNR + "papu22/Figures/fig07_alt.pdf", dpi=300)
+    plt.close(fig)
 
 def jet_pos_plot():
     runids = ["AEC", "AEA", "ABC", "ABA"]
