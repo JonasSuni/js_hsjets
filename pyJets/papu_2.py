@@ -7222,7 +7222,7 @@ def auto_classifier(
 
         t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
-        r_vecu = np.array([-x0, -y0]) / np.linalg.norm([x0, y0])
+        r_vecu = np.array([x0, y0]) / np.linalg.norm([x0, y0])
         ty = 1
         tx = -y0 * ty / x0
         t_vecu = np.array([tx, ty]) / np.linalg.norm([tx, ty])
