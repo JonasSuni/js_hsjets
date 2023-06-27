@@ -5436,6 +5436,55 @@ def calc_conv_ExB(v, B):
 
     return np.cross(-np.cross(v, B), B) / (Bmag**2)
 
+def kind_size_hist():
+    runids = ["ABA","ABC","AEA","AEC"]
+
+    kinds = ["beam", "foreshock","fcs_beam", "fcs_foreshock"]
+    kind_labels = [
+        "Non-FCS\nflankward jets",
+        "Non-FCS\nantisunward jets",
+        "FCS\nflankward jets",
+        "FCS\nantisunward jets",
+    ]
+
+    sizes = [[]*len(kinds)]
+
+    for runid in runids:
+        fcs_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                    dtype=int,
+                )
+        antisunward_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, "foreshock"),
+                    dtype=int,
+                    ndmin=1,
+                )
+        flankward_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, "beam"),
+                    dtype=int,
+                    ndmin=1,
+                )
+        kind_ids = [np.setdiff1d(flankward_ids,fcs_ids),np.setdiff1d(antisunward_ids,fcs_ids),np.intersect1d(flankward_ids,fcs_ids),np.intersect1d(antisunward_ids,fcs_ids)]
+
+        for idx in range(len(kinds)):
+            ids = kind_ids[idx]
+            for jetid in ids:
+                props = jio.PropReader(str(jetid).zfill(5),runid)
+                maxsize = props.read_at_amax("Nr_cells")
+                sizes[idx].append(maxsize)
+
+
+    fig,ax_list = plt.subplots(1,len(kinds),figsize=(12,5),constrained_layout=True)
+    for idx in range(len(kinds)):
+        ax_list[idx].hist(sizes[idx],bins="fd")
+        ax_list[idx].set_title(kind_labels[idx]+"\nN = {}".format(len(sizes[idx])),pad=10)
+        ax_list.set_ylabel("# counts")
+        ax_list.set_xlabel("# cells max")
+    for ax in ax_list:
+        ax.label_outer()
+
+    fig.savefig(wrkdir_DNR+"papu22/Figures/size_hist.pdf")
+    plt.close(fig)
 
 def SEA_timeseries_comp(full_set=False):
     plot_labels = [

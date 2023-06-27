@@ -158,7 +158,8 @@ from papu_2 import (
     fig0,
     jet_counter,
     jet_vdf_profile_plotter,
-    filter_fcs_jets
+    filter_fcs_jets,
+    kind_size_hist
 )
 
 from jet_23_scripts import (
