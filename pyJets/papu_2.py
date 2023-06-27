@@ -5479,7 +5479,9 @@ def kind_size_hist():
                 maxsize = props.read_at_amax("Nr_cells")
                 sizes[idx].append(maxsize)
 
-    fig, ax_list = plt.subplots(1, len(kinds), figsize=(12, 5), constrained_layout=True)
+    fig, ax_list = plt.subplots(
+        1, len(kinds), figsize=(12, 5), constrained_layout=True, sharey=True
+    )
     for idx in range(len(kinds)):
         ax_list[idx].hist(sizes[idx], histtype="step", range=(1, 10), bins=9)
         ax_list[idx].grid()
