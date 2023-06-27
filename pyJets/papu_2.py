@@ -7226,8 +7226,8 @@ def auto_classifier(
         ty = 1
         tx = -y0 * ty / x0
         t_vecu = np.array([tx, ty]) / np.linalg.norm([tx, ty])
-        if y0 < 0:
-            t_vecu = t_vecu * -1
+        # if y0 < 0:
+        #     t_vecu = t_vecu * -1
 
         propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
             tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
