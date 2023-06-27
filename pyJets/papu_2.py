@@ -5481,7 +5481,8 @@ def kind_size_hist():
 
     fig, ax_list = plt.subplots(1, len(kinds), figsize=(12, 5), constrained_layout=True)
     for idx in range(len(kinds)):
-        ax_list[idx].hist(sizes[idx], histtype="step", range=(1, 10), bins=8)
+        ax_list[idx].hist(sizes[idx], histtype="step", range=(1, 10), bins=9)
+        ax_list[idx].grid()
         ax_list[idx].set_title(
             kind_labels[idx] + "\nN = {}".format(len(sizes[idx])), pad=10
         )
