@@ -7222,7 +7222,12 @@ def auto_classifier(
 
         t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
-        pos_vecu = np.array([-x0, -y0]) / np.linalg.norm([x0, y0])
+        r_vecu = np.array([-x0, -y0]) / np.linalg.norm([x0, y0])
+        ty = 1
+        tx = -y0 * ty / x0
+        t_vecu = np.array([tx, ty]) / np.linalg.norm([tx, ty])
+        if y0 < 0:
+            t_vecu = t_vecu * -1
 
         propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
             tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
@@ -7246,12 +7251,8 @@ def auto_classifier(
                 np.sqrt(propvx**2 + propvy**2),
                 (
                     np.arctan2(
-                        np.sqrt(
-                            propvx**2
-                            + propvy**2
-                            - np.dot(pos_vecu, [propvx, propvy]) ** 2
-                        ),
-                        np.dot(pos_vecu, [propvx, propvy]),
+                        np.dot(t_vecu, [propvx, propvy]),
+                        np.dot(r_vecu, [propvx, propvy]),
                     )
                     + 2 * np.pi
                 )
@@ -7265,10 +7266,8 @@ def auto_classifier(
                 np.sqrt(vscx**2 + vscy**2),
                 (
                     np.arctan2(
-                        np.sqrt(
-                            vscx**2 + vscy**2 - np.dot(pos_vecu, [vscx, vscy]) ** 2
-                        ),
-                        np.dot(pos_vecu, [vscx, vscy]),
+                        np.dot(t_vecu, [vscx, vscy]),
+                        np.dot(r_vecu, [vscx, vscy]),
                     )
                     + 2 * np.pi
                 )
