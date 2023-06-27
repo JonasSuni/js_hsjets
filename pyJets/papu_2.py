@@ -6453,7 +6453,7 @@ def fig02_alt(vlim=1.3):
                 wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
                 dtype=int,
             )
-            if kind in ["fcs_beam", "fcs_antisunward"]:
+            if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.loadtxt(
                     wrkdir_DNR
                     + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind[4:]),
