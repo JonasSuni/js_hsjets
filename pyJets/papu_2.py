@@ -5511,7 +5511,10 @@ def SEA_timeseries_comp(full_set=False):
             # run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
             # run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
             if kind == "fcs":
-                non_ids = get_fcs_jets(runid)
+                # non_ids = get_fcs_jets(runid)
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid)
+                )
             else:
                 if kind in ["fcs_beam", "fcs_foreshock"]:
                     k2 = kind[4:]
@@ -5523,9 +5526,15 @@ def SEA_timeseries_comp(full_set=False):
                     ndmin=1,
                 )
             if kind in ["fcs_beam", "fcs_foreshock"]:
-                non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
+                non_ids = np.intersect1d(
+                    non_ids,
+                    np.loadtxt(wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid)),
+                )
             elif kind in ["beam", "foreshock"]:
-                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
+                non_ids = np.setdiff1d(
+                    non_ids,
+                    np.loadtxt(wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid)),
+                )
             for non_id in non_ids:
                 data_arr = np.loadtxt(
                     wrkdir_DNR
@@ -5585,7 +5594,11 @@ def SEA_timeseries_comp(full_set=False):
             constrained_layout=True,
         )
     for idx2, kind in enumerate(kinds):
-        ax_list[0][idx2].set_title("{}".format(kind_labels[idx2]), fontsize=40, pad=10)
+        ax_list[0][idx2].set_title(
+            "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
+            fontsize=40,
+            pad=10,
+        )
         for idx in range(len(plot_labels)):
             ax = ax_list[plot_index[idx]][idx2]
             ax.plot(
