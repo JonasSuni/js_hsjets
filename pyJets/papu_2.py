@@ -5192,7 +5192,7 @@ def jmap_SEA_comp(run_id="all", full_set=False):
             if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.intersect1d(
                     non_ids,
-                    non_ids=np.loadtxt(
+                    np.loadtxt(
                         wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
                         dtype=int,
                     ),
@@ -5200,7 +5200,7 @@ def jmap_SEA_comp(run_id="all", full_set=False):
             elif kind in ["beam", "foreshock"]:
                 non_ids = np.setdiff1d(
                     non_ids,
-                    non_ids=np.loadtxt(
+                    np.loadtxt(
                         wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
                         dtype=int,
                     ),
