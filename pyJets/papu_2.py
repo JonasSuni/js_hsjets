@@ -5529,14 +5529,18 @@ def SEA_timeseries_comp(full_set=False):
             if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.intersect1d(
                     non_ids,
-                    np.loadtxt(wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid)),
-                    dtype=int,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
                 )
             elif kind in ["beam", "foreshock"]:
                 non_ids = np.setdiff1d(
                     non_ids,
-                    np.loadtxt(wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid)),
-                    dtype=int,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
                 )
             for non_id in non_ids:
                 data_arr = np.loadtxt(
