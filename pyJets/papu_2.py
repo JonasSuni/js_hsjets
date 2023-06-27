@@ -5477,7 +5477,7 @@ def kind_size_hist():
             for jetid in ids:
                 props = jio.PropReader(str(jetid).zfill(5), runid)
                 maxsize = props.read_at_amax("Nr_cells")
-                sizes[idx].append(maxsize)
+                sizes[idx].append(maxsize)+0.5
 
     fig, ax_list = plt.subplots(1, len(kinds), figsize=(12, 5), constrained_layout=True)
     for idx in range(len(kinds)):
