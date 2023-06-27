@@ -5174,7 +5174,11 @@ def jmap_SEA_comp(run_id="all", full_set=False):
         fcs_ids = get_fcs_jets(runid)
         for idx, kind in enumerate(kinds):
             if kind == "fcs":
-                non_ids = get_fcs_jets(runid)
+                # non_ids = get_fcs_jets(runid)
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                    dtype=int,
+                )
             else:
                 if kind in ["fcs_beam", "fcs_foreshock"]:
                     k2 = kind[4:]
@@ -5186,9 +5190,21 @@ def jmap_SEA_comp(run_id="all", full_set=False):
                     ndmin=1,
                 )
             if kind in ["fcs_beam", "fcs_foreshock"]:
-                non_ids = np.intersect1d(non_ids, get_fcs_jets(runid))
+                non_ids = np.intersect1d(
+                    non_ids,
+                    non_ids=np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
             elif kind in ["beam", "foreshock"]:
-                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
+                non_ids = np.setdiff1d(
+                    non_ids,
+                    non_ids=np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
             for non_id in non_ids:
                 if non_id in fcs_ids:
                     pref = "sj_"
@@ -5328,7 +5344,9 @@ def jmap_SEA_comp(run_id="all", full_set=False):
                 fontsize=24,
                 bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
             )
-        ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
+        ax_list[0][idx2].set_title(
+            kind_names[idx2] + "\nN = {}".format(counts[idx2]), fontsize=32, pad=10
+        )
         ax_list[-1][idx2].set_xlabel(
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=32, labelpad=10
         )
