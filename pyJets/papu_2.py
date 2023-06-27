@@ -6437,7 +6437,7 @@ def fig02_alt(vlim=1.3):
     sonic_arrs = np.zeros((len(kinds), 1000), dtype=float)
     special_arrs = np.zeros((len(kinds), 1000), dtype=float)
     propv_arrs = np.zeros((len(kinds), 2, 1000), dtype=float)
-    propv_arrs_full = np.zeros((3, 2, 1000), dtype=float)
+    propv_arrs_full = np.zeros((len(kinds), 2, 1000), dtype=float)
     # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
     # vax_avg_arr = np.zeros((3, fnr_arr.size))
     # vay_avg_arr = np.zeros((3, fnr_arr.size))
