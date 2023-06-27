@@ -65,6 +65,7 @@ try:
 except:
     vlasdir = "/proj/vlasov"
 
+
 def fig07_alt():
     runids = ["AEC", "AEA", "ABC", "ABA"]
     runid_labels = ["LM05", "LM30", "HM05", "HM30"]
@@ -72,10 +73,15 @@ def fig07_alt():
     rect_ex = [(12, 12), (12, 14), (12, 12), (12, 14)]
     CB_color_cycle = jx.CB_color_cycle
     # kinds = ["foreshock", "beam", "complex", "stripe"]
-    kinds = ["beam", "foreshock","fcs_beam","fcs_foreshock"]
+    kinds = ["beam", "foreshock", "fcs_beam", "fcs_foreshock"]
     # kinds_pub = ["Antisunward\njets", "Flankward\njets"]
-    kinds_pub = ["Non-FCS\nflankward jets", "Non-FCS\nantisunward\njets","FCS\nflankward jets", "FCS\nantisunward\njets"]
-    marker = ["^", "o","x","+"]
+    kinds_pub = [
+        "Non-FCS\nflankward jets",
+        "Non-FCS\nantisunward\njets",
+        "FCS\nflankward jets",
+        "FCS\nantisunward\njets",
+    ]
+    marker = ["^", "o", "x", "+"]
     draw_labels = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(11, 12), sharex=True, sharey=True)
@@ -162,26 +168,27 @@ def fig07_alt():
 
     for n1, runid in enumerate(runids):
         fcs_filtered = np.loadtxt(
-                wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
-                dtype=int,
-            )
+            wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+            dtype=int,
+        )
         ax = ax_flat[n1]
         for n2, kind in enumerate(kinds):
             label_bool = draw_labels[n1]
-            if kind in ["fcs_beam","fcs_foreshock"]:
+            if kind in ["fcs_beam", "fcs_foreshock"]:
                 non_ids = np.loadtxt(
-                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind[4:]),
+                    wrkdir_DNR
+                    + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind[4:]),
                     dtype=int,
                     ndmin=1,
                 )
-                non_ids = np.intersect1d(non_ids,fcs_filtered)
+                non_ids = np.intersect1d(non_ids, fcs_filtered)
             else:
                 non_ids = np.loadtxt(
                     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
-                non_ids = np.setdiff1d(non_ids,fcs_filtered)
+                non_ids = np.setdiff1d(non_ids, fcs_filtered)
             for non_id in non_ids:
                 props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
                 x0, y0, t0 = (
@@ -314,6 +321,7 @@ def fig07_alt():
 
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig07_alt.pdf", dpi=300)
     plt.close(fig)
+
 
 def jet_pos_plot():
     runids = ["AEC", "AEA", "ABC", "ABA"]
@@ -7137,6 +7145,7 @@ def auto_classifier(
     cross_corr_threshold=0.8,
     min_A=0,
     include_fcs=False,
+    radial=False,
 ):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
@@ -7213,6 +7222,8 @@ def auto_classifier(
 
         t0, x0, y0 = tlist[0], xlist[0], ylist[0]
 
+        pos_vecu = np.array([-x0, -y0]) / np.linalg.norm([x0, y0])
+
         propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
             tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
         )
@@ -7226,26 +7237,68 @@ def auto_classifier(
         c = res_arr[12]
         # print(c)
 
-        mod_arg_pvfull = [
-            np.sqrt(propvx_full**2 + propvy_full**2),
-            (np.arctan2(propvy_full, propvx_full) + 2 * np.pi) % (2 * np.pi),
-        ]
-        mod_arg_pv = [
-            np.sqrt(propvx**2 + propvy**2),
-            (np.arctan2(propvy, propvx) + 2 * np.pi) % (2 * np.pi),
-        ]
-        mod_arg_vn = [
-            np.sqrt(vnx**2 + vny**2),
-            (np.arctan2(vny, vnx) + 2 * np.pi) % (2 * np.pi),
-        ]
-        mod_arg_vsc = [
-            np.sqrt(vscx**2 + vscy**2),
-            (np.arctan2(vscy, vscx) + 2 * np.pi) % (2 * np.pi),
-        ]
-        mod_arg_vb = [
-            np.sqrt(vbx**2 + vby**2),
-            (np.arctan2(vby, vbx) + 2 * np.pi) % (2 * np.pi),
-        ]
+        if radial:
+            # mod_arg_pvfull = [
+            #     np.sqrt(propvx_full**2 + propvy_full**2),
+            #     (np.arctan2(propvy_full, propvx_full) + 2 * np.pi) % (2 * np.pi),
+            # ]
+            mod_arg_pv = [
+                np.sqrt(propvx**2 + propvy**2),
+                (
+                    np.arctan2(
+                        np.sqrt(
+                            propvx**2
+                            + propvy**2
+                            - np.dot(pos_vecu, [propvx, propvy]) ** 2
+                        ),
+                        np.dot(pos_vecu, [propvx, propvy]),
+                    )
+                    + 2 * np.pi
+                )
+                % (2 * np.pi),
+            ]
+            # mod_arg_vn = [
+            #     np.sqrt(vnx**2 + vny**2),
+            #     (np.arctan2(vny, vnx) + 2 * np.pi) % (2 * np.pi),
+            # ]
+            mod_arg_vsc = [
+                np.sqrt(vscx**2 + vscy**2),
+                (
+                    np.arctan2(
+                        np.sqrt(
+                            vscx**2 + vscy**2 - np.dot(pos_vecu, [vscx, vscy]) ** 2
+                        ),
+                        np.dot(pos_vecu, [vscx, vscy]),
+                    )
+                    + 2 * np.pi
+                )
+                % (2 * np.pi),
+            ]
+            # mod_arg_vb = [
+            #     np.sqrt(vbx**2 + vby**2),
+            #     (np.arctan2(vby, vbx) + 2 * np.pi) % (2 * np.pi),
+            # ]
+        else:
+            # mod_arg_pvfull = [
+            #     np.sqrt(propvx_full**2 + propvy_full**2),
+            #     (np.arctan2(propvy_full, propvx_full) + 2 * np.pi) % (2 * np.pi),
+            # ]
+            mod_arg_pv = [
+                np.sqrt(propvx**2 + propvy**2),
+                (np.arctan2(propvy, propvx) + 2 * np.pi) % (2 * np.pi),
+            ]
+            # mod_arg_vn = [
+            #     np.sqrt(vnx**2 + vny**2),
+            #     (np.arctan2(vny, vnx) + 2 * np.pi) % (2 * np.pi),
+            # ]
+            mod_arg_vsc = [
+                np.sqrt(vscx**2 + vscy**2),
+                (np.arctan2(vscy, vscx) + 2 * np.pi) % (2 * np.pi),
+            ]
+            # mod_arg_vb = [
+            #     np.sqrt(vbx**2 + vby**2),
+            #     (np.arctan2(vby, vbx) + 2 * np.pi) % (2 * np.pi),
+            # ]
 
         if (
             ~np.isnan(mod_arg_vsc[0])
