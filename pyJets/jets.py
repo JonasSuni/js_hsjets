@@ -161,6 +161,7 @@ from papu_2 import (
     filter_fcs_jets,
     kind_size_hist,
     fig02_alt,
+    fig07_alt,
 )
 
 from jet_23_scripts import (
