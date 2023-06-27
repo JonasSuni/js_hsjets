@@ -6398,6 +6398,379 @@ def timing_comp(vlim=1.3):
     plt.close(fig)
 
 
+def fig02_alt(vlim=1.3):
+    vsws = [750, 600, 750, 600]
+
+    nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
+    Bsws = [5.0e-9, 5.0e-9, 10.0e-9, 10.0e-9]
+
+    kinds = ["beam", "foreshock", "fcs_beam", "fcs_foreshock"]
+    kind_labels = [
+        "Non-FCS\nflankward jets",
+        "Non-FCS\nantisunward jets",
+        "FCS\nflankward jets",
+        "FCS\nantisunward jets",
+    ]
+    annot = ["(a)", "(b)", "(c)", "(d)"]
+    arrow_labels = [
+        "$v_\mathrm{n}$",
+        "$v_\mathrm{SC}$",
+        # "$v_{\\langle \mathrm{SC} \\rangle}$",
+        "$v_\mathrm{bulk}$",
+        # "$v_\mathrm{A}$",
+    ]
+    ylabels = [
+        "$\\rho~[\\rho_\mathrm{sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$T~[T_\mathrm{sw}]$",
+        "$T_{core}~[T_\mathrm{sw}]$",
+    ]
+
+    vsc_counter = [0] * len(kinds)
+    vtr_counter = [0] * len(kinds)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((len(kinds), 3, len(ylabels) + 6 + 1, fnr_arr.size), dtype=float)
+    timing_arrs = np.zeros((len(kinds), fnr_arr.size, 1000), dtype=float)
+    alfven_arrs = np.zeros((len(kinds), 1000), dtype=float)
+    sonic_arrs = np.zeros((len(kinds), 1000), dtype=float)
+    special_arrs = np.zeros((len(kinds), 1000), dtype=float)
+    propv_arrs = np.zeros((len(kinds), 2, 1000), dtype=float)
+    propv_arrs_full = np.zeros((3, 2, 1000), dtype=float)
+    # ts_avg_arr = np.zeros((3, 12, fnr_arr.size))
+    # vax_avg_arr = np.zeros((3, fnr_arr.size))
+    # vay_avg_arr = np.zeros((3, fnr_arr.size))
+    counters = [0] * len(kinds)
+
+    for idx, kind in enumerate(kinds):
+        for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
+            vsw = vsws[idx2]
+            Bsw = Bsws[idx2]
+            nsw = nsws[idx2]
+            Tsw = 0.5e6
+            fcs_filtered = np.loadtxt(
+                wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                dtype=int,
+            )
+            if kind in ["fcs_beam", "fcs_antisunward"]:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind[4:]),
+                    dtype=int,
+                    ndmin=1,
+                )
+                non_ids = np.intersect1d(non_ids, fcs_filtered)
+            else:
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+                    dtype=int,
+                    ndmin=1,
+                )
+                non_ids = np.setdiff1d(non_ids, fcs_filtered)
+            for non_id in non_ids:
+                # ts_data = np.loadtxt(
+                #     wrkdir_DNR
+                #     + "papu22/timeseries_txts/{}_{}.txt".format(
+                #         runid, str(non_id).zfill(5)
+                #     )
+                # )
+                data_arr = np.load(
+                    wrkdir_DNR
+                    + "papu22/trifecta_txts/{}_{}.npy".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                tlist, xlist, ylist = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/jet_prop_v_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                ).T
+                if kind == "beam" and runid == "AEA" and non_id == 920:
+                    special_arrs[idx, counters[idx]] = 1
+                elif kind == "foreshock" and runid == "ABC" and non_id == 153:
+                    special_arrs[idx, counters[idx]] = 1
+
+                t0, x0, y0 = tlist[0], xlist[0], ylist[0]
+
+                propvx = (xlist[tlist - t0 < 2.5][-1] - x0) / (
+                    tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+                )
+                propvy = (ylist[tlist - t0 < 2.5][-1] - y0) / (
+                    tlist[tlist - t0 < 2.5][-1] - t0 + 1e-27
+                )
+                propvx_full = (xlist[-1] - x0) / (tlist[-1] - t0 + 1e-27)
+                propvy_full = (ylist[-1] - y0) / (tlist[-1] - t0 + 1e-27)
+
+                # propvx = np.array(propvx, ndmin=1)
+                # propvy = np.array(propvy, ndmin=1)
+
+                propv_arrs[idx, :, counters[idx]] = [
+                    propvx / vsw,
+                    propvy / vsw,
+                ]
+                propv_arrs_full[idx, :, counters[idx]] = [
+                    propvx_full / vsw,
+                    propvy_full / vsw,
+                ]
+                # print(data_arr[:, -1, :8])
+                c = data_arr[0, -1, 12]
+                data_arr[:, 6:, :] /= vsw
+                # ts_avg_arr[idx] = ts_avg_arr[idx] + ts_data
+                # vax_avg_arr[idx] = (
+                #     vax_avg_arr[idx]
+                #     + ts_data[6, :]
+                #     * Bsw
+                #     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
+                #     / vsw
+                #     / 1.0e3
+                # )
+                # vay_avg_arr[idx] = (
+                #     vay_avg_arr[idx]
+                #     + ts_data[7, :]
+                #     * Bsw
+                #     / np.sqrt(m_p * mu0 * ts_data[0, :] * nsw)
+                #     / vsw
+                #     / 1.0e3
+                # )
+                ch_mask = data_arr[1, 5, :] >= 3
+                timing_arrs[idx, :, counters[idx]] = data_arr[0, -1, :]
+                if c < 0.8:
+                    timing_arrs[idx, [0, 1, 2, 3], counters[idx]] = np.nan
+                alfven_arrs[idx, counters[idx]] = np.nanmean(
+                    Bsw
+                    * data_arr[1, 1, :][ch_mask]
+                    / np.sqrt(mu0 * m_p * nsw * data_arr[1, 0, :][ch_mask])
+                ) / (vsw * 1e3)
+                sonic_arrs[idx, counters[idx]] = np.nanmean(
+                    np.sqrt(5.0 / 3 * kb * Tsw * data_arr[1, 4, :][ch_mask] / m_p)
+                ) / (vsw * 1e3)
+
+                avg_arr[idx] = avg_arr[idx] + data_arr
+                counters[idx] += 1
+
+    for idx, kind in enumerate(kinds):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+        # vax_avg_arr[idx] = vax_avg_arr[idx] / counters[idx]
+        # vay_avg_arr[idx] = vay_avg_arr[idx] / counters[idx]
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(18, 18))
+    magnetosonic_arrs = np.sqrt(alfven_arrs**2 + sonic_arrs**2)
+    vx_all = []
+    vy_all = []
+    vms_all = []
+    ax_flat = ax_list.flatten()
+    for idx, ax in enumerate(ax_flat):
+        ax.set_title("{}".format(kind_labels[idx]), fontsize=32, pad=10)
+        avg_res = avg_arr[idx, 0, -1]
+        # print(avg_res)
+        a_med = np.nanmedian(alfven_arrs[idx, : counters[idx]])
+        ms_med = np.nanmedian(magnetosonic_arrs[idx, : counters[idx]])
+        circ_xy = np.array(
+            [(np.cos(theta), np.sin(theta)) for theta in np.arange(0, np.pi * 2, 0.01)]
+        )
+        ms_xy = circ_xy * ms_med
+        # vms_all = vms_all + [ms_med]
+        a_xy = circ_xy * a_med
+        ax.plot(
+            ms_xy.T[0],
+            ms_xy.T[1],
+            color="k",
+            linestyle="dashed",
+            label="$v_\mathrm{MS}$",
+        )
+        ax.plot(
+            a_xy.T[0],
+            a_xy.T[1],
+            color=CB_color_cycle[3],
+            linestyle="dashed",
+            label="$v_\mathrm{A}$",
+        )
+
+        vx = [
+            # avg_res[0],
+            # avg_res[2],
+            # avg_res[4],
+            # avg_res[6],
+            np.nanmedian(timing_arrs[idx, 0, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 2, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 4, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 6, : counters[idx]]),
+        ]
+        vy = [
+            # avg_res[1],
+            # avg_res[3],
+            # avg_res[5],
+            # avg_res[7],
+            np.nanmedian(timing_arrs[idx, 1, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 3, : counters[idx]]),
+            np.nanmedian(timing_arrs[idx, 5, : counters[idx]]),
+            # np.nanmedian(timing_arrs[idx, 7, : counters[idx]]),
+        ]
+        vx_all = vx_all + vx
+        vy_all = vy_all + vy
+
+        # ax.quiver(
+        #     0,
+        #     0,
+        #     np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
+        #     np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
+        #     color=CB_color_cycle[6],
+        #     label="$v_\mathrm{tr,full}$",
+        #     angles="xy",
+        #     scale_units="xy",
+        #     scale=1,
+        #     zorder=2,
+        # )
+        for idx2 in range(1, len(vx)):
+            ax.quiver(
+                0,
+                0,
+                vx[idx2],
+                vy[idx2],
+                color=CB_color_cycle[idx2],
+                label=arrow_labels[idx2],
+                angles="xy",
+                scale_units="xy",
+                scale=1,
+                zorder=1,
+                linewidth=1,
+                edgecolor="k",
+            )
+            if idx2 != 2:
+                for n in range(counters[idx]):
+                    vx_one = timing_arrs[idx, :, n][2 * idx2]
+                    vy_one = timing_arrs[idx, :, n][2 * idx2 + 1]
+                    if np.max([np.abs(vx_one), np.abs(vy_one)]) > vlim:
+                        vsc_counter[idx] += 1
+                    # vx_all = vx_all + [vx_one]
+                    # vy_all = vy_all + [vy_one]
+                    if special_arrs[idx, n] == 1.0:
+                        ax.plot(
+                            vx_one,
+                            vy_one,
+                            "*",
+                            color=CB_color_cycle[idx2],
+                            alpha=1,
+                            zorder=3,
+                            markersize=20,
+                            mec="k",
+                            mew=1,
+                        )
+                    else:
+                        ax.plot(
+                            vx_one,
+                            vy_one,
+                            "^",
+                            color=CB_color_cycle[idx2],
+                            alpha=0.5,
+                            zorder=0,
+                            markersize=10,
+                        )
+        for n in range(counters[idx]):
+            if (
+                np.max([np.abs(propv_arrs[idx, 0, n]), np.abs(propv_arrs[idx, 1, n])])
+                > vlim
+            ):
+                vtr_counter[idx] += 1
+            if special_arrs[idx, n] == 1.0:
+                ax.plot(
+                    propv_arrs[idx, 0, n],
+                    propv_arrs[idx, 1, n],
+                    "*",
+                    color=CB_color_cycle[0],
+                    alpha=1,
+                    zorder=3,
+                    markersize=20,
+                    mec="k",
+                    mew=1,
+                )
+            else:
+                ax.plot(
+                    propv_arrs[idx, 0, n],
+                    propv_arrs[idx, 1, n],
+                    "o",
+                    color=CB_color_cycle[0],
+                    alpha=0.5,
+                    zorder=0,
+                    markersize=10,
+                )
+            # vx_all = vx_all + [propv_arrs[idx, 0, n]]
+            # vy_all = vy_all + [propv_arrs[idx, 1, n]]
+        ax.quiver(
+            0,
+            0,
+            np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
+            np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
+            color=CB_color_cycle[0],
+            label="$v_\mathrm{tr}$",
+            angles="xy",
+            scale_units="xy",
+            scale=1,
+            zorder=2,
+            linewidth=1,
+            edgecolor="k",
+        )
+        # ax.set_xlim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
+        # ax.set_ylim(-1.1 * np.nanmax(np.abs(vx_all+vy_all)), 1.1 * np.nanmax(np.abs(vx_all+vy_all)))
+        # ax.set_xlim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        # ax.set_ylim(-1.0 - np.nanmax(vms_all), 1.0 + np.nanmax(vms_all))
+        ax.set_xlim(-vlim, vlim)
+        ax.set_ylim(-vlim, vlim)
+        ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
+        ax.set_ylabel("$v_y$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        if idx == 1:
+            ax.legend(fontsize=24, loc="lower right")
+            lhand, llab = ax.get_legend_handles_labels()
+            order = [2, 4, 3, 0, 1]
+            # ax.legend(
+            #     [lhand[idx3] for idx3 in order],
+            #     [llab[idx3] for idx3 in order],
+            #     fontsize=24,
+            #     loc="lower right",
+            # )
+            ax.legend(
+                [lhand[idx3] for idx3 in order],
+                [llab[idx3] for idx3 in order],
+                fontsize=24,
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.15),
+                ncols=3,
+            )
+        ax.set_xlabel("$v_x$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        ax.tick_params(labelsize=20)
+        ax.grid()
+        ax.set_aspect("equal")
+
+    # for ax in ax_flat[1:]:
+    #     ax.set_xlim(
+    #         -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #         1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #     )
+    #     ax.set_ylim(
+    #         -1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #         1.1 * np.nanmax(np.abs(vx_all + vy_all)),
+    #     )
+
+    plt.tight_layout()
+    fig.savefig(
+        wrkdir_DNR + "papu22/Figures/fig02_fullset.pdf",
+        dpi=300,
+    )
+    # fig.savefig(
+    #     wrkdir_DNR + "papu22/Figures/fig02.png",
+    #     dpi=300,
+    # )
+
+    print("\n VSC outliers:")
+    print(vsc_counter)
+    print("\n Vtr outliers:")
+    print(vtr_counter)
+
+    plt.close(fig)
+
+
 def weighted_propagation_velocity(runid, kind="non"):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
