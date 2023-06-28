@@ -639,7 +639,7 @@ def filter_fcs_jets(runid, Bthresh=1.5):
     )
 
 
-def get_fcs_jets(runid):
+def get_fcs_jets(runid, minA=1):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     fcs_ids = []
@@ -655,6 +655,9 @@ def get_fcs_jets(runid):
             continue
 
         if props.read("time")[0] == 290.0:
+            continue
+
+        if props.read_at_amax("Nr_cells") < minA:
             continue
 
         if props.read("time")[-1] - props.read("time")[0] == 0:
@@ -674,7 +677,7 @@ def get_fcs_jets(runid):
     return np.unique(fcs_ids)
 
 
-def get_non_jets(runid):
+def get_non_jets(runid, minA=1):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     non_ids = []
@@ -691,6 +694,9 @@ def get_non_jets(runid):
             continue
 
         if props.read("time")[0] == 290.0:
+            continue
+
+        if props.read_at_amax("Nr_cells") < minA:
             continue
 
         if props.read("time")[-1] - props.read("time")[0] == 0:
@@ -4549,7 +4555,7 @@ def expr_rhoratio(pass_maps):
     return rho_st / (rho_st + rho_th + 1e-27)
 
 
-def fig0(runid="ABC", jetid=596):
+def fig0(runid="ABC", jetid=596, minA=1):
     var = "Pdyn"
     vscale = 1e9
     vmax = 1.5
@@ -4567,8 +4573,8 @@ def fig0(runid="ABC", jetid=596):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    non_ids = get_non_jets(runid)
-    sj_ids = get_fcs_jets(runid)
+    non_ids = get_non_jets(runid, minA=minA)
+    sj_ids = get_fcs_jets(runid, minA=minA)
 
     sj_ids_g = sj_ids
     non_ids_g = non_ids
@@ -4886,7 +4892,7 @@ def jet_var_plotter(runid, var):
         plt.close(fig)
 
 
-def non_jet_omni(runid, only_man_figs=True):
+def non_jet_omni(runid, only_man_figs=True, minA=1):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     runids_pub = ["HM30", "HM05", "LM30", "LM05"]
 
@@ -4897,8 +4903,8 @@ def non_jet_omni(runid, only_man_figs=True):
 
     bulkpath = jx.find_bulkpath(runid)
 
-    non_ids = get_non_jets(runid)
-    sj_ids = get_fcs_jets(runid)
+    non_ids = get_non_jets(runid, minA=minA)
+    sj_ids = get_fcs_jets(runid, minA=minA)
 
     sj_ids_g = sj_ids
     non_ids_g = non_ids
@@ -5397,7 +5403,7 @@ def non_jet_omni(runid, only_man_figs=True):
         plt.close(fig)
 
 
-def jmap_SEA_comp(run_id="all", full_set=False):
+def jmap_SEA_comp(run_id="all", full_set=False, minA=1):
     if run_id == "all":
         runid_list = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -5435,7 +5441,7 @@ def jmap_SEA_comp(run_id="all", full_set=False):
     data_avg = np.zeros((len(kinds), 7, XmeshXY.shape[0], XmeshXY.shape[1]))
 
     for runid in runid_list:
-        fcs_ids = get_fcs_jets(runid)
+        fcs_ids = get_fcs_jets(runid, minA=minA)
         for idx, kind in enumerate(kinds):
             if kind == "fcs":
                 # non_ids = get_fcs_jets(runid)
@@ -6057,7 +6063,7 @@ def SEA_timeseries_comp(full_set=False):
     plt.close(fig)
 
 
-def kinds_pca():
+def kinds_pca(minA=1):
     var_names = np.array(
         [
             "rho",
@@ -6087,7 +6093,7 @@ def kinds_pca():
     for idx, kind in enumerate(kinds):
         for idx2, runid in enumerate(["ABA", "ABC", "AEA", "AEC"]):
             if kind == "fcs":
-                non_ids = get_fcs_jets(runid)
+                non_ids = get_fcs_jets(runid, minA=minA)
             else:
                 non_ids = np.loadtxt(
                     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
@@ -6274,7 +6280,7 @@ def kinds_pca():
             )
 
 
-def timing_comp(vlim=1.3):
+def timing_comp(vlim=1.3, minA=1):
     vsws = [750, 600, 750, 600]
 
     nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
@@ -6321,14 +6327,14 @@ def timing_comp(vlim=1.3):
             nsw = nsws[idx2]
             Tsw = 0.5e6
             if kind == "fcs":
-                non_ids = get_fcs_jets(runid)
+                non_ids = get_fcs_jets(runid, minA=minA)
             else:
                 non_ids = np.loadtxt(
                     wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
                     dtype=int,
                     ndmin=1,
                 )
-                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
+                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid, minA=minA))
             for non_id in non_ids:
                 # ts_data = np.loadtxt(
                 #     wrkdir_DNR
@@ -7042,7 +7048,7 @@ def fig02_alt(vlim=1.3):
     plt.close(fig)
 
 
-def weighted_propagation_velocity(runid, kind="non"):
+def weighted_propagation_velocity(runid, kind="non", minA=1):
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
     rho_sw = [1e6, 3.3e6, 1e6, 3.3e6]
@@ -7053,9 +7059,9 @@ def weighted_propagation_velocity(runid, kind="non"):
     bulkpath = jx.find_bulkpath(runid)
 
     if kind == "non":
-        jet_ids = get_non_jets(runid)
+        jet_ids = get_non_jets(runid, minA=minA)
     elif kind == "fcs":
-        jet_ids = get_fcs_jets(runid)
+        jet_ids = get_fcs_jets(runid, minA=minA)
 
     for jetid in jet_ids:
         print("Jet {} in run {}".format(jetid, runid))
@@ -7123,7 +7129,7 @@ def weighted_propagation_velocity(runid, kind="non"):
         )
 
 
-def jet_counter(runid="all", cc_thresh=0.8):
+def jet_counter(runid="all", cc_thresh=0.8, minA=1):
     if runid == "all":
         runids = ["ABA", "ABC", "AEA", "AEC"]
     else:
@@ -7136,8 +7142,8 @@ def jet_counter(runid="all", cc_thresh=0.8):
 
     for run_id in runids:
         antisunward, flankward = auto_classifier(run_id, cross_corr_threshold=cc_thresh)
-        fcs_jets = get_fcs_jets(run_id)
-        non_jets = get_non_jets(run_id)
+        fcs_jets = get_fcs_jets(run_id, minA=minA)
+        non_jets = get_non_jets(run_id, minA=minA)
 
         flank_counter += len(flankward)
         antisunward_counter += len(antisunward)
@@ -7157,7 +7163,7 @@ def auto_classifier(
     runid,
     threshold_angle=np.pi / 4,
     cross_corr_threshold=0.8,
-    min_A=0,
+    min_A=1,
     include_fcs=False,
     radial=False,
 ):
@@ -7169,9 +7175,9 @@ def auto_classifier(
     pdyn_sw = pdyn_sws[runids.index(runid)]
     v_sw_run = v_sw[runids.index(runid)] / 1e3
 
-    non_ids = get_non_jets(runid)
+    non_ids = get_non_jets(runid, minA=min_A)
     if include_fcs:
-        non_ids = np.append(non_ids, get_fcs_jets(runid))
+        non_ids = np.append(non_ids, get_fcs_jets(runid, minA=min_A))
 
     flankward_list = []
     antisunward_list = []
@@ -7318,7 +7324,7 @@ def auto_classifier(
             # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) < threshold_angle
             and c >= cross_corr_threshold
-            and props.read_at_amax("Nr_cells") > min_A
+            and props.read_at_amax("Nr_cells") >= min_A
         ):
             antisunward_list.append(non_id)
             antisunward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -7328,7 +7334,7 @@ def auto_classifier(
             # and mod_arg_vsc[0] < v_sw_run
             and np.abs(mod_arg_vsc[1] - np.pi) >= threshold_angle
             and c >= cross_corr_threshold
-            and props.read_at_amax("Nr_cells") > min_A
+            and props.read_at_amax("Nr_cells") >= min_A
         ):
             flankward_list.append(non_id)
             flankward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -7337,7 +7343,7 @@ def auto_classifier(
             ~np.isnan(mod_arg_pv[0])
             # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) < threshold_angle
-            and props.read_at_amax("Nr_cells") > min_A
+            and props.read_at_amax("Nr_cells") >= min_A
         ):
             antisunward_list.append(non_id)
             antisunward_max_size.append(props.read_at_amax("Nr_cells"))
@@ -7346,7 +7352,7 @@ def auto_classifier(
             ~np.isnan(mod_arg_pv[0])
             # and mod_arg_pv[0] < v_sw_run
             and np.abs(mod_arg_pv[1] - np.pi) >= threshold_angle
-            and props.read_at_amax("Nr_cells") > min_A
+            and props.read_at_amax("Nr_cells") >= min_A
         ):
             flankward_list.append(non_id)
             flankward_max_size.append(props.read_at_amax("Nr_cells"))
