@@ -323,7 +323,7 @@ def fig07_alt():
     plt.close(fig)
 
 
-def jet_pos_plot():
+def jet_pos_plot(minA=1):
     runids = ["AEC", "AEA", "ABC", "ABA"]
     runid_labels = ["LM05", "LM30", "HM05", "HM30"]
     rect_anchor = [(6, -6), (6, -8), (6, -6), (6, -8)]
@@ -478,7 +478,7 @@ def jet_pos_plot():
                             alpha=0.7,
                         )
         label_bool = draw_labels[n1]
-        fcs_jet_ids = get_fcs_jets(runid)
+        fcs_jet_ids = get_fcs_jets(runid,minA=minA)
         for sj_id in fcs_jet_ids:
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
             x0, y0, t0 = (
