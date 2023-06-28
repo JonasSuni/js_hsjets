@@ -427,6 +427,7 @@ def jet_pos_plot():
                 dtype=int,
                 ndmin=1,
             )
+            non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
             for non_id in non_ids:
                 props = jio.PropReader(str(non_id).zfill(5), runid, transient="jet")
                 x0, y0, t0 = (
@@ -6327,6 +6328,7 @@ def timing_comp(vlim=1.3):
                     dtype=int,
                     ndmin=1,
                 )
+                non_ids = np.setdiff1d(non_ids, get_fcs_jets(runid))
             for non_id in non_ids:
                 # ts_data = np.loadtxt(
                 #     wrkdir_DNR
