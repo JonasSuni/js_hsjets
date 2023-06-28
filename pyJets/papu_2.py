@@ -478,7 +478,7 @@ def jet_pos_plot(minA=1):
                             alpha=0.7,
                         )
         label_bool = draw_labels[n1]
-        fcs_jet_ids = get_fcs_jets(runid,minA=minA)
+        fcs_jet_ids = get_fcs_jets(runid, minA=minA)
         for sj_id in fcs_jet_ids:
             props = jio.PropReader(str(sj_id).zfill(5), runid, transient="jet")
             x0, y0, t0 = (
@@ -596,10 +596,10 @@ def jet_pos_plot(minA=1):
     plt.close(fig)
 
 
-def filter_fcs_jets(runid, Bthresh=1.5):
+def filter_fcs_jets(runid, Bthresh=1.5, minA=1):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     Bimf = [5e-9, 5e-9, 10e-9, 10e-9][runids.index(runid)]
-    fcs_ids = get_fcs_jets(runid)
+    fcs_ids = get_fcs_jets(runid, minA=minA)
     filtered_ids = []
     bulkpath = jx.find_bulkpath(runid)
 
