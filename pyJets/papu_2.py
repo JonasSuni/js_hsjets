@@ -4023,9 +4023,10 @@ def jet_vdf_profile_plotter(runid):
 
     vdf_cells = cellids[fsaved == 1]
 
-    asw_list, fw_list = auto_classifier(runid)
-    jet_ids = asw_list + fw_list
+    # asw_list, fw_list = auto_classifier(runid)
+    # jet_ids = asw_list + fw_list
     # jet_ids = np.append(np.array(jet_ids, dtype=int), get_fcs_jets(runid))
+    jet_ids = np.append(get_non_jets(runid), get_fcs_jets(runid))
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
     runid_g = runid
