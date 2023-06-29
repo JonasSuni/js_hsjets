@@ -5710,13 +5710,15 @@ def calc_conv_ExB(v, B):
 def kind_size_hist():
     runids = ["ABA", "ABC", "AEA", "AEC"]
 
-    kinds = ["beam", "foreshock", "fcs_beam", "fcs_foreshock"]
-    kind_labels = [
-        "Non-FCS\nflankward jets",
-        "Non-FCS\nantisunward jets",
-        "FCS\nflankward jets",
-        "FCS\nantisunward jets",
-    ]
+    # kinds = ["beam", "foreshock", "fcs_beam", "fcs_foreshock"]
+    # kind_labels = [
+    #     "Non-FCS\nflankward jets",
+    #     "Non-FCS\nantisunward jets",
+    #     "FCS\nflankward jets",
+    #     "FCS\nantisunward jets",
+    # ]
+    kinds = ["beam", "foreshock", "fcs"]
+    kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
 
     sizes = [[], [], [], []]
 
@@ -5735,11 +5737,16 @@ def kind_size_hist():
             dtype=int,
             ndmin=1,
         )
+        # kind_ids = [
+        #     np.setdiff1d(flankward_ids, fcs_ids),
+        #     np.setdiff1d(antisunward_ids, fcs_ids),
+        #     np.intersect1d(flankward_ids, fcs_ids),
+        #     np.intersect1d(antisunward_ids, fcs_ids),
+        # ]
         kind_ids = [
             np.setdiff1d(flankward_ids, fcs_ids),
             np.setdiff1d(antisunward_ids, fcs_ids),
-            np.intersect1d(flankward_ids, fcs_ids),
-            np.intersect1d(antisunward_ids, fcs_ids),
+            fcs_ids,
         ]
 
         for idx in range(len(kinds)):
