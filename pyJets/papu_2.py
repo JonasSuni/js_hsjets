@@ -4010,7 +4010,7 @@ def vspace_reducer(vlsvobj, cellid, operator):
     return (hist, bin_edges)
 
 
-def jet_vdf_profile_plotter(runid):
+def jet_vdf_profile_plotter(runid, skip=[]):
     runids = ["ABA", "ABC", "AEA", "AEC"]
     pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
     bulkpath = jx.find_bulkpath(runid)
@@ -4050,6 +4050,8 @@ def jet_vdf_profile_plotter(runid):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for jet_id in jet_ids:
+        if jet_id in skip:
+            continue
         props = jio.PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
         jet_cells = props.get_cells()
