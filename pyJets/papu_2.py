@@ -5760,14 +5760,14 @@ def kind_size_hist():
         1, len(kinds), figsize=(12, 5), constrained_layout=True, sharey=True
     )
     for idx in range(len(kinds)):
-        ax_list[idx].hist(sizes[idx], histtype="step", range=(1, 10), bins=9)
+        ax_list[idx].hist(sizes[idx], histtype="step", range=(1, 20), bins=19)
         ax_list[idx].grid()
         ax_list[idx].set_title(
             kind_labels[idx] + "\nN = {}".format(len(sizes[idx])), pad=10
         )
         ax_list[idx].set_ylabel("N counts")
         ax_list[idx].set_xlabel("N cells max")
-        ax_list[idx].set_xlim(1, 10)
+        ax_list[idx].set_xlim(1, 20)
     for ax in ax_list:
         ax.label_outer()
 
