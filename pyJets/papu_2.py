@@ -5765,13 +5765,13 @@ def kind_size_hist():
             histtype="step",
             range=(1, 20),
             bins=19,
-            weights=np.ones(len(sizes[idx]), dtype=float) * (1.0 / len(sizes[idx])),
+            weights=np.ones(len(sizes[idx]), dtype=float) * (100.0 / len(sizes[idx])),
         )
         ax_list[idx].grid()
         ax_list[idx].set_title(
             kind_labels[idx] + "\nN = {}".format(len(sizes[idx])), pad=10
         )
-        ax_list[idx].set_ylabel("Fraction of jets")
+        ax_list[idx].set_ylabel("\% of jets")
         ax_list[idx].set_xlabel("N cells max")
         ax_list[idx].set_xlim(1, 20)
         ax_list[idx].set_xticks(np.arange(2, 21, 2))
