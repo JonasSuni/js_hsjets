@@ -162,6 +162,7 @@ from papu_2 import (
     kind_size_hist,
     fig02_alt,
     fig07_alt,
+    SEA_timeseries_comp_violin,
 )
 
 from jet_23_scripts import (

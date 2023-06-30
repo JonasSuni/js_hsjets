@@ -7416,3 +7416,285 @@ def auto_classifier(
     )
 
     return (antisunward_list, flankward_list)
+
+
+def SEA_timeseries_comp_violin(full_set=False):
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$|v_{yz}|$",
+        "$|v|$",
+        None,
+        "$|B_x|$",
+        "$|B_{yz}|$",
+        "$|B|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$n~[n_\mathrm{sw}]$",
+        "$v~[v_\mathrm{sw}]$",
+        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        "$B~[B_\mathrm{IMF}]$",
+        "$T~[T_\mathrm{sw}]$",
+    ]
+    vmins = [0.2, -1.1, 0, -0.5, 0]
+    vmaxs = [7, 1.1, 2.3, 5, 55]
+    plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
+    offsets = np.array([0, -0.2, 0.2, 0, 0, -0.2, 0.2, 0, 0, -0.2]) - 0.1
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    if full_set:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
+            ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
+            ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
+            ["(s)", "(t)", "(u)", "(v)", "(w)", "(x)"],
+            ["(y)", "(z)", "(aa)", "(ab)", "(ac)", "(ad)"],
+        ]
+    else:
+        annot = [
+            ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"],
+            ["(g)", "(h)", "(i)", "(j)", "(k)", "(l)"],
+            ["(m)", "(n)", "(o)", "(p)", "(q)", "(r)"],
+        ]
+
+    if full_set:
+        kinds = [
+            "beam",
+            "foreshock",
+            # "fcs",
+            "fcs_beam",
+            "fcs_foreshock",
+        ]
+        kind_labels = [
+            "Non-FCS\nflankward jets",
+            "Non-FCS\nantisunward jets",
+            # "FCS-jets",
+            "FCS\nflankward jets",
+            "FCS\nantisunward jets",
+        ]
+    else:
+        kinds = ["beam", "foreshock", "fcs"]
+        kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    vsw = [750e3, 600e3, 750e3, 600e3]
+    Bsw = [5e-9, 5e-9, 10e-9, 10e-9]
+    t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
+    Tani_avg_arr = np.zeros((len(kinds), fnr_arr.size), dtype=float)
+    epoch_mag_arr = np.empty((len(kinds), len(plot_labels), 3, 1000), dtype=float)
+    # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
+    # print(epoch_mag_arr.shape)
+    epoch_mag_arr.fill(np.nan)
+    counters = [0] * len(kinds)
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        for idx, kind in enumerate(kinds):
+            # run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            # run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            if kind == "fcs":
+                # non_ids = get_fcs_jets(runid)
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                    dtype=int,
+                )
+            else:
+                if kind in ["fcs_beam", "fcs_foreshock"]:
+                    k2 = kind[4:]
+                else:
+                    k2 = kind
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, k2),
+                    dtype=int,
+                    ndmin=1,
+                )
+            if kind in ["fcs_beam", "fcs_foreshock"]:
+                non_ids = np.intersect1d(
+                    non_ids,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
+            elif kind in ["beam", "foreshock"]:
+                non_ids = np.setdiff1d(
+                    non_ids,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
+            for non_id in non_ids:
+                data_arr = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/timeseries_yz_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                if np.isnan(data_arr).any():
+                    continue
+                data_arr[5, :] = np.abs(data_arr[5, :])  # Use |Bx| instead of Bx
+                avg_arr[idx] = avg_arr[idx] + data_arr
+                Tani_avg_arr[idx] = (
+                    Tani_avg_arr[idx] + data_arr[-1, :] / data_arr[-2, :]
+                )
+                # print(data_arr.shape)
+                # epoch_mag_arr[idx, :, counters[idx]] = data_arr[:, 20][[0, 4, 5, 9]]
+                epoch_mag_arr[idx, :, :, counters[idx]] = data_arr[:, 7::13]
+                # data_v = run_vsw * data_arr[[1, 2, 3], :].T
+                # data_B = run_Bsw * data_arr[[6, 7, 8], :].T
+                # v_conv_ExB[idx] = (
+                #     v_conv_ExB[idx] + (1.0 / run_vsw) * calc_conv_ExB(data_v, data_B).T
+                # )
+                counters[idx] += 1
+
+    for idx in range(len(kinds)):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+        Tani_avg_arr[idx] = Tani_avg_arr[idx] / counters[idx]
+        # v_conv_ExB[idx] = v_conv_ExB[idx] / counters[idx]
+
+    means = np.mean(avg_arr, axis=-1)
+    epochval = avg_arr[:, :, 20]
+
+    means_max_arr = np.array([means, epochval])
+    np.save(wrkdir_DNR + "papu22/SEA_timeseries_mean_max", means_max_arr)
+
+    T_ani = np.zeros((len(kinds), 3, 1000), dtype=float)
+    for idx in range(len(kinds)):
+        T_ani[idx, :, : counters[idx]] = (
+            epoch_mag_arr[idx, -1, :, : counters[idx]]
+            / epoch_mag_arr[idx, -2, :, : counters[idx]]
+        )
+
+    if full_set:
+        fig, ax_list = plt.subplots(
+            len(ylabels) + 1,
+            len(kinds),
+            sharex=True,
+            figsize=(32, 24),
+            constrained_layout=True,
+        )
+    else:
+        fig, ax_list = plt.subplots(
+            len(ylabels) + 1,
+            len(kinds),
+            sharex=True,
+            figsize=(25, 24),
+            constrained_layout=True,
+        )
+    for idx2, kind in enumerate(kinds):
+        ax_list[0][idx2].set_title(
+            "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
+            fontsize=40,
+            pad=10,
+        )
+        for idx in range(len(plot_labels)):
+            ax = ax_list[plot_index[idx]][idx2]
+            ax.plot(
+                t_arr,
+                avg_arr[idx2, idx],
+                color=plot_colors[idx],
+                label=plot_labels[idx],
+                linewidth=2,
+            )
+            # if idx in [1, 2, 3]:
+            #     ax.plot(
+            #         t_arr,
+            #         v_conv_ExB[idx2, idx - 1],
+            #         color=plot_colors[idx],
+            #         linewidth=2,
+            #         linestyle="dashed",
+            #     )
+            ax.violinplot(
+                epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
+                # positions=[0],
+                positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
+                widths=1.0,
+                quantiles=[0.25, 0.75],
+                bw_method="scott",
+            )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if draw_legend[idx] and idx2 == len(kinds) - 1:
+                # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=24)
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
+        for idx, ax in enumerate(ax_list[:-1, idx2]):
+            ax.grid()
+            # ax.set_xticks(np.arange(-10, 10.1, 2.5))
+            ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
+            # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
+            ax.tick_params(labelsize=22)
+            if idx2 == 0:
+                ax.set_ylabel(ylabels[idx], fontsize=40, labelpad=10)
+            # ax.axvline(0, linestyle="dashed")
+            ax.set_ylim(vmins[idx], vmaxs[idx])
+            ax.annotate(
+                annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
+            )
+    for idx2, kind in enumerate(kinds):
+        ax = ax_list[-1][idx2]
+        ax.plot(
+            t_arr,
+            Tani_avg_arr[idx2],
+            color="k",
+            # label="$T_\perp/T_\parallel$",
+            linewidth=2,
+        )
+        ax.violinplot(
+            T_ani[idx2, :, : counters[idx2]].T,
+            # positions=[0],
+            positions=np.arange(-6.5, 7.5, 6.5) - 0.1,
+            manage_ticks=False,
+            widths=1.0,
+            quantiles=[0.25, 0.75],
+            bw_method="scott",
+        )
+        ax.grid()
+        # ax.set_xticks(np.arange(-10, 10.1, 2.5))
+        ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
+        # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
+        ax.tick_params(labelsize=22)
+        if idx2 == 0:
+            ax.set_ylabel("$T_\perp/T_\parallel$", fontsize=40, labelpad=10)
+        # ax.axvline(0, linestyle="dashed")
+        ax.set_ylim(0, 4)
+        ax.annotate(
+            annot[idx2][-1], (0.05, 0.85), xycoords="axes fraction", fontsize=32
+        )
+    for ax in ax_list.flat:
+        ax.label_outer()
+    # plt.tight_layout()
+    if full_set:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig06_fullset.pdf",
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/fig06.pdf",
+            dpi=300,
+        )
+    plt.close(fig)
