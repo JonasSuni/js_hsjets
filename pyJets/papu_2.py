@@ -7632,9 +7632,11 @@ def SEA_timeseries_comp_violin(full_set=False):
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
                 positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
-                widths=1.0,
-                quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
+                widths=1.5,
+                #quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
                 bw_method="scott",
+                #showmedians=True,
+                showextrema=False,
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == len(kinds) - 1:
@@ -7667,9 +7669,11 @@ def SEA_timeseries_comp_violin(full_set=False):
             T_ani[idx2, :, : counters[idx2]].T,
             # positions=[0],
             positions=np.arange(-6.5, 7.5, 6.5) - 0.1,
-            widths=1.0,
-            quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
+            widths=1.5,
+            #quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
             bw_method="scott",
+            #showmedians=True,
+            showextrema=False,
         )
         ax.grid()
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
