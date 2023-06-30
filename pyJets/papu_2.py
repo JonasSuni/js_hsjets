@@ -7628,7 +7628,7 @@ def SEA_timeseries_comp_violin(full_set=False):
             #         linewidth=2,
             #         linestyle="dashed",
             #     )
-            ax.violinplot(
+            vi = ax.violinplot(
                 epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
                 # positions=[0],
                 positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
@@ -7638,6 +7638,8 @@ def SEA_timeseries_comp_violin(full_set=False):
                 # showmedians=True,
                 showextrema=False,
             )
+            for pid, p in enumerate(vi["bodies"]):
+                p.set_color(["k", CB_color_cycle[0], CB_color_cycle[1]][pid])
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == len(kinds) - 1:
                 # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
@@ -7665,7 +7667,7 @@ def SEA_timeseries_comp_violin(full_set=False):
             # label="$T_\perp/T_\parallel$",
             linewidth=2,
         )
-        ax.violinplot(
+        vi = ax.violinplot(
             T_ani[idx2, :, : counters[idx2]].T,
             # positions=[0],
             positions=np.arange(-6.5, 7.5, 6.5) - 0.1,
@@ -7675,6 +7677,8 @@ def SEA_timeseries_comp_violin(full_set=False):
             # showmedians=True,
             showextrema=False,
         )
+        for pid, p in enumerate(vi["bodies"]):
+            p.set_color(["k", CB_color_cycle[0], CB_color_cycle[1]][pid])
         ax.grid()
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
         ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
