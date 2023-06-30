@@ -7639,7 +7639,7 @@ def SEA_timeseries_comp_violin(full_set=False):
                 showextrema=False,
             )
             for pid, p in enumerate(vi["bodies"]):
-                p.set_color(["k", CB_color_cycle[0], CB_color_cycle[1]][pid])
+                p.set_color(plot_colors[idx])
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx] and idx2 == len(kinds) - 1:
                 # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
@@ -7678,7 +7678,7 @@ def SEA_timeseries_comp_violin(full_set=False):
             showextrema=False,
         )
         for pid, p in enumerate(vi["bodies"]):
-            p.set_color(["k", CB_color_cycle[0], CB_color_cycle[1]][pid])
+            p.set_color(plot_colors[idx])
         ax.grid()
         # ax.set_xticks(np.arange(-10, 10.1, 2.5))
         ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
