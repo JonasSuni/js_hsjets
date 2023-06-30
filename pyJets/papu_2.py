@@ -7689,12 +7689,12 @@ def SEA_timeseries_comp_violin(full_set=False):
     # plt.tight_layout()
     if full_set:
         fig.savefig(
-            wrkdir_DNR + "papu22/Figures/fig06_fullset.pdf",
+            wrkdir_DNR + "papu22/Figures/fig06_fullset_violin.pdf",
             dpi=300,
         )
     else:
         fig.savefig(
-            wrkdir_DNR + "papu22/Figures/fig06.pdf",
+            wrkdir_DNR + "papu22/Figures/fig06_violin.pdf",
             dpi=300,
         )
     plt.close(fig)
