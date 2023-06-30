@@ -7667,7 +7667,6 @@ def SEA_timeseries_comp_violin(full_set=False):
             T_ani[idx2, :, : counters[idx2]].T,
             # positions=[0],
             positions=np.arange(-6.5, 7.5, 6.5) - 0.1,
-            manage_ticks=False,
             widths=1.0,
             quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
             bw_method="scott",
