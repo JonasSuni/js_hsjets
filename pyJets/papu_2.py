@@ -7633,7 +7633,7 @@ def SEA_timeseries_comp_violin(full_set=False):
                 # positions=[0],
                 positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
                 widths=1.0,
-                quantiles=[0.25, 0.75],
+                quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
                 bw_method="scott",
             )
             ax.set_xlim(t_arr[0], t_arr[-1])
@@ -7669,7 +7669,7 @@ def SEA_timeseries_comp_violin(full_set=False):
             positions=np.arange(-6.5, 7.5, 6.5) - 0.1,
             manage_ticks=False,
             widths=1.0,
-            quantiles=[0.25, 0.75],
+            quantiles=[[0.25, 0.75], [0.25, 0.75], [0.25, 0.75]],
             bw_method="scott",
         )
         ax.grid()
