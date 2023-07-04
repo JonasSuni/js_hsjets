@@ -5243,7 +5243,7 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             )
             arrow_labels = [
                 "$v_\mathrm{n}$",
-                "$v_\mathrm{SC}$",
+                "$v$",
                 "$v_\mathrm{bulk}$",
                 # "$v_\mathrm{A}$",
             ]
@@ -6318,7 +6318,7 @@ def timing_comp(vlim=1.3, minA=1):
     annot = ["(b)", "(c)", "(d)"]
     arrow_labels = [
         "$v_\mathrm{n}$",
-        "$v_\mathrm{SC}$",
+        "$v$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
         # "$v_\mathrm{A}$",
@@ -6718,7 +6718,7 @@ def fig02_alt(vlim=1.3):
     annot = ["(a)", "(b)", "(c)", "(d)"]
     arrow_labels = [
         "$v_\mathrm{n}$",
-        "$v_\mathrm{SC}$",
+        "$v$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
         "$v_\mathrm{bulk}$",
         # "$v_\mathrm{A}$",
