@@ -4988,7 +4988,7 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             # internalcb=True,
             lin=1,
             # colormap="batlow",
-            colormap="Greys",
+            colormap="batlow",
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -5072,9 +5072,9 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             t_range,
             pdyn_arr,
             shading="nearest",
-            cmap="Greys",
-            vmin=1.0 / 6,
-            vmax=2,
+            cmap="batlow",
+            vmin=0.25,
+            vmax=1.2,
             rasterized=True,
         )
         cb = fig.colorbar(im, ax=ax_ne, location="top", pad=-0.05)
