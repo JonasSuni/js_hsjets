@@ -4760,7 +4760,7 @@ def fig0(runid="ABC", jetid=596, minA=1):
         ),
     )
 
-    ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.5)
+    ax[1].legend(gprox, gprox_labs, fontsize=20, loc="upper right", framealpha=0.7)
 
     # plt.tight_layout()
     fig.savefig(wrkdir_DNR + "papu22/Figures/fig01.pdf")
