@@ -5617,9 +5617,12 @@ def jmap_SEA_comp(run_id="all", full_set=False, minA=1):
                 fontsize=24,
                 bbox=dict(boxstyle="square,pad=0.2", fc="white", ec="k", lw=1),
             )
-        ax_list[0][idx2].set_title(
-            kind_names[idx2] + "\nN = {}".format(counts[idx2]), fontsize=32, pad=10
-        )
+        if full_set:
+            ax_list[0][idx2].set_title(
+                kind_names[idx2] + "\nN = {}".format(counts[idx2]), fontsize=32, pad=10
+            )
+        else:
+            ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
         ax_list[-1][idx2].set_xlabel(
             "Epoch $x$ [$R_\mathrm{E}$]", fontsize=32, labelpad=10
         )
@@ -5973,11 +5976,18 @@ def SEA_timeseries_comp(full_set=False):
             constrained_layout=True,
         )
     for idx2, kind in enumerate(kinds):
-        ax_list[0][idx2].set_title(
-            "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
-            fontsize=40,
-            pad=10,
-        )
+        if full_set:
+            ax_list[0][idx2].set_title(
+                "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
+                fontsize=40,
+                pad=10,
+            )
+        else:
+            ax_list[0][idx2].set_title(
+                "{}".format(kind_labels[idx2]),
+                fontsize=40,
+                pad=10,
+            )
         for idx in range(len(plot_labels)):
             ax = ax_list[plot_index[idx]][idx2]
             ax.plot(
