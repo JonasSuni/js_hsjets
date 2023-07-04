@@ -5073,8 +5073,8 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             pdyn_arr,
             shading="nearest",
             cmap="batlow",
-            vmin=0.25,
-            vmax=1.2,
+            vmin=0.2,
+            vmax=2,
             rasterized=True,
         )
         cb = fig.colorbar(im, ax=ax_ne, location="top", pad=-0.05)
