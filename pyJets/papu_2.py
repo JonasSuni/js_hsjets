@@ -6307,7 +6307,7 @@ def kinds_pca(minA=1):
             )
 
 
-def timing_comp(vlim=1.3, minA=1):
+def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
     vsws = [750, 600, 750, 600]
 
     nsws = [1.0e6, 3.3e6, 1.0e6, 3.3e6]
@@ -6432,6 +6432,8 @@ def timing_comp(vlim=1.3, minA=1):
                 timing_arrs[idx, :, counters[idx]] = data_arr[0, -1, :]
                 if c < 0.8:
                     timing_arrs[idx, [0, 1, 2, 3], counters[idx]] = np.nan
+                elif not retain_vtr:
+                    propv_arrs[idx, :, counters[idx]] = np.nan
                 alfven_arrs[idx, counters[idx]] = np.nanmean(
                     Bsw
                     * data_arr[1, 1, :][ch_mask]
