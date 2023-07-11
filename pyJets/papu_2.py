@@ -7889,6 +7889,7 @@ def clock_angle_comp(full_set=False, vminmax=30):
                 t_arr,
                 # avg_arr[idx2, idx],
                 np.nanmean(epoch_mag_arr[idx2, 0, :, : counters[idx2]], axis=-1),
+                "x",
                 color=plot_colors[idx],
                 label=plot_labels[idx],
                 linewidth=2,
@@ -7898,6 +7899,7 @@ def clock_angle_comp(full_set=False, vminmax=30):
                 ax.plot(
                     t_arr,
                     epoch_mag_arr[idx2, 0, :, idx3],
+                    "x",
                     color="grey",
                     # label=plot_labels[idx],
                     linewidth=1,
