@@ -163,6 +163,7 @@ from papu_2 import (
     fig02_alt,
     fig07_alt,
     SEA_timeseries_comp_violin,
+    clock_angle_comp,
 )
 
 from jet_23_scripts import (

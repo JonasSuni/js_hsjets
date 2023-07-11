@@ -7717,3 +7717,264 @@ def SEA_timeseries_comp_violin(full_set=False):
             dpi=300,
         )
     plt.close(fig)
+
+
+def clock_angle_comp(full_set=False):
+    plot_labels = [
+        None,
+    ]
+    draw_legend = [
+        False,
+    ]
+    ylabels = [
+        "$\partial\theta_{clock}/\partial t~[^\circ]$",
+    ]
+    vmins = [-45]
+    vmaxs = [45]
+    plot_index = [0]
+    offsets = (
+        np.array(
+            [
+                0,
+            ]
+        )
+        - 0.1
+    )
+    plot_colors = [
+        "k",
+    ]
+
+    if full_set:
+        annot = [
+            [
+                "(a)",
+            ],
+            [
+                "(b)",
+            ],
+            [
+                "(c)",
+            ],
+            [
+                "(d)",
+            ],
+            [
+                "(e)",
+            ],
+        ]
+    else:
+        annot = [
+            [
+                "(a)",
+            ],
+            [
+                "(b)",
+            ],
+            [
+                "(c)",
+            ],
+        ]
+
+    if full_set:
+        kinds = [
+            "beam",
+            "foreshock",
+            # "fcs",
+            "fcs_beam",
+            "fcs_foreshock",
+        ]
+        kind_labels = [
+            "Non-FCS\nflankward jets",
+            "Non-FCS\nantisunward jets",
+            # "FCS-jets",
+            "FCS\nflankward jets",
+            "FCS\nantisunward jets",
+        ]
+    else:
+        kinds = ["beam", "foreshock", "fcs"]
+        kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
+    vsw = [750e3, 600e3, 750e3, 600e3]
+    Bsw = [5e-9, 5e-9, 10e-9, 10e-9]
+    Bxsw = [
+        -np.cos(np.deg2rad(30)),
+        -np.cos(np.deg2rad(5)),
+        -np.cos(np.deg2rad(30)),
+        -np.cos(np.deg2rad(5)),
+    ]
+    Bysw = [
+        np.sin(np.deg2rad(30)),
+        np.sin(np.deg2rad(5)),
+        np.sin(np.deg2rad(30)),
+        np.sin(np.deg2rad(5)),
+    ]
+    t_arr = np.arange(0 - 10.0, 0 + 10.1, 0.5)
+    fnr_arr = np.arange(0 - 20, 0 + 21)
+    avg_arr = np.zeros((len(kinds), len(plot_labels), fnr_arr.size), dtype=float)
+    epoch_mag_arr = np.empty(
+        (len(kinds), len(plot_labels), fnr_arr.size, 1000), dtype=float
+    )
+    # v_conv_ExB = np.zeros((len(kinds), 3, fnr_arr.size), dtype=float)
+    # print(epoch_mag_arr.shape)
+    epoch_mag_arr.fill(np.nan)
+    counters = [0] * len(kinds)
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        for idx, kind in enumerate(kinds):
+            # run_vsw = vsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            # run_Bsw = Bsw[["ABA", "ABC", "AEA", "AEC"].index(runid)]
+            if kind == "fcs":
+                # non_ids = get_fcs_jets(runid)
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                    dtype=int,
+                )
+            else:
+                if kind in ["fcs_beam", "fcs_foreshock"]:
+                    k2 = kind[4:]
+                else:
+                    k2 = kind
+                non_ids = np.loadtxt(
+                    wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, k2),
+                    dtype=int,
+                    ndmin=1,
+                )
+            if kind in ["fcs_beam", "fcs_foreshock"]:
+                non_ids = np.intersect1d(
+                    non_ids,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
+            elif kind in ["beam", "foreshock"]:
+                non_ids = np.setdiff1d(
+                    non_ids,
+                    np.loadtxt(
+                        wrkdir_DNR + "papu22/fcs_filtered/{}.txt".format(runid),
+                        dtype=int,
+                    ),
+                )
+            for non_id in non_ids:
+                data_arr = np.loadtxt(
+                    wrkdir_DNR
+                    + "papu22/timeseries_txts/{}_{}.txt".format(
+                        runid, str(non_id).zfill(5)
+                    )
+                )
+                if np.isnan(data_arr).any():
+                    continue
+                data_arr[6, :] = np.abs(data_arr[5, :])  # Use |Bx| instead of Bx
+                Bx = data_arr[6, :]
+                By = data_arr[7, :]
+                Bz = data_arr[7, :]
+                b = np.array([Bxsw[runids.index(runid)], Bysw[runids.index(runid)], 0])
+                bxz = np.cross(b, np.array([0, 0, 1]))
+                bxbxz = np.cross(b, bxz)
+                # b = np.array([np.nanmean(Bx),np.nanmean(By),np.nanmean(Bz)])
+                perB = np.array([Bx, By, Bz]).T
+                Bpar = np.array([np.dot(b, Bvec) for Bvec in perB])
+                Bperp1 = np.array([np.dot(bxz, Bvec) for Bvec in perB])
+                Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
+                cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
+                avg_arr[idx] = avg_arr[idx] + cangle
+
+                epoch_mag_arr[idx, 0, :, counters[idx]] = cangle
+
+                counters[idx] += 1
+
+    for idx in range(len(kinds)):
+        avg_arr[idx] = avg_arr[idx] / counters[idx]
+
+    if full_set:
+        fig, ax_list = plt.subplots(
+            len(ylabels),
+            len(kinds),
+            sharex=True,
+            figsize=(32, 5),
+            constrained_layout=True,
+        )
+    else:
+        fig, ax_list = plt.subplots(
+            len(ylabels),
+            len(kinds),
+            sharex=True,
+            figsize=(25, 5),
+            constrained_layout=True,
+        )
+    for idx2, kind in enumerate(kinds):
+        if full_set:
+            ax_list[0][idx2].set_title(
+                "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
+                fontsize=40,
+                pad=10,
+            )
+        else:
+            ax_list[0][idx2].set_title(
+                "{}".format(kind_labels[idx2]),
+                fontsize=40,
+                pad=10,
+            )
+        for idx in range(len(plot_labels)):
+            ax = ax_list[plot_index[idx]][idx2]
+            ax.plot(
+                t_arr,
+                avg_arr[idx2, idx],
+                color=plot_colors[idx],
+                label=plot_labels[idx],
+                linewidth=2,
+            )
+            # if idx in [1, 2, 3]:
+            #     ax.plot(
+            #         t_arr,
+            #         v_conv_ExB[idx2, idx - 1],
+            #         color=plot_colors[idx],
+            #         linewidth=2,
+            #         linestyle="dashed",
+            #     )
+            # ax.boxplot(
+            #     epoch_mag_arr[idx2, idx, :, : counters[idx2]].T,
+            #     # positions=[0],
+            #     positions=np.arange(-6.5, 7.5, 6.5) + offsets[idx],
+            #     manage_ticks=False,
+            #     widths=1.0,
+            #     sym="",
+            #     whis=1.5,
+            #     notch=False,
+            #     boxprops=dict(color=plot_colors[idx]),
+            #     capprops=dict(color=plot_colors[idx]),
+            #     whiskerprops=dict(color=plot_colors[idx]),
+            #     # flierprops=dict(color=c, markeredgecolor=c),
+            #     medianprops=dict(color=plot_colors[idx]),
+            # )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if draw_legend[idx] and idx2 == len(kinds) - 1:
+                # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=24)
+        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
+        for idx, ax in enumerate(ax_list[:-1, idx2]):
+            ax.grid()
+            # ax.set_xticks(np.arange(-10, 10.1, 2.5))
+            ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
+            # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
+            ax.tick_params(labelsize=22)
+            if idx2 == 0:
+                ax.set_ylabel(ylabels[idx], fontsize=40, labelpad=10)
+            # ax.axvline(0, linestyle="dashed")
+            ax.set_ylim(vmins[idx], vmaxs[idx])
+            ax.annotate(
+                annot[idx2][idx], (0.05, 0.85), xycoords="axes fraction", fontsize=32
+            )
+    for ax in ax_list.flat:
+        ax.label_outer()
+    # plt.tight_layout()
+    if full_set:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/clock_angle_fullset.pdf",
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            wrkdir_DNR + "papu22/Figures/clock_angle.pdf",
+            dpi=300,
+        )
+    plt.close(fig)
