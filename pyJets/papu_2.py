@@ -7951,7 +7951,7 @@ def clock_angle_comp(full_set=False):
                 # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
                 ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=24)
         ax_list[idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
-        for idx, ax in enumerate(ax_list[idx2]):
+        for idx, ax in enumerate([ax_list[idx2]]):
             ax.grid()
             # ax.set_xticks(np.arange(-10, 10.1, 2.5))
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
