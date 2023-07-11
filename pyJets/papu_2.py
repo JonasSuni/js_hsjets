@@ -7842,7 +7842,7 @@ def clock_angle_comp(full_set=False):
                 Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
                 cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
                 dcangledt = np.gradient(cangle, 0.5)
-                dcangledt[np.abs(dcangledt) >= 270] = np.nan
+                dcangledt[np.abs(dcangledt) >= 360] = np.nan
                 avg_arr[idx] = avg_arr[idx] + dcangledt
 
                 epoch_mag_arr[idx, 0, :, counters[idx]] = dcangledt
