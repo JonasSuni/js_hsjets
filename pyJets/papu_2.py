@@ -7719,7 +7719,7 @@ def SEA_timeseries_comp_violin(full_set=False):
     plt.close(fig)
 
 
-def clock_angle_comp(full_set=False):
+def clock_angle_comp(full_set=False, vminmax=30):
     plot_labels = [
         None,
     ]
@@ -7729,8 +7729,8 @@ def clock_angle_comp(full_set=False):
     ylabels = [
         "$\partial\\theta_{clock}/\partial t~[^\circ]$",
     ]
-    vmins = [-30]
-    vmaxs = [30]
+    vmins = [-vminmax]
+    vmaxs = [vminmax]
     plot_index = [0]
     offsets = np.array([0]) - 0.1
     plot_colors = ["k"]
