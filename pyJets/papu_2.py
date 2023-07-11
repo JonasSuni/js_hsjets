@@ -7719,7 +7719,7 @@ def SEA_timeseries_comp_violin(full_set=False):
     plt.close(fig)
 
 
-def clock_angle_comp(full_set=False, vminmax=30):
+def clock_angle_comp(full_set=False, vminmax=30, cutoffdeg=360):
     plot_labels = [
         None,
     ]
@@ -7844,7 +7844,7 @@ def clock_angle_comp(full_set=False, vminmax=30):
                 Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
                 cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
                 dcangledt = np.gradient(cangle, 0.5)
-                dcangledt[np.abs(dcangledt) >= 360] = np.nan
+                dcangledt[np.abs(dcangledt) >= cutoffdeg] = np.nan
                 avg_arr[idx] = avg_arr[idx] + dcangledt
 
                 epoch_mag_arr[idx, 0, :, counters[idx]] = dcangledt
