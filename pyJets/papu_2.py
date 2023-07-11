@@ -7903,19 +7903,19 @@ def clock_angle_comp(full_set=False):
         )
     for idx2, kind in enumerate(kinds):
         if full_set:
-            ax_list[0][idx2].set_title(
+            ax_list[idx2].set_title(
                 "{}".format(kind_labels[idx2] + "\nN = {}".format(counters[idx2])),
                 fontsize=40,
                 pad=10,
             )
         else:
-            ax_list[0][idx2].set_title(
+            ax_list[idx2].set_title(
                 "{}".format(kind_labels[idx2]),
                 fontsize=40,
                 pad=10,
             )
         for idx in range(len(plot_labels)):
-            ax = ax_list[plot_index[idx]][idx2]
+            ax = ax_list[idx2]
             ax.plot(
                 t_arr,
                 avg_arr[idx2, idx],
@@ -7950,8 +7950,8 @@ def clock_angle_comp(full_set=False):
             if draw_legend[idx] and idx2 == len(kinds) - 1:
                 # ax.legend(loc="lower right", fontsize=22, ncols=3, framealpha=0.5)
                 ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=24)
-        ax_list[-1][idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
-        for idx, ax in enumerate(ax_list[:-1, idx2]):
+        ax_list[idx2].set_xlabel("Epoch time [s]", fontsize=40, labelpad=10)
+        for idx, ax in enumerate(ax_list[idx2]):
             ax.grid()
             # ax.set_xticks(np.arange(-10, 10.1, 2.5))
             ax.set_xticks(np.arange(-7.5, 10.1, 2.5))
