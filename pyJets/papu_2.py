@@ -7887,7 +7887,17 @@ def clock_angle_comp(full_set=False):
                 color=plot_colors[idx],
                 label=plot_labels[idx],
                 linewidth=2,
+                zorder=1,
             )
+            for idx3 in range(counters[idx2]):
+                ax.plot(
+                    t_arr,
+                    epoch_mag_arr[idx2, 0, :, idx3],
+                    color="grey",
+                    # label=plot_labels[idx],
+                    linewidth=1,
+                    zorder=0,
+                )
             # if idx in [1, 2, 3]:
             #     ax.plot(
             #         t_arr,
