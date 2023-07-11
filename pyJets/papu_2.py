@@ -7841,9 +7841,9 @@ def clock_angle_comp(full_set=False):
                 Bperp1 = np.array([np.dot(bxz, Bvec) for Bvec in perB])
                 Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
                 cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
-                avg_arr[idx] = avg_arr[idx] + np.gradient(cangle, dx=0.5)
+                avg_arr[idx] = avg_arr[idx] + np.gradient(cangle, 0.5)
 
-                epoch_mag_arr[idx, 0, :, counters[idx]] = np.gradient(cangle, dx=0.5)
+                epoch_mag_arr[idx, 0, :, counters[idx]] = np.gradient(cangle, 0.5)
 
                 counters[idx] += 1
 
