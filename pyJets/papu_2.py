@@ -7833,7 +7833,9 @@ def clock_angle_comp(full_set=False):
                 By = data_arr[7, :]
                 Bz = data_arr[7, :]
                 # b = np.array([Bxsw[runids.index(runid)], Bysw[runids.index(runid)], 0])
-                b = np.array([np.nanmean(Bx), np.nanmean(By), np.nanmean(Bz)])
+                b = np.array(
+                    [np.nanmean(Bx), np.nanmean(By), np.nanmean(Bz)]
+                ) / np.linalg.norm([np.nanmean(Bx), np.nanmean(By), np.nanmean(Bz)])
                 bxz = np.cross(b, np.array([0, 0, 1]))
                 bxbxz = np.cross(b, bxz)
                 perB = np.array([Bx, By, Bz]).T
