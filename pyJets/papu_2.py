@@ -7842,7 +7842,8 @@ def clock_angle_comp(full_set=False, vminmax=30, cutoffdeg=360):
                 Bpar = np.array([np.dot(b, Bvec) for Bvec in perB])
                 Bperp1 = np.array([np.dot(bxz, Bvec) for Bvec in perB])
                 Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
-                cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
+                # cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
+                cangle = np.rad2deg(np.arctan2(By, Bx))
                 dcangledt = np.gradient(cangle, 0.5)
                 dcangledt[np.abs(dcangledt) >= cutoffdeg] = np.nan
                 avg_arr[idx] = avg_arr[idx] + dcangledt
