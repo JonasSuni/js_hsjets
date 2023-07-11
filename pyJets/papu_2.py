@@ -7727,53 +7727,18 @@ def clock_angle_comp(full_set=False):
         False,
     ]
     ylabels = [
-        "$\partial\theta_{clock}/\partial t~[^\circ]$",
+        "$\partial\\theta_{clock}/\partial t~[^\circ]$",
     ]
-    vmins = [-45]
-    vmaxs = [45]
+    vmins = [-90]
+    vmaxs = [90]
     plot_index = [0]
-    offsets = (
-        np.array(
-            [
-                0,
-            ]
-        )
-        - 0.1
-    )
-    plot_colors = [
-        "k",
-    ]
+    offsets = np.array([0]) - 0.1
+    plot_colors = ["k"]
 
     if full_set:
-        annot = [
-            [
-                "(a)",
-            ],
-            [
-                "(b)",
-            ],
-            [
-                "(c)",
-            ],
-            [
-                "(d)",
-            ],
-            [
-                "(e)",
-            ],
-        ]
+        annot = [["(a)"], ["(b)"], ["(c)"], ["(d)"], ["(e)"]]
     else:
-        annot = [
-            [
-                "(a)",
-            ],
-            [
-                "(b)",
-            ],
-            [
-                "(c)",
-            ],
-        ]
+        annot = [["(a)"], ["(b)"], ["(c)"]]
 
     if full_set:
         kinds = [
@@ -7876,9 +7841,9 @@ def clock_angle_comp(full_set=False):
                 Bperp1 = np.array([np.dot(bxz, Bvec) for Bvec in perB])
                 Bperp2 = np.array([np.dot(bxbxz, Bvec) for Bvec in perB])
                 cangle = np.rad2deg(np.arctan2(Bperp1, Bperp2))
-                avg_arr[idx] = avg_arr[idx] + cangle
+                avg_arr[idx] = avg_arr[idx] + np.gradient(cangle, dx=0.5)
 
-                epoch_mag_arr[idx, 0, :, counters[idx]] = cangle
+                epoch_mag_arr[idx, 0, :, counters[idx]] = np.gradient(cangle, dx=0.5)
 
                 counters[idx] += 1
 
