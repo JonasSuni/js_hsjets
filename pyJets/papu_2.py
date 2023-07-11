@@ -7729,8 +7729,8 @@ def clock_angle_comp(full_set=False):
     ylabels = [
         "$\partial\\theta_{clock}/\partial t~[^\circ]$",
     ]
-    vmins = [-90]
-    vmaxs = [90]
+    vmins = [-30]
+    vmaxs = [30]
     plot_index = [0]
     offsets = np.array([0]) - 0.1
     plot_colors = ["k"]
