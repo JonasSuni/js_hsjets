@@ -1686,6 +1686,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             start_points=start_points,
         )
 
+    lws = 0.6
+    mrks = 2
+    mews = 0.4
+
     if drawBy0:
         by_mask = (By > 0).astype(int)
         by_mask[YmeshXY < 0] = 0
@@ -1699,10 +1703,6 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             colors=CB_color_cycle[8],
             linestyles=["dashed"],
         )
-
-    lws = 0.6
-    mrks = 2
-    mews = 0.4
 
     jet_cont = ax.contour(
         XmeshXY,
