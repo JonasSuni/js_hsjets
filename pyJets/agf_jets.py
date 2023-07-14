@@ -1696,18 +1696,19 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         by_mask[np.logical_and(By < 0, YmeshXY > 0)] = 0
 
         # by_mask[YmeshXY < 0] = 0
-        by_mask[beta_star < 0.3] = 0
-        by_mask[core_heating < 3 * T_sw] = 0
+        by_mask[beta_star < 0.3] = -1
+        by_mask[core_heating < 3 * T_sw] = -1
 
         by_cont = ax.contourf(
             XmeshXY,
             YmeshXY,
             by_mask,
-            [0.5],
+            [-0.5, 0.5],
             # linewidths=lws,
-            colors=CB_color_cycle[8],
+            colors=[CB_color_cycle[6], CB_color_cycle[8]],
             # linestyles=["dashed"],
-            hatches=["/"],
+            hatches=["\\", "/"],
+            alpha=0.3,
         )
 
     jet_cont = ax.contour(
