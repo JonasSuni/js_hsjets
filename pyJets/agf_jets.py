@@ -602,8 +602,8 @@ def jet_creator(
     nbrs=[2, 2, 0],
     mag_thresh=1.1,
 ):
-    runid_list = ["ABA", "ABC", "AEA", "AEC", "AGF"]
-    maxfnr_list = [839, 1179, 1339, 879, 1193]
+    runid_list = ["ABA", "ABC", "AEA", "AEC", "AGF", "AIA"]
+    maxfnr_list = [839, 1179, 1339, 879, 1193, 1193]
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
 
@@ -3235,7 +3235,7 @@ def jet_vdf_plotter(runid, skip=[]):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for jet_id in jet_ids:
-        if runid == "AGF" and jet_id in skip:
+        if jet_id in skip:
             continue
         props = PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
@@ -3441,7 +3441,7 @@ def jet_vdf_profile_plotter(runid, skip=[]):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     for jet_id in jet_ids:
-        if runid == "AGF" and jet_id in skip:
+        if jet_id in skip:
             continue
         props = PropReader(str(jet_id).zfill(5), runid)
         jet_times = props.get_times()
