@@ -1850,7 +1850,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
-        proxy_labs.append("Jet")
+        proxy_labs.append(
+            "$P_\mathrm{dyn} \geq \\langle P_\mathrm{dyn} \\rangle_\mathrm{3min}$"
+        )
     # if ~(slams_mask == 0).all():
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
     #     proxy_labs.append("FCS")
