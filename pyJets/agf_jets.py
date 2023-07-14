@@ -1691,8 +1691,13 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     mews = 0.4
 
     if drawBy0:
-        by_mask = (By > 0).astype(int)
-        by_mask[YmeshXY < 0] = 0
+        by_mask = np.ones_like(By, dtype=int)
+        by_mask[np.logical_and(By > 0, YmeshXY < 0)] = 0
+        by_mask[np.logical_and(By < 0, YmeshXY > 0)] = 0
+
+        # by_mask[YmeshXY < 0] = 0
+        by_mask[beta_star < 0.3] = 0
+        by_mask[core_heating < 3 * T_sw] = 0
 
         by_cont = ax.contour(
             XmeshXY,
