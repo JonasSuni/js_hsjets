@@ -1992,46 +1992,43 @@ def v5_plotter(
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
-        try:
-            pt.plot.plot_colormap(
-                filename=bulkpath + fname,
-                outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
-                var=var,
-                vmin=pdynmin,
-                # vmax=1,
-                vmax=vmax,
-                vscale=vscale,
-                # cbtitle="",
-                # cbtitle="",
-                usesci=0,
-                # scale=3,
-                title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
-                boxre=boxre,
-                internalcb=False,
-                lin=lin,
-                colormap="batlow",
-                tickinterval=tickint,
-                fsaved=fsaved,
-                # useimshow=True,
-                external=ext_jet,
-                # expression=expr_rhoratio,
-                pass_vars=[
-                    "proton/vg_rho_thermal",
-                    "proton/vg_rho_nonthermal",
-                    "proton/vg_ptensor_thermal_diagonal",
-                    "vg_b_vol",
-                    "proton/vg_v",
-                    "proton/vg_rho",
-                    "proton/vg_core_heating",
-                    "CellID",
-                    "proton/vg_mmsx",
-                    "proton/vg_Pdyn",
-                    "proton/vg_Pdynx",
-                    "proton/vg_beta_star",
-                ],
-            )
-        except:
-            pass
+        pt.plot.plot_colormap(
+            filename=bulkpath + fname,
+            outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
+            var=var,
+            vmin=pdynmin,
+            # vmax=1,
+            vmax=vmax,
+            vscale=vscale,
+            # cbtitle="",
+            # cbtitle="",
+            usesci=0,
+            # scale=3,
+            title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+            boxre=boxre,
+            internalcb=False,
+            lin=lin,
+            colormap="batlow",
+            tickinterval=tickint,
+            fsaved=fsaved,
+            # useimshow=True,
+            external=ext_jet,
+            # expression=expr_rhoratio,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+        )
 
 
 def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=True):
