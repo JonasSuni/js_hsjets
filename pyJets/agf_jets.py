@@ -1699,14 +1699,15 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         by_mask[beta_star < 0.3] = 0
         by_mask[core_heating < 3 * T_sw] = 0
 
-        by_cont = ax.contour(
+        by_cont = ax.contourf(
             XmeshXY,
             YmeshXY,
             by_mask,
             [0.5],
-            linewidths=lws,
+            # linewidths=lws,
             colors=CB_color_cycle[8],
-            linestyles=["dashed"],
+            # linestyles=["dashed"],
+            hatches=["/"],
         )
 
     jet_cont = ax.contour(
