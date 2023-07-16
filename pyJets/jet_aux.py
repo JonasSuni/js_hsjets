@@ -367,7 +367,7 @@ def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
 def make_bs_fit(runid, start, stop):
     bs_fit_arr = np.zeros(6)
     mp_fit_arr = np.zeros(3)
-    if runid == "AGF":
+    if runid in ["AGF","AIA"]:
         for n in range(start, stop + 1):
             mp_fit, bs_fit = bs_mp_fit_v5(runid, n, boxre=[6, 18, -8, 6])
             bs_fit_arr = np.vstack((bs_fit_arr, bs_fit))
@@ -580,7 +580,7 @@ def get_cell_coordinates(runid, cellid):
 
 
 def spatmesh_get(runid):
-    runids = ["ABA", "ABC", "AEA", "AEC", "AGF"]
+    runids = ["ABA", "ABC", "AEA", "AEC", "AGF", "AIA"]
 
     spat_extent = [
         np.array(
@@ -633,12 +633,23 @@ def spatmesh_get(runid):
                 1.5000e05,
             ]
         ),
+        np.array(
+            [
+                -6.3780e07,
+                -2.5500e08,
+                -1.5000e05,
+                1.9122e08,
+                2.5500e08,
+                1.5000e05,
+            ]
+        ),
     ]
     spat_size = [
         np.array([1530, 1750, 1], dtype=np.uint64),
         np.array([2000, 1750, 1], dtype=np.uint64),
         np.array([1530, 1750, 1], dtype=np.uint64),
         np.array([2000, 1750, 1], dtype=np.uint64),
+        np.array([850, 1700, 1], dtype=np.uint64),
         np.array([850, 1700, 1], dtype=np.uint64),
     ]
 
