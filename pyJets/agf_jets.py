@@ -1887,7 +1887,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 1,
                 fc=CB_color_cycle[6],
                 color="black",
-                fill=True,
+                fill=False,
                 hatch="\\",
             )
         )
