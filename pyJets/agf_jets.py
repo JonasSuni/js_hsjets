@@ -1721,7 +1721,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             By,
             [0],
             linewidths=lws,
-            colors=CB_color_cycle[8],
+            colors="red",
             linestyles=["dashed"],
         )
 
@@ -1877,6 +1877,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if Blines_g:
         proxy.append(mlines.Line2D([], [], color="k"))
         proxy_labs.append("$B$")
+    if drawBy0:
+        proxy.append(mlines.Line2D([], [], color="red", linestyle="dashed"))
+        proxy_labs.append("$B_y=0$")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
