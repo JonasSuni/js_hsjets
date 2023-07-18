@@ -2071,7 +2071,7 @@ def fig1(runid):
                 headwidth=3,
             ),
             bbox=dict(
-                boxstyle="square,pad=0.1",
+                boxstyle="square,pad=0.15",
                 fc="white",
                 ec="k",
                 lw=0.5,
