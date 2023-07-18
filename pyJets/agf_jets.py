@@ -1923,6 +1923,103 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
+def fig1(runid):
+    var = "proton/vg_Pdyn"
+    vscale = 1e9
+    vmax = 1.0
+    runids = ["AGF", "AIA"]
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0
+    runid_g = runid
+    Blines_g = False
+    drawBy0 = True
+
+    global xg, yg
+    xg = []
+    yg = []
+
+    bulkpath = find_bulkpath(runid)
+
+    non_ids = get_jets(runid)
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 1.5][runids.index(runid)]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    outputdir = wrkdir_DNR + "Figs/pdfs/"
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    fig, ax_list = plt.subplots(1, 4, figsize=(24, 8), constrained_layout=True)
+
+    legon = [True, False, False, False]
+    nocb = [False, False, False, True]
+
+    for idx, fnr in enumerate([820, 880, 935, 1190]):
+        filenr_g = fnr
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        pt.plot.plot_colormap(
+            filename=bulkpath + fname,
+            axes=ax_list[idx],
+            var=var,
+            vmin=0.01,
+            # vmax=1,
+            vmax=vmax,
+            vscale=vscale,
+            # cbtitle="",
+            # cbtitle="",
+            usesci=0,
+            # scale=3,
+            title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+            boxre=[0, 18, -15, 15],
+            internalcb=True,
+            nocb=nocb[idx],
+            lin=None,
+            colormap="batlow",
+            tickinterval=2.0,
+            fsaved=None,
+            # useimshow=True,
+            external=ext_jet,
+            # expression=expr_rhoratio,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+        )
+
+        if not legon[idx]:
+            ax_list[idx].get_legend().remove()
+
+    for ax in ax_list:
+        ax.label_outer()
+
+    fig.savefig(outputdir + "fig1.pdf")
+    plt.close(fig)
+
+
 def v5_plotter(
     runid,
     start,
