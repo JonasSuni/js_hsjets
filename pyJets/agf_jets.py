@@ -1961,7 +1961,7 @@ def fig1(runid):
         except OSError:
             pass
 
-    fig, ax_list = plt.subplots(1, 4, figsize=(12, 5), constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 4, figsize=(8, 5), constrained_layout=True)
 
     legon = [True, False, False, False]
     nocb = [True, True, True, False]
