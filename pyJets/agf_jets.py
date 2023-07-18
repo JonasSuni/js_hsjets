@@ -1961,10 +1961,10 @@ def fig1(runid):
         except OSError:
             pass
 
-    fig, ax_list = plt.subplots(1, 4, figsize=(24, 8), constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 4, figsize=(18, 5), constrained_layout=True)
 
     legon = [True, False, False, False]
-    nocb = [False, False, False, True]
+    nocb = [True, True, True, False]
 
     for idx, fnr in enumerate([820, 880, 935, 1190]):
         filenr_g = fnr
