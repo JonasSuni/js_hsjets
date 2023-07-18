@@ -1886,12 +1886,13 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 1,
                 1,
                 fc=CB_color_cycle[6],
-                color="black",
-                fill=False,
+                # color="black",
+                fill=True,
                 hatch="\\",
+                alpha=0.3,
             )
         )
-        proxy_labs.append("Quasi-$\\perp$ sheath")
+        proxy_labs.append("Q$\\perp$ sheath")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
