@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
+import matplotlib.patches as mpatches
 
 # from matplotlib.ticker import MaxNLocator
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -1881,10 +1882,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         proxy.append(mlines.Line2D([], [], color="red", linestyle="dashed"))
         proxy_labs.append("$B_y=0$")
         proxy.append(
-            plt.Rectangle(
-                (-100, -100),
-                1,
-                1,
+            mpatches.Patch(
                 fc=CB_color_cycle[6],
                 # color="black",
                 # fill=True,
