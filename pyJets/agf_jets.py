@@ -1713,7 +1713,6 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # linestyles=["dashed"],
             hatches=["\\", "/"],
             alpha=0.3,
-            linewidths=0.6,
         )
 
         by0_cont = ax.contour(
@@ -1881,6 +1880,12 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if drawBy0:
         proxy.append(mlines.Line2D([], [], color="red", linestyle="dashed"))
         proxy_labs.append("$B_y=0$")
+        proxy.append(
+            plt.Rectangle(
+                (-100, -100), 1, 1, fc=CB_color_cycle[6], fill=True, hatch="\\"
+            )
+        )
+        proxy_labs.append("Quasi-$\\perp$ sheath")
     if np.logical_and(
         np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
         np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
