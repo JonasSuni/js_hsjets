@@ -1993,6 +1993,7 @@ def fig1(runid):
             fsaved=None,
             # useimshow=True,
             external=ext_jet,
+            useimshow=True,
             # expression=expr_rhoratio,
             pass_vars=[
                 "proton/vg_rho_thermal",
