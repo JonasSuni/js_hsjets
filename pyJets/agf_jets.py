@@ -1711,6 +1711,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             alpha=0.3,
         )
 
+        by0_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            By,
+            [0],
+            linewidths=lws,
+            colors=CB_color_cycle[8],
+            linestyles=["dashed"],
+        )
+
     jet_cont = ax.contour(
         XmeshXY,
         YmeshXY,
