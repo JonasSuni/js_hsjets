@@ -1882,7 +1882,13 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         proxy_labs.append("$B_y=0$")
         proxy.append(
             plt.Rectangle(
-                (-100, -100), 1, 1, fc=CB_color_cycle[6], fill=True, hatch="\\"
+                (-100, -100),
+                1,
+                1,
+                fc=CB_color_cycle[6],
+                color="black",
+                fill=True,
+                hatch="\\",
             )
         )
         proxy_labs.append("Quasi-$\\perp$ sheath")
