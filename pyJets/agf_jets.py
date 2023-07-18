@@ -2011,7 +2011,7 @@ def fig1(runid):
             ],
             streamlines="vg_b_vol",
             streamlinedensity=0.4,
-            streamlinecolor="black",
+            streamlinecolor="red",
             streamlinethick=0.7,
         )
 
