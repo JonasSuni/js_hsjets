@@ -1674,8 +1674,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if Blines_g:
         blines_bx = B[:, :, 0]
         blines_by = B[:, :, 1]
-        blines_bx[core_heating < 3 * T_sw] = np.nan
-        blines_by[core_heating < 3 * T_sw] = np.nan
+        blines_bx[core_heating >= 3 * T_sw] = np.nan
+        blines_by[core_heating >= 3 * T_sw] = np.nan
         stream = ax.streamplot(
             XmeshXY,
             YmeshXY,
