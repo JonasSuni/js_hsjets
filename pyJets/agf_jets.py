@@ -2006,9 +2006,9 @@ def fig1(runid):
 
     legon = [True, False, False, False]
     nocb = [True, True, True, False]
-    annot_lab = ["DC", "Jets", "Fast-mode\npulse", "MP\ndeformed"]
-    annot_xy = [(16, 9), (14, -3), (10.5, 3), (8.5, 1)]
-    annot_xytext = [(12, 12), (16, -9), (7, 9), (3, 0)]
+    annot_lab = ["RD", "Jets", "Fast-mode\npulse", "MP\ndeformed"]
+    annot_xy = [(16, 9), (13.5, -3), (10, 3), (8.5, 1)]
+    annot_xytext = [(12, 12), (16, -9), (7, 9), (1, -3)]
 
     for idx, fnr in enumerate([820, 880, 935, 1190]):
         filenr_g = fnr
@@ -2062,7 +2062,7 @@ def fig1(runid):
             annot_lab[idx],
             xy=annot_xy[idx],
             xytext=annot_xytext[idx],
-            # fontsize=20,
+            fontsize=6,
             arrowprops=dict(
                 facecolor="k",
                 ec="k",
