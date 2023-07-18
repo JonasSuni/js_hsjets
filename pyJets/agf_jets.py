@@ -1672,11 +1672,15 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # start_points = np.array([np.ones(nstp) * 17, np.linspace(-20, 20, nstp)]).T
 
     if Blines_g:
+        blines_bx = B[:, :, 0]
+        blines_by = B[:, :, 1]
+        blines_bx[core_heating < 3 * T_sw] = np.nan
+        blines_by[core_heating < 3 * T_sw] = np.nan
         stream = ax.streamplot(
             XmeshXY,
             YmeshXY,
-            B[:, :, 0],
-            B[:, :, 1],
+            blines_bx,
+            blines_by,
             arrowstyle="-",
             broken_streamlines=False,
             color="k",
@@ -1941,8 +1945,16 @@ def fig1(runid):
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0
     runid_g = runid
-    Blines_g = False
+    Blines_g = True
     drawBy0 = True
+
+    start_points = np.array(
+        # [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
+        [
+            np.ones(10) * 16,
+            np.linspace(-14, 14, 10),
+        ]
+    ).T
 
     global xg, yg
     xg = []
