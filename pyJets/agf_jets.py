@@ -1713,6 +1713,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # linestyles=["dashed"],
             hatches=["\\", "/"],
             alpha=0.3,
+            linewidths=0.6,
         )
 
         by0_cont = ax.contour(
