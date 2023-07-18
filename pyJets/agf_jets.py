@@ -1754,15 +1754,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    plaschke_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        plaschke_mask,
-        [0.5],
-        linewidths=lws,
-        colors=CB_color_cycle[7],
-        linestyles=["solid"],
-    )
+    if plaschke_g:
+        plaschke_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            plaschke_mask,
+            [0.5],
+            linewidths=lws,
+            colors=CB_color_cycle[7],
+            linestyles=["solid"],
+        )
 
     # slams_cont = ax.contour(
     #     XmeshXY,
@@ -1847,7 +1848,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         # "$T_\mathrm{core}=3T_\mathrm{sw}$",
         "$\\beta^* = 0.3$",
         # "$M_{\mathrm{MS},x}=1$",
-        "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
+        # "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
     ]
 
     proxy = [
@@ -1862,6 +1863,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         np.max(YmeshXY),
     )
 
+    if plaschke_g:
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[7]]))
+        proxy_labs.append("$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append(
@@ -1943,10 +1947,11 @@ def fig1(runid):
     vmax = 1.0
     runids = ["AGF", "AIA"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g
     runid_g = runid
     Blines_g = True
     drawBy0 = True
+    plaschke_g = False
 
     start_points = np.array(
         # [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
