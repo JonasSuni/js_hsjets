@@ -2071,10 +2071,10 @@ def fig1(runid):
                 headwidth=3,
             ),
             bbox=dict(
-                boxstyle="square,pad=0.2",
+                boxstyle="square,pad=0.1",
                 fc="white",
                 ec="k",
-                lw=1,
+                lw=0.5,
             ),
         )
 
