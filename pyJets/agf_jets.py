@@ -2062,13 +2062,13 @@ def fig1(runid):
             annot_lab[idx],
             xy=annot_xy[idx],
             xytext=annot_xytext[idx],
-            fontsize=20,
+            # fontsize=20,
             arrowprops=dict(
                 facecolor="k",
                 ec="k",
                 shrink=0.1,
-                width=2,
-                headwidth=6,
+                width=1,
+                headwidth=3,
             ),
             bbox=dict(
                 boxstyle="square,pad=0.2",
