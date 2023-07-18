@@ -2010,9 +2010,9 @@ def fig1(runid):
                 "proton/vg_beta_star",
             ],
             streamlines="vg_b_vol",
-            streamlinedensity=0.2,
+            streamlinedensity=0.4,
             streamlinecolor="black",
-            streamlinethick=0.6,
+            streamlinethick=0.7,
         )
 
         if not legon[idx]:
