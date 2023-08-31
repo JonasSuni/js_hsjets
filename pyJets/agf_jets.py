@@ -3537,7 +3537,7 @@ def jet_vdf_plotter(runid, skip=[]):
     return None
 
 
-def vspace_reducer(vlsvobj, cellid, operator):
+def vspace_reducer(vlsvobj, cellid, operator, dv=30e3):
     op_list = ["x", "y", "z"]
 
     velcels = vlsvobj.read_velocity_cells(cellid)
@@ -3545,8 +3545,6 @@ def vspace_reducer(vlsvobj, cellid, operator):
     vc_vals = np.array(list(velcels.values()))
 
     vc_coord_arr = vc_coords[:, op_list.index(operator)]
-
-    dv = 30e3
 
     vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
