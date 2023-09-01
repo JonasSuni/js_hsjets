@@ -3538,19 +3538,36 @@ def jet_vdf_plotter(runid, skip=[]):
 
 
 def vspace_reducer(vlsvobj, cellid, operator, dv=30e3):
+    """
+    Function for reducing a 3D VDF to 1D
+    (object) vlsvobj = Analysator VLSV file object
+    (int) cellid = ID of cell whose VDF you want
+    (str) operator = "x", "y", or "z", which velocity component to retain after reduction
+    (float) dv = Velocity space resolution in m/s
+    """
+
+    # List of valid operators from which to get an index
     op_list = ["x", "y", "z"]
 
+    # Read velocity cell keys and values from vlsv file
     velcels = vlsvobj.read_velocity_cells(cellid)
     vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
     vc_vals = np.array(list(velcels.values()))
 
+    # Select coordinates of chosen velocity component
     vc_coord_arr = vc_coords[:, op_list.index(operator)]
 
+    # Create histogram bins, one for each unique coordinate of the chosen velocity component
     vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
 
-    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vc_vals * dv * dv)
+    # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
+    vweights = vc_vals * dv * dv
 
+    # Integrate over the perpendicular directions
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+
+    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
     return (hist, bin_edges)
 
 
