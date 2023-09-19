@@ -3070,10 +3070,11 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     xg = []
     yg = []
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, drawBy0
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, drawBy0, plaschke_g
     runid_g = runid
     Blines_g = False
     drawBy0 = False
+    plaschke_g = False
 
     non_ids = []
     sj_ids = []
