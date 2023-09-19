@@ -3060,7 +3060,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
-def pos_vdf_profile_plotter(runid, x, y, t0, t1):
+def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3105,9 +3105,15 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1):
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-        xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
-        yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
-        zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+        xhist, xbin_edges = vspace_reducer(
+            vobj, vdf_cellid, operator="x", vmin=vmin, vmax=vmax
+        )
+        yhist, ybin_edges = vspace_reducer(
+            vobj, vdf_cellid, operator="y", vmin=vmin, vmax=vmax
+        )
+        zhist, zbin_edges = vspace_reducer(
+            vobj, vdf_cellid, operator="z", vmin=vmin, vmax=vmax
+        )
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
         zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
@@ -3537,7 +3543,7 @@ def jet_vdf_plotter(runid, skip=[]):
     return None
 
 
-def vspace_reducer(vlsvobj, cellid, operator, dv=30e3,vmin=None,vmax=None):
+def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     """
     Function for reducing a 3D VDF to 1D
     (object) vlsvobj = Analysator VLSV file object
@@ -3559,7 +3565,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3,vmin=None,vmax=None):
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
     if vmin or vmax:
-        vbins = np.arange(vmin,vmax+dv/2,dv)
+        vbins = np.arange(vmin, vmax + dv / 2, dv)
     else:
         vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
@@ -3574,7 +3580,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3,vmin=None,vmax=None):
     return (hist, bin_edges)
 
 
-def jet_vdf_profile_plotter(runid, skip=[],vmin=None,vmax=None):
+def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3648,9 +3654,15 @@ def jet_vdf_profile_plotter(runid, skip=[],vmin=None,vmax=None):
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
                 x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-                xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x",vmin=vmin,vmax=vmax)
-                yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y",vmin=vmin,vmax=vmax)
-                zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z",vmin=vmin,vmax=vmax)
+                xhist, xbin_edges = vspace_reducer(
+                    vobj, vdf_cellid, operator="x", vmin=vmin, vmax=vmax
+                )
+                yhist, ybin_edges = vspace_reducer(
+                    vobj, vdf_cellid, operator="y", vmin=vmin, vmax=vmax
+                )
+                zhist, zbin_edges = vspace_reducer(
+                    vobj, vdf_cellid, operator="z", vmin=vmin, vmax=vmax
+                )
                 xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
                 ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
                 zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
