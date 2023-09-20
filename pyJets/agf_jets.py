@@ -3060,6 +3060,100 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
+def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
+    runids = ["AGF", "AIA"]
+    pdmax = [1.0, 1.0][runids.index(runid)]
+    bulkpath = find_bulkpath(runid)
+
+    global xg, yg
+
+    xg = []
+    yg = []
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, drawBy0, plaschke_g
+    runid_g = runid
+    Blines_g = False
+    drawBy0 = False
+    plaschke_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    v_arr = np.arange(vmin, vmax, dv)
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+
+    vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+
+    fig, ax_list = plt.subplots(3, 1, (12, 12), constrained_layout=True)
+
+    for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
+        fnr = int(t * 2)
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+        xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+        yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+        zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+        xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
+        ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
+        zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
+
+        plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
+
+        x0 = x_re
+        y0 = y_re
+
+        xhist_interp = np.interp(v_arr, xbin_centers, xhist)
+        yhist_interp = np.interp(v_arr, ybin_centers, yhist)
+        zhist_interp = np.interp(v_arr, zbin_centers, zhist)
+
+        vx_arr[:, idx] = xhist_interp
+        vy_arr[:, idx] = yhist_interp
+        vz_arr[:, idx] = zhist_interp
+
+    ax_list[0].pcolormesh(t_arr, v_arr, vx_arr, shading="nearest", cmap="batlow")
+    ax_list[1].pcolormesh(t_arr, v_arr, vx_arr, shading="nearest", cmap="batlow")
+    ax_list[2].pcolormesh(t_arr, v_arr, vx_arr, shading="nearest", cmap="batlow")
+
+    for ax in ax_list:
+        ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0], v_arr[-1]))
+
+    outdir = wrkdir_DNR + "Figs/1d_vdf_spectrogram"
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+    fig.savefig(outdir + "/{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1))
+    plt.close(fig)
+
+
 def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
