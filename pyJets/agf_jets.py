@@ -3137,8 +3137,8 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         vz_arr[:, idx] = zhist_interp
 
     ax_list[0].pcolormesh(t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow")
-    ax_list[1].pcolormesh(t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow")
-    ax_list[2].pcolormesh(t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow")
+    ax_list[1].pcolormesh(t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow")
+    ax_list[2].pcolormesh(t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow")
 
     for ax in ax_list:
         ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
