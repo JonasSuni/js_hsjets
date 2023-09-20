@@ -3140,8 +3140,16 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     ax_list[1].pcolormesh(t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow")
     ax_list[2].pcolormesh(t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow")
 
-    for ax in ax_list:
+    ax_list[2].set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
+    ax_list[0].set_title(
+        "Run = {}, x = {:.3f}, y = {:.3f}".format(runid, x0, y0), fontsize=28, pad=10
+    )
+
+    labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
+
+    for idx2, ax in enumerate(ax_list):
         ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
+        ax.set_ylabel(labels[idx2], fontsize=24, labelpad=10)
         ax.label_outer()
         ax.tick_params(labelsize=20)
 
