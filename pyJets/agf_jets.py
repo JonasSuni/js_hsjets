@@ -3152,7 +3152,9 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
             os.makedirs(outdir)
         except OSError:
             pass
-    fig.savefig(outdir + "/{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1))
+    fig.savefig(
+        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1)
+    )
     plt.close(fig)
 
 
