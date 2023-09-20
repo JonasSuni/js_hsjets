@@ -3107,18 +3107,14 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-        xhist, xbin_edges = vspace_reducer(
-            vobj, vdf_cellid, operator="x", vmin=vmin, vmax=vmax
-        )
-        yhist, ybin_edges = vspace_reducer(
-            vobj, vdf_cellid, operator="y", vmin=vmin, vmax=vmax
-        )
-        zhist, zbin_edges = vspace_reducer(
-            vobj, vdf_cellid, operator="z", vmin=vmin, vmax=vmax
-        )
+        xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+        yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+        zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
         zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
+
+        plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
 
         x0 = x_re
         y0 = y_re
@@ -3178,9 +3174,24 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
         #     # scale=1.3,
         # )
 
-        ax_list[1].step(xbin_centers * 1e-3, xhist, "k", label="vx")
-        ax_list[1].step(ybin_centers * 1e-3, yhist, "r", label="vy")
-        ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
+        ax_list[1].step(
+            plotbin_centers * 1e-3,
+            np.interp(plotbin_centers, xbin_centers, xhist),
+            "k",
+            label="vx",
+        )
+        ax_list[1].step(
+            plotbin_centers * 1e-3,
+            np.interp(plotbin_centers, ybin_centers, yhist),
+            "r",
+            label="vy",
+        )
+        ax_list[1].step(
+            plotbin_centers * 1e-3,
+            np.interp(plotbin_centers, zbin_centers, zhist),
+            "b",
+            label="vz",
+        )
         ax_list[1].legend(loc="upper right")
         ax_list[1].set_xlim(-2000, 2000)
         ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
@@ -3656,15 +3667,9 @@ def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
                 fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
                 vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
                 x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-                xhist, xbin_edges = vspace_reducer(
-                    vobj, vdf_cellid, operator="x", vmin=vmin, vmax=vmax
-                )
-                yhist, ybin_edges = vspace_reducer(
-                    vobj, vdf_cellid, operator="y", vmin=vmin, vmax=vmax
-                )
-                zhist, zbin_edges = vspace_reducer(
-                    vobj, vdf_cellid, operator="z", vmin=vmin, vmax=vmax
-                )
+                xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+                yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+                zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
                 xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
                 ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
                 zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
