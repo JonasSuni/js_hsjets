@@ -3136,13 +3136,25 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         vy_arr[:, idx] = yhist_interp
         vz_arr[:, idx] = zhist_interp
 
-    ax_list[0].pcolormesh(t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow")
-    ax_list[1].pcolormesh(t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow")
-    ax_list[2].pcolormesh(t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow")
+    pcx = ax_list[0].pcolormesh(
+        t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow"
+    )
+    pcy = ax_list[1].pcolormesh(
+        t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow"
+    )
+    pcz = ax_list[2].pcolormesh(
+        t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
+    )
+
+    cbx = plt.colorbar(pcx, ax=ax_list[0])
+    cby = plt.colorbar(pcy, ax=ax_list[1])
+    cbz = plt.colorbar(pcz, ax=ax_list[2])
 
     ax_list[2].set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
     ax_list[0].set_title(
-        "Run = {}, x = {:.3f}, y = {:.3f}".format(runid, x0, y0), fontsize=28, pad=10
+        "Run = {}, x = {:.3f} $R_E$, y = {:.3f} $R_E$".format(runid, x0, y0),
+        fontsize=28,
+        pad=10,
     )
 
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
