@@ -3104,7 +3104,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
 
-    fig, ax_list = plt.subplots(3, 1, (12, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
         fnr = int(t * 2)
