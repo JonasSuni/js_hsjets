@@ -3567,7 +3567,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
     if bool(vmin or vmax):
-        vbins = np.arange(vmin, vmax + dv / 2, dv)
+        vbins = np.arange(vmin, vmax, dv)
     else:
         vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
