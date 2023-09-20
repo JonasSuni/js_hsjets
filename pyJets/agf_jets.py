@@ -3141,7 +3141,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     ax_list[2].pcolormesh(t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow")
 
     for ax in ax_list:
-        ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0], v_arr[-1]))
+        ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
         ax.label_outer()
         ax.tick_params(labelsize=20)
 
