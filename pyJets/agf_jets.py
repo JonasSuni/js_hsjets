@@ -3566,10 +3566,10 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     vc_coord_arr = vc_coords[:, op_list.index(operator)]
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
-    if bool(vmin or vmax):
-        vbins = np.arange(vmin, vmax, dv)
-    else:
-        vbins = np.sort(np.unique(vc_coord_arr))
+    # if bool(vmin or vmax):
+    #     vbins = np.arange(vmin, vmax, dv)
+    # else:
+    vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
 
     # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
