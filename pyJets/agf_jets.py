@@ -3166,6 +3166,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         ax.tick_params(labelsize=20)
         cbax = [cbx, cby, cbz][idx2]
         cbax.ax.tick_params(labelsize=20)
+        cbax.set_label("$f~[s/m^4]$", fontsize=24)
 
     outdir = wrkdir_DNR + "Figs/1d_vdf_spectrogram"
 
