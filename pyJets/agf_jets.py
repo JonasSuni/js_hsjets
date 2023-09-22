@@ -3682,7 +3682,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     Function for reducing a 3D VDF to 1D
     (object) vlsvobj = Analysator VLSV file object
     (int) cellid = ID of cell whose VDF you want
-    (str) operator = "x", "y", or "z", which velocity component to retain after reduction
+    (str) operator = "x", "y", or "z", which velocity component to retain after reduction, or "magnitude" to get the distribution of speeds (untested)
     (float) dv = Velocity space resolution in m/s
     """
 
@@ -3695,7 +3695,12 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     vc_vals = np.array(list(velcels.values()))
 
     # Select coordinates of chosen velocity component
-    vc_coord_arr = vc_coords[:, op_list.index(operator)]
+    if operator in op_list:
+        vc_coord_arr = vc_coords[:, op_list.index(operator)]
+    elif operator == "magnitude":
+        vc_coord_arr = np.sqrt(
+            vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2
+        )
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
     # if bool(vmin or vmax):
@@ -3705,7 +3710,10 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
 
     # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
-    vweights = vc_vals * dv * dv
+    if operator in op_list:
+        vweights = vc_vals * dv * dv
+    elif operator == "magnitude":
+        vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
 
     # Integrate over the perpendicular directions
     hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
