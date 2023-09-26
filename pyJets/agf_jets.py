@@ -3741,7 +3741,8 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
 
     # Integrate over the perpendicular directions
     if operator == "magnitude":
-        vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
+        # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
+        vbins = vbins * np.sqrt(3)
         hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
     else:
         hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
