@@ -3128,8 +3128,13 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
 
         plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
 
-        maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
-        magbin_centers = magbin_edges[:-1] + 0.5 * (magbin_edges[1] - magbin_edges[0])
+        # maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
+        # magbin_centers = magbin_edges[:-1] + 0.5 * (magbin_edges[1] - magbin_edges[0])
+
+        maghist = (xhist + yhist + zhist) / dv
+        magbin_centers = np.sqrt(
+            xbin_centers**2 + ybin_centers**2 + zbin_centers**2
+        )
 
         x0 = x_re
         y0 = y_re
