@@ -3099,15 +3099,12 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
 
     v_arr = np.arange(vmin, vmax, dv)
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
-    vtot_arr = np.arange(0, vmax * np.sqrt(3), dv)
 
     vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
 
-    vmag_arr = np.zeros((vtot_arr.size, t_arr.size), dtype=float)
-
-    fig, ax_list = plt.subplots(4, 1, figsize=(12, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
         fnr = int(t * 2)
@@ -3128,14 +3125,6 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
 
         plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
 
-        # maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
-        # magbin_centers = magbin_edges[:-1] + 0.5 * (magbin_edges[1] - magbin_edges[0])
-
-        maghist = (xhist + yhist + zhist) / dv
-        magbin_centers = np.sqrt(
-            xbin_centers**2 + ybin_centers**2 + zbin_centers**2
-        )
-
         x0 = x_re
         y0 = y_re
 
@@ -3143,13 +3132,9 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         yhist_interp = np.interp(v_arr, ybin_centers, yhist)
         zhist_interp = np.interp(v_arr, zbin_centers, zhist)
 
-        maghist_interp = np.interp(vtot_arr, magbin_centers, maghist)
-
         vx_arr[:, idx] = xhist_interp
         vy_arr[:, idx] = yhist_interp
         vz_arr[:, idx] = zhist_interp
-
-        vmag_arr[:, idx] = maghist_interp
 
     pcx = ax_list[0].pcolormesh(
         t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow"
@@ -3161,14 +3146,9 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
     )
 
-    pcm = ax_list[-1].pcolormesh(
-        t_arr, vtot_arr * 1e-3, vmag_arr, shading="nearest", cmap="batlow"
-    )
-
     cbx = plt.colorbar(pcx, ax=ax_list[0])
     cby = plt.colorbar(pcy, ax=ax_list[1])
     cbz = plt.colorbar(pcz, ax=ax_list[2])
-    cbm = plt.colorbar(pcm, ax=ax_list[-1])
 
     ax_list[-1].set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
     ax_list[0].set_title(
@@ -3179,7 +3159,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
 
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
 
-    for idx2, ax in enumerate(ax_list[:-1]):
+    for idx2, ax in enumerate(ax_list):
         ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
         ax.set_ylabel(labels[idx2], fontsize=24, labelpad=10)
         ax.label_outer()
@@ -3187,15 +3167,6 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         cbax = [cbx, cby, cbz][idx2]
         cbax.ax.tick_params(labelsize=20)
         cbax.set_label("$f~[s/m^4]$", fontsize=24)
-
-    ax_list[-1].set(
-        xlim=(t_arr[0], t_arr[-1]), ylim=(vtot_arr[0] * 1e-3, vtot_arr[-1] * 1e-3)
-    )
-    ax_list[-1].set_ylabel("$|V|$ [km/s]", fontsize=24, labelpad=10)
-    ax_list[-1].label_outer()
-    ax_list[-1].tick_params(labelsize=20)
-    cbm.ax.tick_params(labelsize=20)
-    cbm.set_label("$f~[s/m^4]$", fontsize=24)
 
     outdir = wrkdir_DNR + "Figs/1d_vdf_spectrogram"
 
