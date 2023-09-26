@@ -3740,7 +3740,10 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
         vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
 
     # Integrate over the perpendicular directions
-    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+    if operator == "magnitude":
+        hist, bin_edges = np.histogram(vc_coord_arr, bins="fd", weights=vweights)
+    else:
+        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
 
     # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
     return (hist, bin_edges)
