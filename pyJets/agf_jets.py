@@ -3284,7 +3284,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
 
     cbm = plt.colorbar(pcm, ax=ax)
 
-    ax[-1].set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
+    ax.set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
     ax.set_title(
         "Run = {}, x = {:.3f} $R_E$, y = {:.3f} $R_E$".format(runid, x0, y0),
         fontsize=28,
