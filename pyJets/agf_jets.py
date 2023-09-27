@@ -3247,7 +3247,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         # zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
 
         maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
-        magbin_centers = magbin_edges[:-1]
+        magbin_centers = magbin_edges[:-1] + dv
 
         # plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
 
@@ -3850,6 +3850,8 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     # else:
     vbins = np.sort(np.unique(vc_coord_arr))
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
+    if operator == "magnitude":
+        vbins = vbins * 2
 
     # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
     # if operator in op_list:
