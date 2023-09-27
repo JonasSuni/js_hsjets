@@ -3294,7 +3294,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
 
     ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
-    ax.set_ylabel("$|V| [km/s]$", fontsize=24, labelpad=10)
+    ax.set_ylabel("$|V|$ [km/s]", fontsize=24, labelpad=10)
     ax.label_outer()
     ax.tick_params(labelsize=20)
     cbax = cbm
