@@ -3181,6 +3181,148 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     plt.close(fig)
 
 
+def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
+    runids = ["AGF", "AIA"]
+    pdmax = [1.0, 1.0][runids.index(runid)]
+    bulkpath = find_bulkpath(runid)
+
+    global xg, yg
+
+    xg = []
+    yg = []
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, drawBy0, plaschke_g
+    runid_g = runid
+    Blines_g = False
+    drawBy0 = False
+    plaschke_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    # pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+    # sw_pars = [
+    #     [1e6, 750e3, 5e-9, 0.5e6],
+    #     [3.3e6, 600e3, 5e-9, 0.5e6],
+    #     [1e6, 750e3, 10e-9, 0.5e6],
+    #     [3.3e6, 600e3, 10e-9, 0.5e6],
+    # ]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    v_arr = np.arange(vmin, vmax, dv)
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+
+    # vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    # vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    # vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+
+    vmag_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 6), constrained_layout=True)
+
+    for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
+        fnr = int(t * 2)
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+        # xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+        # yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+        # zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+        # xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
+        # ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
+        # zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
+
+        maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
+        magbin_centers = magbin_edges[:-1]
+
+        # plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
+
+        x0 = x_re
+        y0 = y_re
+
+        # xhist_interp = np.interp(v_arr, xbin_centers, xhist)
+        # yhist_interp = np.interp(v_arr, ybin_centers, yhist)
+        # zhist_interp = np.interp(v_arr, zbin_centers, zhist)
+
+        # vx_arr[:, idx] = xhist_interp
+        # vy_arr[:, idx] = yhist_interp
+        # vz_arr[:, idx] = zhist_interp
+
+        maghist_interp = np.interp(v_arr, magbin_centers, maghist)
+
+        vmag_arr[:, idx] = maghist_interp
+
+    # pcx = ax_list[0].pcolormesh(
+    #     t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow"
+    # )
+    # pcy = ax_list[1].pcolormesh(
+    #     t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow"
+    # )
+    # pcz = ax_list[2].pcolormesh(
+    #     t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
+    # )
+
+    pcm = ax.pcolormesh(t_arr, v_arr * 1e-3, shading="nearest", cmap="batlow")
+
+    # cbx = plt.colorbar(pcx, ax=ax_list[0])
+    # cby = plt.colorbar(pcy, ax=ax_list[1])
+    # cbz = plt.colorbar(pcz, ax=ax_list[2])
+
+    cbm = plt.colorbar(pcm, ax=ax)
+
+    ax[-1].set_xlabel("Simulation time [s]", fontsize=24, labelpad=10)
+    ax.set_title(
+        "Run = {}, x = {:.3f} $R_E$, y = {:.3f} $R_E$".format(runid, x0, y0),
+        fontsize=28,
+        pad=10,
+    )
+
+    labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
+
+    ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
+    ax.set_ylabel("$|V| [km/s]$", fontsize=24, labelpad=10)
+    ax.label_outer()
+    ax.tick_params(labelsize=20)
+    cbax = cbm
+    cbax.ax.tick_params(labelsize=20)
+    cbax.set_label("$f~[s/m^4]$", fontsize=24)
+
+    # for idx2, ax in enumerate(ax_list):
+    #     ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
+    #     ax.set_ylabel(labels[idx2], fontsize=24, labelpad=10)
+    #     ax.label_outer()
+    #     ax.tick_params(labelsize=20)
+    #     cbax = [cbx, cby, cbz][idx2]
+    #     cbax.ax.tick_params(labelsize=20)
+    #     cbax.set_label("$f~[s/m^4]$", fontsize=24)
+
+    outdir = wrkdir_DNR + "Figs/1d_vdf_spectrogram"
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+    fig.savefig(
+        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_mag.png".format(runid, x0, y0, t0, t1)
+    )
+    plt.close(fig)
+
+
 def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
@@ -3710,10 +3852,11 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
     vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
 
     # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
-    if operator in op_list:
-        vweights = vc_vals * dv * dv
-    elif operator == "magnitude":
-        vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
+    # if operator in op_list:
+    #     vweights = vc_vals * dv * dv
+    # elif operator == "magnitude":
+    #     vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
+    vweights = vc_vals * dv * dv
 
     # Integrate over the perpendicular directions
     if operator == "magnitude":
