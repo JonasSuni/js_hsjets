@@ -3276,7 +3276,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     #     t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
     # )
 
-    pcm = ax.pcolormesh(t_arr, v_arr * 1e-3, shading="nearest", cmap="batlow")
+    pcm = ax.pcolormesh(t_arr, v_arr * 1e-3, vmag_arr, shading="nearest", cmap="batlow")
 
     # cbx = plt.colorbar(pcx, ax=ax_list[0])
     # cby = plt.colorbar(pcy, ax=ax_list[1])
