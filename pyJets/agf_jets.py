@@ -3218,7 +3218,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
-    v_arr = np.arange(vmin, vmax, dv)
+    v_arr = np.arange(vmin, vmax, dv * 4)
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
 
     # vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
