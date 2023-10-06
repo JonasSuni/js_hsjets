@@ -3181,7 +3181,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     plt.close(fig)
 
 
-def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
+def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3218,14 +3218,14 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
-    v_arr = np.arange(vmin, vmax, dv)
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
+    e_arr = np.zeros(enum,dtype=float)
 
     # vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     # vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     # vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
 
-    vmag_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    data_arr = np.zeros((e_arr.size, t_arr.size), dtype=float)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 6), constrained_layout=True)
 
@@ -3239,44 +3239,17 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-        # xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
-        # yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
-        # zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
-        # xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
-        # ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
-        # zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
 
-        maghist, magbin_edges = vspace_reducer(vobj, vdf_cellid, operator="magnitude")
-        magbin_centers = magbin_edges[:-1] + 2 * dv
-
-        # plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
+        success,bin_centers,bin_values = pt.plot.energy_spectrum_jetstyle(vobj, vdf_cellid, "proton", emin, emax, enum=enum)
+        e_arr = bin_centers
 
         x0 = x_re
         y0 = y_re
 
-        # xhist_interp = np.interp(v_arr, xbin_centers, xhist)
-        # yhist_interp = np.interp(v_arr, ybin_centers, yhist)
-        # zhist_interp = np.interp(v_arr, zbin_centers, zhist)
+        data_arr[:, idx] = bin_values
 
-        # vx_arr[:, idx] = xhist_interp
-        # vy_arr[:, idx] = yhist_interp
-        # vz_arr[:, idx] = zhist_interp
-
-        maghist_interp = np.interp(v_arr, magbin_centers, maghist)
-
-        vmag_arr[:, idx] = maghist_interp
-
-    # pcx = ax_list[0].pcolormesh(
-    #     t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow"
-    # )
-    # pcy = ax_list[1].pcolormesh(
-    #     t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow"
-    # )
-    # pcz = ax_list[2].pcolormesh(
-    #     t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
-    # )
-
-    pcm = ax.pcolormesh(t_arr, v_arr * 1e-3, vmag_arr, shading="nearest", cmap="batlow")
+    pcm = ax.pcolormesh(t_arr, e_arr * 1e-3, data_arr, shading="nearest", cmap="batlow")
+    ax.set_yscale("log")
 
     # cbx = plt.colorbar(pcx, ax=ax_list[0])
     # cby = plt.colorbar(pcy, ax=ax_list[1])
@@ -3291,15 +3264,13 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         pad=10,
     )
 
-    labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
-
-    ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
-    ax.set_ylabel("$|V|$ [km/s]", fontsize=24, labelpad=10)
+    ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(e_arr[0] * 1e-3, e_arr[-1] * 1e-3))
+    ax.set_ylabel("$E$ [keV]", fontsize=24, labelpad=10)
     ax.label_outer()
     ax.tick_params(labelsize=20)
     cbax = cbm
     cbax.ax.tick_params(labelsize=20)
-    cbax.set_label("$f~[s/m^4]$", fontsize=24)
+    cbax.set_label("PSD", fontsize=24)
 
     # for idx2, ax in enumerate(ax_list):
     #     ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
@@ -3318,7 +3289,7 @@ def pos_vdf_mag_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
         except OSError:
             pass
     fig.savefig(
-        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_mag.png".format(runid, x0, y0, t0, t1)
+        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_energy.png".format(runid, x0, y0, t0, t1)
     )
     plt.close(fig)
 
