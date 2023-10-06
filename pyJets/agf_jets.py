@@ -3181,7 +3181,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     plt.close(fig)
 
 
-def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
+def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3219,7 +3219,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
-    e_arr = np.zeros(enum,dtype=float)
+    e_arr = np.zeros(enum, dtype=float)
 
     # vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     # vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
@@ -3240,7 +3240,9 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
-        success,bin_centers,bin_values = pt.plot.energy_spectrum_jetstyle(vobj, vdf_cellid, "proton", emin, emax, enum=enum)
+        success, bin_centers, bin_values = pt.plot.energy_spectrum_jetstyle(
+            vobj, vdf_cellid, "proton", emin, emax, enum=enum
+        )
         e_arr = bin_centers
 
         x0 = x_re
@@ -3249,6 +3251,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
         data_arr[:, idx] = bin_values
 
     pcm = ax.pcolormesh(t_arr, e_arr * 1e-3, data_arr, shading="nearest", cmap="batlow")
+    ax.tick_params(labelsize=20)
     ax.set_yscale("log")
 
     # cbx = plt.colorbar(pcx, ax=ax_list[0])
@@ -3289,7 +3292,8 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax,enum=10):
         except OSError:
             pass
     fig.savefig(
-        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_energy.png".format(runid, x0, y0, t0, t1)
+        outdir
+        + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_energy.png".format(runid, x0, y0, t0, t1)
     )
     plt.close(fig)
 
