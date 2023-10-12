@@ -3274,7 +3274,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout
     cbax = cbm
     cbax.ax.tick_params(labelsize=20)
     if fluxout:
-        cbax.set_label("Flux keV/(cm$^2$ s sr keV)", fontsize=24)
+        cbax.set_label("Flux [keV/(cm$^2$ s sr keV)]", fontsize=24)
     else:
         cbax.set_label("PSD", fontsize=24)
 
