@@ -2357,7 +2357,7 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
 
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
-    fnr_arr = np.arange(fnr0, int(t1 * 2) + 1)
+    fnr_arr = np.arange(fnr0, int(t1 * 2) + 1, dtype=int)
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
