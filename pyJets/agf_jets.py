@@ -3181,7 +3181,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     plt.close(fig)
 
 
-def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10):
+def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout=True):
     runids = ["AGF", "AIA"]
     pdmax = [1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3241,7 +3241,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10):
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
         success, bin_centers, bin_values = pt.plot.energy_spectrum_jetstyle(
-            vobj, vdf_cellid, "proton", emin, emax, enum=enum
+            vobj, vdf_cellid, "proton", emin, emax, enum=enum, fluxout=fluxout
         )
         e_arr = bin_centers
 
@@ -3273,7 +3273,10 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10):
     ax.tick_params(labelsize=20)
     cbax = cbm
     cbax.ax.tick_params(labelsize=20)
-    cbax.set_label("PSD", fontsize=24)
+    if fluxout:
+        cbax.set_label("Flux keV/(cm$^2$ s sr keV)", fontsize=24)
+    else:
+        cbax.set_label("PSD", fontsize=24)
 
     # for idx2, ax in enumerate(ax_list):
     #     ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
