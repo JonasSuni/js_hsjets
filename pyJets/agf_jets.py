@@ -2386,6 +2386,7 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
                     # / run_norm[idx2]
                 )
         except:
+            print("Something went wrong!")
             data_arr[:, idx] = np.nan
 
     fig, ax_list = plt.subplots(
