@@ -2205,7 +2205,7 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=True):
+def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -2355,9 +2355,9 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=True):
 
     run_norm = norm[0]
 
-    t_arr = np.arange(t0 - tpm, t0 + tpm + 0.1, 0.5)
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
-    fnr_arr = np.arange(fnr0 - 2 * tpm, fnr0 + 2 * tpm + 1)
+    fnr_arr = np.arange(fnr0, int(t1 * 2) + 1)
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
@@ -2426,11 +2426,11 @@ def VSC_timeseries(runid, x0, y0, t0, tpm=20, pdavg=True):
             pass
 
     fig.savefig(
-        figdir + "{}_x{}_y{}_t{}_pm{}.png".format(runid, x0, y0, t0, tpm),
+        figdir + "{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1),
         dpi=300,
     )
     np.savetxt(
-        txtdir + "{}_x{}_y{}_t{}_pm{}.txt".format(runid, x0, y0, t0, tpm),
+        txtdir + "{}_x{}_y{}_t0{}_t1{}.txt".format(runid, x0, y0, t0, t1),
         data_arr,
     )
     plt.close(fig)
