@@ -2406,7 +2406,7 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
             )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
-            ax.legend(loc="center left")
+            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     ax_list[-1].set_xlabel("Simulation time [s]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
