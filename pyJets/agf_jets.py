@@ -2085,7 +2085,7 @@ def fig1(runid):
         ax.label_outer()
 
     fig.savefig(outputdir + "fig1.pdf")
-    fig.savefig(outputdir + "../fig1.png")
+    fig.savefig(outputdir + "../fig1.png", dpi=300)
     plt.close(fig)
 
 
