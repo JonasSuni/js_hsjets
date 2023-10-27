@@ -2825,8 +2825,8 @@ def plot_fft(
         )
         ax.tick_params(labelsize=20)
         im = ax.pcolormesh(
-            XmeshXY,
-            YmeshXY,
+            #XmeshXY,
+            #YmeshXY,
             fft_arr.T,
             shading="nearest",
             cmap="batlow",
