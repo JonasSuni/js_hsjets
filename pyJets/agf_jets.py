@@ -2813,7 +2813,7 @@ def plot_fft(
     for idx2 in range(len(xplot_list)):
         data_arr[idx2, :] = np.interp(t_range, t_real_range, data_arr[idx2, :])
 
-    fft_arr = rfft2(data_arr)
+    fft_arr = np.real(rfft2(data_arr))
 
     if draw:
         fig, ax = plt.subplots(
@@ -2825,8 +2825,8 @@ def plot_fft(
         )
         ax.tick_params(labelsize=20)
         im = ax.pcolormesh(
-            #XmeshXY,
-            #YmeshXY,
+            # XmeshXY,
+            # YmeshXY,
             fft_arr.T,
             shading="nearest",
             cmap="batlow",
