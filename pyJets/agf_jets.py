@@ -23,7 +23,7 @@ from copy import deepcopy
 # import scipy
 # import scipy.linalg
 from scipy.linalg import eig
-from scipy.fft import fft2
+from scipy.fft import rfft2
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2813,7 +2813,7 @@ def plot_fft(
     for idx2 in range(len(xplot_list)):
         data_arr[idx2, :] = np.interp(t_range, t_real_range, data_arr[idx2, :])
 
-    fft_arr = fft2(data_arr)
+    fft_arr = rfft2(data_arr)
 
     if draw:
         fig, ax = plt.subplots(
