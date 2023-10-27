@@ -2827,11 +2827,9 @@ def plot_fft(
         im = ax.pcolormesh(
             XmeshXY,
             YmeshXY,
-            fft_arr[idx].T,
+            fft_arr.T,
             shading="nearest",
             cmap="batlow",
-            vmin=vmin[idx],
-            vmax=vmax[idx],
             rasterized=True,
         )
         # if idx == 1:
