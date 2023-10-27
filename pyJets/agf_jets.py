@@ -2677,7 +2677,7 @@ def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
     vsy = vs * By / Bmag
 
     vmsx = vms * By / Bmag
-    vmsy = vms * Bx / Bmag
+    vmsy = vms * -Bx / Bmag
 
     vpvax = vx + vax
     vpvay = vy + vay
