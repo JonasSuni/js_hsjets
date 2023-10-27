@@ -2906,6 +2906,7 @@ def jplots(
     intpol=False,
     vel_lines=None,
     wavefan=None,
+    vars_to_plot=[0, 1, 2, 3, 4],
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -2981,8 +2982,8 @@ def jplots(
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
-    vmin = [0, -300, 0, 0, 0]
-    vmax = [5, 0, 0.5, 40, 25]
+    vmin = [0, -250, 0, 5, 0]
+    vmax = [5, 0, 0.3, 40, 25]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
@@ -3098,7 +3099,8 @@ def jplots(
     if draw:
         fig, ax_list = plt.subplots(
             1,
-            len(varname_list),
+            # len(varname_list),
+            len(vars_to_plot),
             figsize=(18, 10),
             sharex=True,
             sharey=True,
@@ -3111,6 +3113,8 @@ def jplots(
             fontsize=28,
         )
         for idx in range(len(varname_list)):
+            if idx not in vars_to_plot:
+                continue
             ax = ax_list[idx]
             ax.tick_params(labelsize=20)
             im_list.append(
