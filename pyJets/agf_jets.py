@@ -3133,9 +3133,9 @@ def jplots(
             #     cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
             #     cb_list[idx].cmap.set_over("red")
             # else:
-            cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+            cb_list.append(fig.colorbar(im_list[-1], ax=ax))
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
-            cb_list[idx].ax.tick_params(labelsize=20)
+            cb_list[-1].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=["k"])
             ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
