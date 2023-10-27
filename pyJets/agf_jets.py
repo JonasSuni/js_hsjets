@@ -23,6 +23,7 @@ from copy import deepcopy
 # import scipy
 # import scipy.linalg
 from scipy.linalg import eig
+from scipy.fft import fft2
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2708,6 +2709,189 @@ def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
     vpar = (dx * vx + dy * vy) / (np.sqrt(dx**2 + dy**2))
 
     return (vpar, vpvapar, vmvapar, vpvspar, vmvspar, vpvmspar, vmvmspar)
+
+
+def plot_fft(
+    x0,
+    x1,
+    y0,
+    y1,
+    t0,
+    t1,
+    runid="AGF",
+    txt=False,
+    draw=True,
+    intpol=False,
+):
+    dr = 300e3 / r_e
+    dr_km = 300
+
+    # Solar wind parameters for the different runs
+    # n [m^-3], v [m/s], B [T], T [K]
+    runid_list = ["AGF", "AIA"]
+    runids_paper = ["RDC", "RDC2"]
+    sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
+    ]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
+    pdyn_sw = m_p * n_sw * v_sw * v_sw
+
+    # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
+    # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
+    vmin = [0, -500, 0, 0, 0]
+    vmax = [5, 0, 0.8, 40, 25]
+
+    # Path to vlsv files for current run
+    bulkpath = find_bulkpath(runid)
+
+    fnr0 = int(t0 * 2)
+    fnr1 = int(t1 * 2)
+
+    fnr_range = np.arange(fnr0, fnr1 + 1, 1, dtype=int)
+    t_range = np.arange(t0, t1 + 0.1, 0.5)
+    t_real_range = np.zeros_like(t_range)
+    # Get cellid of initial position
+
+    npoints = int(np.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2) / dr) + 1
+
+    xlist = np.linspace(x0, x1, npoints)
+    ylist = np.linspace(y0, y1, npoints)
+
+    if intpol:
+        coords = [[xlist[idx] * r_e, ylist[idx] * r_e, 0] for idx in range(xlist.size)]
+
+    fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
+
+    cellids = [
+        int(fobj.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+        for idx in range(xlist.size)
+    ]
+    cellnr = range(xlist.size)
+    if xlist[-1] != xlist[0]:
+        xplot_list = xlist
+        xlab = "$X~[R_\mathrm{E}]$"
+    else:
+        xplot_list = ylist
+        xlab = "$Y~[R_\mathrm{E}]$"
+
+    XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
+
+    data_arr = np.zeros((xplot_list.size, t_range.size), dtype=float)
+    vt_arr = np.ones((xplot_list.size, t_range.size), dtype=float)
+    dx_arr = (x1 - x0) * vt_arr
+    dy_arr = (y1 - y0) * vt_arr
+
+    figdir = wrkdir_DNR + "Figs/fft/"
+    txtdir = wrkdir_DNR + "txts/fft/"
+
+    if txt:
+        data_arr = np.load(
+            txtdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.npy".format(
+                runid, x0, y0, x1, y1, t0, t1
+            )
+        )
+    else:
+        for idx in range(fnr_range.size):
+            fnr = fnr_range[idx]
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
+            treal = vlsvobj.read_parameter("t")
+            t_real_range[idx] = treal
+            if intpol:
+                data_arr[:, idx] = [
+                    vlsvobj.read_interpolated_variable("proton/vg_pdyn", coords[idx3])
+                    for idx3 in range(xlist.size)
+                ]
+            else:
+                data_arr[:, idx] = vlsvobj.read_variable(
+                    "proton/vg_pdyn", cellids=cellids
+                )
+
+    for idx2 in range(len(xplot_list)):
+        data_arr[idx2, :] = np.interp(t_range, t_real_range, data_arr[idx2, :])
+
+    fft_arr = fft2(data_arr)
+
+    if draw:
+        fig, ax = plt.subplots(
+            1, 1, figsize=(10, 10), sharex=True, sharey=True, constrained_layout=True
+        )
+        fig.suptitle(
+            "Run: {}, x0: {}, y0: {}, x1: {}, y1: {}".format(runid, x0, y0, x1, y1),
+            fontsize=28,
+        )
+        ax.tick_params(labelsize=20)
+        im = ax.pcolormesh(
+            XmeshXY,
+            YmeshXY,
+            fft_arr[idx].T,
+            shading="nearest",
+            cmap="batlow",
+            vmin=vmin[idx],
+            vmax=vmax[idx],
+            rasterized=True,
+        )
+        # if idx == 1:
+        #     cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
+        #     cb_list[idx].cmap.set_over("red")
+        # else:
+        cb = fig.colorbar(im, ax=ax)
+        # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
+        cb.ax.tick_params(labelsize=20)
+        # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
+        # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
+        ax.set_xlim(data_arr[0, 0], data_arr[-1, 0])
+        ax.set_ylim(data_arr[0, 0], data_arr[0, -1])
+        # ax.set_xlabel(xlab, fontsize=24, labelpad=10)
+        # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
+        # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
+        # ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+        # ax.set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+        # ax.legend(fontsize=12, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2)
+        # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
+        #     "Simulation time [s]", fontsize=28, labelpad=10
+        # )
+        # ax_list[-1].set_axis_off()
+
+        # Save figure
+        # plt.tight_layout()
+
+        # fig.savefig(
+        #     wrkdir_DNR
+        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
+        # )
+        if not os.path.exists(figdir):
+            try:
+                os.makedirs(figdir)
+            except OSError:
+                pass
+
+        fig.savefig(
+            figdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.png".format(
+                runid, x0, y0, x1, y1, t0, t1
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
+
+    if not txt:
+        if not os.path.exists(txtdir):
+            try:
+                os.makedirs(txtdir)
+            except OSError:
+                pass
+
+        np.save(
+            txtdir
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.npy".format(
+                runid, x0, y0, x1, y1, t0, t1
+            ),
+            data_arr,
+        )
 
 
 def jplots(
