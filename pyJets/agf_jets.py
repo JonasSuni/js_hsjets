@@ -3112,10 +3112,11 @@ def jplots(
             "Run: {}, x0: {}, y0: {}, x1: {}, y1: {}".format(runid, x0, y0, x1, y1),
             fontsize=28,
         )
+        ax_idx = 0
         for idx in range(len(varname_list)):
             if idx not in vars_to_plot:
                 continue
-            ax = ax_list[idx]
+            ax = ax_list[ax_idx]
             ax.tick_params(labelsize=20)
             im_list.append(
                 ax.pcolormesh(
@@ -3184,6 +3185,7 @@ def jplots(
             # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+            ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         ax_list[1].legend(
             fontsize=12, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
