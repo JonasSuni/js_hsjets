@@ -3163,7 +3163,7 @@ def jplots(
                         arrowstyle="-",
                         broken_streamlines=True,
                         color=CB_color_cycle[itr],
-                        linewidth=0.6,
+                        linewidth=0.8,
                         # minlength=4,
                         maxlength=1,
                         integration_direction="forward",
