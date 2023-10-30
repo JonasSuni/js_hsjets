@@ -3155,11 +3155,34 @@ def jplots(
                 )
             if wavefan:
                 for itr, vel in enumerate(outvels):
+                    vel_masked = vel.T
+                    vt_masked = vt_arr.T
+
+                    vel_masked[
+                        np.logical_or(
+                            XmeshXY < wavefan[0] - 1, XmeshXY > wavefan[0] + 1
+                        )
+                    ] = np.nan
+                    vel_masked[
+                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 20)
+                    ] = np.nan
+
+                    vt_masked[
+                        np.logical_or(
+                            XmeshXY < wavefan[0] - 1, XmeshXY > wavefan[0] + 1
+                        )
+                    ] = np.nan
+                    vt_masked[
+                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 20)
+                    ] = np.nan
+
                     ax.streamplot(
                         XmeshXY,
                         YmeshXY,
-                        vel.T / 6371,
-                        vt_arr.T,
+                        vel_masked / 6371,
+                        vt_masked,
+                        # vel.T / 6371,
+                        # vt_arr.T,
                         arrowstyle="-",
                         broken_streamlines=True,
                         color=CB_color_cycle[itr],
