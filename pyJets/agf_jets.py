@@ -2081,8 +2081,8 @@ def fig1(runid):
 
         if not legon[idx]:
             ax_list[idx].get_legend().remove()
-        else:
-            ax_list[idx].get_legend().set(fontsize=12)
+        # else:
+        #     ax_list[idx].get_legend().set(fontsize=12)
 
     for ax in ax_list:
         ax.label_outer()
