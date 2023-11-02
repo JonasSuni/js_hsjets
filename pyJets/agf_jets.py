@@ -2909,6 +2909,7 @@ def jplots(
     vel_lines=None,
     wavefan=None,
     vars_to_plot=[0, 1, 2, 3, 4],
+    legsize=12,
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -3213,7 +3214,7 @@ def jplots(
             ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         ax_list[1].legend(
-            fontsize=12, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
+            fontsize=legsize, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
         )
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
