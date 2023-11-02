@@ -2063,7 +2063,7 @@ def fig1(runid):
             annot_lab[idx],
             xy=annot_xy[idx],
             xytext=annot_xytext[idx],
-            fontsize=6,
+            fontsize=12,
             arrowprops=dict(
                 facecolor="k",
                 ec="k",
@@ -2081,6 +2081,8 @@ def fig1(runid):
 
         if not legon[idx]:
             ax_list[idx].get_legend().remove()
+        else:
+            ax_list[idx].get_legend().set(fontsize=12)
 
     for ax in ax_list:
         ax.label_outer()
