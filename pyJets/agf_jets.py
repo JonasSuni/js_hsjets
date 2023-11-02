@@ -2063,7 +2063,7 @@ def fig1(runid):
             annot_lab[idx],
             xy=annot_xy[idx],
             xytext=annot_xytext[idx],
-            fontsize=12,
+            fontsize=10,
             arrowprops=dict(
                 facecolor="k",
                 ec="k",
