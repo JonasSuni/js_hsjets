@@ -3160,20 +3160,20 @@ def jplots(
 
                     vel_masked[
                         np.logical_or(
-                            XmeshXY < wavefan[0] - 1, XmeshXY > wavefan[0] + 1
+                            XmeshXY < wavefan[0] - 2, XmeshXY > wavefan[0] + 2
                         )
                     ] = np.nan
                     vel_masked[
-                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 20)
+                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 40)
                     ] = np.nan
 
                     vt_masked[
                         np.logical_or(
-                            XmeshXY < wavefan[0] - 1, XmeshXY > wavefan[0] + 1
+                            XmeshXY < wavefan[0] - 2, XmeshXY > wavefan[0] + 2
                         )
                     ] = np.nan
                     vt_masked[
-                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 20)
+                        np.logical_or(YmeshXY < wavefan[1], YmeshXY > wavefan[1] + 40)
                     ] = np.nan
 
                     ax.streamplot(
