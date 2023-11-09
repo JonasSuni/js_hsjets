@@ -2008,6 +2008,7 @@ def fig1(runid):
     legon = [True, False, False, False]
     nocb = [True, True, True, False]
     annot_lab = ["RD", "Jets", "Fast-mode\npulse", "MP\ndeformed"]
+    annot_pan = ["1", "2", "3", "4"]
     annot_xy = [(16, 9), (13.5, -3), (10, 3), (8, 1)]
     annot_xytext = [(12, 12), (16, -9), (6, 9), (1, -7)]
 
@@ -2078,7 +2079,18 @@ def fig1(runid):
                 lw=0.5,
             ),
         )
-
+        ax_list[idx].annotate(
+            annot_pan[idx],
+            (0.05, 0.85),
+            xycoords="axes fraction",
+            fontsize=10,
+            bbox=dict(
+                boxstyle="square,pad=0.15",
+                fc="white",
+                ec="k",
+                lw=0.5,
+            ),
+        )
         if not legon[idx]:
             ax_list[idx].get_legend().remove()
         # else:
