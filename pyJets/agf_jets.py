@@ -2081,9 +2081,9 @@ def fig1(runid):
         )
         ax_list[idx].annotate(
             annot_pan[idx],
-            (0.05, 0.95),
+            (0.05, 0.90),
             xycoords="axes fraction",
-            fontsize=10,
+            fontsize=12,
             bbox=dict(
                 boxstyle="square,pad=0.15",
                 fc="white",
