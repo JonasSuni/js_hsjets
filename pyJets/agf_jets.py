@@ -2066,7 +2066,7 @@ def fig1(runid):
             xytext=annot_xytext[idx],
             fontsize=10,
             arrowprops=dict(
-                facecolor="k",
+                facecolor="w",
                 ec="k",
                 shrink=0.1,
                 width=1,
