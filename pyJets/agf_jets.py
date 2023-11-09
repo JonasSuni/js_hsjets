@@ -2011,6 +2011,7 @@ def fig1(runid):
     annot_pan = ["1", "2", "3", "4"]
     annot_xy = [(16, 9), (13.5, -3), (10, 3), (8, 1)]
     annot_xytext = [(12, 12), (16, -9), (6, 9), (1, -7)]
+    arrowc = ["k", "k", "k", "w"]
 
     for idx, fnr in enumerate([820, 880, 935, 1190]):
         filenr_g = fnr
@@ -2066,8 +2067,8 @@ def fig1(runid):
             xytext=annot_xytext[idx],
             fontsize=10,
             arrowprops=dict(
-                facecolor="w",
-                ec="k",
+                facecolor=arrowc[idx],
+                ec=arrowc[idx],
                 shrink=0.1,
                 width=1,
                 headwidth=3,
