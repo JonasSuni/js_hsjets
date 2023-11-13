@@ -3479,7 +3479,14 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout
 
         data_arr[:, idx] = bin_values
 
-    pcm = ax.pcolormesh(t_arr, e_arr * 1e-3, data_arr, shading="nearest", cmap="batlow")
+    pcm = ax.pcolormesh(
+        t_arr,
+        e_arr * 1e-3,
+        data_arr,
+        shading="nearest",
+        cmap="batlow",
+        norm=colors.LogNorm(vmin=data_arr.min(), vmax=data_arr.max()),
+    )
     ax.tick_params(labelsize=20)
     ax.set_yscale("log")
 
