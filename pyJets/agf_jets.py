@@ -3481,7 +3481,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout
 
     pcm = ax.pcolormesh(
         t_arr,
-        e_arr * 1e-3,
+        e_arr,
         data_arr,
         shading="nearest",
         cmap="batlow",
@@ -3503,8 +3503,8 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout
         pad=10,
     )
 
-    ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(e_arr[0] * 1e-3, e_arr[-1] * 1e-3))
-    ax.set_ylabel("$E$ [keV]", fontsize=24, labelpad=10)
+    ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(e_arr[0], e_arr[-1]))
+    ax.set_ylabel("$E$ [eV]", fontsize=24, labelpad=10)
     ax.label_outer()
     ax.tick_params(labelsize=20)
     cbax = cbm
