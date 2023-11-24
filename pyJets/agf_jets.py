@@ -2998,7 +2998,7 @@ def jplots(
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
-    vmin = [1, -250, 0, 5, 0]
+    vmin = [1, -250, 0, 5, 5]
     vmax = [5, 0, 0.3, 40, 25]
 
     # Path to vlsv files for current run
@@ -3117,7 +3117,7 @@ def jplots(
             1,
             # len(varname_list),
             len(vars_to_plot),
-            figsize=(18, 10),
+            figsize=(24, 10),
             sharex=True,
             sharey=True,
         )
@@ -3202,7 +3202,7 @@ def jplots(
                         arrowstyle="-",
                         broken_streamlines=True,
                         color=CB_color_cycle[itr],
-                        linewidth=0.8,
+                        linewidth=1.0,
                         # minlength=4,
                         maxlength=1,
                         integration_direction="forward",
