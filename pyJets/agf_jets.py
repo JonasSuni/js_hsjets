@@ -2013,7 +2013,7 @@ def fig1(runid):
     annot_xytext = [(12, 12), (16, -9), (6, 9), (1, -7)]
     arrowc = ["k", "k", "k", "w"]
 
-    for idx, fnr in enumerate([820, 880, 935, 1190]):
+    for idx, fnr in enumerate([820, 880, 900, 1190]):
         filenr_g = fnr
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
