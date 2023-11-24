@@ -2009,7 +2009,7 @@ def fig1(runid):
     nocb = [True, True, True, False]
     annot_lab = ["RD", "Jets", "Fast-mode\npulse", "MP\ndeformed"]
     annot_pan = ["1", "2", "3", "4"]
-    annot_xy = [(16, 9), (13.5, -3), (10, 3), (8, 1)]
+    annot_xy = [(16, 9), (13.5, -3), (12, 1), (8, 1)]
     annot_xytext = [(12, 12), (16, -9), (6, 9), (1, -7)]
     arrowc = ["k", "k", "k", "w"]
 
