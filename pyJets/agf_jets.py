@@ -3117,7 +3117,7 @@ def jplots(
             1,
             # len(varname_list),
             len(vars_to_plot),
-            figsize=(24, 10),
+            figsize=(5 * len(vars_to_plot), 10),
             sharex=True,
             sharey=True,
         )
