@@ -32,7 +32,7 @@ import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
 
-mpl.rcParams['hatch.linewidth'] = 0.1
+mpl.rcParams["hatch.linewidth"] = 0.1
 
 # from matplotlib.ticker import MaxNLocator
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -1958,7 +1958,7 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def fig1(runid,panel_nums=True):
+def fig1(runid, panel_nums=True):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.0
@@ -2925,7 +2925,7 @@ def jplots(
     vel_lines=None,
     wavefan=None,
     vars_to_plot=[0, 1, 2, 3, 4],
-    vels_to_plot=[0,1,2,3,4,5,6],
+    vels_to_plot=[0, 1, 2, 3, 4, 5, 6],
     legsize=12,
 ):
     dr = 300e3 / r_e
@@ -3232,20 +3232,29 @@ def jplots(
             ax.set_xlabel(xlab, fontsize=24, labelpad=10)
             # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24,bbox=dict(
+            ax.annotate(
+                annot[idx],
+                (0.05, 0.90),
+                xycoords="axes fraction",
+                fontsize=24,
+                bbox=dict(
                     boxstyle="square,pad=0.15",
                     fc="white",
                     ec="k",
                     lw=0.5,
-                ),)
+                ),
+            )
             ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         if len(vels_to_plot) >= 4:
             ax_list[1].legend(
-                fontsize=legsize, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
+                fontsize=legsize,
+                bbox_to_anchor=(0.5, -0.12),
+                loc="upper center",
+                ncols=2,
             )
         else:
-            ax_list[1].legend(fontsize=legsize,loc="lower left",ncols=2)
+            ax_list[1].legend(fontsize=legsize, loc="lower left", ncols=2)
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
         # )
