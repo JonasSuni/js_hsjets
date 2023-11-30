@@ -1713,7 +1713,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # linewidths=lws,
             colors=[CB_color_cycle[6], CB_color_cycle[8]],
             # linestyles=["dashed"],
-            hatches=["\\", "/"],
+            hatches=["*", "/"],
             alpha=0.3,
         )
 
@@ -1887,7 +1887,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 fc=CB_color_cycle[6],
                 # color="black",
                 # fill=True,
-                hatch=r"\\\\",
+                hatch=r"*",
                 alpha=0.3,
             )
         )
@@ -2008,7 +2008,7 @@ def fig1(runid,panel_nums=True):
     legon = [True, False, False, False]
     nocb = [True, True, True, False]
     annot_lab = ["RD", "Jets", "Fast-mode\npulse", "MP\ndeformed"]
-    annot_pan = ["1", "2", "3", "4"]
+    annot_pan = ["a", "b", "c", "d"]
     annot_xy = [(16, 9), (13.5, -3), (11.5, 1), (8, 1)]
     annot_xytext = [(12, 12), (16, -9), (6, 9), (1, -7)]
     arrowc = ["k", "k", "k", "w"]
