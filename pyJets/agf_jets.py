@@ -2925,6 +2925,7 @@ def jplots(
     vel_lines=None,
     wavefan=None,
     vars_to_plot=[0, 1, 2, 3, 4],
+    vels_to_plot=[0,1,2,3,4,5,6],
     legsize=12,
 ):
     dr = 300e3 / r_e
@@ -3115,6 +3116,9 @@ def jplots(
     # fig, ax_list = plt.subplots(
     #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
     # )
+    figh = 10
+    if len(vels_to_plot) < 4:
+        figh = 8
     if draw:
         fig, ax_list = plt.subplots(
             1,
@@ -3174,6 +3178,8 @@ def jplots(
                 )
             if wavefan:
                 for itr, vel in enumerate(outvels):
+                    if itr not in vels_to_plot:
+                        continue
                     vel_masked = vel.T
                     vt_masked = vt_arr.T
 
@@ -3205,7 +3211,7 @@ def jplots(
                         arrowstyle="-",
                         broken_streamlines=True,
                         color=CB_color_cycle[itr],
-                        linewidth=1.0,
+                        linewidth=1.2,
                         # minlength=4,
                         maxlength=1,
                         integration_direction="forward",
@@ -3234,9 +3240,12 @@ def jplots(
                 ),)
             ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
-        ax_list[1].legend(
-            fontsize=legsize, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
-        )
+        if len(vels_to_plot) >= 4:
+            ax_list[1].legend(
+                fontsize=legsize, bbox_to_anchor=(0.5, -0.12), loc="upper center", ncols=2
+            )
+        else:
+            ax_list[1].legend(fontsize=legsize,loc="lower left",ncols=2)
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
         # )
