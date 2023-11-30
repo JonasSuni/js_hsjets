@@ -32,7 +32,7 @@ import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
 
-mpl.rcParams['hatch.linewidth'] = 0.1
+mpl.rcParams['hatch.linewidth'] = 0.01
 
 # from matplotlib.ticker import MaxNLocator
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
