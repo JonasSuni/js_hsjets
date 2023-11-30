@@ -3210,7 +3210,7 @@ def jplots(
                         # vt_arr.T,
                         arrowstyle="-",
                         broken_streamlines=True,
-                        color=CB_color_cycle[itr+1],
+                        color=CB_color_cycle[itr + 1],
                         linewidth=1.2,
                         # minlength=4,
                         maxlength=1,
@@ -3221,7 +3221,7 @@ def jplots(
                     ax.plot(
                         [1, 2],
                         [0, 1],
-                        color=CB_color_cycle[itr],
+                        color=CB_color_cycle[itr + 1],
                         label=vels_labels[itr],
                     )
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
