@@ -3108,7 +3108,7 @@ def jplots(
 
     # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
-    annot = ["(a)", "(b)", "(c)", "(d)", "(e)"]
+    annot = ["a", "b", "c", "d", "e"]
 
     # fig, ax_list = plt.subplots(
     #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
@@ -3224,7 +3224,12 @@ def jplots(
             ax.set_xlabel(xlab, fontsize=24, labelpad=10)
             # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
-            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
+            ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24,bbox=dict(
+                    boxstyle="square,pad=0.15",
+                    fc="white",
+                    ec="k",
+                    lw=0.5,
+                ),)
             ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         ax_list[1].legend(
