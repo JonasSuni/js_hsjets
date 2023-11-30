@@ -1956,7 +1956,7 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def fig1(runid):
+def fig1(runid,panel_nums=True):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.0
@@ -2080,18 +2080,19 @@ def fig1(runid):
                 lw=0.5,
             ),
         )
-        ax_list[idx].annotate(
-            annot_pan[idx],
-            (0.05, 0.90),
-            xycoords="axes fraction",
-            fontsize=12,
-            bbox=dict(
-                boxstyle="square,pad=0.15",
-                fc="white",
-                ec="k",
-                lw=0.5,
-            ),
-        )
+        if panel_nums:
+            ax_list[idx].annotate(
+                annot_pan[idx],
+                (0.05, 0.90),
+                xycoords="axes fraction",
+                fontsize=12,
+                bbox=dict(
+                    boxstyle="square,pad=0.15",
+                    fc="white",
+                    ec="k",
+                    lw=0.5,
+                ),
+            )
         if not legon[idx]:
             ax_list[idx].get_legend().remove()
         # else:
@@ -2927,7 +2928,7 @@ def jplots(
     dr = 300e3 / r_e
     dr_km = 300
     varname_list = [
-        "$n$ [cm$^{-3}$]",
+        "$\\rho$ [cm$^{-3}$]",
         "$v_x$ [km/s]",
         "$P_\mathrm{dyn}$ [nPa]",
         "$B$ [nT]",
