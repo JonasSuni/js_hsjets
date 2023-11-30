@@ -1715,7 +1715,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             # linewidths=lws,
             colors=[CB_color_cycle[6], CB_color_cycle[8]],
             # linestyles=["dashed"],
-            hatches=["+", "/"],
+            hatches=["++", "/"],
             alpha=0.3,
         )
 
@@ -1889,7 +1889,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 fc=CB_color_cycle[6],
                 # color="black",
                 # fill=True,
-                hatch=r"++",
+                hatch=r"+++",
                 alpha=0.3,
             )
         )
