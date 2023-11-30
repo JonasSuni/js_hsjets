@@ -38,6 +38,16 @@ CB_color_cycle = [
     "#999999",
     "#dede00",
     "#000000",
+    "#377eb8",
+    "#ff7f00",
+    "#4daf4a",
+    "#e41a1c",
+    "#f781bf",
+    "#a65628",
+    "#984ea3",
+    "#999999",
+    "#dede00",
+    "#000000",
 ]
 
 
@@ -367,7 +377,7 @@ def bs_mp_fit_v5(runid, file_nr, boxre=[6, 18, -8, 6]):
 def make_bs_fit(runid, start, stop):
     bs_fit_arr = np.zeros(6)
     mp_fit_arr = np.zeros(3)
-    if runid in ["AGF","AIA"]:
+    if runid in ["AGF", "AIA"]:
         for n in range(start, stop + 1):
             mp_fit, bs_fit = bs_mp_fit_v5(runid, n, boxre=[6, 18, -8, 6])
             bs_fit_arr = np.vstack((bs_fit_arr, bs_fit))
