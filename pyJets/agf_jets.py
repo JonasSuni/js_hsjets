@@ -2928,7 +2928,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
 
     # Path to vlsv files for current run
     bulkpath_AGF = find_bulkpath("AGF")
-    bulkpath_AIA = find_bulkpath("AGF")
+    bulkpath_AIA = find_bulkpath("AIA")
 
     fnr0 = int(t0 * 2)
     fnr1 = int(t1 * 2)
@@ -2971,8 +2971,14 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr).zfill(7))
         )
 
-        data_arr_AGF[:, idx] = vlsvobj_AGF.read_variable("proton/vg_pdyn",cellids=cellids_AGF) / pdyn_sw_AGF
-        data_arr_AIA[:, idx] = vlsvobj_AIA.read_variable("proton/vg_pdyn",cellids=cellids_AIA) / pdyn_sw_AIA
+        data_arr_AGF[:, idx] = (
+            vlsvobj_AGF.read_variable("proton/vg_pdyn", cellids=cellids_AGF)
+            / pdyn_sw_AGF
+        )
+        data_arr_AIA[:, idx] = (
+            vlsvobj_AIA.read_variable("proton/vg_pdyn", cellids=cellids_AIA)
+            / pdyn_sw_AIA
+        )
 
     fig, ax_list = plt.subplots(1, 2, figsize=(12, 8))
 
