@@ -2910,6 +2910,93 @@ def plot_fft(
         )
 
 
+def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
+    dr = 300e3 / r_e
+    dr_km = 300
+
+    runid_list = ["AGF", "AIA"]
+    runids_paper = ["RDC", "RDC2"]
+    sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
+    ]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AGF")]
+    pdyn_sw_AGF = m_p * n_sw * v_sw * v_sw
+
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIA")]
+    pdyn_sw_AIA = m_p * n_sw * v_sw * v_sw
+
+    # Path to vlsv files for current run
+    bulkpath_AGF = find_bulkpath("AGF")
+    bulkpath_AIA = find_bulkpath("AGF")
+
+    fnr0 = int(t0 * 2)
+    fnr1 = int(t1 * 2)
+
+    fnr_range = np.arange(fnr0, fnr1 + 1, 1, dtype=int)
+    t_range = np.arange(t0, t1 + 0.1, 0.5)
+
+    fobj_AGF = pt.vlsvfile.VlsvReader(
+        bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+    fobj_AIA = pt.vlsvfile.VlsvReader(
+        bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+
+    xmesh, ymesh = np.meshgrid(
+        np.arange(x0, x1 + 0.001, dr), np.arange(y0, y1 + 0.001, dr)
+    )
+
+    xlist = xmesh.flatten()
+    ylist = ymesh.flatten()
+
+    cellids_AGF = [
+        int(fobj_AGF.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+        for idx in range(xlist.size)
+    ]
+    cellids_AIA = [
+        int(fobj_AIA.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+        for idx in range(xlist.size)
+    ]
+
+    data_arr_AGF = np.zeros((xlist.size, t_range.size), dtype=float)
+    data_arr_AIA = np.zeros_like(data_arr_AGF)
+
+    for idx in range(fnr_range.size):
+        fnr = fnr_range[idx]
+        vlsvobj_AGF = pt.vlsvfile.VlsvReader(
+            bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        vlsvobj_AIA = pt.vlsvfile.VlsvReader(
+            bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+
+        data_arr_AGF[:, idx] = vlsvobj_AGF.read_variable("proton/vg_pdyn") / pdyn_sw_AGF
+        data_arr_AIA[:, idx] = vlsvobj_AIA.read_variable("proton/vg_pdyn") / pdyn_sw_AIA
+
+    fig, ax_list = plt.subplots(1, 2, figsize=(12, 8))
+
+    ax_list[0].hist(data_arr_AGF.flatten(), bins="fd")
+    ax_list[1].hist(data_arr_AIA.flatten(), bins="fd")
+
+    figdir = wrkdir_DNR + "Figs/histograms/"
+
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "msheath_hist_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.png".format(
+            x0, y0, x1, y1, t0, t1
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def jplots(
     x0,
     y0,
