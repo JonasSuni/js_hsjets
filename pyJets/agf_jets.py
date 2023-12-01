@@ -2985,6 +2985,17 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     ax_list[0].hist(data_arr_AGF.flatten(), bins="fd")
     ax_list[1].hist(data_arr_AIA.flatten(), bins="fd")
 
+    ax_list[0].set(
+        title="AGF",
+        xlabel="Pdyn [$Pdyn_{sw}$]",
+        xlim=(0, np.max([np.max(data_arr_AGF), np.max(data_arr_AIA)])),
+    )
+    ax_list[1].set(
+        title="AIA",
+        xlabel="Pdyn [$Pdyn_{sw}$]",
+        xlim=(0, np.max([np.max(data_arr_AGF), np.max(data_arr_AIA)])),
+    )
+
     figdir = wrkdir_DNR + "Figs/histograms/"
 
     if not os.path.exists(figdir):
