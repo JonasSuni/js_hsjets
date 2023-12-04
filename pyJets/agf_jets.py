@@ -3020,7 +3020,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             )
             data_arr_AIB[idx2, :, idx] = (
                 vlsvobj_AIB.read_variable(
-                    "proton/vg_pdyn", operator=op_list[idx2], cellids=cellids_AIA
+                    "proton/vg_pdyn", operator=op_list[idx2], cellids=cellids_AIB
                 )
                 / norm_list[idx2]
             )
