@@ -2395,21 +2395,21 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
             except:
                 tavg_pdyn = np.nan
             tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
-        try:
-            vlsvobj = pt.vlsvfile.VlsvReader(
-                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-            )
-            for idx2, var in enumerate(var_list):
-                data_arr[idx2, idx] = (
-                    vlsvobj.read_interpolated_variable(
-                        var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-                    )
-                    * scales[idx2]
-                    # / run_norm[idx2]
+        # try:
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        for idx2, var in enumerate(var_list):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
                 )
-        except:
-            print("Something went wrong!")
-            data_arr[:, idx] = np.nan
+                * scales[idx2]
+                # / run_norm[idx2]
+            )
+        # except:
+        #     print("Something went wrong!")
+        #     data_arr[:, idx] = np.nan
 
     for idx in range(len(var_list)):
         data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
