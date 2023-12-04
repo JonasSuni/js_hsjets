@@ -3049,7 +3049,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             alpha=0.3,
             label="AIB",
         )
-        ax_list[0].set(
+        ax_list[idx].set(
             title=var_list[idx],
             # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
             xlim=(
