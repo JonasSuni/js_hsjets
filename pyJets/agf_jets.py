@@ -2226,7 +2226,7 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, sos_thresh=0.1):
+def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=0.1):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -2375,7 +2375,8 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, sos_thresh=0.1):
     ]
 
     run_norm = norm[0]
-    sos = butter(10, sos_thresh, "lowpass", fs=2, output="sos")
+    if filt:
+        sos = butter(10, filt, "lowpass", fs=2, output="sos")
 
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
@@ -2411,8 +2412,9 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, sos_thresh=0.1):
         #     print("Something went wrong!")
         #     data_arr[:, idx] = np.nan
 
-    for idx in range(len(var_list)):
-        data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
+    if filt:
+        for idx in range(len(var_list)):
+            data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
