@@ -2929,6 +2929,8 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "proton/vg_v",
     ]
 
+    varlab_list = ["Pdyn", "Rho", "Vx", "Vy", "Vz"]
+
     runid_list = ["AGF", "AIA", "AIB"]
     runids_paper = ["RDC", "RDC2"]
     sw_pars = [
@@ -3050,7 +3052,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             label="AIB",
         )
         ax_list[idx].set(
-            title=var_list[idx],
+            title=varlab_list[idx],
             # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
             xlim=(
                 np.min(
