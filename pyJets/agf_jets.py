@@ -2375,7 +2375,7 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True):
     ]
 
     run_norm = norm[0]
-    sos = butter(10, 0.01, "low", fs=2, output="sos")
+    sos = butter(10, 0.1, "low", fs=2, output="sos")
 
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
