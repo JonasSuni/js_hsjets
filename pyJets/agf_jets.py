@@ -3053,7 +3053,13 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             title=var_list[idx],
             # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
             xlim=(
-                0,
+                np.min(
+                    [
+                        np.min(data_arr_AGF[idx, :, :]),
+                        np.min(data_arr_AIA[idx, :, :]),
+                        np.min(data_arr_AIB[idx, :, :]),
+                    ]
+                ),
                 np.max(
                     [
                         np.max(data_arr_AGF[idx, :, :]),
