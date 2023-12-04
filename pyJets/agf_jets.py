@@ -24,7 +24,7 @@ from copy import deepcopy
 # import scipy.linalg
 from scipy.linalg import eig
 from scipy.fft import rfft2
-from scipy.signal import butter,sosfilt
+from scipy.signal import butter, sosfilt
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2915,9 +2915,10 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     dr = 300e3 / r_e
     dr_km = 300
 
-    runid_list = ["AGF", "AIA"]
+    runid_list = ["AGF", "AIA", "AIB"]
     runids_paper = ["RDC", "RDC2"]
     sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
@@ -2927,9 +2928,13 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIA")]
     pdyn_sw_AIA = m_p * n_sw * v_sw * v_sw
 
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIB")]
+    pdyn_sw_AIB = m_p * n_sw * v_sw * v_sw
+
     # Path to vlsv files for current run
     bulkpath_AGF = find_bulkpath("AGF")
     bulkpath_AIA = find_bulkpath("AIA")
+    bulkpath_AIB = find_bulkpath("AIB")
 
     fnr0 = int(t0 * 2)
     fnr1 = int(t1 * 2)
@@ -2942,6 +2947,9 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     )
     fobj_AIA = pt.vlsvfile.VlsvReader(
         bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+    fobj_AIB = pt.vlsvfile.VlsvReader(
+        bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
 
     xmesh, ymesh = np.meshgrid(
@@ -2959,9 +2967,14 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         int(fobj_AIA.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
         for idx in range(xlist.size)
     ]
+    cellids_AIB = [
+        int(fobj_AIB.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+        for idx in range(xlist.size)
+    ]
 
     data_arr_AGF = np.zeros((xlist.size, t_range.size), dtype=float)
     data_arr_AIA = np.zeros_like(data_arr_AGF)
+    data_arr_AIB = np.zeros_like(data_arr_AGF)
 
     for idx in range(fnr_range.size):
         fnr = fnr_range[idx]
@@ -2970,6 +2983,9 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         )
         vlsvobj_AIA = pt.vlsvfile.VlsvReader(
             bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        vlsvobj_AIB = pt.vlsvfile.VlsvReader(
+            bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr).zfill(7))
         )
 
         data_arr_AGF[:, idx] = (
@@ -2980,24 +2996,44 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             vlsvobj_AIA.read_variable("proton/vg_pdyn", cellids=cellids_AIA)
             / pdyn_sw_AIA
         )
+        data_arr_AIB[:, idx] = (
+            vlsvobj_AIB.read_variable("proton/vg_pdyn", cellids=cellids_AIA)
+            / pdyn_sw_AIB
+        )
 
-    fig, ax_list = plt.subplots(1, 2, figsize=(12, 8))
+    fig, ax_list = plt.subplots(1, 3, figsize=(18, 8))
 
     ax_list[0].hist(data_arr_AGF.flatten(), bins="fd")
     ax_list[1].hist(data_arr_AIA.flatten(), bins="fd")
+    ax_list[2].hist(data_arr_AIB.flatten(), bins="fd")
 
     ax_list[0].set(
         title="AGF",
-        xlabel="Pdyn [$Pdyn_{sw}$]",
-        xlim=(0, np.max([np.max(data_arr_AGF), np.max(data_arr_AIA)])),
+        xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        xlim=(
+            0,
+            np.max([np.max(data_arr_AGF), np.max(data_arr_AIA), np.max(data_arr_AIB)]),
+        ),
     )
     ax_list[1].set(
         title="AIA",
-        xlabel="Pdyn [$Pdyn_{sw}$]",
-        xlim=(0, np.max([np.max(data_arr_AGF), np.max(data_arr_AIA)])),
+        xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        xlim=(
+            0,
+            np.max([np.max(data_arr_AGF), np.max(data_arr_AIA), np.max(data_arr_AIB)]),
+        ),
+    )
+    ax_list[2].set(
+        title="AIB",
+        xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+        xlim=(
+            0,
+            np.max([np.max(data_arr_AGF), np.max(data_arr_AIA), np.max(data_arr_AIB)]),
+        ),
     )
 
     figdir = wrkdir_DNR + "Figs/histograms/"
+    plt.tight_layout()
 
     if not os.path.exists(figdir):
         try:

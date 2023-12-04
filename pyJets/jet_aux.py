@@ -701,11 +701,12 @@ def get_neighs_asym(runid, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
 
 
 def find_bulkpath(runid):
-    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF", "AIA"]
+    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF", "AIA", "AIB"]
     path_list = [
         "bulk/",
         "bulk/",
         "round_3_boundary_sw/",
+        "bulk/",
         "bulk/",
         "bulk/",
         "bulk/",
