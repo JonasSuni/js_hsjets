@@ -3068,6 +3068,7 @@ def jplots(
     vars_to_plot=[0, 1, 2, 3, 4],
     vels_to_plot=[0, 1, 2, 3, 4, 5, 6],
     legsize=12,
+    filt=False,
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -3188,6 +3189,8 @@ def jplots(
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
 
+    sos = butter(10, 0.1, "low", fs=2, output="sos")
+
     if txt:
         data_arr = np.load(
             txtdir
@@ -3217,6 +3220,11 @@ def jplots(
                         )
                         * scale_list[idx2]
                     )
+
+    if filt:
+        for idx in range(len(vars_list)):
+            for idx2 in range(xplot_list.size):
+                data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
 
     # vpar,vpvapar,vmvapar,vpvspar,vmvspar,vpvmspar,vmvmspar
     outvels = calc_velocities(
