@@ -3009,7 +3009,9 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
 
     fig, ax_list = plt.subplots(1, 3, figsize=(18, 8))
 
-    ax_list[0].hist(data_arr_AGF.flatten(), bins="fd")
+    ax_list[0].hist(data_arr_AGF.flatten(), bins="fd", color="black", alpha=0.3)
+    ax_list[0].hist(data_arr_AIA.flatten(), bins="fd", color="blue", alpha=0.3)
+    ax_list[0].hist(data_arr_AIB.flatten(), bins="fd", color="red", alpha=0.3)
     ax_list[1].hist(data_arr_AIA.flatten(), bins="fd")
     ax_list[2].hist(data_arr_AIB.flatten(), bins="fd")
 
