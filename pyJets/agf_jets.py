@@ -3189,7 +3189,7 @@ def jplots(
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
 
-    sos = butter(10, 0.1, "low", fs=2, output="sos")
+    sos = butter(10, 0.01, "low", fs=2, output="sos")
 
     if txt:
         data_arr = np.load(
