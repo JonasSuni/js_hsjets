@@ -2927,12 +2927,32 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "proton/vg_v",
         "proton/vg_v",
         "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_b_vol",
+        "proton/vg_b_vol",
+        "proton/vg_b_vol",
+        "proton/vg_b_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
     ]
 
-    varlab_list = ["Pdyn", "Rho", "Vx", "Vy", "Vz"]
+    varlab_list = [
+        "Pdyn",
+        "Rho",
+        "Vx",
+        "Vy",
+        "Vz",
+        "Vmag",
+        "Bx",
+        "By",
+        "Bz",
+        "Bmag",
+        "TPar",
+        "TPerp",
+    ]
 
     runid_list = ["AGF", "AIA", "AIB"]
-    runids_paper = ["RDC", "RDC2"]
+    runids_paper = ["RDC", "RDC2", "RDC3"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
@@ -2947,8 +2967,34 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIB")]
     pdyn_sw_AIB = m_p * n_sw * v_sw * v_sw
 
-    norm_list = [pdyn_sw_AGF, n_sw, v_sw, v_sw, v_sw]
-    op_list = ["pass", "pass", "x", "y", "z"]
+    norm_list = [
+        pdyn_sw_AGF,
+        n_sw,
+        v_sw,
+        v_sw,
+        v_sw,
+        v_sw,
+        B_sw,
+        B_sw,
+        B_sw,
+        B_sw,
+        T_sw,
+        T_sw,
+    ]
+    op_list = [
+        "pass",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
 
     # Path to vlsv files for current run
     bulkpath_AGF = find_bulkpath("AGF")
@@ -3027,31 +3073,31 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
                 / norm_list[idx2]
             )
 
-    fig, ax_list = plt.subplots(1, len(var_list), figsize=(5 * len(var_list), 8))
+    fig, ax_list = plt.subplots(2, 6, figsize=(24, 8))
 
     for idx in range(len(var_list)):
-        ax_list[idx].hist(
+        ax_list.flatten()[idx].hist(
             data_arr_AGF[idx, :, :].flatten(),
             bins="fd",
             color="black",
             alpha=0.3,
             label="AGF",
         )
-        ax_list[idx].hist(
+        ax_list.flatten()[idx].hist(
             data_arr_AIA[idx, :, :].flatten(),
             bins="fd",
             color="blue",
             alpha=0.3,
             label="AIA",
         )
-        ax_list[idx].hist(
+        ax_list.flatten()[idx].hist(
             data_arr_AIB[idx, :, :].flatten(),
             bins="fd",
             color="red",
             alpha=0.3,
             label="AIB",
         )
-        ax_list[idx].set(
+        ax_list.flatten()[idx].set(
             title=varlab_list[idx],
             # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
             xlim=(
@@ -3071,7 +3117,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
                 ),
             ),
         )
-    ax_list[0].legend(loc="upper right")
+    ax_list.flatten()[0].legend(loc="upper right")
 
     figdir = wrkdir_DNR + "Figs/histograms/"
     plt.tight_layout()
