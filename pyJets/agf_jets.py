@@ -3073,7 +3073,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
                 / norm_list[idx2]
             )
 
-    fig, ax_list = plt.subplots(2, 6, figsize=(24, 8))
+    fig, ax_list = plt.subplots(2, 6, figsize=(24, 12))
 
     for idx in range(len(var_list)):
         ax_list.flatten()[idx].hist(
