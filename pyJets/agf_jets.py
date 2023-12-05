@@ -2931,7 +2931,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "vg_b_vol",
         "vg_b_vol",
         "vg_b_vol",
-        "proton/vg_b_vol",
+        "vg_b_vol",
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
