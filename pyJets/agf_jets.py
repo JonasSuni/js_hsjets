@@ -3553,8 +3553,8 @@ def getNearestCellWithVspace(vlsvReader, cid):
 
 
 def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
-    runids = ["AGF", "AIA"]
-    pdmax = [1.0, 1.0][runids.index(runid)]
+    runids = ["AGF", "AIA", "AIB"]
+    pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -3582,6 +3582,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     #     [3.3e6, 600e3, 10e-9, 0.5e6],
     # ]
     sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
     ]
