@@ -2226,7 +2226,7 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=0.1):
+def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=None):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
