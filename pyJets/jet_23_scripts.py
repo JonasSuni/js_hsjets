@@ -767,7 +767,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         markersize=2,
         markeredgecolor="white",
         fillstyle="full",
-        mew=1,
+        mew=0.6,
         # label="Non-FCS-jet",
         label="Tracked jet",
     )
@@ -779,7 +779,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         markersize=2,
         markeredgecolor="white",
         fillstyle="full",
-        mew=1,
+        mew=0.6,
         label="FCS-jet",
     )
 
@@ -890,7 +890,7 @@ def fincospar_plots(runid, start, stop):
             # vmax=1,
             vmax=pdmax,
             vscale=1e9,
-            useimshow=True,
+            useimshow=False,
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
             usesci=0,
