@@ -620,3 +620,302 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         loc="lower left",
         fontsize=14,
     )
+
+
+def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
+    B = pass_maps["B"]
+    rho = pass_maps["rho"]
+    cellids = pass_maps["CellID"]
+    mmsx = pass_maps["Mmsx"]
+    core_heating = pass_maps["core_heating"]
+    Bmag = np.linalg.norm(B, axis=-1)
+    Pdyn = pass_maps["Pdyn"]
+
+    # try:
+    #     slams_cells = np.loadtxt(
+    #         "/wrk-vakka/users/jesuni/working/SLAMS/Masks/{}/{}.mask".format(
+    #             runid_g, int(filenr_g)
+    #         )
+    #     ).astype(int)
+    # except:
+    #     slams_cells = []
+    try:
+        jet_cells = np.loadtxt(
+            "/wrk-vakka/users/jesuni/working/jets/Masks/{}/{}.mask".format(
+                runid_g, int(filenr_g)
+            )
+        ).astype(int)
+    except:
+        jet_cells = []
+
+    sj_jetobs = [
+        jio.PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
+        for sj_id in sj_ids_g
+    ]
+    non_sjobs = [
+        jio.PropReader(str(int(non_id)).zfill(5), runid_g, transient="jet")
+        for non_id in non_ids_g
+    ]
+
+    sj_xlist = []
+    sj_ylist = []
+    non_xlist = []
+    non_ylist = []
+
+    for jetobj in sj_jetobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            sj_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
+            sj_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
+    for jetobj in non_sjobs:
+        if filenr_g / 2.0 in jetobj.read("time"):
+            non_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
+            non_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
+
+    # slams_mask = np.in1d(cellids, slams_cells).astype(int)
+    # slams_mask = np.reshape(slams_mask, cellids.shape)
+
+    jet_mask = np.in1d(cellids, jet_cells).astype(int)
+    jet_mask = np.reshape(jet_mask, cellids.shape)
+
+    ch_mask = (core_heating > 3 * T_sw).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
+    rho_mask = (rho > 2 * rho_sw).astype(int)
+
+    cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
+    cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
+
+    diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
+    diamag_mask[Bmag > B_sw] = 0
+
+    CB_color_cycle = jx.CB_color_cycle
+
+    start_points = np.array(
+        [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
+    ).T
+    # start_points = np.array([np.linspace(x0 - 0.9, x0 + 0.9, 10), np.ones(10) * y0]).T
+
+    if Blines_g:
+        stream = ax.streamplot(
+            XmeshXY,
+            YmeshXY,
+            B[:, :, 0],
+            B[:, :, 1],
+            # arrowstyle="-",
+            # broken_streamlines=False,
+            color="k",
+            linewidth=0.6,
+            # minlength=4,
+            density=35,
+            start_points=start_points,
+        )
+
+    jet_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        jet_mask,
+        [0.5],
+        linewidths=2,
+        colors=CB_color_cycle[2],
+        linestyles=["solid"],
+    )
+
+    ch_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        ch_mask,
+        [0.5],
+        linewidths=2,
+        colors=CB_color_cycle[1],
+        linestyles=["solid"],
+    )
+
+    # slams_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     slams_mask,
+    #     [0.5],
+    #     linewidths=2,
+    #     colors=CB_color_cycle[0],
+    #     linestyles=["solid"],
+    # )
+
+    # rho_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     rho_mask,
+    #     [0.5],
+    #     linewidths=2,
+    #     colors=CB_color_cycle[3],
+    #     linestyles=["solid"],
+    # )
+
+    # mach_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     mach_mask,
+    #     [0.5],
+    #     linewidths=2,
+    #     colors=CB_color_cycle[4],
+    #     linestyles=["solid"],
+    # )
+
+    (non_pos,) = ax.plot(
+        non_xlist,
+        non_ylist,
+        "o",
+        color="black",
+        markersize=10,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=1,
+        # label="Non-FCS-jet",
+        label="Tracked jet",
+    )
+    (sj_pos,) = ax.plot(
+        sj_xlist,
+        sj_ylist,
+        "o",
+        color="red",
+        markersize=10,
+        markeredgecolor="white",
+        fillstyle="full",
+        mew=1,
+        label="FCS-jet",
+    )
+
+    itr_jumbled = [3, 1, 4, 2, 0]
+
+    # proxy = [
+    #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
+    # proxy = [
+    #     mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
+    # proxy_labs = (
+    #         "$n=2n_\mathrm{sw}$",
+    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$M_{\mathrm{MS},x}=1$",
+    #         "Jet",
+    #         "FCS",
+    #         "Non-FCS jet",
+    #         "FCS-jet"
+    #     )
+    proxy = [
+        mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+        for itr in range(1)
+    ]
+    proxy_labs = [
+        # "$n=2n_\mathrm{sw}$",
+        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        # "$M_{\mathrm{MS},x}=1$",
+    ]
+
+    xmin, xmax, ymin, ymax = (
+        np.min(XmeshXY),
+        np.max(XmeshXY),
+        np.min(YmeshXY),
+        np.max(YmeshXY),
+    )
+
+    if ~(jet_mask == 0).all():
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
+        proxy_labs.append("Jet")
+    # if ~(slams_mask == 0).all():
+    #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
+    #     proxy_labs.append("FCS")
+    if np.logical_and(
+        np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
+        np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
+    ).any():
+        proxy.append(non_pos)
+        # proxy_labs.append("Non-FCS jet")
+        proxy_labs.append("Tracked jet")
+    if np.logical_and(
+        np.logical_and(sj_xlist >= xmin, sj_xlist <= xmax),
+        np.logical_and(sj_ylist >= ymin, sj_ylist <= ymax),
+    ).any():
+        proxy.append(sj_pos)
+        proxy_labs.append("FCS-jet")
+
+    ax.legend(
+        proxy,
+        proxy_labs,
+        frameon=True,
+        numpoints=1,
+        markerscale=1,
+        loc="lower left",
+        fontsize=14,
+    )
+
+
+def fincospar_plots(runid, start, stop):
+    global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g, pm_g, ax_ylabels, vmaxs, vmins, t0
+    global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
+    runid_g = runid
+    Blines_g = False
+    runids = ["ABA", "ABC", "AEA", "AEC"]
+    sw_pars = [
+        [1e6, 750e3, 5e-9, 0.5e6],
+        [3.3e6, 600e3, 5e-9, 0.5e6],
+        [1e6, 750e3, 10e-9, 0.5e6],
+        [3.3e6, 600e3, 10e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+    pdmax = [1.5, 3.5, 1.5, 3.5][runids.index(runid)]
+
+    bulkpath = jx.find_bulkpath(runid)
+    outdir = wrkdir_DNR + "fincospar/jet_ani/"
+
+    non_jets = get_non_jets(runid)
+    fcs_jets = get_fcs_jets(runid)
+
+    non_ids_g = np.append(non_jets, fcs_jets)
+    sj_ids_g = []
+
+    for fnr in range(start, stop + 1):
+        fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+
+        pt.plot.plot_colormap(
+            filename=bulkpath + fname,
+            outputfile=outdir + "{}.png".format(str(fnr).zfill(7)),
+            var="Pdyn",
+            vmin=0,
+            # vmax=1,
+            vmax=pdmax,
+            vscale=1e9,
+            useimshow=True,
+            # cbtitle="$P_{dyn}$ [nPa]",
+            # cbtitle="",
+            usesci=0,
+            scale=3,
+            # title="Run: {}, ID: {}\n t = {}s".format(
+            #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
+            # ),
+            # title="",
+            boxre=[0, 20, -10, 10],
+            # internalcb=True,
+            lin=5,
+            colormap="batlow",
+            tickinterval=2.0,
+            external=ext_jet_slim,
+            # nocb=True,
+            # expression=expr_rhoratio,
+            pass_vars=[
+                "RhoNonBackstream",
+                "RhoBackstream",
+                "PTensorNonBackstreamDiagonal",
+                "B",
+                "v",
+                "rho",
+                "core_heating",
+                "CellID",
+                "Mmsx",
+                "Pdyn",
+            ],
+        )
