@@ -899,7 +899,7 @@ def fincospar_plots(runid, start, stop):
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
             # title="",
-            boxre=[0, 20, -10, 10],
+            boxre=[0, 20, -6, 6],
             # internalcb=True,
             lin=5,
             colormap="batlow",
