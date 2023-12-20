@@ -894,7 +894,7 @@ def fincospar_plots(runid, start, stop):
             # cbtitle="$P_{dyn}$ [nPa]",
             # cbtitle="",
             usesci=0,
-            scale=3,
+            # scale=3,
             # title="Run: {}, ID: {}\n t = {}s".format(
             #     runids_pub[runids.index(runid)], non_id, float(fnr0) / 2.0
             # ),
