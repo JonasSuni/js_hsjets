@@ -714,7 +714,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         jet_mask,
         [0.5],
-        linewidths=2,
+        linewidths=0.6,
         colors=CB_color_cycle[2],
         linestyles=["solid"],
     )
@@ -724,7 +724,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         ch_mask,
         [0.5],
-        linewidths=2,
+        linewidths=0.6,
         colors=CB_color_cycle[1],
         linestyles=["solid"],
     )
@@ -764,7 +764,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         non_ylist,
         "o",
         color="black",
-        markersize=10,
+        markersize=2,
         markeredgecolor="white",
         fillstyle="full",
         mew=1,
@@ -776,7 +776,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         sj_ylist,
         "o",
         color="red",
-        markersize=10,
+        markersize=2,
         markeredgecolor="white",
         fillstyle="full",
         mew=1,
@@ -848,7 +848,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         numpoints=1,
         markerscale=1,
         loc="lower left",
-        fontsize=14,
+        fontsize=6,
     )
 
 
