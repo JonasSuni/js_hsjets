@@ -2226,7 +2226,7 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=0.1):
+def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=None):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -3220,9 +3220,10 @@ def jplots(
 
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
-    runid_list = ["AGF", "AIA"]
-    runids_paper = ["RDC", "RDC2"]
+    runid_list = ["AGF", "AIA", "AIB"]
+    runids_paper = ["RDC", "RDC2", "RDC3"]
     sw_pars = [
+        [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
@@ -3552,8 +3553,8 @@ def getNearestCellWithVspace(vlsvReader, cid):
 
 
 def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
-    runids = ["AGF", "AIA"]
-    pdmax = [1.0, 1.0][runids.index(runid)]
+    runids = ["AGF", "AIA", "AIB"]
+    pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -3581,6 +3582,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     #     [3.3e6, 600e3, 10e-9, 0.5e6],
     # ]
     sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
     ]
