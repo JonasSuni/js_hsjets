@@ -854,7 +854,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
 
 def fincospar_plots(runid, start, stop):
     global ax, x0, y0, pdmax, bulkpath, jetid_g, axr0, axr1, axr2, axr3, axr4, fnr0_g, pm_g, ax_ylabels, vmaxs, vmins, t0
-    global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g
+    global runid_g, sj_ids_g, non_ids_g, kind_g, Blines_g, filenr_g
     runid_g = runid
     Blines_g = False
     runids = ["ABA", "ABC", "AEA", "AEC"]
@@ -879,6 +879,7 @@ def fincospar_plots(runid, start, stop):
     sj_ids_g = []
 
     for fnr in range(start, stop + 1):
+        filenr_g = fnr
         fname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
 
         pt.plot.plot_colormap(
