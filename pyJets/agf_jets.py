@@ -4558,3 +4558,459 @@ def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
             break
 
     return None
+
+
+def run_comp_plotter(
+    start,
+    stop,
+    boxre=[-10, 20, -20, 20],
+    tickint=5.0,
+    blines=False,
+    nstp=40,
+    pdynmax=1.5,
+    pdynmin=0.1,
+    outdir="cmaps",
+    pointsx=[],
+    pointsy=[],
+    fsaved=None,
+    lin=1,
+):
+    var = "proton/vg_Pdyn"
+    vscale = 1e9
+    vmax = pdynmax
+    runids = ["AGF", "AIA", "AIB"]
+
+    if len(pointsx) != len(pointsy):
+        print("x and y must have same length!")
+        return 1
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0
+    runid_g = "AGF"
+    Blines_g = blines
+    drawBy0 = True
+
+    global xg, yg
+    xg = pointsx
+    yg = pointsy
+
+    # nstp = 40
+    start_points = np.array(
+        # [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
+        [
+            np.linspace(boxre[0] + 0.1, boxre[1] - 0.1, nstp),
+            np.ones(nstp) * (boxre[2] + 1),
+        ]
+    ).T
+
+    bulkpath_AGF = find_bulkpath("AGF")
+    bulkpath_AIA = find_bulkpath("AIA")
+    bulkpath_AIB = find_bulkpath("AIB")
+
+    bulkpaths = [bulkpath_AGF, bulkpath_AIA, bulkpath_AIB]
+
+    non_ids = []
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 1.5][runids.index("AGF")]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AGF")]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    outputdir = wrkdir_DNR + "Figs/{}/".format(outdir)
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # global x0, y0
+    # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+    # t0 = props.read("time")[0]
+    # x0 = props.read("x_wmean")[0]
+    # y0 = props.read("y_wmean")[0]
+    # fnr0 = int(t0 * 2)
+
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+
+    for fnr in range(start, stop + 1):
+        filenr_g = fnr
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        for bulkpath in bulkpaths:
+            pt.plot.plot_colormap(
+                ax=ax,
+                filename=bulkpath_AGF + fname,
+                outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
+                var=var,
+                vmin=pdynmin,
+                # vmax=1,
+                vmax=vmax,
+                vscale=vscale,
+                # cbtitle="",
+                # cbtitle="",
+                usesci=0,
+                # scale=3,
+                title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+                boxre=boxre,
+                internalcb=False,
+                lin=lin,
+                colormap="batlow",
+                tickinterval=tickint,
+                fsaved=fsaved,
+                # useimshow=True,
+                external=ext_jet,
+                # expression=expr_rhoratio,
+                pass_vars=[
+                    "proton/vg_rho_thermal",
+                    "proton/vg_rho_nonthermal",
+                    "proton/vg_ptensor_thermal_diagonal",
+                    "vg_b_vol",
+                    "proton/vg_v",
+                    "proton/vg_rho",
+                    "proton/vg_core_heating",
+                    "CellID",
+                    "proton/vg_mmsx",
+                    "proton/vg_Pdyn",
+                    "proton/vg_Pdynx",
+                    "proton/vg_beta_star",
+                ],
+            )
+
+
+def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
+    B = pass_maps["vg_b_vol"]
+    rho = pass_maps["proton/vg_rho"]
+    cellids = pass_maps["CellID"]
+    mmsx = pass_maps["proton/vg_mmsx"]
+    core_heating = pass_maps["proton/vg_core_heating"]
+    Bmag = np.linalg.norm(B, axis=-1)
+    Pdyn = pass_maps["proton/vg_Pdyn"]
+    Pdynx = pass_maps["proton/vg_Pdynx"]
+    beta_star = pass_maps["proton/vg_beta_star"]
+    By = B[:, :, 1]
+
+    # try:
+    #     slams_cells = np.loadtxt(
+    #         "/wrk-vakka/users/jesuni/foreshock_bubble/working/SLAMS/Masks/{}/{}.mask".format(
+    #             runid_g, int(filenr_g)
+    #         )
+    #     ).astype(int)
+    # except:
+    #     slams_cells = []
+    # try:
+    #     jet_cells = np.loadtxt(
+    #         "/wrk-vakka/users/jesuni/foreshock_bubble/working/jets/Masks/{}/{}.mask".format(
+    #             runid_g, int(filenr_g)
+    #         )
+    #     ).astype(int)
+    # except:
+    #     jet_cells = []
+
+    # sj_jetobs = [
+    #     PropReader(str(int(sj_id)).zfill(5), runid_g, transient="jet")
+    #     for sj_id in sj_ids_g
+    # ]
+    # non_sjobs = [
+    #     PropReader(str(int(non_id)).zfill(5), runid_g, transient="jet")
+    #     for non_id in non_ids_g
+    # ]
+
+    sj_xlist = []
+    sj_ylist = []
+    non_xlist = []
+    non_ylist = []
+
+    # for jetobj in sj_jetobs:
+    #     if filenr_g / 2.0 in jetobj.read("time"):
+    #         sj_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
+    #         sj_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
+    # for jetobj in non_sjobs:
+    #     if filenr_g / 2.0 in jetobj.read("time"):
+    #         non_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
+    #         non_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
+
+    for idx in range(len(xg)):
+        ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
+
+    # slams_mask = np.in1d(cellids, slams_cells).astype(int)
+    # slams_mask = np.reshape(slams_mask, cellids.shape)
+
+    # jet_mask = np.in1d(cellids, jet_cells).astype(int)
+    # jet_mask = np.reshape(jet_mask, cellids.shape)
+
+    ch_mask = (core_heating > 3 * T_sw).astype(int)
+    # mach_mask = (mmsx < 1).astype(int)
+    # rho_mask = (rho > 2 * rho_sw).astype(int)
+
+    # plaschke_mask = (Pdynx > 0.25 * Pdyn_sw).astype(int)
+    # plaschke_mask[core_heating < 3 * T_sw] = 0
+
+    # cav_shfa_mask = (Bmag < 0.8 * B_sw).astype(int)
+    # cav_shfa_mask[rho >= 0.8 * rho_sw] = 0
+
+    # diamag_mask = (Pdyn >= 1.2 * Pdyn_sw).astype(int)
+    # diamag_mask[Bmag > B_sw] = 0
+
+    # CB_color_cycle
+
+    # start_points = np.array(
+    #     [np.ones(20) * x0 + 0.5, np.linspace(y0 - 0.9, y0 + 0.9, 20)]
+    # ).T
+    # nstp = 40
+    # start_points = np.array([np.ones(nstp) * 17, np.linspace(-20, 20, nstp)]).T
+
+    # if Blines_g:
+    #     blines_bx = np.copy(B[:, :, 0])
+    #     blines_by = np.copy(B[:, :, 1])
+    #     blines_bx[core_heating > 3 * T_sw] = np.nan
+    #     blines_by[core_heating > 3 * T_sw] = np.nan
+    #     stream = ax.streamplot(
+    #         XmeshXY,
+    #         YmeshXY,
+    #         blines_bx,
+    #         blines_by,
+    #         arrowstyle="-",
+    #         broken_streamlines=False,
+    #         color="k",
+    #         linewidth=0.4,
+    #         # minlength=4,
+    #         density=35,
+    #         start_points=start_points,
+    #     )
+
+    lws = 0.6
+    mrks = 2
+    mews = 0.4
+
+    # if drawBy0:
+    #     by_mask = np.ones_like(By, dtype=int)
+    #     by_mask[np.logical_and(By > 0, YmeshXY < 0)] = 0
+    #     by_mask[np.logical_and(By < 0, YmeshXY > 0)] = 0
+
+    #     # by_mask[YmeshXY < 0] = 0
+    #     by_mask[beta_star < 0.3] = -1
+    #     by_mask[core_heating < 3 * T_sw] = -1
+
+    #     by_cont = ax.contourf(
+    #         XmeshXY,
+    #         YmeshXY,
+    #         by_mask,
+    #         [-0.5, 0.5],
+    #         # linewidths=lws,
+    #         colors=[CB_color_cycle[6], CB_color_cycle[8]],
+    #         # linestyles=["dashed"],
+    #         hatches=["++", "/"],
+    #         alpha=0.3,
+    #     )
+
+    #     by0_cont = ax.contour(
+    #         XmeshXY,
+    #         YmeshXY,
+    #         By,
+    #         [0],
+    #         linewidths=lws,
+    #         colors="red",
+    #         linestyles=["dashed"],
+    #     )
+
+    # jet_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     jet_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[2],
+    #     linestyles=["solid"],
+    # )
+
+    ch_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        ch_mask,
+        [0.5],
+        linewidths=lws,
+        colors=CB_color_cycle[0],
+        linestyles=["solid"],
+        zorder=3,
+    )
+    bs_cont = ax.contour(
+        XmeshXY,
+        YmeshXY,
+        beta_star,
+        [0.3],
+        linewidths=lws,
+        colors=CB_color_cycle[1],
+        linestyles=["solid"],
+        zorder=3,
+    )
+
+    # if plaschke_g:
+    #     plaschke_cont = ax.contour(
+    #         XmeshXY,
+    #         YmeshXY,
+    #         plaschke_mask,
+    #         [0.5],
+    #         linewidths=lws,
+    #         colors=CB_color_cycle[7],
+    #         linestyles=["solid"],
+    #     )
+
+    # slams_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     slams_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[7],
+    #     linestyles=["solid"],
+    # )
+
+    # rho_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     rho_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[3],
+    #     linestyles=["solid"],
+    # )
+
+    # mach_cont = ax.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     mach_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[4],
+    #     linestyles=["solid"],
+    # )
+
+    # (non_pos,) = ax.plot(
+    #     non_xlist,
+    #     non_ylist,
+    #     "o",
+    #     color="black",
+    #     markersize=mrks,
+    #     markeredgecolor="white",
+    #     fillstyle="full",
+    #     mew=mews,
+    #     label="Tracked jet",
+    # )
+    # (sj_pos,) = ax.plot(
+    #     sj_xlist,
+    #     sj_ylist,
+    #     "o",
+    #     color="red",
+    #     markersize=mrks,
+    #     markeredgecolor="white",
+    #     fillstyle="full",
+    #     mew=mews,
+    #     label="FCS-jet",
+    # )
+
+    # itr_jumbled = [3, 1, 4, 2, 7]
+
+    # itr_jumbled = [1, 1, 4, 2, 7]
+    # itr_jumbled = [1, 7, 4, 2, 7]
+
+    # proxy = [
+    #     plt.Rectangle((0, 0), 1, 1, fc=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
+    # proxy = [
+    #     mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(5)
+    # ] + [non_pos, sj_pos]
+
+    # proxy_labs = (
+    #         "$n=2n_\mathrm{sw}$",
+    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$M_{\mathrm{MS},x}=1$",
+    #         "Jet",
+    #         "FCS",
+    #         "Non-FCS jet",
+    #         "FCS-jet"
+    #     )
+
+    # proxy_labs = [
+    #     # "$n=2n_\mathrm{sw}$",
+    #     # "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #     "$\\beta^* = 0.3$",
+    #     # "$M_{\mathrm{MS},x}=1$",
+    #     # "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
+    # ]
+
+    # proxy = [
+    #     mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(len(proxy_labs))
+    # ]
+
+    # xmin, xmax, ymin, ymax = (
+    #     np.min(XmeshXY),
+    #     np.max(XmeshXY),
+    #     np.min(YmeshXY),
+    #     np.max(YmeshXY),
+    # )
+
+    # if plaschke_g:
+    #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[7]]))
+    #     proxy_labs.append("$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
+    # if ~(jet_mask == 0).all():
+    #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
+    #     proxy_labs.append(
+    #         "$P_\mathrm{dyn} \geq 2 \\langle P_\mathrm{dyn} \\rangle_\mathrm{3min}$"
+    #     )
+    # # if ~(slams_mask == 0).all():
+    # #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
+    # #     proxy_labs.append("FCS")
+    # if Blines_g:
+    #     proxy.append(mlines.Line2D([], [], color="k"))
+    #     proxy_labs.append("$B$")
+    # if drawBy0:
+    #     proxy.append(mlines.Line2D([], [], color="red", linestyle="dashed"))
+    #     proxy_labs.append("$B_y=0$")
+    #     proxy.append(
+    #         mpatches.Patch(
+    #             fc=CB_color_cycle[6],
+    #             # color="black",
+    #             # fill=True,
+    #             hatch=r"++++",
+    #             alpha=0.3,
+    #         )
+    #     )
+    #     proxy_labs.append("Q$\\perp$ sheath")
+    # if np.logical_and(
+    #     np.logical_and(non_xlist >= xmin, non_xlist <= xmax),
+    #     np.logical_and(non_ylist >= ymin, non_ylist <= ymax),
+    # ).any():
+    #     proxy.append(non_pos)
+    #     proxy_labs.append("Tracked jet")
+    # # if np.logical_and(
+    # #     np.logical_and(sj_xlist >= xmin, sj_xlist <= xmax),
+    # #     np.logical_and(sj_ylist >= ymin, sj_ylist <= ymax),
+    # # ).any():
+    # #     proxy.append(sj_pos)
+    # #     proxy_labs.append("FCS-jet")
+
+    # ax.legend(
+    #     proxy,
+    #     proxy_labs,
+    #     frameon=True,
+    #     numpoints=1,
+    #     markerscale=1,
+    #     loc="lower left",
+    #     fontsize=5,
+    # )
+
+    # global gprox, gprox_labs
+
+    # gprox = proxy
+    # gprox_labs = proxy_labs
