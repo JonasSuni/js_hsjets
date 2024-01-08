@@ -4569,7 +4569,7 @@ def run_comp_plotter(
     nstp=40,
     pdynmax=1.5,
     pdynmin=0.1,
-    outdir="cmaps",
+    outdir="comps",
     pointsx=[],
     pointsy=[],
     fsaved=None,
@@ -4636,9 +4636,8 @@ def run_comp_plotter(
     # y0 = props.read("y_wmean")[0]
     # fnr0 = int(t0 * 2)
 
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10))
-
     for fnr in range(start, stop + 1):
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
         filenr_g = fnr
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
@@ -4657,7 +4656,7 @@ def run_comp_plotter(
                 # cbtitle="",
                 usesci=0,
                 # scale=3,
-                title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+                title="t = {}s".format(float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
                 lin=lin,
@@ -4682,6 +4681,9 @@ def run_comp_plotter(
                     "proton/vg_beta_star",
                 ],
             )
+
+        fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)))
+        plt.close(fig)
 
 
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
