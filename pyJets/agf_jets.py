@@ -4584,7 +4584,7 @@ def run_comp_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g,linestyle_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g, linestyle_g
     runid_g = "AGF"
     Blines_g = blines
     drawBy0 = True
@@ -4635,7 +4635,7 @@ def run_comp_plotter(
     # x0 = props.read("x_wmean")[0]
     # y0 = props.read("y_wmean")[0]
     # fnr0 = int(t0 * 2)
-    linestyles = ["solid","dashed","dashdot"]
+    linestyles = ["solid", "dashed", "dashdot"]
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(10, 10))
@@ -4644,7 +4644,7 @@ def run_comp_plotter(
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
-        for idx,bulkpath in enumerate(bulkpaths):
+        for idx, bulkpath in enumerate(bulkpaths):
             linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
                 # axes=ax,
