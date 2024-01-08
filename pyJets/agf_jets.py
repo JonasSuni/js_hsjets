@@ -4584,7 +4584,7 @@ def run_comp_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0,ax_g
     runid_g = "AGF"
     Blines_g = blines
     drawBy0 = True
@@ -4638,13 +4638,14 @@ def run_comp_plotter(
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+        ax_g = ax
         filenr_g = fnr
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
         for bulkpath in bulkpaths:
             pt.plot.plot_colormap(
-                axes=ax,
+                #axes=ax,
                 filename=bulkpath_AGF + fname,
                 outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
                 var=var,
@@ -4738,8 +4739,8 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #         non_xlist.append(jetobj.read_at_time("x_wmean", filenr_g / 2.0))
     #         non_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
 
-    for idx in range(len(xg)):
-        ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
+    # for idx in range(len(xg)):
+    #     ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
 
     # slams_mask = np.in1d(cellids, slams_cells).astype(int)
     # slams_mask = np.reshape(slams_mask, cellids.shape)
@@ -4832,7 +4833,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #     linestyles=["solid"],
     # )
 
-    ch_cont = ax.contour(
+    ch_cont = ax_g.contour(
         XmeshXY,
         YmeshXY,
         ch_mask,
@@ -4842,7 +4843,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
         zorder=3,
     )
-    bs_cont = ax.contour(
+    bs_cont = ax_g.contour(
         XmeshXY,
         YmeshXY,
         beta_star,
