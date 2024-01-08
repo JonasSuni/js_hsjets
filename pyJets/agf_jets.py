@@ -4644,7 +4644,7 @@ def run_comp_plotter(
 
         for bulkpath in bulkpaths:
             pt.plot.plot_colormap(
-                ax=ax,
+                axes=ax,
                 filename=bulkpath_AGF + fname,
                 outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
                 var=var,
