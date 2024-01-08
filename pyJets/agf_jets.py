@@ -4584,7 +4584,7 @@ def run_comp_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0,ax_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g,linestyle_g
     runid_g = "AGF"
     Blines_g = blines
     drawBy0 = True
@@ -4635,6 +4635,7 @@ def run_comp_plotter(
     # x0 = props.read("x_wmean")[0]
     # y0 = props.read("y_wmean")[0]
     # fnr0 = int(t0 * 2)
+    linestyles = ["solid","dashed","dashdot"]
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(10, 10))
@@ -4643,10 +4644,11 @@ def run_comp_plotter(
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
-        for bulkpath in bulkpaths:
+        for idx,bulkpath in enumerate(bulkpaths):
+            linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
-                #axes=ax,
-                filename=bulkpath_AGF + fname,
+                # axes=ax,
+                filename=bulkpath + fname,
                 outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
                 var=var,
                 vmin=pdynmin,
@@ -4749,7 +4751,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # jet_mask = np.reshape(jet_mask, cellids.shape)
 
     ch_mask = (core_heating > 3 * T_sw).astype(int)
-    # mach_mask = (mmsx < 1).astype(int)
+    mach_mask = (mmsx < 1).astype(int)
     # rho_mask = (rho > 2 * rho_sw).astype(int)
 
     # plaschke_mask = (Pdynx > 0.25 * Pdyn_sw).astype(int)
@@ -4788,7 +4790,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #         start_points=start_points,
     #     )
 
-    lws = 0.6
+    lws = 1.0
     mrks = 2
     mews = 0.4
 
@@ -4833,14 +4835,24 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #     linestyles=["solid"],
     # )
 
-    ch_cont = ax_g.contour(
+    # ch_cont = ax_g.contour(
+    #     XmeshXY,
+    #     YmeshXY,
+    #     ch_mask,
+    #     [0.5],
+    #     linewidths=lws,
+    #     colors=CB_color_cycle[0],
+    #     linestyles=linestyle_g,
+    #     zorder=3,
+    # )
+    mms_cont = ax_g.contour(
         XmeshXY,
         YmeshXY,
-        ch_mask,
+        mach_mask,
         [0.5],
         linewidths=lws,
         colors=CB_color_cycle[0],
-        linestyles=["solid"],
+        linestyles=linestyle_g,
         zorder=3,
     )
     bs_cont = ax_g.contour(
@@ -4850,7 +4862,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
         [0.3],
         linewidths=lws,
         colors=CB_color_cycle[1],
-        linestyles=["solid"],
+        linestyles=linestyle_g,
         zorder=3,
     )
 
