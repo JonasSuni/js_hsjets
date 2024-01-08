@@ -4664,7 +4664,7 @@ def run_comp_plotter(
                 tickinterval=tickint,
                 fsaved=fsaved,
                 # useimshow=True,
-                external=ext_jet,
+                external=ext_bs_mp,
                 # expression=expr_rhoratio,
                 pass_vars=[
                     "proton/vg_rho_thermal",
