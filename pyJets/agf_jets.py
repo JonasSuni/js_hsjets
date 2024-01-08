@@ -4638,7 +4638,7 @@ def run_comp_plotter(
     linestyles = ["solid", "dashed", "dashdot"]
 
     for fnr in range(start, stop + 1):
-        fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
         ax_g = ax
         filenr_g = fnr
 
@@ -4685,7 +4685,7 @@ def run_comp_plotter(
                 ],
             )
 
-        fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)))
+        fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
 
 
