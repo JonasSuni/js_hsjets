@@ -4711,11 +4711,14 @@ def run_comp_plotter(
 def expr_Bratio(exprmaps, requestvariables=False):
     B = exprmaps["vg_b_vol"]
     Bmag = np.linalg.norm(B, axis=-1)
+    Bref = Bmag
 
     if idx_g == 0:
         Bmag_g = Bmag
+    else:
+        Bref = Bmag_g
 
-    return Bmag / (Bmag_g + 1.0e-30)
+    return Bmag / (Bref + 1.0e-30)
 
 
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
