@@ -4649,7 +4649,8 @@ def run_comp_plotter(
             pt.plot.plot_colormap(
                 # axes=ax,
                 filename=bulkpath + fname,
-                outputfile=outputdir + "debug/pdyn_{}.png".format(str(fnr).zfill(7)),
+                outputfile=outputdir
+                + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
                 var=var,
                 vmin=pdynmin,
                 # vmax=1,
