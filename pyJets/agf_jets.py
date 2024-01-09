@@ -4678,7 +4678,7 @@ def run_comp_plotter(
                 boxre=boxre,
                 internalcb=False,
                 # lin=10,
-                colormap="batlow",
+                colormap="vik",
                 tickinterval=tickint,
                 fsaved=fsaved,
                 # useimshow=True,
