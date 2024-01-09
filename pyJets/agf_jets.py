@@ -4639,6 +4639,7 @@ def run_comp_plotter(
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        fig2,ax2 = plt.subplots(1, 3, figsize=(16, 6))
         ax_g = ax
         filenr_g = fnr
 
@@ -4647,7 +4648,7 @@ def run_comp_plotter(
         for idx, bulkpath in enumerate(bulkpaths):
             linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
-                # axes=ax,
+                axes=ax2[idx],
                 filename=bulkpath + fname,
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
@@ -4660,7 +4661,7 @@ def run_comp_plotter(
                 # cbtitle="",
                 usesci=0,
                 # scale=3,
-                title="t = {}s".format(float(fnr) / 2.0),
+                #title="t = {}s".format(float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
                 lin=lin,
@@ -4693,6 +4694,9 @@ def run_comp_plotter(
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
+
+        fig2.savefig(outputdir+"../fluxf/{}.png".format(str(fnr).zfill(7)),dpi=300)
+        plt.close(fig2)
 
 
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
