@@ -4661,7 +4661,7 @@ def run_comp_plotter(
                 var="vg_b_vol",
                 vmin=1,
                 # vmax=1,
-                vmax=10,
+                vmax=20,
                 vscale=1e9,
                 # cbtitle="",
                 # cbtitle="",
