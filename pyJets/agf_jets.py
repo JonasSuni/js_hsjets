@@ -4659,9 +4659,9 @@ def run_comp_plotter(
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
                 var="proton/vg_rho",
-                vmin=1e6,
+                vmin=1,
                 # vmax=1,
-                vmax=4e6,
+                vmax=4,
                 vscale=1e-6,
                 # cbtitle="",
                 # cbtitle="",
