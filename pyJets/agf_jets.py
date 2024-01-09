@@ -4649,9 +4649,13 @@ def run_comp_plotter(
         fig2, ax2 = plt.subplots(3, 1, figsize=(6, 16))
         ax_g = ax
         filenr_g = fnr
-        Bmag_g = np.array([], dtype=float)
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        vobj = pt.vlsvfile.VlsvReader(bulkpaths[0] + fname)
+        Bmag_AGF = vobj.read_variable("vg_b_vol", operator="magnitude")
+        cellids_AGF = vobj.read_variable("CellID")
+        Bmag_g = Bmag_AGF[np.argsort(cellids_AGF)]
 
         for idx, bulkpath in enumerate(bulkpaths):
             idx_g = idx
@@ -4711,12 +4715,7 @@ def run_comp_plotter(
 def expr_Bratio(exprmaps, requestvariables=False):
     B = exprmaps["vg_b_vol"]
     Bmag = np.linalg.norm(B, axis=-1)
-    Bref = Bmag
-
-    if idx_g == 0:
-        Bmag_g = Bmag
-    else:
-        Bref = Bmag_g
+    Bref = np.reshape(Bmag_g, Bmag.shape)
 
     return Bmag / (Bref + 1.0e-30)
 
