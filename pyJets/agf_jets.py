@@ -4649,7 +4649,7 @@ def run_comp_plotter(
             pt.plot.plot_colormap(
                 # axes=ax,
                 filename=bulkpath + fname,
-                outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
+                outputfile=outputdir + "debug/pdyn_{}.png".format(str(fnr).zfill(7)),
                 var=var,
                 vmin=pdynmin,
                 # vmax=1,
@@ -4683,6 +4683,9 @@ def run_comp_plotter(
                     "proton/vg_Pdynx",
                     "proton/vg_beta_star",
                 ],
+                fluxdir=bulkpath + "../fluxfunction",
+                fluxfile="bulk.{}.bin".format(str(int(fnr)).zfill(7)),
+                fluxlines=10,
             )
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
