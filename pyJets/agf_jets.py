@@ -4684,7 +4684,7 @@ def run_comp_plotter(
                     "proton/vg_beta_star",
                 ],
                 fluxdir=bulkpath + "../fluxfunction/",
-                fluxfile="bulk.{}.vlsv.bin".format(str(int(fnr)).zfill(7)),
+                fluxfile=fname+".bin",
                 fluxlines=10,
             )
 
