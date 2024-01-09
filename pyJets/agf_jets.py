@@ -4667,7 +4667,7 @@ def run_comp_plotter(
                 # cbtitle="",
                 usesci=0,
                 # scale=3,
-                # title="t = {}s".format(float(fnr) / 2.0),
+                title="Run = {}, t = {}s".format(runids[idx],float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
                 lin=10,
