@@ -4629,6 +4629,12 @@ def run_comp_plotter(
         except OSError:
             pass
 
+    if not os.path.exists(outputdir + "../fluxf"):
+        try:
+            os.makedirs(outputdir + "../fluxf")
+        except OSError:
+            pass
+
     # global x0, y0
     # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
     # t0 = props.read("time")[0]
@@ -4639,7 +4645,7 @@ def run_comp_plotter(
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-        fig2,ax2 = plt.subplots(1, 3, figsize=(16, 6))
+        fig2, ax2 = plt.subplots(1, 3, figsize=(16, 6))
         ax_g = ax
         filenr_g = fnr
 
@@ -4661,7 +4667,7 @@ def run_comp_plotter(
                 # cbtitle="",
                 usesci=0,
                 # scale=3,
-                #title="t = {}s".format(float(fnr) / 2.0),
+                # title="t = {}s".format(float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
                 lin=lin,
@@ -4695,7 +4701,7 @@ def run_comp_plotter(
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
 
-        fig2.savefig(outputdir+"../fluxf/{}.png".format(str(fnr).zfill(7)),dpi=300)
+        fig2.savefig(outputdir + "../fluxf/{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig2)
 
 
