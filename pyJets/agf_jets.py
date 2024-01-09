@@ -4645,7 +4645,7 @@ def run_comp_plotter(
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-        fig2, ax2 = plt.subplots(1, 3, figsize=(16, 6))
+        fig2, ax2 = plt.subplots(3, 1, figsize=(6, 16))
         ax_g = ax
         filenr_g = fnr
 
@@ -4658,11 +4658,11 @@ def run_comp_plotter(
                 filename=bulkpath + fname,
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
-                var=var,
-                vmin=pdynmin,
+                var="proton/vg_rho",
+                vmin=1e6,
                 # vmax=1,
-                vmax=vmax,
-                vscale=vscale,
+                vmax=4e6,
+                vscale=1e-6,
                 # cbtitle="",
                 # cbtitle="",
                 usesci=0,
@@ -4670,7 +4670,7 @@ def run_comp_plotter(
                 # title="t = {}s".format(float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
-                lin=lin,
+                lin=10,
                 colormap="batlow_r",
                 tickinterval=tickint,
                 fsaved=fsaved,
