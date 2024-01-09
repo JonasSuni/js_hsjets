@@ -4714,8 +4714,9 @@ def run_comp_plotter(
 
 def expr_Bratio(exprmaps, requestvariables=False):
     B = exprmaps["vg_b_vol"]
+    ci = exprmaps["CellID"].flatten()
     Bmag = np.linalg.norm(B, axis=-1)
-    Bref = np.reshape(Bmag_g, Bmag.shape)
+    Bref = np.reshape(Bmag_g[ci - 1], Bmag.shape)
 
     return Bmag / (Bref + 1.0e-30)
 
