@@ -4666,7 +4666,7 @@ def run_comp_plotter(
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
                 var="vg_b_vol",
-                vmin=0.01,
+                vmin=0.1,
                 # vmax=1,
                 vmax=10,
                 # vscale=1e9,
