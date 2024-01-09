@@ -4686,7 +4686,7 @@ def run_comp_plotter(
                 # fluxdir="/wrk-vakka/group/spacephysics/vlasiator/2D/{}/fluxfunction".format(
                 #     runids[idx]
                 # ),
-                fluxfile=bulkpath+"../fluxfunction/"+fname,
+                fluxfile=bulkpath + "../fluxfunction/" + fname + ".bin",
                 fluxlines=10,
             )
 
