@@ -4683,8 +4683,8 @@ def run_comp_plotter(
                     "proton/vg_Pdynx",
                     "proton/vg_beta_star",
                 ],
-                fluxdir=bulkpath + "../fluxfunction/",
-                fluxfile=fname+".bin",
+                fluxdir=bulkpath + "../fluxfunction",
+                fluxfile=fname + ".bin",
                 fluxlines=10,
             )
 
