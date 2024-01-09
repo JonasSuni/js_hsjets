@@ -4584,7 +4584,7 @@ def run_comp_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g, linestyle_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g, linestyle_g, idx_g, B_g
     runid_g = "AGF"
     Blines_g = blines
     drawBy0 = True
@@ -4652,6 +4652,7 @@ def run_comp_plotter(
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
         for idx, bulkpath in enumerate(bulkpaths):
+            idx_g = idx
             linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
                 axes=ax2[idx],
@@ -4659,10 +4660,10 @@ def run_comp_plotter(
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
                 var="vg_b_vol",
-                vmin=1,
+                vmin=0.01,
                 # vmax=1,
-                vmax=30,
-                vscale=1e9,
+                vmax=10,
+                #vscale=1e9,
                 # cbtitle="",
                 # cbtitle="",
                 usesci=0,
@@ -4670,13 +4671,13 @@ def run_comp_plotter(
                 title="Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0),
                 boxre=boxre,
                 internalcb=False,
-                lin=10,
+                #lin=10,
                 colormap="batlow",
                 tickinterval=tickint,
                 fsaved=fsaved,
                 # useimshow=True,
                 external=ext_bs_mp,
-                # expression=expr_rhoratio,
+                expression=expr_Bratio,
                 pass_vars=[
                     "proton/vg_rho_thermal",
                     "proton/vg_rho_nonthermal",
@@ -4703,6 +4704,16 @@ def run_comp_plotter(
 
         fig2.savefig(outputdir + "../fluxf/{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig2)
+
+
+def expr_Bratio(exprmaps, requestvariables=False):
+    B = exprmaps["vg_b_vol"]
+    Bmag = np.linalg.norm(B, axis=-1)
+
+    if idx_g == 0:
+        B_g = Bmag
+
+    return Bmag / (B_g + 1.0e-30)
 
 
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
