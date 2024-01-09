@@ -4683,8 +4683,10 @@ def run_comp_plotter(
                     "proton/vg_Pdynx",
                     "proton/vg_beta_star",
                 ],
-                fluxdir=bulkpath + "../fluxfunction",
-                fluxfile=fname,
+                fluxdir="/wrk-vakka/group/spacephysics/vlasiator/2D/{}/fluxfunction".format(
+                    runids[idx]
+                ),
+                fluxfile=fname + ".bin",
                 fluxlines=10,
             )
 
