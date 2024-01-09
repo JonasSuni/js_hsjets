@@ -4649,7 +4649,7 @@ def run_comp_plotter(
         fig2, ax2 = plt.subplots(3, 1, figsize=(6, 16))
         ax_g = ax
         filenr_g = fnr
-        Bmag_g = np.array([],dtype=float)
+        Bmag_g = np.array([], dtype=float)
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
