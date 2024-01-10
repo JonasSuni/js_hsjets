@@ -4585,7 +4585,7 @@ def run_comp_plotter(
         return 1
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g, linestyle_g, idx_g
-    global Bmag_g
+    global Bmag_g, ax3_g
     runid_g = "AGF"
     Blines_g = blines
     drawBy0 = True
@@ -4636,6 +4636,12 @@ def run_comp_plotter(
         except OSError:
             pass
 
+    if not os.path.exists(outputdir + "../dipcomp"):
+        try:
+            os.makedirs(outputdir + "../dipcomp")
+        except OSError:
+            pass
+
     # global x0, y0
     # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
     # t0 = props.read("time")[0]
@@ -4647,6 +4653,7 @@ def run_comp_plotter(
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
         fig2, ax2 = plt.subplots(2, 2, figsize=(10, 10))
+        fig3, ax3 = plt.subplots(2, 2, figsize=(10, 10))
         ax_g = ax
         filenr_g = fnr
 
@@ -4658,8 +4665,10 @@ def run_comp_plotter(
         Bmag_g = Bmag_AGF[np.argsort(cellids_AGF)]
 
         ax2[1, 1].axis("off")
+        ax3[1, 1].axis("off")
 
         for idx, bulkpath in enumerate(bulkpaths):
+            ax3_g = ax3.flatten()[idx]
             idx_g = idx
             linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
@@ -4706,12 +4715,16 @@ def run_comp_plotter(
                 fluxfile=bulkpath + "../fluxfunction/" + fname + ".bin",
                 fluxlines=10,
             )
+            ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0))
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
 
         fig2.savefig(outputdir + "../fluxf/{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig2)
+
+        fig3.savefig(outputdir + "../dipcomp/{}.png".format(str(fnr).zfill(7)), dpi=300)
+        plt.close(fig3)
 
 
 def expr_Bratio(exprmaps, requestvariables=False):
@@ -4734,6 +4747,15 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     Pdynx = pass_maps["proton/vg_Pdynx"]
     beta_star = pass_maps["proton/vg_beta_star"]
     By = B[:, :, 1]
+    Bmag = np.linalg.norm(B, axis=-1)
+
+    RmeshXY = np.sqrt(XmeshXY**2 + YmeshXY**2) / r_e
+    B_dipole = 3.12e-5 / (RmeshXY**3 + 1e-30)
+
+    (dcplot,) = ax3_g.pcolormesh(
+        XmeshXY, YmeshXY, Bmag / B_dipole, cmap="vik", vmin=0.1, vmax=10
+    )
+    dccb = ax3_g.colorbar(dcplot, ax=ax3_g)
 
     # try:
     #     slams_cells = np.loadtxt(
