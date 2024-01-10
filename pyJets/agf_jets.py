@@ -4757,7 +4757,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
         YmeshXY,
         Bmag / B_dipole,
         cmap="vik",
-        #norm=colors.LogNorm(vmin=0.5, vmax=2),
+        # norm=colors.LogNorm(vmin=0.5, vmax=2),
         vmin=0.5,
         vmax=2,
     )
