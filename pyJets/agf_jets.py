@@ -4758,7 +4758,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
         Bmag / B_dipole,
         cmap="vik",
         # norm=colors.LogNorm(vmin=0.5, vmax=2),
-        vmin=0.5,
+        vmin=0,
         vmax=2,
     )
     dccb = plt.colorbar(dcplot, ax=ax3_g)
