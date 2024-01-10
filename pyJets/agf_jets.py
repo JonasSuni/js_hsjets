@@ -4753,7 +4753,11 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     B_dipole = 3.12e-5 / (RmeshXY**3 + 1e-30)
 
     dcplot = ax3_g.pcolormesh(
-        XmeshXY, YmeshXY, Bmag / B_dipole, cmap="vik", vmin=0.1, vmax=10
+        XmeshXY,
+        YmeshXY,
+        Bmag / B_dipole,
+        cmap="vik",
+        norm=colors.LogNorm(vmin=0.1, vmax=10),
     )
     dccb = plt.colorbar(dcplot, ax=ax3_g)
 
