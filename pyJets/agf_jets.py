@@ -4755,7 +4755,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     dcplot = ax3_g.pcolormesh(
         XmeshXY, YmeshXY, Bmag / B_dipole, cmap="vik", vmin=0.1, vmax=10
     )
-    dccb = ax3_g.colorbar(dcplot, ax=ax3_g)
+    dccb = plt.colorbar(dcplot, ax=ax3_g)
 
     # try:
     #     slams_cells = np.loadtxt(
