@@ -4646,7 +4646,7 @@ def run_comp_plotter(
 
     for fnr in range(start, stop + 1):
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-        fig2, ax2 = plt.subplots(3, 1, figsize=(6, 16))
+        fig2, ax2 = plt.subplots(2, 2, figsize=(10, 10))
         ax_g = ax
         filenr_g = fnr
 
@@ -4657,11 +4657,13 @@ def run_comp_plotter(
         cellids_AGF = vobj.read_variable("CellID")
         Bmag_g = Bmag_AGF[np.argsort(cellids_AGF)]
 
+        ax2[1, 1].axis("off")
+
         for idx, bulkpath in enumerate(bulkpaths):
             idx_g = idx
             linestyle_g = linestyles[idx]
             pt.plot.plot_colormap(
-                axes=ax2[idx],
+                axes=ax2.flatten()[idx],
                 filename=bulkpath + fname,
                 outputfile=outputdir
                 + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
