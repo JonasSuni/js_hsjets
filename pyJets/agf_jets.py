@@ -4686,6 +4686,7 @@ def run_comp_plotter(
                 usesci=0,
                 # scale=3,
                 title="Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0),
+                cbtitle="$B/B_{AGF}$",
                 boxre=boxre,
                 internalcb=False,
                 # lin=10,
