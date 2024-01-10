@@ -4749,7 +4749,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     By = B[:, :, 1]
     Bmag = np.linalg.norm(B, axis=-1)
 
-    RmeshXY = np.sqrt(XmeshXY**2 + YmeshXY**2) / r_e
+    RmeshXY = np.sqrt(XmeshXY**2 + YmeshXY**2)
     B_dipole = 3.12e-5 / (RmeshXY**3 + 1e-30)
 
     dcplot = ax3_g.pcolormesh(
