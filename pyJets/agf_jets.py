@@ -4762,7 +4762,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
         vmax=2,
     )
     dccb = plt.colorbar(dcplot, ax=ax3_g)
-    dccb.set_label('Dipole compression $f$', rotation=270)
+    dccb.set_label("Dipole compression $f$", rotation=270, labelpad=10)
 
     # try:
     #     slams_cells = np.loadtxt(
