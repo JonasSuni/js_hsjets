@@ -5235,7 +5235,7 @@ def run_comp_plotter_early(
                 # cbtitle="",
                 usesci=0,
                 # scale=3,
-                title="Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0),
+                title="Run = {}, t = {}s".format(runids[idx], float(fnr) * 10),
                 cbtitle="$B/B_{AGF}$",
                 boxre=boxre,
                 internalcb=False,
@@ -5266,7 +5266,7 @@ def run_comp_plotter_early(
                 # fluxfile=bulkpath + "../fluxfunction/" + fname + ".bin",
                 # fluxlines=10,
             )
-            ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0))
+            ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) * 10))
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
