@@ -5278,7 +5278,7 @@ def run_comp_plotter_early(
         ax.set_title("MP and BS position")
         ax.set_xlabel("X [$R_E$]")
         ax.set_ylabel("Y [$R_E$]")
-        ax.set(xlim=(boxre[0],boxre[1]),ylim=(boxre[2],boxre[3]))
+        ax.set(xlim=(boxre[0], boxre[1]), ylim=(boxre[2], boxre[3]))
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
