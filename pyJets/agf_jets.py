@@ -4739,15 +4739,15 @@ def expr_Bratio(exprmaps, requestvariables=False):
 
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     B = pass_maps["vg_b_vol"]
-    rho = pass_maps["proton/vg_rho"]
-    cellids = pass_maps["CellID"]
+    # rho = pass_maps["proton/vg_rho"]
+    # cellids = pass_maps["CellID"]
     mmsx = pass_maps["proton/vg_mmsx"]
-    core_heating = pass_maps["proton/vg_core_heating"]
+    # core_heating = pass_maps["proton/vg_core_heating"]
     Bmag = np.linalg.norm(B, axis=-1)
-    Pdyn = pass_maps["proton/vg_Pdyn"]
-    Pdynx = pass_maps["proton/vg_Pdynx"]
+    # Pdyn = pass_maps["proton/vg_Pdyn"]
+    # Pdynx = pass_maps["proton/vg_Pdynx"]
     beta_star = pass_maps["proton/vg_beta_star"]
-    By = B[:, :, 1]
+    # By = B[:, :, 1]
     Bmag = np.linalg.norm(B, axis=-1)
 
     RmeshXY = np.sqrt(XmeshXY**2 + YmeshXY**2)
@@ -4814,7 +4814,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # jet_mask = np.in1d(cellids, jet_cells).astype(int)
     # jet_mask = np.reshape(jet_mask, cellids.shape)
 
-    ch_mask = (core_heating > 3 * T_sw).astype(int)
+    # ch_mask = (core_heating > 3 * T_sw).astype(int)
     mach_mask = (mmsx < 1).astype(int)
     # rho_mask = (rho > 2 * rho_sw).astype(int)
 
@@ -5247,13 +5247,13 @@ def run_comp_plotter_early(
                 external=ext_bs_mp,
                 expression=expr_Bratio,
                 pass_vars=[
-                    "proton/vg_rho_thermal",
-                    "proton/vg_rho_nonthermal",
-                    "proton/vg_ptensor_thermal_diagonal",
+                    # "proton/vg_rho_thermal",
+                    # "proton/vg_rho_nonthermal",
+                    # "proton/vg_ptensor_thermal_diagonal",
                     "vg_b_vol",
                     "proton/vg_v",
                     "proton/vg_rho",
-                    "proton/vg_core_heating",
+                    # "proton/vg_core_heating",
                     "CellID",
                     "proton/vg_mmsx",
                     "proton/vg_Pdyn",
