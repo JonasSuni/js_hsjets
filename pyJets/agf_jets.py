@@ -5275,7 +5275,7 @@ def run_comp_plotter_early(
             )
             ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) * 10))
         ax.legend(loc="lower right")
-        ax.set_title("MP and BS position")
+        ax.set_title("MP and BS position, t = {}s".format(float(fnr)*10))
         ax.set_xlabel("X [$R_E$]")
         ax.set_ylabel("Y [$R_E$]")
         ax.set(xlim=(boxre[0], boxre[1]), ylim=(boxre[2], boxre[3]))
