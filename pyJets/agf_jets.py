@@ -5099,7 +5099,7 @@ def early_bulkpath(runid):
     if runid == "static_IB_test":
         return "/wrk-vakka/users/jesuni/static_IB_B_test_fullres/bulk_before_300/"
     elif runid == "AGF":
-        return "/wrk-vakka/group/spacephysics/vlasiator/2D/AGF/run_300s_steady"
+        return "/wrk-vakka/group/spacephysics/vlasiator/2D/AGF/run_300s_steady/"
     elif runid == "AIA":
         return "/wrk-vakka/group/spacephysics/vlasiator/2D/AIA/bulk/"
     elif runid == "AIB":
