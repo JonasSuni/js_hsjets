@@ -5093,3 +5093,190 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
 
     # gprox = proxy
     # gprox_labs = proxy_labs
+
+
+def early_bulkpath(runid):
+    if runid == "static_IB_test":
+        return "/wrk-vakka/users/jesuni/static_IB_B_test_fullres/bulk_before_300/"
+    elif runid == "AGF":
+        return "/wrk-vakka/group/spacephysics/vlasiator/2D/AGF/run_300s_steady"
+    elif runid == "AIA":
+        return "/wrk-vakka/group/spacephysics/vlasiator/2D/AIA/bulk/"
+    elif runid == "AIB":
+        return "/wrk-vakka/group/spacephysics/vlasiator/2D/AIB/bulk_before_300/"
+
+
+def run_comp_plotter_early(
+    start,
+    stop,
+    boxre=[-10, 20, -20, 20],
+    tickint=5.0,
+    blines=False,
+    nstp=40,
+    pdynmax=1.5,
+    pdynmin=0.1,
+    outdir="early_comps",
+    pointsx=[],
+    pointsy=[],
+    fsaved=None,
+    lin=1,
+):
+    var = "proton/vg_Pdyn"
+    vscale = 1e9
+    vmax = pdynmax
+    runids = ["AGF", "static_IB_test", "AIA", "AIB"]
+
+    if len(pointsx) != len(pointsy):
+        print("x and y must have same length!")
+        return 1
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, ax_g, linestyle_g, idx_g
+    global Bmag_g, ax3_g
+    runid_g = "AGF"
+    Blines_g = blines
+    drawBy0 = True
+
+    global xg, yg
+    xg = pointsx
+    yg = pointsy
+
+    # nstp = 40
+    start_points = np.array(
+        # [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
+        [
+            np.linspace(boxre[0] + 0.1, boxre[1] - 0.1, nstp),
+            np.ones(nstp) * (boxre[2] + 1),
+        ]
+    ).T
+
+    bulkpath_AGF = find_bulkpath("AGF")
+    bulkpath_AIA = find_bulkpath("AIA")
+    bulkpath_AIB = find_bulkpath("AIB")
+
+    bulkpaths = [
+        early_bulkpath(runid) for runid in ["AGF", "static_IB_test", "AIA", "AIB"]
+    ]
+
+    non_ids = []
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    pdmax = [1.5, 1.5][runids.index("AGF")]
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AGF")]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    outputdir = wrkdir_DNR + "Figs/{}/".format(outdir)
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    if not os.path.exists(outputdir + "../early_fluxf"):
+        try:
+            os.makedirs(outputdir + "../early_fluxf")
+        except OSError:
+            pass
+
+    if not os.path.exists(outputdir + "../early_dipcomp"):
+        try:
+            os.makedirs(outputdir + "../early_dipcomp")
+        except OSError:
+            pass
+
+    # global x0, y0
+    # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+    # t0 = props.read("time")[0]
+    # x0 = props.read("x_wmean")[0]
+    # y0 = props.read("y_wmean")[0]
+    # fnr0 = int(t0 * 2)
+    linestyles = ["solid", "dashed", "dashdot", "dotted"]
+
+    for fnr in range(start, stop + 1):
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+        fig2, ax2 = plt.subplots(2, 2, figsize=(10, 10))
+        fig3, ax3 = plt.subplots(2, 2, figsize=(10, 10))
+        ax_g = ax
+        filenr_g = fnr
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        vobj = pt.vlsvfile.VlsvReader(bulkpaths[0] + fname)
+        Bmag_AGF = vobj.read_variable("vg_b_vol", operator="magnitude")
+        cellids_AGF = vobj.read_variable("CellID")
+        Bmag_g = Bmag_AGF[np.argsort(cellids_AGF)]
+
+        # ax2[1, 1].axis("off")
+        # ax3[1, 1].axis("off")
+
+        for idx, bulkpath in enumerate(bulkpaths):
+            ax3_g = ax3.flatten()[idx]
+            idx_g = idx
+            linestyle_g = linestyles[idx]
+            pt.plot.plot_colormap(
+                axes=ax2.flatten()[idx],
+                filename=bulkpath + fname,
+                outputfile=outputdir
+                + "debug/{}_pdyn_{}.png".format(runids[idx], str(fnr).zfill(7)),
+                var="vg_b_vol",
+                vmin=0.1,
+                # vmax=1,
+                vmax=10,
+                # vscale=1e9,
+                # cbtitle="",
+                # cbtitle="",
+                usesci=0,
+                # scale=3,
+                title="Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0),
+                cbtitle="$B/B_{AGF}$",
+                boxre=boxre,
+                internalcb=False,
+                # lin=10,
+                colormap="vik",
+                tickinterval=tickint,
+                fsaved=fsaved,
+                # useimshow=True,
+                external=ext_bs_mp,
+                expression=expr_Bratio,
+                pass_vars=[
+                    "proton/vg_rho_thermal",
+                    "proton/vg_rho_nonthermal",
+                    "proton/vg_ptensor_thermal_diagonal",
+                    "vg_b_vol",
+                    "proton/vg_v",
+                    "proton/vg_rho",
+                    "proton/vg_core_heating",
+                    "CellID",
+                    "proton/vg_mmsx",
+                    "proton/vg_Pdyn",
+                    "proton/vg_Pdynx",
+                    "proton/vg_beta_star",
+                ],
+                # fluxdir="/wrk-vakka/group/spacephysics/vlasiator/2D/{}/fluxfunction".format(
+                #     runids[idx]
+                # ),
+                # fluxfile=bulkpath + "../fluxfunction/" + fname + ".bin",
+                # fluxlines=10,
+            )
+            ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) / 2.0))
+
+        fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
+        plt.close(fig)
+
+        fig2.savefig(
+            outputdir + "../early_fluxf/{}.png".format(str(fnr).zfill(7)), dpi=300
+        )
+        plt.close(fig2)
+
+        fig3.savefig(
+            outputdir + "../early_dipcomp/{}.png".format(str(fnr).zfill(7)), dpi=300
+        )
+        plt.close(fig3)
