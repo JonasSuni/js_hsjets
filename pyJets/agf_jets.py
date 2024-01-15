@@ -5218,6 +5218,13 @@ def run_comp_plotter_early(
         # ax3[1, 1].axis("off")
 
         for idx, bulkpath in enumerate(bulkpaths):
+            ax.plot(
+                [-1, -1],
+                [-1, -1],
+                linestyle=linestyles[idx],
+                color=CB_color_cycle[0],
+                label=runids[idx],
+            )
             ax3_g = ax3.flatten()[idx]
             idx_g = idx
             linestyle_g = linestyles[idx]
@@ -5267,6 +5274,10 @@ def run_comp_plotter_early(
                 # fluxlines=10,
             )
             ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) * 10))
+        ax.legend("lower right")
+        ax.set_title("MP and BS position")
+        ax.set_xlabel("X [$R_E$]")
+        ax.set_ylabel("Y [$R_E$]")
 
         fig.savefig(outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)), dpi=300)
         plt.close(fig)
