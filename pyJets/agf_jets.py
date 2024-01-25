@@ -2951,20 +2951,20 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "TPerp",
     ]
 
-    runid_list = ["AGF", "AIA", "AIB"]
+    runids = ["AGF", "AIA", "AIB", "static_IB_B"]
     runids_paper = ["RDC", "RDC2", "RDC3"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AGF")]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AGF")]
     pdyn_sw_AGF = m_p * n_sw * v_sw * v_sw
 
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIA")]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIA")]
     pdyn_sw_AIA = m_p * n_sw * v_sw * v_sw
 
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index("AIB")]
+    n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIB")]
     pdyn_sw_AIB = m_p * n_sw * v_sw * v_sw
 
     norm_list = [
@@ -2997,9 +2997,18 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     ]
 
     # Path to vlsv files for current run
-    bulkpath_AGF = find_bulkpath("AGF")
-    bulkpath_AIA = find_bulkpath("AIA")
-    bulkpath_AIB = find_bulkpath("AIB")
+    # bulkpath_AGF = find_bulkpath("AGF")
+    # bulkpath_AIA = find_bulkpath("AIA")
+    # bulkpath_AIB = find_bulkpath("AIB")
+    # bulkpath_SIB = find_bulkpath("static_IB_B")
+
+    bulkpaths = [find_bulkpath(runid) for runid in runids]
+    color_list = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[3],
+    ]
 
     fnr0 = int(t0 * 2)
     fnr1 = int(t1 * 2)
@@ -3007,15 +3016,22 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     fnr_range = np.arange(fnr0, fnr1 + 1, 1, dtype=int)
     t_range = np.arange(t0, t1 + 0.1, 0.5)
 
-    fobj_AGF = pt.vlsvfile.VlsvReader(
-        bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-    )
-    fobj_AIA = pt.vlsvfile.VlsvReader(
-        bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-    )
-    fobj_AIB = pt.vlsvfile.VlsvReader(
-        bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-    )
+    fobjs = [
+        pt.vlsvfile.VlsvReader(
+            bulkpaths[idx] + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        for idx in range(len(runids))
+    ]
+
+    # fobj_AGF = pt.vlsvfile.VlsvReader(
+    #     bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    # )
+    # fobj_AIA = pt.vlsvfile.VlsvReader(
+    #     bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    # )
+    # fobj_AIB = pt.vlsvfile.VlsvReader(
+    #     bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    # )
 
     xmesh, ymesh = np.meshgrid(
         np.arange(x0, x1 + 0.001, dr), np.arange(y0, y1 + 0.001, dr)
@@ -3024,99 +3040,137 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     xlist = xmesh.flatten()
     ylist = ymesh.flatten()
 
-    cellids_AGF = [
-        int(fobj_AGF.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
-        for idx in range(xlist.size)
-    ]
-    cellids_AIA = [
-        int(fobj_AIA.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
-        for idx in range(xlist.size)
-    ]
-    cellids_AIB = [
-        int(fobj_AIB.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
-        for idx in range(xlist.size)
+    # cellids_AGF = [
+    #     int(fobj_AGF.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+    #     for idx in range(xlist.size)
+    # ]
+    # cellids_AIA = [
+    #     int(fobj_AIA.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+    #     for idx in range(xlist.size)
+    # ]
+    # cellids_AIB = [
+    #     int(fobj_AIB.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+    #     for idx in range(xlist.size)
+    # ]
+
+    cellids = [
+        [
+            int(fobjs[idx2].get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+            for idx in range(xlist.size)
+        ]
+        for idx2 in range(len(runids))
     ]
 
-    data_arr_AGF = np.zeros((len(var_list), xlist.size, t_range.size), dtype=float)
-    data_arr_AIA = np.zeros_like(data_arr_AGF)
-    data_arr_AIB = np.zeros_like(data_arr_AGF)
+    # data_arr_AGF = np.zeros((len(var_list), xlist.size, t_range.size), dtype=float)
+    # data_arr_AIA = np.zeros_like(data_arr_AGF)
+    # data_arr_AIB = np.zeros_like(data_arr_AGF)
 
-    for idx in range(fnr_range.size):
-        fnr = fnr_range[idx]
-        vlsvobj_AGF = pt.vlsvfile.VlsvReader(
-            bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-        )
-        vlsvobj_AIA = pt.vlsvfile.VlsvReader(
-            bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-        )
-        vlsvobj_AIB = pt.vlsvfile.VlsvReader(
-            bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-        )
+    data_arr = np.zeros(
+        (len(runids), len(var_list), xlist.size, t_range.size), dtype=float
+    )
 
-        for idx2 in range(len(var_list)):
-            data_arr_AGF[idx2, :, idx] = (
-                vlsvobj_AGF.read_variable(
-                    var_list[idx2], operator=op_list[idx2], cellids=cellids_AGF
-                )
-                / norm_list[idx2]
+    for idx3 in range(len(runids)):
+        for idx in range(fnr_range.size):
+            fnr = fnr_range[idx]
+            # vlsvobj_AGF = pt.vlsvfile.VlsvReader(
+            #     bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            # )
+            # vlsvobj_AIA = pt.vlsvfile.VlsvReader(
+            #     bulkpath_AIA + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            # )
+            # vlsvobj_AIB = pt.vlsvfile.VlsvReader(
+            #     bulkpath_AIB + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            # )
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpaths[idx3] + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
-            data_arr_AIA[idx2, :, idx] = (
-                vlsvobj_AIA.read_variable(
-                    var_list[idx2], operator=op_list[idx2], cellids=cellids_AIA
+
+            for idx2 in range(len(var_list)):
+                # data_arr_AGF[idx2, :, idx] = (
+                #     vlsvobj_AGF.read_variable(
+                #         var_list[idx2], operator=op_list[idx2], cellids=cellids_AGF
+                #     )
+                #     / norm_list[idx2]
+                # )
+                # data_arr_AIA[idx2, :, idx] = (
+                #     vlsvobj_AIA.read_variable(
+                #         var_list[idx2], operator=op_list[idx2], cellids=cellids_AIA
+                #     )
+                #     / norm_list[idx2]
+                # )
+                # data_arr_AIB[idx2, :, idx] = (
+                #     vlsvobj_AIB.read_variable(
+                #         var_list[idx2], operator=op_list[idx2], cellids=cellids_AIB
+                #     )
+                #     / norm_list[idx2]
+                # )
+                data_arr[idx3, idx2, :, idx] = (
+                    vlsvobj.read_variable(
+                        var_list[idx2], operator=op_list[idx2], cellids=cellids[idx3]
+                    )
+                    / norm_list[idx2]
                 )
-                / norm_list[idx2]
-            )
-            data_arr_AIB[idx2, :, idx] = (
-                vlsvobj_AIB.read_variable(
-                    var_list[idx2], operator=op_list[idx2], cellids=cellids_AIB
-                )
-                / norm_list[idx2]
-            )
 
     fig, ax_list = plt.subplots(2, 6, figsize=(24, 12))
 
     for idx in range(len(var_list)):
-        ax_list.flatten()[idx].hist(
-            data_arr_AGF[idx, :, :].flatten(),
-            bins="fd",
-            color="black",
-            alpha=0.3,
-            label="AGF",
-        )
-        ax_list.flatten()[idx].hist(
-            data_arr_AIA[idx, :, :].flatten(),
-            bins="fd",
-            color="blue",
-            alpha=0.3,
-            label="AIA",
-        )
-        ax_list.flatten()[idx].hist(
-            data_arr_AIB[idx, :, :].flatten(),
-            bins="fd",
-            color="red",
-            alpha=0.3,
-            label="AIB",
-        )
-        ax_list.flatten()[idx].set(
-            title=varlab_list[idx],
-            # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-            xlim=(
-                np.min(
-                    [
-                        np.min(data_arr_AGF[idx, :, :]),
-                        np.min(data_arr_AIA[idx, :, :]),
-                        np.min(data_arr_AIB[idx, :, :]),
-                    ]
+        for idx2 in range(len(runids)):
+            # ax_list.flatten()[idx].hist(
+            #     data_arr_AGF[idx, :, :].flatten(),
+            #     bins="fd",
+            #     color="black",
+            #     alpha=0.3,
+            #     label="AGF",
+            # )
+            # ax_list.flatten()[idx].hist(
+            #     data_arr_AIA[idx, :, :].flatten(),
+            #     bins="fd",
+            #     color="blue",
+            #     alpha=0.3,
+            #     label="AIA",
+            # )
+            # ax_list.flatten()[idx].hist(
+            #     data_arr_AIB[idx, :, :].flatten(),
+            #     bins="fd",
+            #     color="red",
+            #     alpha=0.3,
+            #     label="AIB",
+            # )
+            ax_list.flatten()[idx].hist(
+                data_arr[idx2, idx, :, :].flatten(),
+                bins="fd",
+                color=color_list[idx2],
+                alpha=0.3,
+                label=runids[idx2],
+            )
+            # ax_list.flatten()[idx].set(
+            #     title=varlab_list[idx],
+            #     # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+            #     xlim=(
+            #         np.min(
+            #             [
+            #                 np.min(data_arr_AGF[idx, :, :]),
+            #                 np.min(data_arr_AIA[idx, :, :]),
+            #                 np.min(data_arr_AIB[idx, :, :]),
+            #             ]
+            #         ),
+            #         np.max(
+            #             [
+            #                 np.max(data_arr_AGF[idx, :, :]),
+            #                 np.max(data_arr_AIA[idx, :, :]),
+            #                 np.max(data_arr_AIB[idx, :, :]),
+            #             ]
+            #         ),
+            #     ),
+            # )
+            ax_list.flatten()[idx].set(
+                title=varlab_list[idx],
+                # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+                xlim=(
+                    np.min(data_arr[:, idx, :, :]),
+                    np.max(data_arr[:, idx, :, :]),
                 ),
-                np.max(
-                    [
-                        np.max(data_arr_AGF[idx, :, :]),
-                        np.max(data_arr_AIA[idx, :, :]),
-                        np.max(data_arr_AIB[idx, :, :]),
-                    ]
-                ),
-            ),
-        )
+            )
     ax_list.flatten()[0].legend(loc="upper right")
 
     figdir = wrkdir_DNR + "Figs/histograms/"
@@ -5275,7 +5329,7 @@ def run_comp_plotter_early(
             )
             ax3_g.set_title("Run = {}, t = {}s".format(runids[idx], float(fnr) * 10))
         ax.legend(loc="lower right")
-        ax.set_title("MP and BS position, t = {}s".format(float(fnr)*10))
+        ax.set_title("MP and BS position, t = {}s".format(float(fnr) * 10))
         ax.set_xlabel("X [$R_E$]")
         ax.set_ylabel("Y [$R_E$]")
         ax.set(xlim=(boxre[0], boxre[1]), ylim=(boxre[2], boxre[3]))

@@ -701,7 +701,7 @@ def get_neighs_asym(runid, cells, neighborhood_reach=[-1, 1, -1, 1, 0, 0]):
 
 
 def find_bulkpath(runid):
-    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF", "AIA", "AIB"]
+    runid_list = ["ABA", "ABC", "AEA", "AEC", "BFD", "AGF", "AIA", "AIB", "static_IB_B"]
     path_list = [
         "bulk/",
         "bulk/",
@@ -719,6 +719,8 @@ def find_bulkpath(runid):
         bulkpath = vlpath + path_list[runid_list.index(runid)]
     elif runid == "DCB":
         bulkpath = vlasdir + "/3D/DCB/bulk/"
+    elif runid == "static_IB_B":
+        bulkpath = wrkdir_DNR + "static_IB_B_test_fullres_highn/bulk/"
     else:
         bulkpath = vlpath + "bulk/"
 
