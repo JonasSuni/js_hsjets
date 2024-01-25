@@ -711,6 +711,7 @@ def find_bulkpath(runid):
         "bulk/",
         "bulk/",
         "bulk/",
+        "bulk/",
     ]
 
     vlpath = "{}/2D/{}/".format(vlasdir, runid)
