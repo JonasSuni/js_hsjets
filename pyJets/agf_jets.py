@@ -2962,11 +2962,11 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AGF")]
     pdyn_sw_AGF = m_p * n_sw * v_sw * v_sw
 
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIA")]
-    pdyn_sw_AIA = m_p * n_sw * v_sw * v_sw
+    # n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIA")]
+    # pdyn_sw_AIA = m_p * n_sw * v_sw * v_sw
 
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIB")]
-    pdyn_sw_AIB = m_p * n_sw * v_sw * v_sw
+    # n_sw, v_sw, B_sw, T_sw = sw_pars[runids.index("AIB")]
+    # pdyn_sw_AIB = m_p * n_sw * v_sw * v_sw
 
     norm_list = [
         pdyn_sw_AGF,
