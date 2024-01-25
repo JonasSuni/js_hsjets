@@ -2951,7 +2951,8 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "TPerp",
     ]
 
-    runids = ["AGF", "AIA", "AIB", "static_IB_B"]
+    # runids = ["AGF", "AIA", "AIB", "static_IB_B"]
+    runids = ["AGF", "static_IB_B"]
     runids_paper = ["RDC", "RDC2", "RDC3"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
