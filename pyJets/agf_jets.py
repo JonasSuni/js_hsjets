@@ -3612,7 +3612,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
-def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
+def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=30e3):
     runids = ["AGF", "AIA", "AIB","static_IB_B"]
     pdmax = [1.0, 1.0, 1.0,1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
