@@ -3219,14 +3219,16 @@ def jplots(
         "$v_x$ [km/s]",
         "$P_\mathrm{dyn}$ [nPa]",
         "$B$ [nT]",
-        "$T$ [MK]",
+        # "$T$ [MK]",
+        "$E$ [mV/m]",
     ]
     vars_list = [
         "proton/vg_rho",
         "proton/vg_v",
         "proton/vg_pdyn",
         "vg_b_vol",
-        "proton/vg_temperature",
+        # "proton/vg_temperature",
+        "vg_e_vol",
         # "proton/vg_core_heating",
         # "proton/vg_mmsx",
         "proton/vg_beta_star",
@@ -3243,7 +3245,8 @@ def jplots(
         "x",
         "pass",
         "magnitude",
-        "pass",
+        # "pass",
+        "magnitude",
         # "pass",
         # "pass",
         "pass",
@@ -3260,7 +3263,8 @@ def jplots(
         1e-3,
         1e9,
         1e9,
-        1e-6,
+        # 1e-6,
+        1e3,
         # 1,
         # 1,
         1,
@@ -3288,8 +3292,8 @@ def jplots(
 
     # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
-    vmin = [1, -250, 0, 5, 5]
-    vmax = [5, 0, 0.3, 40, 25]
+    vmin = [1, -250, 0, 5, 0]
+    vmax = [5, 0, 0.3, 40, 10]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
