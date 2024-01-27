@@ -4358,7 +4358,7 @@ def jet_vdf_plotter(runid, skip=[]):
     return None
 
 
-def vspace_reducer(vlsvobj, cellid, operator, dv=30e3, vmin=None, vmax=None):
+def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None):
     """
     Function for reducing a 3D VDF to 1D
     (object) vlsvobj = Analysator VLSV file object
