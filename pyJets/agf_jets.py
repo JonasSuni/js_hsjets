@@ -2226,7 +2226,7 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=None):
+def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -2430,6 +2430,13 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=True, filt=None):
                 color=CB_color_cycle[0],
                 linestyle="dashed",
                 label="$2\\langle P_\mathrm{dyn}\\rangle$",
+            )
+        elif idx == 5 and pdx:
+            ax.plot(
+                t_arr,
+                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9,
+                color=CB_color_cycle[0],
+                label="$P_{\mathrm{dyn},x}$",
             )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
