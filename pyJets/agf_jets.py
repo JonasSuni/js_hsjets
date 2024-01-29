@@ -1963,7 +1963,7 @@ def fig1(runid, panel_nums=True):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     vmax = 1.0
-    runids = ["AGF", "AIA"]
+    runids = ["AGF", "AIA", "AIC"]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g
     runid_g = runid
@@ -1990,8 +1990,9 @@ def fig1(runid, panel_nums=True):
     sj_ids_g = []
     non_ids_g = non_ids
 
-    pdmax = [1.5, 1.5][runids.index(runid)]
+    pdmax = [1.5, 1.5, 1.5][runids.index(runid)]
     sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
     ]
@@ -2958,8 +2959,8 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
         "TPerp",
     ]
 
-    # runids = ["AGF", "AIA", "AIB", "static_IB_B"]
-    runids = ["AGF", "static_IB_B"]
+    # runids = ["AGF", "AIA", "AIB", "AIC"]
+    runids = ["AGF", "AIC"]
     runids_paper = ["RDC", "RDC2", "RDC3"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
@@ -3008,7 +3009,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
     # bulkpath_AGF = find_bulkpath("AGF")
     # bulkpath_AIA = find_bulkpath("AIA")
     # bulkpath_AIB = find_bulkpath("AIB")
-    # bulkpath_SIB = find_bulkpath("static_IB_B")
+    # bulkpath_SIB = find_bulkpath("AIC")
 
     bulkpaths = [find_bulkpath(runid) for runid in runids]
     color_list = [
@@ -3286,7 +3287,7 @@ def jplots(
 
     # Solar wind parameters for the different runs
     # n [m^-3], v [m/s], B [T], T [K]
-    runid_list = ["AGF", "AIA", "AIB", "static_IB_B"]
+    runid_list = ["AGF", "AIA", "AIB", "AIC"]
     runids_paper = ["RDC", "RDC2", "RDC3", "RDC4"]
     sw_pars = [
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
@@ -3620,7 +3621,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
 
 
 def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
-    runids = ["AGF", "AIA", "AIB", "static_IB_B"]
+    runids = ["AGF", "AIA", "AIB", "AIC"]
     pdmax = [1.0, 1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
