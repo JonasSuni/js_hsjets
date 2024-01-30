@@ -607,8 +607,8 @@ def jet_creator(
     nbrs=[2, 2, 0],
     mag_thresh=1.1,
 ):
-    runid_list = ["ABA", "ABC", "AEA", "AEC", "AGF", "AIA"]
-    maxfnr_list = [839, 1179, 1339, 879, 1193, 1193]
+    runid_list = ["ABA", "ABC", "AEA", "AEC", "AGF", "AIA", "AIC"]
+    maxfnr_list = [839, 1179, 1339, 879, 1193, 1193, 1193]
     if start > maxfnr_list[runid_list.index(runid)]:
         return 0
 
