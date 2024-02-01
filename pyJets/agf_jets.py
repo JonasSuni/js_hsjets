@@ -25,6 +25,7 @@ from copy import deepcopy
 from scipy.linalg import eig
 from scipy.fft import rfft2
 from scipy.signal import butter, sosfilt
+from scipy.ndimage import uniform_filter1d
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2229,7 +2230,9 @@ def v5_plotter(
         )
 
 
-def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
+def VSC_timeseries(
+    runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False, delta=None
+):
     bulkpath = find_bulkpath(runid)
 
     var_list = [
@@ -2318,6 +2321,9 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
         # "$E~[E_\mathrm{sw}]$",
         # "$T~[T_\mathrm{sw}]$",
     ]
+    if delta:
+        for idx in range(len(ylabels)):
+            ylabels[idx] = "$\\delta" + ylabels[idx][1:]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     norm = [
         [
@@ -2425,8 +2431,18 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
     ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
-        ax.plot(t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
-        if idx == 5 and pdavg:
+        if delta:
+            ax.plot(
+                t_arr,
+                data_arr[idx] - uniform_filter1d(data_arr[idx], size=delta),
+                color=plot_colors[idx],
+                label=plot_labels[idx],
+            )
+        else:
+            ax.plot(
+                t_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
+            )
+        if idx == 5 and pdavg and not delta:
             ax.plot(
                 t_arr,
                 2 * tavg_arr,
@@ -2435,12 +2451,23 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
                 label="$2\\langle P_\mathrm{dyn}\\rangle$",
             )
         elif idx == 5 and pdx:
-            ax.plot(
-                t_arr,
-                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9,
-                color=CB_color_cycle[0],
-                label="$P_{\mathrm{dyn},x}$",
+            pdynx = (
+                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
             )
+            if delta:
+                ax.plot(
+                    t_arr,
+                    pdynx - uniform_filter1d(pdynx, size=delta),
+                    color=CB_color_cycle[0],
+                    label="$P_{\mathrm{dyn},x}$",
+                )
+            else:
+                ax.plot(
+                    t_arr,
+                    pdynx,
+                    color=CB_color_cycle[0],
+                    label="$P_{\mathrm{dyn},x}$",
+                )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
@@ -2464,11 +2491,13 @@ def VSC_timeseries(runid, x0, y0, t0, t1, pdavg=False, filt=None, pdx=False):
             pass
 
     fig.savefig(
-        figdir + "{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1),
+        figdir
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}.png".format(runid, x0, y0, t0, t1, delta),
         dpi=300,
     )
     np.savetxt(
-        txtdir + "{}_x{}_y{}_t0{}_t1{}.txt".format(runid, x0, y0, t0, t1),
+        txtdir
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}.txt".format(runid, x0, y0, t0, t1, delta),
         data_arr,
     )
     plt.close(fig)
