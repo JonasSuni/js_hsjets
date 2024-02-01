@@ -2323,7 +2323,7 @@ def VSC_timeseries(
     ]
     if delta:
         for idx in range(len(ylabels)):
-            ylabels[idx] = "$\\delta" + ylabels[idx][1:]
+            ylabels[idx] = "$\\delta " + ylabels[idx][1:]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     norm = [
         [
