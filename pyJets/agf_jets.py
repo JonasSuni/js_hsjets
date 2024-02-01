@@ -3651,7 +3651,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
-def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
+def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=False):
     runids = ["AGF", "AIA", "AIB", "AIC"]
     pdmax = [1.0, 1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -3697,6 +3697,9 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
     vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
     vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
 
+    if overplot_v:
+        vmean_arr = np.zeros((3, t_arr.size), dtype=float)
+
     fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
@@ -3721,6 +3724,11 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
         x0 = x_re
         y0 = y_re
 
+        if overplot_v:
+            vmean_arr[:, idx] = (
+                vobj.read_variable("proton/vg_v", cellids=vdf_cellid) * 1e-3
+            )
+
         xhist_interp = np.interp(v_arr, xbin_centers, xhist)
         yhist_interp = np.interp(v_arr, ybin_centers, yhist)
         zhist_interp = np.interp(v_arr, zbin_centers, zhist)
@@ -3738,6 +3746,11 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3):
     pcz = ax_list[2].pcolormesh(
         t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
     )
+
+    if overplot_v:
+        ax_list[0].plot(t_arr, vmean_arr[0, :])
+        ax_list[1].plot(t_arr, vmean_arr[1, :])
+        ax_list[2].plot(t_arr, vmean_arr[2, :])
 
     cbx = plt.colorbar(pcx, ax=ax_list[0])
     cby = plt.colorbar(pcy, ax=ax_list[1])
