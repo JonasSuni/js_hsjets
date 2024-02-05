@@ -3408,14 +3408,6 @@ def jplots(
                         * scale_list[idx2]
                     )
 
-    if filt:
-        for idx in range(len(vars_list)):
-            for idx2 in range(xplot_list.size):
-                # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
-                data_arr[idx, idx2, :] = uniform_filter1d(
-                    data_arr[idx, idx2, :], size=60
-                )
-
     # vpar,vpvapar,vmvapar,vpvspar,vmvspar,vpvmspar,vmvmspar
     outvels = calc_velocities(
         dx_arr,
@@ -3428,6 +3420,15 @@ def jplots(
         data_arr[7],
         data_arr[8],
     )
+
+    if filt:
+        for idx in range(len(vars_list)):
+            for idx2 in range(xplot_list.size):
+                # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
+                data_arr[idx, idx2, :] = uniform_filter1d(
+                    data_arr[idx, idx2, :], size=60
+                )
+
     vels_list = ["vb", "vb+va", "vb-va", "vb+vs", "vb-vs", "vb+vms", "vb-vms"]
     vels_labels = [
         "$v_b$",
