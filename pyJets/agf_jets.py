@@ -3863,7 +3863,7 @@ def pos_vdf_energy_spectrogram(runid, x, y, t0, t1, emin, emax, enum=10, fluxout
         data_arr,
         shading="nearest",
         cmap="hot_desaturated",
-        norm=colors.LogNorm(vmin=10**4, vmax=data_arr.max()),
+        # norm=colors.LogNorm(vmin=10**4, vmax=data_arr.max()),
     )
     ax.tick_params(labelsize=20)
     ax.set_yscale("log")
