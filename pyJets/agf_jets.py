@@ -3412,7 +3412,7 @@ def jplots(
         for idx in range(len(vars_list)):
             for idx2 in range(xplot_list.size):
                 # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
-                data_arr[idx, idx2, :] = data_arr[idx, idx2, :] - uniform_filter1d(
+                data_arr[idx, idx2, :] = uniform_filter1d(
                     data_arr[idx, idx2, :], size=60
                 )
 
