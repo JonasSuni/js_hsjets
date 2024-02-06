@@ -3422,7 +3422,7 @@ def jplots(
     )
 
     if filt:
-        for idx in range(len(vars_list)):
+        for idx in range(5):
             for idx2 in range(xplot_list.size):
                 # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
                 data_arr[idx, idx2, :] = (
