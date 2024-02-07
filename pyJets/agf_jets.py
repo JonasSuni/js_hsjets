@@ -4145,7 +4145,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
             vlsvobj=vobj,
             var="proton/vg_Pdyn",
             vmin=0.01,
-            vmax=0.5,
+            vmax=1,
             vscale=1e9,
             cbtitle="$P_\mathrm{dyn}$ [nPa]",
             usesci=0,
