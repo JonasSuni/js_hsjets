@@ -4087,8 +4087,8 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
 
 
 def pos_vdf_plotter(runid, x, y, t0, t1):
-    runids = ["AGF", "AIA"]
-    pdmax = [1.0, 1.0][runids.index(runid)]
+    runids = ["AGF", "AIA", "AIC"]
+    pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -4096,7 +4096,8 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
     xg = []
     yg = []
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g
+    plaschke_g = False
     runid_g = runid
     Blines_g = False
 
@@ -4114,6 +4115,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
     #     [3.3e6, 600e3, 10e-9, 0.5e6],
     # ]
     sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
         [1e6, 750e3, 3e-9, 0.5e6],
     ]
@@ -4218,7 +4220,11 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
         )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
-
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
         outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
             runid, x_re, y_re, t0, t1
         )
