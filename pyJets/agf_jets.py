@@ -4096,7 +4096,8 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
     xg = []
     yg = []
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g, drawBy0
+    drawBy0 = False
     plaschke_g = False
     runid_g = runid
     Blines_g = False
