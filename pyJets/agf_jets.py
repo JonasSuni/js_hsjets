@@ -4152,7 +4152,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
             boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
             # internalcb=True,
             # lin=1,
-            colormap="batlow",
+            colormap="hot_desaturated",
             scale=1.3,
             tickinterval=1.0,
             external=ext_jet,
