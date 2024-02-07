@@ -3337,8 +3337,8 @@ def jplots(
     vmin = [1, -250, 0, 5, 0]
     vmax = [5, 0, 0.3, 40, 4]
     if filt:
-        vmin = [-1, -100, -0.3, -10, -1]
-        vmax = [1, 100, 0.3, 10, 1]
+        vmin = [-1, -100, -0.25, -7.5, -1]
+        vmax = [1, 100, 0.25, 7.5, 1]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
