@@ -4221,14 +4221,16 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
         )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
+
+        outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
+            runid, x_re, y_re, t0, t1
+        )
+
         if not os.path.exists(outdir):
             try:
                 os.makedirs(outdir)
             except OSError:
                 pass
-        outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
-            runid, x_re, y_re, t0, t1
-        )
 
         fig.suptitle(
             "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t)
