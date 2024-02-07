@@ -3261,6 +3261,9 @@ def jplots(
         # "$T$ [MK]",
         "$E$ [mV/m]",
     ]
+    if filt:
+        for idx in range(len(varname_list)):
+            varname_list[idx] = "$\\delta " + varname_list[idx][1:]
     vars_list = [
         "proton/vg_rho",
         "proton/vg_v",
@@ -3333,6 +3336,9 @@ def jplots(
     # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
     vmin = [1, -250, 0, 5, 0]
     vmax = [5, 0, 0.3, 40, 4]
+    if filt:
+        vmin = [-1, -100, -0.3, -10, -1]
+        vmax = [1, 100, 0.3, 10, 1]
 
     # Path to vlsv files for current run
     bulkpath = find_bulkpath(runid)
@@ -3425,10 +3431,8 @@ def jplots(
         for idx in range(5):
             for idx2 in range(xplot_list.size):
                 # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
-                data_arr[idx, idx2, :] = (
-                    data_arr[idx, idx2, :]
-                    - uniform_filter1d(data_arr[idx, idx2, :], size=10)
-                    + uniform_filter1d(data_arr[idx, idx2, :], size=60)
+                data_arr[idx, idx2, :] = data_arr[idx, idx2, :] - uniform_filter1d(
+                    data_arr[idx, idx2, :], size=60
                 )
 
     vels_list = ["vb", "vb+va", "vb-va", "vb+vs", "vb-vs", "vb+vms", "vb-vms"]
@@ -3453,6 +3457,8 @@ def jplots(
 
     # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
+    if filt:
+        cmap = ["vik", "vik", "vik", "vik", "vik"]
     annot = ["a", "b", "c", "d", "e"]
 
     # fig, ax_list = plt.subplots(
@@ -3617,8 +3623,8 @@ def jplots(
 
         fig.savefig(
             figdir
-            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.png".format(
-                runid, x0, y0, x1, y1, t0, t1
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}_filt_{}.png".format(
+                runid, x0, y0, x1, y1, t0, t1, filt
             ),
             dpi=300,
         )
@@ -3633,8 +3639,8 @@ def jplots(
 
         np.save(
             txtdir
-            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}.npy".format(
-                runid, x0, y0, x1, y1, t0, t1
+            + "{}_x0_{}_y0_{}_x1_{}_y1_{}_t0_{}_t1_{}_filt_{}.npy".format(
+                runid, x0, y0, x1, y1, t0, t1, filt
             ),
             data_arr,
         )
