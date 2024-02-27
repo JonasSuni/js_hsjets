@@ -4125,7 +4125,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
     vobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(int(t0*2)).zfill(7))
+        bulkpath + "bulk.{}.vlsv".format(str(int(t0 * 2)).zfill(7))
     )
     cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
     vdf_cellid = getNearestCellWithVspace(vobj, cellid)
@@ -4133,8 +4133,8 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
     x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
     outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
-            runid, x_re, y_re, t0, t1
-        )
+        runid, x_re, y_re, t0, t1
+    )
 
     for t in np.arange(t0, t1 + 0.1, 0.5):
         fnr = int(t * 2)
@@ -5442,3 +5442,60 @@ def run_comp_plotter_early(
             outputdir + "../early_dipcomp/{}.png".format(str(fnr).zfill(7)), dpi=300
         )
         plt.close(fig3)
+
+
+def hodogram(runid, x0, y0, t0, t1, electric=False):
+
+    runids_list = ["AGF", "AIA", "AIC"]
+
+    bulkpath = find_bulkpath(runid)
+
+    t_range = np.arange(t0, t1 + 0.01, 0.5)
+    fnr_range = (t_range * 2).astype(int)
+
+    data = np.zeros((3, t_range.size), dtype=float)
+    var = "vg_b_vol"
+    op_list = ["x", "y", "z"]
+    scale = 1e9
+    labels = ["$B_x$", "$B_y$", "$B_z$"]
+
+    for idx2, fnr in enumerate(fnr_range):
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+
+        for idx in range(3):
+            data = (
+                vobj.read_interpolated_variable(
+                    var, [x0 * r_e, y0 * r_e, 0], operator=op_list[idx]
+                )
+                * scale
+            )
+
+    fig, ax_list = plt.subplots(1, 3, figsize=(15, 6))
+
+    for idx in range(3):
+        ax = ax_list[idx]
+        ax.grid()
+        ax.quiver(
+            data[idx % 3, :-1],
+            data[(idx + 1) % 3, :-1],
+            data[idx % 3, 1:] - data[idx % 3, :-1],
+            data[(idx + 1) % 3, 1:] - data[(idx + 1) % 3, :-1],
+            scale_units="xy",
+            angles="xy",
+            scale=1,
+        )
+        ax.set_xlabel(labels[idx % 3])
+        ax.set_ylabel(labels[(idx + 1) % 3])
+        ax.set_aspect("equal")
+
+    outdir = wrkdir_DNR + "Figs/hodograms/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(outdir + "{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1))
+    plt.close(fig)
