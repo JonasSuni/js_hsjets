@@ -5499,5 +5499,7 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
         except OSError:
             pass
 
-    fig.savefig(outdir + "{}_x{}_y{}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1))
+    fig.savefig(
+        outdir + "{}_x{}_y{}_t0{}_t1{}_var_{}.png".format(runid, x0, y0, t0, t1, var)
+    )
     plt.close(fig)
