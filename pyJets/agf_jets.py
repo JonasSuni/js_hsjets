@@ -5477,17 +5477,19 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
     for idx in range(3):
         ax = ax_list[idx]
         ax.grid()
+        idx_x = int(idx % 3)
+        idx_y = int((idx + 1) % 3)
         ax.quiver(
-            data[idx % 3, :-1],
-            data[(idx + 1) % 3, :-1],
-            data[idx % 3, 1:] - data[idx % 3, :-1],
-            data[(idx + 1) % 3, 1:] - data[(idx + 1) % 3, :-1],
+            data[idx_x, :-1],
+            data[idx_y, :-1],
+            data[idx_x, 1:] - data[idx_x, :-1],
+            data[idx_y, 1:] - data[idx_y, :-1],
             scale_units="xy",
             angles="xy",
             scale=1,
         )
-        ax.set_xlabel(labels[idx % 3])
-        ax.set_ylabel(labels[(idx + 1) % 3])
+        ax.set_xlabel(labels[idx_x])
+        ax.set_ylabel(labels[idx_y])
         ax.set_aspect("equal")
 
     outdir = wrkdir_DNR + "Figs/hodograms/"
