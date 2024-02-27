@@ -5465,7 +5465,7 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
         )
 
         for idx in range(3):
-            data = (
+            data[idx, idx2] = (
                 vobj.read_interpolated_variable(
                     var, [x0 * r_e, y0 * r_e, 0], operator=op_list[idx]
                 )
