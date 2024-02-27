@@ -4086,7 +4086,7 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     return None
 
 
-def pos_vdf_plotter(runid, x, y, t0, t1):
+def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
     runids = ["AGF", "AIA", "AIC"]
     pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
@@ -4124,8 +4124,22 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
+    vobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(t0*2)).zfill(7))
+    )
+    cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+    vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+    x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+
+    outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
+            runid, x_re, y_re, t0, t1
+        )
+
     for t in np.arange(t0, t1 + 0.1, 0.5):
         fnr = int(t * 2)
+        if skip and os.path.isfile(outdir + "/{}.png".format(fnr)):
+            continue
         filenr_g = fnr
         vobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
@@ -4224,10 +4238,6 @@ def pos_vdf_plotter(runid, x, y, t0, t1):
         )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
-
-        outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
-            runid, x_re, y_re, t0, t1
-        )
 
         if not os.path.exists(outdir):
             try:
