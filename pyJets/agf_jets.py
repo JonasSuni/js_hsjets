@@ -5472,7 +5472,7 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
                 * scale
             )
 
-    fig, ax_list = plt.subplots(1, 3, figsize=(15, 6),constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 3, figsize=(15, 6), constrained_layout=True)
 
     for idx in range(3):
         ax = ax_list[idx]
