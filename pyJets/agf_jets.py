@@ -5444,7 +5444,7 @@ def run_comp_plotter_early(
         plt.close(fig3)
 
 
-def hodogram(runid, x0, y0, t0, t1, electric=False):
+def hodogram(runid, x0, y0, t0, t1, electric=False, filt=None):
 
     runids_list = ["AGF", "AIA", "AIC"]
 
@@ -5476,6 +5476,10 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
                 )
                 * scale
             )
+
+    if filt:
+        for idx in range(3):
+            data[idx] = data[idx] - uniform_filter1d(data[idx], size=filt)
 
     fig, ax_list = plt.subplots(1, 3, figsize=(15, 6), constrained_layout=True)
 
