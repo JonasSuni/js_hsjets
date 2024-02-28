@@ -5454,10 +5454,15 @@ def hodogram(runid, x0, y0, t0, t1, electric=False):
     fnr_range = (t_range * 2).astype(int)
 
     data = np.zeros((3, t_range.size), dtype=float)
-    var = "vg_b_vol"
+    if electric:
+        var = "vg_e_vol"
+        scale = 1e3
+        labels = ["$E_x$", "$E_y$", "$E_z$"]
+    else:
+        var = "vg_b_vol"
+        scale = 1e9
+        labels = ["$B_x$", "$B_y$", "$B_z$"]
     op_list = ["x", "y", "z"]
-    scale = 1e9
-    labels = ["$B_x$", "$B_y$", "$B_z$"]
 
     for idx2, fnr in enumerate(fnr_range):
         vobj = pt.vlsvfile.VlsvReader(
