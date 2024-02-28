@@ -5509,6 +5509,6 @@ def hodogram(runid, x0, y0, t0, t1, electric=False, filt=None):
             pass
 
     fig.savefig(
-        outdir + "{}_x{}_y{}_t0{}_t1{}_var_{}.png".format(runid, x0, y0, t0, t1, var)
+        outdir + "{}_x{}_y{}_t0{}_t1{}_var_{}_filt{}.png".format(runid, x0, y0, t0, t1, var,filt)
     )
     plt.close(fig)
