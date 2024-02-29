@@ -24,7 +24,7 @@ from copy import deepcopy
 # import scipy.linalg
 from scipy.linalg import eig
 from scipy.fft import rfft2
-from scipy.signal import butter, sosfilt
+from scipy.signal import butter, sosfilt, cwt, morlet2
 from scipy.ndimage import uniform_filter1d
 import numpy as np
 import matplotlib as mpl
@@ -5509,6 +5509,60 @@ def hodogram(runid, x0, y0, t0, t1, electric=False, filt=None):
             pass
 
     fig.savefig(
-        outdir + "{}_x{}_y{}_t0{}_t1{}_var_{}_filt{}.png".format(runid, x0, y0, t0, t1, var,filt)
+        outdir
+        + "{}_x{}_y{}_t0{}_t1{}_var_{}_filt{}.png".format(
+            runid, x0, y0, t0, t1, var, filt
+        )
+    )
+    plt.close(fig)
+
+
+def wavelet_analysis(runid, x0, y0, t0, t1, var):
+
+    dt = 0.5
+    fs = 1 / dt
+
+    t_arr = np.arange(t0, t1 + dt / 2, dt)
+    fnr_arr = (t_arr * 2).astype(int)
+
+    freq = np.linspace(2.0 / (t1 - t0), fs / 2, 200)
+    w = 6.0
+    widths = w * fs / (2 * freq * np.pi)
+    bulkpath = find_bulkpath(runid)
+
+    tmeshtf, fmeshtf = np.meshgrid(t_arr, freq)
+
+    data = np.zeros(t_arr.size)
+
+    for idx, fnr in enumerate(fnr_arr):
+
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+
+        data[idx] = vobj.read_interpolated_variable(
+            var, [x0 * r_e, y0 * r_e, 0], operator="x"
+        )
+
+    cwtm = cwt(data, morlet2, widths, w=w)
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
+
+    ax.pcolormesh(
+        tmeshtf, fmeshtf, np.abs(cwtm), cmap="hot_desaturated", shading="gouraud"
+    )
+
+    outdir = wrkdir_DNR + "Figs/wavelet/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        outdir
+        + "{}_x{}_y{}_t0{}_t1{}_var_{}_filt{}.png".format(
+            runid, x0, y0, t0, t1, var, filt
+        )
     )
     plt.close(fig)
