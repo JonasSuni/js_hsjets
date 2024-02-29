@@ -5560,9 +5560,6 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
             pass
 
     fig.savefig(
-        outdir
-        + "{}_x{}_y{}_t0{}_t1{}_var_{}_filt{}.png".format(
-            runid, x0, y0, t0, t1, var, filt
-        )
+        outdir + "{}_x{}_y{}_t0{}_t1{}_var_{}.png".format(runid, x0, y0, t0, t1, var)
     )
     plt.close(fig)
