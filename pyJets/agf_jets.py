@@ -5548,7 +5548,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
 
-    ax.pcolormesh(
+    pcm = ax.pcolormesh(
         tmeshtf, fmeshtf, np.abs(cwtm), cmap="hot_desaturated", shading="gouraud"
     )
 
