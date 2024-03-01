@@ -5558,7 +5558,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
         np.abs(cwtm),
         cmap="hot_desaturated",
         shading="gouraud",
-        norm=colors.LogNorm(),
+        # norm=colors.LogNorm(),
     )
     ax.set_xlabel("t [s]")
     ax.set_ylabel("f [Hz]")
