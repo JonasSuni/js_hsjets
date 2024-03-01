@@ -5551,6 +5551,22 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
     pcm = ax.pcolormesh(
         tmeshtf, fmeshtf, np.abs(cwtm), cmap="hot_desaturated", shading="gouraud"
     )
+    ax.set_xlabel("t [s]")
+    ax.set_ylabel("f [Hz]")
+
+    persmesh = 1.0 / fmeshtf
+
+    nogo_cont = ax.contourf(
+        tmeshtf,
+        fmeshtf,
+        np.logical_or(tmeshtf < t0 + persmesh, tmeshtf > t1 - persmesh),
+        [0.5, 1.5],
+        # linewidths=lws,
+        colors=[CB_color_cycle[6], CB_color_cycle[8]],
+        # linestyles=["dashed"],
+        hatches=["xx", "/"],
+        alpha=0.3,
+    )
 
     outdir = wrkdir_DNR + "Figs/wavelet/"
     if not os.path.exists(outdir):
