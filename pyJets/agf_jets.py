@@ -5553,7 +5553,12 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
     fig, ax = plt.subplots(1, 1, figsize=(15, 6), constrained_layout=True)
 
     pcm = ax.pcolormesh(
-        tmeshtf, fmeshtf, np.abs(cwtm), cmap="hot_desaturated", shading="gouraud"
+        tmeshtf,
+        fmeshtf,
+        np.abs(cwtm),
+        cmap="hot_desaturated",
+        shading="gouraud",
+        norm=colors.LogNorm(),
     )
     ax.set_xlabel("t [s]")
     ax.set_ylabel("f [Hz]")
