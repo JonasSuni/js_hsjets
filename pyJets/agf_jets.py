@@ -5557,6 +5557,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
     )
     ax.set_xlabel("t [s]")
     ax.set_ylabel("f [Hz]")
+    ax.set_yscale("log", base=2)
 
     persmesh = 1.0 / fmeshtf
 
