@@ -5517,7 +5517,7 @@ def hodogram(runid, x0, y0, t0, t1, electric=False, filt=None):
     plt.close(fig)
 
 
-def wavelet_analysis(runid, x0, y0, t0, t1, var):
+def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
 
     dt = 0.5
     fs = 1 / dt
@@ -5545,7 +5545,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
         )
 
         data[idx] = vobj.read_interpolated_variable(
-            var, [x0 * r_e, y0 * r_e, 0], operator="x"
+            var, [x0 * r_e, y0 * r_e, 0], operator=op
         )
 
     cwtm = cwt(data, morlet2, widths, w=w)
