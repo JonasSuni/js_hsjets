@@ -5560,6 +5560,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
         shading="gouraud",
         # norm=colors.LogNorm(),
     )
+    plt.colorbar(pcm,ax=ax)
     ax.set_xlabel("t [s]")
     ax.set_ylabel("f [Hz]")
     ax.set_yscale("log", base=2)
