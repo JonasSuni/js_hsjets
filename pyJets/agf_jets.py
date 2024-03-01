@@ -5546,7 +5546,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
 
     cwtm = cwt(data, morlet2, widths, w=w)
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(15, 6), constrained_layout=True)
 
     pcm = ax.pcolormesh(
         tmeshtf, fmeshtf, np.abs(cwtm), cmap="hot_desaturated", shading="gouraud"
