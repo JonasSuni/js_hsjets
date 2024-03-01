@@ -5525,7 +5525,11 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var):
     t_arr = np.arange(t0, t1 + dt / 2, dt)
     fnr_arr = (t_arr * 2).astype(int)
 
-    freq = np.linspace(2.0 / (t1 - t0), fs / 2, 200)
+    freq_min = int(np.log2(2.0 / (t1 - t0)))
+    freq_max = int(np.log2(fs/2))
+
+    #freq = np.linspace(2.0 / (t1 - t0), fs / 2, 200)
+    freq = np.logspace(freq_min,freq_max,100,base=2.)
     w = 6.0
     widths = w * fs / (2 * freq * np.pi)
     bulkpath = find_bulkpath(runid)
