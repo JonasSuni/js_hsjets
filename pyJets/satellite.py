@@ -125,10 +125,11 @@ def plot_ace_dscovr_wind(t0, t1):
             ax = ax_list[idx2, idx]
             if idx == 0:
                 ax.set_ylabel(ylabs[idx2])
-            if idx == 2:
-                ax.plot(time_list[idx], data_list[idx][idx2])
-            else:
-                ax.plot(time_list[idx], uniform_filter1d(data_list[idx][idx2], size=60))
+            # if idx == 2:
+            #     ax.plot(time_list[idx], data_list[idx][idx2])
+            # else:
+            #     ax.plot(time_list[idx], uniform_filter1d(data_list[idx][idx2], size=60))
+            ax.plot(time_list[idx], data_list[idx][idx2])
             ax.set_xlim(t0plot, t1plot)
 
     for ax in ax_list.flatten():
