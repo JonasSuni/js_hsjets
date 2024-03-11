@@ -122,7 +122,7 @@ def plot_ace_dscovr_wind(t0, t1):
 
     for idx in range(3):
         for idx2 in range(6):
-            ax = ax_list[idx, idx2]
+            ax = ax_list[idx2, idx]
             if idx == 0:
                 ax.set_ylabel(ylabs[idx2])
             if idx == 2:
