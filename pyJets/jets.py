@@ -173,3 +173,7 @@ from jet_23_scripts import (
 )
 
 import agf_jets
+try:
+    import satellite
+except:
+    print("Did not import satellite")
