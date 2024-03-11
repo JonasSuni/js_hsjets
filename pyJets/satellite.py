@@ -100,7 +100,7 @@ def plot_ace_dscovr_wind(t0, t1):
     wind_B = wind_data["BGSE"]["y"].T
 
     ace_clock, dscovr_clock, wind_clock = [
-        np.rad2deg(np.arctan2(B[2], B[1]) for B in [ace_B, dscovr_B, wind_B])
+        np.rad2deg(np.arctan2(B[2], B[1])) for B in [ace_B, dscovr_B, wind_B]
     ]
     ace_cone, dscovr_cone, wind_cone = [
         np.rad2deg(np.arctan2(np.sqrt(B[2] ** 2 + B[1] ** 2), B[0]))
