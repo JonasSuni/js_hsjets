@@ -78,3 +78,64 @@ except:
     tavgdir = wrkdir_DNR + "tavg/"
 
 wrkdir_DNR = wrkdir_DNR + "foreshock_bubble/"
+
+
+def plot_ace_dscovr_wind(t0, t1):
+
+    ace_data = pyspedas.ace.mfi(trange=[t0, t1], notplot=True)
+    dscovr_data = pyspedas.dscovr.mag(trange=[t0, t1], notplot=True)
+    wind_data = pyspedas.wind.mfi(trange=[t0, t1], notplot=True)
+
+    ace_t = ace_data["BGSEc"]["x"]
+    ace_B = ace_data["BGSEc"]["y"].T
+
+    dscovr_t = dscovr_data["dsc_h0_mag_B1GSE"]["x"]
+    dscovr_B = dscovr_data["dsc_h0_mag_B1GSE"]["y"].T
+
+    wind_t = wind_data["BGSE"]["x"]
+    wind_B = wind_data["BGSE"]["y"].T
+
+    ace_clock, dscovr_clock, wind_clock = [
+        np.rad2deg(np.arctan2(B[2], B[1]) for B in [ace_B, dscovr_B, wind_B])
+    ]
+    ace_cone, dscovr_cone, wind_cone = [
+        np.rad2deg(np.arctan2(np.sqrt(B[2] ** 2 + B[1] ** 2), B[0]))
+        for B in [ace_B, dscovr_B, wind_B]
+    ]
+    ace_Bmag, dscovr_Bmag, wind_Bmag = [
+        np.sqrt(B[0] ** 2 + B[1] ** 2 + B[2] ** 2) for B in [ace_B, dscovr_B, wind_B]
+    ]
+
+    time_list = [ace_t, dscovr_t, wind_t]
+    data_list = [
+        [ace_B[0], ace_B[1], ace_B[2], ace_Bmag, ace_clock, ace_cone],
+        [dscovr_B[0], dscovr_B[1], dscovr_B[2], dscovr_Bmag, dscovr_clock, dscovr_cone],
+        [wind_B[0], wind_B[1], wind_B[2], wind_Bmag, wind_clock, wind_cone],
+    ]
+    ylabs = ["Bx", "By", "Bz", "Bmag", "Clock", "Cone"]
+
+    fig, ax_list = plt.subplots(6, 3, figsize=(18, 18), constrained_layout=True)
+
+    for idx in range(3):
+        for idx2 in range(6):
+            ax = ax_list[idx, idx2]
+            if idx == 0:
+                ax.set_ylabel(ylabs[idx2])
+            if idx == 2:
+                ax.plot(time_list[idx], data_list[idx][idx2])
+            else:
+                ax.plot(time_list[idx], uniform_filter1d(data_list[idx][idx2], size=60))
+            ax.set_xlim(t0, t1)
+
+    for ax in ax_list.flatten():
+        ax.label_outer()
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}.png".format(t0, t1))
+    plt.close(fig)
