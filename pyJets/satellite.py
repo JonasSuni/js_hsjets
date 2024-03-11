@@ -24,6 +24,7 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
 
 import pyspedas
+from datetime import datetime
 
 mpl.rcParams["hatch.linewidth"] = 0.1
 
@@ -82,6 +83,9 @@ wrkdir_DNR = wrkdir_DNR + "foreshock_bubble/"
 
 def plot_ace_dscovr_wind(t0, t1):
 
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
     ace_data = pyspedas.ace.mfi(trange=[t0, t1], notplot=True)
     dscovr_data = pyspedas.dscovr.mag(trange=[t0, t1], notplot=True)
     wind_data = pyspedas.wind.mfi(trange=[t0, t1], notplot=True)
@@ -125,7 +129,7 @@ def plot_ace_dscovr_wind(t0, t1):
                 ax.plot(time_list[idx], data_list[idx][idx2])
             else:
                 ax.plot(time_list[idx], uniform_filter1d(data_list[idx][idx2], size=60))
-            ax.set_xlim(t0, t1)
+            ax.set_xlim(t0plot, t1plot)
 
     for ax in ax_list.flatten():
         ax.label_outer()
