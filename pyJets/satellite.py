@@ -141,5 +141,5 @@ def plot_ace_dscovr_wind(t0, t1):
         except OSError:
             pass
 
-    fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}.png".format(t0, t1))
+    fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}.png".format(t0plot, t1plot))
     plt.close(fig)
