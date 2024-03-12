@@ -256,10 +256,15 @@ def timing_analysis_ace_dscovr_wind(
     dscovr_time_unix = np.array(
         [dscovr_time[idx].timestamp() for idx in range(dscovr_time.size)]
     )
+    wind_time_unix = np.array(
+        [wind_time[idx].timestamp() for idx in range(wind_time.size)]
+    )
 
     dt = uni_time[1] - uni_time[0]
 
-    wind_data_clean = wind_data[~np.isnan(wind_data)]
+    wind_data_clean = np.interp(
+        uni_time, wind_time_unix[~np.isnan(wind_data)], wind_data[~np.isnan(wind_data)]
+    )
     ace_data_clean = np.interp(
         uni_time, ace_time_unix[~np.isnan(ace_data)], ace_data[~np.isnan(ace_data)]
     )
