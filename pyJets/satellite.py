@@ -89,6 +89,49 @@ def interpolate_nans(data):
     return np.interp(dummy_x, dummy_x[~mask], data[~mask])
 
 
+def plot_thd_mms1_c4(t0, t1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    thd_mag = pyspedas.themis.fgm(trange=[t0, t1], notplot=True, probe="d")
+    thd_mom = pyspedas.themis.gmom(trange=[t0, t1], notplot=True, probe="d")
+
+    mms1_mag = pyspedas.mms.fgm(trange=[t0, t1], notplot=True, probe="1")
+    mms1_mom = pyspedas.mms.fpi(trange=[t0, t1], notplot=True, probe="1")
+
+    c4_mag = pyspedas.cluster.fgm(trange=[t0, t1], notplot=True, probe="4")
+    c4_mom = pyspedas.cluster.cis(trange=[t0, t1], notplot=True, probe="4")
+
+    time_arr = np.empty(3, 4, dtype=object)
+    data_arr = np.empty(3, 10, dtype=object)
+
+    time_arr[0, :] = [
+        datetime.utcfromtimestamp(thd_mag["thd_fgs_gse"]["x"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
+    ]
+    data_arr[0, :] = [
+        thd_mag["thd_fgs_gse"]["y"].T[0],
+        thd_mag["thd_fgs_gse"]["y"].T[1],
+        thd_mag["thd_fgs_gse"]["y"].T[2],
+        thd_mag["thd_fgs_btotal"]["y"],
+        thd_mom["thd_ptiff_velocity_gse"]["y"].T[0],
+        thd_mom["thd_ptiff_velocity_gse"]["y"].T[1],
+        thd_mom["thd_ptiff_velocity_gse"]["y"].T[2],
+        np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1),
+        thd_mom["thd_ptiff_density"]["y"],
+        m_p
+        * thd_mom["thd_ptiff_density"]["y"]
+        * 1e6
+        * np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1)
+        * np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1)
+        * 1e6
+        / 1e-9,
+    ]
+
+
 def plot_ace_dscovr_wind(t0, t1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -161,6 +204,7 @@ def plot_ace_dscovr_wind(t0, t1):
     fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}.png".format(t0plot, t1plot))
     plt.close(fig)
 
+    print("\n")
     print("Bx: ")
     timing_analysis_ace_dscovr_wind(
         ace_t, dscovr_t, wind_t, ace_B[0], dscovr_B[0], wind_B[0], t0, t1
@@ -177,7 +221,6 @@ def plot_ace_dscovr_wind(t0, t1):
     timing_analysis_ace_dscovr_wind(
         ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2], t0, t1
     )
-    print("\n")
 
 
 def timing_analysis_ace_dscovr_wind(
