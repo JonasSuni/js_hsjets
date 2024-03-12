@@ -249,7 +249,7 @@ def timing_analysis_ace_dscovr_wind(
             if not np.isnan(wind_data[idx])
         ]
     )
-    uni_time = uni_time[np.logical_and(uni_time >= t0, uni_time <= t1)]
+    uni_time = uni_time[np.logical_and(uni_time >= t0plot, uni_time <= t1plot)]
     ace_time_unix = np.array(
         [ace_time[idx].timestamp() for idx in range(ace_time.size)]
     )
