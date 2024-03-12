@@ -81,6 +81,14 @@ except:
 wrkdir_DNR = wrkdir_DNR + "foreshock_bubble/"
 
 
+def interpolate_nans(data):
+
+    dummy_x = np.arange(data.size)
+    mask = np.isnan(data)
+
+    return np.interp(dummy_x, dummy_x[~mask], data[~mask])
+
+
 def plot_ace_dscovr_wind(t0, t1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -118,18 +126,23 @@ def plot_ace_dscovr_wind(t0, t1):
     ]
     ylabs = ["Bx", "By", "Bz", "Bmag", "Clock", "Cone"]
 
-    fig, ax_list = plt.subplots(6, 3, figsize=(18, 18), constrained_layout=True)
+    fig, ax_list = plt.subplots(
+        6, 3, figsize=(18, 18), constrained_layout=True, sharey="row"
+    )
 
     for idx in range(3):
         for idx2 in range(6):
             ax = ax_list[idx2, idx]
             if idx == 0:
                 ax.set_ylabel(ylabs[idx2])
-            # if idx == 2:
-            #     ax.plot(time_list[idx], data_list[idx][idx2])
-            # else:
-            #     ax.plot(time_list[idx], uniform_filter1d(data_list[idx][idx2], size=60))
-            ax.plot(time_list[idx], data_list[idx][idx2])
+            if idx == 2:
+                ax.plot(time_list[idx], data_list[idx][idx2])
+            else:
+                ax.plot(
+                    time_list[idx],
+                    uniform_filter1d(interpolate_nans(data_list[idx][idx2]), size=60),
+                )
+            # ax.plot(time_list[idx], data_list[idx][idx2])
             ax.set_xlim(t0plot, t1plot)
 
     for ax in ax_list.flatten():
