@@ -263,10 +263,10 @@ def timing_analysis_ace_dscovr_wind(
     )
 
     ace_norm = (ace_data_clean - np.mean(ace_data_clean)) / (
-        np.std(ace_data_clean, ddof=1) * ace_data_clean.size
+        np.std(ace_data_clean, ddof=1)  # * ace_data_clean.size
     )
     dscovr_norm = (dscovr_data_clean - np.mean(dscovr_data_clean)) / (
-        np.std(dscovr_data_clean, ddof=1) * dscovr_data_clean.size
+        np.std(dscovr_data_clean, ddof=1)  # * dscovr_data_clean.size
     )
     wind_norm = (wind_data_clean - np.mean(wind_data_clean)) / (
         np.std(wind_data_clean, ddof=1) * wind_data_clean.size
