@@ -165,16 +165,19 @@ def plot_ace_dscovr_wind(t0, t1):
     timing_analysis_ace_dscovr_wind(
         ace_t, dscovr_t, wind_t, ace_B[0], dscovr_B[0], wind_B[0]
     )
+    print("\n")
 
     print("By: ")
     timing_analysis_ace_dscovr_wind(
         ace_t, dscovr_t, wind_t, ace_B[1], dscovr_B[1], wind_B[1]
     )
+    print("\n")
 
     print("Bz: ")
     timing_analysis_ace_dscovr_wind(
         ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2]
     )
+    print("\n")
 
 
 def timing_analysis_ace_dscovr_wind(
