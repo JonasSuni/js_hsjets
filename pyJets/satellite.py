@@ -214,21 +214,27 @@ def timing_analysis_ace_dscovr_wind(
     sc_y = pos_data[5].astype(float) * Re
     sc_z = pos_data[6].astype(float) * Re
 
-    ace_pos = [
-        np.nanmean(sc_x[sc_name == "ace"]),
-        np.nanmean(sc_y[sc_name == "ace"]),
-        np.nanmean(sc_z[sc_name == "ace"]),
-    ]
-    dscovr_pos = [
-        np.nanmean(sc_x[sc_name == "dscovr"]),
-        np.nanmean(sc_y[sc_name == "dscovr"]),
-        np.nanmean(sc_z[sc_name == "dscovr"]),
-    ]
-    wind_pos = [
-        np.nanmean(sc_x[sc_name == "wind"]),
-        np.nanmean(sc_y[sc_name == "wind"]),
-        np.nanmean(sc_z[sc_name == "wind"]),
-    ]
+    ace_pos = np.array(
+        [
+            np.nanmean(sc_x[sc_name == "ace"]),
+            np.nanmean(sc_y[sc_name == "ace"]),
+            np.nanmean(sc_z[sc_name == "ace"]),
+        ]
+    )
+    dscovr_pos = np.array(
+        [
+            np.nanmean(sc_x[sc_name == "dscovr"]),
+            np.nanmean(sc_y[sc_name == "dscovr"]),
+            np.nanmean(sc_z[sc_name == "dscovr"]),
+        ]
+    )
+    wind_pos = np.array(
+        [
+            np.nanmean(sc_x[sc_name == "wind"]),
+            np.nanmean(sc_y[sc_name == "wind"]),
+            np.nanmean(sc_z[sc_name == "wind"]),
+        ]
+    )
 
     uni_time = np.array(
         [
