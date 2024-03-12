@@ -128,7 +128,7 @@ def plot_ace_dscovr_wind(t0, t1):
     ylabs = ["ACE", "DSCOVR", "Wind"]
 
     fig, ax_list = plt.subplots(
-        3, 6, figsize=(18, 18), constrained_layout=True, sharey="col"
+        3, 6, figsize=(18, 12), constrained_layout=True, sharey="col"
     )
 
     for idx in range(3):
