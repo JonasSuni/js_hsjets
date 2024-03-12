@@ -124,17 +124,19 @@ def plot_ace_dscovr_wind(t0, t1):
         [dscovr_B[0], dscovr_B[1], dscovr_B[2], dscovr_Bmag, dscovr_clock, dscovr_cone],
         [wind_B[0], wind_B[1], wind_B[2], wind_Bmag, wind_clock, wind_cone],
     ]
-    ylabs = ["Bx", "By", "Bz", "Bmag", "Clock", "Cone"]
+    title_labs = ["Bx", "By", "Bz", "Bmag", "Clock", "Cone"]
+    ylabs = ["ACE", "DSCOVR", "Wind"]
 
     fig, ax_list = plt.subplots(
-        6, 3, figsize=(18, 18), constrained_layout=True, sharey="row"
+        3, 6, figsize=(18, 18), constrained_layout=True, sharey="col"
     )
 
     for idx in range(3):
+        ax_list[idx, 0].set_ylabel(ylabs, labelpad=10, fontsize=20)
         for idx2 in range(6):
-            ax = ax_list[idx2, idx]
-            if idx == 0:
-                ax.set_ylabel(ylabs[idx2])
+            ax = ax_list[idx, idx2]
+            if idx2 == 0:
+                ax.set_title(title_labs[idx2], pad=10, fontsize=20)
             if idx == 2:
                 ax.plot(time_list[idx], data_list[idx][idx2])
             else:
@@ -144,6 +146,7 @@ def plot_ace_dscovr_wind(t0, t1):
                 )
             # ax.plot(time_list[idx], data_list[idx][idx2])
             ax.set_xlim(t0plot, t1plot)
+            ax.grid()
 
     for ax in ax_list.flatten():
         ax.label_outer()
