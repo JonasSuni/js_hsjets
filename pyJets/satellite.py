@@ -163,25 +163,25 @@ def plot_ace_dscovr_wind(t0, t1):
 
     print("Bx: ")
     timing_analysis_ace_dscovr_wind(
-        ace_t, dscovr_t, wind_t, ace_B[0], dscovr_B[0], wind_B[0]
+        ace_t, dscovr_t, wind_t, ace_B[0], dscovr_B[0], wind_B[0], t0, t1
     )
     print("\n")
 
     print("By: ")
     timing_analysis_ace_dscovr_wind(
-        ace_t, dscovr_t, wind_t, ace_B[1], dscovr_B[1], wind_B[1]
+        ace_t, dscovr_t, wind_t, ace_B[1], dscovr_B[1], wind_B[1], t0, t1
     )
     print("\n")
 
     print("Bz: ")
     timing_analysis_ace_dscovr_wind(
-        ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2]
+        ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2], t0, t1
     )
     print("\n")
 
 
 def timing_analysis_ace_dscovr_wind(
-    ace_time, dscovr_time, wind_time, ace_data, dscovr_data, wind_data
+    ace_time, dscovr_time, wind_time, ace_data, dscovr_data, wind_data, t0, t1
 ):
     # Adapted from code created by Lucile Turc
 
@@ -205,6 +205,9 @@ def timing_analysis_ace_dscovr_wind(
     # print(min_time,max_time)
 
     # ref_sc = ind_sc[0]
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").timestamp()
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").timestamp()
 
     pos_data = np.loadtxt(
         wrkdir_DNR
@@ -246,6 +249,7 @@ def timing_analysis_ace_dscovr_wind(
             if not np.isnan(wind_data[idx])
         ]
     )
+    uni_time = uni_time[np.logical_and(uni_time >= t0, uni_time <= t1)]
     ace_time_unix = np.array(
         [ace_time[idx].timestamp() for idx in range(ace_time.size)]
     )
