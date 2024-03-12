@@ -205,13 +205,14 @@ def timing_analysis_ace_dscovr_wind(
 
     pos_data = np.loadtxt(
         wrkdir_DNR
-        + "satellites/ace_dscovr_wind_pos_2022-03-27_19:00:00_21:00:00_numpy.txt"
+        + "satellites/ace_dscovr_wind_pos_2022-03-27_19:00:00_21:00:00_numpy.txt",
+        dtype=str,
     ).T
 
     sc_name = pos_data[3]
-    sc_x = pos_data[4] * Re
-    sc_y = pos_data[5] * Re
-    sc_z = pos_data[6] * Re
+    sc_x = pos_data[4].astype(float) * Re
+    sc_y = pos_data[5].astype(float) * Re
+    sc_z = pos_data[6].astype(float) * Re
 
     ace_pos = [
         np.nanmean(sc_x[sc_name == "ace"]),
