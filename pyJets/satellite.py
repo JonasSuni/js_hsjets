@@ -94,9 +94,9 @@ def plot_ace_dscovr_wind(t0, t1):
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
-    ace_data = pyspedas.ace.mfi(trange=[t0, t1], notplot=True)
-    dscovr_data = pyspedas.dscovr.mag(trange=[t0, t1], notplot=True)
-    wind_data = pyspedas.wind.mfi(trange=[t0, t1], notplot=True)
+    ace_data = pyspedas.ace.mfi(trange=[t0, t1], notplot=True, time_clip=True)
+    dscovr_data = pyspedas.dscovr.mag(trange=[t0, t1], notplot=True, time_clip=True)
+    wind_data = pyspedas.wind.mfi(trange=[t0, t1], notplot=True, time_clip=True)
 
     ace_t = ace_data["BGSEc"]["x"]
     ace_B = ace_data["BGSEc"]["y"].T
