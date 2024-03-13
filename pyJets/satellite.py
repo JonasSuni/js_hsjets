@@ -251,7 +251,8 @@ def plot_thd_mms1_c4(t0, t1):
         for idx2 in range(len(panel_id)):
             print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
             ax = ax_list[panel_id[idx2], idx]
-            ax.grid()
+            if plot_legend[idx2]:
+                ax.grid()
             ax.plot(
                 time_arr[idx, panel_id[idx2]],
                 data_arr[idx, idx2],
