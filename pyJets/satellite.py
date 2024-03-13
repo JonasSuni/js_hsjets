@@ -130,10 +130,10 @@ def plot_thd_mms1_c4(t0, t1):
     data_arr = np.empty((3, 10), dtype=object)
 
     time_arr[0, :] = [
-        datetime.fromtimestamp(thd_mag["thd_fgs_gse"]["x"], tz=timezone.utc()),
-        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
-        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
-        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
+        datetime.utcfromtimestamp(thd_mag["thd_fgs_gse"]["x"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]["x"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]["x"]),
+        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]["x"]),
     ]
     data_arr[0, :] = [
         thd_mag["thd_fgs_gse"]["y"].T[0],
