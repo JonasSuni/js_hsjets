@@ -248,6 +248,7 @@ def plot_thd_mms1_c4(t0, t1):
 
     for idx in range(3):
         for idx2 in range(len(panel_id)):
+            print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
             ax = ax_list[panel_id[idx2], idx]
             ax.grid()
             ax.plot(
