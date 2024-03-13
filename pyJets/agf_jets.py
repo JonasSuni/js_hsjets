@@ -2126,6 +2126,7 @@ def v5_plotter(
     pointsy=[],
     fsaved=None,
     lin=1,
+    By0=True,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -2139,7 +2140,7 @@ def v5_plotter(
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g
     runid_g = runid
     Blines_g = blines
-    drawBy0 = True
+    drawBy0 = By0
     plaschke_g = False
 
     global xg, yg
