@@ -126,8 +126,8 @@ def plot_thd_mms1_c4(t0, t1):
     c4_mag = pyspedas.cluster.fgm(trange=[t0, t1], notplot=True, probe="4")
     c4_mom = pyspedas.cluster.cis(trange=[t0, t1], notplot=True, probe="4")
 
-    time_arr = np.empty(3, 4, dtype=object)
-    data_arr = np.empty(3, 10, dtype=object)
+    time_arr = np.empty((3, 4), dtype=object)
+    data_arr = np.empty((3, 10), dtype=object)
 
     time_arr[0, :] = [
         datetime.fromtimestamp(thd_mag["thd_fgs_gse"]["x"], tz=timezone.utc()),
