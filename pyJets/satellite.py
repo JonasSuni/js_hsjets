@@ -118,7 +118,7 @@ def plot_thd_mms1_c4(t0, t1):
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
     thd_mag = pyspedas.themis.fgm(trange=[t0, t1], notplot=True, probe="d")
-    thd_mom = pyspedas.themis.gmom(trange=[t0, t1], notplot=True, probe="d")
+    thd_mom = pyspedas.themis.mom(trange=[t0, t1], notplot=True, probe="d")
 
     mms1_mag = pyspedas.mms.fgm(trange=[t0, t1], notplot=True, probe="1")
     mms1_mom = pyspedas.mms.fpi(trange=[t0, t1], notplot=True, probe="1")
@@ -131,25 +131,25 @@ def plot_thd_mms1_c4(t0, t1):
 
     time_arr[0, :] = [
         [datetime.utcfromtimestamp(t) for t in thd_mag["thd_fgs_gse"]["x"]],
-        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_ptiff_density"]["x"]],
-        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_ptiff_density"]["x"]],
-        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_ptiff_density"]["x"]],
+        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_peim_density"]["x"]],
+        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_peim_density"]["x"]],
+        [datetime.utcfromtimestamp(t) for t in thd_mom["thd_peim_density"]["x"]],
     ]
     data_arr[0, :] = [
         thd_mag["thd_fgs_gse"]["y"].T[0],
         thd_mag["thd_fgs_gse"]["y"].T[1],
         thd_mag["thd_fgs_gse"]["y"].T[2],
         thd_mag["thd_fgs_btotal"]["y"],
-        thd_mom["thd_ptiff_velocity_gse"]["y"].T[0],
-        thd_mom["thd_ptiff_velocity_gse"]["y"].T[1],
-        thd_mom["thd_ptiff_velocity_gse"]["y"].T[2],
-        np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1),
-        thd_mom["thd_ptiff_density"]["y"],
+        thd_mom["thd_peim_velocity_gse"]["y"].T[0],
+        thd_mom["thd_peim_velocity_gse"]["y"].T[1],
+        thd_mom["thd_peim_velocity_gse"]["y"].T[2],
+        np.linalg.norm(thd_mom["thd_peim_velocity_gse"]["y"], axis=-1),
+        thd_mom["thd_peim_density"]["y"],
         m_p
-        * thd_mom["thd_ptiff_density"]["y"]
+        * thd_mom["thd_peim_density"]["y"]
         * 1e6
-        * np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1)
-        * np.linalg.norm(thd_mom["thd_ptiff_velocity_gse"]["y"], axis=-1)
+        * np.linalg.norm(thd_mom["thd_peim_velocity_gse"]["y"], axis=-1)
+        * np.linalg.norm(thd_mom["thd_peim_velocity_gse"]["y"], axis=-1)
         * 1e6
         / 1e-9,
     ]
@@ -251,7 +251,7 @@ def plot_thd_mms1_c4(t0, t1):
         for idx2 in range(len(panel_id)):
             print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
             ax = ax_list[panel_id[idx2], idx]
-            if plot_legend[idx2]:
+            if not plot_legend[idx2]:
                 ax.grid()
             ax.plot(
                 time_arr[idx, panel_id[idx2]],
