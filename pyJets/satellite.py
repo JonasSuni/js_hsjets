@@ -258,7 +258,7 @@ def plot_thd_mms1_c4(t0, t1):
             if idx == 1 and idx2 in [0, 1, 2, 3]:
                 ax.plot(
                     time_arr[idx, panel_id[idx2]],
-                    uniform_filter1d(data_arr[idx, idx2], size=16),
+                    uniform_filter1d(data_arr[idx, idx2], size=80),
                     color=colors[idx2],
                     label=line_label[idx2],
                 )
