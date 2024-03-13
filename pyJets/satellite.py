@@ -205,7 +205,7 @@ def plot_thd_mms1_c4(t0, t1):
     ]
 
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
-    panel_labs = ["B [nT]", "V [km/s]", "n [cm^-3]", "Pdyn [nPa]"]
+    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
     sc_labs = ["THD", "MMS1", "C4"]
     colors = [
         CB_color_cycle[0],
