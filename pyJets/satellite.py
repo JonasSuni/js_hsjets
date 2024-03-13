@@ -206,6 +206,18 @@ def plot_thd_mms1_c4(t0, t1):
 
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
+    ylabels_all = [
+        "Bx [nT]",
+        "By [nT]",
+        "Bz [nT]",
+        "Bt [nT]",
+        "vx [km/s]",
+        "vy [km/s]",
+        "vz [km/s]",
+        "vt [km/s]",
+        "n [1/cm3]",
+        "Pdyn [nPa]",
+    ]
     sc_labs = ["THD", "MMS1", "C4"]
     colors = [
         CB_color_cycle[0],
@@ -246,46 +258,41 @@ def plot_thd_mms1_c4(t0, t1):
     ylims = [(-40, 60), (-400, 500), (5, 35), (0, 10)]
 
     fig, ax_list = plt.subplots(
-        4, 3, figsize=(18, 12), sharey="row", constrained_layout=True
+        10, 3, figsize=(18, 24), sharey="row", constrained_layout=True
     )
 
     for idx in range(3):
         for idx2 in range(len(panel_id)):
             print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
-            ax = ax_list[panel_id[idx2], idx]
-            if not plot_legend[idx2]:
-                ax.grid()
-            # if idx == 1 and idx2 in [0, 1, 2, 3]:
-            #     ax.plot(
-            #         time_arr[idx, panel_id[idx2]],
-            #         uniform_filter1d(data_arr[idx, idx2], size=80),
-            #         color=colors[idx2],
-            #         label=line_label[idx2],
-            #     )
-            # else:
-            #     ax.plot(
-            #         time_arr[idx, panel_id[idx2]],
-            #         data_arr[idx, idx2],
-            #         color=colors[idx2],
-            #         label=line_label[idx2],
-            #     )
+            # ax = ax_list[panel_id[idx2], idx]
+            # if not plot_legend[idx2]:
+            #     ax.grid()
+            # ax.plot(
+            #     time_arr[idx, panel_id[idx2]],
+            #     data_arr[idx, idx2],
+            #     color=colors[idx2],
+            #     label=line_label[idx2],
+            #     alpha=0.5,
+            # )
+            # if plot_legend[idx2] and idx == 2:
+            #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ax = ax_list[idx2, idx]
+            ax.grid()
             ax.plot(
                 time_arr[idx, panel_id[idx2]],
                 data_arr[idx, idx2],
-                color=colors[idx2],
-                label=line_label[idx2],
-                alpha=0.5,
             )
-            if plot_legend[idx2] and idx == 2:
-                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
             ax.label_outer()
             ax.set_xlim(t0plot, t1plot)
 
     for idx in range(3):
         ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
-    for idx in range(len(panel_labs)):
-        ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
-        ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
+    # for idx in range(len(panel_labs)):
+    #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+    #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
+    for idx in range(len(ylabels_all)):
+        ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
+        ax_list[idx, 0].set_ylim(ylims[panel_id[idx]][0], ylims[panel_id[idx]][1])
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
