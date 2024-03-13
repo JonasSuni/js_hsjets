@@ -244,7 +244,7 @@ def plot_thd_mms1_c4(t0, t1):
         None,
     ]
 
-    fig, ax_list = plt.subplots(4, 3, figsize=(12, 12), sharey="row")
+    fig, ax_list = plt.subplots(4, 3, figsize=(12, 12))
 
     for idx in range(3):
         for idx2 in range(len(panel_id)):
@@ -257,7 +257,7 @@ def plot_thd_mms1_c4(t0, t1):
                 color=colors[idx2],
                 label=line_label[idx2],
             )
-            if plot_legend[idx2]:
+            if plot_legend[idx2] and idx == 2:
                 ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
             ax.label_outer()
             ax.set_xlim(t0plot, t1plot)
