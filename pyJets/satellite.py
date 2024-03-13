@@ -255,12 +255,20 @@ def plot_thd_mms1_c4(t0, t1):
             ax = ax_list[panel_id[idx2], idx]
             if not plot_legend[idx2]:
                 ax.grid()
-            ax.plot(
-                time_arr[idx, panel_id[idx2]],
-                data_arr[idx, idx2],
-                color=colors[idx2],
-                label=line_label[idx2],
-            )
+            if idx == 1 and idx2 in [0, 1, 2, 3]:
+                ax.plot(
+                    time_arr[idx, panel_id[idx2]],
+                    uniform_filter1d(data_arr[idx, idx2], size=16),
+                    color=colors[idx2],
+                    label=line_label[idx2],
+                )
+            else:
+                ax.plot(
+                    time_arr[idx, panel_id[idx2]],
+                    data_arr[idx, idx2],
+                    color=colors[idx2],
+                    label=line_label[idx2],
+                )
             if plot_legend[idx2] and idx == 2:
                 ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
             ax.label_outer()
