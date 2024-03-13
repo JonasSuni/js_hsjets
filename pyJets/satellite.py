@@ -243,7 +243,7 @@ def plot_thd_mms1_c4(t0, t1):
         None,
         None,
     ]
-    ylims = [(-10, 10), (-500, 500), (0, 50), (0, 10)]
+    ylims = [(-50, 50), (-500, 500), (0, 50), (0, 10)]
 
     fig, ax_list = plt.subplots(4, 3, figsize=(18, 12), sharey="row")
 
