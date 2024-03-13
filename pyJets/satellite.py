@@ -243,8 +243,9 @@ def plot_thd_mms1_c4(t0, t1):
         None,
         None,
     ]
+    ylims = [(-10, 10), (-500, 500), (0, 50), (0, 10)]
 
-    fig, ax_list = plt.subplots(4, 3, figsize=(12, 12))
+    fig, ax_list = plt.subplots(4, 3, figsize=(18, 12), sharey="row")
 
     for idx in range(3):
         for idx2 in range(len(panel_id)):
@@ -266,6 +267,7 @@ def plot_thd_mms1_c4(t0, t1):
         ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
     for idx in range(len(panel_labs)):
         ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+        ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
