@@ -252,7 +252,7 @@ def plot_thd_mms1_c4(t0, t1):
             ax = ax_list[panel_id[idx2], idx]
             ax.grid()
             ax.plot(
-                time_arr[idx, idx2],
+                time_arr[idx, panel_id[idx2]],
                 data_arr[idx, idx2],
                 color=colors[idx2],
                 label=line_label[idx2],
