@@ -193,13 +193,13 @@ def plot_thd_mms1_c4(t0, t1):
         c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[0],
         c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[1],
         c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[2],
-        np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"]),
+        np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"], axis=-1),
         c4_mom["N_p__C4_PP_CIS"]["y"],
         m_p
         * c4_mom["N_p__C4_PP_CIS"]["y"]
         * 1e6
-        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"])
-        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"])
+        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"], axis=-1)
+        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"], axis=-1)
         * 1e6
         / 1e-9,
     ]
