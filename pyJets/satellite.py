@@ -24,7 +24,7 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
 
 import pyspedas
-from datetime import datetime
+from datetime import datetime, timezone
 
 mpl.rcParams["hatch.linewidth"] = 0.1
 
@@ -80,6 +80,29 @@ except:
 
 wrkdir_DNR = wrkdir_DNR + "foreshock_bubble/"
 
+CB_color_cycle = [
+    "#377eb8",
+    "#ff7f00",
+    "#4daf4a",
+    "#e41a1c",
+    "#f781bf",
+    "#a65628",
+    "#984ea3",
+    "#999999",
+    "#dede00",
+    "#000000",
+    "#377eb8",
+    "#ff7f00",
+    "#4daf4a",
+    "#e41a1c",
+    "#f781bf",
+    "#a65628",
+    "#984ea3",
+    "#999999",
+    "#dede00",
+    "#000000",
+]
+
 
 def interpolate_nans(data):
 
@@ -107,10 +130,10 @@ def plot_thd_mms1_c4(t0, t1):
     data_arr = np.empty(3, 10, dtype=object)
 
     time_arr[0, :] = [
-        datetime.utcfromtimestamp(thd_mag["thd_fgs_gse"]["x"]),
-        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
-        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
-        datetime.utcfromtimestamp(thd_mom["thd_ptiff_density"]),
+        datetime.fromtimestamp(thd_mag["thd_fgs_gse"]["x"], tz=timezone.utc()),
+        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
+        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
+        datetime.fromtimestamp(thd_mom["thd_ptiff_density"]["x"], tz=timezone.utc()),
     ]
     data_arr[0, :] = [
         thd_mag["thd_fgs_gse"]["y"].T[0],
@@ -130,6 +153,128 @@ def plot_thd_mms1_c4(t0, t1):
         * 1e6
         / 1e-9,
     ]
+
+    time_arr[1, :] = [
+        mms1_mag["mms1_fgm_b_gse_srvy_l2"]["x"],
+        mms1_mom["mms1_dis_numberdensity_fast"]["x"],
+        mms1_mom["mms1_dis_numberdensity_fast"]["x"],
+        mms1_mom["mms1_dis_numberdensity_fast"]["x"],
+    ]
+    data_arr[1, :] = [
+        mms1_mag["mms1_fgm_b_gse_srvy_l2"]["y"].T[0],
+        mms1_mag["mms1_fgm_b_gse_srvy_l2"]["y"].T[1],
+        mms1_mag["mms1_fgm_b_gse_srvy_l2"]["y"].T[2],
+        np.linalg.norm(mms1_mag["mms1_fgm_b_gse_srvy_l2"]["y"], axis=-1),
+        mms1_mom["mms1_dis_bulkv_gse_fast"]["y"].T[0],
+        mms1_mom["mms1_dis_bulkv_gse_fast"]["y"].T[1],
+        mms1_mom["mms1_dis_bulkv_gse_fast"]["y"].T[2],
+        np.linalg.norm(mms1_mom["mms1_dis_bulkv_gse_fast"]["y"], axis=-1),
+        mms1_mom["mms1_dis_numberdensity_fast"]["y"],
+        m_p
+        * mms1_mom["mms1_dis_numberdensity_fast"]["y"]
+        * 1e6
+        * np.linalg.norm(mms1_mom["mms1_dis_bulkv_gse_fast"]["y"], axis=-1)
+        * np.linalg.norm(mms1_mom["mms1_dis_bulkv_gse_fast"]["y"], axis=-1)
+        * 1e6
+        / 1e-9,
+    ]
+
+    time_arr[2, :] = [
+        c4_mag["B_xyz_gse__C4_UP_FGM"]["x"],
+        c4_mom["N_p__C4_PP_CIS"]["x"],
+        c4_mom["N_p__C4_PP_CIS"]["x"],
+        c4_mom["N_p__C4_PP_CIS"]["x"],
+    ]
+    data_arr[2, :] = [
+        c4_mag["B_xyz_gse__C4_UP_FGM"]["y"].T[0],
+        c4_mag["B_xyz_gse__C4_UP_FGM"]["y"].T[1],
+        c4_mag["B_xyz_gse__C4_UP_FGM"]["y"].T[2],
+        np.linalg.norm(c4_mag["B_xyz_gse__C4_UP_FGM"]["y"], axis=-1),
+        c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[0],
+        c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[1],
+        c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"].T[2],
+        np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"]),
+        c4_mom["N_p__C4_PP_CIS"]["y"],
+        m_p
+        * c4_mom["N_p__C4_PP_CIS"]["y"]
+        * 1e6
+        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"])
+        * np.linalg.norm(c4_mom["V_p_xyz_gse__C4_PP_CIS"]["y"])
+        * 1e6
+        / 1e-9,
+    ]
+
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
+    panel_labs = ["B [nT]", "V [km/s]", "n [cm^-3]", "Pdyn [nPa]"]
+    sc_labs = ["THD", "MMS1", "C4"]
+    colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        "k",
+    ]
+    plot_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    line_label = [
+        "x",
+        "y",
+        "z",
+        "mag",
+        "x",
+        "y",
+        "z",
+        "mag",
+        None,
+        None,
+    ]
+
+    fig, ax_list = plt.subplots(4, 3, figsize=(12, 12), sharey="row")
+
+    for idx in range(3):
+        for idx2 in range(len(panel_id)):
+            ax = ax_list[panel_id[idx2], idx]
+            ax.grid()
+            ax.plot(
+                time_arr[idx, idx2],
+                data_arr[idx, idx2],
+                color=colors[idx2],
+                label=line_label[idx2],
+            )
+            if plot_legend[idx2]:
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ax.label_outer()
+            ax.set_xlim(t0plot, t1plot)
+
+    for idx in range(3):
+        ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
+    for idx in range(len(panel_labs)):
+        ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(outdir + "thd_mms1_c4_t0{}_t1{}.png".format(t0plot, t1plot))
+    plt.close(fig)
 
 
 def plot_ace_dscovr_wind(t0, t1):
