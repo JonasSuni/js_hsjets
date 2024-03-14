@@ -3599,14 +3599,14 @@ def jplots(
             ax_idx += 1
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
         if len(vels_to_plot) >= 4:
-            ax_list[1].legend(
+            ax_list[0].legend(
                 fontsize=legsize,
                 bbox_to_anchor=(0.5, -0.12),
                 loc="upper center",
                 ncols=2,
             )
         else:
-            ax_list[1].legend(fontsize=legsize, loc="lower left", ncols=2)
+            ax_list[0].legend(fontsize=legsize, loc="lower left", ncols=2)
         # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
         #     "Simulation time [s]", fontsize=28, labelpad=10
         # )
