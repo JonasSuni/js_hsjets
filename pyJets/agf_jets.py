@@ -3562,7 +3562,7 @@ def jplots(
                         # vt_arr.T,
                         arrowstyle="-",
                         broken_streamlines=True,
-                        color=CB_color_cycle[itr + 1],
+                        color=CB_color_cycle[::-1][itr + 1],
                         linewidth=2,
                         # minlength=4,
                         maxlength=1,
