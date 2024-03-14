@@ -1908,16 +1908,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ).any():
     #     proxy.append(sj_pos)
     #     proxy_labs.append("FCS-jet")
-
-    ax.legend(
-        proxy,
-        proxy_labs,
-        frameon=True,
-        numpoints=1,
-        markerscale=1,
-        loc="lower left",
-        fontsize=5,
-    )
+    if leg_g:
+        ax.legend(
+            proxy,
+            proxy_labs,
+            frameon=True,
+            numpoints=1,
+            markerscale=1,
+            loc="lower left",
+            fontsize=5,
+        )
 
     global gprox, gprox_labs
 
@@ -2127,6 +2127,7 @@ def v5_plotter(
     fsaved=None,
     lin=1,
     By0=True,
+    leg=True,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -2137,11 +2138,12 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g
     runid_g = runid
     Blines_g = blines
     drawBy0 = By0
     plaschke_g = False
+    leg_g = leg
 
     global xg, yg
     xg = pointsx
