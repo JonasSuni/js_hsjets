@@ -2128,6 +2128,7 @@ def v5_plotter(
     lin=1,
     By0=True,
     leg=True,
+    track_jets=True,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -2163,7 +2164,10 @@ def v5_plotter(
 
     bulkpath = find_bulkpath(runid)
 
-    non_ids = get_jets(runid)
+    if track_jets:
+        non_ids = get_jets(runid)
+    else:
+        non_ids = []
 
     sj_ids_g = []
     non_ids_g = non_ids
