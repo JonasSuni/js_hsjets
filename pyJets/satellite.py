@@ -205,6 +205,7 @@ def plot_thd_mms1_c4(t0, t1):
     ]
 
     t_pdmax = [time_arr[idx, -1][np.argmax(data_arr[idx, -1])] for idx in range(3)]
+    print(t_pdmax)
 
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
