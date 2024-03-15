@@ -111,6 +111,12 @@ def interpolate_nans(data):
 
     return np.interp(dummy_x, dummy_x[~mask], data[~mask])
 
+def time_clip(time_list,data_list,t0,t1):
+
+    time_clipped = [t for t in time_list if t>=t0 and t<=t1]
+    data_clipped = [data_list[idx] for idx in range(len(time_list)) if time_list[idx]>=t0 and time_list[idx]<=t1]
+
+    return (time_clipped,data_clipped)
 
 def plot_thd_mms1_c4(t0, t1):
 
