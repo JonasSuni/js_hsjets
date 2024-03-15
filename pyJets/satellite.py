@@ -204,8 +204,17 @@ def plot_thd_mms1_c4(t0, t1):
         / 1e-9,
     ]
 
-    t_pdmax = [time_arr[idx, -1][np.argmax(data_arr[idx, -1])] for idx in range(3)]
-    print(t_pdmax)
+    time_masks = [
+        np.logical_and(time_arr[idx, -1] >= t0plot, time_arr[idx, -1] <= t1plot)
+        for idx in range(3)
+    ]
+
+    t_pdmax = [
+        time_arr[idx, -1][time_masks[idx]][
+            np.argmax(data_arr[idx, -1][time_masks[idx]])
+        ]
+        for idx in range(3)
+    ]
 
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
@@ -308,7 +317,6 @@ def plot_thd_mms1_c4(t0, t1):
 
     for idx in range(3):
         ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
-        ax.axvline(t_pdmax[idx], linestyle="dashed")
     # for idx in range(len(panel_labs)):
     #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
     #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
