@@ -2250,6 +2250,7 @@ def VSC_timeseries(
     filt=None,
     pdx=False,
     delta=None,
+    vlines=[],
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2449,6 +2450,8 @@ def VSC_timeseries(
     ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
+        for vline in vlines:
+            ax.axvline(vline, linestyle="dashed", linewidth=0.6)
         if delta:
             ax.plot(
                 t_arr,
