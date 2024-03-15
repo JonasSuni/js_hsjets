@@ -308,6 +308,7 @@ def plot_thd_mms1_c4(t0, t1):
 
     for idx in range(3):
         ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
+        ax.axvline(t_pdmax[idx], linestyle="dashed")
     # for idx in range(len(panel_labs)):
     #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
     #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
