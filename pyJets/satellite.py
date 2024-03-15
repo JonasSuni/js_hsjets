@@ -210,6 +210,7 @@ def plot_thd_mms1_c4(t0, t1):
         )
         for idx in range(3)
     ]
+    print(time_masks)
 
     t_pdmax = [
         time_arr[idx, -1][time_masks[idx]][
