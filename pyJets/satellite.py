@@ -213,8 +213,8 @@ def plot_thd_mms1_c4(t0, t1):
     print(time_masks)
 
     t_pdmax = [
-        time_arr[idx, -1][time_masks[idx]][
-            np.argmax(data_arr[idx, -1][time_masks[idx]])
+        np.array(time_arr[idx, -1])[time_masks[idx]][
+            np.argmax(np.array(data_arr[idx, -1])[time_masks[idx]])
         ]
         for idx in range(3)
     ]
