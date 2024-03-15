@@ -205,7 +205,9 @@ def plot_thd_mms1_c4(t0, t1):
     ]
 
     time_masks = [
-        np.logical_and(time_arr[idx, -1] >= t0plot, time_arr[idx, -1] <= t1plot)
+        np.logical_and(
+            np.array(time_arr[idx, -1]) >= t0plot, np.array(time_arr[idx, -1]) <= t1plot
+        )
         for idx in range(3)
     ]
 
