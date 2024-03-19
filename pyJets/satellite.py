@@ -168,9 +168,13 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True):
     data_list = np.array(sc_data["y"]).T
 
     if intpol:
-        newtime = np.arange(t0plot.timestamp(), t1plot.timestamp(), 1)
+        newtime = np.arange(
+            t0plot.replace(tzinfo=timezone.utc).timestamp(),
+            t1plot.replace(tzinfo=timezone.utc).timestamp(),
+            1,
+        )
         if type(time_list[0]) == datetime:
-            time_list = [t.timestamp() for t in time_list]
+            time_list = [t.replace(tzinfo=timezone.utc).timestamp() for t in time_list]
         if len(data_list.shape) > 1:
             newdata = np.array(
                 [np.interp(newtime, time_list, data) for data in data_list]
