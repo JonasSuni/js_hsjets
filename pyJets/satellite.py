@@ -124,7 +124,7 @@ def time_clip(time_list, data_list, t0, t1):
     return (time_clipped, data_clipped)
 
 
-def load_msh_sc_data(sc, probe, var, t0, t1):
+def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -134,12 +134,20 @@ def load_msh_sc_data(sc, probe, var, t0, t1):
     moms_list = ["fpi", "mom", "cis"]
     sc_var_names = [
         [
-            "mms1_fgm_b_gse_srvy_l2",
-            "mms1_dis_numberdensity_fast",
-            "mms1_dis_bulkv_gse_fast",
+            "mms{}_fgm_b_gse_srvy_l2".format(probe),
+            "mms{}_dis_numberdensity_fast".format(probe),
+            "mms{}_dis_bulkv_gse_fast".format(probe),
         ],
-        ["thd_fgs_gse", "thd_peim_density", "thd_peim_velocity_gse"],
-        ["B_xyz_gse__C4_UP_FGM", "N_p__C4_PP_CIS", "V_p_xyz_gse__C4_PP_CIS"],
+        [
+            "th{}_fgs_gse".format(probe),
+            "th{}_peim_density".format(probe),
+            "th{}_peim_velocity_gse".format(probe),
+        ],
+        [
+            "B_xyz_gse__C{}_UP_FGM".format(probe),
+            "N_p__C{}_PP_CIS".format(probe),
+            "V_p_xyz_gse__C{}_PP_CIS".format(probe),
+        ],
     ]
 
     sc_obj = [
@@ -156,8 +164,26 @@ def load_msh_sc_data(sc, probe, var, t0, t1):
     sc_data = sc_ins_obj(trange=[t0, t1], probe=probe, notplot=True, time_clip=True)[
         sc_var_names[sc_list.index(sc)][vars_list.index(var)]
     ]
-    time_list = sc_data["x"]
-    data_list = sc_data["y"]
+    time_list = np.array(sc_data["x"])
+    data_list = np.array(sc_data["y"]).T
+
+    if intpol:
+        newtime = np.arange(t0plot.timestamp(), t1plot.timestamp(), 1)
+        if type(time_list[0]) == datetime:
+            time_list = [t.timestamp() for t in time_list]
+        if len(data_list.size) > 1:
+            newdata = np.array(
+                [np.interp(newtime, time_list, data) for data in data_list]
+            )
+        else:
+            newdata = np.interp(newtime, time_list, data_list)
+        newtime = np.array([datetime.utcfromtimestamp(t) for t in newtime])
+
+        return (newtime, newdata)
+    else:
+        if type(time_list[0]) != datetime:
+            time_list = np.array([datetime.utcfromtimestamp(t) for t in time_list])
+        return (time_list, data_list)
 
 
 def plot_thd_mms1_c4(t0, t1):
