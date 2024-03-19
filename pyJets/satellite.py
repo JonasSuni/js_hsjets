@@ -171,7 +171,7 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True):
         newtime = np.arange(t0plot.timestamp(), t1plot.timestamp(), 1)
         if type(time_list[0]) == datetime:
             time_list = [t.timestamp() for t in time_list]
-        if len(data_list.size) > 1:
+        if len(data_list.shape) > 1:
             newdata = np.array(
                 [np.interp(newtime, time_list, data) for data in data_list]
             )
