@@ -111,12 +111,54 @@ def interpolate_nans(data):
 
     return np.interp(dummy_x, dummy_x[~mask], data[~mask])
 
-def time_clip(time_list,data_list,t0,t1):
 
-    time_clipped = [t for t in time_list if t>=t0 and t<=t1]
-    data_clipped = [data_list[idx] for idx in range(len(time_list)) if time_list[idx]>=t0 and time_list[idx]<=t1]
+def time_clip(time_list, data_list, t0, t1):
 
-    return (time_clipped,data_clipped)
+    time_clipped = [t for t in time_list if t >= t0 and t <= t1]
+    data_clipped = [
+        data_list[idx]
+        for idx in range(len(time_list))
+        if time_list[idx] >= t0 and time_list[idx] <= t1
+    ]
+
+    return (time_clipped, data_clipped)
+
+
+def load_msh_sc_data(sc, probe, var, t0, t1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    vars_list = ["B", "rho", "v"]
+    sc_list = ["mms", "themis", "cluster"]
+    moms_list = ["fpi", "mom", "cis"]
+    sc_var_names = [
+        [
+            "mms1_fgm_b_gse_srvy_l2",
+            "mms1_dis_numberdensity_fast",
+            "mms1_dis_bulkv_gse_fast",
+        ],
+        ["thd_fgs_gse", "thd_peim_density", "thd_peim_velocity_gse"],
+        ["B_xyz_gse__C4_UP_FGM", "N_p__C4_PP_CIS", "V_p_xyz_gse__C4_PP_CIS"],
+    ]
+
+    sc_obj = [
+        pyspedas.mms,
+        pyspedas.themis,
+        pyspedas.cluster,
+    ][sc_list.index(sc)]
+
+    if var == "B":
+        sc_ins_obj = sc_obj.fgm
+    else:
+        sc_ins_obj = [sc_obj.fpi, sc_obj.mom, sc_obj.cis][sc_list.index(sc)]
+
+    sc_data = sc_ins_obj(trange=[t0, t1], probe=probe, notplot=True, time_clip=True)[
+        sc_var_names[sc_list.index(sc)][vars_list.index(var)]
+    ]
+    time_list = sc_data["x"]
+    data_list = sc_data["y"]
+
 
 def plot_thd_mms1_c4(t0, t1):
 
@@ -598,310 +640,5 @@ def timing_analysis_ace_dscovr_wind(
     results["wave_velocity_sc_frame"] = wave_velocity_sc_frame
     results["cross_corr_values"] = cross_corr_values
     print("Correlation coefficients: ", cross_corr_values)
-
-    return results
-
-
-def timing_analysis_thd_mms1_c4(
-    thd_time, mms1_time, c4_time, thd_data, mms1_data, c4_data, t0, t1
-):
-    # Adapted from code created by Lucile Turc
-
-    # Inputs:
-    # data is a list of dictionaries containing the virtual spacecraft time series
-    # ind_sc selects one virtual spacecraft from the list of dictionaries
-    # min_time and max_time indicate between which time steps we perform the timing analysis
-    # var4analysis is a dictionary key which selects the time series on which timing analysis is performed
-    # Output:
-    # results is a dictionary containing the results of the timing analysis
-
-    Re = 6371.0  # Earth radius in km
-    time_difference = []
-    # dt = 0.5  # Time step dt = 0.5 in all Vlasiator runs
-
-    # ******************************************************************************#
-    # Calculate the correlation function between two times series
-    # ******************************************************************************#
-    cross_corr_values = []
-
-    # print(min_time,max_time)
-
-    # ref_sc = ind_sc[0]
-
-    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").timestamp()
-    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").timestamp()
-
-    pos_data = np.loadtxt(
-        wrkdir_DNR
-        + "satellites/ace_dscovr_wind_pos_2022-03-27_19:00:00_21:00:00_numpy.txt",
-        dtype=str,
-    ).T
-
-    sc_name = pos_data[3]
-    sc_x = pos_data[4].astype(float) * Re
-    sc_y = pos_data[5].astype(float) * Re
-    sc_z = pos_data[6].astype(float) * Re
-
-    ace_pos = np.array(
-        [
-            np.nanmean(sc_x[sc_name == "ace"]),
-            np.nanmean(sc_y[sc_name == "ace"]),
-            np.nanmean(sc_z[sc_name == "ace"]),
-        ]
-    )
-    dscovr_pos = np.array(
-        [
-            np.nanmean(sc_x[sc_name == "dscovr"]),
-            np.nanmean(sc_y[sc_name == "dscovr"]),
-            np.nanmean(sc_z[sc_name == "dscovr"]),
-        ]
-    )
-    wind_pos = np.array(
-        [
-            np.nanmean(sc_x[sc_name == "wind"]),
-            np.nanmean(sc_y[sc_name == "wind"]),
-            np.nanmean(sc_z[sc_name == "wind"]),
-        ]
-    )
-
-    uni_time = np.array(
-        [
-            wind_time[idx].timestamp()
-            for idx in range(wind_time.size)
-            if not np.isnan(wind_data[idx])
-        ]
-    )
-    uni_time = uni_time[np.logical_and(uni_time >= t0plot, uni_time <= t1plot)]
-    ace_time_unix = np.array(
-        [ace_time[idx].timestamp() for idx in range(ace_time.size)]
-    )
-    dscovr_time_unix = np.array(
-        [dscovr_time[idx].timestamp() for idx in range(dscovr_time.size)]
-    )
-    wind_time_unix = np.array(
-        [wind_time[idx].timestamp() for idx in range(wind_time.size)]
-    )
-
-    dt = uni_time[1] - uni_time[0]
-
-    wind_data_clean = np.interp(
-        uni_time, wind_time_unix[~np.isnan(wind_data)], wind_data[~np.isnan(wind_data)]
-    )
-    ace_data_clean = np.interp(
-        uni_time, ace_time_unix[~np.isnan(ace_data)], ace_data[~np.isnan(ace_data)]
-    )
-    dscovr_data_clean = np.interp(
-        uni_time,
-        dscovr_time_unix[~np.isnan(dscovr_data)],
-        dscovr_data[~np.isnan(dscovr_data)],
-    )
-
-    ace_norm = (ace_data_clean - np.mean(ace_data_clean)) / (
-        np.std(ace_data_clean, ddof=1)  # * ace_data_clean.size
-    )
-    dscovr_norm = (dscovr_data_clean - np.mean(dscovr_data_clean)) / (
-        np.std(dscovr_data_clean, ddof=1)  # * dscovr_data_clean.size
-    )
-    wind_norm = (wind_data_clean - np.mean(wind_data_clean)) / (
-        np.std(wind_data_clean, ddof=1) * wind_data_clean.size
-    )
-
-    # c = np.correlate(ace_norm,dscovr_norm,"full")
-    # offset = np.argmax(c)
-    # alpha = c[offset - 1]
-    # beta = c[offset]
-    # gamma = c[offset + 1]
-    # offset2 = (
-    #         offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
-    #     )
-    # print("offset", offset, offset2)
-    # cross_corr_values.append(np.max(c))
-    # # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
-    # time_difference.append(offset2 * dt)
-
-    c = np.correlate(ace_norm, wind_norm, "full")
-    offset = np.argmax(c)
-    alpha = c[offset - 1]
-    beta = c[offset]
-    gamma = c[offset + 1]
-    offset2 = offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
-    print("offset", offset, offset2)
-    cross_corr_values.append(np.max(c))
-    # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
-    time_difference.append(offset2 * dt)
-
-    c = np.correlate(dscovr_norm, wind_norm, "full")
-    offset = np.argmax(c)
-    alpha = c[offset - 1]
-    beta = c[offset]
-    gamma = c[offset + 1]
-    offset2 = offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
-    print("offset", offset, offset2)
-    cross_corr_values.append(np.max(c))
-    # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
-    time_difference.append(offset2 * dt)
-
-    # for isc in ind_sc[1:]:
-    #     # To obtain a normalized crosscorrelation:
-    #     a = (data[ref_sc, var_ind] - np.mean(data[ref_sc, var_ind])) / (
-    #         np.std(data[ref_sc, var_ind], ddof=1) * len(data[ref_sc, var_ind])
-    #     )
-
-    #     b = (data[isc, var_ind] - np.mean(data[isc, var_ind])) / (
-    #         np.std(data[isc, var_ind], ddof=1)
-    #     )
-
-    #     c = np.correlate(b, a, "full")
-
-    #     # This gives the offset with the same time resolution as in the Vlasiator data set, so it as a 0.5 s error in the estimate
-    #     offset = np.argmax(c)
-
-    #     alpha = c[offset - 1]
-    #     beta = c[offset]
-    #     gamma = c[offset + 1]
-
-    #     # Here we fit the data points at and surrounding the selected offset time with a parabola, to improve on the time resolution
-    #     # It is this offset value that is then used in the remainder of the script
-    #     offset2 = (
-    #         offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
-    #     )
-
-    #     print("offset", offset, offset2)
-
-    #     cross_corr_values.append(np.max(c))
-
-    #     # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
-    #     time_difference.append(offset2 * dt)
-
-    # # ******************************************************************************#
-
-    time_difference = np.array(time_difference)
-    print("Time differences: ", time_difference)
-
-    matrix_positions = np.zeros((3, 3))
-
-    matrix_positions[0] = ace_pos - wind_pos
-    matrix_positions[1] = dscovr_pos - wind_pos
-    matrix_positions[2] = ace_pos - dscovr_pos
-
-    # pos_ref_sc = np.zeros((3, 3))
-
-    # pos_ref_sc[0, :] = [
-    #     pos_jonas[ref_sc, 0],
-    #     pos_jonas[ref_sc, 1],
-    #     pos_jonas[ref_sc, 2],
-    # ]
-    # pos_ref_sc[1, :] = [
-    #     pos_jonas[ref_sc, 0],
-    #     pos_jonas[ref_sc, 1],
-    #     pos_jonas[ref_sc, 2],
-    # ]
-    # pos_ref_sc[2, :] = [
-    #     pos_jonas[ind_sc[1], 0],
-    #     pos_jonas[ind_sc[1], 1],
-    #     pos_jonas[ind_sc[1], 2],
-    # ]
-
-    # pos_ref_sc[0] = pos_jonas[ref_sc]
-    # pos_ref_sc[1] = pos_jonas[ref_sc]
-    # pos_ref_sc[2] = pos_jonas[ind_sc[1]]
-
-    # pos_ref_sc = pos_ref_sc * Re
-
-    # ind = 0
-    # for isc in ind_sc[1:]:
-    #     # Position of the second spacecraft from the considered pair
-    #     # R2 = [pos_jonas[isc, 0], pos_jonas[isc, 1], pos_jonas[isc, 2]]
-    #     R2 = pos_jonas[isc]
-    #     # R2 = np.array(R2) * Re
-    #     R2 = R2 * Re
-
-    #     matrix_positions[ind] = R2 - pos_ref_sc[ind]
-
-    #     ind = ind + 1
-
-    # matrix_positions[2, :] = R2 - pos_ref_sc[2, :]
-
-    print("Timing analysis")
-    print(matrix_positions)
-    # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
-    # of equations for the wave vector
-    # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
-
-    result = np.dot(np.linalg.inv(matrix_positions[0:2, 0:2]), time_difference[0:2])
-    result.shape = (2, 1)
-
-    norm_result = np.linalg.norm(result)
-
-    wave_velocity_sc_frame = 1.0 / norm_result
-
-    print(result)
-
-    wave_vector = np.zeros((3, 1))
-    wave_vector[0:2] = result / norm_result
-
-    print("Wave phase velocity ", wave_velocity_sc_frame)
-    print("Wave vector ", wave_vector)
-
-    results = {}
-    results["wave_vector"] = wave_vector
-    results["wave_velocity_sc_frame"] = wave_velocity_sc_frame
-    results["cross_corr_values"] = cross_corr_values
-    print("Correlation coefficients: ", cross_corr_values)
-
-    # V_bulk = np.array(
-    #     [
-    #         np.mean(data[ref_sc, -7][data[ref_sc, 5] >= 3]),
-    #         np.mean(data[ref_sc, -6][data[ref_sc, 5] >= 3]),
-    #         np.mean(data[ref_sc, -5][data[ref_sc, 5] >= 3]),
-    #     ]
-    # )
-    # V_A = np.array(
-    #     [
-    #         np.mean(data[ref_sc, -4][data[ref_sc, 5] >= 3]),
-    #         np.mean(data[ref_sc, -3][data[ref_sc, 5] >= 3]),
-    #         np.mean(data[ref_sc, -2][data[ref_sc, 5] >= 3]),
-    #     ]
-    # )
-    # results["alfven_velocity"] = V_A
-    # print("Bulk velocity: ", V_bulk, np.linalg.norm(V_bulk))
-    # Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
-
-    # if "proton/V.x" in data:
-    #     V_bulk = np.array(
-    #         [
-    #             np.mean(data["proton/V.x"][min_time:max_time, ref_sc]),
-    #             np.mean(data["proton/V.y"][min_time:max_time, ref_sc]),
-    #             np.mean(data["proton/V.z"][min_time:max_time, ref_sc]),
-    #         ]
-    #     )
-    #
-
-    # elif "V.x" in data:
-    #     V_bulk = np.array(
-    #         [
-    #             np.mean(data["V.x"][min_time:max_time, ref_sc]),
-    #             np.mean(data["V.y"][min_time:max_time, ref_sc]),
-    #             np.mean(data["V.z"][min_time:max_time, ref_sc]),
-    #         ]
-    #     )
-    #     Vpl = wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)
-    # else:
-    #     print("No bulk velocity found - wave velocity only in simulation frame")
-
-    # if "Vpl" in locals():
-    #     print("Wave phase velocity in plasma frame ", Vpl)
-
-    #     wave_velocity_relative2sc = (
-    #         V_bulk.reshape((3, 1))
-    #         + (wave_velocity_sc_frame - np.dot(V_bulk, wave_vector)) * wave_vector
-    #     )
-    #     wave_velocity_relative2sc.shape = 3
-    #     print("Wave velocity relative to spacecraft ", wave_velocity_relative2sc)
-
-    #     results["wave_velocity_plasma_frame"] = Vpl
-    #     results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
-
-    #     results["bulk_velocity"] = V_bulk
 
     return results
