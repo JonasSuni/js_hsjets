@@ -124,7 +124,7 @@ def time_clip(time_list, data_list, t0, t1):
     return (time_clipped, data_clipped)
 
 
-def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True):
+def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True,dt=1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -171,7 +171,7 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True):
         newtime = np.arange(
             t0plot.replace(tzinfo=timezone.utc).timestamp(),
             t1plot.replace(tzinfo=timezone.utc).timestamp(),
-            1,
+            dt,
         )
         if type(time_list[0]) == datetime:
             time_list = [t.replace(tzinfo=timezone.utc).timestamp() for t in time_list]
@@ -506,7 +506,6 @@ def plot_ace_dscovr_wind(t0, t1):
         ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2], t0, t1
     )
 
-
 def timing_analysis_ace_dscovr_wind(
     ace_time, dscovr_time, wind_time, ace_data, dscovr_data, wind_data, t0, t1
 ):
@@ -533,8 +532,8 @@ def timing_analysis_ace_dscovr_wind(
 
     # ref_sc = ind_sc[0]
 
-    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").timestamp()
-    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").timestamp()
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
 
     pos_data = np.loadtxt(
         wrkdir_DNR
@@ -578,13 +577,13 @@ def timing_analysis_ace_dscovr_wind(
     )
     uni_time = uni_time[np.logical_and(uni_time >= t0plot, uni_time <= t1plot)]
     ace_time_unix = np.array(
-        [ace_time[idx].timestamp() for idx in range(ace_time.size)]
+        [ace_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(ace_time.size)]
     )
     dscovr_time_unix = np.array(
-        [dscovr_time[idx].timestamp() for idx in range(dscovr_time.size)]
+        [dscovr_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(dscovr_time.size)]
     )
     wind_time_unix = np.array(
-        [wind_time[idx].timestamp() for idx in range(wind_time.size)]
+        [wind_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(wind_time.size)]
     )
 
     dt = uni_time[1] - uni_time[0]
@@ -661,6 +660,96 @@ def timing_analysis_ace_dscovr_wind(
 
     wave_vector = np.zeros((3, 1))
     wave_vector[0:2] = result / norm_result
+
+    print("Wave phase velocity ", wave_velocity_sc_frame)
+    print("Wave vector ", wave_vector)
+
+    results = {}
+    results["wave_vector"] = wave_vector
+    results["wave_velocity_sc_frame"] = wave_velocity_sc_frame
+    results["cross_corr_values"] = cross_corr_values
+    print("Correlation coefficients: ", cross_corr_values)
+
+    return results
+
+def timing_analysis_arb(
+    sc_times, sc_data,sc_rel_pos, t0, t1
+):
+    # Adapted from code created by Lucile Turc
+
+    # Inputs:
+    # data is a list of dictionaries containing the virtual spacecraft time series
+    # ind_sc selects one virtual spacecraft from the list of dictionaries
+    # min_time and max_time indicate between which time steps we perform the timing analysis
+    # var4analysis is a dictionary key which selects the time series on which timing analysis is performed
+    # Output:
+    # results is a dictionary containing the results of the timing analysis
+
+    Re = 6371.0  # Earth radius in km
+    time_difference = []
+    # dt = 0.5  # Time step dt = 0.5 in all Vlasiator runs
+
+    # ******************************************************************************#
+    # Calculate the correlation function between two times series
+    # ******************************************************************************#
+    cross_corr_values = []
+
+    # print(min_time,max_time)
+
+    # ref_sc = ind_sc[0]
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+
+    sc_times_new = []
+
+    for idx in range(len(sc_times)):
+        sc_times_new.append(np.array([t.replace(tzinfo=timezone.utc).timestamp() for t in sc_times[idx]]))
+
+    dt = sc_times_new[0][1]-sc_times_new[0][0]
+
+    rel_sc_norm = (sc_data[0]-np.mean(sc_data[0]))/(np.std(sc_data[0],ddof=1)*sc_data[0].size)
+
+    for sc in sc_data[1:]:
+        sc_norm = (sc-np.mean(sc))/np.std(sc,ddof=1)
+        c = np.correlate(sc_norm,rel_sc_norm,"full")
+        offset = np.argmax(c)
+        alpha = c[offset - 1]
+        beta = c[offset]
+        gamma = c[offset + 1]
+        offset2 = offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+        print("offset", offset, offset2)
+        cross_corr_values.append(np.max(c))
+        # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
+        time_difference.append(offset2 * dt)
+
+    # # ******************************************************************************#
+
+    time_difference = np.array(time_difference)
+    print("Time differences: ", time_difference)
+
+    matrix_positions = np.zeros((3, 3))
+
+    for idx in range(len(sc_times)-1):
+        matrix_positions[idx] = sc_rel_pos[idx]
+
+    print("Timing analysis")
+    print(matrix_positions)
+    # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
+    # of equations for the wave vector
+    # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
+
+    result = np.dot(np.linalg.inv(matrix_positions[0:len(sc_rel_pos)]), time_difference[0:len(sc_rel_pos)])
+    result.shape = (len(sc_rel_pos), 1)
+
+    norm_result = np.linalg.norm(result)
+
+    wave_velocity_sc_frame = 1.0 / norm_result
+
+    print(result)
+
+    wave_vector = np.zeros((3, 1))
+    wave_vector[0:len(sc_rel_pos)] = result / norm_result
 
     print("Wave phase velocity ", wave_velocity_sc_frame)
     print("Wave vector ", wave_vector)
