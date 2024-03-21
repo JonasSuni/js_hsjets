@@ -158,8 +158,12 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
 
     if var == "B":
         sc_ins_obj = sc_obj.fgm
-    else:
-        sc_ins_obj = [sc_obj.fpi, sc_obj.mom, sc_obj.cis][sc_list.index(sc)]
+    elif sc == "themis":
+        sc_ins_obj = sc_obj.mom
+    elif sc == "mms":
+        sc_ins_obj = sc_obj.fpi
+    elif sc == "cluster":
+        sc_ins_obj = sc_obj.cis
 
     sc_data = sc_ins_obj(trange=[t0, t1], probe=probe, notplot=True, time_clip=True)[
         sc_var_names[sc_list.index(sc)][vars_list.index(var)]
