@@ -196,6 +196,22 @@ def thd_mms1_c4_timing(t0, t1):
     mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=5)
     c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=5)
 
+    dummy, thd_rho = load_msh_sc_data("themis", "d", "rho", t0, t1, intpol=True, dt=5)
+    dummy, mms1_rho = load_msh_sc_data("mms", "1", "rho", t0, t1, intpol=True, dt=5)
+    dummy, c4_rho = load_msh_sc_data("cluster", "4", "rho", t0, t1, intpol=True, dt=5)
+
+    dummy, thd_v = load_msh_sc_data("themis", "d", "v", t0, t1, intpol=True, dt=5)
+    dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=5)
+    dummy, c4_v = load_msh_sc_data("cluster", "4", "v", t0, t1, intpol=True, dt=5)
+
+    thd_vmag = np.linalg.norm(thd_v, axis=-1)
+    mms1_vmag = np.linalg.norm(mms1_v, axis=-1)
+    c4_vmag = np.linalg.norm(c4_v, axis=-1)
+
+    thd_pdyn = m_p * thd_rho * 1e6 * thd_vmag * thd_vmag * 1e6 / 1e-9
+    mms1_pdyn = m_p * mms1_rho * 1e6 * mms1_vmag * mms1_vmag * 1e6 / 1e-9
+    c4_pdyn = m_p * c4_rho * 1e6 * c4_vmag * c4_vmag * 1e6 / 1e-9
+
     pos_data = np.loadtxt(
         wrkdir_DNR
         + "satellites/c4_mms1_thd_pos_2022-03-27_21:00:00_21:30:00_numpy.txt",
@@ -231,6 +247,16 @@ def thd_mms1_c4_timing(t0, t1):
             t1,
         )
         print("\n")
+
+    print("Pdyn:")
+    timing_analysis_arb(
+        [thd_time, mms1_time, c4_time],
+        [thd_pdyn, mms1_pdyn, c4_pdyn],
+        sc_rel_pos,
+        t0,
+        t1,
+    )
+    print("\n")
 
 
 def plot_thd_mms1_c4(t0, t1):
