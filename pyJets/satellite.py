@@ -124,7 +124,7 @@ def time_clip(time_list, data_list, t0, t1):
     return (time_clipped, data_clipped)
 
 
-def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True,dt=1):
+def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -188,6 +188,47 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True,dt=1):
         if type(time_list[0]) != datetime:
             time_list = np.array([datetime.utcfromtimestamp(t) for t in time_list])
         return (time_list, data_list)
+
+
+def thd_mms1_c4_timing(t0, t1):
+
+    thd_time, thd_B = load_msh_sc_data("themis", "d", "B", t0, t1, intpol=True, dt=5)
+    mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=5)
+    c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=5)
+
+    pos_data = np.loadtxt(
+        "c4_mms1_thd_pos_2022-03-27_21:00:00_21:30:00_numpy.txt", dtype="str"
+    )
+    sc_name = pos_data[3]
+    sc_x = pos_data[4].astype(float) * r_e * 1e-3
+    sc_y = pos_data[5].astype(float) * r_e * 1e-3
+    sc_z = pos_data[6].astype(float) * r_e * 1e-3
+
+    sc_coords = np.array([sc_x, sc_y, sc_z]).T
+
+    thd_pos = sc_coords[:-1, sc_name == "themisd"]
+    mms1_pos = sc_coords[:, sc_name == "mms1"]
+    c4_pos = sc_coords[:, sc_name == "cluster4"]
+
+    sc_rel_pos = [
+        np.nanmean(mms1_pos - thd_pos, axis=0),
+        np.nanmean(c4_pos - thd_pos, axis=0),
+    ]
+
+    labs = ["Bx:", "By:", "Bz:"]
+
+    print("\n")
+
+    for idx in range(3):
+        print(labs[idx])
+        timing_analysis_arb(
+            [thd_time, mms1_time, c4_time],
+            [thd_B[idx], mms1_B[idx], c4_B[idx]],
+            sc_rel_pos,
+            t0,
+            t1,
+        )
+        print("\n")
 
 
 def plot_thd_mms1_c4(t0, t1):
@@ -506,6 +547,7 @@ def plot_ace_dscovr_wind(t0, t1):
         ace_t, dscovr_t, wind_t, ace_B[2], dscovr_B[2], wind_B[2], t0, t1
     )
 
+
 def timing_analysis_ace_dscovr_wind(
     ace_time, dscovr_time, wind_time, ace_data, dscovr_data, wind_data, t0, t1
 ):
@@ -532,8 +574,16 @@ def timing_analysis_ace_dscovr_wind(
 
     # ref_sc = ind_sc[0]
 
-    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
-    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    t0plot = (
+        datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+        .replace(tzinfo=timezone.utc)
+        .timestamp()
+    )
+    t1plot = (
+        datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+        .replace(tzinfo=timezone.utc)
+        .timestamp()
+    )
 
     pos_data = np.loadtxt(
         wrkdir_DNR
@@ -577,13 +627,22 @@ def timing_analysis_ace_dscovr_wind(
     )
     uni_time = uni_time[np.logical_and(uni_time >= t0plot, uni_time <= t1plot)]
     ace_time_unix = np.array(
-        [ace_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(ace_time.size)]
+        [
+            ace_time[idx].replace(tzinfo=timezone.utc).timestamp()
+            for idx in range(ace_time.size)
+        ]
     )
     dscovr_time_unix = np.array(
-        [dscovr_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(dscovr_time.size)]
+        [
+            dscovr_time[idx].replace(tzinfo=timezone.utc).timestamp()
+            for idx in range(dscovr_time.size)
+        ]
     )
     wind_time_unix = np.array(
-        [wind_time[idx].replace(tzinfo=timezone.utc).timestamp() for idx in range(wind_time.size)]
+        [
+            wind_time[idx].replace(tzinfo=timezone.utc).timestamp()
+            for idx in range(wind_time.size)
+        ]
     )
 
     dt = uni_time[1] - uni_time[0]
@@ -672,9 +731,8 @@ def timing_analysis_ace_dscovr_wind(
 
     return results
 
-def timing_analysis_arb(
-    sc_times, sc_data,sc_rel_pos, t0, t1
-):
+
+def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
     # Adapted from code created by Lucile Turc
 
     # Inputs:
@@ -698,26 +756,42 @@ def timing_analysis_arb(
 
     # ref_sc = ind_sc[0]
 
-    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
-    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S").replace(tzinfo=timezone.utc).timestamp()
+    t0plot = (
+        datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+        .replace(tzinfo=timezone.utc)
+        .timestamp()
+    )
+    t1plot = (
+        datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+        .replace(tzinfo=timezone.utc)
+        .timestamp()
+    )
 
     sc_times_new = []
 
     for idx in range(len(sc_times)):
-        sc_times_new.append(np.array([t.replace(tzinfo=timezone.utc).timestamp() for t in sc_times[idx]]))
+        sc_times_new.append(
+            np.array(
+                [t.replace(tzinfo=timezone.utc).timestamp() for t in sc_times[idx]]
+            )
+        )
 
-    dt = sc_times_new[0][1]-sc_times_new[0][0]
+    dt = sc_times_new[0][1] - sc_times_new[0][0]
 
-    rel_sc_norm = (sc_data[0]-np.mean(sc_data[0]))/(np.std(sc_data[0],ddof=1)*sc_data[0].size)
+    rel_sc_norm = (sc_data[0] - np.mean(sc_data[0])) / (
+        np.std(sc_data[0], ddof=1) * sc_data[0].size
+    )
 
     for sc in sc_data[1:]:
-        sc_norm = (sc-np.mean(sc))/np.std(sc,ddof=1)
-        c = np.correlate(sc_norm,rel_sc_norm,"full")
+        sc_norm = (sc - np.mean(sc)) / np.std(sc, ddof=1)
+        c = np.correlate(sc_norm, rel_sc_norm, "full")
         offset = np.argmax(c)
         alpha = c[offset - 1]
         beta = c[offset]
         gamma = c[offset + 1]
-        offset2 = offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+        offset2 = (
+            offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+        )
         print("offset", offset, offset2)
         cross_corr_values.append(np.max(c))
         # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
@@ -730,7 +804,7 @@ def timing_analysis_arb(
 
     matrix_positions = np.zeros((3, 3))
 
-    for idx in range(len(sc_times)-1):
+    for idx in range(len(sc_times) - 1):
         matrix_positions[idx] = sc_rel_pos[idx]
 
     print("Timing analysis")
@@ -739,7 +813,10 @@ def timing_analysis_arb(
     # of equations for the wave vector
     # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
 
-    result = np.dot(np.linalg.inv(matrix_positions[0:len(sc_rel_pos)]), time_difference[0:len(sc_rel_pos)])
+    result = np.dot(
+        np.linalg.inv(matrix_positions[0 : len(sc_rel_pos)]),
+        time_difference[0 : len(sc_rel_pos)],
+    )
     result.shape = (len(sc_rel_pos), 1)
 
     norm_result = np.linalg.norm(result)
@@ -749,7 +826,7 @@ def timing_analysis_arb(
     print(result)
 
     wave_vector = np.zeros((3, 1))
-    wave_vector[0:len(sc_rel_pos)] = result / norm_result
+    wave_vector[0 : len(sc_rel_pos)] = result / norm_result
 
     print("Wave phase velocity ", wave_velocity_sc_frame)
     print("Wave vector ", wave_vector)
