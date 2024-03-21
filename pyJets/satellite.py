@@ -194,25 +194,25 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
         return (time_list, data_list)
 
 
-def thd_mms1_c4_timing(t0, t1):
+def thd_mms1_c4_timing(t0, t1, dt=1):
 
-    thd_time, thd_B = load_msh_sc_data("themis", "d", "B", t0, t1, intpol=True, dt=5)
-    mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=5)
-    c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=5)
+    thd_time, thd_B = load_msh_sc_data("themis", "d", "B", t0, t1, intpol=True, dt=dt)
+    mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=dt)
+    c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=dt)
 
     thd_time2, thd_rho = load_msh_sc_data(
-        "themis", "d", "rho", t0, t1, intpol=True, dt=5
+        "themis", "d", "rho", t0, t1, intpol=True, dt=dt
     )
     mms1_time2, mms1_rho = load_msh_sc_data(
-        "mms", "1", "rho", t0, t1, intpol=True, dt=5
+        "mms", "1", "rho", t0, t1, intpol=True, dt=dt
     )
     c4_time2, c4_rho = load_msh_sc_data(
-        "cluster", "4", "rho", t0, t1, intpol=True, dt=5
+        "cluster", "4", "rho", t0, t1, intpol=True, dt=dt
     )
 
-    dummy, thd_v = load_msh_sc_data("themis", "d", "v", t0, t1, intpol=True, dt=5)
-    dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=5)
-    dummy, c4_v = load_msh_sc_data("cluster", "4", "v", t0, t1, intpol=True, dt=5)
+    dummy, thd_v = load_msh_sc_data("themis", "d", "v", t0, t1, intpol=True, dt=dt)
+    dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=dt)
+    dummy, c4_v = load_msh_sc_data("cluster", "4", "v", t0, t1, intpol=True, dt=dt)
 
     thd_vmag = np.linalg.norm(thd_v, axis=0)
     mms1_vmag = np.linalg.norm(mms1_v, axis=0)
