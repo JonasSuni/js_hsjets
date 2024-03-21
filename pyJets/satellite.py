@@ -200,7 +200,7 @@ def thd_mms1_c4_timing(t0, t1):
         wrkdir_DNR
         + "satellites/c4_mms1_thd_pos_2022-03-27_21:00:00_21:30:00_numpy.txt",
         dtype="str",
-    )
+    ).T
     sc_name = pos_data[3]
     sc_x = pos_data[4].astype(float) * r_e * 1e-3
     sc_y = pos_data[5].astype(float) * r_e * 1e-3
