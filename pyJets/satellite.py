@@ -200,9 +200,15 @@ def thd_mms1_c4_timing(t0, t1):
     mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=5)
     c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=5)
 
-    dummy, thd_rho = load_msh_sc_data("themis", "d", "rho", t0, t1, intpol=True, dt=5)
-    dummy, mms1_rho = load_msh_sc_data("mms", "1", "rho", t0, t1, intpol=True, dt=5)
-    dummy, c4_rho = load_msh_sc_data("cluster", "4", "rho", t0, t1, intpol=True, dt=5)
+    thd_time2, thd_rho = load_msh_sc_data(
+        "themis", "d", "rho", t0, t1, intpol=True, dt=5
+    )
+    mms1_time2, mms1_rho = load_msh_sc_data(
+        "mms", "1", "rho", t0, t1, intpol=True, dt=5
+    )
+    c4_time2, c4_rho = load_msh_sc_data(
+        "cluster", "4", "rho", t0, t1, intpol=True, dt=5
+    )
 
     dummy, thd_v = load_msh_sc_data("themis", "d", "v", t0, t1, intpol=True, dt=5)
     dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=5)
@@ -254,7 +260,7 @@ def thd_mms1_c4_timing(t0, t1):
 
     print("Pdyn:")
     timing_analysis_arb(
-        [thd_time, mms1_time, c4_time],
+        [thd_time2, mms1_time2, c4_time2],
         [thd_pdyn, mms1_pdyn, c4_pdyn],
         sc_rel_pos,
         t0,
