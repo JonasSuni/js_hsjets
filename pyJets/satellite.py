@@ -888,4 +888,10 @@ def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
     results["cross_corr_values"] = cross_corr_values
     print("Correlation coefficients: ", cross_corr_values)
 
+    predicted_time_lags = (
+        np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
+        / wave_velocity_sc_frame
+    )
+    print(predicted_time_lags)
+
     return results
