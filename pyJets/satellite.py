@@ -208,9 +208,9 @@ def thd_mms1_c4_timing(t0, t1):
 
     sc_coords = np.array([sc_x, sc_y, sc_z]).T
 
-    thd_pos = sc_coords[:-1, sc_name == "themisd"]
-    mms1_pos = sc_coords[:, sc_name == "mms1"]
-    c4_pos = sc_coords[:, sc_name == "cluster4"]
+    thd_pos = sc_coords[sc_name == "themisd", :-1]
+    mms1_pos = sc_coords[sc_name == "mms1", :]
+    c4_pos = sc_coords[sc_name == "cluster4", :]
 
     sc_rel_pos = [
         np.nanmean(mms1_pos - thd_pos, axis=0),
