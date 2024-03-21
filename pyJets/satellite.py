@@ -488,6 +488,8 @@ def plot_thd_mms1_c4(t0, t1):
             ax.set_xlim(t0plot, t1plot)
             ax.axvline(t_pdmax[idx], linestyle="dashed")
 
+    print("Times of Pdynmax: {}".format(t_pdmax))
+
     for idx in range(3):
         ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
     # for idx in range(len(panel_labs)):
@@ -892,6 +894,6 @@ def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
         np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
         / wave_velocity_sc_frame
     )
-    print(predicted_time_lags)
+    print("Predicted time lags", predicted_time_lags)
 
     return results
