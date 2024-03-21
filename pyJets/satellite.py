@@ -244,6 +244,7 @@ def thd_mms1_c4_timing(t0, t1):
     ]
 
     labs = ["Bx:", "By:", "Bz:"]
+    labs_v = ["Vx:", "Vy:", "Vz:"]
 
     print("\n")
 
@@ -252,6 +253,15 @@ def thd_mms1_c4_timing(t0, t1):
         timing_analysis_arb(
             [thd_time, mms1_time, c4_time],
             [thd_B[idx], mms1_B[idx], c4_B[idx]],
+            sc_rel_pos,
+            t0,
+            t1,
+        )
+        print("\n")
+        print(labs_v[idx])
+        timing_analysis_arb(
+            [thd_time2, mms1_time2, c4_time2],
+            [thd_v[idx], mms1_v[idx], c4_v[idx]],
             sc_rel_pos,
             t0,
             t1,
@@ -267,6 +277,8 @@ def thd_mms1_c4_timing(t0, t1):
         t1,
     )
     print("\n")
+
+    print(":")
 
 
 def plot_thd_mms1_c4(t0, t1):
