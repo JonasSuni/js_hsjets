@@ -816,7 +816,7 @@ def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
     # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
 
     result = np.dot(
-        np.linalg.inv(matrix_positions[0 : len(sc_rel_pos)]),
+        np.linalg.inv(matrix_positions[0 : len(sc_rel_pos), 0 : len(sc_rel_pos)]),
         time_difference[0 : len(sc_rel_pos)],
     )
     result.shape = (len(sc_rel_pos), 1)
