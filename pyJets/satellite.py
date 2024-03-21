@@ -208,9 +208,9 @@ def thd_mms1_c4_timing(t0, t1):
     dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=5)
     dummy, c4_v = load_msh_sc_data("cluster", "4", "v", t0, t1, intpol=True, dt=5)
 
-    thd_vmag = np.linalg.norm(thd_v, axis=-1)
-    mms1_vmag = np.linalg.norm(mms1_v, axis=-1)
-    c4_vmag = np.linalg.norm(c4_v, axis=-1)
+    thd_vmag = np.linalg.norm(thd_v, axis=0)
+    mms1_vmag = np.linalg.norm(mms1_v, axis=0)
+    c4_vmag = np.linalg.norm(c4_v, axis=0)
 
     thd_pdyn = m_p * thd_rho * 1e6 * thd_vmag * thd_vmag * 1e6 / 1e-9
     mms1_pdyn = m_p * mms1_rho * 1e6 * mms1_vmag * mms1_vmag * 1e6 / 1e-9
