@@ -242,6 +242,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1):
         np.nanmean(mms1_pos - thd_pos, axis=0),
         np.nanmean(c4_pos - thd_pos, axis=0),
     ]
+    print(sc_rel_pos)
 
     labs = ["Bx:", "By:", "Bz:"]
     labs_v = ["Vx:", "Vy:", "Vz:"]
