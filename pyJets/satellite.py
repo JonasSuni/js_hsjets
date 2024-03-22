@@ -412,6 +412,7 @@ def plot_mms(t0, t1, mva=False):
 
     if mva:
         Bdata = [data_arr[idx, 0:3, :] for idx in range(4)]
+        print(data_arr[0, 0:3, :].shape)
         eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
         for prob in range(4):
             for idx in range(3):
