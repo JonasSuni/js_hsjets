@@ -118,7 +118,7 @@ def MVA(data):
     eigenvec = eigenvec.T
 
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
-    return eigenvec[np.argsort(eigenval)]
+    return eigenvec[np.argsort(eigenval), :]
 
 
 def interpolate_nans(data):
@@ -412,9 +412,11 @@ def plot_mms(t0, t1, mva=False):
 
     if mva:
         Bdata = [data_arr[idx, 0:3, :] for idx in range(4)]
-        eigenvecs = [MVA(d) for d in Bdata]
+        eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
         for prob in range(4):
             for idx in range(3):
+                print(Bdata[prob].shape)
+                print(eigenvecs[prob].shape)
                 data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob])
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
