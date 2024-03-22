@@ -565,6 +565,7 @@ def plot_mms(t0, t1):
         t0,
         t1,
     )
+    print("\n")
 
     print("Pdyn:")
     timing_analysis_arb(
