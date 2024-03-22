@@ -168,9 +168,9 @@ def load_msh_sc_data(
     # elif sc == "cluster":
     #     sc_ins_obj = sc_obj.cis
 
-    sc_data = sc_ins_obj(trange=[t0, t1], probe=probe, notplot=True, time_clip=True)[
-        sc_var_names[sc_list.index(sc)][vars_list.index(var)]
-    ]
+    sc_data = sc_ins_obj(
+        trange=[t0, t1], probe=probe, notplot=True, time_clip=True, data_rate=datarate
+    )[sc_var_names[sc_list.index(sc)][vars_list.index(var)]]
     time_list = np.array(sc_data["x"])
     data_list = np.array(sc_data["y"]).T
 
