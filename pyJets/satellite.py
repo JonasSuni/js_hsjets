@@ -526,7 +526,12 @@ def plot_mms(t0, t1):
         print(labs[idx])
         timing_analysis_arb(
             [time_arr, time_arr, time_arr, time_arr],
-            [data_arr[0][idx], data_arr[1][idx], data_arr[2][idx], data_arr[3][idx]],
+            [
+                data_arr[0][idx],
+                data_arr[1][idx],
+                data_arr[2][idx],
+                data_arr[3][idx],
+            ],
             rel_pos,
             t0,
             t1,
@@ -536,10 +541,10 @@ def plot_mms(t0, t1):
         timing_analysis_arb(
             [time_arr, time_arr, time_arr, time_arr],
             [
+                data_arr[0][idx + 4],
                 data_arr[1][idx + 4],
                 data_arr[2][idx + 4],
                 data_arr[3][idx + 4],
-                data_arr[4][idx + 4],
             ],
             rel_pos,
             t0,
@@ -550,7 +555,12 @@ def plot_mms(t0, t1):
     print("rho:")
     timing_analysis_arb(
         [time_arr, time_arr, time_arr, time_arr],
-        [data_arr[1][8], data_arr[2][8], data_arr[3][8], data_arr[4][8]],
+        [
+            data_arr[0][8],
+            data_arr[1][8],
+            data_arr[2][8],
+            data_arr[3][8],
+        ],
         rel_pos,
         t0,
         t1,
@@ -559,7 +569,12 @@ def plot_mms(t0, t1):
     print("Pdyn:")
     timing_analysis_arb(
         [time_arr, time_arr, time_arr, time_arr],
-        [data_arr[1][9], data_arr[2][9], data_arr[3][9], data_arr[4][9]],
+        [
+            data_arr[0][9],
+            data_arr[1][9],
+            data_arr[2][9],
+            data_arr[3][9],
+        ],
         rel_pos,
         t0,
         t1,
