@@ -104,6 +104,23 @@ CB_color_cycle = [
 ]
 
 
+def MVA(data):
+
+    M = np.zeros((3, 3), dtype=float)
+
+    for i in range(3):
+        for j in range(3):
+            M[i, j] = np.nanmean(data[i] * data[j]) - np.nanmean(data[i]) * np.nanmean(
+                data[j]
+            )
+
+    eigenval, eigenvec = np.linalg.eig(M)
+    eigenvec = eigenvec.T
+
+    # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
+    return eigenvec[np.argsort(eigenval)]
+
+
 def interpolate_nans(data):
 
     dummy_x = np.arange(data.size)
@@ -206,7 +223,7 @@ def load_msh_sc_data(
         return (time_list, data_list)
 
 
-def thd_mms1_c4_timing(t0, t1, dt=1):
+def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
 
     thd_time, thd_B = load_msh_sc_data(
         pyspedas.themis.fgm, "themis", "d", "B", t0, t1, intpol=True, dt=dt
@@ -304,7 +321,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1):
     print("\n")
 
 
-def plot_mms(t0, t1):
+def plot_mms(t0, t1, mva=False):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -392,6 +409,13 @@ def plot_mms(t0, t1):
             * 1e6
             / 1e-9,
         ]
+
+    if mva:
+        Bdata = [sc_B[idx, 0:3, :] for idx in range(4)]
+        eigenvecs = [MVA(d) for d in Bdata]
+        for prob in range(4):
+            for idx in range(3):
+                data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob])
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
 
