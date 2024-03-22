@@ -487,7 +487,7 @@ def plot_mms(t0, t1):
     #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
     for idx in range(len(ylabels_all)):
         ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
-        ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+        # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
