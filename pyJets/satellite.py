@@ -124,19 +124,22 @@ def time_clip(time_list, data_list, t0, t1):
     return (time_clipped, data_clipped)
 
 
-def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
+def load_msh_sc_data(
+    sc_ins_obj, sc, probe, var, t0, t1, intpol=True, dt=1, datarate="fast"
+):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
-    vars_list = ["B", "rho", "v"]
+    vars_list = ["B", "rho", "v", "pos"]
     sc_list = ["mms", "themis", "cluster"]
     moms_list = ["fpi", "mom", "cis"]
     sc_var_names = [
         [
-            "mms{}_fgm_b_gse_srvy_l2".format(probe),
-            "mms{}_dis_numberdensity_fast".format(probe),
-            "mms{}_dis_bulkv_gse_fast".format(probe),
+            "mms{}_fgm_b_gse_{}_l2".format(probe, datarate),
+            "mms{}_dis_numberdensity_{}".format(probe, datarate),
+            "mms{}_dis_bulkv_gse_{}".format(probe, datarate),
+            "mms{}_mec_r_gse".format(probe),
         ],
         [
             "th{}_fgs_gse".format(probe),
@@ -150,20 +153,20 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
         ],
     ]
 
-    sc_obj = [
-        pyspedas.mms,
-        pyspedas.themis,
-        pyspedas.cluster,
-    ][sc_list.index(sc)]
+    # sc_obj = [
+    #     pyspedas.mms,
+    #     pyspedas.themis,
+    #     pyspedas.cluster,
+    # ][sc_list.index(sc)]
 
-    if var == "B":
-        sc_ins_obj = sc_obj.fgm
-    elif sc == "themis":
-        sc_ins_obj = sc_obj.mom
-    elif sc == "mms":
-        sc_ins_obj = sc_obj.fpi
-    elif sc == "cluster":
-        sc_ins_obj = sc_obj.cis
+    # if var == "B":
+    #     sc_ins_obj = sc_obj.fgm
+    # elif sc == "themis":
+    #     sc_ins_obj = sc_obj.mom
+    # elif sc == "mms":
+    #     sc_ins_obj = sc_obj.fpi
+    # elif sc == "cluster":
+    #     sc_ins_obj = sc_obj.cis
 
     sc_data = sc_ins_obj(trange=[t0, t1], probe=probe, notplot=True, time_clip=True)[
         sc_var_names[sc_list.index(sc)][vars_list.index(var)]
@@ -181,7 +184,7 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
             time_list = [t.replace(tzinfo=timezone.utc).timestamp() for t in time_list]
         if len(data_list.shape) > 1:
             newdata = np.array(
-                [np.interp(newtime, time_list, data) for data in data_list]
+                [np.interp(newtime, time_list, data) for data in data_list[:3]]
             )
         else:
             newdata = np.interp(newtime, time_list, data_list)
@@ -196,23 +199,35 @@ def load_msh_sc_data(sc, probe, var, t0, t1, intpol=True, dt=1):
 
 def thd_mms1_c4_timing(t0, t1, dt=1):
 
-    thd_time, thd_B = load_msh_sc_data("themis", "d", "B", t0, t1, intpol=True, dt=dt)
-    mms1_time, mms1_B = load_msh_sc_data("mms", "1", "B", t0, t1, intpol=True, dt=dt)
-    c4_time, c4_B = load_msh_sc_data("cluster", "4", "B", t0, t1, intpol=True, dt=dt)
+    thd_time, thd_B = load_msh_sc_data(
+        pyspedas.themis.fgm, "themis", "d", "B", t0, t1, intpol=True, dt=dt
+    )
+    mms1_time, mms1_B = load_msh_sc_data(
+        pyspedas.mms.fgm, "mms", "1", "B", t0, t1, intpol=True, dt=dt
+    )
+    c4_time, c4_B = load_msh_sc_data(
+        pyspedas.cluster.fgm, "cluster", "4", "B", t0, t1, intpol=True, dt=dt
+    )
 
     thd_time2, thd_rho = load_msh_sc_data(
-        "themis", "d", "rho", t0, t1, intpol=True, dt=dt
+        pyspedas.themis.mom, "themis", "d", "rho", t0, t1, intpol=True, dt=dt
     )
     mms1_time2, mms1_rho = load_msh_sc_data(
-        "mms", "1", "rho", t0, t1, intpol=True, dt=dt
+        pyspedas.mms.fpi, "mms", "1", "rho", t0, t1, intpol=True, dt=dt
     )
     c4_time2, c4_rho = load_msh_sc_data(
-        "cluster", "4", "rho", t0, t1, intpol=True, dt=dt
+        pyspedas.cluster.cis, "cluster", "4", "rho", t0, t1, intpol=True, dt=dt
     )
 
-    dummy, thd_v = load_msh_sc_data("themis", "d", "v", t0, t1, intpol=True, dt=dt)
-    dummy, mms1_v = load_msh_sc_data("mms", "1", "v", t0, t1, intpol=True, dt=dt)
-    dummy, c4_v = load_msh_sc_data("cluster", "4", "v", t0, t1, intpol=True, dt=dt)
+    dummy, thd_v = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "d", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, mms1_v = load_msh_sc_data(
+        pyspedas.mms.fpi, "mms", "1", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, c4_v = load_msh_sc_data(
+        pyspedas.cluster.cis, "cluster", "4", "v", t0, t1, intpol=True, dt=dt
+    )
 
     thd_vmag = np.linalg.norm(thd_v, axis=0)
     mms1_vmag = np.linalg.norm(mms1_v, axis=0)
@@ -280,6 +295,200 @@ def thd_mms1_c4_timing(t0, t1, dt=1):
     print("\n")
 
     print(":")
+
+
+def plot_mms(t0, t1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    sc_B = [
+        load_msh_sc_data(
+            pyspedas.mms.fgm,
+            "mms",
+            "{}".format(probe),
+            "B",
+            t0,
+            t1,
+            intpol=True,
+            dt=0.1,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+    sc_rho = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "rho",
+            t0,
+            t1,
+            intpol=True,
+            dt=0.1,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+    sc_v = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "v",
+            t0,
+            t1,
+            intpol=True,
+            dt=0.1,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+
+    time_arr = sc_B[0][0]
+
+    data_arr = np.empty((4, 10, time_arr.size), dtype=float)
+    for idx in range(4):
+        data_arr[idx, :, :] = [
+            sc_B[idx][1][0],
+            sc_B[idx][1][1],
+            sc_B[idx][1][2],
+            np.linalg.norm(sc_B[idx][1][:3], axis=0),
+            sc_v[idx][1][0],
+            sc_v[idx][1][1],
+            sc_v[idx][1][2],
+            np.linalg.norm(sc_v[idx][1][:3], axis=0),
+            sc_rho[idx][1],
+            m_p
+            * sc_rho[idx][1]
+            * 1e6
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * 1e6
+            / 1e-9,
+        ]
+
+    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
+
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
+    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
+    ylabels_all = [
+        "Bx [nT]",
+        "By [nT]",
+        "Bz [nT]",
+        "Bt [nT]",
+        "vx [km/s]",
+        "vy [km/s]",
+        "vz [km/s]",
+        "vt [km/s]",
+        "n [1/cm3]",
+        "Pdyn [nPa]",
+    ]
+    sc_labs = ["MMS1", "MMS2", "MMS3", "MMS4"]
+    colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        "k",
+    ]
+    plot_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    line_label = [
+        "x",
+        "y",
+        "z",
+        "mag",
+        "x",
+        "y",
+        "z",
+        "mag",
+        None,
+        None,
+    ]
+    ylims = [
+        (-40, 60),
+        (-400, 500),
+        (5, 35),
+        (0, 10),
+    ]
+    ylims_full = [
+        (-20, 30),
+        (-20, 40),
+        (-40, 50),
+        (0, 60),
+        (-400, 0),
+        (-200, 100),
+        (-100, 300),
+        (0, 500),
+        (5, 35),
+        (0, 10),
+    ]
+
+    fig, ax_list = plt.subplots(
+        10, 4, figsize=(24, 24), sharey="row", constrained_layout=True
+    )
+
+    for idx in range(4):
+        for idx2 in range(len(panel_id)):
+            print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
+            # ax = ax_list[panel_id[idx2], idx]
+            # if not plot_legend[idx2]:
+            #     ax.grid()
+            # ax.plot(
+            #     time_arr[idx, panel_id[idx2]],
+            #     data_arr[idx, idx2],
+            #     color=colors[idx2],
+            #     label=line_label[idx2],
+            #     alpha=0.5,
+            # )
+            # if plot_legend[idx2] and idx == 2:
+            #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ax = ax_list[idx2, idx]
+            ax.grid()
+            ax.plot(
+                time_arr[idx, panel_id[idx2]],
+                data_arr[idx, idx2],
+            )
+            ax.label_outer()
+            ax.set_xlim(t0plot, t1plot)
+            ax.axvline(t_pdmax[idx], linestyle="dashed")
+
+    print("Times of Pdynmax: {}".format(t_pdmax))
+
+    for idx in range(4):
+        ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
+    # for idx in range(len(panel_labs)):
+    #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+    #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
+    for idx in range(len(ylabels_all)):
+        ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
+        ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(outdir + "mms_all_t0{}_t1{}.png".format(t0plot, t1plot))
+    plt.close(fig)
 
 
 def plot_thd_mms1_c4(t0, t1):
