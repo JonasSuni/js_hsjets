@@ -414,6 +414,11 @@ def plot_mms(t0, t1, mva=False):
         Bdata = [data_arr[idx, 0:3, :] for idx in range(4)]
         eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
         for prob in range(4):
+            print(
+                "MMS{} Maximum Variance direction: {}".format(
+                    prob + 1, eigenvecs[prob][2]
+                )
+            )
             for idx in range(3):
                 data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob][idx])
 
