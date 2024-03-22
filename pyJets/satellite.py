@@ -417,8 +417,8 @@ def plot_mms(t0, t1, mva=False):
         for prob in range(4):
             for idx in range(3):
                 print(Bdata[prob].shape)
-                print(eigenvecs[prob].shape)
-                data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob])
+                print(eigenvecs[prob][idx].shape)
+                data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob][idx])
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
 
