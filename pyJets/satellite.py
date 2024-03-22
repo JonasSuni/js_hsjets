@@ -303,8 +303,6 @@ def thd_mms1_c4_timing(t0, t1, dt=1):
     )
     print("\n")
 
-    print(":")
-
 
 def plot_mms(t0, t1):
 
@@ -352,6 +350,24 @@ def plot_mms(t0, t1):
             datarate="brst",
         )
         for probe in range(1, 5)
+    ]
+    sc_pos = [
+        load_msh_sc_data(
+            pyspedas.mms.mec,
+            "mms",
+            "{}".format(probe),
+            "pos",
+            t0,
+            t1,
+            intpol=True,
+            dt=0.1,
+            datarate="srvy",
+        )
+        for probe in range(1, 5)
+    ]
+
+    rel_pos = [
+        np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 4)
     ]
 
     time_arr = sc_B[0][0]
@@ -498,6 +514,57 @@ def plot_mms(t0, t1):
 
     fig.savefig(outdir + "mms_all_t0{}_t1{}.png".format(t0plot, t1plot))
     plt.close(fig)
+
+    print(rel_pos)
+
+    labs = ["Bx:", "By:", "Bz:"]
+    labs_v = ["Vx:", "Vy:", "Vz:"]
+
+    print("\n")
+
+    for idx in range(3):
+        print(labs[idx])
+        timing_analysis_arb(
+            [time_arr, time_arr, time_arr, time_arr],
+            [data_arr[0][idx], data_arr[1][idx], data_arr[2][idx], data_arr[3][idx]],
+            rel_pos,
+            t0,
+            t1,
+        )
+        print("\n")
+        print(labs_v[idx])
+        timing_analysis_arb(
+            [time_arr, time_arr, time_arr, time_arr],
+            [
+                data_arr[1][idx + 4],
+                data_arr[2][idx + 4],
+                data_arr[3][idx + 4],
+                data_arr[4][idx + 4],
+            ],
+            rel_pos,
+            t0,
+            t1,
+        )
+        print("\n")
+
+    print("rho:")
+    timing_analysis_arb(
+        [time_arr, time_arr, time_arr, time_arr],
+        [data_arr[1][8], data_arr[2][8], data_arr[3][8], data_arr[4][8]],
+        rel_pos,
+        t0,
+        t1,
+    )
+
+    print("Pdyn:")
+    timing_analysis_arb(
+        [time_arr, time_arr, time_arr, time_arr],
+        [data_arr[1][9], data_arr[2][9], data_arr[3][9], data_arr[4][9]],
+        rel_pos,
+        t0,
+        t1,
+    )
+    print("\n")
 
 
 def plot_thd_mms1_c4(t0, t1):
