@@ -471,7 +471,7 @@ def plot_mms(t0, t1):
             ax = ax_list[idx2, idx]
             ax.grid()
             ax.plot(
-                time_arr[idx, panel_id[idx2]],
+                time_arr,
                 data_arr[idx, idx2],
             )
             ax.label_outer()
