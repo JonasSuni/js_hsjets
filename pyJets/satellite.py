@@ -412,15 +412,17 @@ def plot_mms(t0, t1, mva=False):
 
     if mva:
         Bdata = [data_arr[idx, 0:3, :] for idx in range(4)]
+        vdata = [data_arr[idx, 3:6, :] for idx in range(4)]
         eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
         for prob in range(4):
             print(
-                "MMS{} Maximum Variance direction: {}".format(
-                    prob + 1, eigenvecs[prob][2]
+                "MMS{} Minimum Variance direction: {}".format(
+                    prob + 1, eigenvecs[prob][0]
                 )
             )
             for idx in range(3):
                 data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob][idx])
+                data_arr[prob, idx + 3, :] = np.dot(vdata[prob].T, eigenvecs[prob][idx])
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
 
@@ -438,6 +440,19 @@ def plot_mms(t0, t1, mva=False):
         "n [1/cm3]",
         "Pdyn [nPa]",
     ]
+    if mva:
+        ylabels_all = [
+            "Bmin [nT]",
+            "Bmed [nT]",
+            "Bmax [nT]",
+            "Bt [nT]",
+            "vmin [km/s]",
+            "vmed [km/s]",
+            "vmax [km/s]",
+            "vt [km/s]",
+            "n [1/cm3]",
+            "Pdyn [nPa]",
+        ]
     sc_labs = ["MMS1", "MMS2", "MMS3", "MMS4"]
     colors = [
         CB_color_cycle[0],
@@ -541,13 +556,16 @@ def plot_mms(t0, t1, mva=False):
         except OSError:
             pass
 
-    fig.savefig(outdir + "mms_all_t0{}_t1{}.png".format(t0plot, t1plot))
+    fig.savefig(outdir + "mms_all_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva))
     plt.close(fig)
 
     print(rel_pos)
 
     labs = ["Bx:", "By:", "Bz:"]
     labs_v = ["Vx:", "Vy:", "Vz:"]
+    if mva:
+        labs = ["Bmin:", "Bmed:", "Bmax:"]
+        labs_v = ["Vmin:", "Vmed:", "Vmax:"]
 
     print("\n")
 
