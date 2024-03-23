@@ -321,7 +321,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     print("\n")
 
 
-def plot_mms(t0, t1, mva=False):
+def plot_mms(t0, t1, mva=False, dt=0.1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -335,7 +335,7 @@ def plot_mms(t0, t1, mva=False):
             t0,
             t1,
             intpol=True,
-            dt=0.1,
+            dt=dt,
             datarate="brst",
         )
         for probe in range(1, 5)
@@ -349,7 +349,7 @@ def plot_mms(t0, t1, mva=False):
             t0,
             t1,
             intpol=True,
-            dt=0.1,
+            dt=dt,
             datarate="brst",
         )
         for probe in range(1, 5)
@@ -363,7 +363,7 @@ def plot_mms(t0, t1, mva=False):
             t0,
             t1,
             intpol=True,
-            dt=0.1,
+            dt=dt,
             datarate="brst",
         )
         for probe in range(1, 5)
@@ -377,7 +377,7 @@ def plot_mms(t0, t1, mva=False):
             t0,
             t1,
             intpol=True,
-            dt=0.1,
+            dt=dt,
             datarate="srvy",
         )
         for probe in range(1, 5)
