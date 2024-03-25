@@ -1648,10 +1648,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             non_ylist.append(jetobj.read_at_time("y_wmean", filenr_g / 2.0))
 
     for idx in range(len(xg)):
-        ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
+        ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx], zorder=2)
 
     if linsg:
-        ax.plot([linsg[0], lineg[0]], [linsg[1], lineg[1]], alpha=0.5)
+        ax.plot([linsg[0], lineg[0]], [linsg[1], lineg[1]], alpha=0.3, zorder=1)
 
     # slams_mask = np.in1d(cellids, slams_cells).astype(int)
     # slams_mask = np.reshape(slams_mask, cellids.shape)
