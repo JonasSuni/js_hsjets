@@ -1650,6 +1650,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     for idx in range(len(xg)):
         ax.plot(xg[idx], yg[idx], "x", color=CB_color_cycle[idx])
 
+    if linsg:
+        ax.plot([linsg[0], lineg[0]], [linsg[1], lineg[1]], alpha=0.5)
+
     # slams_mask = np.in1d(cellids, slams_cells).astype(int)
     # slams_mask = np.reshape(slams_mask, cellids.shape)
 
@@ -2133,6 +2136,7 @@ def v5_plotter(
     leg=True,
     track_jets=True,
     qperp=True,
+    linestartstop=[],
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -2151,9 +2155,13 @@ def v5_plotter(
     leg_g = leg
     draw_qperp = qperp
 
-    global xg, yg
+    global xg, yg, linsg, lineg
     xg = pointsx
     yg = pointsy
+    linsg, lineg = None, None
+    if len(linestartstop) == 2:
+        linsg = linestartstop[0]
+        lineg = linestartstop[1]
 
     # nstp = 40
     start_points = np.array(
