@@ -3501,7 +3501,7 @@ def jplots(
             figsize=(6 * len(vars_to_plot), figh),
             sharex=True,
             sharey=True,
-            constrained_layout=True
+            constrained_layout=True,
         )
         if len(vars_to_plot) > 1:
             ax_list = ax_list.flatten()
@@ -3599,7 +3599,7 @@ def jplots(
                     ax.plot(
                         [1, 2],
                         [0, 1],
-                        color=CB_color_cycle[itr + 1],
+                        color=CB_color_cycle[::-1][itr + 1],
                         label=vels_labels[itr],
                     )
             # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
@@ -3639,7 +3639,7 @@ def jplots(
         # ax_list[-1].set_axis_off()
 
         # Save figure
-        #plt.tight_layout()
+        # plt.tight_layout()
 
         # fig.savefig(
         #     wrkdir_DNR
