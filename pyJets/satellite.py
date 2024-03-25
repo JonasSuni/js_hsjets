@@ -233,7 +233,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
         pyspedas.themis.fgm, "themis", "d", "B", t0, t1, intpol=True, dt=dt
     )
     mms1_time, mms1_B = load_msh_sc_data(
-        pyspedas.mms.fgm, "mms", "1", "B", t0, t1, intpol=True, dt=dt
+        pyspedas.mms.fgm, "mms", "1", "B", t0, t1, intpol=True, dt=dt, datarate="srvy"
     )
     c4_time, c4_B = load_msh_sc_data(
         pyspedas.cluster.fgm, "cluster", "4", "B", t0, t1, intpol=True, dt=dt
@@ -243,7 +243,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
         pyspedas.themis.mom, "themis", "d", "rho", t0, t1, intpol=True, dt=dt
     )
     mms1_time2, mms1_rho = load_msh_sc_data(
-        pyspedas.mms.fpi, "mms", "1", "rho", t0, t1, intpol=True, dt=dt
+        pyspedas.mms.fpi, "mms", "1", "rho", t0, t1, intpol=True, dt=dt, datarate="fast"
     )
     c4_time2, c4_rho = load_msh_sc_data(
         pyspedas.cluster.cis, "cluster", "4", "rho", t0, t1, intpol=True, dt=dt
@@ -253,7 +253,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
         pyspedas.themis.mom, "themis", "d", "v", t0, t1, intpol=True, dt=dt
     )
     dummy, mms1_v = load_msh_sc_data(
-        pyspedas.mms.fpi, "mms", "1", "v", t0, t1, intpol=True, dt=dt
+        pyspedas.mms.fpi, "mms", "1", "v", t0, t1, intpol=True, dt=dt, datarate="fast"
     )
     dummy, c4_v = load_msh_sc_data(
         pyspedas.cluster.cis, "cluster", "4", "v", t0, t1, intpol=True, dt=dt
