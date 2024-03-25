@@ -660,7 +660,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     print("\n")
 
 
-def plot_thd_mms1_c4(t0, t1, dt=1, mva=False):
+def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -919,53 +919,68 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False):
     fig.savefig(outdir + "thd_mms1_c4_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva))
     plt.close(fig)
 
-    labs = ["Bx:", "By:", "Bz:"]
-    labs_v = ["Vx:", "Vy:", "Vz:"]
+    labs = ["Bx:", "By:", "Bz:", "Bt:" "Vx:", "Vy:", "Vz:", "Vt:", "rho", "Pdyn:"]
+    # labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
-        labs = ["Bmin:", "Bmed:", "Bmax:"]
-        labs_v = ["Vmin:", "Vmed:", "Vmax:"]
+        # labs = ["Bmin:", "Bmed:", "Bmax:"]
+        # labs_v = ["Vmin:", "Vmed:", "Vmax:"]
+        labs = [
+            "Bmin:",
+            "Bmed:",
+            "Bmax:",
+            "Bt:" "Vmin:",
+            "Vmed:",
+            "Vmax:",
+            "Vt:",
+            "rho",
+            "Pdyn:",
+        ]
 
     print("\n")
 
-    for idx in range(3):
+    for idx in range(10):
         print(labs[idx])
         timing_analysis_arb(
             [time_arr, time_arr, time_arr],
-            [data_arr[0, idx, :], data_arr[1, idx, :], data_arr[2, idx, :]],
+            [
+                data_arr[sc_order[0], idx, :],
+                data_arr[sc_order[1], idx, :],
+                data_arr[sc_order[2], idx, :],
+            ],
             sc_rel_pos,
             t0,
             t1,
         )
-        print("\n")
-        print(labs_v[idx])
-        timing_analysis_arb(
-            [time_arr, time_arr, time_arr],
-            [data_arr[0, 4 + idx, :], data_arr[1, 4 + idx, :], data_arr[2, 4 + idx, :]],
-            sc_rel_pos,
-            t0,
-            t1,
-        )
-        print("\n")
+    #     print("\n")
+    #     print(labs_v[idx])
+    #     timing_analysis_arb(
+    #         [time_arr, time_arr, time_arr],
+    #         [data_arr[0, 4 + idx, :], data_arr[1, 4 + idx, :], data_arr[2, 4 + idx, :]],
+    #         sc_rel_pos,
+    #         t0,
+    #         t1,
+    #     )
+    #     print("\n")
 
-    print("rho:")
-    timing_analysis_arb(
-        [time_arr, time_arr, time_arr],
-        [data_arr[0, 8, :], data_arr[1, 8, :], data_arr[2, 8, :]],
-        sc_rel_pos,
-        t0,
-        t1,
-    )
-    print("\n")
+    # print("rho:")
+    # timing_analysis_arb(
+    #     [time_arr, time_arr, time_arr],
+    #     [data_arr[0, 8, :], data_arr[1, 8, :], data_arr[2, 8, :]],
+    #     sc_rel_pos,
+    #     t0,
+    #     t1,
+    # )
+    # print("\n")
 
-    print("Pdyn:")
-    timing_analysis_arb(
-        [time_arr, time_arr, time_arr],
-        [data_arr[0, 9, :], data_arr[1, 9, :], data_arr[2, 9, :]],
-        sc_rel_pos,
-        t0,
-        t1,
-    )
-    print("\n")
+    # print("Pdyn:")
+    # timing_analysis_arb(
+    #     [time_arr, time_arr, time_arr],
+    #     [data_arr[0, 9, :], data_arr[1, 9, :], data_arr[2, 9, :]],
+    #     sc_rel_pos,
+    #     t0,
+    #     t1,
+    # )
+    # print("\n")
 
 
 def plot_ace_dscovr_wind(t0, t1):
