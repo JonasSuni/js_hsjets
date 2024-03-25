@@ -952,6 +952,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             t0,
             t1,
         )
+        print("\n")
     #     print("\n")
     #     print(labs_v[idx])
     #     timing_analysis_arb(
