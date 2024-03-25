@@ -926,7 +926,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False):
         except OSError:
             pass
 
-    fig.savefig(outdir + "thd_mms1_c4_t0{}_t1{}_mva.png".format(t0plot, t1plot, mva))
+    fig.savefig(outdir + "thd_mms1_c4_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva))
     plt.close(fig)
 
     labs = ["Bx:", "By:", "Bz:"]
