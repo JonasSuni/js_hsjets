@@ -289,8 +289,30 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     ]
     print(sc_rel_pos)
 
+    if mva:
+        eigenvecs_thd = MVA(thd_B[0:3])
+        eigenvecs_mms1 = MVA(mms1_B[0:3])
+        eigenvecs_c4 = MVA(c4_B[0:3])
+
+        print("THD Minimum Variance direction: {}".format(eigenvecs_thd[0]))
+        print("MMS1 Minimum Variance direction: {}".format(eigenvecs_mms1[0]))
+        print("C4 Minimum Variance direction: {}".format(eigenvecs_c4[0]))
+
+        for idx in range(3):
+            thd_B[idx] = np.dot(thd_B.T, eigenvecs_thd[idx])
+            thd_v[idx] = np.dot(thd_v.T, eigenvecs_thd[idx])
+
+            mms1_B[idx] = np.dot(mms1_B.T, eigenvecs_mms1[idx])
+            mms1_v[idx] = np.dot(mms1_v.T, eigenvecs_mms1[idx])
+
+            c4_B[idx] = np.dot(c4_B.T, eigenvecs_c4[idx])
+            c4_v[idx] = np.dot(c4_v.T, eigenvecs_c4[idx])
+
     labs = ["Bx:", "By:", "Bz:"]
     labs_v = ["Vx:", "Vy:", "Vz:"]
+    if mva:
+        labs = ["Bmin:", "Bmed:", "Bmax:"]
+        labs_v = ["Vmin:", "Vmed:", "Vmax:"]
 
     print("\n")
 
