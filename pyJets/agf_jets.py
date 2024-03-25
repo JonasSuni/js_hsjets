@@ -3502,7 +3502,10 @@ def jplots(
             sharex=True,
             sharey=True,
         )
-        ax_list = ax_list.flatten()
+        if len(vars_to_plot) > 1:
+            ax_list = ax_list.flatten()
+        else:
+            ax_list = [ax_list]
         im_list = []
         cb_list = []
         fig.suptitle(
