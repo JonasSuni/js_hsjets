@@ -2143,7 +2143,7 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g,draw_qperp
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp
     runid_g = runid
     Blines_g = blines
     drawBy0 = By0
