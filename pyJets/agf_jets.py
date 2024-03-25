@@ -1700,7 +1700,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     mrks = 2
     mews = 0.4
 
-    if drawBy0:
+    if draw_qperp:
         by_mask = np.ones_like(By, dtype=int)
         by_mask[np.logical_and(By > 0, YmeshXY < 0)] = 0
         by_mask[np.logical_and(By < 0, YmeshXY > 0)] = 0
@@ -1720,6 +1720,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             hatches=["++", "/"],
             alpha=0.3,
         )
+
+    if drawBy0:
 
         by0_cont = ax.contour(
             XmeshXY,
@@ -1886,6 +1888,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if drawBy0:
         proxy.append(mlines.Line2D([], [], color="red", linestyle="dashed"))
         proxy_labs.append("$B_y=0$")
+    if draw_qperp:
         proxy.append(
             mpatches.Patch(
                 fc=CB_color_cycle[6],
@@ -2129,6 +2132,7 @@ def v5_plotter(
     By0=True,
     leg=True,
     track_jets=True,
+    qperp=True,
 ):
     var = "proton/vg_Pdyn"
     vscale = 1e9
@@ -2139,12 +2143,13 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g,draw_qperp
     runid_g = runid
     Blines_g = blines
     drawBy0 = By0
     plaschke_g = False
     leg_g = leg
+    draw_qperp = qperp
 
     global xg, yg
     xg = pointsx
