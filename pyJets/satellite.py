@@ -117,6 +117,10 @@ def MVA(data):
     eigenval, eigenvec = np.linalg.eig(M)
     eigenvec = eigenvec.T
 
+    print("\n")
+    print("Eigenvalues: ", np.sort(eigenval))
+    print("Eigenvectors: ", eigenvec[np.argsort(eigenval)])
+
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
     return eigenvec[np.argsort(eigenval), :]
 
