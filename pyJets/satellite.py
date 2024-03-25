@@ -729,20 +729,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False):
     mms1_pdyn = m_p * mms1_rho * 1e6 * mms1_vmag * mms1_vmag * 1e6 / 1e-9
     c4_pdyn = m_p * c4_rho * 1e6 * c4_vmag * c4_vmag * 1e6 / 1e-9
 
-    thd_mag = pyspedas.themis.fgm(trange=[t0, t1], notplot=True, probe="d")
-    thd_mom = pyspedas.themis.mom(trange=[t0, t1], notplot=True, probe="d")
-
-    mms1_mag = pyspedas.mms.fgm(trange=[t0, t1], notplot=True, probe="1")
-    mms1_mom = pyspedas.mms.fpi(trange=[t0, t1], notplot=True, probe="1")
-
-    c4_mag = pyspedas.cluster.fgm(trange=[t0, t1], notplot=True, probe="4")
-    c4_mom = pyspedas.cluster.cis(trange=[t0, t1], notplot=True, probe="4")
-
     time_arr = thd_time
 
     data_arr = np.empty((3, 10, time_arr.size), dtype=float)
-
-    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9, :])] for idx in range(3)]
 
     data_arr[0, :, :] = [
         thd_B[0],
@@ -780,6 +769,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False):
         c4_rho,
         c4_pdyn,
     ]
+    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9, :])] for idx in range(3)]
 
     sc_labs = ["THD", "MMS1", "C4"]
     if mva:
