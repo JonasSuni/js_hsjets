@@ -919,7 +919,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     fig.savefig(outdir + "thd_mms1_c4_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva))
     plt.close(fig)
 
-    labs = ["Bx:", "By:", "Bz:", "Bt:" "Vx:", "Vy:", "Vz:", "Vt:", "rho", "Pdyn:"]
+    labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho", "Pdyn:"]
     # labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
         # labs = ["Bmin:", "Bmed:", "Bmax:"]
