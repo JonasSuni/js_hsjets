@@ -681,9 +681,11 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     mms1_pos = sc_coords[sc_name == "mms1", :]
     c4_pos = sc_coords[sc_name == "cluster4", :]
 
+    sc_poses = [thd_pos, mms1_pos, c4_pos]
+
     sc_rel_pos = [
-        np.nanmean(mms1_pos - thd_pos, axis=0),
-        np.nanmean(c4_pos - thd_pos, axis=0),
+        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
     ]
     print(sc_rel_pos)
 
