@@ -157,8 +157,7 @@ def load_msh_sc_data(
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
     vars_list = ["B", "rho", "v", "pos"]
-    sc_list = ["mms", "themis", "cluster"]
-    moms_list = ["fpi", "mom", "cis"]
+    sc_list = ["mms", "themis", "cluster", "ace", "dscovr", "wind"]
     sc_var_names = [
         [
             "mms{}_fgm_b_gse_{}_l2".format(probe, datarate),
@@ -176,22 +175,22 @@ def load_msh_sc_data(
             "N_p__C{}_PP_CIS".format(probe),
             "V_p_xyz_gse__C{}_PP_CIS".format(probe),
         ],
+        [
+            "BGSEc",
+            "Np",
+            "Vp",
+        ],
+        [
+            "dsc_h0_mag_B1GSE",
+            "dsc_h1_fc_Np",
+            "dsc_h1_fc_V_GSE",
+        ],
+        [
+            "BGSE",
+            "N_elec",
+            "U_eGSE",
+        ],
     ]
-
-    # sc_obj = [
-    #     pyspedas.mms,
-    #     pyspedas.themis,
-    #     pyspedas.cluster,
-    # ][sc_list.index(sc)]
-
-    # if var == "B":
-    #     sc_ins_obj = sc_obj.fgm
-    # elif sc == "themis":
-    #     sc_ins_obj = sc_obj.mom
-    # elif sc == "mms":
-    #     sc_ins_obj = sc_obj.fpi
-    # elif sc == "cluster":
-    #     sc_ins_obj = sc_obj.cis
 
     if sc == "mms":
         sc_data = sc_ins_obj(
