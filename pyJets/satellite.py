@@ -455,6 +455,12 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
 
+    rel_pos = [
+        sc_pos[idx][1].T[np.argmax(data_arr[idx, 9])]
+        - sc_pos[0][1].T[np.argmax(data_arr[0, 9])]
+        for idx in range(1, 4)
+    ]
+
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
     ylabels_all = [
