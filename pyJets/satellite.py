@@ -150,7 +150,16 @@ def time_clip(time_list, data_list, t0, t1):
 
 
 def load_msh_sc_data(
-    sc_ins_obj, sc, probe, var, t0, t1, intpol=True, dt=1, datarate="fast"
+    sc_ins_obj,
+    sc,
+    probe,
+    var,
+    t0,
+    t1,
+    intpol=True,
+    dt=1,
+    datarate="fast",
+    datatype="h0",
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -199,6 +208,14 @@ def load_msh_sc_data(
             notplot=True,
             time_clip=True,
             data_rate=datarate,
+        )[sc_var_names[sc_list.index(sc)][vars_list.index(var)]]
+    elif sc in ["ace", "dscovr", "wind"]:
+        sc_data = sc_ins_obj(
+            trange=[t0, t1],
+            probe=probe,
+            notplot=True,
+            time_clip=True,
+            datatype=datatype,
         )[sc_var_names[sc_list.index(sc)][vars_list.index(var)]]
     else:
         sc_data = sc_ins_obj(
