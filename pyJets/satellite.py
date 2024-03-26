@@ -646,8 +646,6 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         print("\n")
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-    # ax.xaxis.set_visible(False)
-    # ax.yaxis.set_visible(False)
     fig.patch.set_visible(False)
     ax.axis("off")
     ax.axis("tight")
@@ -667,7 +665,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         )
     if mva:
         rowLabels += sc_labs
-        for idx in range(4):
+        for idx in range(len(sc_labs)):
             cellText.append(
                 [
                     str(eigenvecs[idx][0][0]),
@@ -972,9 +970,11 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
 
     print("\n")
 
+    timing_res = []
+
     for idx in range(10):
         print(labs[idx])
-        timing_analysis_arb(
+        res = timing_analysis_arb(
             [time_arr, time_arr, time_arr],
             [
                 data_arr[sc_order[0], idx, :],
@@ -985,6 +985,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             t0,
             t1,
         )
+        timing_res.append(res)
         print("\n")
     #     print("\n")
     #     print(labs_v[idx])
@@ -1016,6 +1017,49 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     #     t1,
     # )
     # print("\n")
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    fig.patch.set_visible(False)
+    ax.axis("off")
+    ax.axis("tight")
+
+    cellText = []
+    colLabels = ["x", "y", "z", "v"]
+    rowLabels = labs
+    for idx in range(10):
+        res = timing_res[idx]
+        cellText.append(
+            [
+                str(res["wave_vector"][0][0]),
+                str(res["wave_vector"][1][0]),
+                str(res["wave_vector"][1][0]),
+                str(res["wave_velocity_sc_frame"]),
+            ]
+        )
+    if mva:
+        rowLabels += sc_labs
+        for idx in range(len(sc_labs)):
+            cellText.append(
+                [
+                    str(eigenvecs[idx][0][0]),
+                    str(eigenvecs[idx][0][1]),
+                    str(eigenvecs[idx][0][2]),
+                    "",
+                ]
+            )
+
+    for idx in range(len(cellText)):
+        for idx2 in range(len(cellText[0])):
+            cellText[idx][idx2] = cellText[idx][idx2][:5]
+
+    ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels, loc="center")
+
+    fig.tight_layout()
+
+    fig.savefig(
+        outdir + "thd_mms1_c4_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
+    )
+    plt.close(fig)
 
 
 def plot_ace_dscovr_wind(t0, t1):
