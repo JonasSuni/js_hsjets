@@ -1121,7 +1121,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
 
     ace_pos = sc_coords[sc_name == "ace", :][:-1]
     dscovr_pos = sc_coords[sc_name == "dscovr", :]
-    wind_pos = sc_coords[sc_name == "wind", :]
+    wind_pos = sc_coords[sc_name == "wind", :][:-1]
 
     sc_poses = [ace_pos, dscovr_pos, wind_pos]
 
