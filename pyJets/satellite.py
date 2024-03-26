@@ -596,17 +596,41 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
 
     print(rel_pos)
 
-    labs = ["Bx:", "By:", "Bz:"]
+    labs = [
+        "Bx:",
+        "By:",
+        "Bz:",
+        "Bt:",
+        "Vx:",
+        "Vy:",
+        "Vz:",
+        "Vt:",
+        "rho:",
+        "Pdyn:",
+    ]
     labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
-        labs = ["Bmin:", "Bmed:", "Bmax:"]
+        labs = [
+            "Bmin:",
+            "Bmed:",
+            "Bmax:",
+            "Bt:",
+            "Vmin:",
+            "Vmed:",
+            "Vmax:",
+            "Vt:",
+            "rho:",
+            "Pdyn:",
+        ]
         labs_v = ["Vmin:", "Vmed:", "Vmax:"]
 
     print("\n")
 
-    for idx in range(3):
+    timing_res = []
+
+    for idx in range(10):
         print(labs[idx])
-        timing_analysis_arb(
+        res = timing_analysis_arb(
             [time_arr, time_arr, time_arr, time_arr],
             [
                 data_arr[0][idx],
@@ -618,51 +642,42 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
             t0,
             t1,
         )
+        timing_res.append(res)
         print("\n")
-        print(labs_v[idx])
-        timing_analysis_arb(
-            [time_arr, time_arr, time_arr, time_arr],
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 18), constrained_layout=True)
+
+    cellText = []
+    colLabels = ["x", "y", "z", "v"]
+    rowLabels = labs
+    for idx in range(10):
+        res = timing_res[idx]
+        cellText.append(
             [
-                data_arr[0][idx + 4],
-                data_arr[1][idx + 4],
-                data_arr[2][idx + 4],
-                data_arr[3][idx + 4],
-            ],
-            rel_pos,
-            t0,
-            t1,
+                str(res["wave_vector"][0][0]),
+                str(res["wave_vector"][1][0]),
+                str(res["wave_vector"][1][0]),
+                str(res["wave_velocity_sc_frame"]),
+            ]
         )
-        print("\n")
+    if mva:
+        rowLabels += sc_labs
+        for idx in range(4):
+            cellText.append(
+                [
+                    str(eigenvecs[idx][0][0]),
+                    str(eigenvecs[idx][0][1]),
+                    str(eigenvecs[idx][0][2]),
+                    "",
+                ]
+            )
 
-    print("rho:")
-    timing_analysis_arb(
-        [time_arr, time_arr, time_arr, time_arr],
-        [
-            data_arr[0][8],
-            data_arr[1][8],
-            data_arr[2][8],
-            data_arr[3][8],
-        ],
-        rel_pos,
-        t0,
-        t1,
-    )
-    print("\n")
+    ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels)
 
-    print("Pdyn:")
-    timing_analysis_arb(
-        [time_arr, time_arr, time_arr, time_arr],
-        [
-            data_arr[0][9],
-            data_arr[1][9],
-            data_arr[2][9],
-            data_arr[3][9],
-        ],
-        rel_pos,
-        t0,
-        t1,
+    fig.savefig(
+        outdir + "mms_all_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
     )
-    print("\n")
+    plt.close(fig)
 
 
 def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
