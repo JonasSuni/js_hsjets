@@ -674,6 +674,10 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
                 ]
             )
 
+    for idx in len(cellText):
+        for idx2 in len(cellText[0]):
+            cellText[idx][idx2] = cellText[idx][idx2][:5]
+
     ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels)
 
     fig.savefig(
