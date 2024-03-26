@@ -659,7 +659,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
             [
                 str(res["wave_vector"][0][0]),
                 str(res["wave_vector"][1][0]),
-                str(res["wave_vector"][1][0]),
+                str(res["wave_vector"][2][0]),
                 str(res["wave_velocity_sc_frame"]),
             ]
         )
@@ -1032,7 +1032,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             [
                 str(res["wave_vector"][0][0]),
                 str(res["wave_vector"][1][0]),
-                str(res["wave_vector"][1][0]),
+                str(res["wave_vector"][2][0]),
                 str(res["wave_velocity_sc_frame"]),
             ]
         )
