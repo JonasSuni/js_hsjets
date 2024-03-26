@@ -648,6 +648,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     fig, ax = plt.subplots(1, 1, figsize=(12, 12), constrained_layout=True)
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
+    fig.patch.set_visible(False)
+    ax.axis("off")
+    ax.axis("tight")
 
     cellText = []
     colLabels = ["x", "y", "z", "v"]
@@ -674,8 +677,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
                 ]
             )
 
-    for idx in len(cellText):
-        for idx2 in len(cellText[0]):
+    for idx in range(len(cellText)):
+        for idx2 in range(len(cellText[0])):
             cellText[idx][idx2] = cellText[idx][idx2][:5]
 
     ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels)
