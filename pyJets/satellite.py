@@ -645,9 +645,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         timing_res.append(res)
         print("\n")
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 4), constrained_layout=True)
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+    # ax.xaxis.set_visible(False)
+    # ax.yaxis.set_visible(False)
     fig.patch.set_visible(False)
     ax.axis("off")
     ax.axis("tight")
@@ -682,6 +682,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
             cellText[idx][idx2] = cellText[idx][idx2][:5]
 
     ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels)
+
+    fig.tight_layout()
 
     fig.savefig(
         outdir + "mms_all_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
