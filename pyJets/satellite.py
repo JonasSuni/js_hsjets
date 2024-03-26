@@ -1183,7 +1183,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         ax.label_outer()
 
     for idx in range(4):
-        ax_list[0, idx].set_ylabel(title_labs[idx], labelpad=10, fontsize=20)
+        ax_list[idx, 0].set_ylabel(title_labs[idx], labelpad=10, fontsize=20)
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
