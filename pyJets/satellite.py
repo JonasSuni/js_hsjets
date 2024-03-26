@@ -1142,6 +1142,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         ]
 
     print("NaNs detected:", np.isnan(data_arr).any())
+    print(data_arr)
 
     if mva:
         Bdata = [data_arr[idx, 0:3, :] for idx in range(3)]
