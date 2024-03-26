@@ -645,7 +645,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         timing_res.append(res)
         print("\n")
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 12))
+    fig, ax = plt.subplots(1, 1, figsize=(12, 4), constrained_layout=True)
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     fig.patch.set_visible(False)
