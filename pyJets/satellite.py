@@ -1187,8 +1187,8 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
             ax.set_xlim(t0plot, t1plot)
             ax.grid()
 
-    for ax in ax_list.flatten():
-        ax.label_outer()
+    # for ax in ax_list.flatten():
+    #     ax.label_outer()
 
     for idx in range(4):
         ax_list[idx, 0].set_ylabel(title_labs[idx], labelpad=10, fontsize=20)
