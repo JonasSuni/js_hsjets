@@ -1129,6 +1129,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
         np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
     ]
+    print(sc_rel_pos)
 
     data_arr = np.zeros((3, 4, time_arr.size), dtype=float)
 
