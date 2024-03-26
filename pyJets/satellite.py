@@ -1104,7 +1104,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         datatype="h0",
     )
     wind_time, wind_B = load_msh_sc_data(
-        pyspedas.wind.mfi, "wind", "1", "B", t0, t1, intpol=True, dt=dt, datatype="h0"
+        pyspedas.wind.mfi, "wind", "1", "B", t0, t1, intpol=True, dt=dt, datatype="h2"
     )
 
     sc_B = [ace_B, dscovr_B, wind_B]
