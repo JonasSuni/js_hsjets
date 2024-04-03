@@ -2467,9 +2467,9 @@ def VSC_timeseries(
         for idx in range(3):
             data_arr[idx + 6, :] = np.dot(Bdata.T, eigenvecs[idx])
             data_arr[idx + 1, :] = np.dot(vdata.T, eigenvecs[idx])
-            data_arr[idx+10,:] = np.dot(Edata.T, eigenvecs[idx])
+            data_arr[idx + 10, :] = np.dot(Edata.T, eigenvecs[idx])
 
-        plot_labels[[1, 2, 3, 6, 7, 8,10,11,12]] = [
+        plot_labels[[1, 2, 3, 6, 7, 8, 10, 11, 12]] = [
             "$v_N$",
             "$v_M$",
             "$v_L$",
