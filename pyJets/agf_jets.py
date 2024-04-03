@@ -2286,26 +2286,24 @@ def VSC_timeseries(
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
-    plot_labels = np.array(
-        [
-            None,
-            "$v_x$",
-            "$v_y$",
-            "$v_z$",
-            "$|v|$",
-            "$P_\mathrm{dyn}$",
-            "$B_x$",
-            "$B_y$",
-            "$B_z$",
-            "$|B|$",
-            "$E_x$",
-            "$E_y$",
-            "$E_z$",
-            "$|E|$",
-            "$T_\\parallel$",
-            "$T_\\perp$",
-        ]
-    )
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
     scales = [
         1e-6,
         1e-3,
@@ -2471,17 +2469,21 @@ def VSC_timeseries(
             data_arr[idx + 1, :] = np.dot(vdata.T, eigenvecs[idx])
             data_arr[idx + 10, :] = np.dot(Edata.T, eigenvecs[idx])
 
-        plot_labels[[1, 2, 3, 6, 7, 8, 10, 11, 12]] = [
-            "$v_N$",
-            "$v_M$",
-            "$v_L$",
-            "$B_N$",
-            "$B_M$",
-            "$B_L$",
-            "$E_N$",
-            "$E_M$",
-            "$E_L$",
-        ]
+        # plot_labels[[1, 2, 3, 6, 7, 8, 10, 11, 12]] = [
+        #     "$v_N$",
+        #     "$v_M$",
+        #     "$v_L$",
+        #     "$B_N$",
+        #     "$B_M$",
+        #     "$B_L$",
+        #     "$E_N$",
+        #     "$E_M$",
+        #     "$E_L$",
+        # ]
+        plot_labels[1:4] = ["$v_N$", "$v_M$", "$v_L$"]
+        plot_labels[6:9] = ["$B_N$", "$B_M$", "$B_L$"]
+        plot_labels[10:13] = ["$E_N$", "$E_M$", "$E_L$"]
+
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
