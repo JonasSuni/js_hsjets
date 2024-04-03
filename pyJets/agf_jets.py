@@ -5667,7 +5667,7 @@ def MVA(data):
     eigenvec = eigenvec.T
 
     for idx in range(3):
-        if eigenvec[idx][0] > 0:
+        if eigenvec[0][0] > 0:
             eigenvec[idx] *= -1
 
     print("\n")
