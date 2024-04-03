@@ -2461,19 +2461,24 @@ def VSC_timeseries(
     if mva:
         Bdata = data_arr[6:9, :]
         vdata = data_arr[1:4, :]
+        Edata = data_arr[10:13, :]
         eigenvecs = MVA(Bdata)
         print("Minimum Variance direction: {}".format(eigenvecs[0]))
         for idx in range(3):
             data_arr[idx + 6, :] = np.dot(Bdata.T, eigenvecs[idx])
             data_arr[idx + 1, :] = np.dot(vdata.T, eigenvecs[idx])
+            data_arr[idx+10,:] = np.dot(Edata.T, eigenvecs[idx])
 
-        plot_labels[[1, 2, 3, 6, 7, 8]] = [
+        plot_labels[[1, 2, 3, 6, 7, 8,10,11,12]] = [
             "$v_N$",
             "$v_M$",
             "$v_L$",
             "$B_N$",
             "$B_M$",
             "$B_L$",
+            "$E_N$",
+            "$E_M$",
+            "$E_L$",
         ]
 
     fig, ax_list = plt.subplots(
