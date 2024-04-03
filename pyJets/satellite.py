@@ -313,23 +313,31 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     print(sc_rel_pos)
 
     if mva:
-        eigenvecs_thd = MVA(thd_B[0:3])
-        eigenvecs_mms1 = MVA(mms1_B[0:3])
-        eigenvecs_c4 = MVA(c4_B[0:3])
+        Bdata_thd = deepcopy(thd_B[0:3])
+        Bdata_mms1 = deepcopy(mms1_B[0:3])
+        Bdata_c4 = deepcopy(c4_B[0:3])
+
+        vdata_thd = deepcopy(thd_v[0:3])
+        vdata_mms1 = deepcopy(mms1_v[0:3])
+        vdata_c4 = deepcopy(c4_v[0:3])
+
+        eigenvecs_thd = MVA(Bdata_thd)
+        eigenvecs_mms1 = MVA(Bdata_mms1)
+        eigenvecs_c4 = MVA(Bdata_c4)
 
         print("THD Minimum Variance direction: {}".format(eigenvecs_thd[0]))
         print("MMS1 Minimum Variance direction: {}".format(eigenvecs_mms1[0]))
         print("C4 Minimum Variance direction: {}".format(eigenvecs_c4[0]))
 
         for idx in range(3):
-            thd_B[idx] = np.dot(thd_B.T, eigenvecs_thd[idx])
-            thd_v[idx] = np.dot(thd_v.T, eigenvecs_thd[idx])
+            thd_B[idx] = np.dot(Bdata_thd.T, eigenvecs_thd[idx])
+            thd_v[idx] = np.dot(vdata_thd.T, eigenvecs_thd[idx])
 
-            mms1_B[idx] = np.dot(mms1_B.T, eigenvecs_mms1[idx])
-            mms1_v[idx] = np.dot(mms1_v.T, eigenvecs_mms1[idx])
+            mms1_B[idx] = np.dot(Bdata_mms1.T, eigenvecs_mms1[idx])
+            mms1_v[idx] = np.dot(vdata_mms1.T, eigenvecs_mms1[idx])
 
-            c4_B[idx] = np.dot(c4_B.T, eigenvecs_c4[idx])
-            c4_v[idx] = np.dot(c4_v.T, eigenvecs_c4[idx])
+            c4_B[idx] = np.dot(Bdata_c4.T, eigenvecs_c4[idx])
+            c4_v[idx] = np.dot(Bdata_c4.T, eigenvecs_c4[idx])
 
     labs = ["Bx:", "By:", "Bz:"]
     labs_v = ["Vx:", "Vy:", "Vz:"]
@@ -460,8 +468,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         ]
 
     if mva:
-        Bdata = [data_arr[idx, 0:3, :] for idx in range(4)]
-        vdata = [data_arr[idx, 4:7, :] for idx in range(4)]
+        Bdata = [deepcopy(data_arr[idx, 0:3, :]) for idx in range(4)]
+        vdata = [deepcopy(data_arr[idx, 4:7, :]) for idx in range(4)]
         eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
         for prob in range(4):
             print(
@@ -824,8 +832,8 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
 
     sc_labs = ["THD", "MMS1", "C4"]
     if mva:
-        Bdata = [data_arr[idx, 0:3, :] for idx in range(3)]
-        vdata = [data_arr[idx, 4:7, :] for idx in range(3)]
+        Bdata = [deepcopy(data_arr[idx, 0:3, :]) for idx in range(3)]
+        vdata = [deepcopy(data_arr[idx, 4:7, :]) for idx in range(3)]
         eigenvecs = [MVA(Bdata[idx]) for idx in range(3)]
         for prob in range(3):
             print(
@@ -1149,7 +1157,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
     # print(data_arr)
 
     if mva:
-        Bdata = [data_arr[idx, 0:3, :] for idx in range(3)]
+        Bdata = [deepcopy(data_arr[idx, 0:3, :]) for idx in range(3)]
         eigenvecs = [MVA(Bdata[idx]) for idx in range(3)]
         for prob in range(3):
             print(
