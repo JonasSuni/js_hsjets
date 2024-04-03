@@ -2286,24 +2286,26 @@ def VSC_timeseries(
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
     ]
-    plot_labels = [
-        None,
-        "$v_x$",
-        "$v_y$",
-        "$v_z$",
-        "$|v|$",
-        "$P_\mathrm{dyn}$",
-        "$B_x$",
-        "$B_y$",
-        "$B_z$",
-        "$|B|$",
-        "$E_x$",
-        "$E_y$",
-        "$E_z$",
-        "$|E|$",
-        "$T_\\parallel$",
-        "$T_\\perp$",
-    ]
+    plot_labels = np.array(
+        [
+            None,
+            "$v_x$",
+            "$v_y$",
+            "$v_z$",
+            "$|v|$",
+            "$P_\mathrm{dyn}$",
+            "$B_x$",
+            "$B_y$",
+            "$B_z$",
+            "$|B|$",
+            "$E_x$",
+            "$E_y$",
+            "$E_z$",
+            "$|E|$",
+            "$T_\\parallel$",
+            "$T_\\perp$",
+        ]
+    )
     scales = [
         1e-6,
         1e-3,
