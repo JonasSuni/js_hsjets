@@ -2264,6 +2264,7 @@ def VSC_timeseries(
     pdx=False,
     delta=None,
     vlines=[],
+    mva=False,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2457,6 +2458,24 @@ def VSC_timeseries(
         for idx in range(len(var_list)):
             data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
 
+    if mva:
+        Bdata = data_arr[6:9, :]
+        vdata = data_arr[1:4, :]
+        eigenvecs = MVA(Bdata)
+        print("Minimum Variance direction: {}".format(eigenvecs[0]))
+        for idx in range(3):
+            data_arr[idx + 6, :] = np.dot(Bdata.T, eigenvecs[idx])
+            data_arr[idx + 1, :] = np.dot(vdata.T, eigenvecs[idx])
+
+        plot_labels[[1, 2, 3, 6, 7, 8]] = [
+            "$v_N$",
+            "$v_M$",
+            "$v_L$",
+            "$B_N$",
+            "$B_M$",
+            "$B_L$",
+        ]
+
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
@@ -2526,12 +2545,16 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}.png".format(runid, x0, y0, t0, t1, delta),
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}.png".format(
+            runid, x0, y0, t0, t1, delta, mva
+        ),
         dpi=300,
     )
     np.savetxt(
         txtdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}.txt".format(runid, x0, y0, t0, t1, delta),
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}.txt".format(
+            runid, x0, y0, t0, t1, delta, mva
+        ),
         data_arr,
     )
     plt.close(fig)
@@ -5629,3 +5652,28 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
         + "{}_x{}_y{}_t0{}_t1{}_var_{}_{}.png".format(runid, x0, y0, t0, t1, var, op)
     )
     plt.close(fig)
+
+
+def MVA(data):
+
+    M = np.zeros((3, 3), dtype=float)
+
+    for i in range(3):
+        for j in range(3):
+            M[i, j] = np.nanmean(data[i] * data[j]) - np.nanmean(data[i]) * np.nanmean(
+                data[j]
+            )
+
+    eigenval, eigenvec = np.linalg.eig(M)
+    eigenvec = eigenvec.T
+
+    for idx in range(3):
+        if eigenvec[idx][0] > 0:
+            eigenvec[idx] *= -1
+
+    print("\n")
+    print("Eigenvalues: ", np.sort(eigenval))
+    print("Eigenvectors: ", eigenvec[np.argsort(eigenval)])
+
+    # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
+    return eigenvec[np.argsort(eigenval), :]
