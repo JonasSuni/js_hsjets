@@ -2484,7 +2484,6 @@ def VSC_timeseries(
         plot_labels[6:9] = ["$B_N$", "$B_M$", "$B_L$"]
         plot_labels[10:13] = ["$E_N$", "$E_M$", "$E_L$"]
 
-
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
