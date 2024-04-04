@@ -681,19 +681,19 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     cellText = []
     colLabels = ["n", "v", "c"]
     rowLabels = labs
-    for idx in range(10):
+    for idx in range(len(labs)):
         res = timing_res[idx]
         cellText.append(
             [
                 str(
                     (
-                        res["wave_vector"][0][0],
-                        res["wave_vector"][1][0],
-                        res["wave_vector"][2][0],
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
                     )
                 ),
-                str(res["wave_velocity_sc_frame"]),
-                str(np.min(res["cross_corr_values"])),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
             ]
         )
     if mva:
@@ -703,9 +703,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
                 [
                     str(
                         (
-                            eigenvecs[idx][0][0],
-                            eigenvecs[idx][0][1],
-                            eigenvecs[idx][0][2],
+                            round(eigenvecs[idx][0][0], ndigits=2),
+                            round(eigenvecs[idx][0][1], ndigits=2),
+                            round(eigenvecs[idx][0][2], ndigits=2),
                         )
                     ),
                     "",
@@ -713,11 +713,17 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
                 ]
             )
 
-    for idx in range(len(cellText)):
-        for idx2 in range(len(cellText[0])):
-            cellText[idx][idx2] = cellText[idx][idx2][:5]
+    # for idx in range(len(cellText)):
+    #     for idx2 in range(len(cellText[0])):
+    #         cellText[idx][idx2] = cellText[idx][idx2][:5]
 
-    ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels, loc="center")
+    ax.table(
+        cellText=cellText,
+        rowLabels=rowLabels,
+        colLabels=colLabels,
+        loc="center",
+        colLoc="center",
+    )
 
     fig.tight_layout()
 
@@ -1064,7 +1070,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     cellText = []
     colLabels = ["n", "v", "c"]
     rowLabels = labs
-    for idx in range(10):
+    for idx in range(len(labs)):
         res = timing_res[idx]
         cellText.append(
             [
@@ -1097,7 +1103,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             )
 
     # for idx in range(len(cellText)):
-    #     for idx2 in range(1, len(cellText[0])):
+    #     for idx2 in range(len(cellText[0])):
     #         cellText[idx][idx2] = cellText[idx][idx2][:5]
 
     ax.table(
@@ -1105,7 +1111,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
         rowLabels=rowLabels,
         colLabels=colLabels,
         loc="center",
-        cellLoc="center",
+        colLoc="center",
     )
 
     fig.tight_layout()
@@ -1265,19 +1271,19 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
     cellText = []
     colLabels = ["n", "v", "c"]
     rowLabels = title_labs
-    for idx in range(10):
+    for idx in range(len(title_labs)):
         res = timing_res[idx]
         cellText.append(
             [
                 str(
                     (
-                        res["wave_vector"][0][0],
-                        res["wave_vector"][1][0],
-                        res["wave_vector"][2][0],
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
                     )
                 ),
-                str(res["wave_velocity_sc_frame"]),
-                str(np.min(res["cross_corr_values"])),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
             ]
         )
     if mva:
@@ -1287,9 +1293,9 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
                 [
                     str(
                         (
-                            eigenvecs[idx][0][0],
-                            eigenvecs[idx][0][1],
-                            eigenvecs[idx][0][2],
+                            round(eigenvecs[idx][0][0], ndigits=2),
+                            round(eigenvecs[idx][0][1], ndigits=2),
+                            round(eigenvecs[idx][0][2], ndigits=2),
                         )
                     ),
                     "",
@@ -1297,11 +1303,17 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
                 ]
             )
 
-    for idx in range(len(cellText)):
-        for idx2 in range(len(cellText[0])):
-            cellText[idx][idx2] = cellText[idx][idx2][:5]
+    # for idx in range(len(cellText)):
+    #     for idx2 in range(len(cellText[0])):
+    #         cellText[idx][idx2] = cellText[idx][idx2][:5]
 
-    ax.table(cellText=cellText, rowLabels=rowLabels, colLabels=colLabels, loc="center")
+    ax.table(
+        cellText=cellText,
+        rowLabels=rowLabels,
+        colLabels=colLabels,
+        loc="center",
+        colLoc="center",
+    )
 
     fig.tight_layout()
 
