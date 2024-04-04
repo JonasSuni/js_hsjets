@@ -337,13 +337,13 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
             mms1_v[idx] = np.dot(vdata_mms1.T, eigenvecs_mms1[idx])
 
             c4_B[idx] = np.dot(Bdata_c4.T, eigenvecs_c4[idx])
-            c4_v[idx] = np.dot(Bdata_c4.T, eigenvecs_c4[idx])
+            c4_v[idx] = np.dot(vdata_c4.T, eigenvecs_c4[idx])
 
     labs = ["Bx:", "By:", "Bz:"]
     labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
-        labs = ["Bmin:", "Bmed:", "Bmax:"]
-        labs_v = ["Vmin:", "Vmed:", "Vmax:"]
+        labs = ["BN:", "BM:", "BL:"]
+        labs_v = ["VN:", "VM:", "VL:"]
 
     print("\n")
 
@@ -505,9 +505,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     ]
     if mva:
         ylabels_all = [
-            "Bmin [nT]",
-            "Bmed [nT]",
-            "Bmax [nT]",
+            "BN [nT]",
+            "BM [nT]",
+            "BL [nT]",
             "Bt [nT]",
             "vmin [km/s]",
             "vmed [km/s]",
@@ -639,9 +639,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
         labs = [
-            "Bmin:",
-            "Bmed:",
-            "Bmax:",
+            "BN:",
+            "BM:",
+            "BL:",
             "Bt:",
             "Vmin:",
             "Vmed:",
@@ -679,16 +679,21 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
     ax.axis("tight")
 
     cellText = []
-    colLabels = ["x", "y", "z", "v"]
+    colLabels = ["n", "v", "c"]
     rowLabels = labs
     for idx in range(10):
         res = timing_res[idx]
         cellText.append(
             [
-                str(res["wave_vector"][0][0]),
-                str(res["wave_vector"][1][0]),
-                str(res["wave_vector"][2][0]),
+                str(
+                    (
+                        res["wave_vector"][0][0],
+                        res["wave_vector"][1][0],
+                        res["wave_vector"][2][0],
+                    )
+                ),
                 str(res["wave_velocity_sc_frame"]),
+                str(np.min(res["cross_corr_values"])),
             ]
         )
     if mva:
@@ -696,9 +701,14 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         for idx in range(len(sc_labs)):
             cellText.append(
                 [
-                    str(eigenvecs[idx][0][0]),
-                    str(eigenvecs[idx][0][1]),
-                    str(eigenvecs[idx][0][2]),
+                    str(
+                        (
+                            eigenvecs[idx][0][0],
+                            eigenvecs[idx][0][1],
+                            eigenvecs[idx][0][2],
+                        )
+                    ),
+                    "",
                     "",
                 ]
             )
@@ -861,9 +871,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     ]
     if mva:
         ylabels_all = [
-            "Bmin [nT]",
-            "Bmed [nT]",
-            "Bmax [nT]",
+            "BN [nT]",
+            "BM [nT]",
+            "BL [nT]",
             "Bt [nT]",
             "vmin [km/s]",
             "vmed [km/s]",
@@ -984,9 +994,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
         # labs = ["Bmin:", "Bmed:", "Bmax:"]
         # labs_v = ["Vmin:", "Vmed:", "Vmax:"]
         labs = [
-            "Bmin:",
-            "Bmed:",
-            "Bmax:",
+            "BN:",
+            "BM:",
+            "BL:",
             "Bt:",
             "Vmin:",
             "Vmed:",
@@ -1052,16 +1062,21 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     ax.axis("tight")
 
     cellText = []
-    colLabels = ["x", "y", "z", "v"]
+    colLabels = ["n", "v", "c"]
     rowLabels = labs
     for idx in range(10):
         res = timing_res[idx]
         cellText.append(
             [
-                str(res["wave_vector"][0][0]),
-                str(res["wave_vector"][1][0]),
-                str(res["wave_vector"][2][0]),
+                str(
+                    (
+                        res["wave_vector"][0][0],
+                        res["wave_vector"][1][0],
+                        res["wave_vector"][2][0],
+                    )
+                ),
                 str(res["wave_velocity_sc_frame"]),
+                str(np.min(res["cross_corr_values"])),
             ]
         )
     if mva:
@@ -1069,9 +1084,14 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
         for idx in range(len(sc_labs)):
             cellText.append(
                 [
-                    str(eigenvecs[idx][0][0]),
-                    str(eigenvecs[idx][0][1]),
-                    str(eigenvecs[idx][0][2]),
+                    str(
+                        (
+                            eigenvecs[idx][0][0],
+                            eigenvecs[idx][0][1],
+                            eigenvecs[idx][0][2],
+                        )
+                    ),
+                    "",
                     "",
                 ]
             )
@@ -1170,7 +1190,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
 
     title_labs = ["Bx", "By", "Bz", "Bmag"]
     if mva:
-        title_labs = ["Bmin", "Bmed", "Bmax", "Bmag"]
+        title_labs = ["BN", "BM", "BL", "Bmag"]
 
     # ace_clock, dscovr_clock, wind_clock = [
     #     np.rad2deg(np.arctan2(B[2], B[1])) for B in [ace_B, dscovr_B, wind_B]
@@ -1237,16 +1257,21 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
     ax.axis("tight")
 
     cellText = []
-    colLabels = ["x", "y", "z", "v"]
+    colLabels = ["n", "v", "c"]
     rowLabels = title_labs
-    for idx in range(4):
+    for idx in range(10):
         res = timing_res[idx]
         cellText.append(
             [
-                str(res["wave_vector"][0][0]),
-                str(res["wave_vector"][1][0]),
-                str(res["wave_vector"][2][0]),
+                str(
+                    (
+                        res["wave_vector"][0][0],
+                        res["wave_vector"][1][0],
+                        res["wave_vector"][2][0],
+                    )
+                ),
                 str(res["wave_velocity_sc_frame"]),
+                str(np.min(res["cross_corr_values"])),
             ]
         )
     if mva:
@@ -1254,9 +1279,14 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         for idx in range(len(sc_labs)):
             cellText.append(
                 [
-                    str(eigenvecs[idx][0][0]),
-                    str(eigenvecs[idx][0][1]),
-                    str(eigenvecs[idx][0][2]),
+                    str(
+                        (
+                            eigenvecs[idx][0][0],
+                            eigenvecs[idx][0][1],
+                            eigenvecs[idx][0][2],
+                        )
+                    ),
+                    "",
                     "",
                 ]
             )
