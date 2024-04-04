@@ -1070,13 +1070,13 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             [
                 str(
                     (
-                        res["wave_vector"][0][0],
-                        res["wave_vector"][1][0],
-                        res["wave_vector"][2][0],
+                        round(res["wave_vector"][0][0], ndigis=3),
+                        round(res["wave_vector"][1][0], ndigits=3),
+                        round(res["wave_vector"][2][0], ndigits=3),
                     )
                 ),
-                str(res["wave_velocity_sc_frame"]),
-                str(np.min(res["cross_corr_values"])),
+                str(round(res["wave_velocity_sc_frame"], ndigits=3)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=3)),
             ]
         )
     if mva:
@@ -1086,9 +1086,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
                 [
                     str(
                         (
-                            eigenvecs[idx][0][0],
-                            eigenvecs[idx][0][1],
-                            eigenvecs[idx][0][2],
+                            round(eigenvecs[idx][0][0], ndigits=3),
+                            round(eigenvecs[idx][0][1], ndigits=3),
+                            round(eigenvecs[idx][0][2], ndigits=3),
                         )
                     ),
                     "",
@@ -1096,9 +1096,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
                 ]
             )
 
-    for idx in range(len(cellText)):
-        for idx2 in range(1, len(cellText[0])):
-            cellText[idx][idx2] = cellText[idx][idx2][:5]
+    # for idx in range(len(cellText)):
+    #     for idx2 in range(1, len(cellText[0])):
+    #         cellText[idx][idx2] = cellText[idx][idx2][:5]
 
     ax.table(
         cellText=cellText,
