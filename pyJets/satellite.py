@@ -722,7 +722,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         rowLabels=rowLabels,
         colLabels=colLabels,
         loc="center",
-        colLoc="center",
+        cellLoc="center",
     )
 
     fig.tight_layout()
@@ -1111,7 +1111,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
         rowLabels=rowLabels,
         colLabels=colLabels,
         loc="center",
-        colLoc="center",
+        cellLoc="center",
     )
 
     fig.tight_layout()
@@ -1312,7 +1312,7 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         rowLabels=rowLabels,
         colLabels=colLabels,
         loc="center",
-        colLoc="center",
+        cellLoc="center",
     )
 
     fig.tight_layout()
