@@ -1070,13 +1070,13 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             [
                 str(
                     (
-                        round(res["wave_vector"][0][0], ndigits=3),
-                        round(res["wave_vector"][1][0], ndigits=3),
-                        round(res["wave_vector"][2][0], ndigits=3),
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
                     )
                 ),
-                str(round(res["wave_velocity_sc_frame"], ndigits=3)),
-                str(round(np.min(res["cross_corr_values"]), ndigits=3)),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
             ]
         )
     if mva:
@@ -1086,9 +1086,9 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
                 [
                     str(
                         (
-                            round(eigenvecs[idx][0][0], ndigits=3),
-                            round(eigenvecs[idx][0][1], ndigits=3),
-                            round(eigenvecs[idx][0][2], ndigits=3),
+                            round(eigenvecs[idx][0][0], ndigits=2),
+                            round(eigenvecs[idx][0][1], ndigits=2),
+                            round(eigenvecs[idx][0][2], ndigits=2),
                         )
                     ),
                     "",
