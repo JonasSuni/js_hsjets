@@ -1097,7 +1097,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             )
 
     for idx in range(len(cellText)):
-        for idx2 in range(len(cellText[0])):
+        for idx2 in range(1, len(cellText[0])):
             cellText[idx][idx2] = cellText[idx][idx2][:5]
 
     ax.table(
