@@ -1070,7 +1070,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
             [
                 str(
                     (
-                        round(res["wave_vector"][0][0], ndigis=3),
+                        round(res["wave_vector"][0][0], ndigits=3),
                         round(res["wave_vector"][1][0], ndigits=3),
                         round(res["wave_vector"][2][0], ndigits=3),
                     )
