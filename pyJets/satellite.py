@@ -521,6 +521,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                         window_center[idx2], window_halfwidth[idx3], start_id, stop_id
                     )
                 )
+                var_id = idcs[idx1]
                 res = timing_analysis_arb(
                     [
                         time_arr[start_id:stop_id],
@@ -529,25 +530,31 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                         time_arr[start_id:stop_id],
                     ],
                     [
-                        data_arr[0, idcs[idx1], start_id:stop_id],
-                        data_arr[1, idcs[idx1], start_id:stop_id],
-                        data_arr[2, idcs[idx1], start_id:stop_id],
-                        data_arr[3, idcs[idx1], start_id:stop_id],
+                        data_arr[0, var_id, start_id:stop_id],
+                        data_arr[1, var_id, start_id:stop_id],
+                        data_arr[2, var_id, start_id:stop_id],
+                        data_arr[3, var_id, start_id:stop_id],
                     ],
                     rel_pos,
                     prnt=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
-    fig, ax_list = plt.subplots(4, 1, figsize=(18, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 1, figsize=(12, 18), constrained_layout=True)
+    ims = []
+    cbs = []
     for idx in range(4):
-        ax_list[idx].pcolormesh(
+        im = ax_list[idx].pcolormesh(
             time_arr[0::grain],
             window_size,
             diag_data[idx].T,
             shading="gouraud",
             cmap="hot_desaturated",
+            vmin=0,
+            vmax=1,
         )
+        ims.append(im)
+        cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=300)
     plt.close(fig)
