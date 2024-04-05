@@ -1769,17 +1769,12 @@ def timing_analysis_arb(
     # # ******************************************************************************#
 
     time_difference = np.array(time_difference)
-    if prnt:
-        print("Time differences: ", time_difference)
 
     matrix_positions = np.zeros((3, 3))
 
     for idx in range(len(sc_times) - 1):
         matrix_positions[idx] = sc_rel_pos[idx]
 
-    if prnt:
-        print("Timing analysis")
-        print(matrix_positions)
     # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
     # of equations for the wave vector
     # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
@@ -1794,22 +1789,13 @@ def timing_analysis_arb(
 
     wave_velocity_sc_frame = 1.0 / norm_result
 
-    if prnt:
-        print(result)
-
     wave_vector = np.zeros((3, 1))
     wave_vector[0 : len(sc_rel_pos)] = result / norm_result
-
-    if prnt:
-        print("Wave phase velocity ", wave_velocity_sc_frame)
-        print("Wave vector ", wave_vector)
 
     results = {}
     results["wave_vector"] = wave_vector
     results["wave_velocity_sc_frame"] = wave_velocity_sc_frame
     results["cross_corr_values"] = cross_corr_values
-    if prnt:
-        print("Correlation coefficients: ", cross_corr_values)
 
     predicted_time_lags = (
         np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
@@ -1817,5 +1803,12 @@ def timing_analysis_arb(
     )
     if prnt:
         print("Predicted time lags", predicted_time_lags)
+        print("Time differences: ", time_difference)
+        print("Correlation coefficients: ", cross_corr_values)
+        print("Wave phase velocity ", wave_velocity_sc_frame)
+        print("Wave vector ", wave_vector)
+        print(result)
+        print("Timing analysis")
+        print(matrix_positions)
 
     return results
