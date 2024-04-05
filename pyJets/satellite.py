@@ -489,7 +489,7 @@ def diag_mms(t0, t1, dt=0.1):
         )
     for idx in range(3):
         ax_list[idx].grid()
-        ax_list.legend()
+        ax_list[idx].legend()
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
     plt.close(fig)
