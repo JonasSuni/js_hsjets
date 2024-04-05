@@ -378,7 +378,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     print("\n")
 
 
-def plot_mms(t0, t1, mva=False, dt=0.1):
+def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -636,6 +636,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
         "rho:",
         "Pdyn:",
     ]
+    grads = [True, True, True, True, True, True, True, True, True, False]
     labs_v = ["Vx:", "Vy:", "Vz:"]
     if mva:
         labs = [
@@ -669,6 +670,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1):
             rel_pos,
             t0,
             t1,
+            peakonly=peakonly,
+            gradient=grads[idx],
         )
         timing_res.append(res)
         print("\n")
@@ -1507,7 +1510,9 @@ def timing_analysis_ace_dscovr_wind(
     return results
 
 
-def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
+def timing_analysis_arb(
+    sc_times, sc_data, sc_rel_pos, t0, t1, peakonly=False, gradient=False
+):
     # Adapted from code created by Lucile Turc
 
     # Inputs:
@@ -1553,24 +1558,37 @@ def timing_analysis_arb(sc_times, sc_data, sc_rel_pos, t0, t1):
 
     dt = sc_times_new[0][1] - sc_times_new[0][0]
 
+    if gradient:
+        for idx in range(len(sc_data)):
+            sc_data[idx] = np.gradient(sc_data[idx])
+
     rel_sc_norm = (sc_data[0] - np.mean(sc_data[0])) / (
         np.std(sc_data[0], ddof=1) * sc_data[0].size
     )
 
-    for sc in sc_data[1:]:
-        sc_norm = (sc - np.mean(sc)) / np.std(sc, ddof=1)
-        c = np.correlate(sc_norm, rel_sc_norm, "full")
-        offset = np.argmax(c)
-        alpha = c[offset - 1]
-        beta = c[offset]
-        gamma = c[offset + 1]
-        offset2 = (
-            offset - len(c) / 2.0 + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
-        )
-        print("offset", offset, offset2)
-        cross_corr_values.append(np.max(c))
-        # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
-        time_difference.append(offset2 * dt)
+    if peakonly:
+        reftime = sc_times_new[0][np.argmax(np.abs(sc_data[0]))]
+        for idx in range(1, len(sc_data)):
+            time_difference.append(
+                sc_times_new[idx][np.argmax(np.abs(sc_data[idx]))] - reftime
+            )
+    else:
+        for sc in sc_data[1:]:
+            sc_norm = (sc - np.mean(sc)) / np.std(sc, ddof=1)
+            c = np.correlate(sc_norm, rel_sc_norm, "full")
+            offset = np.argmax(c)
+            alpha = c[offset - 1]
+            beta = c[offset]
+            gamma = c[offset + 1]
+            offset2 = (
+                offset
+                - len(c) / 2.0
+                + 0.5 * (alpha - gamma) / (alpha - 2 * beta + gamma)
+            )
+            print("offset", offset, offset2)
+            cross_corr_values.append(np.max(c))
+            # Offset being given as an index in the time array, we multiply it by the time step dt to obtain the actual time lag in s.
+            time_difference.append(offset2 * dt)
 
     # # ******************************************************************************#
 
