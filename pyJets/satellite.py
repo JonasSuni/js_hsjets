@@ -507,6 +507,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
 
     diag_data = np.empty((4, window_center.size, window_halfwidth.size), dtype=float)
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
+    idcs = [2, 5, 8, 9]
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
@@ -514,7 +515,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
             stop_id = min(
                 window_center[idx2] + window_halfwidth[idx3] + 1, time_arr.size
             )
-            for idx1 in [2, 5, 8, 9]:
+            for idx1 in range(len(idcs)):
                 print(
                     "Window center: {}, window halfwidth: {}, start id: {}, stop id: {}".format(
                         window_center[idx2], window_halfwidth[idx3], start_id, stop_id
@@ -528,17 +529,17 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                         time_arr[start_id:stop_id],
                     ],
                     [
-                        data_arr[0, idx, start_id:stop_id],
-                        data_arr[1, idx, start_id:stop_id],
-                        data_arr[2, idx, start_id:stop_id],
-                        data_arr[3, idx, start_id:stop_id],
+                        data_arr[0, idcs[idx1], start_id:stop_id],
+                        data_arr[1, idcs[idx1], start_id:stop_id],
+                        data_arr[2, idcs[idx1], start_id:stop_id],
+                        data_arr[3, idcs[idx1], start_id:stop_id],
                     ],
                     rel_pos,
                     prnt=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
-    fig, ax_list = plt.subplots(10, 1, figsize=(18, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 1, figsize=(18, 12), constrained_layout=True)
     for idx in range(4):
         ax_list[idx].pcolormesh(
             time_arr[0::grain],
