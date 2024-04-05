@@ -378,6 +378,111 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     print("\n")
 
 
+def diag_mms(t0, t1, dt=0.1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    sc_B = [
+        load_msh_sc_data(
+            pyspedas.mms.fgm,
+            "mms",
+            "{}".format(probe),
+            "B",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+    sc_rho = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "rho",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+    sc_v = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "v",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(1, 5)
+    ]
+    sc_pos = [
+        load_msh_sc_data(
+            pyspedas.mms.mec,
+            "mms",
+            "{}".format(probe),
+            "pos",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="srvy",
+        )
+        for probe in range(1, 5)
+    ]
+
+    rel_pos = [
+        np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 4)
+    ]
+
+    time_arr = sc_B[0][0]
+
+    data_arr = np.empty((4, 10, time_arr.size), dtype=float)
+    for idx in range(4):
+        data_arr[idx, :, :] = [
+            sc_B[idx][1][0],
+            sc_B[idx][1][1],
+            sc_B[idx][1][2],
+            np.linalg.norm(sc_B[idx][1][:3], axis=0),
+            sc_v[idx][1][0],
+            sc_v[idx][1][1],
+            sc_v[idx][1][2],
+            np.linalg.norm(sc_v[idx][1][:3], axis=0),
+            sc_rho[idx][1],
+            m_p
+            * sc_rho[idx][1]
+            * 1e6
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * 1e6
+            / 1e-9,
+        ]
+
+    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
+    for idx in range(1, 4):
+        ax_list[0].plot(
+            time_arr, sc_pos[idx][1][0] - sc_pos[0][1][0], color=CB_color_cycle[idx]
+        )
+        ax_list[1].plot(
+            time_arr, sc_pos[idx][1][1] - sc_pos[0][1][1], color=CB_color_cycle[idx]
+        )
+        ax_list[2].plot(
+            time_arr, sc_pos[idx][1][2] - sc_pos[0][1][2], color=CB_color_cycle[idx]
+        )
+
+    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
+    plt.close(fig)
+
+
 def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
