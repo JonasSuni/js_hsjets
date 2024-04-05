@@ -1676,7 +1676,7 @@ def timing_analysis_ace_dscovr_wind(
 
 
 def timing_analysis_arb(
-    sc_times, sc_data, sc_rel_pos, t0, t1, peakonly=False, gradient=False
+    sc_times, sc_data, sc_rel_pos, t0=None, t1=None, peakonly=False, gradient=False
 ):
     # Adapted from code created by Lucile Turc
 
