@@ -494,6 +494,47 @@ def diag_mms(t0, t1, dt=0.1):
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
     plt.close(fig)
 
+    window_center = np.arange(time_arr.size)
+    window_halfwidth = np.arange(int(5.0 / dt), int(window_center.size / 2))
+    window_size = window_halfwidth * 2 * dt
+
+    diag_data = np.empty((10, window_center.size, window_halfwidth.size), dtype=float)
+    labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
+
+    for idx2 in range(window_center.size):
+        for idx3 in range(window_halfwidth.size):
+            start_id = window_center[idx2] - window_halfwidth[idx3]
+            stop_id = window_center[idx2] + window_halfwidth[idx3] + 1
+            for idx1 in range(len(labs)):
+                res = timing_analysis_arb(
+                    [
+                        time_arr[start_id:stop_id],
+                        time_arr[start_id:stop_id],
+                        time_arr[start_id:stop_id],
+                        time_arr[start_id:stop_id],
+                    ],
+                    [
+                        data_arr[0, idx, start_id:stop_id],
+                        data_arr[1, idx, start_id:stop_id],
+                        data_arr[2, idx, start_id:stop_id],
+                        data_arr[3, idx, start_id:stop_id],
+                    ],
+                )
+                diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
+
+    fig, ax_list = plt.subplots(10, 1, figsize=(18, 12), constrained_layout=True)
+    for idx in range(10):
+        ax_list[idx].pcolormesh(
+            time_arr,
+            window_size,
+            diag_data[idx],
+            shading="gouraud",
+            cmap="hot_desaturated",
+        )
+
+    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=300)
+    plt.close(fig)
+
 
 def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
 
@@ -1659,16 +1700,16 @@ def timing_analysis_arb(
 
     # ref_sc = ind_sc[0]
 
-    t0plot = (
-        datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
-        .replace(tzinfo=timezone.utc)
-        .timestamp()
-    )
-    t1plot = (
-        datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
-        .replace(tzinfo=timezone.utc)
-        .timestamp()
-    )
+    # t0plot = (
+    #     datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    #     .replace(tzinfo=timezone.utc)
+    #     .timestamp()
+    # )
+    # t1plot = (
+    #     datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+    #     .replace(tzinfo=timezone.utc)
+    #     .timestamp()
+    # )
 
     sc_times_new = []
 
