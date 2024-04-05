@@ -522,6 +522,7 @@ def diag_mms(t0, t1, dt=0.1):
                         data_arr[3, idx, start_id:stop_id],
                     ],
                     rel_pos,
+                    prnt=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
