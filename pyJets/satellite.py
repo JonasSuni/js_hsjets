@@ -494,8 +494,8 @@ def diag_mms(t0, t1, dt=0.1):
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
     plt.close(fig)
 
-    window_center = np.arange(time_arr.size)
-    window_halfwidth = np.arange(int(5.0 / dt), int(window_center.size / 2))
+    window_center = np.arange(time_arr.size, dtype=int)
+    window_halfwidth = np.arange(int(5.0 / dt), int(window_center.size / 2), dtype=int)
     window_size = window_halfwidth * 2 * dt
 
     diag_data = np.empty((10, window_center.size, window_halfwidth.size), dtype=float)
@@ -503,8 +503,8 @@ def diag_mms(t0, t1, dt=0.1):
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
-            start_id = np.max(window_center[idx2] - window_halfwidth[idx3], 0)
-            stop_id = np.min(
+            start_id = max(window_center[idx2] - window_halfwidth[idx3], 0)
+            stop_id = min(
                 window_center[idx2] + window_halfwidth[idx3] + 1, window_center.size
             )
             for idx1 in range(len(labs)):
