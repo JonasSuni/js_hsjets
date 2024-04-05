@@ -499,8 +499,13 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
         int(5.0 / dt), int(time_arr.size / 2), grain, dtype=int
     )
     window_size = (window_halfwidth * 2 * dt).astype(int)
+    print(
+        "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
+            window_center.size, window_halfwidth.size, time_arr[0::grain].size
+        )
+    )
 
-    diag_data = np.empty((10, window_center.size, window_halfwidth.size), dtype=float)
+    diag_data = np.empty((4, window_center.size, window_halfwidth.size), dtype=float)
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
 
     for idx2 in range(window_center.size):
@@ -509,7 +514,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
             stop_id = min(
                 window_center[idx2] + window_halfwidth[idx3] + 1, time_arr.size
             )
-            for idx1 in range(len(labs)):
+            for idx1 in [2, 5, 8, 9]:
                 print(
                     "Window center: {}, window halfwidth: {}, start id: {}, stop id: {}".format(
                         window_center[idx2], window_halfwidth[idx3], start_id, stop_id
@@ -534,7 +539,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
     fig, ax_list = plt.subplots(10, 1, figsize=(18, 12), constrained_layout=True)
-    for idx in range(10):
+    for idx in range(4):
         ax_list[idx].pcolormesh(
             time_arr[0::grain],
             window_size,
@@ -1730,7 +1735,7 @@ def timing_analysis_arb(
     # )
 
     sc_times_new = []
-    print(sc_times[0].size)
+    # print(sc_times[0].size)
 
     for idx in range(len(sc_times)):
         sc_times_new.append(
