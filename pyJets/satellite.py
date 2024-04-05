@@ -543,7 +543,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
         ax_list[idx].pcolormesh(
             time_arr[0::grain],
             window_size,
-            diag_data[idx],
+            diag_data[idx].T,
             shading="gouraud",
             cmap="hot_desaturated",
         )
