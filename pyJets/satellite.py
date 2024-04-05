@@ -619,7 +619,10 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
         except OSError:
             pass
 
-    fig.savefig(outdir + "mms_all_t0{}_t1{}_mva{}_peak{}.png".format(t0plot, t1plot, mva,peakonly))
+    fig.savefig(
+        outdir
+        + "mms_all_t0{}_t1{}_mva{}_peak{}.png".format(t0plot, t1plot, mva, peakonly)
+    )
     plt.close(fig)
 
     print(rel_pos)
@@ -731,7 +734,10 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     fig.tight_layout()
 
     fig.savefig(
-        outdir + "mms_all_t0{}_t1{}_mva{}_peak{}_table.png".format(t0plot, t1plot, mva,peakonly)
+        outdir
+        + "mms_all_t0{}_t1{}_mva{}_peak{}_table.png".format(
+            t0plot, t1plot, mva, peakonly
+        )
     )
     plt.close(fig)
 
@@ -1572,6 +1578,7 @@ def timing_analysis_arb(
             time_difference.append(
                 sc_times_new[idx][np.argmax(np.abs(sc_data[idx]))] - reftime
             )
+            cross_corr_values.append(1)
     else:
         for sc in sc_data[1:]:
             sc_norm = (sc - np.mean(sc)) / np.std(sc, ddof=1)
