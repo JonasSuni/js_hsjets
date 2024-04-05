@@ -498,7 +498,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
     window_halfwidth = np.arange(
         int(5.0 / dt), int(window_center.size / 2), grain, dtype=int
     )
-    window_size = window_halfwidth * 2 * dt
+    window_size = (window_halfwidth * 2 * dt).astype(int)
 
     diag_data = np.empty((10, window_center.size, window_halfwidth.size), dtype=float)
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
