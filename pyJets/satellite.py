@@ -378,7 +378,7 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
     print("\n")
 
 
-def diag_mms(t0, t1, dt=0.1):
+def diag_mms(t0, t1, dt=0.1, grain=1):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -494,8 +494,10 @@ def diag_mms(t0, t1, dt=0.1):
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
     plt.close(fig)
 
-    window_center = np.arange(time_arr.size, dtype=int)
-    window_halfwidth = np.arange(int(5.0 / dt), int(window_center.size / 2), dtype=int)
+    window_center = np.arange(0, time_arr.size, grain, dtype=int)
+    window_halfwidth = np.arange(
+        int(5.0 / dt), int(window_center.size / 2), grain, dtype=int
+    )
     window_size = window_halfwidth * 2 * dt
 
     diag_data = np.empty((10, window_center.size, window_halfwidth.size), dtype=float)
@@ -529,7 +531,7 @@ def diag_mms(t0, t1, dt=0.1):
     fig, ax_list = plt.subplots(10, 1, figsize=(18, 12), constrained_layout=True)
     for idx in range(10):
         ax_list[idx].pcolormesh(
-            time_arr,
+            time_arr[0::grain],
             window_size,
             diag_data[idx],
             shading="gouraud",
