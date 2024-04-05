@@ -510,6 +510,11 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                 window_center[idx2] + window_halfwidth[idx3] + 1, window_center.size
             )
             for idx1 in range(len(labs)):
+                print(
+                    "Window center: {}, window size: {}".format(
+                        window_center[idx2], window_size[idx3]
+                    )
+                )
                 res = timing_analysis_arb(
                     [
                         time_arr[start_id:stop_id],
