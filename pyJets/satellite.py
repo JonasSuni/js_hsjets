@@ -470,14 +470,26 @@ def diag_mms(t0, t1, dt=0.1):
     fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
     for idx in range(1, 4):
         ax_list[0].plot(
-            time_arr, sc_pos[idx][1][0] - sc_pos[0][1][0], color=CB_color_cycle[idx]
+            time_arr,
+            sc_pos[idx][1][0] - sc_pos[0][1][0],
+            color=CB_color_cycle[idx],
+            label="MMS{}-MMS1".format(idx + 1),
         )
         ax_list[1].plot(
-            time_arr, sc_pos[idx][1][1] - sc_pos[0][1][1], color=CB_color_cycle[idx]
+            time_arr,
+            sc_pos[idx][1][1] - sc_pos[0][1][1],
+            color=CB_color_cycle[idx],
+            label="MMS{}-MMS1".format(idx + 1),
         )
         ax_list[2].plot(
-            time_arr, sc_pos[idx][1][2] - sc_pos[0][1][2], color=CB_color_cycle[idx]
+            time_arr,
+            sc_pos[idx][1][2] - sc_pos[0][1][2],
+            color=CB_color_cycle[idx],
+            label="MMS{}-MMS1".format(idx + 1),
         )
+    for idx in range(3):
+        ax_list[idx].grid()
+        ax_list.legend()
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
     plt.close(fig)
