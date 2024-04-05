@@ -619,7 +619,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
         except OSError:
             pass
 
-    fig.savefig(outdir + "mms_all_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva))
+    fig.savefig(outdir + "mms_all_t0{}_t1{}_mva{}_peak{}.png".format(t0plot, t1plot, mva,peakonly))
     plt.close(fig)
 
     print(rel_pos)
@@ -731,7 +731,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     fig.tight_layout()
 
     fig.savefig(
-        outdir + "mms_all_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
+        outdir + "mms_all_t0{}_t1{}_mva{}_peak{}_table.png".format(t0plot, t1plot, mva,peakonly)
     )
     plt.close(fig)
 
