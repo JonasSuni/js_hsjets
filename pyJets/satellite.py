@@ -503,8 +503,10 @@ def diag_mms(t0, t1, dt=0.1):
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
-            start_id = window_center[idx2] - window_halfwidth[idx3]
-            stop_id = window_center[idx2] + window_halfwidth[idx3] + 1
+            start_id = np.max(window_center[idx2] - window_halfwidth[idx3], 0)
+            stop_id = np.min(
+                window_center[idx2] + window_halfwidth[idx3] + 1, window_center.size
+            )
             for idx1 in range(len(labs)):
                 res = timing_analysis_arb(
                     [
