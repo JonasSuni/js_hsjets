@@ -1725,6 +1725,7 @@ def timing_analysis_arb(
     # )
 
     sc_times_new = []
+    print(sc_times[0].size)
 
     for idx in range(len(sc_times)):
         sc_times_new.append(
