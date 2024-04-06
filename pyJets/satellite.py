@@ -539,7 +539,7 @@ def diag_themis(t0, t1, dt=1, grain=1):
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
-    fig, ax_list = plt.subplots(4, 1, figsize=(12, 18), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
     ims = []
     cbs = []
     for idx in range(4):
