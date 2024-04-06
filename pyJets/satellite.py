@@ -1633,7 +1633,7 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
                     sc_rel_pos,
                     t0,
                     t1,
-                    prnr=False,
+                    prnt=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
