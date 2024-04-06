@@ -1476,6 +1476,185 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     plt.close(fig)
 
 
+def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    pos_data = np.loadtxt(
+        wrkdir_DNR
+        + "satellites/c4_mms1_thd_pos_2022-03-27_21:00:00_21:30:00_numpy.txt",
+        dtype="str",
+    ).T
+    sc_name = pos_data[3]
+    sc_x = pos_data[4].astype(float) * r_e * 1e-3
+    sc_y = pos_data[5].astype(float) * r_e * 1e-3
+    sc_z = pos_data[6].astype(float) * r_e * 1e-3
+
+    sc_coords = np.array([sc_x, sc_y, sc_z]).T
+
+    thd_pos = sc_coords[sc_name == "themisd", :][:-1]
+    mms1_pos = sc_coords[sc_name == "mms1", :]
+    c4_pos = sc_coords[sc_name == "cluster4", :]
+
+    sc_poses = [thd_pos, mms1_pos, c4_pos]
+
+    sc_rel_pos = [
+        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
+    ]
+    print(sc_rel_pos)
+
+    thd_time, thd_B = load_msh_sc_data(
+        pyspedas.themis.fgm, "themis", "d", "B", t0, t1, intpol=True, dt=dt
+    )
+    mms1_time, mms1_B = load_msh_sc_data(
+        pyspedas.mms.fgm, "mms", "1", "B", t0, t1, intpol=True, dt=dt, datarate="srvy"
+    )
+    c4_time, c4_B = load_msh_sc_data(
+        pyspedas.cluster.fgm, "cluster", "4", "B", t0, t1, intpol=True, dt=dt
+    )
+
+    thd_time2, thd_rho = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "d", "rho", t0, t1, intpol=True, dt=dt
+    )
+    mms1_time2, mms1_rho = load_msh_sc_data(
+        pyspedas.mms.fpi, "mms", "1", "rho", t0, t1, intpol=True, dt=dt, datarate="fast"
+    )
+    c4_time2, c4_rho = load_msh_sc_data(
+        pyspedas.cluster.cis, "cluster", "4", "rho", t0, t1, intpol=True, dt=dt
+    )
+
+    dummy, thd_v = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "d", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, mms1_v = load_msh_sc_data(
+        pyspedas.mms.fpi, "mms", "1", "v", t0, t1, intpol=True, dt=dt, datarate="fast"
+    )
+    dummy, c4_v = load_msh_sc_data(
+        pyspedas.cluster.cis, "cluster", "4", "v", t0, t1, intpol=True, dt=dt
+    )
+
+    thd_vmag = np.linalg.norm(thd_v, axis=0)
+    mms1_vmag = np.linalg.norm(mms1_v, axis=0)
+    c4_vmag = np.linalg.norm(c4_v, axis=0)
+
+    thd_Bmag = np.linalg.norm(thd_B[0:3], axis=0)
+    mms1_Bmag = np.linalg.norm(mms1_B[0:3], axis=0)
+    c4_Bmag = np.linalg.norm(c4_B[0:3], axis=0)
+
+    thd_pdyn = m_p * thd_rho * 1e6 * thd_vmag * thd_vmag * 1e6 / 1e-9
+    mms1_pdyn = m_p * mms1_rho * 1e6 * mms1_vmag * mms1_vmag * 1e6 / 1e-9
+    c4_pdyn = m_p * c4_rho * 1e6 * c4_vmag * c4_vmag * 1e6 / 1e-9
+
+    time_arr = thd_time
+
+    data_arr = np.empty((3, 10, time_arr.size), dtype=float)
+
+    data_arr[0, :, :] = [
+        thd_B[0],
+        thd_B[1],
+        thd_B[2],
+        thd_Bmag,
+        thd_v[0],
+        thd_v[1],
+        thd_v[2],
+        thd_vmag,
+        thd_rho,
+        thd_pdyn,
+    ]
+    data_arr[1, :, :] = [
+        mms1_B[0],
+        mms1_B[1],
+        mms1_B[2],
+        mms1_Bmag,
+        mms1_v[0],
+        mms1_v[1],
+        mms1_v[2],
+        mms1_vmag,
+        mms1_rho,
+        mms1_pdyn,
+    ]
+    data_arr[2, :, :] = [
+        c4_B[0],
+        c4_B[1],
+        c4_B[2],
+        c4_Bmag,
+        c4_v[0],
+        c4_v[1],
+        c4_v[2],
+        c4_vmag,
+        c4_rho,
+        c4_pdyn,
+    ]
+    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9, :])] for idx in range(3)]
+
+    sc_labs = ["THD", "MMS1", "C4"]
+
+    window_center = np.arange(0, time_arr.size, grain, dtype=int)
+    window_halfwidth = np.arange(
+        int(5.0 / dt), int(time_arr.size / 2), grain, dtype=int
+    )
+    window_size = (window_halfwidth * 2 * dt).astype(int)
+    print(
+        "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
+            window_center.size, window_halfwidth.size, time_arr[0::grain].size
+        )
+    )
+
+    diag_data = np.empty((4, window_center.size, window_halfwidth.size), dtype=float)
+    labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
+    idcs = [2, 5, 8, 9]
+
+    for idx2 in range(window_center.size):
+        for idx3 in range(window_halfwidth.size):
+            start_id = max(window_center[idx2] - window_halfwidth[idx3], 0)
+            stop_id = min(
+                window_center[idx2] + window_halfwidth[idx3] + 1, time_arr.size
+            )
+            for idx1 in range(len(idcs)):
+                print(
+                    "Window center: {}, window halfwidth: {}, start id: {}, stop id: {}".format(
+                        window_center[idx2], window_halfwidth[idx3], start_id, stop_id
+                    )
+                )
+                var_id = idcs[idx1]
+                res = timing_analysis_arb(
+                    [time_arr, time_arr, time_arr],
+                    [
+                        data_arr[sc_order[0], var_id, :],
+                        data_arr[sc_order[1], var_id, :],
+                        data_arr[sc_order[2], var_id, :],
+                    ],
+                    sc_rel_pos,
+                    t0,
+                    t1,
+                )
+                diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
+
+    fig, ax_list = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
+    ims = []
+    cbs = []
+    for idx in range(4):
+        im = ax_list[idx].pcolormesh(
+            time_arr[0::grain],
+            window_size,
+            diag_data[idx].T,
+            shading="gouraud",
+            cmap="hot_desaturated",
+            vmin=0,
+            vmax=1,
+        )
+        ims.append(im)
+        cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
+        ax_list[idx].set_title(labs[idcs[idx]])
+        ax_list[idx].set_ylabel("Window width [s]")
+    ax_list[-1].set_xlabel("Window center")
+
+    fig.savefig(wrkdir_DNR + "Figs/satellite/thd_mms1_c4_diag_corr.png", dpi=150)
+    plt.close(fig)
+
+
 def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
