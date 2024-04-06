@@ -1599,10 +1599,11 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
             window_center.size, window_halfwidth.size, time_arr[0::grain].size
         )
     )
-    idcs = [2, 4, 5, 8, 9]
-    diag_data = np.empty((len(idcs), window_center.size, window_halfwidth.size), dtype=float)
+    idcs = [0, 1, 2, 4, 9]
+    diag_data = np.empty(
+        (len(idcs), window_center.size, window_halfwidth.size), dtype=float
+    )
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
-    
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
