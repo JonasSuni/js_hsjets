@@ -1592,9 +1592,7 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
     sc_labs = ["THD", "MMS1", "C4"]
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
-    window_halfwidth = np.arange(
-        int(5.0 / dt), int(time_arr.size / 2), grain, dtype=int
-    )
+    window_halfwidth = np.arange(int(10 / dt), int(time_arr.size / 2), grain, dtype=int)
     window_size = (window_halfwidth * 2 * dt).astype(int)
     print(
         "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
