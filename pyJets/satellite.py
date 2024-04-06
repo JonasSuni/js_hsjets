@@ -554,6 +554,9 @@ def diag_themis(t0, t1, dt=1, grain=1):
         )
         ims.append(im)
         cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
+        ax_list[idx].set_title(labs[idcs[idx]])
+        ax_list[idx].set_ylabel("Window width [s]")
+    ax_list[-1].set_xlabel("Window center")
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_corr.png", dpi=300)
     plt.close(fig)
