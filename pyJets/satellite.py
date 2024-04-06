@@ -494,7 +494,7 @@ def diag_themis(t0, t1, dt=1, grain=1):
         ax_list[idx].grid()
         ax_list[idx].legend()
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_pos.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_pos.png", dpi=150)
     plt.close(fig)
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
@@ -558,7 +558,7 @@ def diag_themis(t0, t1, dt=1, grain=1):
         ax_list[idx].set_ylabel("Window width [s]")
     ax_list[-1].set_xlabel("Window center")
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_corr.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_corr.png", dpi=150)
     plt.close(fig)
 
 
@@ -1040,7 +1040,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
         ax_list[idx].grid()
         ax_list[idx].legend()
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=150)
     plt.close(fig)
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
@@ -1089,7 +1089,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
-    fig, ax_list = plt.subplots(4, 1, figsize=(12, 18), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
     ims = []
     cbs = []
     for idx in range(4):
@@ -1104,8 +1104,11 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
         )
         ims.append(im)
         cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
+        ax_list[idx].set_title(labs[idcs[idx]])
+        ax_list[idx].set_ylabel("Window width [s]")
+    ax_list[-1].set_xlabel("Window center")
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=150)
     plt.close(fig)
 
 
