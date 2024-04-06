@@ -476,31 +476,29 @@ def diag_themis(t0, t1, dt=1, grain=1):
             time_arr,
             sc_pos[idx][1][0] - sc_pos[0][1][0],
             color=CB_color_cycle[idx],
-            label="TH{}-THA".format(probe_names[idx].upper),
+            label="TH{}-THA".format(probe_names[idx].upper()),
         )
         ax_list[1].plot(
             time_arr,
             sc_pos[idx][1][1] - sc_pos[0][1][1],
             color=CB_color_cycle[idx],
-            label="TH{}-THA".format(probe_names[idx].upper),
+            label="TH{}-THA".format(probe_names[idx].upper()),
         )
         ax_list[2].plot(
             time_arr,
             sc_pos[idx][1][2] - sc_pos[0][1][2],
             color=CB_color_cycle[idx],
-            label="TH{}-THA".format(probe_names[idx].upper),
+            label="TH{}-THA".format(probe_names[idx].upper()),
         )
     for idx in range(3):
         ax_list[idx].grid()
         ax_list[idx].legend()
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_pos.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_pos.png", dpi=300)
     plt.close(fig)
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
-    window_halfwidth = np.arange(
-        int(5.0 / dt), int(time_arr.size / 2), grain, dtype=int
-    )
+    window_halfwidth = np.arange(int(10 / dt), int(time_arr.size / 2), grain, dtype=int)
     window_size = (window_halfwidth * 2 * dt).astype(int)
     print(
         "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
@@ -557,7 +555,7 @@ def diag_themis(t0, t1, dt=1, grain=1):
         ims.append(im)
         cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/themis_diag_corr.png", dpi=300)
     plt.close(fig)
 
 
