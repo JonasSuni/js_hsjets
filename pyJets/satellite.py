@@ -1620,15 +1620,20 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
                 )
                 var_id = idcs[idx1]
                 res = timing_analysis_arb(
-                    [time_arr, time_arr, time_arr],
                     [
-                        data_arr[sc_order[0], var_id, :],
-                        data_arr[sc_order[1], var_id, :],
-                        data_arr[sc_order[2], var_id, :],
+                        time_arr[start_id:stop_id],
+                        time_arr[start_id:stop_id],
+                        time_arr[start_id:stop_id],
+                    ],
+                    [
+                        data_arr[sc_order[0], var_id, start_id:stop_id],
+                        data_arr[sc_order[1], var_id, start_id:stop_id],
+                        data_arr[sc_order[2], var_id, start_id:stop_id],
                     ],
                     sc_rel_pos,
                     t0,
                     t1,
+                    prnr=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
