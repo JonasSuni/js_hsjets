@@ -178,6 +178,7 @@ def load_msh_sc_data(
             "th{}_fgs_gse".format(probe),
             "th{}_peim_density".format(probe),
             "th{}_peim_velocity_gse".format(probe),
+            "th{}_pos_gse".format(probe),
         ],
         [
             "B_xyz_gse__C{}_UP_FGM".format(probe),
@@ -376,6 +377,371 @@ def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
         t1,
     )
     print("\n")
+
+
+def plot_themis(t0, t1, mva=False, dt=1, peakonly=False):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    probe_names = ["a", "d", "e"]
+
+    sc_B = [
+        load_msh_sc_data(
+            pyspedas.themis.fgm,
+            "themis",
+            probe_names[probe],
+            "B",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(3)
+    ]
+    sc_rho = [
+        load_msh_sc_data(
+            pyspedas.themis.mom,
+            "themis",
+            probe_names[probe],
+            "rho",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(3)
+    ]
+    sc_v = [
+        load_msh_sc_data(
+            pyspedas.themis.mom,
+            "themis",
+            probe_names[probe],
+            "v",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+        )
+        for probe in range(3)
+    ]
+    sc_pos = [
+        load_msh_sc_data(
+            pyspedas.themis.state,
+            "themis",
+            probe_names[probe],
+            "pos",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="srvy",
+        )
+        for probe in range(3)
+    ]
+
+    rel_pos = [
+        np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 3)
+    ]
+
+    time_arr = sc_B[0][0]
+
+    data_arr = np.empty((3, 10, time_arr.size), dtype=float)
+    for idx in range(3):
+        data_arr[idx, :, :] = [
+            sc_B[idx][1][0],
+            sc_B[idx][1][1],
+            sc_B[idx][1][2],
+            np.linalg.norm(sc_B[idx][1][:3], axis=0),
+            sc_v[idx][1][0],
+            sc_v[idx][1][1],
+            sc_v[idx][1][2],
+            np.linalg.norm(sc_v[idx][1][:3], axis=0),
+            sc_rho[idx][1],
+            m_p
+            * sc_rho[idx][1]
+            * 1e6
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * np.linalg.norm(sc_v[idx][1][:3], axis=0)
+            * 1e6
+            / 1e-9,
+        ]
+
+    if mva:
+        Bdata = [deepcopy(data_arr[idx, 0:3, :]) for idx in range(3)]
+        vdata = [deepcopy(data_arr[idx, 4:7, :]) for idx in range(3)]
+        eigenvecs = [MVA(Bdata[idx]) for idx in range(3)]
+        for prob in range(3):
+            print(
+                "MMS{} Minimum Variance direction: {}".format(
+                    probe_names[prob], eigenvecs[prob][0]
+                )
+            )
+            for idx in range(3):
+                data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob][idx])
+                data_arr[prob, idx + 4, :] = np.dot(vdata[prob].T, eigenvecs[prob][idx])
+
+    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(3)]
+
+    # rel_pos = [
+    #     sc_pos[idx][1].T[np.argmax(data_arr[idx, 9])]
+    #     - sc_pos[0][1].T[np.argmax(data_arr[0, 9])]
+    #     for idx in range(1, 4)
+    # ]
+
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
+    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
+    ylabels_all = [
+        "Bx [nT]",
+        "By [nT]",
+        "Bz [nT]",
+        "Bt [nT]",
+        "vx [km/s]",
+        "vy [km/s]",
+        "vz [km/s]",
+        "vt [km/s]",
+        "n [1/cm3]",
+        "Pdyn [nPa]",
+    ]
+    if mva:
+        ylabels_all = [
+            "BN [nT]",
+            "BM [nT]",
+            "BL [nT]",
+            "Bt [nT]",
+            "vN [km/s]",
+            "vM [km/s]",
+            "vL [km/s]",
+            "vt [km/s]",
+            "n [1/cm3]",
+            "Pdyn [nPa]",
+        ]
+    sc_labs = ["THA", "THD", "THE"]
+    colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        "k",
+    ]
+    plot_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    line_label = [
+        "x",
+        "y",
+        "z",
+        "mag",
+        "x",
+        "y",
+        "z",
+        "mag",
+        None,
+        None,
+    ]
+    ylims = [
+        (-40, 60),
+        (-400, 500),
+        (5, 35),
+        (0, 10),
+    ]
+    ylims_full = [
+        (-20, 30),
+        (-20, 40),
+        (-40, 50),
+        (0, 60),
+        (-400, 0),
+        (-200, 100),
+        (-100, 300),
+        (0, 500),
+        (5, 35),
+        (0, 10),
+    ]
+
+    fig, ax_list = plt.subplots(
+        10, 3, figsize=(24, 24), sharey="row", constrained_layout=True
+    )
+
+    for idx in range(3):
+        for idx2 in range(len(panel_id)):
+            print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
+            # ax = ax_list[panel_id[idx2], idx]
+            # if not plot_legend[idx2]:
+            #     ax.grid()
+            # ax.plot(
+            #     time_arr[idx, panel_id[idx2]],
+            #     data_arr[idx, idx2],
+            #     color=colors[idx2],
+            #     label=line_label[idx2],
+            #     alpha=0.5,
+            # )
+            # if plot_legend[idx2] and idx == 2:
+            #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ax = ax_list[idx2, idx]
+            ax.grid()
+            ax.plot(
+                time_arr,
+                data_arr[idx, idx2],
+            )
+            ax.label_outer()
+            ax.set_xlim(t0plot, t1plot)
+            ax.axvline(t_pdmax[idx], linestyle="dashed")
+
+    print("Times of Pdynmax: {}".format(t_pdmax))
+
+    for idx in range(3):
+        ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
+    # for idx in range(len(panel_labs)):
+    #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+    #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
+    for idx in range(len(ylabels_all)):
+        ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
+        # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        outdir
+        + "themis_ade_t0{}_t1{}_mva{}_peak{}.png".format(t0plot, t1plot, mva, peakonly)
+    )
+    plt.close(fig)
+
+    print(rel_pos)
+
+    labs = [
+        "Bx:",
+        "By:",
+        "Bz:",
+        "Bt:",
+        "Vx:",
+        "Vy:",
+        "Vz:",
+        "Vt:",
+        "rho:",
+        "Pdyn:",
+    ]
+    grads = [False, False, False, False, False, False, False, False, False, False]
+    labs_v = ["Vx:", "Vy:", "Vz:"]
+    if mva:
+        labs = [
+            "BN:",
+            "BM:",
+            "BL:",
+            "Bt:",
+            "VN:",
+            "VM:",
+            "VL:",
+            "Vt:",
+            "rho:",
+            "Pdyn:",
+        ]
+        labs_v = ["Vmin:", "Vmed:", "Vmax:"]
+
+    print("\n")
+
+    timing_res = []
+
+    for idx in range(10):
+        print(labs[idx])
+        res = timing_analysis_arb(
+            [time_arr, time_arr, time_arr],
+            [
+                data_arr[0][idx],
+                data_arr[1][idx],
+                data_arr[2][idx],
+            ],
+            rel_pos,
+            t0,
+            t1,
+            peakonly=peakonly,
+            gradient=grads[idx],
+        )
+        timing_res.append(res)
+        print("\n")
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    fig.patch.set_visible(False)
+    ax.axis("off")
+    ax.axis("tight")
+
+    cellText = []
+    colLabels = ["n", "v", "c"]
+    rowLabels = labs
+    for idx in range(len(labs)):
+        res = timing_res[idx]
+        cellText.append(
+            [
+                str(
+                    (
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
+                    )
+                ),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
+            ]
+        )
+    if mva:
+        rowLabels += sc_labs
+        for idx in range(len(sc_labs)):
+            cellText.append(
+                [
+                    str(
+                        (
+                            round(eigenvecs[idx][0][0], ndigits=2),
+                            round(eigenvecs[idx][0][1], ndigits=2),
+                            round(eigenvecs[idx][0][2], ndigits=2),
+                        )
+                    ),
+                    "",
+                    "",
+                ]
+            )
+
+    # for idx in range(len(cellText)):
+    #     for idx2 in range(len(cellText[0])):
+    #         cellText[idx][idx2] = cellText[idx][idx2][:5]
+
+    ax.table(
+        cellText=cellText,
+        rowLabels=rowLabels,
+        colLabels=colLabels,
+        loc="center",
+        cellLoc="center",
+    )
+
+    fig.tight_layout()
+
+    fig.savefig(
+        outdir
+        + "themis_ade_t0{}_t1{}_mva{}_peak{}_table.png".format(
+            t0plot, t1plot, mva, peakonly
+        )
+    )
+    plt.close(fig)
 
 
 def diag_mms(t0, t1, dt=0.1, grain=1):
@@ -665,11 +1031,11 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
 
     t_pdmax = [time_arr[np.argmax(data_arr[idx, 9])] for idx in range(4)]
 
-    rel_pos = [
-        sc_pos[idx][1].T[np.argmax(data_arr[idx, 9])]
-        - sc_pos[0][1].T[np.argmax(data_arr[0, 9])]
-        for idx in range(1, 4)
-    ]
+    # rel_pos = [
+    #     sc_pos[idx][1].T[np.argmax(data_arr[idx, 9])]
+    #     - sc_pos[0][1].T[np.argmax(data_arr[0, 9])]
+    #     for idx in range(1, 4)
+    # ]
 
     panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
