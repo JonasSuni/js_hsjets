@@ -1602,7 +1602,7 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
 
     diag_data = np.empty((4, window_center.size, window_halfwidth.size), dtype=float)
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
-    idcs = [2, 5, 8, 9]
+    idcs = [2, 4, 5, 8, 9]
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
@@ -1635,10 +1635,12 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
 
-    fig, ax_list = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(
+        len(idcs), 1, figsize=(8, 3 * len(idcs)), constrained_layout=True
+    )
     ims = []
     cbs = []
-    for idx in range(4):
+    for idx in range(len(idcs)):
         im = ax_list[idx].pcolormesh(
             time_arr[0::grain],
             window_size,
