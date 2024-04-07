@@ -104,7 +104,7 @@ CB_color_cycle = [
 ]
 
 
-def MVA(data):
+def MVA(data, eigvals=False):
 
     M = np.zeros((3, 3), dtype=float)
 
@@ -126,7 +126,10 @@ def MVA(data):
     print("Eigenvectors: ", eigenvec[np.argsort(eigenval)])
 
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
-    return eigenvec[np.argsort(eigenval), :]
+    if eigvals:
+        return np.sort(eigenval)
+    else:
+        return eigenvec[np.argsort(eigenval), :]
 
 
 def interpolate_nans(data):
@@ -1472,6 +1475,70 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
         + "mms_all_t0{}_t1{}_mva{}_peak{}_table.png".format(
             t0plot, t1plot, mva, peakonly
         )
+    )
+    plt.close(fig)
+
+
+def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1):
+
+    sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
+    Bobj_list = [
+        pyspedas.ace.mfi,
+        pyspedas.dscovr.mag,
+        pyspedas.wind.mfi,
+        pyspedas.themis.fgm,
+        pyspedas.mms.fgm,
+        pyspedas.cluster.fgm,
+    ]
+
+    Bobj = Bobj_list[sc_list.index(sc)]
+
+    dtp = "h0"
+    if sc in ["ace", "dscovr", "wind"]:
+        dtp = ["h3", "h0", "h2"][["ace", "dscovr", "wind"].index(sc)]
+
+    time_arr, B = load_msh_sc_data(
+        Bobj, sc, probe, "B", t0, t1, intpol=True, dt=dt, datarate="srvy", datatype=dtp
+    )
+
+    window_center = np.arange(0, time_arr.size, grain, dtype=int)
+    window_halfwidth = np.arange(int(10 / dt), int(time_arr.size / 2), grain, dtype=int)
+    window_size = (window_halfwidth * 2 * dt).astype(int)
+    print(
+        "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
+            window_center.size, window_halfwidth.size, time_arr[0::grain].size
+        )
+    )
+    diag_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
+
+    for idx2 in range(window_center.size):
+        for idx3 in range(window_halfwidth.size):
+            start_id = max(window_center[idx2] - window_halfwidth[idx3], 0)
+            stop_id = min(
+                window_center[idx2] + window_halfwidth[idx3] + 1, time_arr.size
+            )
+            print(
+                "Window center: {}, window halfwidth: {}, start id: {}, stop id: {}".format(
+                    window_center[idx2], window_halfwidth[idx3], start_id, stop_id
+                )
+            )
+            eigvals = MVA(B[start_id:stop_id], eigvals=True)
+            diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
+
+    fig, ax = plt.subplots(1, 1, figsize=(8, 3), constrained_layout=True)
+    im = ax.pcolormesh(
+        time_arr[0::grain],
+        window_size,
+        diag_data.T,
+        shading="gouraud",
+        cmap="hot_desaturated",
+    )
+    plt.colorbar(im, ax=ax)
+    ax.set_ylabel("Window width [s]")
+    ax.set_xlabel("Window center")
+
+    fig.savefig(
+        wrkdir_DNR + "Figs/satellite/{}{}_diag_mva.png".format(sc, probe), dpi=150
     )
     plt.close(fig)
 
