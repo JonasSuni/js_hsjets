@@ -1531,6 +1531,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1):
         diag_data.T,
         shading="gouraud",
         cmap="hot_desaturated",
+        antialiased=False,
     )
     plt.colorbar(im, ax=ax)
     ax.set_ylabel("Window width [s]")
