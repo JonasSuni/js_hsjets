@@ -1510,7 +1510,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     )
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
-    window_halfwidth = np.arange(int(5 / dt), int(time_arr.size / 2), grain, dtype=int)
+    window_halfwidth = np.arange(10, int(time_arr.size / 2), grain, dtype=int)
     window_size = (window_halfwidth * 2 * dt).astype(int)
     print(
         "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
