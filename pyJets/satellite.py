@@ -128,7 +128,7 @@ def MVA(data, eigvals=False, prnt=True):
 
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
     if eigvals:
-        return np.sort(eigenval)
+        return (np.sort(eigenval), eigenvec[np.argsort(eigenval), :])
     else:
         return eigenvec[np.argsort(eigenval), :]
 
@@ -1530,7 +1530,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
                     window_center[idx2], window_halfwidth[idx3], start_id, stop_id
                 )
             )
-            eigvals = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
+            eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
             diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 3), constrained_layout=True)
