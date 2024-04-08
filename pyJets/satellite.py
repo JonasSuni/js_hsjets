@@ -1545,6 +1545,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         shading="gouraud",
         cmap="hot_desaturated",
     )
+    mva_cutoff = 0.9 * np.max(diag_data)
     plt.colorbar(im, ax=ax[0])
     ax[0].set_ylabel("Window width [s]")
     ax[0].set_title("Eigenvalue difference")
@@ -1552,41 +1553,50 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     im = ax[1].pcolormesh(
         time_arr[0::grain],
         window_size,
-        np.gradient(diag_vec_data[:, :, 0]).T,
+        diag_vec_data[:, :, 0].T,
         shading="gouraud",
         cmap="vik",
-        # vmin=-1,
-        # vmax=1,
+        vmin=-1,
+        vmax=1,
+    )
+    ax[1].contour(
+        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
     )
     plt.colorbar(im, ax=ax[1])
     ax[1].set_ylabel("Window width [s]")
-    ax[1].set_title("$\\nabla n_x$")
+    ax[1].set_title("nx")
 
     im = ax[2].pcolormesh(
         time_arr[0::grain],
         window_size,
-        np.gradient(diag_vec_data[:, :, 1]).T,
+        diag_vec_data[:, :, 1].T,
         shading="gouraud",
         cmap="vik",
-        # vmin=-1,
-        # vmax=1,
+        vmin=-1,
+        vmax=1,
+    )
+    ax[2].contour(
+        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
     )
     plt.colorbar(im, ax=ax[2])
     ax[2].set_ylabel("Window width [s]")
-    ax[2].set_title("$\\nabla n_y$")
+    ax[2].set_title("ny")
 
     im = ax[3].pcolormesh(
         time_arr[0::grain],
         window_size,
-        np.gradient(diag_vec_data[:, :, 2]).T,
+        diag_vec_data[:, :, 2].T,
         shading="gouraud",
         cmap="vik",
-        # vmin=-1,
-        # vmax=1,
+        vmin=-1,
+        vmax=1,
+    )
+    ax[3].contour(
+        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
     )
     plt.colorbar(im, ax=ax[3])
     ax[3].set_ylabel("Window width [s]")
-    ax[3].set_title("$\\nabla n_z$")
+    ax[3].set_title("nz")
 
     ax[3].set_xlabel("Window center")
 
