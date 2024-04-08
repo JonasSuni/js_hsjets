@@ -1478,7 +1478,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     plt.close(fig)
 
 
-def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1):
+def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
 
     sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
     Bobj_list = [
@@ -1497,7 +1497,16 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1):
         dtp = ["h3", "h0", "h2"][["ace", "dscovr", "wind"].index(sc)]
 
     time_arr, B = load_msh_sc_data(
-        Bobj, sc, probe, "B", t0, t1, intpol=True, dt=dt, datarate="srvy", datatype=dtp
+        Bobj,
+        sc,
+        probe,
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datarate=datarate,
+        datatype=dtp,
     )
 
     window_center = np.arange(0, time_arr.size, grain, dtype=int)
