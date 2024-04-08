@@ -1552,7 +1552,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     im = ax[1].pcolormesh(
         time_arr[0::grain],
         window_size,
-        diag_vec_data[:, :, 0].T,
+        np.gradient(diag_vec_data[:, :, 0]).T,
         shading="gouraud",
         cmap="vik",
         vmin=-1,
@@ -1560,12 +1560,12 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     )
     plt.colorbar(im, ax=ax[1])
     ax[1].set_ylabel("Window width [s]")
-    ax[1].set_title("nx")
+    ax[1].set_title("$\\nabla n_x$")
 
     im = ax[2].pcolormesh(
         time_arr[0::grain],
         window_size,
-        diag_vec_data[:, :, 1].T,
+        np.gradient(diag_vec_data[:, :, 1]).T,
         shading="gouraud",
         cmap="vik",
         vmin=-1,
@@ -1573,12 +1573,12 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     )
     plt.colorbar(im, ax=ax[2])
     ax[2].set_ylabel("Window width [s]")
-    ax[2].set_title("ny")
+    ax[2].set_title("$\\nabla n_y$")
 
     im = ax[3].pcolormesh(
         time_arr[0::grain],
         window_size,
-        diag_vec_data[:, :, 2].T,
+        np.gradient(diag_vec_data[:, :, 2]).T,
         shading="gouraud",
         cmap="vik",
         vmin=-1,
@@ -1586,7 +1586,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
     )
     plt.colorbar(im, ax=ax[3])
     ax[3].set_ylabel("Window width [s]")
-    ax[3].set_title("nz")
+    ax[3].set_title("$\\nabla n_z$")
 
     ax[3].set_xlabel("Window center")
 
