@@ -1478,7 +1478,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     plt.close(fig)
 
 
-def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
+def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
 
     sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
     Bobj_list = [
@@ -1545,7 +1545,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         shading="gouraud",
         cmap="hot_desaturated",
     )
-    mva_cutoff = 0.90 * np.max(diag_data)
+    mva_cutoff = cutoff * np.max(diag_data)
     ax[0].contour(
         time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
     )
