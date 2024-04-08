@@ -1535,7 +1535,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
             )
             eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
             diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
-            diag_vec_data[idx2, idx3, :] = eigvecs[0]
+            diag_vec_data[idx2, idx3, :] = eigvecs[0] * np.sign(eigvecs[0])
 
     fig, ax = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
     im = ax[0].pcolormesh(
