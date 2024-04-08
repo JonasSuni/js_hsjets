@@ -1555,8 +1555,8 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         np.gradient(diag_vec_data[:, :, 0]).T,
         shading="gouraud",
         cmap="vik",
-        vmin=-1,
-        vmax=1,
+        # vmin=-1,
+        # vmax=1,
     )
     plt.colorbar(im, ax=ax[1])
     ax[1].set_ylabel("Window width [s]")
@@ -1568,8 +1568,8 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         np.gradient(diag_vec_data[:, :, 1]).T,
         shading="gouraud",
         cmap="vik",
-        vmin=-1,
-        vmax=1,
+        # vmin=-1,
+        # vmax=1,
     )
     plt.colorbar(im, ax=ax[2])
     ax[2].set_ylabel("Window width [s]")
@@ -1581,8 +1581,8 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         np.gradient(diag_vec_data[:, :, 2]).T,
         shading="gouraud",
         cmap="vik",
-        vmin=-1,
-        vmax=1,
+        # vmin=-1,
+        # vmax=1,
     )
     plt.colorbar(im, ax=ax[3])
     ax[3].set_ylabel("Window width [s]")
