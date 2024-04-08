@@ -1518,6 +1518,9 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         )
     )
     diag_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
+    diag_vec_data = np.empty(
+        (window_center.size, window_halfwidth.size, 3), dtype=float
+    )
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
@@ -1532,18 +1535,54 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
             )
             eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
             diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
+            diag_vec_data[idx2, idx3, :] = eigvecs[0]
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 3), constrained_layout=True)
-    im = ax.pcolormesh(
+    fig, ax = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
+    im = ax[0].pcolormesh(
         time_arr[0::grain],
         window_size,
         diag_data.T,
         shading="gouraud",
         cmap="hot_desaturated",
     )
-    plt.colorbar(im, ax=ax)
-    ax.set_ylabel("Window width [s]")
-    ax.set_xlabel("Window center")
+    plt.colorbar(im, ax=ax[0])
+    ax[0].set_ylabel("Window width [s]")
+    ax[0].set_title("Eigenvalue difference")
+
+    im = ax[1].pcolormesh(
+        time_arr[0::grain],
+        window_size,
+        diag_vec_data[:, :, 0].T,
+        shading="gouraud",
+        cmap="hot_desaturated",
+    )
+    plt.colorbar(im, ax=ax[1])
+    ax[1].set_ylabel("Window width [s]")
+    ax[1].set_title("nx")
+
+    im = ax[2].pcolormesh(
+        time_arr[0::grain],
+        window_size,
+        diag_vec_data[:, :, 1].T,
+        shading="gouraud",
+        cmap="hot_desaturated",
+    )
+    plt.colorbar(im, ax=ax[2])
+    ax[2].set_ylabel("Window width [s]")
+    ax[2].set_title("ny")
+
+    im = ax[3].pcolormesh(
+        time_arr[0::grain],
+        window_size,
+        diag_vec_data[:, :, 2].T,
+        shading="gouraud",
+        cmap="hot_desaturated",
+    )
+    plt.colorbar(im, ax=ax[3])
+    ax[3].set_ylabel("Window width [s]")
+    ax[3].set_title("nz")
+
+    ax[3].set_xlabel("Window center")
 
     fig.savefig(
         wrkdir_DNR + "Figs/satellite/{}{}_diag_mva.png".format(sc, probe), dpi=150
