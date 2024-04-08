@@ -1545,7 +1545,10 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy"):
         shading="gouraud",
         cmap="hot_desaturated",
     )
-    mva_cutoff = 0.9 * np.max(diag_data)
+    mva_cutoff = 0.90 * np.max(diag_data)
+    ax[0].contour(
+        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
+    )
     plt.colorbar(im, ax=ax[0])
     ax[0].set_ylabel("Window width [s]")
     ax[0].set_title("Eigenvalue difference")
