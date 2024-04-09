@@ -1535,9 +1535,9 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
                 )
             )
             eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
-            diag_data[idx2, idx3] = eigvals[2] / eigvals[0]
+            diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
             diag_vec_data[idx2, idx3, :] = eigvecs[0] * np.sign(eigvecs[0][0])
-            diag2_data[idx2, idx3] = eigvals[2] / eigvals[1]
+            diag2_data[idx2, idx3] = eigvals[2] - eigvals[1]
 
     fig, ax = plt.subplots(5, 1, figsize=(8, 15), constrained_layout=True)
     im = ax[0].pcolormesh(
@@ -1553,7 +1553,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     )
     plt.colorbar(im, ax=ax[0])
     ax[0].set_ylabel("Window width [s]")
-    ax[0].set_title("$\\lambda_3/\\lambda_1$")
+    ax[0].set_title("$\\lambda_3-\\lambda_1$")
 
     im = ax[1].pcolormesh(
         time_arr[0::grain],
@@ -1567,7 +1567,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     )
     plt.colorbar(im, ax=ax[1])
     ax[1].set_ylabel("Window width [s]")
-    ax[1].set_title("$\\lambda_3/\\lambda_1$")
+    ax[1].set_title("$\\lambda_3-\\lambda_2$")
 
     for idx in range(3):
         im = ax[idx + 2].pcolormesh(
@@ -1582,12 +1582,14 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
         ax[idx + 2].contour(
             time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
         )
-        plt.colorbar(im, ax=ax[idx])
+        plt.colorbar(im, ax=ax[idx + 2])
         ax[idx + 2].set_ylabel("Window width [s]")
         ax[idx + 2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx])
 
     ax[-1].set_xlabel("Window center")
-    fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150)
+    fig.savefig(
+        wrkdir_DNR + "Figs/satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150
+    )
     plt.close(fig)
 
     indcs = np.where(diag_data.T == np.max(diag_data.T))
