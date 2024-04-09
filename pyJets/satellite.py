@@ -1098,7 +1098,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
                 diag_vec_data[idx1, idx2, idx3, :] = (
                     np.array(res["wave_velocity_relative2sc"]).flatten()
                     * np.sign(np.array(res["wave_velocity_relative2sc"]).flatten()[0])
-                    / res["wave_velocity_plasma_frame"]
+                    / np.linalg.norm(res["wave_velocity_relative2sc"])
                 )
                 # diag_vec_data[idx1, idx2, idx3, :] = np.array(
                 #     res["wave_vector"]
