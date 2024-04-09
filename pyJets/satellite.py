@@ -931,7 +931,7 @@ def plot_themis(t0, t1, mva=False, dt=1, peakonly=False):
     plt.close(fig)
 
 
-def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
+def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1075,7 +1075,10 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
                         window_center[idx2], window_halfwidth[idx3], start_id, stop_id
                     )
                 )
-                vbulk = np.nanmean(data_arr[0, 4:7, start_id:stop_id], axis=-1)
+                if bv:
+                    vbulk = np.nanmean(data_arr[0, 4:7, start_id:stop_id], axis=-1)
+                else:
+                    vbulk = [0, 0, 0]
                 var_id = idcs[idx1]
                 res = timing_analysis_arb(
                     [
