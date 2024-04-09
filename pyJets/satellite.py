@@ -1097,7 +1097,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                     res["wave_vector"]
                 ).flatten() * np.sign(np.array(res["wave_vector"]).flatten()[0])
 
-    fig, ax_list = plt.subplots(4, 4, figsize=(16, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 4, figsize=(32, 12), constrained_layout=True)
     ims = []
     cbs = []
     for idx in range(4):
@@ -1128,8 +1128,8 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
             if idx2 == 2:
                 cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx, idx2 + 1]))
             ax_list[0, idx2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx2])
-    for idx in range(4):
-        ax_list[-1, idx].set_xlabel("Window center")
+    # for idx in range(4):
+    #     ax_list[-1, idx].set_xlabel("Window center")
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=150)
     plt.close(fig)
