@@ -1588,7 +1588,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
 
     ax[-1].set_xlabel("Window center")
     fig.savefig(
-        wrkdir_DNR + "Figs/satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150
+        wrkdir_DNR + "Figs/satellite/{}{}_diag_mva.png".format(sc, probe), dpi=150
     )
     plt.close(fig)
 
