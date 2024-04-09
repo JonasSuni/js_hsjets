@@ -931,7 +931,7 @@ def plot_themis(t0, t1, mva=False, dt=1, peakonly=False):
     plt.close(fig)
 
 
-def diag_mms(t0, t1, dt=0.1, grain=1):
+def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1139,16 +1139,22 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
     for idx in range(4):
         indcs = np.where(diag_data[idx] == np.max(diag_data[idx]))
         print(indcs)
-        if indcs[0].size == 1:
-            i, j = np.array(indcs).flatten()
+
+        if not ij:
+            if indcs[0].size == 1:
+                i, j = np.array(indcs).flatten()
+            else:
+                i, j = np.array(indcs).T[0]
         else:
-            i, j = np.array(indcs).T[0]
+            i, j = ij
         print(
-            "{} n vector and pos: {} {} {}".format(
+            "{} n vector and pos: {} {} {}, i = {}, j = {}".format(
                 labs[idcs[idx]],
                 diag_vec_data[idx, i, j, :],
                 time_arr[0::grain][i],
                 window_size[j],
+                i,
+                j,
             )
         )
 
