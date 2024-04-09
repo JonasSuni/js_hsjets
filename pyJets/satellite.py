@@ -1075,6 +1075,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
                         window_center[idx2], window_halfwidth[idx3], start_id, stop_id
                     )
                 )
+                vbulk = np.nanmean(data_arr[0, 4:7, start_id:stop_id], axis=-1)
                 var_id = idcs[idx1]
                 res = timing_analysis_arb(
                     [
@@ -1091,11 +1092,17 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
                     ],
                     rel_pos,
                     prnt=False,
+                    bulkv=vbulk,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
-                diag_vec_data[idx1, idx2, idx3, :] = np.array(
-                    res["wave_vector"]
-                ).flatten() * np.sign(np.array(res["wave_vector"]).flatten()[0])
+                diag_vec_data = (
+                    np.array(res["wave_velocity_relative2sc"]).flatten()
+                    * np.sign(np.array(res["wave_velocity_relative2sc"]).flatten()[0])
+                    / res["wave_velocity_plasma_frame"]
+                )
+                # diag_vec_data[idx1, idx2, idx3, :] = np.array(
+                #     res["wave_vector"]
+                # ).flatten() * np.sign(np.array(res["wave_vector"]).flatten()[0])
 
     fig, ax_list = plt.subplots(4, 4, figsize=(32, 12), constrained_layout=True)
     ims = []
@@ -2622,6 +2629,7 @@ def timing_analysis_arb(
     peakonly=False,
     gradient=False,
     prnt=True,
+    bulkv=None,
 ):
     # Adapted from code created by Lucile Turc
 
@@ -2738,6 +2746,18 @@ def timing_analysis_arb(
         np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
         / wave_velocity_sc_frame
     )
+    if bulkv:
+        Vpl = wave_velocity_sc_frame - np.dot(bulkv, wave_vector)
+        wave_velocity_relative2sc = (
+            bulkv.reshape((3, 1))
+            + (wave_velocity_sc_frame - np.dot(bulkv, wave_vector)) * wave_vector
+        )
+        wave_velocity_relative2sc.shape = 3
+        if prnt:
+            print("Wave velocity relative to spacecraft ", wave_velocity_relative2sc)
+
+        results["wave_velocity_plasma_frame"] = Vpl
+        results["wave_velocity_relative2sc"] = wave_velocity_relative2sc
     if prnt:
         print("Predicted time lags", predicted_time_lags)
         print("Time differences: ", time_difference)
