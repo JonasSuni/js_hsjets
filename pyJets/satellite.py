@@ -1138,6 +1138,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
 
     for idx in range(4):
         indcs = np.where(diag_data[idx] == np.max(diag_data[idx]))
+        print(indcs)
         if indcs[0].size == 1:
             i, j = np.array(indcs).flatten()
         else:
