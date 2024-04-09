@@ -1078,7 +1078,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
                 if bv:
                     vbulk = np.nanmean(data_arr[0, 4:7, start_id:stop_id], axis=-1)
                 else:
-                    vbulk = [0, 0, 0]
+                    vbulk = np.array([0.000001, 0.000001, 0.000001])
                 var_id = idcs[idx1]
                 res = timing_analysis_arb(
                     [
