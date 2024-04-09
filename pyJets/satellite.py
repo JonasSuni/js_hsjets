@@ -1562,6 +1562,9 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     diag_vec_data = np.empty(
         (window_center.size, window_halfwidth.size, 3), dtype=float
     )
+    diag_maxvec_data = np.empty(
+        (window_center.size, window_halfwidth.size, 3), dtype=float
+    )
     diag2_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
 
     for idx2 in range(window_center.size):
@@ -1578,6 +1581,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
             eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
             diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
             diag_vec_data[idx2, idx3, :] = eigvecs[0] * np.sign(eigvecs[0][0])
+            diag_maxvec_data[idx2, idx3, :] = eigvecs[2]
             diag2_data[idx2, idx3] = eigvals[2] - eigvals[1]
 
     fig, ax = plt.subplots(5, 1, figsize=(8, 15), constrained_layout=True)
@@ -1638,6 +1642,8 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
         i, j = np.array(indcs).flatten()
     else:
         i, j = indcs[0]
+
+    print("\nMaxvec: {}\n".format(diag_maxvec_data[j, i, :]))
 
     return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
