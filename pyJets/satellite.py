@@ -2746,7 +2746,7 @@ def timing_analysis_arb(
         np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
         / wave_velocity_sc_frame
     )
-    if bulkv:
+    if not not bulkv:
         Vpl = wave_velocity_sc_frame - np.dot(bulkv, wave_vector)
         wave_velocity_relative2sc = (
             bulkv.reshape((3, 1))
