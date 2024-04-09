@@ -1127,7 +1127,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
             ims.append(im)
             if idx2 == 2:
                 cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx, idx2 + 1]))
-            ax_list[0, idx2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx2])
+            ax_list[0, idx2+1].set_title(["$n_x$", "$n_y$", "$n_z$"][idx2])
     # for idx in range(4):
     #     ax_list[-1, idx].set_xlabel("Window center")
 
