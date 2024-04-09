@@ -1057,6 +1057,9 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
     )
 
     diag_data = np.empty((4, window_center.size, window_halfwidth.size), dtype=float)
+    diag_vec_data = np.empty(
+        (4, window_center.size, window_halfwidth.size, 3), dtype=float
+    )
     labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho:", "Pdyn:"]
     idcs = [2, 5, 8, 9]
 
@@ -1090,12 +1093,15 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
                     prnt=False,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
+                diag_vec_data[idx1, idx2, idx3, :] = np.array(
+                    res["wave_vector"]
+                ).flatten() * np.sign(np.array(res["wave_vector"]).flatten()[0])
 
-    fig, ax_list = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(4, 4, figsize=(16, 12), constrained_layout=True)
     ims = []
     cbs = []
     for idx in range(4):
-        im = ax_list[idx].pcolormesh(
+        im = ax_list[idx, 0].pcolormesh(
             time_arr[0::grain],
             window_size,
             diag_data[idx].T,
@@ -1105,10 +1111,24 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
             vmax=1,
         )
         ims.append(im)
-        cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx]))
-        ax_list[idx].set_title(labs[idcs[idx]])
-        ax_list[idx].set_ylabel("Window width [s]")
-    ax_list[-1].set_xlabel("Window center")
+        cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx, 0]))
+        ax_list[idx, 0].set_title(labs[idcs[idx]])
+        ax_list[idx, 0].set_ylabel("Window width [s]")
+        for idx2 in range(3):
+            im = ax_list[idx, idx2 + 1].pcolormesh(
+                time_arr[0::grain],
+                window_size,
+                diag_vec_data[idx, :, :, idx2].T,
+                shading="gouraud",
+                cmap="vik",
+                vmin=-1,
+                vmax=1,
+            )
+            ims.append(im)
+            cbs.append(plt.colorbar(ims[-1], ax=ax_list[idx, idx2 + 1]))
+            ax_list[0, idx2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx2])
+    for idx in range(4):
+        ax_list[-1, idx].set_xlabel("Window center")
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=150)
     plt.close(fig)
