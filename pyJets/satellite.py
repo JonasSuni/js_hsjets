@@ -1134,6 +1134,25 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
     fig.savefig(wrkdir_DNR + "Figs/satellite/mms_diag_corr.png", dpi=150)
     plt.close(fig)
 
+    print("\n")
+
+    for idx in range(4):
+        indcs = np.where(diag_data[idx] == np.max(diag_data[idx]))
+        if indcs[0].size == 1:
+            i, j = np.array(indcs).flatten()
+        else:
+            i, j = indcs[0]
+        print(
+            "{} n vector and pos: {} {} {}".format(
+                labs[idcs[idx]],
+                diag_vec_data[idx, i, j, :],
+                time_arr[0::grain][i],
+                window_size[j],
+            )
+        )
+
+    # return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
+
 
 def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
 
