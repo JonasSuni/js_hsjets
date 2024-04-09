@@ -1598,7 +1598,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     else:
         i, j = indcs[0]
 
-    return (diag_vec_data[j, i, :], time_arr[0::grain][i], window_size[j])
+    return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
 
 def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
