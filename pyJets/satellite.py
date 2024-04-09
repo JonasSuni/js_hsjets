@@ -1142,7 +1142,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1):
         if indcs[0].size == 1:
             i, j = np.array(indcs).flatten()
         else:
-            i, j = indcs[0]
+            i, j = np.array(indcs).T[0]
         print(
             "{} n vector and pos: {} {} {}".format(
                 labs[idcs[idx]],
