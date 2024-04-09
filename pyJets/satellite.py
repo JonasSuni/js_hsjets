@@ -1587,7 +1587,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
         ax[idx + 2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx])
 
     ax[-1].set_xlabel("Window center")
-    fig.savefig(wrkdir_DNR + "satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150)
     plt.close(fig)
 
     indcs = np.where(diag_data.T == np.max(diag_data.T))
