@@ -1521,6 +1521,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     diag_vec_data = np.empty(
         (window_center.size, window_halfwidth.size, 3), dtype=float
     )
+    diag2_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
 
     for idx2 in range(window_center.size):
         for idx3 in range(window_halfwidth.size):
@@ -1534,10 +1535,11 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
                 )
             )
             eigvals, eigvecs = MVA(B[:, start_id:stop_id], eigvals=True, prnt=False)
-            diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
+            diag_data[idx2, idx3] = eigvals[2] / eigvals[0]
             diag_vec_data[idx2, idx3, :] = eigvecs[0] * np.sign(eigvecs[0][0])
+            diag2_data[idx2, idx3] = eigvals[2] / eigvals[1]
 
-    fig, ax = plt.subplots(4, 1, figsize=(8, 12), constrained_layout=True)
+    fig, ax = plt.subplots(5, 1, figsize=(8, 15), constrained_layout=True)
     im = ax[0].pcolormesh(
         time_arr[0::grain],
         window_size,
@@ -1551,61 +1553,41 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     )
     plt.colorbar(im, ax=ax[0])
     ax[0].set_ylabel("Window width [s]")
-    ax[0].set_title("Eigenvalue difference")
+    ax[0].set_title("$\\lambda_3/\\lambda_1$")
 
     im = ax[1].pcolormesh(
         time_arr[0::grain],
         window_size,
-        diag_vec_data[:, :, 0].T,
+        diag2_data.T,
         shading="gouraud",
-        cmap="vik",
-        vmin=-1,
-        vmax=1,
+        cmap="hot_desaturated",
     )
     ax[1].contour(
         time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
     )
     plt.colorbar(im, ax=ax[1])
     ax[1].set_ylabel("Window width [s]")
-    ax[1].set_title("nx")
+    ax[1].set_title("$\\lambda_3/\\lambda_1$")
 
-    im = ax[2].pcolormesh(
-        time_arr[0::grain],
-        window_size,
-        diag_vec_data[:, :, 1].T,
-        shading="gouraud",
-        cmap="vik",
-        vmin=-1,
-        vmax=1,
-    )
-    ax[2].contour(
-        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
-    )
-    plt.colorbar(im, ax=ax[2])
-    ax[2].set_ylabel("Window width [s]")
-    ax[2].set_title("ny")
+    for idx in range(3):
+        im = ax[idx + 2].pcolormesh(
+            time_arr[0::grain],
+            window_size,
+            diag_vec_data[:, :, idx].T,
+            shading="gouraud",
+            cmap="vik",
+            vmin=-1,
+            vmax=1,
+        )
+        ax[idx + 2].contour(
+            time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
+        )
+        plt.colorbar(im, ax=ax[idx])
+        ax[idx + 2].set_ylabel("Window width [s]")
+        ax[idx + 2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx])
 
-    im = ax[3].pcolormesh(
-        time_arr[0::grain],
-        window_size,
-        diag_vec_data[:, :, 2].T,
-        shading="gouraud",
-        cmap="vik",
-        vmin=-1,
-        vmax=1,
-    )
-    ax[3].contour(
-        time_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
-    )
-    plt.colorbar(im, ax=ax[3])
-    ax[3].set_ylabel("Window width [s]")
-    ax[3].set_title("nz")
-
-    ax[3].set_xlabel("Window center")
-
-    fig.savefig(
-        wrkdir_DNR + "Figs/satellite/{}{}_diag_mva.png".format(sc, probe), dpi=150
-    )
+    ax[-1].set_xlabel("Window center")
+    fig.savefig(wrkdir_DNR + "satellite/{}{}_mva_diag.png".format(sc, probe), dpi=150)
     plt.close(fig)
 
     indcs = np.where(diag_data.T == np.max(diag_data.T))
@@ -1614,7 +1596,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     else:
         i, j = indcs[0]
 
-    return diag_vec_data[j, i, :]
+    return (diag_vec_data[j, i, :], time_arr[0::grain][i], window_size[j])
 
 
 def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
