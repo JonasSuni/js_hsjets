@@ -1095,7 +1095,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None):
                     bulkv=vbulk,
                 )
                 diag_data[idx1, idx2, idx3] = np.min(res["cross_corr_values"])
-                diag_vec_data = (
+                diag_vec_data[idx1, idx2, idx3, :] = (
                     np.array(res["wave_velocity_relative2sc"]).flatten()
                     * np.sign(np.array(res["wave_velocity_relative2sc"]).flatten()[0])
                     / res["wave_velocity_plasma_frame"]
@@ -2629,7 +2629,7 @@ def timing_analysis_arb(
     peakonly=False,
     gradient=False,
     prnt=True,
-    bulkv=[None,None,None],
+    bulkv=[None, None, None],
 ):
     # Adapted from code created by Lucile Turc
 
