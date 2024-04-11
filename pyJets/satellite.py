@@ -303,16 +303,25 @@ def plot_all_sc():
                 label=sc_name[idx2],
                 color=sc_colors[idx2],
             )
-            ax_list[idx].quiver(
-                sc_pos[idx2, 0],
-                sc_pos[idx2, idx + 1],
-                maxvec_mva[idx2, 0] * 20,
-                maxvec_mva[idx2, idx + 1] * 20,
-                scale_units="xy",
-                angles="xy",
-                scale=1,
+            ortho_vector = np.cross(minvec_mva[idx2], [[0, 0, 1], [0, 1, 0]][idx])
+            ax_list[idx].plot(
+                [sc_pos[idx2, 0] - 1, sc_pos[idx2, 0] + 1],
+                [
+                    sc_pos[idx2, idx + 1] - ortho_vector[idx + 1] / ortho_vector[0],
+                    sc_pos[idx2, idx + 1] + ortho_vector[idx + 1] / ortho_vector[0],
+                ],
                 color=sc_colors[idx2],
             )
+            # ax_list[idx].quiver(
+            #     sc_pos[idx2, 0],
+            #     sc_pos[idx2, idx + 1],
+            #     minvec_mva[idx2, 0] * 20,
+            #     minvec_mva[idx2, idx + 1] * 20,
+            #     scale_units="xy",
+            #     angles="xy",
+            #     scale=1,
+            #     color=sc_colors[idx2],
+            # )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
     ax_list[-1].set_xlabel("X [RE]")
