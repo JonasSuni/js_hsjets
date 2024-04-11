@@ -1657,7 +1657,7 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     if indcs[0].size == 1:
         i, j = np.array(indcs).flatten()
     else:
-        i, j = indcs[0]
+        i, j = np.array(indcs).T[0]
 
     print("\nMaxvec: {}\n".format(diag_maxvec_data[j, i, :]))
 
