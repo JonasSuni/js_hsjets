@@ -9,6 +9,9 @@ import sys
 from random import choice
 from copy import deepcopy
 
+from Shue_Mpause_model import Shue_Mpause_model
+from Merka_BS_model import BS_distance_Merka2005
+
 # import scipy
 # import scipy.linalg
 from scipy.linalg import eig
@@ -102,6 +105,40 @@ CB_color_cycle = [
     "#dede00",
     "#000000",
 ]
+
+
+def BS_xy():
+    # theta = np.arange(-60.25,60,0.5)
+    theta = np.deg2rad(np.arange(-90, 90, 0.5))
+    R_bs = np.zeros_like(theta)
+    for a in theta:
+        index = np.where(theta == a)[0][0]
+        R_bs[index] = BS_distance_Merka2005(np.pi / 2, a, 6, 400, 8, [])
+
+    # x_bs = R_bs*np.cos(np.deg2rad(theta))
+    # y_bs = R_bs*np.sin(np.deg2rad(theta))
+    x_bs = R_bs * np.cos(theta)
+    y_bs = R_bs * np.sin(theta)
+
+    return [x_bs, y_bs]
+
+
+def MP_xy():
+    # theta = np.arange(-60.25,60,0.5)
+    theta = np.deg2rad(np.arange(-90, 90, 0.5))
+    R_mp = np.zeros_like(theta)
+    for a in theta:
+        index = np.where(theta == a)[0][0]
+        R_mp[index] = Shue_Mpause_model(
+            m_p * 400e3 * 400e3 * 6e6 * 1.0e9, 0.0, [a], [0]
+        )
+
+    # x_mp = R_mp*np.cos(np.deg2rad(theta))
+    # y_mp = R_mp*np.sin(np.deg2rad(theta))
+    x_mp = R_mp * np.cos(theta)
+    y_mp = R_mp * np.sin(theta)
+
+    return [x_mp, y_mp]
 
 
 def MVA(data, eigvals=False, prnt=True):
@@ -296,6 +333,11 @@ def plot_all_sc():
         2, 1, figsize=(12, 12), constrained_layout=True, sharex=True, sharey=True
     )
 
+    x_bs, y_bs = BS_xy()
+    z_bs = y_bs
+    x_mp, y_mp = MP_xy()
+    z_mp = y_mp
+
     for idx in range(2):
         for idx2 in range(sc_name.size):
             ax_list[idx].plot(
@@ -330,6 +372,8 @@ def plot_all_sc():
             # )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
+        ax_list[idx].plot(x_bs, [y_bs, z_bs][idx], color="k", zorder=0)
+        ax_list[idx].plot(x_mp, [y_mp, z_mp][idx], color="k", zorder=0)
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
 
