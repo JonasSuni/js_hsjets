@@ -306,10 +306,10 @@ def plot_all_sc():
             ortho_vector = np.cross(minvec_mva[idx2], [[0, 0, 1], [0, 1, 0]][idx])
             ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
             ax_list[idx].plot(
-                [sc_pos[idx2, 0] - 1, sc_pos[idx2, 0] + 1],
+                [sc_pos[idx2, 0] - 5, sc_pos[idx2, 0] + 5],
                 [
-                    sc_pos[idx2, idx + 1] - ortho_vector[idx + 1] / ortho_vector[0],
-                    sc_pos[idx2, idx + 1] + ortho_vector[idx + 1] / ortho_vector[0],
+                    sc_pos[idx2, idx + 1] - 5 * ortho_vector[idx + 1] / ortho_vector[0],
+                    sc_pos[idx2, idx + 1] + 5 * ortho_vector[idx + 1] / ortho_vector[0],
                 ],
                 color=sc_colors[idx2],
             )
