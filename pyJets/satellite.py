@@ -306,8 +306,8 @@ def plot_all_sc():
             ax_list[idx].quiver(
                 sc_pos[idx2, 0],
                 sc_pos[idx2, idx + 1],
-                minvec_mva[idx2, 0],
-                minvec_mva[idx2, idx + 1],
+                minvec_mva[idx2, 0] * 5,
+                minvec_mva[idx2, idx + 1] * 5,
                 scale_units="xy",
                 angles="xy",
                 scale=1,
