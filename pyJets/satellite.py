@@ -274,17 +274,34 @@ def plot_all_sc():
     sc_name = np.loadtxt(
         sc_mva_pos_file_name, dtype=str, delimiter=";", skiprows=1, usecols=0
     )
+    sc_markers = ["x", "x", "x", "^", "^", "^", "^", "^", "o", "o", "o", "o", "*", "*"]
+    sc_colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[3],
+        CB_color_cycle[4],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[3],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
 
-    fig, ax_list = plt.subplots(2, 1, figsize=(18, 18), constrained_layout=True)
+    fig, ax_list = plt.subplots(2, 1, figsize=(12, 12), constrained_layout=True)
 
     for idx in range(2):
         for idx2 in range(sc_name.size):
             ax_list[idx].plot(
                 sc_pos[idx2, 0],
                 sc_pos[idx2, idx + 1],
-                "o",
+                sc_markers[idx2],
                 label=sc_name[idx2],
-                color=CB_color_cycle[idx2],
+                color=sc_colors[idx2],
             )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
