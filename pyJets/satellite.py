@@ -350,9 +350,9 @@ def plot_all_sc():
     )
 
     x_bs, y_bs = BS_xy()
-    z_bs = y_bs
+    x_bs2, z_bs = BS_xz()
     x_mp, y_mp = MP_xy()
-    x_bs, z_bs = BS_xz()
+    z_mp = y_mp
 
     for idx in range(2):
         for idx2 in range(sc_name.size):
@@ -388,7 +388,7 @@ def plot_all_sc():
             # )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
-        ax_list[idx].plot(x_bs, [y_bs, z_bs][idx], color="k", zorder=0)
+        ax_list[idx].plot([x_bs, x_bs2][idx], [y_bs, z_bs][idx], color="k", zorder=0)
         ax_list[idx].plot(x_mp, [y_mp, z_mp][idx], color="k", zorder=0)
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
