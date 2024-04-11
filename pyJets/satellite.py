@@ -255,6 +255,42 @@ def load_msh_sc_data(
         return (time_list, data_list)
 
 
+def plot_all_sc():
+
+    sc_mva_pos_file_name = wrkdir_DNR + "SC_time_pos_MVA.csv"
+    minvec_mva = np.loadtxt(
+        sc_mva_pos_file_name, dtype=float, delimiter=";", skiprows=1, usecols=[2, 3, 4]
+    )
+    maxvec_mva = np.loadtxt(
+        sc_mva_pos_file_name,
+        dtype=float,
+        delimiter=";",
+        skiprows=1,
+        usecols=[8, 9, 10],
+    )
+    sc_pos = np.loadtxt(
+        sc_mva_pos_file_name, dtype=float, delimiter=";", skiprows=1, usecols=[5, 6, 7]
+    )
+    sc_name = np.loadtxt(
+        sc_mva_pos_file_name, dtype=str, delimiter=";", skiprows=1, usecols=0
+    )
+
+    fig, ax_list = plt.subplots(2, 1, figsize=(18, 18), constrained_layout=True)
+
+    for idx in range(2):
+        for idx2 in range(sc_name.size):
+            ax_list[idx].plot(
+                sc_pos[idx2, 0], sc_pos[idx2, idx + 1], label=sc_name[idx2]
+            )
+        ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
+        ax_list[idx].grid()
+    ax_list[-1].set_xlabel("X [RE]")
+    ax_list[-1].legend()
+
+    fig.savefig(wrkdir_DNR + "Figs/satellite/all_sc_pos.png", dpi=150)
+    plt.close(fig)
+
+
 def thd_mms1_c4_timing(t0, t1, dt=1, mva=False):
 
     thd_time, thd_B = load_msh_sc_data(
