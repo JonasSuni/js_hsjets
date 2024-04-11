@@ -280,7 +280,11 @@ def plot_all_sc():
     for idx in range(2):
         for idx2 in range(sc_name.size):
             ax_list[idx].plot(
-                sc_pos[idx2, 0], sc_pos[idx2, idx + 1], "o", label=sc_name[idx2]
+                sc_pos[idx2, 0],
+                sc_pos[idx2, idx + 1],
+                "o",
+                label=sc_name[idx2],
+                color=CB_color_cycle[idx2],
             )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
