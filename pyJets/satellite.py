@@ -123,6 +123,22 @@ def BS_xy():
     return [x_bs, y_bs]
 
 
+def BS_xz():
+    # theta = np.arange(-60.25,60,0.5)
+    theta = np.deg2rad(np.arange(0, 180, 0.5))
+    R_bs = np.zeros_like(theta)
+    for a in theta:
+        index = np.where(theta == a)[0][0]
+        R_bs[index] = BS_distance_Merka2005(a, 0, 6, 400, 8, [])
+
+    # x_bs = R_bs*np.cos(np.deg2rad(theta))
+    # y_bs = R_bs*np.sin(np.deg2rad(theta))
+    x_bs = R_bs * np.sin(theta)
+    y_bs = -R_bs * np.cos(theta)
+
+    return [x_bs, y_bs]
+
+
 def MP_xy():
     # theta = np.arange(-60.25,60,0.5)
     theta = np.deg2rad(np.arange(-90, 90, 0.5))
@@ -336,7 +352,7 @@ def plot_all_sc():
     x_bs, y_bs = BS_xy()
     z_bs = y_bs
     x_mp, y_mp = MP_xy()
-    z_mp = y_mp
+    x_bs, z_bs = BS_xz()
 
     for idx in range(2):
         for idx2 in range(sc_name.size):
@@ -376,6 +392,7 @@ def plot_all_sc():
         ax_list[idx].plot(x_mp, [y_mp, z_mp][idx], color="k", zorder=0)
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
+    ax_list[-1].set_xlim(0, 250)
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/all_sc_pos.png", dpi=150)
     plt.close(fig)
