@@ -292,7 +292,9 @@ def plot_all_sc():
         CB_color_cycle[1],
     ]
 
-    fig, ax_list = plt.subplots(2, 1, figsize=(12, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(
+        2, 1, figsize=(12, 12), constrained_layout=True, sharex=True, sharey=True
+    )
 
     for idx in range(2):
         for idx2 in range(sc_name.size):
