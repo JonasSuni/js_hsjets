@@ -303,6 +303,16 @@ def plot_all_sc():
                 label=sc_name[idx2],
                 color=sc_colors[idx2],
             )
+            ax_list[idx].quiver(
+                sc_pos[idx2, 0],
+                sc_pos[idx2, idx + 1],
+                minvec_mva[idx2, 0],
+                minvec_mva[idx2, idx + 1],
+                scale_units="xy",
+                angles="xy",
+                scale=1,
+                color=sc_colors[idx2],
+            )
         ax_list[idx].set_ylabel(["Y [RE]", "Z [RE]"][idx])
         ax_list[idx].grid()
     ax_list[-1].set_xlabel("X [RE]")
