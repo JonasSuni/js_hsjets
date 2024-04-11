@@ -390,6 +390,12 @@ def plot_all_sc():
         ax_list[idx].grid()
         ax_list[idx].plot([x_bs, x_bs2][idx], [y_bs, z_bs][idx], color="k", zorder=0)
         ax_list[idx].plot(x_mp, [y_mp, z_mp][idx], color="k", zorder=0)
+        ax_list[idx].plot(
+            np.cos(np.arange(0, 2 * np.pi, 0.5)),
+            np.sin(np.arange(0, 2 * np.pi, 0.5)),
+            color="k",
+            zorder=0,
+        )
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
     ax_list[-1].set_xlim(0, 250)
