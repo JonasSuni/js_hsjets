@@ -396,6 +396,7 @@ def plot_all_sc():
             color="k",
             zorder=0,
         )
+        ax_list[idx].set_aspect("equal")
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
     ax_list[-1].set_xlim(0, 250)
