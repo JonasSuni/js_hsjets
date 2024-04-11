@@ -2632,7 +2632,7 @@ def timing_analysis_arb(
     peakonly=False,
     gradient=False,
     prnt=True,
-    bulkv=[None, None, None],
+    bulkv=np.array([None, None, None]),
 ):
     # Adapted from code created by Lucile Turc
 
