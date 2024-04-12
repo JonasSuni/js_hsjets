@@ -369,7 +369,8 @@ def avg_sw_data(t0, t1, dt=1):
         np.nanmean(timeshift_arr),
     )
 
-def plot_sc_b(sc,probe,t0,t1,dt=1,datarate="srvy"):
+
+def plot_sc_b(sc, probe, t0, t1, dt=1, datarate="srvy"):
 
     sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
     Bobj_list = [
@@ -400,15 +401,16 @@ def plot_sc_b(sc,probe,t0,t1,dt=1,datarate="srvy"):
         datatype=dtp,
     )
 
-    fig,ax_list = plt.subplots(3,1,figsize=(12,12),constrained_layout=True)
+    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
     for idx in range(3):
         ax = ax_list[idx]
-        ax.plot(time_arr,B[idx])
+        ax.plot(time_arr, B[idx])
         ax.grid()
-        ax.set_ylabel(["Bx","By","Bz"][idx])
-    ax_list[0].set_title("{} {}".format(sc.upper(),probe.upper()))
+        ax.set_ylabel(["Bx", "By", "Bz"][idx])
+    ax_list[0].set_title("{} {}".format(sc.upper(), probe.upper()))
 
-    fig.savefig(wrkdir_DNR+"Figs/satellite/{}{}_B.png".format(sc,probe),dpi=150)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_B.png".format(sc, probe), dpi=150)
+
 
 def plot_all_sc():
 
@@ -1787,7 +1789,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
     plt.close(fig)
 
 
-def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
+def diag_sc_mva(
+    sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9, maxwidth=None
+):
 
     sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
     Bobj_list = [
@@ -1905,6 +1909,8 @@ def diag_sc_mva(sc, probe, t0, t1, dt=1, grain=1, datarate="srvy", cutoff=0.9):
     )
     plt.close(fig)
 
+    if maxwidth:
+        indcs = np.where(window_size.T < maxwidth and diag_data.T >= mva_cutoff)
     indcs = np.where(diag_data.T == np.max(diag_data.T))
     if indcs[0].size == 1:
         i, j = np.array(indcs).flatten()
