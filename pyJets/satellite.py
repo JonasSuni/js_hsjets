@@ -308,6 +308,60 @@ def load_msh_sc_data(
         return (time_list, data_list)
 
 
+def intpol_data(time_arr, data_arr, t0, t1, dt=1):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    mask = ~np.isnan(np.atleast_2d(data_arr)[0])
+    data_arr = data_arr.T[mask].T
+    time_arr = time_arr[mask]
+
+    newtime = np.arange(
+        t0plot.replace(tzinfo=timezone.utc).timestamp(),
+        t1plot.replace(tzinfo=timezone.utc).timestamp(),
+        dt,
+    )
+    if type(time_arr[0]) == datetime:
+        time_arr = [t.replace(tzinfo=timezone.utc).timestamp() for t in time_arr]
+    if len(data_arr.shape) > 1:
+        newdata = np.array(
+            [np.interp(newtime, time_arr, data) for data in data_arr[:3]]
+        )
+    else:
+        newdata = np.interp(newtime, time_arr, data_arr)
+    newtime = np.array([datetime.utcfromtimestamp(t) for t in newtime])
+
+    return (newtime, newdata)
+
+
+def avg_sw_data(t0, t1, dt=1):
+
+    omnidata = pyspedas.omni.data(trange=[t0, t1], notplot=True, time_clip=True)
+    time_arr, n_arr = intpol_data(
+        omnidata["proton_density"][0], omnidata["proton_density"][1], t0, t1, dt
+    )
+    time_arr, v_arr = intpol_data(
+        omnidata["flow_speed"][0], omnidata["flow_speed"][1], t0, t1, dt
+    )
+    time_arr, Bz_arr = intpol_data(
+        omnidata["BZ_GSE"][0], omnidata["BZ_GSE"][1], t0, t1, dt
+    )
+    time_arr, MA_arr = intpol_data(
+        omnidata["Mach_num"][0], omnidata["Mach_num"][1], t0, t1, dt
+    )
+
+    pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
+
+    return (
+        np.nanmean(n_arr),
+        np.nanmean(v_arr),
+        np.nanmean(pd_arr),
+        np.nanmean(Bz_arr),
+        np.nanmean(MA_arr),
+    )
+
+
 def plot_all_sc():
 
     sc_mva_pos_file_name = wrkdir_DNR + "SC_time_pos_MVA.csv"
