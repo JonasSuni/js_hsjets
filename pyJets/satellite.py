@@ -339,16 +339,16 @@ def avg_sw_data(t0, t1, dt=1):
 
     omnidata = pyspedas.omni.data(trange=[t0, t1], notplot=True, time_clip=True)
     time_arr, n_arr = intpol_data(
-        omnidata["proton_density"][0], omnidata["proton_density"][1], t0, t1, dt
+        omnidata["proton_density"]["x"], omnidata["proton_density"]["y"], t0, t1, dt
     )
     time_arr, v_arr = intpol_data(
-        omnidata["flow_speed"][0], omnidata["flow_speed"][1], t0, t1, dt
+        omnidata["flow_speed"]["x"], omnidata["flow_speed"]["y"], t0, t1, dt
     )
     time_arr, Bz_arr = intpol_data(
-        omnidata["BZ_GSE"][0], omnidata["BZ_GSE"][1], t0, t1, dt
+        omnidata["BZ_GSE"]["x"], omnidata["BZ_GSE"]["y"], t0, t1, dt
     )
     time_arr, MA_arr = intpol_data(
-        omnidata["Mach_num"][0], omnidata["Mach_num"][1], t0, t1, dt
+        omnidata["Mach_num"]["x"], omnidata["Mach_num"]["y"], t0, t1, dt
     )
 
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
