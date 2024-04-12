@@ -1909,11 +1909,14 @@ def diag_sc_mva(
     )
     plt.close(fig)
 
+    CmeshCW, WmeshCW = np.meshgrid(window_center, window_size)
+
     if maxwidth:
         indcs = np.where(
-            np.logical_and(window_size.T < maxwidth, diag_data.T >= mva_cutoff)
+            np.logical_and(WmeshCW.T < maxwidth, diag_data.T >= mva_cutoff)
         )
-    indcs = np.where(diag_data.T == np.max(diag_data.T))
+    else:
+        indcs = np.where(diag_data.T == np.max(diag_data.T))
     if indcs[0].size == 1:
         i, j = np.array(indcs).flatten()
     else:
