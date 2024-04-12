@@ -351,6 +351,12 @@ def avg_sw_data(t0, t1, dt=1):
     time_arr, Bz_arr = intpol_data(
         omnidata["BZ_GSE"]["x"], omnidata["BZ_GSE"]["y"], t0, t1, dt
     )
+    time_arr, Bx_arr = intpol_data(
+        omnidata["BX_GSE"]["x"], omnidata["BX_GSE"]["y"], t0, t1, dt
+    )
+    time_arr, By_arr = intpol_data(
+        omnidata["BY_GSE"]["x"], omnidata["BY_GSE"]["y"], t0, t1, dt
+    )
     time_arr, MA_arr = intpol_data(
         omnidata["Mach_num"]["x"], omnidata["Mach_num"]["y"], t0, t1, dt
     )
@@ -359,6 +365,17 @@ def avg_sw_data(t0, t1, dt=1):
     )
 
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
+
+    B = [Bx_arr, By_arr, Bz_arr]
+
+    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
+    for idx in range(3):
+        ax = ax_list[idx]
+        ax.plot(time_arr, B[idx])
+        ax.grid()
+        ax.set_ylabel(["Bx", "By", "Bz"][idx])
+
+    fig.savefig(wrkdir_DNR + "Figs/satellite/SW_B.png", dpi=150)
 
     return (
         np.nanmean(n_arr),
