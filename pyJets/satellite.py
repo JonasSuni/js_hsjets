@@ -354,6 +354,9 @@ def avg_sw_data(t0, t1, dt=1):
     time_arr, MA_arr = intpol_data(
         omnidata["Mach_num"]["x"], omnidata["Mach_num"]["y"], t0, t1, dt
     )
+    time_arr, timeshift_arr = intpol_data(
+        omnidata["Timeshift"]["x"], omnidata["Timeshift"]["y"], t0, t1, dt
+    )
 
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
 
@@ -363,6 +366,7 @@ def avg_sw_data(t0, t1, dt=1):
         np.nanmean(pd_arr),
         np.nanmean(Bz_arr),
         np.nanmean(MA_arr),
+        np.nanmean(timeshift_arr),
     )
 
 
