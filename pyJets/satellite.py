@@ -369,6 +369,46 @@ def avg_sw_data(t0, t1, dt=1):
         np.nanmean(timeshift_arr),
     )
 
+def plot_sc_b(sc,probe,t0,t1,dt=1,datarate="srvy"):
+
+    sc_list = ["ace", "dscovr", "wind", "themis", "mms", "cluster"]
+    Bobj_list = [
+        pyspedas.ace.mfi,
+        pyspedas.dscovr.mag,
+        pyspedas.wind.mfi,
+        pyspedas.themis.fgm,
+        pyspedas.mms.fgm,
+        pyspedas.cluster.fgm,
+    ]
+
+    Bobj = Bobj_list[sc_list.index(sc)]
+
+    dtp = "h0"
+    if sc in ["ace", "dscovr", "wind"]:
+        dtp = ["h3", "h0", "h2"][["ace", "dscovr", "wind"].index(sc)]
+
+    time_arr, B = load_msh_sc_data(
+        Bobj,
+        sc,
+        probe,
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datarate=datarate,
+        datatype=dtp,
+    )
+
+    fig,ax_list = plt.subplots(3,1,figsize=(12,12),constrained_layout=True)
+    for idx in range(3):
+        ax = ax_list[idx]
+        ax.plot(time_arr,B[idx])
+        ax.grid()
+        ax.set_ylabel(["Bx","By","Bz"][idx])
+    ax_list[0].set_title("{} {}".format(sc.upper(),probe.upper()))
+
+    fig.savefig(wrkdir_DNR+"Figs/satellite/{}{}_B.png".format(sc,probe),dpi=150)
 
 def plot_all_sc():
 
