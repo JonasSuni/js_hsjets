@@ -66,7 +66,7 @@ global fileindex_g
 global time_g
 
 # CHANGE IF YOU WANT TO PLOT A DIFFERENT TIME STEP
-itr = 800
+itr = 1000
 idx = str(itr).zfill(7)
 
 # CHANGE PATH HERE IF YOU WANT TO PLOT A DIFFERENT RUN
