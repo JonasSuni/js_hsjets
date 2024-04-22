@@ -3,7 +3,6 @@ outdir = ""
 import pytools
 import matplotlib.pyplot as plt
 import numpy as np
-import jstools as js
 
 r_e = 6.371e6
 
