@@ -27,7 +27,7 @@ import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
 
 # filter_func = lambda d,size:uniform_filter1d(d,size=size)
-filter_func = lambda d, size: uniform_filter1d(d, sigma=size)
+filter_func = lambda d, size: gaussian_filter1d(d, sigma=size)
 
 import pyspedas
 from datetime import datetime, timezone
