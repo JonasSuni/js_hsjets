@@ -2806,6 +2806,8 @@ def timing_analysis_arb(
             )
         )
 
+    sc_pos_rel = deepcopy(sc_rel_pos)
+
     dt = sc_times_new[0][1] - sc_times_new[0][0]
 
     if gradient:
@@ -2844,33 +2846,33 @@ def timing_analysis_arb(
 
     if sw_speed:
         time_difference.append(1)
-        sc_rel_pos.append(np.array([-sw_speed, 0, 0]))
-    print(sc_rel_pos)
+        sc_pos_rel.append(np.array([-sw_speed, 0, 0]))
+    print(sc_pos_rel)
     # # ******************************************************************************#
 
     time_difference = np.array(time_difference)
 
     matrix_positions = np.zeros((3, 3))
 
-    for idx in range(len(sc_rel_pos)):
-        matrix_positions[idx] = sc_rel_pos[idx]
+    for idx in range(len(sc_pos_rel)):
+        matrix_positions[idx] = sc_pos_rel[idx]
 
     # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
     # of equations for the wave vector
     # The vector obtained from this operation is the wave vector divided by the phase velocity in the spacecraft frame
 
     result = np.dot(
-        np.linalg.inv(matrix_positions[0 : len(sc_rel_pos), 0 : len(sc_rel_pos)]),
-        time_difference[0 : len(sc_rel_pos)],
+        np.linalg.inv(matrix_positions[0 : len(sc_pos_rel), 0 : len(sc_pos_rel)]),
+        time_difference[0 : len(sc_pos_rel)],
     )
-    result.shape = (len(sc_rel_pos), 1)
+    result.shape = (len(sc_pos_rel), 1)
 
     norm_result = np.linalg.norm(result)
 
     wave_velocity_sc_frame = 1.0 / norm_result
 
     wave_vector = np.zeros((3, 1))
-    wave_vector[0 : len(sc_rel_pos)] = result / norm_result
+    wave_vector[0 : len(sc_pos_rel)] = result / norm_result
 
     results = {}
     results["wave_vector"] = wave_vector
@@ -2878,7 +2880,7 @@ def timing_analysis_arb(
     results["cross_corr_values"] = cross_corr_values
 
     predicted_time_lags = (
-        np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_rel_pos])
+        np.array([np.dot(wave_vector.flatten(), distance) for distance in sc_pos_rel])
         / wave_velocity_sc_frame
     )
     if bulkv.any():
