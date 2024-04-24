@@ -2852,7 +2852,7 @@ def timing_analysis_arb(
 
     matrix_positions = np.zeros((3, 3))
 
-    for idx in range(len(sc_times) - 1):
+    for idx in range(len(sc_rel_pos)):
         matrix_positions[idx] = sc_rel_pos[idx]
 
     # We now invert the matrix of spacecraft relative positions and multiply it with the time lags in order to solve the system
