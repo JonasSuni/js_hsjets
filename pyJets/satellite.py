@@ -2524,7 +2524,12 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     plt.close(fig)
 
 
-def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False, filt=None):
+def plot_ace_dscovr_wind(
+    t0, t1, dt=1, sc_order=[0, 1, 2], mva=False, filt=None, rotate=[None, None, None]
+):
+
+    if type(rotate) is not np.ndarray:
+        rotate = np.array(rotate)
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -2748,6 +2753,18 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False, filt=None)
         outdir + "ace_dscovr_wind_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
     )
     plt.close(fig)
+    if rotate.any():
+        fig, ax_list = plt.subplots(
+            3, 1, figsize=(18, 6), constrained_layout=True, sharey=True
+        )
+        for idx in range(3):
+            ax = ax_list[idx]
+            ax.plot(time_arr, np.dot(data_arr[idx, 0:3, :].T, rotate))
+            ax.set_title(sc_labs[idx])
+        ax_list[0].set_ylabel("BN")
+
+        fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}_rot.png".format(t0plot, t1plot))
+        plt.close(fig)
 
 
 def timing_analysis_arb(
