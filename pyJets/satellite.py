@@ -221,6 +221,7 @@ def load_msh_sc_data(
     dt=1,
     datarate="fast",
     datatype="h0",
+    filt=None,
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -304,11 +305,14 @@ def load_msh_sc_data(
         else:
             newdata = np.interp(newtime, time_list, data_list)
         newtime = np.array([datetime.utcfromtimestamp(t) for t in newtime])
-
+        if filt:
+            newdata = uniform_filter1d(newdata, size=filt)
         return (newtime, newdata)
     else:
         if type(time_list[0]) != datetime:
             time_list = np.array([datetime.utcfromtimestamp(t) for t in time_list])
+        if filt:
+            data_list = uniform_filter1d(data_list, size=filt)
         return (time_list, data_list)
 
 
@@ -2517,7 +2521,7 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     plt.close(fig)
 
 
-def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
+def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False, filt=None):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -2525,7 +2529,16 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
     sc_labs = ["ACE", "DSCOVR", "Wind"]
 
     ace_time, ace_B = load_msh_sc_data(
-        pyspedas.ace.mfi, "ace", "1", "B", t0, t1, intpol=True, dt=dt, datatype="h3"
+        pyspedas.ace.mfi,
+        "ace",
+        "1",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datatype="h3",
+        filt=filt,
     )
     dscovr_time, dscovr_B = load_msh_sc_data(
         pyspedas.dscovr.mag,
@@ -2537,9 +2550,19 @@ def plot_ace_dscovr_wind(t0, t1, dt=1, sc_order=[0, 1, 2], mva=False):
         intpol=True,
         dt=dt,
         datatype="h0",
+        filt=filt,
     )
     wind_time, wind_B = load_msh_sc_data(
-        pyspedas.wind.mfi, "wind", "1", "B", t0, t1, intpol=True, dt=dt, datatype="h2"
+        pyspedas.wind.mfi,
+        "wind",
+        "1",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datatype="h2",
+        filt=filt,
     )
 
     sc_B = [ace_B, dscovr_B, wind_B]
