@@ -2845,8 +2845,8 @@ def timing_analysis_arb(
             time_difference.append(offset2 * dt)
 
     if sw_speed:
-        time_difference.append(1)
-        sc_pos_rel.append(np.array([-sw_speed, 0, 0]))
+        time_difference.append(100)
+        sc_pos_rel.append(np.array([-sw_speed * 100, 0, 0]))
     print(sc_pos_rel)
     # # ******************************************************************************#
 
