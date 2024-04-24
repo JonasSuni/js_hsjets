@@ -2765,7 +2765,10 @@ def plot_ace_dscovr_wind(
             ax.set_xlim(t0plot, t1plot)
         ax_list[0].set_ylabel("BN")
 
-        fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}_rot.png".format(t0plot, t1plot))
+        fig.savefig(
+            outdir
+            + "ace_dscovr_wind_t0{}_t1{}_rot{}.png".format(t0plot, t1plot, rotate)
+        )
         plt.close(fig)
 
 
