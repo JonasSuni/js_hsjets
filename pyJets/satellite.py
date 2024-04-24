@@ -2755,12 +2755,14 @@ def plot_ace_dscovr_wind(
     plt.close(fig)
     if rotate.any():
         fig, ax_list = plt.subplots(
-            3, 1, figsize=(18, 6), constrained_layout=True, sharey=True
+            1, 3, figsize=(18, 6), constrained_layout=True, sharey=True
         )
         for idx in range(3):
             ax = ax_list[idx]
             ax.plot(time_arr, np.dot(data_arr[idx, 0:3, :].T, rotate))
             ax.set_title(sc_labs[idx])
+            ax.grid()
+            ax.set_xlim(t0plot, t1plot)
         ax_list[0].set_ylabel("BN")
 
         fig.savefig(outdir + "ace_dscovr_wind_t0{}_t1{}_rot.png".format(t0plot, t1plot))
