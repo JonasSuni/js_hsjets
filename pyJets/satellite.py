@@ -17,7 +17,7 @@ from Merka_BS_model import BS_distance_Merka2005
 from scipy.linalg import eig
 from scipy.fft import rfft2
 from scipy.signal import butter, sosfilt, cwt, morlet2
-from scipy.ndimage import uniform_filter1d
+from scipy.ndimage import uniform_filter1d, gaussian_filter1d
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -25,6 +25,9 @@ import matplotlib.colors as colors
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
+
+# filter_func = lambda d,size:uniform_filter1d(d,size=size)
+filter_func = lambda d, size: uniform_filter1d(d, sigma=size)
 
 import pyspedas
 from datetime import datetime, timezone
@@ -306,13 +309,13 @@ def load_msh_sc_data(
             newdata = np.interp(newtime, time_list, data_list)
         newtime = np.array([datetime.utcfromtimestamp(t) for t in newtime])
         if filt:
-            newdata = uniform_filter1d(newdata, size=filt)
+            newdata = filter_func(newdata, size=filt)
         return (newtime, newdata)
     else:
         if type(time_list[0]) != datetime:
             time_list = np.array([datetime.utcfromtimestamp(t) for t in time_list])
         if filt:
-            data_list = uniform_filter1d(data_list, size=filt)
+            data_list = filter_func(data_list, size=filt)
         return (time_list, data_list)
 
 
