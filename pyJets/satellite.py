@@ -367,15 +367,16 @@ def avg_sw_data(t0, t1, dt=1):
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
 
     B = [Bx_arr, By_arr, Bz_arr]
+    data_arr = [Bx_arr, By_arr, Bz_arr, v_arr, n_arr, pd_arr]
 
-    fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
-    for idx in range(3):
+    fig, ax_list = plt.subplots(6, 1, figsize=(18, 12), constrained_layout=True)
+    for idx in range(6):
         ax = ax_list[idx]
-        ax.plot(time_arr, B[idx])
+        ax.plot(time_arr, data_arr[idx])
         ax.grid()
-        ax.set_ylabel(["Bx", "By", "Bz"][idx])
+        ax.set_ylabel(["Bx", "By", "Bz", "v", "n", "Pdyn"][idx])
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/SW_B.png", dpi=150)
+    fig.savefig(wrkdir_DNR + "Figs/satellite/SW_plot.png", dpi=150)
 
     return (
         np.nanmean(n_arr),
