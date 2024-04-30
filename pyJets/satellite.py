@@ -1450,7 +1450,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
     # return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
 
-def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
+def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1466,6 +1466,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
             intpol=True,
             dt=dt,
             datarate="brst",
+            filt=filt,
         )
         for probe in range(1, 5)
     ]
@@ -1480,6 +1481,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
             intpol=True,
             dt=dt,
             datarate="brst",
+            filt=filt,
         )
         for probe in range(1, 5)
     ]
@@ -1494,6 +1496,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
             intpol=True,
             dt=dt,
             datarate="brst",
+            filt=filt,
         )
         for probe in range(1, 5)
     ]
@@ -1508,6 +1511,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False):
             intpol=True,
             dt=dt,
             datarate="srvy",
+            filt=filt,
         )
         for probe in range(1, 5)
     ]
