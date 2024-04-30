@@ -437,7 +437,7 @@ def plot_sc_b(sc, probe, t0, t1, dt=1, datarate="srvy"):
     fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_B.png".format(sc, probe), dpi=150)
 
 
-def plot_all_sc():
+def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]):
 
     sc_mva_pos_file_name = wrkdir_DNR + "SC_time_pos_MVA.csv"
     minvec_mva = np.loadtxt(
@@ -485,6 +485,8 @@ def plot_all_sc():
 
     for idx in range(2):
         for idx2 in range(sc_name.size):
+            if idx2 not in scs_to_plot:
+                continue
             ax_list[idx].plot(
                 sc_pos[idx2, 0],
                 sc_pos[idx2, idx + 1],
@@ -528,9 +530,11 @@ def plot_all_sc():
         ax_list[idx].set_aspect("equal")
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[-1].legend()
-    ax_list[-1].set_xlim(0, 250)
+    ax_list[-1].set_xlim(0, None)
 
-    fig.savefig(wrkdir_DNR + "Figs/satellite/all_sc_pos.png", dpi=150)
+    fig.savefig(
+        wrkdir_DNR + "Figs/satellite/sc_pos_{}.png".format(scs_to_plot), dpi=150
+    )
     plt.close(fig)
 
 
