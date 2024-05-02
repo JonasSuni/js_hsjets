@@ -5676,3 +5676,14 @@ def MVA(data):
 
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
     return eigenvec[np.argsort(eigenval), :]
+
+
+def cut_animation(x0, x1, t0, t1):
+
+    dr = 300e3
+    global bulkpath
+    bulkpath = find_bulkpath("AIC")
+
+def cut_update(fnr):
+
+    vlsvobj = bulkpath+"bulk.{}.vlsv".format(str(fnr).zfill(7))
