@@ -5678,12 +5678,225 @@ def MVA(data):
     return eigenvec[np.argsort(eigenval), :]
 
 
-def cut_animation(x0, x1, t0, t1):
+def cut_animation(runid, x0, x1, y0, t0, t1):
 
     dr = 300e3
-    global bulkpath
-    bulkpath = find_bulkpath("AIC")
+    global bulkpath, var_list, plot_labels, scales, draw_legend, ylabels, norm, ops, plot_index, plot_colors, coords_arr, data_arr, x_arr, ax_list
+    bulkpath = find_bulkpath(runid)
+
+    x_arr = np.arange(x0 * r_e, x1 * r_e + dr / 2.0, dr)
+    coords_arr = np.array([[x, y0 * r_e, 0] for x in x_arr])
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B~[\mathrm{nT}]$",
+        "$E~[\mathrm{mV/m}]$",
+        "$T~[\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\mathrm{sw}]$",
+        # "$v~[v_\mathrm{sw}]$",
+        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        # "$B~[B_\mathrm{IMF}]$",
+        # "$E~[E_\mathrm{sw}]$",
+        # "$T~[T_\mathrm{sw}]$",
+    ]
+    e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
+    norm = [
+        [
+            1,
+            750,
+            750,
+            750,
+            750,
+            0.9408498320756251,
+            3,
+            3,
+            3,
+            3,
+            e_sw,
+            e_sw,
+            e_sw,
+            e_sw,
+            0.5,
+            0.5,
+        ],
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+    fnr0 = int(t0 * 2)
+    fnr_arr = np.arange(fnr0, int(t1 * 2) + 1, dtype=int)
+    cellid = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    data_arr = np.zeros((len(var_list), x_arr.size), dtype=float)
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
+    )
+
+    figdir = wrkdir_DNR + "Figs/cut_anims/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    ani = FuncAnimation(fig, cut_update, frames=fnr_arr, blit=False)
+    ani.save(
+        figdir + "{}_x_{}_{}_y_{}_t_{}_{}.mp4".format(runid, x0, x1, y0, t0, t1),
+        fps=5,
+        dpi=150,
+        bitrate=1000,
+    )
+    # print("Saved animation")
+    plt.close(fig)
+
 
 def cut_update(fnr):
 
-    vlsvobj = bulkpath+"bulk.{}.vlsv".format(str(fnr).zfill(7))
+    vlsvobj = bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+
+    for idx in range(x_arr.size):
+        for idx2 in range(len(var_list)):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var_list[idx2], coords_arr[idx], operator=ops[idx2]
+                )
+                * scales[idx2]
+            )
+
+    for idx in range(len(var_list)):
+        ax.clear()
+        ax = ax_list[plot_index[idx]]
+        # for vline in vlines:
+        #     ax.axvline(vline, linestyle="dashed", linewidth=0.6)
+        ax.plot(x_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
+        if idx == 5:
+            pdynx = (
+                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
+            )
+            ax.plot(
+                x_arr,
+                pdynx,
+                color=CB_color_cycle[0],
+                label="$P_{\mathrm{dyn},x}$",
+            )
+
+        if draw_legend[idx]:
+            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    ax_list[0].set_title("t = {}s".format(fnr / 2.0))
+    ax_list[-1].set_xlabel("X [$R_\mathrm{E}$]")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.set_xlim(x_arr[0], x_arr[-1])
