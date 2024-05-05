@@ -5862,7 +5862,6 @@ def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
                     data_arr[idx3, idx2, idx] = (
                         vlsvobj.read_variable(
                             var_list[idx2],
-                            coords_arr[idx],
                             operator=ops[idx2],
                             cellids=cellids,
                         )
