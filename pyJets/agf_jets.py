@@ -5923,9 +5923,9 @@ def cut_update(idx3):
                 m_p
                 * data_arr[idx3, 0]
                 * 1e6
-                * data_arr[1]
+                * data_arr[idx3, 1]
                 * 1e3
-                * data_arr[1]
+                * data_arr[idx3, 1]
                 * 1e3
                 * 1e9
             )
