@@ -5877,9 +5877,11 @@ def cut_update(fnr):
                 * scales[idx2]
             )
 
+    for ax in ax_list:
+        ax.clear()
+
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
-        ax.clear()
         # for vline in vlines:
         #     ax.axvline(vline, linestyle="dashed", linewidth=0.6)
         ax.plot(
