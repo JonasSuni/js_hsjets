@@ -5864,7 +5864,9 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
 
 def cut_update(fnr):
 
-    vlsvobj = bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    )
 
     for idx in range(x_arr.size):
         for idx2 in range(len(var_list)):
@@ -5880,13 +5882,15 @@ def cut_update(fnr):
         ax = ax_list[plot_index[idx]]
         # for vline in vlines:
         #     ax.axvline(vline, linestyle="dashed", linewidth=0.6)
-        ax.plot(x_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
+        ax.plot(
+            x_arr / r_e, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
+        )
         if idx == 5:
             pdynx = (
                 m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
             )
             ax.plot(
-                x_arr,
+                x_arr / r_e,
                 pdynx,
                 color=CB_color_cycle[0],
                 label="$P_{\mathrm{dyn},x}$",
@@ -5899,4 +5903,4 @@ def cut_update(fnr):
     for idx, ax in enumerate(ax_list):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
-        ax.set_xlim(x_arr[0], x_arr[-1])
+        ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
