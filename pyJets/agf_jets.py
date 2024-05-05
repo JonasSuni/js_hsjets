@@ -5678,7 +5678,7 @@ def MVA(data):
     return eigenvec[np.argsort(eigenval), :]
 
 
-def cut_animation(runid, x0, x1, y0, t0, t1):
+def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
 
     dr = 300e3
     global bulkpath, var_list, plot_labels, scales, draw_legend, ylabels, norm, ops, plot_index, plot_colors, coords_arr, data_arr, x_arr, ax_list, fnr_arr, min_arr, max_arr
@@ -5838,6 +5838,11 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    if not intpol:
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+        cellids = [vobj.get_cellid(coord) for coord in coords_arr]
     data_arr = np.zeros((fnr_arr.size, len(var_list), x_arr.size), dtype=float)
 
     for idx3 in range(fnr_arr.size):
@@ -5846,12 +5851,23 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
         )
         for idx in range(x_arr.size):
             for idx2 in range(len(var_list)):
-                data_arr[idx3, idx2, idx] = (
-                    vlsvobj.read_interpolated_variable(
-                        var_list[idx2], coords_arr[idx], operator=ops[idx2]
+                if intpol:
+                    data_arr[idx3, idx2, idx] = (
+                        vlsvobj.read_interpolated_variable(
+                            var_list[idx2], coords_arr[idx], operator=ops[idx2]
+                        )
+                        * scales[idx2]
                     )
-                    * scales[idx2]
-                )
+                else:
+                    data_arr[idx3, idx2, idx] = (
+                        vlsvobj.read_variable(
+                            var_list[idx2],
+                            coords_arr[idx],
+                            operator=ops[idx2],
+                            cellids=cellids,
+                        )
+                        * scales[idx2]
+                    )
 
     min_arr = [
         0.95 * np.min(data_arr[:, 0, :]),
