@@ -5854,20 +5854,20 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
                 )
 
     min_arr = [
-        0,
-        -np.max(np.abs(data_arr[:, 1:5, :])),
-        0,
-        -np.max(np.abs(data_arr[:, 6:10, :])),
-        -np.max(np.abs(data_arr[:, 10:14, :])),
-        0,
+        0.95 * np.min(data_arr[:, 0, :]),
+        -1.05 * np.max(np.abs(data_arr[:, 1:5, :])),
+        0.95 * np.min(data_arr[:, 5, :]),
+        -1.05 * np.max(np.abs(data_arr[:, 6:10, :])),
+        -1.05 * np.max(np.abs(data_arr[:, 10:14, :])),
+        0.95 * np.min(data_arr[:, 14:, :]),
     ]
     max_arr = [
-        np.max(data_arr[:, 0, :]),
-        np.max(np.abs(data_arr[:, 1:5, :])),
-        np.max(data_arr[:, 5, :]),
-        np.max(np.abs(data_arr[:, 6:10, :])),
-        np.max(np.abs(data_arr[:, 10:14, :])),
-        np.max(data_arr[:, 14:, :]),
+        1.05 * np.max(data_arr[:, 0, :]),
+        1.05 * np.max(np.abs(data_arr[:, 1:5, :])),
+        1.05 * np.max(data_arr[:, 5, :]),
+        1.05 * np.max(np.abs(data_arr[:, 6:10, :])),
+        1.05 * np.max(np.abs(data_arr[:, 10:14, :])),
+        1.05 * np.max(data_arr[:, 14:, :]),
     ]
 
     fig, ax_list = plt.subplots(
