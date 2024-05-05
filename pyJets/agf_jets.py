@@ -5849,24 +5849,25 @@ def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr_arr[idx3]).zfill(7))
         )
-        for idx in range(x_arr.size):
-            for idx2 in range(len(var_list)):
-                if intpol:
+        for idx2 in range(len(var_list)):
+            if intpol:
+                for idx in range(x_arr.size):
+
                     data_arr[idx3, idx2, idx] = (
                         vlsvobj.read_interpolated_variable(
                             var_list[idx2], coords_arr[idx], operator=ops[idx2]
                         )
                         * scales[idx2]
                     )
-                else:
-                    data_arr[idx3, idx2, idx] = (
-                        vlsvobj.read_variable(
-                            var_list[idx2],
-                            operator=ops[idx2],
-                            cellids=cellids,
-                        )
-                        * scales[idx2]
+            else:
+                data_arr[idx3, idx2, :] = (
+                    vlsvobj.read_variable(
+                        var_list[idx2],
+                        operator=ops[idx2],
+                        cellids=cellids,
                     )
+                    * scales[idx2]
+                )
 
     min_arr = [
         0.95 * np.min(data_arr[:, 0, :]),
