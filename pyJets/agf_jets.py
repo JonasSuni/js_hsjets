@@ -5681,7 +5681,7 @@ def MVA(data):
 def cut_animation(runid, x0, x1, y0, t0, t1):
 
     dr = 300e3
-    global bulkpath, var_list, plot_labels, scales, draw_legend, ylabels, norm, ops, plot_index, plot_colors, coords_arr, data_arr, x_arr, ax_list
+    global bulkpath, var_list, plot_labels, scales, draw_legend, ylabels, norm, ops, plot_index, plot_colors, coords_arr, data_arr, x_arr, ax_list, fnr_arr, min_arr, max_arr
     bulkpath = find_bulkpath(runid)
 
     x_arr = np.arange(x0 * r_e, x1 * r_e + dr / 2.0, dr)
@@ -5838,7 +5838,37 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
-    data_arr = np.zeros((len(var_list), x_arr.size), dtype=float)
+    data_arr = np.zeros((fnr_arr.size, len(var_list), x_arr.size), dtype=float)
+
+    for idx3 in range(fnr_arr.size):
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr_arr[idx3]).zfill(7))
+        )
+        for idx in range(x_arr.size):
+            for idx2 in range(len(var_list)):
+                data_arr[idx3, idx2, idx] = (
+                    vlsvobj.read_interpolated_variable(
+                        var_list[idx2], coords_arr[idx], operator=ops[idx2]
+                    )
+                    * scales[idx2]
+                )
+
+    min_arr = [
+        0,
+        -np.max(np.abs(data_arr[:, 1:5, :])),
+        0,
+        -np.max(np.abs(data_arr[:, 6:10, :])),
+        -np.max(np.abs(data_arr[:, 10:14, :])),
+        0,
+    ]
+    max_arr = [
+        np.max(data_arr[:, 0, :]),
+        np.max(np.abs(data_arr[:, 1:5, :])),
+        np.max(data_arr[:, 5, :]),
+        np.max(np.abs(data_arr[:, 6:10, :])),
+        np.max(np.abs(data_arr[:, 10:14, :])),
+        np.max(data_arr[:, 14:, :]),
+    ]
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
@@ -5851,7 +5881,7 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
         except OSError:
             pass
 
-    ani = FuncAnimation(fig, cut_update, frames=fnr_arr, blit=False)
+    ani = FuncAnimation(fig, cut_update, frames=range(fnr_arr.size), blit=False)
     ani.save(
         figdir + "{}_x_{}_{}_y_{}_t_{}_{}.mp4".format(runid, x0, x1, y0, t0, t1),
         fps=5,
@@ -5862,20 +5892,18 @@ def cut_animation(runid, x0, x1, y0, t0, t1):
     plt.close(fig)
 
 
-def cut_update(fnr):
+def cut_update(idx3):
 
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-    )
+    fnr = fnr_arr[idx3]
 
-    for idx in range(x_arr.size):
-        for idx2 in range(len(var_list)):
-            data_arr[idx2, idx] = (
-                vlsvobj.read_interpolated_variable(
-                    var_list[idx2], coords_arr[idx], operator=ops[idx2]
-                )
-                * scales[idx2]
-            )
+    # for idx in range(x_arr.size):
+    #     for idx2 in range(len(var_list)):
+    #         data_arr[idx2, idx] = (
+    #             vlsvobj.read_interpolated_variable(
+    #                 var_list[idx2], coords_arr[idx], operator=ops[idx2]
+    #             )
+    #             * scales[idx2]
+    #         )
 
     for ax in ax_list:
         ax.clear()
@@ -5885,11 +5913,21 @@ def cut_update(fnr):
         # for vline in vlines:
         #     ax.axvline(vline, linestyle="dashed", linewidth=0.6)
         ax.plot(
-            x_arr / r_e, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
+            x_arr / r_e,
+            data_arr[idx3, idx],
+            color=plot_colors[idx],
+            label=plot_labels[idx],
         )
         if idx == 5:
             pdynx = (
-                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
+                m_p
+                * data_arr[idx3, 0]
+                * 1e6
+                * data_arr[1]
+                * 1e3
+                * data_arr[1]
+                * 1e3
+                * 1e9
             )
             ax.plot(
                 x_arr / r_e,
@@ -5906,3 +5944,4 @@ def cut_update(fnr):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
+        ax.set_ylim(min_arr[idx], max_arr[idx])
