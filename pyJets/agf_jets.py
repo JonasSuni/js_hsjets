@@ -5878,8 +5878,8 @@ def cut_update(fnr):
             )
 
     for idx in range(len(var_list)):
-        ax.clear()
         ax = ax_list[plot_index[idx]]
+        ax.clear()
         # for vline in vlines:
         #     ax.axvline(vline, linestyle="dashed", linewidth=0.6)
         ax.plot(
