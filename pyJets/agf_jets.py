@@ -5768,7 +5768,7 @@ def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
     plt.close(fig)
 
 
-def MVA(data):
+def MVA(data, eigvals=False, prnt=True):
 
     M = np.zeros((3, 3), dtype=float)
 
@@ -5785,12 +5785,16 @@ def MVA(data):
     #     if eigenvec[0][0] > 0:
     #         eigenvec[idx] *= -1
 
-    print("\n")
-    print("Eigenvalues: ", np.sort(eigenval))
-    print("Eigenvectors: ", eigenvec[np.argsort(eigenval)])
+    if prnt:
+        print("\n")
+        print("Eigenvalues: ", np.sort(eigenval))
+        print("Eigenvectors: ", eigenvec[np.argsort(eigenval)])
 
     # return (np.sort(eigenval),eigenvec[np.argsort(eigenval)])
-    return eigenvec[np.argsort(eigenval), :]
+    if eigvals:
+        return (np.sort(eigenval), eigenvec[np.argsort(eigenval), :])
+    else:
+        return eigenvec[np.argsort(eigenval), :]
 
 
 def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
