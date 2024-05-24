@@ -2265,6 +2265,7 @@ def VSC_timeseries(
     delta=None,
     vlines=[],
     mva=False,
+    mva_diag=False,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2557,6 +2558,120 @@ def VSC_timeseries(
         data_arr,
     )
     plt.close(fig)
+
+    if mva_diag:
+        Bdata = deepcopy(data_arr[6:9, :])
+        grain = 10
+        dt = 0.5
+        cutoff = 0.9
+        maxwidth = None
+        window_center = np.arange(0, t_arr.size, grain, dtype=int)
+        window_halfwidth = np.arange(10, int(t_arr.size / 2), grain, dtype=int)
+        window_size = (window_halfwidth * 2 * dt).astype(int)
+        print(
+            "Window center size: {}, window halfwidth size: {}, Time arr grain size: {}".format(
+                window_center.size, window_halfwidth.size, t_arr[0::grain].size
+            )
+        )
+        diag_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
+        diag_vec_data = np.empty(
+            (window_center.size, window_halfwidth.size, 3), dtype=float
+        )
+        diag_maxvec_data = np.empty(
+            (window_center.size, window_halfwidth.size, 3), dtype=float
+        )
+        diag2_data = np.empty((window_center.size, window_halfwidth.size), dtype=float)
+
+        for idx2 in range(window_center.size):
+            for idx3 in range(window_halfwidth.size):
+                start_id = max(window_center[idx2] - window_halfwidth[idx3], 0)
+                stop_id = min(
+                    window_center[idx2] + window_halfwidth[idx3] + 1, t_arr.size
+                )
+                print(
+                    "Window center: {}, window halfwidth: {}, start id: {}, stop id: {}".format(
+                        window_center[idx2], window_halfwidth[idx3], start_id, stop_id
+                    )
+                )
+                eigvals, eigvecs = MVA(
+                    Bdata[:, start_id:stop_id], eigvals=True, prnt=False
+                )
+                diag_data[idx2, idx3] = eigvals[2] - eigvals[0]
+                diag_vec_data[idx2, idx3, :] = eigvecs[0] * np.sign(eigvecs[0][0])
+                diag_maxvec_data[idx2, idx3, :] = eigvecs[2]
+                diag2_data[idx2, idx3] = eigvals[2] - eigvals[1]
+
+        fig, ax = plt.subplots(5, 1, figsize=(8, 15), constrained_layout=True)
+        im = ax[0].pcolormesh(
+            t_arr[0::grain],
+            window_size,
+            diag_data.T,
+            shading="gouraud",
+            cmap="hot_desaturated",
+        )
+        mva_cutoff = cutoff * np.max(diag_data)
+        ax[0].contour(
+            t_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
+        )
+        plt.colorbar(im, ax=ax[0])
+        ax[0].set_ylabel("Window width [s]")
+        ax[0].set_title("$\\lambda_3-\\lambda_1$")
+
+        im = ax[1].pcolormesh(
+            t_arr[0::grain],
+            window_size,
+            diag2_data.T,
+            shading="gouraud",
+            cmap="hot_desaturated",
+        )
+        ax[1].contour(
+            t_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
+        )
+        plt.colorbar(im, ax=ax[1])
+        ax[1].set_ylabel("Window width [s]")
+        ax[1].set_title("$\\lambda_3-\\lambda_2$")
+
+        for idx in range(3):
+            im = ax[idx + 2].pcolormesh(
+                t_arr[0::grain],
+                window_size,
+                diag_vec_data[:, :, idx].T,
+                shading="gouraud",
+                cmap="vik",
+                vmin=-1,
+                vmax=1,
+            )
+            ax[idx + 2].contour(
+                t_arr[0::grain], window_size, diag_data.T, [mva_cutoff], colors=["k"]
+            )
+            plt.colorbar(im, ax=ax[idx + 2])
+            ax[idx + 2].set_ylabel("Window width [s]")
+            ax[idx + 2].set_title(["$n_x$", "$n_y$", "$n_z$"][idx])
+
+        ax[-1].set_xlabel("Window center")
+        fig.savefig(
+            wrkdir_DNR
+            + "Figs/vlas_mva_diag/{}_x{}_y{}_diag_mva.png".format(runid, x0, y0),
+            dpi=150,
+        )
+        plt.close(fig)
+
+        CmeshCW, WmeshCW = np.meshgrid(window_center, window_size)
+
+        if maxwidth:
+            indcs = np.where(
+                np.logical_and(WmeshCW < maxwidth, diag_data.T >= mva_cutoff)
+            )
+        else:
+            indcs = np.where(diag_data.T == np.max(diag_data.T))
+        if indcs[0].size == 1:
+            i, j = np.array(indcs).flatten()
+        else:
+            i, j = np.array(indcs).T[0]
+
+        print("\nMaxvec: {}\n".format(diag_maxvec_data[j, i, :]))
+
+        return (diag_vec_data[j, i, :], t_arr[0::grain][j], window_size[i])
 
 
 def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=False):
