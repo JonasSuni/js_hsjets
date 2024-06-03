@@ -2268,6 +2268,7 @@ def VSC_timeseries(
     mva_diag=False,
     grain=1,
     maxwidth=None,
+    cutoff=0.9,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2564,7 +2565,6 @@ def VSC_timeseries(
     if mva_diag:
         Bdata = deepcopy(data_arr[6:9, :])
         dt = 0.5
-        cutoff = 0.9
         window_center = np.arange(0, t_arr.size, grain, dtype=int)
         window_halfwidth = np.arange(10, int(t_arr.size / 2), grain, dtype=int)
         window_size = (window_halfwidth * 2 * dt).astype(int)
