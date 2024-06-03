@@ -186,13 +186,13 @@ def restrict_area(vlsvobj, boxre):
     return masked_ci
 
 
-def BS_xy():
+def BS_xy(rho=6, vel=400, MA=8, thetaminmax=[-60.25, 60]):
     # theta = np.arange(-60.25,60,0.5)
-    theta = np.deg2rad(np.arange(-60.25, 60, 0.5))
+    theta = np.deg2rad(np.arange(thetaminmax[0], thetaminmax[1], 0.5))
     R_bs = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta == a)[0][0]
-        R_bs[index] = BS_distance_Merka2005(np.pi / 2, a, 6, 400, 8, [])
+        R_bs[index] = BS_distance_Merka2005(np.pi / 2, a, rho, vel, MA, [])
 
     # x_bs = R_bs*np.cos(np.deg2rad(theta))
     # y_bs = R_bs*np.sin(np.deg2rad(theta))
@@ -202,15 +202,13 @@ def BS_xy():
     return [x_bs, y_bs]
 
 
-def MP_xy():
+def MP_xy(pdyn=1.6057170467424, Bz=0.0, thetaminmax=[-60.25, 60]):
     # theta = np.arange(-60.25,60,0.5)
-    theta = np.deg2rad(np.arange(-60.25, 60, 0.5))
+    theta = np.deg2rad(np.arange(thetaminmax[0], thetaminmax[1], 0.5))
     R_mp = np.zeros_like(theta)
     for a in theta:
         index = np.where(theta == a)[0][0]
-        R_mp[index] = Shue_Mpause_model(
-            m_p * 400e3 * 400e3 * 6e6 * 1.0e9, 0.0, [a], [0]
-        )
+        R_mp[index] = Shue_Mpause_model(pdyn, Bz, [a], [0])
 
     # x_mp = R_mp*np.cos(np.deg2rad(theta))
     # y_mp = R_mp*np.sin(np.deg2rad(theta))

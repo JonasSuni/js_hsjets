@@ -12,6 +12,8 @@ from pyJets.jet_aux import (
     xyz_reconstruct,
     bow_shock_jonas,
     mag_pause_jonas,
+    BS_xy,
+    MP_xy,
 )
 from pyJets.jet_analyser import get_cell_volume, sw_par_dict
 import pytools as pt
@@ -6081,3 +6083,8 @@ def cut_update(idx3):
         ax.set_ylabel(ylabels[idx])
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
         ax.set_ylim(min_arr[idx], max_arr[idx])
+
+def plot_vsc_tangents():
+
+    x_mp,y_mp = MP_xy(m_p*1e6*750e3*750e3*1e9,0.0,thetaminmax=[-90.25,90])
+    x_bs,y_bs = BS_xy(1,750,11.5,thetaminmax=[-90.25,90])
