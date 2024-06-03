@@ -2664,6 +2664,7 @@ def VSC_timeseries(
             )
         else:
             indcs = np.where(diag_data.T == np.max(diag_data.T))
+        print(indcs)
         if indcs[0].size == 1:
             i, j = np.array(indcs).flatten()
         else:
