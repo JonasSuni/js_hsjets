@@ -6132,7 +6132,7 @@ def plot_vsc_tangents(t=600):
 
     for c in mp_cells:
         coords = vlsvobj.get_cell_coordinates(c) / r_e
-        mp_coords.append(coords[:2])
+        temp_coords.append(coords[:2])
     temp_coords = np.array(temp_coords)
     for yuni in np.unique(temp_coords[:, 1]):
         xclip = temp_coords[temp_coords[:, 1] == yuni]
