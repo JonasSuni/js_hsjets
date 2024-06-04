@@ -6125,7 +6125,7 @@ def plot_vsc_tangents(t=600):
         temp_coords.append(coords[:2])
     temp_coords = np.array(temp_coords)
     for yuni in np.unique(temp_coords[:, 1]):
-        xclip = temp_coords[temp_coords[:, 1] == yuni]
+        xclip = temp_coords[:,0][temp_coords[:, 1] == yuni]
         print(xclip)
         bs_coords.append([max(xclip), yuni])
 
@@ -6136,7 +6136,7 @@ def plot_vsc_tangents(t=600):
         temp_coords.append(coords[:2])
     temp_coords = np.array(temp_coords)
     for yuni in np.unique(temp_coords[:, 1]):
-        xclip = temp_coords[temp_coords[:, 1] == yuni]
+        xclip = temp_coords[:,0][temp_coords[:, 1] == yuni]
         print(xclip)
         mp_coords.append([max(xclip), yuni])
 
