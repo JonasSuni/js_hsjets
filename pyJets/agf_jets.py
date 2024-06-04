@@ -6160,12 +6160,12 @@ def plot_vsc_tangents(t=600):
         ax.plot(x0, y0, "*", color=CB_color_cycle[0])
         ax.plot(
             [
-                x0 - 5 * ortho_vector[0],
-                x0 + 5 * ortho_vector[0],
+                x0 - 2 * ortho_vector[0],
+                x0 + 2 * ortho_vector[0],
             ],
             [
-                y0 - 5 * ortho_vector[1],
-                y0 + 5 * ortho_vector[1],
+                y0 - 2 * ortho_vector[1],
+                y0 + 2 * ortho_vector[1],
             ],
             color=CB_color_cycle[0],
         )
