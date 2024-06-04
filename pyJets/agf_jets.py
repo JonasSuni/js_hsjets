@@ -6110,7 +6110,7 @@ def plot_vsc_tangents(t=600):
     core_heating = vlsvobj.read_variable("proton/vg_core_heating")
     cellids = vlsvobj.read_variable("CellID")
 
-    bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 1000]
+    bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10000]
     mp_cells = cellids[np.abs(beta_star - 0.3) < 0.01]
 
     bs_coords = []
