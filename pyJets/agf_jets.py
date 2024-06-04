@@ -2674,6 +2674,18 @@ def VSC_timeseries(
 
         print("\nMaxvec: {}\n".format(diag_maxvec_data[j, i, :]))
 
+        txtarr = [
+            x0,
+            y0,
+            diag_vec_data[j, i, 0],
+            diag_vec_data[j, i, 1],
+            diag_vec_data[j, i, 2],
+        ]
+
+        np.savetxt(
+            wrkdir_DNR + "vlas_pos_mva/{}_x{}_y{}.txt".format(runid, x0, y0), txtarr
+        )
+
         return (diag_vec_data[j, i, :], t_arr[0::grain][j], window_size[i])
 
 
@@ -6084,7 +6096,8 @@ def cut_update(idx3):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
         ax.set_ylim(min_arr[idx], max_arr[idx])
 
+
 def plot_vsc_tangents():
 
-    x_mp,y_mp = MP_xy(m_p*1e6*750e3*750e3*1e9,0.0,thetaminmax=[-90.25,90])
-    x_bs,y_bs = BS_xy(1,750,11.5,thetaminmax=[-90.25,90])
+    x_mp, y_mp = MP_xy(m_p * 1e6 * 750e3 * 750e3 * 1e9, 0.0, thetaminmax=[-90.25, 90])
+    x_bs, y_bs = BS_xy(1, 750, 11.5, thetaminmax=[-90.25, 90])
