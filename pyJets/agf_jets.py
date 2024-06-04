@@ -6111,8 +6111,8 @@ def plot_vsc_tangents(t=600):
     mmsx = vlsvobj.read_variable("proton/vg_mmsx")
     cellids = vlsvobj.read_variable("CellID")
 
-    # bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 50000]
-    bs_cells = cellids[mmsx <= 1]
+    bs_cells = cellids[core_heating >= 3 * T_sw]
+    # bs_cells = cellids[mmsx <= 1]
     mp_cells = cellids[beta_star <= 0.3]
 
     bs_coords = []
@@ -6182,5 +6182,6 @@ def plot_vsc_tangents(t=600):
     )
     ax.set_aspect("equal")
     ax.set_xlim(left=0)
+    ax.set_ylim(-20, 20)
     fig.savefig(wrkdir_DNR + "Figs/vlas_pos_mva.png", dpi=150)
     plt.close(fig)
