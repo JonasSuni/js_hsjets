@@ -6097,10 +6097,43 @@ def cut_update(idx3):
         ax.set_ylim(min_arr[idx], max_arr[idx])
 
 
-def plot_vsc_tangents():
+def plot_vsc_tangents(t=600):
 
-    x_mp, y_mp = MP_xy(m_p * 1e6 * 750e3 * 750e3 * 1e9, 0.0, thetaminmax=[-90.25, 90])
-    x_bs, y_bs = BS_xy(1, 750, 11.5, thetaminmax=[-90.25, 90])
+    T_sw = 0.5e6
+
+    fnr = int(t * 2)
+    bulkpath = find_bulkpath("AIC")
+    bulkname = "bulk.{}.vlsv".format(str(fnr).zfill(7))
+    vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
+
+    beta_star = vlsvobj.read_variable("proton/vg_beta_star")
+    core_heating = vlsvobj.read_variable("proton/vg_core_heating")
+    cellids = vlsvobj.read_variable("CellID")
+
+    bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10]
+    mp_cells = cellids[np.abs(beta_star - 0.3) < 0.01]
+
+    bs_coords = []
+    mp_coords = []
+
+    for c in bs_cells:
+        coords = vlsvobj.get_cell_coordinates(c) / r_e
+        bs_coords.append(coords[:2])
+    for c in mp_cells:
+        coords = vlsvobj.get_cell_coordinates(c) / r_e
+        mp_coords.append(coords[:2])
+
+    bs_coords = np.array(bs_coords)
+    mp_coords = np.array(mp_coords)
+
+    bs_coords = bs_coords[np.argsort(bs_coords[:, 1])]
+    mp_coords = mp_coords[np.argsort(mp_coords[:, 1])]
+
+    x_mp, y_mp = mp_coords.T
+    x_bs, y_bs = bs_coords.T
+
+    # x_mp, y_mp = MP_xy(m_p * 1e6 * 750e3 * 750e3 * 1e9, 0.0, thetaminmax=[-90.25, 90])
+    # x_bs, y_bs = BS_xy(1, 750, 11.5, thetaminmax=[-90.25, 90])
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 12), constrained_layout=True)
 
@@ -6127,8 +6160,8 @@ def plot_vsc_tangents():
     ax.plot(x_bs, y_bs, color="k", zorder=0)
     ax.plot(x_mp, y_mp, color="k", zorder=0)
     ax.plot(
-        np.cos(np.arange(0, 2 * np.pi+0.02, 0.05)),
-        np.sin(np.arange(0, 2 * np.pi+0.02, 0.05)),
+        np.cos(np.arange(0, 2 * np.pi + 0.02, 0.05)),
+        np.sin(np.arange(0, 2 * np.pi + 0.02, 0.05)),
         color="k",
         zorder=0,
     )
