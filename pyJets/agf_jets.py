@@ -6112,8 +6112,8 @@ def plot_vsc_tangents(t=600):
     cellids = vlsvobj.read_variable("CellID")
 
     # bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 50000]
-    bs_cells = cellids[np.abs(mmsx - 0.9) < 0.1]
-    mp_cells = cellids[np.abs(beta_star - 0.3) < 0.01]
+    bs_cells = cellids[mmsx <= 1]
+    mp_cells = cellids[beta_star <= 0.3]
 
     bs_coords = []
     mp_coords = []
