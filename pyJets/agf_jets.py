@@ -6107,29 +6107,42 @@ def plot_vsc_tangents(t=600):
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
 
     beta_star = vlsvobj.read_variable("proton/vg_beta_star")
-    # core_heating = vlsvobj.read_variable("proton/vg_core_heating")
-    mmsx = vlsvobj.read_variable("proton/vg_mmsx")
+    core_heating = vlsvobj.read_variable("proton/vg_core_heating")
+    # mmsx = vlsvobj.read_variable("proton/vg_mmsx")
     cellids = vlsvobj.read_variable("CellID")
 
-    # bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10000]
-    bs_cells = cellids[np.abs(mmsx - 0.9) < 0.05]
+    bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10000]
+    # bs_cells = cellids[np.abs(mmsx - 0.9) < 0.05]
     mp_cells = cellids[np.abs(beta_star - 0.3) < 0.01]
 
     bs_coords = []
     mp_coords = []
 
+    temp_coords = []
+
     for c in bs_cells:
         coords = vlsvobj.get_cell_coordinates(c) / r_e
-        bs_coords.append(coords[:2])
+        temp_coords.append(coords[:2])
+    temp_coords = np.array(temp_coords)
+    for yuni in np.unique(temp_coords[:, 1]):
+        xclip = temp_coords[temp_coords[:, 1] == yuni]
+        bs_coords.append([max(xclip), yuni])
+
+    temp_coords = []
+
     for c in mp_cells:
         coords = vlsvobj.get_cell_coordinates(c) / r_e
         mp_coords.append(coords[:2])
+    temp_coords = np.array(temp_coords)
+    for yuni in np.unique(temp_coords[:, 1]):
+        xclip = temp_coords[temp_coords[:, 1] == yuni]
+        mp_coords.append([max(xclip), yuni])
 
     bs_coords = np.array(bs_coords)
     mp_coords = np.array(mp_coords)
 
-    bs_coords = bs_coords[np.argsort(bs_coords[:, 1])]
-    mp_coords = mp_coords[np.argsort(mp_coords[:, 1])]
+    # bs_coords = bs_coords[np.argsort(bs_coords[:, 1])]
+    # mp_coords = mp_coords[np.argsort(mp_coords[:, 1])]
 
     x_mp, y_mp = mp_coords.T
     x_bs, y_bs = bs_coords.T
