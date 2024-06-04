@@ -6107,10 +6107,12 @@ def plot_vsc_tangents(t=600):
     vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + bulkname)
 
     beta_star = vlsvobj.read_variable("proton/vg_beta_star")
-    core_heating = vlsvobj.read_variable("proton/vg_core_heating")
+    # core_heating = vlsvobj.read_variable("proton/vg_core_heating")
+    mmsx = vlsvobj.read_variable("proton/vg_mmsx")
     cellids = vlsvobj.read_variable("CellID")
 
-    bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10000]
+    # bs_cells = cellids[np.abs(core_heating - 3 * T_sw) < 10000]
+    bs_cells = cellids[np.abs(mmsx - 0.9) < 0.05]
     mp_cells = cellids[np.abs(beta_star - 0.3) < 0.01]
 
     bs_coords = []
