@@ -6127,8 +6127,8 @@ def plot_vsc_tangents():
     ax.plot(x_bs, y_bs, color="k", zorder=0)
     ax.plot(x_mp, y_mp, color="k", zorder=0)
     ax.plot(
-        np.cos(np.arange(0, 2 * np.pi, 0.5)),
-        np.sin(np.arange(0, 2 * np.pi, 0.5)),
+        np.cos(np.arange(0, 2 * np.pi+0.02, 0.05)),
+        np.sin(np.arange(0, 2 * np.pi+0.02, 0.05)),
         color="k",
         zorder=0,
     )
