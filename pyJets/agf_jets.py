@@ -6108,6 +6108,7 @@ def plot_vsc_tangents():
         x0, y0, nx, ny, nz = np.loadtxt(wrkdir_DNR + "vlas_pos_mva/" + fname)
         nvec = np.array([nx, ny, nz])
         ortho_vector = np.cross(nvec, [0, 0, 1])
+        ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
         ax.plot(x0, y0, "*", color=CB_color_cycle[0])
         ax.plot(
             [
