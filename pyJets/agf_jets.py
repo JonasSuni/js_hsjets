@@ -6157,7 +6157,7 @@ def plot_vsc_tangents(t=600):
         nvec = np.array([nx, ny, nz])
         ortho_vector = np.cross(nvec, [0, 0, 1])
         ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
-        ax.plot(x0, y0, "*", color=CB_color_cycle[1])
+        ax.plot(x0, y0, "*", color=CB_color_cycle[idx])
         ax.plot(
             [
                 x0 - 2 * ortho_vector[0],
@@ -6167,7 +6167,7 @@ def plot_vsc_tangents(t=600):
                 y0 - 2 * ortho_vector[1],
                 y0 + 2 * ortho_vector[1],
             ],
-            color=CB_color_cycle[1],
+            color=CB_color_cycle[idx],
         )
 
     ax.set_ylabel("Y [RE]")
