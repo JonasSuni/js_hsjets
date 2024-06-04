@@ -6132,5 +6132,6 @@ def plot_vsc_tangents():
         zorder=0,
     )
     ax.set_aspect("equal")
+    ax.set_xlim(left=0)
     fig.savefig(wrkdir_DNR + "Figs/vlas_pos_mva.png", dpi=150)
     plt.close(fig)
