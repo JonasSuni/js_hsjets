@@ -6152,12 +6152,12 @@ def plot_vsc_tangents(t=600):
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 12), constrained_layout=True)
 
-    for fname in os.listdir(wrkdir_DNR + "vlas_pos_mva"):
+    for idx, fname in enumerate(os.listdir(wrkdir_DNR + "vlas_pos_mva")):
         x0, y0, nx, ny, nz = np.loadtxt(wrkdir_DNR + "vlas_pos_mva/" + fname)
         nvec = np.array([nx, ny, nz])
         ortho_vector = np.cross(nvec, [0, 0, 1])
         ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
-        ax.plot(x0, y0, "*", color=CB_color_cycle[0])
+        ax.plot(x0, y0, "*", color=CB_color_cycle[1])
         ax.plot(
             [
                 x0 - 2 * ortho_vector[0],
@@ -6167,7 +6167,7 @@ def plot_vsc_tangents(t=600):
                 y0 - 2 * ortho_vector[1],
                 y0 + 2 * ortho_vector[1],
             ],
-            color=CB_color_cycle[0],
+            color=CB_color_cycle[1],
         )
 
     ax.set_ylabel("Y [RE]")
