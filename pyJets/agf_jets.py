@@ -6101,3 +6101,36 @@ def plot_vsc_tangents():
 
     x_mp, y_mp = MP_xy(m_p * 1e6 * 750e3 * 750e3 * 1e9, 0.0, thetaminmax=[-90.25, 90])
     x_bs, y_bs = BS_xy(1, 750, 11.5, thetaminmax=[-90.25, 90])
+
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12), constrained_layout=True)
+
+    for fname in os.listdir(wrkdir_DNR + "vlas_pos_mva"):
+        x0, y0, nx, ny, nz = np.loadtxt(wrkdir_DNR + "vlas_pos_mva/" + fname)
+        nvec = np.array([nx, ny, nz])
+        ortho_vector = np.cross(nvec, [0, 0, 1])
+        ax.plot(x0, y0, "*", CB_color_cycle[0])
+        ax.plot(
+            [
+                x0 - 5 * ortho_vector[0],
+                x0 + 5 * ortho_vector[0],
+            ],
+            [
+                y0 - 5 * ortho_vector[1],
+                y0 + 5 * ortho_vector[1],
+            ],
+            color=CB_color_cycle[0],
+        )
+
+    ax.set_ylabel("Y [RE]")
+    ax.grid()
+    ax.plot(x_bs, y_bs, color="k", zorder=0)
+    ax.plot(x_mp, y_mp, color="k", zorder=0)
+    ax.plot(
+        np.cos(np.arange(0, 2 * np.pi, 0.5)),
+        np.sin(np.arange(0, 2 * np.pi, 0.5)),
+        color="k",
+        zorder=0,
+    )
+    ax_list.set_aspect("equal")
+    fig.savefig(wrkdir_DNR + "Figs/vlas_pos_mva.png", dpi=150)
+    plt.close(fig)
