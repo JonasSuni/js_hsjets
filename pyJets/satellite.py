@@ -437,7 +437,7 @@ def plot_sc_b(sc, probe, t0, t1, dt=1, datarate="srvy"):
     fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_B.png".format(sc, probe), dpi=150)
 
 
-def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]):
+def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],plot_planes=True):
 
     sc_mva_pos_file_name = wrkdir_DNR + "SC_time_pos_MVA.csv"
     minvec_mva = np.loadtxt(
@@ -496,17 +496,18 @@ def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]):
             )
             ortho_vector = np.cross(minvec_mva[idx2], [[0, 0, 1], [0, 1, 0]][idx])
             ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
-            ax_list[idx].plot(
-                [
-                    sc_pos[idx2, 0] - 5 * ortho_vector[0],
-                    sc_pos[idx2, 0] + 5 * ortho_vector[0],
-                ],
-                [
-                    sc_pos[idx2, idx + 1] - 5 * ortho_vector[idx + 1],
-                    sc_pos[idx2, idx + 1] + 5 * ortho_vector[idx + 1],
-                ],
-                color=sc_colors[idx2],
-            )
+            if plot_planes:
+                ax_list[idx].plot(
+                    [
+                        sc_pos[idx2, 0] - 5 * ortho_vector[0],
+                        sc_pos[idx2, 0] + 5 * ortho_vector[0],
+                    ],
+                    [
+                        sc_pos[idx2, idx + 1] - 5 * ortho_vector[idx + 1],
+                        sc_pos[idx2, idx + 1] + 5 * ortho_vector[idx + 1],
+                    ],
+                    color=sc_colors[idx2],
+                )
             # ax_list[idx].quiver(
             #     sc_pos[idx2, 0],
             #     sc_pos[idx2, idx + 1],
