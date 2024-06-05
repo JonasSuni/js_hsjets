@@ -437,7 +437,9 @@ def plot_sc_b(sc, probe, t0, t1, dt=1, datarate="srvy"):
     fig.savefig(wrkdir_DNR + "Figs/satellite/{}{}_B.png".format(sc, probe), dpi=150)
 
 
-def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],plot_planes=True):
+def plot_all_sc(
+    scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], plot_planes=True
+):
 
     sc_mva_pos_file_name = wrkdir_DNR + "SC_time_pos_MVA.csv"
     minvec_mva = np.loadtxt(
@@ -493,7 +495,7 @@ def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],plot_
                 sc_markers[idx2],
                 label=sc_name[idx2],
                 color=sc_colors[idx2],
-                markersize=3,
+                markersize=10,
             )
             ortho_vector = np.cross(minvec_mva[idx2], [[0, 0, 1], [0, 1, 0]][idx])
             ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
