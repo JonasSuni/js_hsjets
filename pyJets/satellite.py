@@ -493,6 +493,7 @@ def plot_all_sc(scs_to_plot=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],plot_
                 sc_markers[idx2],
                 label=sc_name[idx2],
                 color=sc_colors[idx2],
+                markersize=3,
             )
             ortho_vector = np.cross(minvec_mva[idx2], [[0, 0, 1], [0, 1, 0]][idx])
             ortho_vector = ortho_vector / np.linalg.norm(ortho_vector)
