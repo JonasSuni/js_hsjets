@@ -374,8 +374,8 @@ def avg_sw_data(t0, t1, dt=1):
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
 
     B = [Bx_arr, By_arr, Bz_arr]
-    ycone_arr = np.arctan2(By_arr, np.abs(Bx_arr))
-    zcone_arr = np.arctan2(Bz_arr, np.abs(Bx_arr))
+    ycone_arr = np.rad2deg(np.arctan2(By_arr, np.abs(Bx_arr)))
+    zcone_arr = np.rad2deg(np.arctan2(Bz_arr, np.abs(Bx_arr)))
     data_arr = [Bx_arr, By_arr, Bz_arr, v_arr, n_arr, pd_arr, ycone_arr, zcone_arr]
 
     fig, ax_list = plt.subplots(8, 1, figsize=(18, 12), constrained_layout=True)
