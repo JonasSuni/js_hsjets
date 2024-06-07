@@ -378,7 +378,7 @@ def avg_sw_data(t0, t1, dt=1):
     zcone_arr = np.rad2deg(np.arctan2(Bz_arr, np.abs(Bx_arr)))
     data_arr = [Bx_arr, By_arr, Bz_arr, v_arr, n_arr, pd_arr, ycone_arr, zcone_arr]
 
-    fig, ax_list = plt.subplots(8, 1, figsize=(18, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(8, 1, figsize=(12, 18), constrained_layout=True)
     for idx in range(len(ax_list)):
         ax = ax_list[idx]
         ax.plot(time_arr, data_arr[idx])
