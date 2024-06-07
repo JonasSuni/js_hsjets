@@ -392,6 +392,8 @@ def avg_sw_data(t0, t1, dt=1):
         np.nanmean(n_arr),
         np.nanmean(v_arr),
         np.nanmean(pd_arr),
+        np.nanmean(Bx_arr),
+        np.nanmean(By_arr),
         np.nanmean(Bz_arr),
         np.nanmean(MA_arr),
         np.nanmean(timeshift_arr),
