@@ -374,14 +374,17 @@ def avg_sw_data(t0, t1, dt=1):
     pd_arr = m_p * n_arr * 1e6 * v_arr * v_arr * 1e6 * 1e9
 
     B = [Bx_arr, By_arr, Bz_arr]
-    data_arr = [Bx_arr, By_arr, Bz_arr, v_arr, n_arr, pd_arr]
+    ycone_arr = np.arctan2(By_arr, np.abs(Bx_arr))
+    zcone_arr = np.arctan2(Bz_arr, np.abs(Bx_arr))
+    data_arr = [Bx_arr, By_arr, Bz_arr, v_arr, n_arr, pd_arr, ycone_arr, zcone_arr]
 
-    fig, ax_list = plt.subplots(6, 1, figsize=(18, 12), constrained_layout=True)
+    fig, ax_list = plt.subplots(8, 1, figsize=(18, 12), constrained_layout=True)
     for idx in range(6):
         ax = ax_list[idx]
         ax.plot(time_arr, data_arr[idx])
         ax.grid()
-        ax.set_ylabel(["Bx", "By", "Bz", "v", "n", "Pdyn"][idx])
+        ax.set_xlim(time_arr[0], time_arr[-1])
+        ax.set_ylabel(["Bx", "By", "Bz", "v", "n", "Pdyn", "Ycone", "Zcone"][idx])
 
     fig.savefig(wrkdir_DNR + "Figs/satellite/SW_plot.png", dpi=150)
 
