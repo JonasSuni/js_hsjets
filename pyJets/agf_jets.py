@@ -6185,3 +6185,182 @@ def plot_vsc_tangents(t=600):
     ax.set_ylim(-20, 20)
     fig.savefig(wrkdir_DNR + "Figs/vlas_pos_mva.png", dpi=150)
     plt.close(fig)
+
+
+def AGF_AIC_comp(x0, y0, t0, t1):
+
+    bulkpath_AGF = find_bulkpath("AGF")
+    bulkpath_AIC = find_bulkpath("AIC")
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_labels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v_x~[\mathrm{km/s}]$",
+        "$v_y~[\mathrm{km/s}]$",
+        "$v_z~[\mathrm{km/s}]$",
+        "$|v|~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B_x~[\mathrm{nT}]$",
+        "$B_y~[\mathrm{nT}]$",
+        "$B_z~[\mathrm{nT}]$",
+        "$|B|~[\mathrm{nT}]$",
+        "$E_x~[\mathrm{mV/m}]$",
+        "$E_y~[\mathrm{mV/m}]$",
+        "$E_z~[\mathrm{mV/m}]$",
+        "$|E|~[\mathrm{mV/m}]$",
+        "$T_\\parallel~[\mathrm{MK}]$",
+        "$T_\\perp~[\mathrm{MK}]$",
+    ]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B~[\mathrm{nT}]$",
+        "$E~[\mathrm{mV/m}]$",
+        "$T~[\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\mathrm{sw}]$",
+        # "$v~[v_\mathrm{sw}]$",
+        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        # "$B~[B_\mathrm{IMF}]$",
+        # "$E~[E_\mathrm{sw}]$",
+        # "$T~[T_\mathrm{sw}]$",
+    ]
+    e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
+
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+    fnr0 = int(t0 * 2)
+    fnr_arr = np.arange(fnr0, int(t1 * 2) + 1, dtype=int)
+    cellid_AGF = pt.vlsvfile.VlsvReader(
+        bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    cellid_AIC = pt.vlsvfile.VlsvReader(
+        bulkpath_AIC + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
+    data_arr_AGF = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+    data_arr_AIC = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+
+    for idx, fnr in enumerate(fnr_arr):
+        vlsvobj_AGF = pt.vlsvfile.VlsvReader(
+            bulkpath_AGF + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        vlsvobj_AIC = pt.vlsvfile.VlsvReader(
+            bulkpath_AIC + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        for idx2, var in enumerate(var_list):
+            # data_arr_AGF[idx2, idx] = (
+            #     vlsvobj_AGF.read_interpolated_variable(
+            #         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+            #     )
+            #     * scales[idx2]
+            # )
+            # data_arr_AIC[idx2, idx] = (
+            #     vlsvobj_AIC.read_interpolated_variable(
+            #         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+            #     )
+            #     * scales[idx2]
+            # )
+            data_arr_AGF[idx2, idx] = (
+                vlsvobj_AGF.read_variable(var, operator=ops[idx2], cellids=cellid_AGF)
+                * scales[idx2]
+            )
+            data_arr_AIC[idx2, idx] = (
+                vlsvobj_AIC.read_variable(var, operator=ops[idx2], cellids=cellid_AIC)
+                * scales[idx2]
+            )
+
+    fig, ax_list = plt.subplots(
+        len(plot_labels), 1, sharex=True, figsize=(12, 8), constrained_layout=True
+    )
+    ax_list[0].set_title("Run: AGF vs. AIC, $x_0$: {}, $y_0$: {}".format(x0, y0))
+    for idx in range(len(var_list)):
+        ax = ax_list[idx]
+        ax.plot(t_arr, data_arr_AGF[idx], color="k", linestyle="solid")
+        ax.plot(t_arr, data_arr_AIC[idx], color="k", linestyle="dashed")
+        ax.set_xlim(t_arr[0], t_arr[-1])
+    ax_list[-1].set_xlabel("Simulation time [s]")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(plot_labels[idx])
+    figdir = wrkdir_DNR + "Figs/timeseries/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir + "AGFvsAIC_x{}_y{}_t0{}_t1{}.png".format(x0, y0, t0, t1),
+        dpi=300,
+    )
+    plt.close(fig)
