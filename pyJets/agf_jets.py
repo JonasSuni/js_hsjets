@@ -6340,7 +6340,7 @@ def AGF_AIC_comp(x0, y0, t0, t1):
             )
 
     fig, ax_list = plt.subplots(
-        len(plot_labels), 1, sharex=True, figsize=(12, 8), constrained_layout=True
+        len(plot_labels), 1, sharex=True, figsize=(6, 16), constrained_layout=True
     )
     ax_list[0].set_title("Run: AGF vs. AIC, $x_0$: {}, $y_0$: {}".format(x0, y0))
     for idx in range(len(var_list)):
