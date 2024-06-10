@@ -6264,39 +6264,6 @@ def AGF_AIC_comp(x0, y0, t0, t1):
         1e-6,
         1e-6,
     ]
-    draw_legend = [
-        False,
-        False,
-        False,
-        False,
-        True,
-        True,
-        False,
-        False,
-        False,
-        True,
-        False,
-        False,
-        False,
-        True,
-        False,
-        True,
-    ]
-    ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B~[\mathrm{nT}]$",
-        "$E~[\mathrm{mV/m}]$",
-        "$T~[\mathrm{MK}]$",
-        # "$\\rho~[\\rho_\mathrm{sw}]$",
-        # "$v~[v_\mathrm{sw}]$",
-        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        # "$B~[B_\mathrm{IMF}]$",
-        # "$E~[E_\mathrm{sw}]$",
-        # "$T~[T_\mathrm{sw}]$",
-    ]
-    e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
 
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
@@ -6318,18 +6285,6 @@ def AGF_AIC_comp(x0, y0, t0, t1):
             bulkpath_AIC + "bulk.{}.vlsv".format(str(fnr).zfill(7))
         )
         for idx2, var in enumerate(var_list):
-            # data_arr_AGF[idx2, idx] = (
-            #     vlsvobj_AGF.read_interpolated_variable(
-            #         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-            #     )
-            #     * scales[idx2]
-            # )
-            # data_arr_AIC[idx2, idx] = (
-            #     vlsvobj_AIC.read_interpolated_variable(
-            #         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-            #     )
-            #     * scales[idx2]
-            # )
             data_arr_AGF[idx2, idx] = (
                 vlsvobj_AGF.read_variable(var, operator=ops[idx2], cellids=cellid_AGF)
                 * scales[idx2]
