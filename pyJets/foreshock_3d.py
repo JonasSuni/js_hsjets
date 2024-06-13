@@ -91,9 +91,9 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def ipshock_1d_compare(fnr=36):
+def ipshock_1d_compare(fnr=36, resols=[250, 300, 500]):
 
-    resols = [250, 300, 500]
+    # resols = [250, 300, 500]
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal"]
