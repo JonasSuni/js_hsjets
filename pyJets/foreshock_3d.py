@@ -133,6 +133,7 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500]):
         ax.set_ylim(miny[idx], maxy[idx])
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[0].legend(loc="upper right")
+    ax_list[0].set_title("t = {}s".format(fnr * 5))
 
     fig.savefig(wrkdir_DNR + "Figs/res_comp.png")
     plt.close(fig)
