@@ -96,7 +96,13 @@ def ipshock_1d_compare(fnr=36):
     resols = [250, 300, 500]
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
-    fig, ax = plt.subplots(1, 1, constrained_layout=True)
+    var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal"]
+    ylabels = ["$\\rho~[\mathrm{cm}^{-3}]$", "$\\rho~[\mathrm{cm}^{-3}]$"]
+    scales = [1e-6, 1e-6]
+
+    fig, ax_list = plt.subplots(
+        len(var_list), 1, figsize=(12, 12), constrained_layout=True, sharex=True
+    )
 
     for idx, r in enumerate(resols):
         vobj = pt.vlsvfile.VlsvReader(
@@ -107,15 +113,19 @@ def ipshock_1d_compare(fnr=36):
         x_arr = (
             np.array([vobj.get_cell_coordinates(c)[0] for c in np.sort(cellids)]) / r_e
         )
-        rho_arr = vobj.read_variable("proton/vg_rho")[np.argsort(cellids)]
+        for idx2, var in enumerate(var_list):
+            ax = ax_list[idx2]
+            var_arr = vobj.read_variable(var)[np.argsort(cellids)] * scales[idx2]
 
-        ax.plot(x_arr, rho_arr, color=CB_color_cycle[idx], label="{}".format(r))
+            ax.plot(x_arr, var_arr, color=CB_color_cycle[idx], label="{}".format(r))
 
-    ax.grid()
-    ax.set_xlim(x_arr[0], x_arr[-1])
-    ax.set_xlabel("X [RE]")
-    ax.set_ylabel("$\\rho~[m^{-3}]$")
-    ax.legend(loc="upper right")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        # ax.set_xlim(x_arr[0], x_arr[-1])
+        ax.set_xlim(-20, 20)
+        ax.set_xlabel("X [RE]")
+        ax.set_ylabel(ylabels[idx])
+    ax_list[0].legend(loc="upper right")
 
     fig.savefig(wrkdir_DNR + "Figs/res_comp.png")
     plt.close(fig)
