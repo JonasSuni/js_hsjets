@@ -97,11 +97,14 @@ def ipshock_1d_compare(fnr=36):
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal"]
-    ylabels = ["$\\rho~[\mathrm{cm}^{-3}]$", "$\\rho~[\mathrm{cm}^{-3}]$"]
+    ylabels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
+    ]
     scales = [1e-6, 1e-6]
 
     fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(12, 12), constrained_layout=True, sharex=True
+        len(var_list), 1, figsize=(8, 6), constrained_layout=True, sharex=True
     )
 
     for idx, r in enumerate(resols):
