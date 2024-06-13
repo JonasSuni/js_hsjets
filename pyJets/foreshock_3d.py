@@ -102,6 +102,8 @@ def ipshock_1d_compare(fnr=36):
         "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
     ]
     scales = [1e-6, 1e-6]
+    miny = [None, 10**-4]
+    maxy = [5, 5]
 
     fig, ax_list = plt.subplots(
         len(var_list), 1, figsize=(8, 6), constrained_layout=True, sharex=True
@@ -128,7 +130,7 @@ def ipshock_1d_compare(fnr=36):
         ax.set_xlim(-20, 20)
         ax.set_ylabel(ylabels[idx])
         ax.set_yscale("log")
-        ax.set_ylim(0.01)
+        ax.set_ylim(miny[idx], maxy[idx])
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[0].legend(loc="upper right")
 
