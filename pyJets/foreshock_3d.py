@@ -88,7 +88,7 @@ try:
 except:
     tavgdir = wrkdir_DNR + "tavg/"
 
-wrkdir_DNR = wrkdir_DNR + "foreshock_3d/"
+wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
 def ipshock_1d_compare(fnr=36):
