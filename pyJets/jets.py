@@ -173,6 +173,9 @@ from jet_23_scripts import (
 )
 
 import agf_jets
+
+import foreshock_3d
+
 try:
     import satellite
 except:
