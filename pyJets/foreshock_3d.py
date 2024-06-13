@@ -128,6 +128,7 @@ def ipshock_1d_compare(fnr=36):
         ax.set_xlim(-20, 20)
         ax.set_ylabel(ylabels[idx])
         ax.set_yscale("log")
+        ax.set_ylim(0.01)
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[0].legend(loc="upper right")
 
