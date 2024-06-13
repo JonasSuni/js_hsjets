@@ -115,6 +115,7 @@ def ipshock_1d_compare(fnr=36):
     ax.set_xlim(x_arr[0], x_arr[-1])
     ax.set_xlabel("X [RE]")
     ax.set_ylabel("$\\rho~[m^{-3}]$")
+    ax.legend(loc="upper right")
 
     fig.savefig(wrkdir_DNR + "res_comp.png")
     plt.close(fig)
