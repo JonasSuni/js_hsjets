@@ -105,7 +105,7 @@ def ipshock_1d_compare(fnr=36):
 
         cellids = vobj.read_variable("CellID")
         x_arr = (
-            np.array([vobj.get_cell_coordinates(c)[0] for c in cellids.sort()]) / r_e
+            np.array([vobj.get_cell_coordinates(c)[0] for c in np.sort(cellids)]) / r_e
         )
         rho_arr = vobj.read_variable("proton/vg_rho")[np.argsort(cellids)]
 
