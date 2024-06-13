@@ -127,7 +127,7 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500]):
     for idx, ax in enumerate(ax_list):
         ax.grid()
         # ax.set_xlim(x_arr[0], x_arr[-1])
-        ax.set_xlim(-20, 20)
+        ax.set_xlim(-20, 40)
         ax.set_ylabel(ylabels[idx])
         ax.set_yscale("log")
         ax.set_ylim(miny[idx], maxy[idx])
