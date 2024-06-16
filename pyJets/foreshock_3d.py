@@ -117,6 +117,8 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
             fmin=1e-18,
             xz=True,
             setThreshold=1e-18,
+            box=[-6e6, 6e6, -6e6, 6e6],
+            fmax=1e-5,
         )
         ax.set_title("dx = {} km".format(r))
 
