@@ -91,6 +91,32 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
+def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
+
+    ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
+
+    fig, ax_list = plt.subplots(
+        len(resols),
+        1,
+        figsize=(8, 24),
+        constrained_layout=True,
+        sharex=True,
+        sharey=True,
+    )
+
+    for idx, r in enumerate(resols):
+        ax = ax_list[idx]
+        filename = os.listdir(ipshock_path + "{}/restart/".format(r))[-1]
+        vobj = pt.vlsvfile.VlsvReader(
+            ipshock_path + "{}/restart/{}".format(r, filename)
+        )
+        pt.plot.plot_vdf(vlsvobj=vobj, coordre=[20, 0, 0], axes=ax, fmin=1e-18, xz=True)
+        ax.set_title("dx = {} km".format(r))
+
+    fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
+    plt.close(fig)
+
+
 def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
     # resols = [250, 300, 500]
