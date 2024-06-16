@@ -91,7 +91,7 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
+def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
 
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
@@ -112,7 +112,7 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         )
         pt.plot.plot_vdf(
             vlsvobj=vobj,
-            coordre=[20, 0, 0],
+            coordre=[x0, 0, 0],
             axes=ax,
             fmin=1e-18,
             xz=True,
