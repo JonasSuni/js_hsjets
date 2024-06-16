@@ -124,7 +124,8 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         for idx2, var in enumerate(var_list):
             ax = ax_list[idx2]
             var_arr = (
-                vobj.read_variable(var, op=op[idx2])[np.argsort(cellids)] * scales[idx2]
+                vobj.read_variable(var, operator=op[idx2])[np.argsort(cellids)]
+                * scales[idx2]
             )
 
             ax.plot(x_arr, var_arr, color=CB_color_cycle[idx], label="{}".format(r))
