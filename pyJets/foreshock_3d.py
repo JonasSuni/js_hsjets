@@ -96,8 +96,8 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     fig, ax_list = plt.subplots(
-        len(resols),
-        1,
+        2,
+        int(len(resols) / 2),
         figsize=(8, 24),
         constrained_layout=True,
         sharex=True,
@@ -105,7 +105,7 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
     )
 
     for idx, r in enumerate(resols):
-        ax = ax_list[idx]
+        ax = ax_list.flatten()[idx]
         filename = os.listdir(ipshock_path + "{}/restart/".format(r))[-1]
         vobj = pt.vlsvfile.VlsvReader(
             ipshock_path + "{}/restart/{}".format(r, filename)
@@ -121,7 +121,8 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
             fmax=1e-5,
         )
         ax.set_title("dx = {} km".format(r))
-
+    if len(resols) / 2 % 1 != 0:
+        ax_list.flatten()[-1].set_axis_off()
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
     plt.close(fig)
 
