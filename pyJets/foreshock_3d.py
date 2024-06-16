@@ -96,17 +96,23 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
     # resols = [250, 300, 500]
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
-    var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal", "proton/vg_v_nonthermal"]
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_rho_nonthermal",
+        "proton/vg_v",
+        "proton/vg_v_nonthermal",
+    ]
     ylabels = [
         "$\\rho~[\mathrm{cm}^{-3}]$",
         "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
         "$v_\mathrm{non-th}~[\mathrm{km/s}]$",
     ]
-    scales = [1e-6, 1e-6, 1e-3]
-    miny = [None, 10**-4, 0]
-    maxy = [5, 5, 1000]
-    op = ["pass", "pass", "magnitude"]
-    yscales = ["log", "log", "linear"]
+    scales = [1e-6, 1e-6, 1e-3, 1e-3]
+    miny = [None, 10**-4, 0, 0]
+    maxy = [5, 5, 1000, 1000]
+    op = ["pass", "pass", "magnitude", "magnitude"]
+    yscales = ["log", "log", "linear", "linear"]
 
     fig, ax_list = plt.subplots(
         len(var_list), 1, figsize=(8, 9), constrained_layout=True, sharex=True
