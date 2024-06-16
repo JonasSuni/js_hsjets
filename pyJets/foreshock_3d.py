@@ -101,21 +101,23 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         "proton/vg_rho_nonthermal",
         "proton/vg_v",
         "proton/vg_v_nonthermal",
+        "vg_b_vol",
     ]
     ylabels = [
         "$\\rho~[\mathrm{cm}^{-3}]$",
         "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
         "$v_x~[\mathrm{km/s}]$",
         "$v_{\mathrm{non-th},x}~[\mathrm{km/s}]$",
+        "$B_y~[\mathrm{nT}]$",
     ]
-    scales = [1e-6, 1e-6, 1e-3, 1e-3]
-    miny = [None, 10**-4, -1000, -500]
-    maxy = [5, 5, 0, 1000]
-    op = ["pass", "pass", "x", "x"]
-    yscales = ["log", "log", "linear", "linear"]
+    scales = [1e-6, 1e-6, 1e-3, 1e-3, 1e9]
+    miny = [None, 10**-4, -1000, -500, -5]
+    maxy = [5, 5, 0, 1000, 5]
+    op = ["pass", "pass", "x", "x", "y"]
+    yscales = ["log", "log", "linear", "linear", "linear"]
 
     fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(8, 9), constrained_layout=True, sharex=True
+        len(var_list), 1, figsize=(8, 12), constrained_layout=True, sharex=True
     )
 
     for idx, r in enumerate(resols):
