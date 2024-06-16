@@ -91,22 +91,24 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def ipshock_1d_compare(fnr=36, resols=[250, 300, 500]):
+def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
     # resols = [250, 300, 500]
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
-    var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal"]
+    var_list = ["proton/vg_rho", "proton/vg_rho_nonthermal", "proton/vg_v_nonthermal"]
     ylabels = [
         "$\\rho~[\mathrm{cm}^{-3}]$",
         "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
+        "$v_\mathrm{non-th}~[\mathrm{km/s}]$",
     ]
-    scales = [1e-6, 1e-6]
-    miny = [None, 10**-4]
-    maxy = [5, 5]
+    scales = [1e-6, 1e-6, 1e-3]
+    miny = [None, 10**-4, 0]
+    maxy = [5, 5, 1000]
+    op = [None, None, "magnitude"]
 
     fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(8, 6), constrained_layout=True, sharex=True
+        len(var_list), 1, figsize=(8, 9), constrained_layout=True, sharex=True
     )
 
     for idx, r in enumerate(resols):
@@ -120,7 +122,9 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500]):
         )
         for idx2, var in enumerate(var_list):
             ax = ax_list[idx2]
-            var_arr = vobj.read_variable(var)[np.argsort(cellids)] * scales[idx2]
+            var_arr = (
+                vobj.read_variable(var, op=op[idx2])[np.argsort(cellids)] * scales[idx2]
+            )
 
             ax.plot(x_arr, var_arr, color=CB_color_cycle[idx], label="{}".format(r))
 
