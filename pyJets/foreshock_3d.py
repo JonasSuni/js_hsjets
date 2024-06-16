@@ -91,13 +91,15 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
+def ipshock_1d_vdf(x0=20):
+
+    resols = [250, 300, 500, 1000, 2000, 4000, 8000]
 
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     fig, ax_list = plt.subplots(
         2,
-        int(len(resols) / 2) + 1,
+        4,
         figsize=(12, 8),
         constrained_layout=True,
         sharex=True,
@@ -121,8 +123,7 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
             fmax=1e-5,
         )
         ax.set_title("dx = {} km".format(r))
-    if len(resols) / 2 % 1 != 0:
-        ax_list.flatten()[-1].set_axis_off()
+    ax_list.flatten()[-1].set_axis_off()
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
     plt.close(fig)
 
