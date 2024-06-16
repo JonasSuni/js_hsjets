@@ -97,8 +97,8 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000], x0=20):
 
     fig, ax_list = plt.subplots(
         2,
-        int(len(resols) / 2),
-        figsize=(8, 24),
+        int(len(resols) / 2) + 1,
+        figsize=(12, 8),
         constrained_layout=True,
         sharex=True,
         sharey=True,
