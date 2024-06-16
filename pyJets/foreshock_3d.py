@@ -109,7 +109,7 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         "$v_\mathrm{non-th}~[\mathrm{km/s}]$",
     ]
     scales = [1e-6, 1e-6, 1e-3, 1e-3]
-    miny = [None, 10**-4, 0, 0]
+    miny = [None, 10**-4, -1000, -1000]
     maxy = [5, 5, 1000, 1000]
     op = ["pass", "pass", "x", "x"]
     yscales = ["log", "log", "linear", "linear"]
