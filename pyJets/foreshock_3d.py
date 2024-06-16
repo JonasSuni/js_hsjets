@@ -110,7 +110,14 @@ def ipshock_1d_vdf(resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         vobj = pt.vlsvfile.VlsvReader(
             ipshock_path + "{}/restart/{}".format(r, filename)
         )
-        pt.plot.plot_vdf(vlsvobj=vobj, coordre=[20, 0, 0], axes=ax, fmin=1e-18, xz=True)
+        pt.plot.plot_vdf(
+            vlsvobj=vobj,
+            coordre=[20, 0, 0],
+            axes=ax,
+            fmin=1e-18,
+            xz=True,
+            setThreshold=1e-18,
+        )
         ax.set_title("dx = {} km".format(r))
 
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
