@@ -123,6 +123,7 @@ def ipshock_1d_vdf(x0=20):
             fmax=1e-5,
         )
         ax.set_title("dx = {} km".format(r))
+    fig.suptitle("X = {} RE".format(x0))
     ax_list.flatten()[-1].set_axis_off()
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
     plt.close(fig)
