@@ -125,7 +125,7 @@ def ipshock_1d_vdf(x0=20):
         ax.set_title("dx = {} km".format(r))
     fig.suptitle("X = {} RE".format(x0))
     ax_list.flatten()[-1].set_axis_off()
-    fig.savefig(wrkdir_DNR + "Figs/vdf_comp.png")
+    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}.png".format(x0))
     plt.close(fig)
 
 
@@ -187,5 +187,5 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
     ax_list[0].legend(loc="upper right")
     ax_list[0].set_title("t = {}s".format(fnr * 5))
 
-    fig.savefig(wrkdir_DNR + "Figs/res_comp.png")
+    fig.savefig(wrkdir_DNR + "Figs/res_comp_{}.png".format(fnr))
     plt.close(fig)
