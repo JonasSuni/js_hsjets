@@ -121,6 +121,7 @@ def ipshock_1d_vdf(x0=20):
             setThreshold=1e-18,
             box=[-6e6, 6e6, -6e6, 6e6],
             fmax=1e-5,
+            slicethick=0,
         )
         ax.set_title("dx = {} km".format(r))
     fig.suptitle("X = {} RE".format(x0))
