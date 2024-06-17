@@ -124,8 +124,8 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18):
             slicethick=1,
             reducer="average",
         )
-        ax.set_title("dx = {} km, threshold = {}".format(r, str(cutoff)))
-    fig.suptitle("X = {} RE".format(x0))
+        ax.set_title("dx = {} km".format(r))
+    fig.suptitle("X = {} RE, threshold = {}".format(x0, str(cutoff)))
     ax_list.flatten()[-1].set_axis_off()
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}.png".format(x0, cutoff))
     plt.close(fig)
