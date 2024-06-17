@@ -91,7 +91,7 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def ipshock_1d_vdf(x0=20):
+def ipshock_1d_vdf(x0=20, cutoff=1e-18):
 
     resols = [250, 300, 500, 1000, 2000, 4000, 8000]
 
@@ -118,7 +118,7 @@ def ipshock_1d_vdf(x0=20):
             axes=ax,
             fmin=1e-18,
             xz=True,
-            setThreshold=1e-18,
+            setThreshold=cutoff,
             box=[-6e6, 6e6, -6e6, 6e6],
             fmax=1e-5,
             slicethick=1,
@@ -127,7 +127,7 @@ def ipshock_1d_vdf(x0=20):
         ax.set_title("dx = {} km".format(r))
     fig.suptitle("X = {} RE".format(x0))
     ax_list.flatten()[-1].set_axis_off()
-    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}.png".format(x0))
+    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}.png".format(x0, cutoff))
     plt.close(fig)
 
 
