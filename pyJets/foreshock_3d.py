@@ -152,7 +152,8 @@ def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
     )
     fig.suptitle("res = {} RE, cellid = {}".format(resol, cellid))
     ax_list.flatten()[-1].set_axis_off()
-    fig.savefig(wrkdir_DNR + "Figs/vdf_r{}_c{}.png".format(resol, cellid))
+    res = str(resol).replace("/", "_")
+    fig.savefig(wrkdir_DNR + "Figs/vdf_r{}_c{}.png".format(res, cellid))
     plt.close(fig)
 
 
