@@ -91,6 +91,71 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
+def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
+
+    fig, ax_list = plt.subplots(
+        2,
+        2,
+        figsize=(8, 8),
+        constrained_layout=True,
+        sharex=True,
+        sharey=True,
+    )
+    ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
+    ax_flat = ax_list.flatten()
+
+    ax_flat[-1].set_axis_off()
+
+    filename = os.listdir(ipshock_path + "{}/restart/".format(resol))[-1]
+    vobj = pt.vlsvfile.VlsvReader(
+        ipshock_path + "{}/restart/{}".format(resol, filename)
+    )
+
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[0],
+        fmin=1e-18,
+        xy=True,
+        setThreshold=1e-18,
+        box=box,
+        fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[1],
+        fmin=1e-18,
+        xz=True,
+        setThreshold=1e-18,
+        box=box,
+        fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[2],
+        fmin=1e-18,
+        yz=True,
+        setThreshold=1e-18,
+        box=box,
+        fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    fig.suptitle("res = {} RE, cellid = {}".format(resol, cellid))
+    ax_list.flatten()[-1].set_axis_off()
+    fig.savefig(wrkdir_DNR + "Figs/vdf_r{}_c{}.png".format(resol, cellid))
+    plt.close(fig)
+
+
 def ipshock_1d_vdf(x0=20, cutoff=1e-18):
 
     resols = [250, 300, 500, 1000, 2000, 4000, 8000]
