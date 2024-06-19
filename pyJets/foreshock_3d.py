@@ -106,7 +106,7 @@ def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
 
     ax_flat[-1].set_axis_off()
 
-    filename = os.listdir(ipshock_path + "{}/restart/".format(resol))[-1]
+    filename = sorted(os.listdir(ipshock_path + "{}/restart/".format(resol)))[-1]
     vobj = pt.vlsvfile.VlsvReader(
         ipshock_path + "{}/restart/{}".format(resol, filename)
     )
@@ -174,7 +174,7 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18):
 
     for idx, r in enumerate(resols):
         ax = ax_list.flatten()[idx]
-        filename = os.listdir(ipshock_path + "{}/restart/".format(r))[-1]
+        filename = sorted(os.listdir(ipshock_path + "{}/restart/".format(r)))[-1]
         vobj = pt.vlsvfile.VlsvReader(
             ipshock_path + "{}/restart/{}".format(r, filename)
         )
