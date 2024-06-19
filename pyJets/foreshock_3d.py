@@ -150,7 +150,7 @@ def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
         # reducer="average",
         slicethick=0,
     )
-    fig.suptitle("res = {} RE, cellid = {}".format(resol, cellid))
+    fig.suptitle("res = {}, cellid = {}".format(resol, cellid))
     ax_list.flatten()[-1].set_axis_off()
     res = str(resol).replace("/", "_")
     fig.savefig(wrkdir_DNR + "Figs/vdf_r{}_c{}.png".format(res, cellid))
