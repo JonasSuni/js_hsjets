@@ -201,6 +201,61 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000,
     plt.close(fig)
 
 
+def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1):
+
+    ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
+
+    dx = 8000e3
+
+    # var_list = [
+    #     "proton/vg_rho",
+    #     "proton/vg_rho_nonthermal",
+    #     "proton/vg_v",
+    #     "proton/vg_v_nonthermal",
+    #     "vg_b_vol",
+    # ]
+    # ylabels = [
+    #     "$\\rho~[\mathrm{cm}^{-3}]$",
+    #     "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
+    #     "$v_x~[\mathrm{km/s}]$",
+    #     "$v_{\mathrm{non-th},x}~[\mathrm{km/s}]$",
+    #     "$B_y~[\mathrm{nT}]$",
+    # ]
+    # scales = [1e-6, 1e-6, 1e-3, 1e-3, 1e9]
+    # miny = [None, 10**-4, -1000, -500, -5]
+    # maxy = [5, 5, 0, 1000, 5]
+    # op = ["pass", "pass", "x", "x", "y"]
+    # yscales = ["log", "log", "linear", "linear", "linear"]
+
+    fig, ax_list = plt.subplots(
+        2, 1, figsize=(8, 6), constrained_layout=True, sharex=True
+    )
+
+    vobj = pt.vlsvfile.VlsvReader(
+        ipshock_path + "{}/bulk/bulk.{}.vlsv".format("v30/8000", str(fnr).zfill(7))
+    )
+    cellids = vobj.read_variable("CellID")
+    x_arr = np.array([vobj.get_cell_coordinates(c)[0] for c in np.sort(cellids)]) / r_e
+    alpha1_arr = vobj.read_variable("vg_amr_alpha1")[np.argsort(cellids)]
+    alpha2_arr = vobj.read_variable("vg_amr_alpha2")[np.argsort(cellids)]
+
+    alpha1_target = np.ceil(np.log2(alpha1_arr + 1e-30) - np.log2(a1))
+    alpha2_target = np.ceil(np.log2(alpha2_arr + 1e-30) - np.log2(a2))
+
+    ax_list[0].plot(x_arr, alpha1_target, color="k")
+    ax_list[1].plot(x_arr, alpha2_target, color="k")
+
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_xlim(x_arr[0], x_arr[-1])
+        ax.set_ylabel("AMR alpha{} target".format(idx))
+    ax_list[-1].set_xlabel("X [RE]")
+    ax_list[0].set_title("t = {}s".format(fnr * 5))
+
+    fig.savefig(wrkdir_DNR + "Figs/amr_target_{}.png".format(fnr))
+    plt.close(fig)
+
+
 def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
     # resols = [250, 300, 500]
