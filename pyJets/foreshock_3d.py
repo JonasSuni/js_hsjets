@@ -249,7 +249,9 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[0].set_title("t = {}s, r: {}".format(fnr * 5, resol))
 
-    fig.savefig(wrkdir_DNR + "Figs/amr_target_{}_{}.png".format(fnr, resol))
+    fig.savefig(
+        wrkdir_DNR + "Figs/amr_target_{}_{}.png".format(fnr, resol.replace("/", "_"))
+    )
     plt.close(fig)
 
 
