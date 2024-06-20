@@ -199,11 +199,9 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000,
     plt.close(fig)
 
 
-def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1):
+def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
 
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
-
-    dx = 8000e3
 
     # var_list = [
     #     "proton/vg_rho",
@@ -230,7 +228,7 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1):
     )
 
     vobj = pt.vlsvfile.VlsvReader(
-        ipshock_path + "{}/bulk/bulk.{}.vlsv".format("v30/8000", str(fnr).zfill(7))
+        ipshock_path + "{}/bulk/bulk.{}.vlsv".format(resol, str(fnr).zfill(7))
     )
     cellids = vobj.read_variable("CellID")
     x_arr = np.array([vobj.get_cell_coordinates(c)[0] for c in np.sort(cellids)]) / r_e
@@ -245,13 +243,13 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1):
 
     for idx, ax in enumerate(ax_list):
         ax.grid()
-        ax.set_xlim(x_arr[0], x_arr[-1])
+        ax.set_xlim(-20, 40)
         ax.set_ylabel("AMR alpha{} target".format(idx + 1))
         ax.set_ylim(-3, 3)
     ax_list[-1].set_xlabel("X [RE]")
-    ax_list[0].set_title("t = {}s".format(fnr * 5))
+    ax_list[0].set_title("t = {}s, r: {}".format(fnr * 5, resol))
 
-    fig.savefig(wrkdir_DNR + "Figs/amr_target_{}.png".format(fnr))
+    fig.savefig(wrkdir_DNR + "Figs/amr_target_{}_{}.png".format(fnr, resol))
     plt.close(fig)
 
 
