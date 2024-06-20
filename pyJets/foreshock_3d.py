@@ -246,7 +246,8 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1):
     for idx, ax in enumerate(ax_list):
         ax.grid()
         ax.set_xlim(x_arr[0], x_arr[-1])
-        ax.set_ylabel("AMR alpha{} target".format(idx+1))
+        ax.set_ylabel("AMR alpha{} target".format(idx + 1))
+        ax.set_ylim(-3, 3)
     ax_list[-1].set_xlabel("X [RE]")
     ax_list[0].set_title("t = {}s".format(fnr * 5))
 
