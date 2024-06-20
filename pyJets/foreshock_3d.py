@@ -157,23 +157,23 @@ def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
     plt.close(fig)
 
 
-def ipshock_1d_vdf(x0=20, cutoff=1e-18):
-
-    resols = [250, 300, 500, 1000, 2000, 4000, 8000]
+def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     fig, ax_list = plt.subplots(
-        2,
-        4,
-        figsize=(12, 8),
+        3,
+        3,
+        figsize=(12, 12),
         constrained_layout=True,
         sharex=True,
         sharey=True,
     )
 
+    ax_flat = ax_list.flatten()
+
     for idx, r in enumerate(resols):
-        ax = ax_list.flatten()[idx]
+        ax = ax_flat[idx]
         filename = sorted(os.listdir(ipshock_path + "{}/restart/".format(r)))[-1]
         vobj = pt.vlsvfile.VlsvReader(
             ipshock_path + "{}/restart/{}".format(r, filename)
@@ -190,10 +190,12 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18):
             slicethick=1,
             reducer="average",
         )
-        ax.set_title("dx = {} km".format(r))
+        pt_title = ax.get_title()
+        ax.set_title("{}\nres: {}".format(pt_title, r))
     fig.suptitle("X = {} RE, threshold = {}".format(x0, str(cutoff)))
-    ax_list.flatten()[-1].set_axis_off()
-    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}.png".format(x0, cutoff))
+    for idx in range(len(resols), 9):
+        ax_flat[idx].set_axis_off()
+    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}_r.png".format(x0, cutoff, resols))
     plt.close(fig)
 
 
@@ -255,5 +257,5 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
     ax_list[0].legend(loc="upper right")
     ax_list[0].set_title("t = {}s".format(fnr * 5))
 
-    fig.savefig(wrkdir_DNR + "Figs/res_comp_{}.png".format(fnr))
+    fig.savefig(wrkdir_DNR + "Figs/res_comp_{}_r.png".format(fnr, resols))
     plt.close(fig)
