@@ -166,8 +166,6 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000,
         3,
         figsize=(12, 12),
         constrained_layout=True,
-        sharex=True,
-        sharey=True,
     )
 
     ax_flat = ax_list.flatten()
