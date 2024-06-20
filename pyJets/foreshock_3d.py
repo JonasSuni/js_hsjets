@@ -196,7 +196,7 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000,
     for idx in range(len(resols), 9):
         ax_flat[idx].set_axis_off()
 
-    resols = [r.replace("/", "_") for r in resols]
+    resols = "_".join([r.replace("/", "_") for r in resols])
     fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}_r{}.png".format(x0, cutoff, resols))
     plt.close(fig)
 
@@ -259,7 +259,7 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
     ax_list[0].legend(loc="upper right")
     ax_list[0].set_title("t = {}s".format(fnr * 5))
 
-    resols = [r.replace("/", "_") for r in resols]
+    resols = "_".join([r.replace("/", "_") for r in resols])
 
     fig.savefig(wrkdir_DNR + "Figs/res_comp_{}_r{}.png".format(fnr, resols))
     plt.close(fig)
