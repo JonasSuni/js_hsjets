@@ -195,7 +195,7 @@ def ipshock_1d_vdf(x0=20, cutoff=1e-18, resols=[250, 300, 500, 1000, 2000, 4000,
     fig.suptitle("X = {} RE, threshold = {}".format(x0, str(cutoff)))
     for idx in range(len(resols), 9):
         ax_flat[idx].set_axis_off()
-    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}_r.png".format(x0, cutoff, resols))
+    fig.savefig(wrkdir_DNR + "Figs/vdf_comp_x{}_f{}_r{}.png".format(x0, cutoff, resols))
     plt.close(fig)
 
 
