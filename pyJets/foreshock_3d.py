@@ -257,5 +257,5 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
     ax_list[0].legend(loc="upper right")
     ax_list[0].set_title("t = {}s".format(fnr * 5))
 
-    fig.savefig(wrkdir_DNR + "Figs/res_comp_{}_r.png".format(fnr, resols))
+    fig.savefig(wrkdir_DNR + "Figs/res_comp_{}_r{}.png".format(fnr, resols))
     plt.close(fig)
