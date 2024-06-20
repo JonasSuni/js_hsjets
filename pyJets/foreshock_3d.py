@@ -259,7 +259,6 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
 
 def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
-    # resols = [250, 300, 500]
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
 
     var_list = [
