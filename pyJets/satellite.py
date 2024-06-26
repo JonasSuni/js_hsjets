@@ -2543,6 +2543,163 @@ def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
     plt.close(fig)
 
 
+def sw_timing(t0, t1, dt=1, sc_order=[0, 1, 2, 3], filt=None):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    sc_labs = ["ACE", "DSCOVR", "Wind", "THB"]
+
+    ace_time, ace_B = load_msh_sc_data(
+        pyspedas.ace.mfi,
+        "ace",
+        "1",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datatype="h3",
+        filt=filt,
+    )
+    omnidata = pyspedas.omni.data(trange=[t0, t1], notplot=True, time_clip=True)
+    dscovr_time, dscovr_B = load_msh_sc_data(
+        pyspedas.dscovr.mag,
+        "dscovr",
+        "1",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datatype="h0",
+        filt=filt,
+    )
+    wind_time, wind_B = load_msh_sc_data(
+        pyspedas.wind.mfi,
+        "wind",
+        "1",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        datatype="h2",
+        filt=filt,
+    )
+    thb_time, thb_B = load_msh_sc_data(
+        pyspedas.themis.fgm,
+        "themis",
+        "b",
+        "B",
+        t0,
+        t1,
+        intpol=True,
+        dt=dt,
+        filt=filt,
+    )
+    sc_B = [ace_B, dscovr_B, wind_B, thb_B]
+    time_arr = ace_time
+
+    pos_data = np.loadtxt(
+        wrkdir_DNR
+        + "satellites/ace_dscovr_wind_pos_2022-03-27_19:00:00_21:00:00_numpy.txt",
+        dtype="str",
+    ).T
+    sc_name = pos_data[3]
+    sc_x = pos_data[4].astype(float) * r_e * 1e-3
+    sc_y = pos_data[5].astype(float) * r_e * 1e-3
+    sc_z = pos_data[6].astype(float) * r_e * 1e-3
+
+    sc_coords = np.array([sc_x, sc_y, sc_z]).T
+
+    ace_pos = sc_coords[sc_name == "ace", :][:-1]
+    dscovr_pos = sc_coords[sc_name == "dscovr", :]
+    wind_pos = sc_coords[sc_name == "wind", :][:-1]
+    thb_pos = np.array([225214.85, -311541.9, -32746.94])
+
+    sc_poses = [ace_pos, dscovr_pos, wind_pos, thb_pos]
+
+    sc_rel_pos = [
+        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[3]] - sc_poses[sc_order[0]], axis=0),
+    ]
+    print(sc_rel_pos)
+
+    title_labs = ["Bx", "By", "Bz", "Bmag"]
+
+    data_arr = np.zeros((4, 4, time_arr.size), dtype=float)
+
+    for idx in range(4):
+        data_arr[idx, :, :] = [
+            sc_B[idx][0],
+            sc_B[idx][1],
+            sc_B[idx][2],
+            np.linalg.norm(sc_B[idx][:3], axis=0),
+        ]
+
+    timing_res = []
+
+    for idx in range(4):
+        print(title_labs[idx])
+        res = timing_analysis_arb(
+            [time_arr, time_arr, time_arr, time_arr],
+            [
+                data_arr[sc_order[0], idx, :],
+                data_arr[sc_order[1], idx, :],
+                data_arr[sc_order[2], idx, :],
+                data_arr[sc_order[3], idx, :],
+            ],
+            sc_rel_pos,
+            t0,
+            t1,
+        )
+        timing_res.append(res)
+        print("\n")
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    fig.patch.set_visible(False)
+    ax.axis("off")
+    ax.axis("tight")
+
+    cellText = []
+    colLabels = ["n", "v", "c"]
+    rowLabels = title_labs
+    for idx in range(len(title_labs)):
+        res = timing_res[idx]
+        cellText.append(
+            [
+                str(
+                    (
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
+                    )
+                ),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
+            ]
+        )
+
+    ax.table(
+        cellText=cellText,
+        rowLabels=rowLabels,
+        colLabels=colLabels,
+        loc="center",
+        cellLoc="center",
+    )
+
+    fig.tight_layout()
+
+    fig.savefig(
+        wrkdir_DNR
+        + "Figs/satellite/"
+        + "ace_dscovr_wind_thb_t0{}_t1{}_table.png".format(t0plot, t1plot)
+    )
+    plt.close(fig)
+
+
 def plot_ace_dscovr_wind(
     t0, t1, dt=1, sc_order=[0, 1, 2], mva=False, filt=None, rotate=[None, None, None]
 ):
