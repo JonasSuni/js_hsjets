@@ -3554,11 +3554,11 @@ def jplots(
     if xlist[-1] != xlist[0]:
         xplot_list = xlist
         xlab = "$X~[R_\mathrm{E}]$"
+        XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
     else:
         xplot_list = ylist
         xlab = "$Y~[R_\mathrm{E}]$"
-
-    XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
+        XmeshXY, YmeshXY = np.meshgrid(ylist, t_range)
 
     data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
     vt_arr = np.ones((xplot_list.size, t_range.size), dtype=float)
