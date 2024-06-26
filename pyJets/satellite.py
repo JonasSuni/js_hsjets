@@ -2562,7 +2562,6 @@ def sw_timing(t0, t1, dt=1, sc_order=[0, 1, 2, 3], filt=None):
         datatype="h3",
         filt=filt,
     )
-    omnidata = pyspedas.omni.data(trange=[t0, t1], notplot=True, time_clip=True)
     dscovr_time, dscovr_B = load_msh_sc_data(
         pyspedas.dscovr.mag,
         "dscovr",
