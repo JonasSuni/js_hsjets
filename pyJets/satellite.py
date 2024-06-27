@@ -225,6 +225,7 @@ def load_msh_sc_data(
     datarate="fast",
     datatype="h0",
     filt=None,
+    species="i",
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -235,14 +236,14 @@ def load_msh_sc_data(
     sc_var_names = [
         [
             "mms{}_fgm_b_gse_{}_l2".format(probe, datarate),
-            "mms{}_dis_numberdensity_{}".format(probe, datarate),
-            "mms{}_dis_bulkv_gse_{}".format(probe, datarate),
+            "mms{}_d{}s_numberdensity_{}".format(probe, datarate, species),
+            "mms{}_d{}s_bulkv_gse_{}".format(probe, datarate, species),
             "mms{}_mec_r_gse".format(probe),
         ],
         [
             "th{}_fgs_gse".format(probe),
-            "th{}_peim_density".format(probe),
-            "th{}_peim_velocity_gse".format(probe),
+            "th{}_pe{}m_density".format(probe, species),
+            "th{}_pe{}m_velocity_gse".format(probe, species),
             "th{}_pos_gse".format(probe),
         ],
         [
@@ -1465,7 +1466,7 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
     # return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
 
-def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
+def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1497,6 +1498,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
             dt=dt,
             datarate="brst",
             filt=filt,
+            species=species,
         )
         for probe in range(1, 5)
     ]
@@ -1512,6 +1514,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
             dt=dt,
             datarate="brst",
             filt=filt,
+            species=species,
         )
         for probe in range(1, 5)
     ]
@@ -1527,6 +1530,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
             dt=dt,
             datarate="srvy",
             filt=filt,
+            species=species,
         )
         for probe in range(1, 5)
     ]
@@ -1712,7 +1716,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
 
     fig.savefig(
         outdir
-        + "mms_all_t0{}_t1{}_mva{}_peak{}.png".format(t0plot, t1plot, mva, peakonly)
+        + "mms_all_t0{}_t1{}_mva{}_peak{}_species{}.png".format(
+            t0plot, t1plot, mva, peakonly, species
+        )
     )
     plt.close(fig)
 
@@ -1826,8 +1832,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None):
 
     fig.savefig(
         outdir
-        + "mms_all_t0{}_t1{}_mva{}_peak{}_table.png".format(
-            t0plot, t1plot, mva, peakonly
+        + "mms_all_t0{}_t1{}_mva{}_peak{}_species{}_table.png".format(
+            t0plot, t1plot, mva, peakonly, species
         )
     )
     plt.close(fig)
