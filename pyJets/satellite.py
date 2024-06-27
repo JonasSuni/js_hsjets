@@ -2260,7 +2260,7 @@ def plot_thd_the_tha_mms1(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2, 3]):
 
     time_arr = thd_time
 
-    data_arr = np.empty((3, 10, time_arr.size), dtype=float)
+    data_arr = np.empty((4, 10, time_arr.size), dtype=float)
 
     data_arr[0, :, :] = [
         thd_B[0],
