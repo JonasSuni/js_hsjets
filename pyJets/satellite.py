@@ -2198,9 +2198,9 @@ def plot_thd_the_tha_mms1(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2, 3]):
     sc_poses = [thd_pos, the_pos, tha_pos, mms1_pos]
 
     sc_rel_pos = [
-        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
-        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
-        np.nanmean(sc_poses[sc_order[3]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=-1),
+        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=-1),
+        np.nanmean(sc_poses[sc_order[3]] - sc_poses[sc_order[0]], axis=-1),
     ]
     print(sc_rel_pos)
 
