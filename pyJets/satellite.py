@@ -2154,6 +2154,445 @@ def diag_thd_mms1_c4(t0, t1, dt=1, sc_order=[0, 1, 2], grain=1):
     plt.close(fig)
 
 
+def plot_thd_the_tha_mms1(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2, 3]):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    # pos_data = np.loadtxt(
+    #     wrkdir_DNR
+    #     + "satellites/c4_mms1_thd_pos_2022-03-27_21:00:00_21:30:00_numpy.txt",
+    #     dtype="str",
+    # ).T
+    # sc_name = pos_data[3]
+    # sc_x = pos_data[4].astype(float) * r_e * 1e-3
+    # sc_y = pos_data[5].astype(float) * r_e * 1e-3
+    # sc_z = pos_data[6].astype(float) * r_e * 1e-3
+
+    # sc_coords = np.array([sc_x, sc_y, sc_z]).T
+
+    # thd_pos = sc_coords[sc_name == "themisd", :][:-1]
+    # mms1_pos = sc_coords[sc_name == "mms1", :]
+    # c4_pos = sc_coords[sc_name == "cluster4", :]
+
+    dummy_time, thd_pos = load_msh_sc_data(
+        pyspedas.themis.state, "themis", "d", "pos", t0, t1, intpol=True, dt=dt
+    )
+    # thd_pos = np.nanmean(thd_pos,axis=-1)
+
+    dummy_time, the_pos = load_msh_sc_data(
+        pyspedas.themis.state, "themis", "e", "pos", t0, t1, intpol=True, dt=dt
+    )
+    # the_pos = np.nanmean(the_pos,axis=-1)
+
+    dummy_time, tha_pos = load_msh_sc_data(
+        pyspedas.themis.state, "themis", "a", "pos", t0, t1, intpol=True, dt=dt
+    )
+    # tha_pos = np.nanmean(tha_pos,axis=-1)
+
+    dummy_time, mms1_pos = load_msh_sc_data(
+        pyspedas.mms.mec, "mms", "1", "pos", t0, t1, intpol=True, dt=dt, datarate="srvy"
+    )
+    # tha_pos = np.nanmean(tha_pos,axis=-1)
+
+    sc_poses = [thd_pos, the_pos, tha_pos, mms1_pos]
+
+    sc_rel_pos = [
+        np.nanmean(sc_poses[sc_order[1]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[2]] - sc_poses[sc_order[0]], axis=0),
+        np.nanmean(sc_poses[sc_order[3]] - sc_poses[sc_order[0]], axis=0),
+    ]
+    print(sc_rel_pos)
+
+    thd_time, thd_B = load_msh_sc_data(
+        pyspedas.themis.fgm, "themis", "d", "B", t0, t1, intpol=True, dt=dt
+    )
+    the_time, the_B = load_msh_sc_data(
+        pyspedas.themis.fgm, "themis", "e", "B", t0, t1, intpol=True, dt=dt
+    )
+    tha_time, tha_B = load_msh_sc_data(
+        pyspedas.themis.fgm, "themis", "a", "B", t0, t1, intpol=True, dt=dt
+    )
+    mms1_time, mms1_B = load_msh_sc_data(
+        pyspedas.mms.fgm, "mms", "1", "B", t0, t1, intpol=True, dt=dt, datarate="srvy"
+    )
+
+    thd_time2, thd_rho = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "d", "rho", t0, t1, intpol=True, dt=dt
+    )
+    the_time2, the_rho = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "e", "rho", t0, t1, intpol=True, dt=dt
+    )
+    tha_time2, tha_rho = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "a", "rho", t0, t1, intpol=True, dt=dt
+    )
+    mms1_time2, mms1_rho = load_msh_sc_data(
+        pyspedas.mms.fpi, "mms", "1", "rho", t0, t1, intpol=True, dt=dt, datarate="fast"
+    )
+
+    dummy, thd_v = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "d", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, the_v = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "e", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, tha_v = load_msh_sc_data(
+        pyspedas.themis.mom, "themis", "a", "v", t0, t1, intpol=True, dt=dt
+    )
+    dummy, mms1_v = load_msh_sc_data(
+        pyspedas.mms.fpi, "mms", "1", "v", t0, t1, intpol=True, dt=dt, datarate="fast"
+    )
+
+    thd_vmag = np.linalg.norm(thd_v, axis=0)
+    the_vmag = np.linalg.norm(the_v, axis=0)
+    tha_vmag = np.linalg.norm(tha_v, axis=0)
+    mms1_vmag = np.linalg.norm(mms1_v, axis=0)
+
+    thd_Bmag = np.linalg.norm(thd_B[0:3], axis=0)
+    the_Bmag = np.linalg.norm(the_B[0:3], axis=0)
+    tha_Bmag = np.linalg.norm(tha_B[0:3], axis=0)
+    mms1_Bmag = np.linalg.norm(mms1_B[0:3], axis=0)
+
+    thd_pdyn = m_p * thd_rho * 1e6 * thd_vmag * thd_vmag * 1e6 / 1e-9
+    the_pdyn = m_p * the_rho * 1e6 * the_vmag * the_vmag * 1e6 / 1e-9
+    tha_pdyn = m_p * tha_rho * 1e6 * tha_vmag * tha_vmag * 1e6 / 1e-9
+    mms1_pdyn = m_p * mms1_rho * 1e6 * mms1_vmag * mms1_vmag * 1e6 / 1e-9
+
+    time_arr = thd_time
+
+    data_arr = np.empty((3, 10, time_arr.size), dtype=float)
+
+    data_arr[0, :, :] = [
+        thd_B[0],
+        thd_B[1],
+        thd_B[2],
+        thd_Bmag,
+        thd_v[0],
+        thd_v[1],
+        thd_v[2],
+        thd_vmag,
+        thd_rho,
+        thd_pdyn,
+    ]
+    data_arr[1, :, :] = [
+        the_B[0],
+        the_B[1],
+        the_B[2],
+        the_Bmag,
+        the_v[0],
+        the_v[1],
+        the_v[2],
+        the_vmag,
+        the_rho,
+        the_pdyn,
+    ]
+    data_arr[2, :, :] = [
+        tha_B[0],
+        tha_B[1],
+        tha_B[2],
+        tha_Bmag,
+        tha_v[0],
+        tha_v[1],
+        tha_v[2],
+        tha_vmag,
+        tha_rho,
+        tha_pdyn,
+    ]
+    data_arr[3, :, :] = [
+        mms1_B[0],
+        mms1_B[1],
+        mms1_B[2],
+        mms1_Bmag,
+        mms1_v[0],
+        mms1_v[1],
+        mms1_v[2],
+        mms1_vmag,
+        mms1_rho,
+        mms1_pdyn,
+    ]
+
+    t_pdmax = [time_arr[np.argmax(data_arr[idx, 9, :])] for idx in range(4)]
+
+    sc_labs = ["THD", "THE", "THA", "MMS1"]
+    if mva:
+        Bdata = [deepcopy(data_arr[idx, 0:3, :]) for idx in range(4)]
+        vdata = [deepcopy(data_arr[idx, 4:7, :]) for idx in range(4)]
+        eigenvecs = [MVA(Bdata[idx]) for idx in range(4)]
+        for prob in range(4):
+            print(
+                "{} Minimum Variance direction: {}".format(
+                    sc_labs[prob], eigenvecs[prob][0]
+                )
+            )
+            for idx in range(3):
+                data_arr[prob, idx, :] = np.dot(Bdata[prob].T, eigenvecs[prob][idx])
+                data_arr[prob, idx + 4, :] = np.dot(vdata[prob].T, eigenvecs[prob][idx])
+
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
+    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
+    ylabels_all = [
+        "Bx [nT]",
+        "By [nT]",
+        "Bz [nT]",
+        "Bt [nT]",
+        "vx [km/s]",
+        "vy [km/s]",
+        "vz [km/s]",
+        "vt [km/s]",
+        "n [1/cm3]",
+        "Pdyn [nPa]",
+    ]
+    if mva:
+        ylabels_all = [
+            "BN [nT]",
+            "BM [nT]",
+            "BL [nT]",
+            "Bt [nT]",
+            "vN [km/s]",
+            "vM [km/s]",
+            "vL [km/s]",
+            "vt [km/s]",
+            "n [1/cm3]",
+            "Pdyn [nPa]",
+        ]
+
+    colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        "k",
+    ]
+    plot_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    line_label = [
+        "x",
+        "y",
+        "z",
+        "mag",
+        "x",
+        "y",
+        "z",
+        "mag",
+        None,
+        None,
+    ]
+    ylims = [
+        (-40, 60),
+        (-400, 500),
+        (5, 35),
+        (0, 10),
+    ]
+    ylims_full = [
+        (-20, 30),
+        (-20, 40),
+        (-40, 50),
+        (0, 60),
+        (-400, 0),
+        (-200, 100),
+        (-100, 300),
+        (0, 500),
+        (5, 35),
+        (0, 10),
+    ]
+
+    fig, ax_list = plt.subplots(
+        10, 4, figsize=(24, 24), sharey="row", constrained_layout=True
+    )
+
+    for idx in range(4):
+        for idx2 in range(len(panel_id)):
+            print("Plotting {} {}".format(sc_labs[idx], panel_labs[panel_id[idx2]]))
+            # ax = ax_list[panel_id[idx2], idx]
+            # if not plot_legend[idx2]:
+            #     ax.grid()
+            # ax.plot(
+            #     time_arr[idx, panel_id[idx2]],
+            #     data_arr[idx, idx2],
+            #     color=colors[idx2],
+            #     label=line_label[idx2],
+            #     alpha=0.5,
+            # )
+            # if plot_legend[idx2] and idx == 2:
+            #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ax = ax_list[idx2, idx]
+            ax.grid()
+            ax.plot(
+                time_arr,
+                data_arr[idx, idx2],
+            )
+            ax.label_outer()
+            ax.set_xlim(t0plot, t1plot)
+            ax.axvline(t_pdmax[idx], linestyle="dashed")
+
+    print("Times of Pdynmax: {}".format(t_pdmax))
+
+    for idx in range(4):
+        ax_list[0, idx].set_title(sc_labs[idx], pad=10, fontsize=20)
+    # for idx in range(len(panel_labs)):
+    #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
+    #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
+    for idx in range(len(ylabels_all)):
+        ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
+        # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        outdir + "thd_the_tha_mms1_t0{}_t1{}_mva{}.png".format(t0plot, t1plot, mva)
+    )
+    plt.close(fig)
+
+    labs = ["Bx:", "By:", "Bz:", "Bt:", "Vx:", "Vy:", "Vz:", "Vt:", "rho", "Pdyn:"]
+    # labs_v = ["Vx:", "Vy:", "Vz:"]
+    if mva:
+        # labs = ["Bmin:", "Bmed:", "Bmax:"]
+        # labs_v = ["Vmin:", "Vmed:", "Vmax:"]
+        labs = [
+            "BN:",
+            "BM:",
+            "BL:",
+            "Bt:",
+            "VN:",
+            "VM:",
+            "VL:",
+            "Vt:",
+            "rho",
+            "Pdyn:",
+        ]
+
+    print("\n")
+
+    timing_res = []
+
+    for idx in range(10):
+        print(labs[idx])
+        res = timing_analysis_arb(
+            [time_arr, time_arr, time_arr, time_arr],
+            [
+                data_arr[sc_order[0], idx, :],
+                data_arr[sc_order[1], idx, :],
+                data_arr[sc_order[2], idx, :],
+                data_arr[sc_order[3], idx, :],
+            ],
+            sc_rel_pos,
+            t0,
+            t1,
+        )
+        timing_res.append(res)
+        print("\n")
+    #     print("\n")
+    #     print(labs_v[idx])
+    #     timing_analysis_arb(
+    #         [time_arr, time_arr, time_arr],
+    #         [data_arr[0, 4 + idx, :], data_arr[1, 4 + idx, :], data_arr[2, 4 + idx, :]],
+    #         sc_rel_pos,
+    #         t0,
+    #         t1,
+    #     )
+    #     print("\n")
+
+    # print("rho:")
+    # timing_analysis_arb(
+    #     [time_arr, time_arr, time_arr],
+    #     [data_arr[0, 8, :], data_arr[1, 8, :], data_arr[2, 8, :]],
+    #     sc_rel_pos,
+    #     t0,
+    #     t1,
+    # )
+    # print("\n")
+
+    # print("Pdyn:")
+    # timing_analysis_arb(
+    #     [time_arr, time_arr, time_arr],
+    #     [data_arr[0, 9, :], data_arr[1, 9, :], data_arr[2, 9, :]],
+    #     sc_rel_pos,
+    #     t0,
+    #     t1,
+    # )
+    # print("\n")
+
+    fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+    fig.patch.set_visible(False)
+    ax.axis("off")
+    ax.axis("tight")
+
+    cellText = []
+    colLabels = ["n", "v", "c"]
+    rowLabels = labs
+    for idx in range(len(labs)):
+        res = timing_res[idx]
+        cellText.append(
+            [
+                str(
+                    (
+                        round(res["wave_vector"][0][0], ndigits=2),
+                        round(res["wave_vector"][1][0], ndigits=2),
+                        round(res["wave_vector"][2][0], ndigits=2),
+                    )
+                ),
+                str(round(res["wave_velocity_sc_frame"], ndigits=2)),
+                str(round(np.min(res["cross_corr_values"]), ndigits=2)),
+            ]
+        )
+    if mva:
+        rowLabels += sc_labs
+        for idx in range(len(sc_labs)):
+            cellText.append(
+                [
+                    str(
+                        (
+                            round(eigenvecs[idx][0][0], ndigits=2),
+                            round(eigenvecs[idx][0][1], ndigits=2),
+                            round(eigenvecs[idx][0][2], ndigits=2),
+                        )
+                    ),
+                    "",
+                    "",
+                ]
+            )
+
+    # for idx in range(len(cellText)):
+    #     for idx2 in range(len(cellText[0])):
+    #         cellText[idx][idx2] = cellText[idx][idx2][:5]
+
+    ax.table(
+        cellText=cellText,
+        rowLabels=rowLabels,
+        colLabels=colLabels,
+        loc="center",
+        cellLoc="center",
+    )
+
+    fig.tight_layout()
+
+    fig.savefig(
+        outdir
+        + "thd_the_tha_mms1_t0{}_t1{}_mva{}_table.png".format(t0plot, t1plot, mva)
+    )
+    plt.close(fig)
+
+
 def plot_thd_mms1_c4(t0, t1, dt=1, mva=False, sc_order=[0, 1, 2]):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
