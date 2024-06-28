@@ -1471,6 +1471,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
+    species_list = [species, species, species, "i"]
+
     sc_B = [
         load_msh_sc_data(
             pyspedas.mms.fgm,
@@ -1498,7 +1500,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
-            species=species,
+            species=species_list[probe-1],
         )
         for probe in range(1, 5)
     ]
@@ -1514,7 +1516,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
-            species=species,
+            species=species_list[probe-1],
         )
         for probe in range(1, 5)
     ]
@@ -1530,7 +1532,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="srvy",
             filt=filt,
-            species=species,
+            species=species_list[probe-1],
         )
         for probe in range(1, 5)
     ]
