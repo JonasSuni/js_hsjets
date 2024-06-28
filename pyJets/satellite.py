@@ -290,9 +290,9 @@ def load_msh_sc_data(
     time_list = np.array(sc_data["x"])
     data_list = np.array(sc_data["y"]).T
 
-    print(
-        "Probe {} Var {} time res: {} {}".format(probe, var, time_list[0], time_list[1])
-    )
+    # print(
+    #     "Probe {} Var {} time res: {} {}".format(probe, var, time_list[0], time_list[1])
+    # )
 
     mask = ~np.isnan(np.atleast_2d(data_list)[0])
     data_list = data_list.T[mask].T
