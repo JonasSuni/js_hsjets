@@ -236,8 +236,8 @@ def load_msh_sc_data(
     sc_var_names = [
         [
             "mms{}_fgm_b_gse_{}_l2".format(probe, datarate),
-            "mms{}_d{}s_numberdensity_{}".format(probe, datarate, species),
-            "mms{}_d{}s_bulkv_gse_{}".format(probe, datarate, species),
+            "mms{}_d{}s_numberdensity_{}".format(probe, species, datarate),
+            "mms{}_d{}s_bulkv_gse_{}".format(probe, species, datarate),
             "mms{}_mec_r_gse".format(probe),
         ],
         [
