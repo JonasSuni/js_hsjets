@@ -1975,13 +1975,14 @@ def fig1(runid, panel_nums=True):
     vmax = 1.1
     runids = ["AGF", "AIA", "AIC"]
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, linsg, draw_qperp
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, linsg, draw_qperp, leg_g
     runid_g = runid
     Blines_g = True
     drawBy0 = True
     plaschke_g = False
     linsg = False
     draw_qperp = True
+    leg_g = True
 
     start_points = np.array(
         # [np.ones(nstp) * boxre[1] - 1, np.linspace(boxre[2], boxre[3], nstp)]
