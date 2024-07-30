@@ -1971,7 +1971,8 @@ def get_jets(runid):
 def fig1(runid, panel_nums=True):
     var = "proton/vg_Pdyn"
     vscale = 1e9
-    vmax = 1.0
+    # vmax = 1.0
+    vmax = 1.1
     runids = ["AGF", "AIA", "AIC"]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g
