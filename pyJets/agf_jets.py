@@ -1968,11 +1968,11 @@ def get_jets(runid):
     return np.unique(non_ids)
 
 
-def fig1(runid, panel_nums=True):
+def fig1(runid, panel_nums=True, vmax=1.0):
     var = "proton/vg_Pdyn"
     vscale = 1e9
     # vmax = 1.0
-    vmax = 1.1
+    # vmax = 1.2
     runids = ["AGF", "AIA", "AIC"]
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, linsg, draw_qperp, leg_g
