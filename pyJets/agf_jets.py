@@ -3857,7 +3857,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
-def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=None):
+def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=None,fmin=1e-15):
     """
     Function for reducing a 3D VDF to 1D
     (object) vlsvobj = Analysator VLSV file object
@@ -3873,6 +3873,10 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=N
     velcels = vlsvobj.read_velocity_cells(cellid)
     vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
     vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals>=fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm,:][0,:,:]
 
     # Select coordinates of chosen velocity component
     if operator in op_list:
