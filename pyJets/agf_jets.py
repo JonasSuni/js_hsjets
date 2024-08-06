@@ -3917,7 +3917,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=N
     vweights = vc_vals * dv * dv
 
     # Integrate over the perpendicular directions
-    if operator == "magnitude":
+    if operator in ["magnitude", "par", "perp"]:
         # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
         vbins = vbins * np.sqrt(3)
         hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
@@ -3935,7 +3935,7 @@ def pos_vdf_1d_spectrogram(
     bulkpath = find_bulkpath(runid)
 
     if parperp:
-        dv = [0.02,dv, dv]
+        dv = [0.02, dv, dv]
         vmin = [-1, vmin, 0]
         vmax = [1, vmax, vmax]
         scales = [1, 1e-3, 1e-3]
