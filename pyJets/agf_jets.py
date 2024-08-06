@@ -4000,7 +4000,7 @@ def pos_vdf_1d_spectrogram(
         cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
-        b = vobj.read_variable("vg_b_vol", cellid=vdf_cellid)
+        b = vobj.read_variable("vg_b_vol", cellids=vdf_cellid)
         b = b / np.linalg.norm(b)
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
