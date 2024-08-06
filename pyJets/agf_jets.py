@@ -3900,12 +3900,15 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=N
     # if bool(vmin or vmax):
     #     vbins = np.arange(vmin, vmax, dv)
     # else:
+    # vbins = np.sort(np.unique(vc_coord_arr))
+    # vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
+    # if operator == "cosmu":
+    #     vbins = np.sort(np.unique(vc_coord_arr))
+    #     dcosmu = np.max(np.ediff1d(vbins))
+    #     vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
     vbins = np.sort(np.unique(vc_coord_arr))
-    vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
-    if operator == "cosmu":
-        vbins = np.sort(np.unique(vc_coord_arr))
-        dcosmu = np.max(np.ediff1d(vbins))
-        vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
+    dbins = np.max(np.ediff1d(vbins))
+    vbins = np.append(vbins - dbins / 2, vbins[-1] + dbins / 2)
     # if operator == "magnitude":
     #     vbins = vbins * 4
 
