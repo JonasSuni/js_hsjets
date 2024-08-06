@@ -3907,7 +3907,7 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=N
     #     dcosmu = np.max(np.ediff1d(vbins))
     #     vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
     vbins = np.sort(np.unique(vc_coord_arr))
-    dbins = np.max(np.ediff1d(vbins))
+    dbins = np.max(np.ediff1d(vbins)) * np.sqrt(3)
     vbins = np.append(vbins - dbins / 2, vbins[-1] + dbins / 2)
     # if operator == "magnitude":
     #     vbins = vbins * 4
@@ -3920,19 +3920,30 @@ def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=N
     vweights = vc_vals * dv * dv
 
     # Integrate over the perpendicular directions
-    if operator in ["magnitude", "par", "perp"]:
-        # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
-        vbins = vbins * np.sqrt(3)
-        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
-    else:
-        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+    # if operator in ["magnitude", "par", "perp"]:
+    #     # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
+    #     vbins = vbins * np.sqrt(3)
+    #     hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+    # else:
+    #     hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
 
     # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
     return (hist, bin_edges)
 
 
 def pos_vdf_1d_spectrogram(
-    runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=False, parperp=False
+    runid,
+    x,
+    y,
+    t0,
+    t1,
+    vmin,
+    vmax,
+    dv=31e3,
+    overplot_v=False,
+    parperp=False,
+    logcb=False,
 ):
     runids = ["AGF", "AIA", "AIB", "AIC"]
     bulkpath = find_bulkpath(runid)
@@ -4035,14 +4046,19 @@ def pos_vdf_1d_spectrogram(
         vy_arr[:, idx] = yhist_interp
         vz_arr[:, idx] = zhist_interp
 
+    if logcb:
+        norm = "log"
+    else:
+        norm = None
+
     pcx = ax_list[0].pcolormesh(
-        t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow", norm=norm
     )
     pcy = ax_list[1].pcolormesh(
-        t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow", norm=norm
     )
     pcz = ax_list[2].pcolormesh(
-        t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow", norm=norm
     )
 
     if overplot_v:
