@@ -4038,9 +4038,9 @@ def pos_vdf_1d_spectrogram(
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
         if parperp:
-            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="cosmu", b=b)
-            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="par", b=b)
-            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="perp", b=b)
+            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="cosmu", b=b_arr[idx])
+            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="par", b=b_arr[idx])
+            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="perp", b=b_arr[idx])
         else:
             xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
             yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
