@@ -3857,10 +3857,93 @@ def getNearestCellWithVspace(vlsvReader, cid):
     return cell_candidates[i]
 
 
-def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=False):
+def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=None):
+    """
+    Function for reducing a 3D VDF to 1D
+    (object) vlsvobj = Analysator VLSV file object
+    (int) cellid = ID of cell whose VDF you want
+    (str) operator = "x", "y", or "z", which velocity component to retain after reduction, or "magnitude" to get the distribution of speeds (untested)
+    (float) dv = Velocity space resolution in m/s
+    """
+
+    # List of valid operators from which to get an index
+    op_list = ["x", "y", "z"]
+
+    # Read velocity cell keys and values from vlsv file
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    # Select coordinates of chosen velocity component
+    if operator in op_list:
+        vc_coord_arr = vc_coords[:, op_list.index(operator)]
+    elif operator == "magnitude":
+        vc_coord_arr = np.sqrt(
+            vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2
+        )
+    elif operator == "par":
+        vc_coord_arr = np.dot(vc_coords, b)
+    elif operator == "perp":
+        vc_coord_arr = np.sqrt(
+            vc_coords[:, 0] ** 2
+            + vc_coords[:, 1] ** 2
+            + vc_coords[:, 2] ** 2
+            - np.dot(vc_coords, b) ** 2
+        )
+    elif operator == "cosmu":
+        vc_coord_arr = np.dot(vc_coords, b) / (
+            np.sqrt(vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2)
+            + 1e-27
+        )
+
+    # Create histogram bins, one for each unique coordinate of the chosen velocity component
+    # if bool(vmin or vmax):
+    #     vbins = np.arange(vmin, vmax, dv)
+    # else:
+    vbins = np.sort(np.unique(vc_coord_arr))
+    vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
+    if operator == "cosmu":
+        vbins = np.sort(np.unique(vc_coord_arr))
+        dcosmu = np.max(np.ediff1d(vbins))
+        vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
+    # if operator == "magnitude":
+    #     vbins = vbins * 4
+
+    # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
+    # if operator in op_list:
+    #     vweights = vc_vals * dv * dv
+    # elif operator == "magnitude":
+    #     vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
+    vweights = vc_vals * dv * dv
+
+    # Integrate over the perpendicular directions
+    if operator == "magnitude":
+        # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
+        vbins = vbins * np.sqrt(3)
+        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+    else:
+        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+
+    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
+    return (hist, bin_edges)
+
+
+def pos_vdf_1d_spectrogram(
+    runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=False, parperp=False
+):
     runids = ["AGF", "AIA", "AIB", "AIC"]
-    pdmax = [1.0, 1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
+
+    if parperp:
+        dv = [dv, dv, 0.02]
+        vmin = [vmin, 0, -1]
+        vmax = [vmax, vmax, 1]
+        scales = [1, 1e-3, 1e-3]
+    else:
+        dv = [dv, dv, dv]
+        vmin = [vmin, vmin, vmin]
+        vmax = [vmax, vmax, vmax]
+        scales = [1e-3, 1e-3, 1e-3]
 
     global xg, yg
 
@@ -3896,7 +3979,7 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=
     rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
     Pdyn_sw = m_p * rho_sw * v_sw * v_sw
 
-    v_arr = np.arange(vmin, vmax, dv)
+    v_arr = [np.arange(vmin[idx], vmax[idx], dv[idx]) for idx in range(3)]
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
 
     vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
@@ -3917,40 +4000,46 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=
         cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
+        b = vobj.read_variable("vg_b_vol", cellid=vdf_cellid)
+        b = b / np.linalg.norm(b)
+
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
-        xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
-        yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
-        zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+        if parperp:
+            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="cosmu", b=b)
+            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="par", b=b)
+            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="perp", b=b)
+        else:
+            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
+            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
+            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
         zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
 
-        plotbin_centers = np.arange(vmin, vmax, (xbin_edges[1] - xbin_edges[0]))
-
         x0 = x_re
         y0 = y_re
 
-        if overplot_v:
+        if overplot_v and not parperp:
             vmean_arr[:, idx] = (
                 vobj.read_variable("proton/vg_v", cellids=vdf_cellid) * 1e-3
             )
 
-        xhist_interp = np.interp(v_arr, xbin_centers, xhist)
-        yhist_interp = np.interp(v_arr, ybin_centers, yhist)
-        zhist_interp = np.interp(v_arr, zbin_centers, zhist)
+        xhist_interp = np.interp(v_arr[0], xbin_centers, xhist)
+        yhist_interp = np.interp(v_arr[1], ybin_centers, yhist)
+        zhist_interp = np.interp(v_arr[2], zbin_centers, zhist)
 
         vx_arr[:, idx] = xhist_interp
         vy_arr[:, idx] = yhist_interp
         vz_arr[:, idx] = zhist_interp
 
     pcx = ax_list[0].pcolormesh(
-        t_arr, v_arr * 1e-3, vx_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow"
     )
     pcy = ax_list[1].pcolormesh(
-        t_arr, v_arr * 1e-3, vy_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow"
     )
     pcz = ax_list[2].pcolormesh(
-        t_arr, v_arr * 1e-3, vz_arr, shading="nearest", cmap="batlow"
+        t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow"
     )
 
     if overplot_v:
@@ -3970,6 +4059,8 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=
     )
 
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
+    if parperp:
+        ["$\\cos\\mu$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
 
     for idx2, ax in enumerate(ax_list):
         ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
@@ -3988,7 +4079,10 @@ def pos_vdf_1d_spectrogram(runid, x, y, t0, t1, vmin, vmax, dv=31e3, overplot_v=
         except OSError:
             pass
     fig.savefig(
-        outdir + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}.png".format(runid, x0, y0, t0, t1)
+        outdir
+        + "/{}_x{:.3f}_y{:.3f}_t0{}_t1{}_parperp{}.png".format(
+            runid, x0, y0, t0, t1, parperp
+        )
     )
     plt.close(fig)
 
@@ -4639,59 +4733,6 @@ def jet_vdf_plotter(runid, skip=[]):
             break
 
     return None
-
-
-def vspace_reducer(vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None):
-    """
-    Function for reducing a 3D VDF to 1D
-    (object) vlsvobj = Analysator VLSV file object
-    (int) cellid = ID of cell whose VDF you want
-    (str) operator = "x", "y", or "z", which velocity component to retain after reduction, or "magnitude" to get the distribution of speeds (untested)
-    (float) dv = Velocity space resolution in m/s
-    """
-
-    # List of valid operators from which to get an index
-    op_list = ["x", "y", "z"]
-
-    # Read velocity cell keys and values from vlsv file
-    velcels = vlsvobj.read_velocity_cells(cellid)
-    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
-    vc_vals = np.array(list(velcels.values()))
-
-    # Select coordinates of chosen velocity component
-    if operator in op_list:
-        vc_coord_arr = vc_coords[:, op_list.index(operator)]
-    elif operator == "magnitude":
-        vc_coord_arr = np.sqrt(
-            vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2
-        )
-
-    # Create histogram bins, one for each unique coordinate of the chosen velocity component
-    # if bool(vmin or vmax):
-    #     vbins = np.arange(vmin, vmax, dv)
-    # else:
-    vbins = np.sort(np.unique(vc_coord_arr))
-    vbins = np.append(vbins - dv / 2, vbins[-1] + dv / 2)
-    if operator == "magnitude":
-        vbins = vbins * 4
-
-    # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
-    # if operator in op_list:
-    #     vweights = vc_vals * dv * dv
-    # elif operator == "magnitude":
-    #     vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
-    vweights = vc_vals * dv * dv
-
-    # Integrate over the perpendicular directions
-    if operator == "magnitude":
-        # vbins = np.histogram_bin_edges(vc_coord_arr, bins="auto", weights=vweights)
-        vbins = vbins * np.sqrt(3)
-        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
-    else:
-        hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
-
-    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
-    return (hist, bin_edges)
 
 
 def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
