@@ -4072,9 +4072,15 @@ def pos_vdf_1d_spectrogram(
                 vobj.read_variable("proton/vg_v", cellids=vdf_cellid) * 1e-3
             )
 
-        xhist_interp = np.interp(v_arr[0], xbin_centers, xhist)
-        yhist_interp = np.interp(v_arr[1], ybin_centers, yhist)
-        zhist_interp = np.interp(v_arr[2], zbin_centers, zhist)
+        xhist_interp = np.interp(
+            v_arr[0], xbin_centers, xhist, left=np.nan, right=np.nan
+        )
+        yhist_interp = np.interp(
+            v_arr[1], ybin_centers, yhist, left=np.nan, right=np.nan
+        )
+        zhist_interp = np.interp(
+            v_arr[2], zbin_centers, zhist, left=np.nan, right=np.nan
+        )
 
         vx_arr[:, idx] = xhist_interp
         vy_arr[:, idx] = yhist_interp
