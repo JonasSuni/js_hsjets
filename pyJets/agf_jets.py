@@ -3982,9 +3982,9 @@ def pos_vdf_1d_spectrogram(
     v_arr = [np.arange(vmin[idx], vmax[idx], dv[idx]) for idx in range(3)]
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
 
-    vx_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
-    vy_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
-    vz_arr = np.zeros((v_arr.size, t_arr.size), dtype=float)
+    vx_arr = np.zeros((v_arr[0].size, t_arr.size), dtype=float)
+    vy_arr = np.zeros((v_arr[1].size, t_arr.size), dtype=float)
+    vz_arr = np.zeros((v_arr[2].size, t_arr.size), dtype=float)
 
     if overplot_v:
         vmean_arr = np.zeros((3, t_arr.size), dtype=float)
