@@ -4065,7 +4065,7 @@ def pos_vdf_1d_spectrogram(
     for idx2, ax in enumerate(ax_list):
         ax.set(
             xlim=(t_arr[0], t_arr[-1]),
-            ylim=(v_arr[idx2][0] * 1e-3, v_arr[idx2][-1] * 1e-3),
+            ylim=(v_arr[idx2][0] * scales[idx2], v_arr[idx2][-1] * scales[idx2]),
         )
         ax.set_ylabel(labels[idx2], fontsize=24, labelpad=10)
         ax.label_outer()
