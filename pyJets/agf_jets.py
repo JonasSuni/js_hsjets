@@ -3935,9 +3935,9 @@ def pos_vdf_1d_spectrogram(
     bulkpath = find_bulkpath(runid)
 
     if parperp:
-        dv = [dv, dv, 0.02]
-        vmin = [vmin, 0, -1]
-        vmax = [vmax, vmax, 1]
+        dv = [0.02,dv, dv]
+        vmin = [-1, vmin, 0]
+        vmax = [1, vmax, vmax]
         scales = [1, 1e-3, 1e-3]
     else:
         dv = [dv, dv, dv]
@@ -4060,7 +4060,7 @@ def pos_vdf_1d_spectrogram(
 
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
     if parperp:
-        ["$\\cos\\mu$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
+        labels = ["$\\cos\\mu$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
 
     for idx2, ax in enumerate(ax_list):
         ax.set(
