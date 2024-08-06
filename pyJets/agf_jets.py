@@ -4000,7 +4000,7 @@ def pos_vdf_1d_spectrogram(
     vy_arr = np.zeros((v_arr[1].size, t_arr.size), dtype=float)
     vz_arr = np.zeros((v_arr[2].size, t_arr.size), dtype=float)
 
-    b_arr = np.zeros_like(t_arr)
+    b_arr = np.zeros((t_arr.size, 3), dtype=float)
 
     if overplot_v:
         vmean_arr = np.zeros((3, t_arr.size), dtype=float)
@@ -4038,9 +4038,15 @@ def pos_vdf_1d_spectrogram(
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
         if parperp:
-            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="cosmu", b=b_arr[idx])
-            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="par", b=b_arr[idx])
-            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="perp", b=b_arr[idx])
+            xhist, xbin_edges = vspace_reducer(
+                vobj, vdf_cellid, operator="cosmu", b=b_arr[idx]
+            )
+            yhist, ybin_edges = vspace_reducer(
+                vobj, vdf_cellid, operator="par", b=b_arr[idx]
+            )
+            zhist, zbin_edges = vspace_reducer(
+                vobj, vdf_cellid, operator="perp", b=b_arr[idx]
+            )
         else:
             xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
             yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
