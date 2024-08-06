@@ -4000,10 +4000,29 @@ def pos_vdf_1d_spectrogram(
     vy_arr = np.zeros((v_arr[1].size, t_arr.size), dtype=float)
     vz_arr = np.zeros((v_arr[2].size, t_arr.size), dtype=float)
 
+    b_arr = np.zeros_like(t_arr)
+
     if overplot_v:
         vmean_arr = np.zeros((3, t_arr.size), dtype=float)
 
     fig, ax_list = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
+
+    for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
+
+        fnr = int(t * 2)
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        b = vobj.read_variable("vg_b_vol", cellids=vdf_cellid)
+        b = b / np.linalg.norm(b)
+        b_arr[idx] = b
+
+    b_arr = uniform_filter1d(b_arr, size=10)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
         fnr = int(t * 2)
@@ -4014,8 +4033,8 @@ def pos_vdf_1d_spectrogram(
         cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
-        b = vobj.read_variable("vg_b_vol", cellids=vdf_cellid)
-        b = b / np.linalg.norm(b)
+        # b = vobj.read_variable("vg_b_vol", cellids=vdf_cellid)
+        # b = b / np.linalg.norm(b)
 
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
         if parperp:
