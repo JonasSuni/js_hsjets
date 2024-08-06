@@ -4063,7 +4063,10 @@ def pos_vdf_1d_spectrogram(
         ["$\\cos\\mu$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
 
     for idx2, ax in enumerate(ax_list):
-        ax.set(xlim=(t_arr[0], t_arr[-1]), ylim=(v_arr[0] * 1e-3, v_arr[-1] * 1e-3))
+        ax.set(
+            xlim=(t_arr[0], t_arr[-1]),
+            ylim=(v_arr[idx2][0] * 1e-3, v_arr[idx2][-1] * 1e-3),
+        )
         ax.set_ylabel(labels[idx2], fontsize=24, labelpad=10)
         ax.label_outer()
         ax.tick_params(labelsize=20)
