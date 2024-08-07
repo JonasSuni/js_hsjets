@@ -4834,7 +4834,7 @@ def pos_vdf_plotter(
                 contours=ncont,
             )
             ax_list[0][1].plot(v[0],v[1],"x")
-            ax_list[0][1].add_patch(plt.Circle((v[0],v[1]),radius=vth),fc=None,ec="red",linestyle="dashed")
+            ax_list[0][1].add_patch(plt.Circle((v[0],v[1]),radius=vth,fc=None,ec="red",linestyle="dashed"))
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
                 vlsvobj=vobj,
@@ -4853,7 +4853,7 @@ def pos_vdf_plotter(
                 contours=ncont,
             )
             ax_list[1][0].plot(v[0],v[2],"x")
-            ax_list[1][0].add_patch(plt.Circle((v[0],v[2]),radius=vth),fc=None,ec="red",linestyle="dashed")
+            ax_list[1][0].add_patch(plt.Circle((v[0],v[2]),radius=vth,fc=None,ec="red",linestyle="dashed"))
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
                 vlsvobj=vobj,
@@ -4872,7 +4872,7 @@ def pos_vdf_plotter(
                 contours=ncont,
             )
             ax_list[1][1].plot(v[1],v[2],"x")
-            ax_list[1][1].add_patch(plt.Circle((v[1],v[2]),radius=vth),fc=None,ec="red",linestyle="dashed")
+            ax_list[1][1].add_patch(plt.Circle((v[1],v[2]),radius=vth,fc=None,ec="red",linestyle="dashed"))
         else:
             pt.plot.plot_vdf(
                 axes=ax_list[0][1],
