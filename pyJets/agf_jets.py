@@ -2267,9 +2267,7 @@ def VSC_cut_through(
     y1,
     dr,
     t0,
-    filt=None,
     pdx=False,
-    delta=None,
     vlines=[],
 ):
     bulkpath = find_bulkpath(runid)
@@ -2422,7 +2420,6 @@ def VSC_cut_through(
     alpha = np.arctan2(y1 - y0, x1 - x0)
     dx = dr * np.cos(alpha)
     nx = 1 + int((x1 - x0) / dx)
-    dy = dr * np.sin(alpha)
     x_arr = np.linspace(x0, x1, nx) * r_e
     y_arr = np.linspace(y0, y1, nx) * r_e
     n_arr = np.arange(x_arr.size)
@@ -4700,10 +4697,11 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
     xg = []
     yg = []
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g, drawBy0
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g, drawBy0, linsg
     drawBy0 = False
     plaschke_g = False
     runid_g = runid
+    linsg = False
     Blines_g = False
 
     non_ids = []
