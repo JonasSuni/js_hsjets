@@ -4687,9 +4687,11 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
     return None
 
 
-def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
+def pos_vdf_plotter(
+    runid, x, y, t0, t1, skip=False, xyz=False, boxwidth=2000e3, pdmax=1.0
+):
     runids = ["AGF", "AIA", "AIC"]
-    pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
+    # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
     bulkpath = find_bulkpath(runid)
 
     global xg, yg
@@ -4698,7 +4700,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
     yg = []
 
     global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g, drawBy0, linsg, draw_qperp, leg_g
-    drawBy0 = False
+    drawBy0 = True
     draw_qperp = False
     plaschke_g = False
     runid_g = runid
@@ -4737,8 +4739,8 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
 
     x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
-    outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}".format(
-        runid, x_re, y_re, t0, t1
+    outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}_xyz{}".format(
+        runid, x_re, y_re, t0, t1, xyz
     )
 
     for t in np.arange(t0, t1 + 0.1, 0.5):
@@ -4764,7 +4766,7 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
             vlsvobj=vobj,
             var="proton/vg_Pdyn",
             vmin=0.01,
-            vmax=1,
+            vmax=pdmax,
             vscale=1e9,
             cbtitle="$P_\mathrm{dyn}$ [nPa]",
             usesci=0,
@@ -4793,54 +4795,104 @@ def pos_vdf_plotter(runid, x, y, t0, t1, skip=False):
         ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
         ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
 
-        pt.plot.plot_vdf(
-            axes=ax_list[0][1],
-            vlsvobj=vobj,
-            cellids=[vdf_cellid],
-            colormap="hot_desaturated",
-            # bvector=1,
-            # xy=1,
-            bpara=1,
-            slicethick=0,
-            box=[-2e6, 2e6, -2e6, 2e6],
-            # internalcb=True,
-            setThreshold=1e-15,
-            scale=1.3,
-            fmin=1e-10,
-            fmax=1e-4,
-        )
-        pt.plot.plot_vdf(
-            axes=ax_list[1][0],
-            vlsvobj=vobj,
-            cellids=[vdf_cellid],
-            colormap="hot_desaturated",
-            # bvector=1,
-            # xz=1,
-            bpara1=1,
-            slicethick=0,
-            box=[-2e6, 2e6, -2e6, 2e6],
-            # internalcb=True,
-            setThreshold=1e-15,
-            scale=1.3,
-            fmin=1e-10,
-            fmax=1e-4,
-        )
-        pt.plot.plot_vdf(
-            axes=ax_list[1][1],
-            vlsvobj=vobj,
-            cellids=[vdf_cellid],
-            colormap="hot_desaturated",
-            # bvector=1,
-            # yz=1,
-            bperp=1,
-            slicethick=0,
-            box=[-2e6, 2e6, -2e6, 2e6],
-            # internalcb=True,
-            setThreshold=1e-15,
-            scale=1.3,
-            fmin=1e-10,
-            fmax=1e-4,
-        )
+        if xyz:
+            pt.plot.plot_vdf(
+                axes=ax_list[0][1],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                xy=1,
+                # bpara=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][0],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                xz=1,
+                # bpara1=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][1],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                yz=1,
+                # bperp=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
+        else:
+            pt.plot.plot_vdf(
+                axes=ax_list[0][1],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                # xy=1,
+                bpara=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][0],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                # xz=1,
+                bpara1=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
+            pt.plot.plot_vdf(
+                axes=ax_list[1][1],
+                vlsvobj=vobj,
+                cellids=[vdf_cellid],
+                colormap="hot_desaturated",
+                # bvector=1,
+                # yz=1,
+                bperp=1,
+                slicethick=0,
+                box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                # internalcb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-10,
+                fmax=1e-4,
+            )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
 
