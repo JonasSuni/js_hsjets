@@ -4744,6 +4744,7 @@ def pos_vdf_plotter(
     )
 
     for t in np.arange(t0, t1 + 0.1, 0.5):
+        print("t = {}s".format(t))
         fnr = int(t * 2)
         if skip and os.path.isfile(outdir + "/{}.png".format(fnr)):
             continue
