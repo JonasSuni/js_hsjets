@@ -4688,7 +4688,16 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
 
 
 def pos_vdf_plotter(
-    runid, x, y, t0, t1, skip=False, xyz=False, boxwidth=2000e3, pdmax=1.0
+    runid,
+    x,
+    y,
+    t0,
+    t1,
+    skip=False,
+    xyz=False,
+    boxwidth=2000e3,
+    pdmax=1.0,
+    ncont=5,
 ):
     runids = ["AGF", "AIA", "AIC"]
     # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
@@ -4812,7 +4821,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
@@ -4829,7 +4838,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
@@ -4846,7 +4855,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
         else:
             pt.plot.plot_vdf(
@@ -4864,7 +4873,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
@@ -4881,7 +4890,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
@@ -4898,7 +4907,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
-                contours=5,
+                contours=ncont,
             )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
