@@ -4764,6 +4764,16 @@ def pos_vdf_plotter(
         cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
 
+        v = vobj.read_variable("proton/vg_v",cellids=vdf_cellid)*1e-3
+        vth = vobj.read_variable("proton/vg_thermalvelocity",cellids=vdf_cellid)*1e-3
+
+        if not xyz:
+            B = vobj.read_variable("vg_b_vol",cellids=vdf_cellid)
+            b = B/np.linalg.norm(B)
+            vpar = np.dot(v,b)
+            vperp1 = np.cross(b,v)
+            vperp2 = np.cross(b,np.cross(b,v))
+
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
         x0 = x_re
@@ -4823,6 +4833,8 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
+            ax_list[0][1].plot(v[0],v[1],"x")
+            ax_list[0][1].add_patch(plt.Circle((v[0],v[1]),radius=vth),fc=None,ec="red",linestyle="dashed")
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
                 vlsvobj=vobj,
@@ -4840,6 +4852,8 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
+            ax_list[1][0].plot(v[0],v[2],"x")
+            ax_list[1][0].add_patch(plt.Circle((v[0],v[2]),radius=vth),fc=None,ec="red",linestyle="dashed")
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
                 vlsvobj=vobj,
@@ -4857,6 +4871,8 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
+            ax_list[1][1].plot(v[1],v[2],"x")
+            ax_list[1][1].add_patch(plt.Circle((v[1],v[2]),radius=vth),fc=None,ec="red",linestyle="dashed")
         else:
             pt.plot.plot_vdf(
                 axes=ax_list[0][1],
