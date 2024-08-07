@@ -4774,7 +4774,7 @@ def pos_vdf_plotter(
             boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
             # internalcb=True,
             # lin=1,
-            colormap="hot_desaturated",
+            colormap="batlow",
             scale=1.3,
             tickinterval=1.0,
             external=ext_jet,
@@ -4801,7 +4801,7 @@ def pos_vdf_plotter(
                 axes=ax_list[0][1],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 xy=1,
                 # bpara=1,
@@ -4812,12 +4812,13 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 xz=1,
                 # bpara1=1,
@@ -4828,12 +4829,13 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 yz=1,
                 # bperp=1,
@@ -4844,13 +4846,14 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
         else:
             pt.plot.plot_vdf(
                 axes=ax_list[0][1],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 # xy=1,
                 bpara=1,
@@ -4861,12 +4864,13 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][0],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 # xz=1,
                 bpara1=1,
@@ -4877,12 +4881,13 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
             pt.plot.plot_vdf(
                 axes=ax_list[1][1],
                 vlsvobj=vobj,
                 cellids=[vdf_cellid],
-                colormap="hot_desaturated",
+                colormap="batlow",
                 # bvector=1,
                 # yz=1,
                 bperp=1,
@@ -4893,6 +4898,7 @@ def pos_vdf_plotter(
                 scale=1.3,
                 fmin=1e-10,
                 fmax=1e-4,
+                contours=5,
             )
 
         # plt.subplots_adjust(wspace=1, hspace=1)
