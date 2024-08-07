@@ -2420,9 +2420,10 @@ def VSC_cut_through(
 
     alpha = np.arctan2(y1-y0,x1-x0)
     dx = dr*np.cos(alpha)
+    nx = 1+int((x1-x0)/dx)
     dy = dr*np.sin(alpha)
-    x_arr = np.arange(x0,x1+dx/2,dx)*r_e
-    y_arr = np.arange(y0,y1+dy/2,dy)*r_e
+    x_arr = np.linspace(x0,x1,nx)*r_e
+    y_arr = np.arange(y0,y1,nx)*r_e
     n_arr = np.arange(x_arr.size)
 
     fnr0 = int(t0 * 2)
