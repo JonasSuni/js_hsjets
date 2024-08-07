@@ -2258,6 +2258,7 @@ def v5_plotter(
             ],
         )
 
+
 def VSC_cut_through(
     runid,
     x0,
@@ -2418,40 +2419,41 @@ def VSC_cut_through(
         CB_color_cycle[1],
     ]
 
-    alpha = np.arctan2(y1-y0,x1-x0)
-    dx = dr*np.cos(alpha)
-    nx = 1+int((x1-x0)/dx)
-    dy = dr*np.sin(alpha)
-    x_arr = np.linspace(x0,x1,nx)*r_e
-    y_arr = np.arange(y0,y1,nx)*r_e
+    alpha = np.arctan2(y1 - y0, x1 - x0)
+    dx = dr * np.cos(alpha)
+    nx = 1 + int((x1 - x0) / dx)
+    dy = dr * np.sin(alpha)
+    x_arr = np.linspace(x0, x1, nx) * r_e
+    y_arr = np.linspace(y0, y1, nx) * r_e
     n_arr = np.arange(x_arr.size)
 
     fnr0 = int(t0 * 2)
     data_arr = np.zeros((len(var_list), x_arr.size), dtype=float)
     vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
-        )
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
 
     for idx in range(x_arr.size):
-        
+
         for idx2, var in enumerate(var_list):
             data_arr[idx2, idx] = (
                 vlsvobj.read_interpolated_variable(
                     var, [x_arr[idx], y_arr[idx], 0], operator=ops[idx2]
                 )
-                * scales[idx2])
+                * scales[idx2]
+            )
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
-    ax_list[0].set_title("Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0),(x1,y1)))
+    ax_list[0].set_title(
+        "Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0), (x1, y1))
+    )
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
         for vline in vlines:
             ax.axvline(vline, linestyle="dashed", linewidth=0.6)
-        ax.plot(
-            n_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
-        )
+        ax.plot(n_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
         if idx == 5 and pdx:
             pdynx = (
                 m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
@@ -2487,18 +2489,29 @@ def VSC_cut_through(
     fig.savefig(
         figdir
         + "{}_x{}_{}_y{}_{}_t0{}.png".format(
-            runid, x0, x1, y0, y1, t0,
+            runid,
+            x0,
+            x1,
+            y0,
+            y1,
+            t0,
         ),
         dpi=300,
     )
     np.savetxt(
         txtdir
         + "{}_x{}_{}_y{}_{}_t0{}.txt".format(
-            runid, x0, x1, y0, y1, t0,
+            runid,
+            x0,
+            x1,
+            y0,
+            y1,
+            t0,
         ),
         data_arr,
     )
     plt.close(fig)
+
 
 def VSC_timeseries(
     runid,
