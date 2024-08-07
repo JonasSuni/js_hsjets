@@ -4833,7 +4833,7 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
-            ax_list[0][1].plot(v[0], v[1], "x")
+            ax_list[0][1].plot(v[0], v[1], "x", color="red")
             ax_list[0][1].add_patch(
                 plt.Circle(
                     (v[0], v[1]), radius=vth, fill=False, ec="red", linestyle="dashed"
@@ -4856,7 +4856,7 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
-            ax_list[1][0].plot(v[0], v[2], "x")
+            ax_list[1][0].plot(v[0], v[2], "x", color="red")
             ax_list[1][0].add_patch(
                 plt.Circle(
                     (v[0], v[2]), radius=vth, fill=False, ec="red", linestyle="dashed"
@@ -4879,7 +4879,7 @@ def pos_vdf_plotter(
                 fmax=1e-4,
                 contours=ncont,
             )
-            ax_list[1][1].plot(v[1], v[2], "x")
+            ax_list[1][1].plot(v[1], v[2], "x", color="red")
             ax_list[1][1].add_patch(
                 plt.Circle(
                     (v[1], v[2]), radius=vth, fill=False, ec="red", linestyle="dashed"
