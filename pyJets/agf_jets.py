@@ -2258,6 +2258,246 @@ def v5_plotter(
             ],
         )
 
+def VSC_cut_through(
+    runid,
+    x0,
+    y0,
+    x1,
+    y1,
+    dr,
+    t0,
+    filt=None,
+    pdx=False,
+    delta=None,
+    vlines=[],
+):
+    bulkpath = find_bulkpath(runid)
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\mathrm{cm}^{-3}]$",
+        "$v~[\mathrm{km/s}]$",
+        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        "$B~[\mathrm{nT}]$",
+        "$E~[\mathrm{mV/m}]$",
+        "$T~[\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\mathrm{sw}]$",
+        # "$v~[v_\mathrm{sw}]$",
+        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+        # "$B~[B_\mathrm{IMF}]$",
+        # "$E~[E_\mathrm{sw}]$",
+        # "$T~[T_\mathrm{sw}]$",
+    ]
+    e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
+    norm = [
+        [
+            1,
+            750,
+            750,
+            750,
+            750,
+            0.9408498320756251,
+            3,
+            3,
+            3,
+            3,
+            e_sw,
+            e_sw,
+            e_sw,
+            e_sw,
+            0.5,
+            0.5,
+        ],
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    alpha = np.arctan2(y1-y0,x1-x0)
+    dx = dr*np.cos(alpha)
+    dy = dr*np.sin(alpha)
+    x_arr = np.arange(x0,x1+dx/2,dx)*r_e
+    y_arr = np.arange(y0,y1+dy/2,dy)*r_e
+    n_arr = np.arange(x_arr.size)
+
+    fnr0 = int(t0 * 2)
+    data_arr = np.zeros((len(var_list), x_arr.size), dtype=float)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        )
+
+    for idx in range(x_arr.size):
+        
+        for idx2, var in enumerate(var_list):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var, [x_arr[idx], y_arr[idx], 0], operator=ops[idx2]
+                )
+                * scales[idx2])
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
+    )
+    ax_list[0].set_title("Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0),(x1,y1)))
+    for idx in range(len(var_list)):
+        ax = ax_list[plot_index[idx]]
+        for vline in vlines:
+            ax.axvline(vline, linestyle="dashed", linewidth=0.6)
+        ax.plot(
+            n_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx]
+        )
+        if idx == 5 and pdx:
+            pdynx = (
+                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
+            )
+            ax.plot(
+                n_arr,
+                pdynx,
+                color=CB_color_cycle[0],
+                label="$P_{\mathrm{dyn},x}$",
+            )
+        ax.set_xlim(n_arr[0], n_arr[-1])
+        if draw_legend[idx]:
+            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    ax_list[-1].set_xlabel("Point along cut")
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.axvline(t0, linestyle="dashed")
+    # plt.tight_layout()
+    figdir = wrkdir_DNR + "Figs/cuts/"
+    txtdir = wrkdir_DNR + "txts/cuts/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+    if not os.path.exists(txtdir):
+        try:
+            os.makedirs(txtdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "{}_x{}_{}_y{}_{}_t0{}.png".format(
+            runid, x0, x1, y0, y1, t0,
+        ),
+        dpi=300,
+    )
+    np.savetxt(
+        txtdir
+        + "{}_x{}_{}_y{}_{}_t0{}.txt".format(
+            runid, x0, x1, y0, y1, t0,
+        ),
+        data_arr,
+    )
+    plt.close(fig)
 
 def VSC_timeseries(
     runid,
