@@ -4107,7 +4107,7 @@ def getNearestCellWithVspace(vlsvReader, cid):
 
 
 def vspace_reducer(
-    vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=None, fmin=1e-15
+    vlsvobj, cellid, operator, dv=31e3, vmin=None, vmax=None, b=None, fmin=1e-15,rotatetob=False,
 ):
     """
     Function for reducing a 3D VDF to 1D
@@ -4128,6 +4128,11 @@ def vspace_reducer(
     ii_fm = np.where(vc_vals >= fmin)
     vc_vals = vc_vals[ii_fm]
     vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    if rotatetob:
+        vc_coords_new = np.array([rotateVectorToVector_X(c,b) for c in vc_coords])
+
+    vc_coords = vc_coords_new
 
     # Select coordinates of chosen velocity component
     if operator in op_list:
@@ -4189,6 +4194,50 @@ def vspace_reducer(
     # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
     return (hist, bin_edges)
 
+def rotateVectorToVector_X( vector1, vector2 ):
+   ''' Applies rotation matrix that would rotate vector2 to x-axis on vector1 and then returns the rotated vector1
+
+       :param vector1        Vector to be rotated
+       :param vector2        Vector for creating the rotation matrix
+       :returns rotated vector1 vector
+
+       .. note::
+
+          vector1 and vector2 must be 3d vectors
+   '''
+   vector_u = np.cross(vector2, np.array([1,0,0]))
+   if np.linalg.norm(vector_u) == 0.0:
+      return vector1
+   else:
+      vector_u = vector_u / np.linalg.norm(vector_u)
+      angle = np.arccos( vector2.dot(np.array([1,0,0])) / np.linalg.norm(vector2) )
+      # A unit vector version of the given vector
+      R = rotation_matrix( vector_u, angle )
+      # Rotate vector
+      vector_rotated = R.dot(vector1.transpose()).transpose()
+      return vector_rotated
+
+def rotation_matrix(vector, angle):
+   ''' Creates a rotation matrix that rotates around a given vector by a given angle
+       :param vector        Some unit vector
+       :param angle         Some angle
+       :returns a rotation matrix
+   '''
+   v = vector
+   t = angle
+   cost = np.cos(t)
+   sint = np.sin(t)
+   unitymcost = -cost+1
+   m = np.array([[cost+v[0]**2*unitymcost,
+                  v[0]*v[1]*unitymcost-v[2]*sint, 
+                  v[0]*v[2]*unitymcost+v[1]*sint],
+                 [v[0]*v[1]*unitymcost+v[2]*sint, 
+                  cost+v[1]**2*unitymcost, 
+                  v[1]*v[2]*unitymcost-v[0]*sint],
+                 [v[0]*v[2]*unitymcost-v[1]*sint, 
+                  v[2]*v[1]*unitymcost+v[0]*sint, 
+                  cost+v[2]**2*unitymcost]])
+   return m
 
 def pos_vdf_1d_spectrogram(
     runid,
@@ -4202,6 +4251,7 @@ def pos_vdf_1d_spectrogram(
     overplot_v=False,
     parperp=False,
     logcb=False,
+    rotatetob=False,
 ):
     runids = ["AGF", "AIA", "AIB", "AIC"]
     bulkpath = find_bulkpath(runid)
@@ -4306,9 +4356,9 @@ def pos_vdf_1d_spectrogram(
                 vobj, vdf_cellid, operator="perp", b=b_arr[idx]
             )
         else:
-            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x")
-            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y")
-            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z")
+            xhist, xbin_edges = vspace_reducer(vobj, vdf_cellid, operator="x", b=b_arr[idx])
+            yhist, ybin_edges = vspace_reducer(vobj, vdf_cellid, operator="y", b=b_arr[idx])
+            zhist, zbin_edges = vspace_reducer(vobj, vdf_cellid, operator="z", b=b_arr[idx])
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
         zbin_centers = zbin_edges[:-1] + 0.5 * (zbin_edges[1] - zbin_edges[0])
