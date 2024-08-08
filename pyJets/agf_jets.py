@@ -4184,20 +4184,20 @@ def vspace_reducer(
         np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
     )
 
-    if rotatetob or operator in ["par", "perp", "cosmu", "magnitude"]:
-        cellsperbin = np.ones(vbins.size - 1, dtype=int)
-        for idx in range(cellsperbin.size):
-            # print("idx = {}".format(idx))
-            cellsperbin[idx] = np.logical_and(
-                vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
-            ).sum()
-        for idx in range(cellsperbin.size):
-            # print("idx = {}".format(idx))
-            vc_vals[
-                np.logical_and(
-                    vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
-                )
-            ] /= cellsperbin[idx] / np.mean(cellsperbin)
+    # if rotatetob or operator in ["par", "perp", "cosmu", "magnitude"]:
+    #     cellsperbin = np.ones(vbins.size - 1, dtype=int)
+    #     for idx in range(cellsperbin.size):
+    #         # print("idx = {}".format(idx))
+    #         cellsperbin[idx] = np.logical_and(
+    #             vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
+    #         ).sum()
+    #     for idx in range(cellsperbin.size):
+    #         # print("idx = {}".format(idx))
+    #         vc_vals[
+    #             np.logical_and(
+    #                 vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
+    #             )
+    #         ] /= cellsperbin[idx] / np.mean(cellsperbin)
 
     # vbins = np.append(vbins - dbins / 2, vbins[-1] + dbins / 2)
     # if operator == "magnitude":
