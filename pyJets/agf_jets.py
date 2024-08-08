@@ -4154,12 +4154,18 @@ def vspace_reducer(
         vc_coord_arr = np.dot(vc_coords, b)
     elif operator == "perp":
         # print("perp")
-        vc_coord_arr = np.sqrt(
-            vc_coords[:, 0] ** 2
-            + vc_coords[:, 1] ** 2
-            + vc_coords[:, 2] ** 2
-            - np.dot(vc_coords, b) ** 2
-        )
+        xvec = np.array([1, 0, 0])
+        bxx = np.cross(b, xvec)
+        bxbxx = np.cross(b, bxx)
+        vc_coord_perp1 = np.dot(vc_coords, bxx)
+        vc_coord_perp2 = np.dot(vc_coords, bxbxx)
+        vc_coord_arr = np.sqrt(vc_coord_perp1**2 + vc_coord_perp2**2)
+        # vc_coord_arr = np.sqrt(
+        #     vc_coords[:, 0] ** 2
+        #     + vc_coords[:, 1] ** 2
+        #     + vc_coords[:, 2] ** 2
+        #     - np.dot(vc_coords, b) ** 2
+        # )
     elif operator == "cosmu":
         # print("cosmu")
         vc_coord_arr = np.dot(vc_coords, b) / (
