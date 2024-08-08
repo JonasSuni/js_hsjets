@@ -4178,6 +4178,13 @@ def vspace_reducer(
     vbins = np.arange(
         np.min(vbins) - dbins / 2, np.max(vbins) + dbins / 2 + dbins / 4, dbins
     )
+
+    cellsperbin = np.ones(vbins.size - 1, dtype=int)
+    for idx in range(cellsperbin.size):
+        cellsperbin[idx] = np.logical_and(
+            vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
+        ).sum()
+
     # vbins = np.append(vbins - dbins / 2, vbins[-1] + dbins / 2)
     # if operator == "magnitude":
     #     vbins = vbins * 4
@@ -4187,7 +4194,7 @@ def vspace_reducer(
     #     vweights = vc_vals * dv * dv
     # elif operator == "magnitude":
     #     vweights = vc_vals * 4 * np.pi * vc_coord_arr**2
-    vweights = vc_vals * dv * dv
+    vweights = vc_vals * dv * dv * cellsperbin
 
     # Integrate over the perpendicular directions
     # if operator in ["magnitude", "par", "perp"]:
