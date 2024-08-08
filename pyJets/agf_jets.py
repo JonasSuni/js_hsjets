@@ -4114,6 +4114,7 @@ def vspace_reducer(
     vmin=None,
     vmax=None,
     b=None,
+    binw=31e3,
     fmin=1e-15,
     rotatetob=False,
 ):
@@ -4177,10 +4178,10 @@ def vspace_reducer(
     #     dcosmu = np.max(np.ediff1d(vbins))
     #     vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
     vbins = np.sort(np.unique(vc_coord_arr))
-    dbins = np.max(np.ediff1d(vbins))
-    print("dbins = {}".format(dbins))
+    # dbins = np.max(np.ediff1d(vbins))
+    # print("dbins = {}".format(dbins))
     vbins = np.arange(
-        np.min(vbins) - dbins / 2, np.max(vbins) + dbins / 2 + dbins / 4, dbins
+        np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
     )
 
     if rotatetob or operator in ["par", "perp", "cosmu", "magnitude"]:
@@ -4388,23 +4389,38 @@ def pos_vdf_1d_spectrogram(
         x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
         if parperp:
             xhist, xbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="cosmu", b=b_arr[idx]
+                vobj, vdf_cellid, operator="cosmu", b=b_arr[idx], binw=dv[0]
             )
             yhist, ybin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="par", b=b_arr[idx]
+                vobj, vdf_cellid, operator="par", b=b_arr[idx], binw=dv[1]
             )
             zhist, zbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="perp", b=b_arr[idx]
+                vobj, vdf_cellid, operator="perp", b=b_arr[idx], binw=dv[2]
             )
         else:
             xhist, xbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="x", b=b_arr[idx], rotatetob=rotatetob
+                vobj,
+                vdf_cellid,
+                operator="x",
+                b=b_arr[idx],
+                rotatetob=rotatetob,
+                binw=dv[0],
             )
             yhist, ybin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="y", b=b_arr[idx], rotatetob=rotatetob
+                vobj,
+                vdf_cellid,
+                operator="y",
+                b=b_arr[idx],
+                rotatetob=rotatetob,
+                binw=dv[1],
             )
             zhist, zbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="z", b=b_arr[idx], rotatetob=rotatetob
+                vobj,
+                vdf_cellid,
+                operator="z",
+                b=b_arr[idx],
+                rotatetob=rotatetob,
+                binw=dv[2],
             )
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
