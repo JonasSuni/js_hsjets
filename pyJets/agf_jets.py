@@ -4139,8 +4139,7 @@ def vspace_reducer(
 
     if rotatetob:
         vc_coords_new = np.array([rotateVectorToVector_X(c, b) for c in vc_coords])
-
-    vc_coords = vc_coords_new
+        vc_coords = vc_coords_new
 
     # Select coordinates of chosen velocity component
     if operator in op_list:
