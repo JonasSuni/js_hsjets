@@ -4179,14 +4179,18 @@ def vspace_reducer(
         np.min(vbins) - dbins / 2, np.max(vbins) + dbins / 2 + dbins / 4, dbins
     )
 
-    cellsperbin = np.ones(vbins.size - 1, dtype=int)
-    for idx in range(cellsperbin.size):
-        cellsperbin[idx] = np.logical_and(
-            vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
-        ).sum()
-        vc_vals[
-            np.logical_and(vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1])
-        ] /= cellsperbin[idx]
+    if rotatetob or operator in ["par", "perp", "cosmu", "magnitude"]:
+        cellsperbin = np.ones(vbins.size - 1, dtype=int)
+        for idx in range(cellsperbin.size):
+            cellsperbin[idx] = np.logical_and(
+                vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
+            ).sum()
+        for idx in range(cellsperbin.size):
+            vc_vals[
+                np.logical_and(
+                    vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
+                )
+            ] /= cellsperbin[idx] / np.mean(cellsperbin)
 
     # vbins = np.append(vbins - dbins / 2, vbins[-1] + dbins / 2)
     # if operator == "magnitude":
@@ -4387,13 +4391,13 @@ def pos_vdf_1d_spectrogram(
             )
         else:
             xhist, xbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="x", b=b_arr[idx]
+                vobj, vdf_cellid, operator="x", b=b_arr[idx], rotatetob=rotatetob
             )
             yhist, ybin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="y", b=b_arr[idx]
+                vobj, vdf_cellid, operator="y", b=b_arr[idx], rotatetob=rotatetob
             )
             zhist, zbin_edges = vspace_reducer(
-                vobj, vdf_cellid, operator="z", b=b_arr[idx]
+                vobj, vdf_cellid, operator="z", b=b_arr[idx], rotatetob=rotatetob
             )
         xbin_centers = xbin_edges[:-1] + 0.5 * (xbin_edges[1] - xbin_edges[0])
         ybin_centers = ybin_edges[:-1] + 0.5 * (ybin_edges[1] - ybin_edges[0])
