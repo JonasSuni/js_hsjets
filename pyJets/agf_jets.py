@@ -4364,7 +4364,7 @@ def pos_vdf_1d_spectrogram(
         b = b / np.linalg.norm(b)
         b_arr[idx] = b
 
-    b_arr = uniform_filter1d(b_arr, size=60)
+    # b_arr = uniform_filter1d(b_arr, size=60)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
         fnr = int(t * 2)
