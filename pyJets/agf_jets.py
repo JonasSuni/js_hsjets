@@ -4149,10 +4149,10 @@ def vspace_reducer(
             vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2
         )
     elif operator == "par":
-        print("par")
+        # print("par")
         vc_coord_arr = np.dot(vc_coords, b)
     elif operator == "perp":
-        print("perp")
+        # print("perp")
         vc_coord_arr = np.sqrt(
             vc_coords[:, 0] ** 2
             + vc_coords[:, 1] ** 2
@@ -4160,7 +4160,7 @@ def vspace_reducer(
             - np.dot(vc_coords, b) ** 2
         )
     elif operator == "cosmu":
-        print("cosmu")
+        # print("cosmu")
         vc_coord_arr = np.dot(vc_coords, b) / (
             np.sqrt(vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2)
             + 1e-27
@@ -4177,7 +4177,8 @@ def vspace_reducer(
     #     dcosmu = np.max(np.ediff1d(vbins))
     #     vbins = np.arange(-1, 1 + dcosmu / 2, dcosmu)
     vbins = np.sort(np.unique(vc_coord_arr))
-    dbins = np.max(np.ediff1d(vbins)) * np.sqrt(3)
+    dbins = np.max(np.ediff1d(vbins))
+    print("dbins = {}".format(dbins))
     vbins = np.arange(
         np.min(vbins) - dbins / 2, np.max(vbins) + dbins / 2 + dbins / 4, dbins
     )
@@ -4185,12 +4186,12 @@ def vspace_reducer(
     if rotatetob or operator in ["par", "perp", "cosmu", "magnitude"]:
         cellsperbin = np.ones(vbins.size - 1, dtype=int)
         for idx in range(cellsperbin.size):
-            print("idx = {}".format(idx))
+            # print("idx = {}".format(idx))
             cellsperbin[idx] = np.logical_and(
                 vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
             ).sum()
         for idx in range(cellsperbin.size):
-            print("idx = {}".format(idx))
+            # print("idx = {}".format(idx))
             vc_vals[
                 np.logical_and(
                     vc_coord_arr > vbins[idx], vc_coord_arr <= vbins[idx + 1]
