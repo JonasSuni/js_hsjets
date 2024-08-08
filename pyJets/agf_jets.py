@@ -3823,8 +3823,6 @@ def jplots(
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
 
-    sos = butter(10, 0.01, "low", fs=2, output="sos")
-
     if txt:
         data_arr = np.load(
             txtdir
@@ -4698,6 +4696,7 @@ def pos_vdf_plotter(
     boxwidth=2000e3,
     pdmax=1.0,
     ncont=5,
+    rboxw=2,
 ):
     runids = ["AGF", "AIA", "AIC"]
     # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
@@ -4790,7 +4789,7 @@ def pos_vdf_plotter(
             vscale=1e9,
             cbtitle="$P_\mathrm{dyn}$ [nPa]",
             usesci=0,
-            boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
+            boxre=[x_re - rboxw, x_re + rboxw, y_re - rboxw, y_re + rboxw],
             # internalcb=True,
             # lin=1,
             colormap="batlow",
