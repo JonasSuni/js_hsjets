@@ -2144,6 +2144,7 @@ def v5_plotter(
     qperp=True,
     linestartstop=[],
     magten=False,
+    usesci=0,
 ):
     var = "proton/vg_Pdyn"
 
