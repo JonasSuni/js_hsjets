@@ -4137,16 +4137,13 @@ def make_vg_b_jacobian(vobj):
     dFy_dx, dFy_dy = np.gradient(By_reshaped[:, :], *dx)
     dFz_dx, dFz_dy = np.gradient(Bz_reshaped[:, :], *dx)
 
-    return np.stack(
-        np.array(
+    return np.array(
             [
                 [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
                 [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
                 [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
             ]
-        ),
-        axis=1,
-    )
+        )
 
 
 def getNearestCellWithVspace(vlsvReader, cid):
