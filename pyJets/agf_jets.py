@@ -2272,6 +2272,7 @@ def v5_plotter(
 def expr_magten(pass_maps):
 
     outcells = pass_maps["CellID"]
+    print(outcells.shape)
     B = pass_maps["vg_b_vol"]
     vg_b_jacobian = make_vg_b_jacobian(vobj)
     print(vg_b_jacobian.shape)
