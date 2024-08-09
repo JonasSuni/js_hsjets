@@ -2269,7 +2269,7 @@ def v5_plotter(
         )
 
 
-def expr_magten(ax, XmeshXY, YmeshXY, pass_maps):
+def expr_magten(pass_maps):
 
     outcells = pass_maps["CellID"]
     B = pass_maps["vg_b_vol"]
