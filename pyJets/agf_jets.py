@@ -2143,9 +2143,17 @@ def v5_plotter(
     track_jets=True,
     qperp=True,
     linestartstop=[],
+    magten=False,
 ):
     var = "proton/vg_Pdyn"
-    vscale = 1e9
+
+    if magten:
+        vscale = 1
+        expression = expr_magten
+    else:
+        vscale = 1e9
+        expression = None
+
     vmax = pdynmax
     runids = ["AGF", "AIA", "AIC"]
 
@@ -2153,7 +2161,7 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj
     runid_g = runid
     Blines_g = blines
     drawBy0 = By0
@@ -2220,8 +2228,10 @@ def v5_plotter(
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
+        vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+
         pt.plot.plot_colormap(
-            filename=bulkpath + fname,
+            vlsvobj=vobj,
             outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
             var=var,
             vmin=pdynmin,
@@ -2241,7 +2251,7 @@ def v5_plotter(
             fsaved=fsaved,
             # useimshow=True,
             external=ext_jet,
-            # expression=expr_rhoratio,
+            expression=expression,
             pass_vars=[
                 "proton/vg_rho_thermal",
                 "proton/vg_rho_nonthermal",
@@ -2257,6 +2267,19 @@ def v5_plotter(
                 "proton/vg_beta_star",
             ],
         )
+
+
+def expr_magten(ax, XmeshXY, YmeshXY, pass_maps):
+
+    outcells = pass_maps["CellID"]
+    B = pass_maps["vg_b_vol"]
+    vg_b_jacobian = make_vg_b_jacobian(vobj)[outcells]
+
+    B_reshaped = np.rollaxis(np.array([B]), 1, 0)
+
+    magten = np.rollaxis(B_reshaped @ vg_b_jacobian, 1, 0)[0] / mu0
+
+    return np.linalg.norm(magten, axis=-1)
 
 
 def VSC_cut_through(
@@ -4087,6 +4110,34 @@ def jplots(
             ),
             data_arr,
         )
+
+
+def make_vg_b_jacobian(vobj):
+
+    B = vobj.read_variable("vg_b_vol")
+    ci = vobj.read_variable("CellID")
+    B_sorted = B[np.argsort(ci)]
+
+    meshshape = vobj.get_spatial_mesh_size()
+
+    Bx, By, Bz = B_sorted.T
+
+    Bx_reshaped = np.reshape(Bx, meshshape)
+    By_reshaped = np.reshape(By, meshshape)
+    Bz_reshaped = np.reshape(Bz, meshshape)
+
+    dx = vobj.get_fsgrid_cell_size()
+
+    dFx_dx, dFx_dy, dFx_dz = np.gradient(Bx_reshaped[:, :, :], *dx)
+    dFy_dx, dFy_dy, dFy_dz = np.gradient(By_reshaped[:, :, :], *dx)
+    dFz_dx, dFz_dy, dFz_dz = np.gradient(Bz_reshaped[:, :, :], *dx)
+
+    return np.stack(
+        np.array(
+            [dFx_dx, dFx_dy, dFx_dz, dFy_dx, dFy_dy, dFy_dz, dFz_dx, dFz_dy, dFz_dz]
+        ),
+        axis=-1,
+    )
 
 
 def getNearestCellWithVspace(vlsvReader, cid):
