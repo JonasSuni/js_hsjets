@@ -2150,9 +2150,11 @@ def v5_plotter(
     if magten:
         vscale = 1
         expression = expr_magten
+        usesci = 1
     else:
         vscale = 1e9
         expression = None
+        usesci = 0
 
     vmax = pdynmax
     runids = ["AGF", "AIA", "AIC"]
@@ -2240,7 +2242,7 @@ def v5_plotter(
             vscale=vscale,
             # cbtitle="",
             # cbtitle="",
-            usesci=0,
+            usesci=usesci,
             # scale=3,
             title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
             boxre=boxre,
