@@ -4126,7 +4126,7 @@ def make_vg_b_jacobian(vobj):
     By_reshaped = np.reshape(By, meshshape)
     Bz_reshaped = np.reshape(Bz, meshshape)
 
-    dx = vobj.get_fsgrid_cell_size()
+    dx = vobj.get_fsgrid_cell_size()[:-1]
 
     dFx_dx, dFx_dy = np.gradient(Bx_reshaped[:, :], *dx)
     dFy_dx, dFy_dy = np.gradient(By_reshaped[:, :], *dx)
