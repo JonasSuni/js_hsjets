@@ -2276,6 +2276,7 @@ def expr_magten(pass_maps):
     outcells = outcells.flatten()
     print(outcells.shape)
     B = pass_maps["vg_b_vol"]
+    print(B.shape)
     vg_b_jacobian = make_vg_b_jacobian(vobj)
     print(vg_b_jacobian.shape)
     vg_b_jacobian = vg_b_jacobian[outcells]
@@ -4137,13 +4138,17 @@ def make_vg_b_jacobian(vobj):
     dFy_dx, dFy_dy = np.gradient(By_reshaped[:, :], *dx)
     dFz_dx, dFz_dy = np.gradient(Bz_reshaped[:, :], *dx)
 
-    return np.rollaxis(np.array(
-        [
-            [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-            [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-            [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-        ]
-    ),2,0)
+    return np.rollaxis(
+        np.array(
+            [
+                [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+            ]
+        ),
+        2,
+        0,
+    )
 
 
 def getNearestCellWithVspace(vlsvReader, cid):
