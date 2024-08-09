@@ -4133,19 +4133,7 @@ def make_vg_b_jacobian(vobj):
     dFz_dx, dFz_dy = np.gradient(Bz_reshaped[:, :], *dx)
 
     return np.stack(
-        np.array(
-            [
-                dFx_dx,
-                dFx_dy,
-                np.zeros_like(dFx_dx),
-                dFy_dx,
-                dFy_dy,
-                np.zeros_like(dFx_dx),
-                dFz_dx,
-                dFz_dy,
-                np.zeros_like(dFx_dx),
-            ]
-        ),
+        np.array([dFx_dx, dFx_dy, np.zeros_like(dFx_dx), dFy_dx, dFy_dy, np.zeros_like(dFx_dx), dFz_dx, dFz_dy, np.zeros_like(dFx_dx)]),
         axis=-1,
     )
 
