@@ -2277,6 +2277,7 @@ def expr_magten(pass_maps):
     print(outcells.shape)
     B = pass_maps["vg_b_vol"]
     print(B.shape)
+    B = np.reshape(B,(outcells.size,3))
     vg_b_jacobian = make_vg_b_jacobian(vobj)
     print(vg_b_jacobian.shape)
     vg_b_jacobian = vg_b_jacobian[outcells]
