@@ -2282,6 +2282,7 @@ def expr_magten(pass_maps):
     v = pass_maps["proton/vg_v"]
     print(B.shape)
     B = np.reshape(B, (outcells.size, 3))
+    Bmag = np.linalg.norm(B,axis=-1)
     v = np.reshape(v, (outcells.size, 3))
     vg_b_jacobian = make_vg_b_jacobian(vobj)
     print(vg_b_jacobian.shape)
@@ -2290,6 +2291,9 @@ def expr_magten(pass_maps):
     B_reshaped = np.rollaxis(np.array([B]), 1, 0)
 
     magten = np.rollaxis(B_reshaped @ vg_b_jacobian, 1, 0)[0] / mu0
+
+    magten = (magten.T/Bmag/Bmag).T
+    magten = (magten*v).sum(axis=-1)
 
     magten = np.reshape(magten, (origshape[0], origshape[1], 3))
 
