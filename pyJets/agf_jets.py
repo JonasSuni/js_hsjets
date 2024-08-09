@@ -2286,7 +2286,7 @@ def expr_magten(pass_maps):
 
     magten = np.rollaxis(B_reshaped @ vg_b_jacobian, 1, 0)[0] / mu0
 
-    magten = np.reshape(magten,(origshape[0],origshape[1],3))
+    magten = np.reshape(magten, (origshape[0], origshape[1], 3))
 
     return np.linalg.norm(magten, axis=-1)
 
