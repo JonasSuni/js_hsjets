@@ -4145,7 +4145,7 @@ def make_vg_b_jacobian(vobj):
                 [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
             ]
         ),
-        axis=-1,
+        axis=0,
     )
 
 
