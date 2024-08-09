@@ -2273,7 +2273,9 @@ def expr_magten(pass_maps):
 
     outcells = pass_maps["CellID"]
     B = pass_maps["vg_b_vol"]
-    vg_b_jacobian = make_vg_b_jacobian(vobj)[outcells]
+    vg_b_jacobian = make_vg_b_jacobian(vobj)
+    print(vg_b_jacobian.shape)
+    vg_b_jacobian = vg_b_jacobian[outcells]
 
     B_reshaped = np.rollaxis(np.array([B]), 1, 0)
 
@@ -4133,7 +4135,13 @@ def make_vg_b_jacobian(vobj):
     dFz_dx, dFz_dy = np.gradient(Bz_reshaped[:, :], *dx)
 
     return np.stack(
-        np.array([dFx_dx, dFx_dy, np.zeros_like(dFx_dx), dFy_dx, dFy_dy, np.zeros_like(dFx_dx), dFz_dx, dFz_dy, np.zeros_like(dFx_dx)]),
+        np.array(
+            [
+                [dFx_dx, dFx_dy, np.zeros_like(dFx_dx)],
+                [dFy_dx, dFy_dy, np.zeros_like(dFx_dx)],
+                [dFz_dx, dFz_dy, np.zeros_like(dFx_dx)],
+            ]
+        ),
         axis=-1,
     )
 
