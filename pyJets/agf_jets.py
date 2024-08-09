@@ -2284,6 +2284,7 @@ def expr_magten(pass_maps):
     B = np.reshape(B, (outcells.size, 3))
     Bmag = np.linalg.norm(B, axis=-1)
     v = np.reshape(v, (outcells.size, 3))
+    print(v.shape)
     vg_b_jacobian = make_vg_b_jacobian(vobj)
     print(vg_b_jacobian.shape)
     vg_b_jacobian = vg_b_jacobian[outcells]
@@ -2294,6 +2295,7 @@ def expr_magten(pass_maps):
 
     magten = (magten.T / Bmag / Bmag).T
     magten = (magten * v).sum(axis=-1)
+    print(magten.shape)
     magten = np.reshape(magten, (origshape[0], origshape[1]))
 
     # magten = np.reshape(magten, (origshape[0], origshape[1], 3))
