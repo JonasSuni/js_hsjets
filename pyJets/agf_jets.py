@@ -4118,7 +4118,7 @@ def make_vg_b_jacobian(vobj):
     ci = vobj.read_variable("CellID")
     B_sorted = B[np.argsort(ci)]
 
-    meshshape = vobj.get_spatial_mesh_size()
+    meshshape = vobj.get_spatial_mesh_size()[:-1]
 
     Bx, By, Bz = B_sorted.T
 
@@ -4128,14 +4128,12 @@ def make_vg_b_jacobian(vobj):
 
     dx = vobj.get_fsgrid_cell_size()
 
-    dFx_dx, dFx_dy, dFx_dz = np.gradient(Bx_reshaped[:, :, :], *dx)
-    dFy_dx, dFy_dy, dFy_dz = np.gradient(By_reshaped[:, :, :], *dx)
-    dFz_dx, dFz_dy, dFz_dz = np.gradient(Bz_reshaped[:, :, :], *dx)
+    dFx_dx, dFx_dy = np.gradient(Bx_reshaped[:, :], *dx)
+    dFy_dx, dFy_dy = np.gradient(By_reshaped[:, :], *dx)
+    dFz_dx, dFz_dy = np.gradient(Bz_reshaped[:, :], *dx)
 
     return np.stack(
-        np.array(
-            [dFx_dx, dFx_dy, dFx_dz, dFy_dx, dFy_dy, dFy_dz, dFz_dx, dFz_dy, dFz_dz]
-        ),
+        np.array([dFx_dx, dFx_dy, 0, dFy_dx, dFy_dy, 0, dFz_dx, dFz_dy, 0]),
         axis=-1,
     )
 
