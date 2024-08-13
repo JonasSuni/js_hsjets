@@ -2471,7 +2471,7 @@ def VSC_cut_through(
     n_arr = np.arange(x_arr.size)
 
     fnr0 = int(t0 * 2)
-    data_arr = np.zeros((len(var_list), x_arr.size), dtype=float)
+    data_arr = np.zeros((len(var_list) + 3, x_arr.size), dtype=float)
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
@@ -2485,6 +2485,13 @@ def VSC_cut_through(
                 )
                 * scales[idx2]
             )
+        data_arr[idx2 + 1, idx] = (
+            pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
+        )
+        data_arr[idx2 + 2, idx] = (
+            pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
+        )
+        data_arr[idx2 + 3, idx] = pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
@@ -2554,6 +2561,89 @@ def VSC_cut_through(
         data_arr,
     )
     plt.close(fig)
+
+
+def pos_mag_tension(vlsvobj, x, y, dx=300e3):
+
+    dBxdx = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x + dx, y, 0], operator="x")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x - dx, y, 0], operator="x")
+    ) / (2.0 * dx)
+    dBydx = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x + dx, y, 0], operator="y")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x - dx, y, 0], operator="y")
+    ) / (2.0 * dx)
+    dBzdx = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x + dx, y, 0], operator="z")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x - dx, y, 0], operator="z")
+    ) / (2.0 * dx)
+
+    dBxdy = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x, y + dx, 0], operator="x")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="x")
+    ) / (2.0 * dx)
+    dBydy = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x, y + dx, 0], operator="y")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="y")
+    ) / (2.0 * dx)
+    dBzdy = (
+        vlsvobj.read_interpolated_variable("vg_b_vol", [x, y + dx, 0], operator="z")
+        - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="z")
+    ) / (2.0 * dx)
+
+    B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]])
+    B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
+
+    BdotJacobian = B@B_jacobian
+
+    return np.linalg.norm(BdotJacobian)/mu0
+
+def pos_pressure_gradient(vlsvobj, x, y, dx=300e3):
+
+    gradx = (
+        vlsvobj.read_interpolated_variable("proton/vg_pressure", [x + dx, y, 0])
+        - vlsvobj.read_interpolated_variable("proton/vg_pressure", [x - dx, y, 0])
+    ) / (2.0 * dx)
+    grady = (
+        vlsvobj.read_interpolated_variable("proton/vg_pressure", [x, y + dx, 0])
+        - vlsvobj.read_interpolated_variable("proton/vg_pressure", [x, y - dx, 0])
+    ) / (2.0 * dx)
+
+    return np.linalg.norm([gradx, grady])
+
+
+def pos_mag_gradient(vlsvobj, x, y, dx=300e3):
+
+    gradx = (
+        vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x + dx, y, 0], operator="magnitude"
+        )
+        * vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x + dx, y, 0], operator="magnitude"
+        )
+        - vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x - dx, y, 0], operator="magnitude"
+        )
+        * vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x - dx, y, 0], operator="magnitude"
+        )
+    ) / (2 * mu0 * 2.0 * dx)
+    grady = (
+        vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x, y + dx, 0], operator="magnitude"
+        )
+        * vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x, y + dx, 0], operator="magnitude"
+        )
+        - vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x, y - dx, 0], operator="magnitude"
+        )
+        * vlsvobj.read_interpolated_variable(
+            "vg_b_vol", [x, y - dx, 0], operator="magnitude"
+        )
+    ) / (2 * mu0 * 2.0 * dx)
+
+    return np.linalg.norm([gradx, grady])
 
 
 def VSC_timeseries(
