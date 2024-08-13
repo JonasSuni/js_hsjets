@@ -2485,13 +2485,18 @@ def VSC_cut_through(
                 )
                 * scales[idx2]
             )
-        data_arr[idx2 + 1, idx] = (
-            pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
+        # data_arr[idx2 + 1, idx] = np.linalg.norm(
+        #     pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
+        # )
+        # data_arr[idx2 + 2, idx] = np.linalg.norm(
+        #     pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
+        # )
+        # data_arr[idx2 + 3, idx] = np.linalg.norm(pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9)
+        data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
+            pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
         )
-        data_arr[idx2 + 2, idx] = (
-            pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
-        )
-        data_arr[idx2 + 3, idx] = pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
 
     fig, ax_list = plt.subplots(
         len(ylabels) + 1, 1, sharex=True, figsize=(6, 8), constrained_layout=True
@@ -2518,15 +2523,26 @@ def VSC_cut_through(
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     ylabels.append("$n_F$ [nPa/m]")
-    ax_list[-1].plot(n_arr, data_arr[-3], color=CB_color_cycle[0], label="$\\nabla p$")
     ax_list[-1].plot(
-        n_arr, data_arr[-2], color=CB_color_cycle[1], label="$\\nabla (B^2/2\\mu_0)$"
+        n_arr,
+        data_arr[-3],
+        color=CB_color_cycle[0],
+        # label="$\\nabla p$",
+        label="x",
+    )
+    ax_list[-1].plot(
+        n_arr,
+        data_arr[-2],
+        color=CB_color_cycle[1],
+        # label="$\\nabla (B^2/2\\mu_0)$",
+        label="y",
     )
     ax_list[-1].plot(
         n_arr,
         data_arr[-1],
         color=CB_color_cycle[2],
-        label="$(B\\cdot\\nabla B)/\\mu_0$",
+        # label="$(B\\cdot\\nabla B)/\\mu_0$",
+        label="z",
     )
     ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     for vline in vlines:
@@ -2611,7 +2627,7 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
 
     BdotJacobian = B @ B_jacobian
 
-    return np.linalg.norm(BdotJacobian) / mu0
+    return BdotJacobian / mu0
 
 
 def pos_pressure_gradient(vlsvobj, x, y, dx=300e3):
@@ -2625,7 +2641,7 @@ def pos_pressure_gradient(vlsvobj, x, y, dx=300e3):
         - vlsvobj.read_interpolated_variable("proton/vg_pressure", [x, y - dx, 0])
     ) / (2.0 * dx)
 
-    return np.linalg.norm([gradx, grady])
+    return np.array([gradx, grady, 0])
 
 
 def pos_mag_gradient(vlsvobj, x, y, dx=300e3):
@@ -2659,7 +2675,7 @@ def pos_mag_gradient(vlsvobj, x, y, dx=300e3):
         )
     ) / (2 * mu0 * 2.0 * dx)
 
-    return np.linalg.norm([gradx, grady])
+    return np.array([gradx, grady, 0])
 
 
 def VSC_timeseries(
