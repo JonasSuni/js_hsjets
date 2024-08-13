@@ -2494,7 +2494,7 @@ def VSC_cut_through(
         data_arr[idx2 + 3, idx] = pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
 
     fig, ax_list = plt.subplots(
-        len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
+        len(ylabels)+1, 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
     ax_list[0].set_title(
         "Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0), (x1, y1))
@@ -2517,11 +2517,19 @@ def VSC_cut_through(
         ax.set_xlim(n_arr[0], n_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    ylabels.append("$n_F$ [nPa/m]")
+    ax_list[-1].plot(n_arr,data_arr[-3],color=CB_color_cycle[0],label="$\\nabla p$")
+    ax_list[-1].plot(n_arr,data_arr[-2],color=CB_color_cycle[1],label="$\\nabla (B^2/2\\mu_0)$")
+    ax_list[-1].plot(n_arr,data_arr[-1],color=CB_color_cycle[1],label="$(B\\cdot\\nabla B)/\\mu_0$")
+    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    for vline in vlines:
+            ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
+    ax_list[-1].set_xlim(n_arr[0], n_arr[-1])
     ax_list[-1].set_xlabel("Point along cut")
     for idx, ax in enumerate(ax_list):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
-        ax.axvline(t0, linestyle="dashed")
+        #ax.axvline(t0, linestyle="dashed")
     # plt.tight_layout()
     figdir = wrkdir_DNR + "Figs/cuts/"
     txtdir = wrkdir_DNR + "txts/cuts/"
@@ -2594,9 +2602,10 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
     B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]])
     B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
 
-    BdotJacobian = B@B_jacobian
+    BdotJacobian = B @ B_jacobian
 
-    return np.linalg.norm(BdotJacobian)/mu0
+    return np.linalg.norm(BdotJacobian) / mu0
+
 
 def pos_pressure_gradient(vlsvobj, x, y, dx=300e3):
 
