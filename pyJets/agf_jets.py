@@ -5017,6 +5017,8 @@ def pos_vdf_plotter(
     pdmax=1.0,
     ncont=5,
     rboxw=2,
+    fmin=1e-10,
+    fmax=1e-4,
 ):
     runids = ["AGF", "AIA", "AIC"]
     # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
@@ -5148,8 +5150,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
             ax_list[0][1].plot(v[0], v[1], "x", color="red")
@@ -5171,8 +5173,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
             ax_list[1][0].plot(v[0], v[2], "x", color="red")
@@ -5194,8 +5196,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
             ax_list[1][1].plot(v[1], v[2], "x", color="red")
