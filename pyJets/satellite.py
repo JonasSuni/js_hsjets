@@ -1548,10 +1548,10 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
     for idx in range(time_arr.size):
         outdata_arr[0, :, idx] = tetra_mag_tension(
-            data_arr[:, [0, 1, 2], :], data_arr[:, [3, 4, 5], :]
+            data_arr[:, [0, 1, 2], :].T, data_arr[:, [3, 4, 5], :].T
         )
         outdata_arr[1, :, idx] = tetra_linear_interp(
-            data_arr[:, [0, 1, 2], :], data_arr[:, [6, 7, 8], :]
+            data_arr[:, [0, 1, 2], :].T, data_arr[:, [6, 7, 8], :].T
         )
 
     fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
