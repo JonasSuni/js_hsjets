@@ -1470,6 +1470,173 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
     # return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
 
+def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
+
+    t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    species_list = [species, species, species, "i"]
+
+    sc_B = [
+        load_msh_sc_data(
+            pyspedas.mms.fgm,
+            "mms",
+            "{}".format(probe),
+            "B",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+            filt=filt,
+        )
+        for probe in range(1, 5)
+    ]
+
+    sc_v = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "v",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+            filt=filt,
+            species=species_list[probe - 1],
+        )
+        for probe in range(1, 5)
+    ]
+
+    sc_pos = [
+        load_msh_sc_data(
+            pyspedas.mms.mec,
+            "mms",
+            "{}".format(probe),
+            "pos",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="srvy",
+            filt=filt,
+            species=species_list[probe - 1],
+        )
+        for probe in range(1, 5)
+    ]
+
+    time_arr = sc_B[0][0]
+
+    data_arr = np.empty((time_arr.size, 4, 9), dtype=float)
+
+    for idx in range(4):
+        data_arr[idx, :, :] = [
+            sc_pos[idx][1][0],
+            sc_pos[idx][1][1],
+            sc_pos[idx][1][2],
+            sc_B[idx][1][0],
+            sc_B[idx][1][1],
+            sc_B[idx][1][2],
+            sc_v[idx][1][0],
+            sc_v[idx][1][1],
+            sc_v[idx][1][2],
+        ]
+
+    outdata_arr = np.empty((2, 3, time_arr.size), dtype=float)
+
+    for idx in range(time_arr.size):
+        outdata_arr[0, :, idx] = tetra_mag_tension(
+            data_arr[:, [0, 1, 2], :], data_arr[:, [3, 4, 5], :]
+        )
+        outdata_arr[1, :, idx] = tetra_linear_interp(
+            data_arr[:, [0, 1, 2], :], data_arr[:, [6, 7, 8], :]
+        )
+
+    fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
+
+    complabels = ["x", "y", "z"]
+
+    for idx in range(3):
+        for idx2 in range(2):
+            ax_list[idx2].plot(
+                time_arr,
+                outdata_arr[idx2, idx, :],
+                label=complabels[idx],
+                color=CB_color_cycle[idx],
+            )
+
+    ax_list[0].set_title("MMS1-4")
+    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}$")
+    ax_list[1].set_ylabel("$v$")
+    ax_list[1].legend()
+
+    outdir = wrkdir_DNR + "Figs/satellite/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        outdir
+        + "mms_tension_velocity_t0{}_t1{}_species{}.png".format(t0plot, t1plot, species)
+    )
+    plt.close(fig)
+
+
+def tetra_kvec(r):
+
+    k0 = np.cross((r[2] - r[1]), (r[3] - r[1])) / np.dot(
+        (r[1] - r[0]), np.cross((r[2] - r[1]), (r[3] - r[1]))
+    )
+    k1 = np.cross((r[3] - r[2]), (r[0] - r[2])) / np.dot(
+        (r[2] - r[1]), np.cross((r[3] - r[2]), (r[0] - r[2]))
+    )
+    k2 = np.cross((r[0] - r[3]), (r[1] - r[3])) / np.dot(
+        (r[3] - r[2]), np.cross((r[0] - r[3]), (r[1] - r[3]))
+    )
+    k3 = np.cross((r[1] - r[0]), (r[2] - r[0])) / np.dot(
+        (r[0] - r[3]), np.cross((r[1] - r[0]), (r[2] - r[0]))
+    )
+
+    return (k0, k1, k2, k3)
+
+
+def tetra_linear_gradient(r, F):
+
+    k = tetra_kvec(r)
+
+    rb = np.sum(r, axis=0) / 4.0
+
+    return (
+        np.outer(k[0], F[0])
+        + np.outer(k[1], F[1])
+        + np.outer(k[2], F[2])
+        + np.outer(k[3], F[3])
+    )
+
+
+def tetra_linear_interp(r, F):
+
+    k = tetra_kvec(r)
+
+    rb = np.sum(r, axis=0) / 4.0
+
+    mu = [1 + np.dot(k[i], (rb - r[i])) for i in range(4)]
+
+    return mu[0] * F[0] + mu[1] * F[1] + mu[2] * F[2] + mu[3] * F[3]
+
+
+def tetra_mag_tension(r, B):
+
+    B_jacob = tetra_linear_gradient(r, B)
+    B_interp = tetra_linear_interp(r, B)
+
+    return B_interp @ B_jacob
+
+
 def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
