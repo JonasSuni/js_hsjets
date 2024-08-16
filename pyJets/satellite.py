@@ -1529,10 +1529,10 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
     time_arr = sc_B[0][0]
 
-    data_arr = np.empty((time_arr.size, 4, 9), dtype=float)
+    data_arr = np.empty((4, 9, time_arr.size), dtype=float)
 
     for idx in range(4):
-        data_arr[:, idx, :] = [
+        data_arr[idx, :, :] = [
             sc_pos[idx][1][0],
             sc_pos[idx][1][1],
             sc_pos[idx][1][2],
