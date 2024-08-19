@@ -1634,7 +1634,7 @@ def tetra_linear_interp(r, F):
     rb = np.sum(r, axis=0) / 4.0
 
     mu = [1 + np.dot(k[i], (rb - r[i])) for i in range(4)]
-    print(mu)
+    # print(mu)
 
     return mu[0] * F[0] + mu[1] * F[1] + mu[2] * F[2] + mu[3] * F[3]
 
