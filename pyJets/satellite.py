@@ -1877,6 +1877,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
                 data_arr[idx, idx2],
                 color=colors[idx2],
                 label=line_label[idx2],
+                alpha=0.8,
             )
             ax.label_outer()
             ax.set_xlim(t0plot, t1plot)
