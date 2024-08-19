@@ -1570,8 +1570,10 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
     ax_list[0].set_title("MMS1-4")
     ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
+    ax_list[0].set_xlim(t0plot, t1plot)
     ax_list[1].set_ylabel("$v$")
     ax_list[1].legend()
+    ax_list[1].set_xlim(t0plot, t1plot)
     for ax in ax_list:
         ax.grid()
 
@@ -1741,6 +1743,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             sc_v[idx][1][2],
             np.linalg.norm(sc_v[idx][1][:3], axis=0),
             sc_rho[idx][1],
+            m_p * sc_rho[idx][1] * 1e6 * sc_v[idx][1][0] * sc_v[idx][1][0] * 1e6 / 1e-9,
             m_p
             * sc_rho[idx][1]
             * 1e6
@@ -1772,18 +1775,19 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     #     for idx in range(1, 4)
     # ]
 
-    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3]
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 3]
     panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
     ylabels_all = [
         "Bx [nT]",
         "By [nT]",
         "Bz [nT]",
-        "Bt [nT]",
+        "B [nT]",
         "vx [km/s]",
         "vy [km/s]",
         "vz [km/s]",
-        "vt [km/s]",
+        "v [km/s]",
         "n [1/cm3]",
+        "Pdynx [nPa]",
         "Pdyn [nPa]",
     ]
     if mva:
@@ -1797,6 +1801,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             "vL [km/s]",
             "vt [km/s]",
             "n [1/cm3]",
+            "Pdynx [nPa]",
             "Pdyn [nPa]",
         ]
     sc_labs = ["MMS1", "MMS2", "MMS3", "MMS4"]
@@ -1810,6 +1815,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         CB_color_cycle[2],
         "k",
         "k",
+        CB_color_cycle[0],
         "k",
     ]
     plot_legend = [
@@ -1823,19 +1829,9 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         True,
         False,
         False,
+        True,
     ]
-    line_label = [
-        "x",
-        "y",
-        "z",
-        "mag",
-        "x",
-        "y",
-        "z",
-        "mag",
-        None,
-        None,
-    ]
+    line_label = ["x", "y", "z", "mag", "x", "y", "z", "mag", None, "x", "mag"]
     ylims = [
         (-40, 60),
         (-400, 500),
@@ -1853,10 +1849,11 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         (0, 500),
         (5, 35),
         (0, 10),
+        (0, 10),
     ]
 
     fig, ax_list = plt.subplots(
-        10, 4, figsize=(24, 24), sharey="row", constrained_layout=True
+        len(panel_labs), 4, figsize=(24, 24), sharey="row", constrained_layout=True
     )
 
     for idx in range(4):
@@ -1874,15 +1871,19 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             # )
             # if plot_legend[idx2] and idx == 2:
             #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-            ax = ax_list[idx2, idx]
+            ax = ax_list[panel_id[idx2], idx]
             ax.grid()
             ax.plot(
                 time_arr,
                 data_arr[idx, idx2],
+                color=colors[idx2],
+                label=line_label[idx2],
             )
             ax.label_outer()
             ax.set_xlim(t0plot, t1plot)
-            ax.axvline(t_pdmax[idx], linestyle="dashed")
+            if plot_legend[idx2]:
+                ax.legend()
+            # ax.axvline(t_pdmax[idx], linestyle="dashed")
 
     print("Times of Pdynmax: {}".format(t_pdmax))
 
@@ -1891,8 +1892,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     # for idx in range(len(panel_labs)):
     #     ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
     #     ax_list[idx, 0].set_ylim(ylims[idx][0], ylims[idx][1])
-    for idx in range(len(ylabels_all)):
-        ax_list[idx, 0].set_ylabel(ylabels_all[idx], labelpad=10, fontsize=20)
+    for idx in range(len(panel_labs)):
+        ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
         # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
 
     outdir = wrkdir_DNR + "Figs/satellite/"
