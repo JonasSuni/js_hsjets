@@ -1614,8 +1614,6 @@ def tetra_linear_gradient(r, F):
 
     k = tetra_kvec(r)
 
-    rb = np.sum(r, axis=0) / 4.0
-
     return (
         np.outer(k[0], F[0])
         + np.outer(k[1], F[1])
@@ -1631,7 +1629,7 @@ def tetra_linear_interp(r, F):
 
     k = tetra_kvec(r)
 
-    rb = np.sum(r, axis=0) / 4.0
+    rb = 0.25*(r[0]+r[1]+r[2]+r[3])
 
     mu = [1 + np.dot(k[i], (rb - r[i])) for i in range(4)]
     # print(mu)
