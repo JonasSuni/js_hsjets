@@ -1533,12 +1533,12 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
     for idx in range(4):
         data_arr[idx, :, :] = [
-            sc_pos[idx][1][0],
-            sc_pos[idx][1][1],
-            sc_pos[idx][1][2],
-            sc_B[idx][1][0],
-            sc_B[idx][1][1],
-            sc_B[idx][1][2],
+            sc_pos[idx][1][0] * 1e3,
+            sc_pos[idx][1][1] * 1e3,
+            sc_pos[idx][1][2] * 1e3,
+            sc_B[idx][1][0] * 1e-9,
+            sc_B[idx][1][1] * 1e-9,
+            sc_B[idx][1][2] * 1e-9,
             sc_v[idx][1][0],
             sc_v[idx][1][1],
             sc_v[idx][1][2],
@@ -1588,8 +1588,8 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
 def tetra_kvec(r):
 
-    #print(r.shape)
-    #print(r[0])
+    # print(r.shape)
+    # print(r[0])
 
     k0 = np.cross((r[2] - r[1]), (r[3] - r[1])) / np.dot(
         (r[1] - r[0]), np.cross((r[2] - r[1]), (r[3] - r[1]))
@@ -1609,8 +1609,8 @@ def tetra_kvec(r):
 
 def tetra_linear_gradient(r, F):
 
-    #print(r.shape)
-    #print(F.shape)
+    # print(r.shape)
+    # print(F.shape)
 
     k = tetra_kvec(r)
 
@@ -1626,8 +1626,8 @@ def tetra_linear_gradient(r, F):
 
 def tetra_linear_interp(r, F):
 
-    #print(r.shape)
-    #print(F.shape)
+    # print(r.shape)
+    # print(F.shape)
 
     k = tetra_kvec(r)
 
@@ -1640,8 +1640,8 @@ def tetra_linear_interp(r, F):
 
 def tetra_mag_tension(r, B):
 
-    #print(r.shape)
-    #print(B.shape)
+    # print(r.shape)
+    # print(B.shape)
 
     B_jacob = tetra_linear_gradient(r, B)
     B_interp = tetra_linear_interp(r, B)
