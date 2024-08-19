@@ -231,7 +231,7 @@ def load_msh_sc_data(
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
 
-    vars_list = ["B", "rho", "v", "pos"]
+    vars_list = ["B", "rho", "v", "pos", "Tperp", "Tpar"]
     sc_list = ["mms", "themis", "cluster", "ace", "dscovr", "wind"]
     sc_var_names = [
         [
@@ -239,6 +239,8 @@ def load_msh_sc_data(
             "mms{}_d{}s_numberdensity_{}".format(probe, species, datarate),
             "mms{}_d{}s_bulkv_gse_{}".format(probe, species, datarate),
             "mms{}_mec_r_gse".format(probe),
+            "mms{}_d{}s_tempperp_{}".format(probe, species, datarate),
+            "mms{}_d{}s_temppara_{}".format(probe, species, datarate),
         ],
         [
             "th{}_fgs_gse".format(probe),
@@ -1724,6 +1726,38 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         )
         for probe in range(1, 5)
     ]
+    sc_tperp = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "TPerp",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+            filt=filt,
+            species=species_list[probe - 1],
+        )
+        for probe in range(1, 5)
+    ]
+    sc_tpara = [
+        load_msh_sc_data(
+            pyspedas.mms.fpi,
+            "mms",
+            "{}".format(probe),
+            "TPar",
+            t0,
+            t1,
+            intpol=True,
+            dt=dt,
+            datarate="brst",
+            filt=filt,
+            species=species_list[probe - 1],
+        )
+        for probe in range(1, 5)
+    ]
 
     rel_pos = [
         np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 4)
@@ -1731,7 +1765,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
 
     time_arr = sc_B[0][0]
 
-    data_arr = np.empty((4, 11, time_arr.size), dtype=float)
+    data_arr = np.empty((4, 13, time_arr.size), dtype=float)
     for idx in range(4):
         data_arr[idx, :, :] = [
             sc_B[idx][1][0],
@@ -1751,6 +1785,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             * np.linalg.norm(sc_v[idx][1][:3], axis=0)
             * 1e6
             / 1e-9,
+            sc_tperp[idx][1] * 0.011606,
+            sc_tpara[idx][1] * 0.011606,
         ]
 
     if mva:
@@ -1775,8 +1811,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     #     for idx in range(1, 4)
     # ]
 
-    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 3]
-    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]"]
+    panel_id = [0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 3, 4, 4]
+    panel_labs = ["B [nT]", "V [km/s]", "n [1/cm3]", "Pdyn [nPa]", "T [MK]"]
     ylabels_all = [
         "Bx [nT]",
         "By [nT]",
@@ -1789,6 +1825,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         "n [1/cm3]",
         "Pdynx [nPa]",
         "Pdyn [nPa]",
+        "TPerp [MK]",
+        "TPara [MK]",
     ]
     if mva:
         ylabels_all = [
@@ -1803,6 +1841,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             "n [1/cm3]",
             "Pdynx [nPa]",
             "Pdyn [nPa]",
+            "TPerp [MK]",
+            "TPara [MK]",
         ]
     sc_labs = ["MMS1", "MMS2", "MMS3", "MMS4"]
     colors = [
@@ -1817,6 +1857,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         "k",
         CB_color_cycle[0],
         "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
     ]
     plot_legend = [
         False,
@@ -1831,7 +1873,22 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
         False,
         True,
     ]
-    line_label = ["x", "y", "z", "mag", "x", "y", "z", "mag", None, "x", "mag"]
+    pan1_leg = [True, True, False, True, True]
+    line_label = [
+        "x",
+        "y",
+        "z",
+        "mag",
+        "x",
+        "y",
+        "z",
+        "mag",
+        None,
+        "x",
+        "mag",
+        "Tperp",
+        "Tpar",
+    ]
     ylims = [
         (-40, 60),
         (-400, 500),
@@ -1881,8 +1938,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             )
             ax.label_outer()
             ax.set_xlim(t0plot, t1plot)
-            if plot_legend[idx2]:
-                ax.legend()
+            # if plot_legend[idx2]:
+            #     ax.legend()
             # ax.axvline(t_pdmax[idx], linestyle="dashed")
 
     print("Times of Pdynmax: {}".format(t_pdmax))
@@ -1895,6 +1952,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     for idx in range(len(panel_labs)):
         ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
         # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+        if pan1_leg[idx]:
+            ax_list[idx, 0].legend()
     for ax in ax_list.flatten():
         ax.grid()
 
