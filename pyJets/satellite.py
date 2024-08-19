@@ -29,6 +29,8 @@ import matplotlib.patches as mpatches
 filter_func = lambda d, size: uniform_filter1d(d, size=size)
 # filter_func = lambda d, size: gaussian_filter1d(d, sigma=size)
 
+from scipy.signal import butter, sosfilt
+
 import pyspedas
 from datetime import datetime, timezone
 
@@ -1764,14 +1766,17 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     ]
 
     time_arr = sc_B[0][0]
+    sos = butter(10, 1, "lowpass", fs=int(1 / dt), output="sos")
+
+    # filtered = signal.sosfilt(sos, sig)
 
     data_arr = np.empty((4, 13, time_arr.size), dtype=float)
     for idx in range(4):
         data_arr[idx, :, :] = [
-            sc_B[idx][1][0],
-            sc_B[idx][1][1],
-            sc_B[idx][1][2],
-            np.linalg.norm(sc_B[idx][1][:3], axis=0),
+            sosfilt(sos, sc_B[idx][1][0]),
+            sosfilt(sos, sc_B[idx][1][1]),
+            sosfilt(sos, sc_B[idx][1][2]),
+            sosfilt(sos, np.linalg.norm(sc_B[idx][1][:3], axis=0)),
             sc_v[idx][1][0],
             sc_v[idx][1][1],
             sc_v[idx][1][2],
