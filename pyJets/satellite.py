@@ -1547,8 +1547,9 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
     outdata_arr = np.empty((2, 3, time_arr.size), dtype=float)
 
     for idx in range(time_arr.size):
-        outdata_arr[0, :, idx] = tetra_mag_tension(
-            data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
+        outdata_arr[0, :, idx] = (
+            tetra_mag_tension(data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx])
+            / mu0
         )
         outdata_arr[1, :, idx] = tetra_linear_interp(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [6, 7, 8], idx]
@@ -1571,6 +1572,8 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
     ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}$")
     ax_list[1].set_ylabel("$v$")
     ax_list[1].legend()
+    for ax in ax_list:
+        ax.grid()
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
