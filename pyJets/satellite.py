@@ -1569,7 +1569,7 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
             )
 
     ax_list[0].set_title("MMS1-4")
-    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}$")
+    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
     ax_list[1].set_ylabel("$v$")
     ax_list[1].legend()
     for ax in ax_list:
