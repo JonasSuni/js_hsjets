@@ -1853,7 +1853,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     ]
 
     fig, ax_list = plt.subplots(
-        len(panel_labs), 4, figsize=(24, 24), sharey="row", constrained_layout=True
+        len(panel_labs), 4, figsize=(24, 18), sharey="row", constrained_layout=True
     )
 
     for idx in range(4):
@@ -1872,7 +1872,6 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             # if plot_legend[idx2] and idx == 2:
             #     ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
             ax = ax_list[panel_id[idx2], idx]
-            ax.grid()
             ax.plot(
                 time_arr,
                 data_arr[idx, idx2],
@@ -1895,6 +1894,8 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     for idx in range(len(panel_labs)):
         ax_list[idx, 0].set_ylabel(panel_labs[idx], labelpad=10, fontsize=20)
         # ax_list[idx, 0].set_ylim(ylims_full[idx][0], ylims_full[idx][1])
+    for ax in ax_list.flatten():
+        ax.grid()
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
