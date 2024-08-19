@@ -1766,7 +1766,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     ]
 
     time_arr = sc_B[0][0]
-    sos = butter(10, 1, "lowpass", fs=int(1 / dt), output="sos")
+    sos = butter(10, 0.1, "lowpass", fs=int(1 / dt), output="sos")
 
     # filtered = signal.sosfilt(sos, sig)
 
