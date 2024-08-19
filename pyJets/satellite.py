@@ -1731,7 +1731,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
 
     time_arr = sc_B[0][0]
 
-    data_arr = np.empty((4, 10, time_arr.size), dtype=float)
+    data_arr = np.empty((4, 11, time_arr.size), dtype=float)
     for idx in range(4):
         data_arr[idx, :, :] = [
             sc_B[idx][1][0],
