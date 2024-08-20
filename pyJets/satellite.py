@@ -227,6 +227,7 @@ def load_msh_sc_data(
     datarate="fast",
     datatype="h0",
     filt=None,
+    lpfilt=None,
     species="i",
 ):
 
@@ -319,12 +320,19 @@ def load_msh_sc_data(
         newtime = np.array([datetime.utcfromtimestamp(t) for t in newtime])
         if filt:
             newdata = filter_func(newdata, size=filt)
+        elif lpfilt:
+            sos = butter(10, lpfilt, "lowpass", fs=int(1 / dt), output="sos")
+            newdata = sosfilt(sos, newdata)
+            # filtered = signal.sosfilt(sos, sig)
         return (newtime, newdata)
     else:
         if type(time_list[0]) != datetime:
             time_list = np.array([datetime.utcfromtimestamp(t) for t in time_list])
         if filt:
             data_list = filter_func(data_list, size=filt)
+        elif lpfilt:
+            sos = butter(10, lpfilt, "lowpass", fs=int(1 / dt), output="sos")
+            data_list = sosfilt(sos, data_list)
         return (time_list, data_list)
 
 
@@ -1658,7 +1666,9 @@ def tetra_mag_tension(r, B):
     return B_interp @ B_jacob
 
 
-def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
+def plot_mms(
+    t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i", lpfilt=None
+):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1677,6 +1687,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
         )
         for probe in range(1, 5)
     ]
@@ -1692,6 +1703,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
             species=species_list[probe - 1],
         )
         for probe in range(1, 5)
@@ -1708,6 +1720,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
             species=species_list[probe - 1],
         )
         for probe in range(1, 5)
@@ -1740,6 +1753,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
             species=species_list[probe - 1],
         )
         for probe in range(1, 5)
@@ -1756,6 +1770,7 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
             species=species_list[probe - 1],
         )
         for probe in range(1, 5)
@@ -1766,17 +1781,14 @@ def plot_mms(t0, t1, mva=False, dt=0.1, peakonly=False, filt=None, species="i"):
     ]
 
     time_arr = sc_B[0][0]
-    sos = butter(10, 0.5, "lowpass", fs=int(1 / dt), output="sos")
-
-    # filtered = signal.sosfilt(sos, sig)
 
     data_arr = np.empty((4, 13, time_arr.size), dtype=float)
     for idx in range(4):
         data_arr[idx, :, :] = [
-            sosfilt(sos, sc_B[idx][1][0]),
-            sosfilt(sos, sc_B[idx][1][1]),
-            sosfilt(sos, sc_B[idx][1][2]),
-            sosfilt(sos, np.linalg.norm(sc_B[idx][1][:3], axis=0)),
+            sc_B[idx][1][0],
+            sc_B[idx][1][1],
+            sc_B[idx][1][2],
+            np.linalg.norm(sc_B[idx][1][:3], axis=0),
             sc_v[idx][1][0],
             sc_v[idx][1][1],
             sc_v[idx][1][2],
