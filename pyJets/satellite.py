@@ -1620,6 +1620,14 @@ def mms_tension_vel(
     )
     plt.close(fig)
 
+    fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
+    ax.psd(outdata_arr[0, 0, :], Fs=int(1 / dt))
+    fig.savefig(
+        outdir
+        + "mms_B_psd_t0{}_t1{}_lpfilt{}_filt{}.png".format(t0plot, t1plot, filt, lpfilt)
+    )
+    plt.close(fig)
+
 
 def tetra_kvec(r):
 
