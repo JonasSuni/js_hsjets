@@ -1482,7 +1482,9 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
     # return (diag_vec_data[j, i, :], time_arr[0::grain][j], window_size[i])
 
 
-def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
+def mms_tension_vel(
+    t0, t1, dt=0.1, filt=None, species="i", lpfilt=None, normalise=False
+):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
     t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
@@ -1501,6 +1503,7 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
         )
         for probe in range(1, 5)
     ]
@@ -1517,6 +1520,7 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
             dt=dt,
             datarate="brst",
             filt=filt,
+            lpfilt=lpfilt,
             species=species_list[probe - 1],
         )
         for probe in range(1, 5)
@@ -1566,6 +1570,9 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
         outdata_arr[1, :, idx] = tetra_linear_interp(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [6, 7, 8], idx]
         )
+        if normalise:
+            outdata_arr[0, :, idx] /= np.linalg.norm(outdata_arr[0, :, idx])
+            outdata_arr[1, :, idx] /= np.linalg.norm(outdata_arr[1, :, idx])
 
     fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
 
@@ -1581,9 +1588,13 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
             )
 
     ax_list[0].set_title("MMS1-4")
-    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
+    if normalise:
+        ax_list[0].set_ylabel("$\Hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
+        ax_list[1].set_ylabel("$\Hat{v}$")
+    else:
+        ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
+        ax_list[1].set_ylabel("$v$")
     ax_list[0].set_xlim(t0plot, t1plot)
-    ax_list[1].set_ylabel("$v$")
     ax_list[1].legend()
     ax_list[1].set_xlim(t0plot, t1plot)
     for ax in ax_list:
@@ -1598,7 +1609,9 @@ def mms_tension_vel(t0, t1, dt=0.1, filt=None, species="i"):
 
     fig.savefig(
         outdir
-        + "mms_tension_velocity_t0{}_t1{}_species{}.png".format(t0plot, t1plot, species)
+        + "mms_tension_velocity_t0{}_t1{}_species{}_norm{}.png".format(
+            t0plot, t1plot, species, normalise
+        )
     )
     plt.close(fig)
 
