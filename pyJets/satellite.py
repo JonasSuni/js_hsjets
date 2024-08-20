@@ -1589,8 +1589,8 @@ def mms_tension_vel(
 
     ax_list[0].set_title("MMS1-4")
     if normalise:
-        ax_list[0].set_ylabel("$\Hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
-        ax_list[1].set_ylabel("$\Hat{v}$")
+        ax_list[0].set_ylabel("$\\hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
+        ax_list[1].set_ylabel("$\\hat{v}$")
     else:
         ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
         ax_list[1].set_ylabel("$v$")
