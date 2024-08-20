@@ -29,7 +29,7 @@ import matplotlib.patches as mpatches
 filter_func = lambda d, size: uniform_filter1d(d, size=size)
 # filter_func = lambda d, size: gaussian_filter1d(d, sigma=size)
 
-from scipy.signal import butter, sosfilt
+from scipy.signal import butter, sosfilt, sosfiltfilt
 
 import pyspedas
 from datetime import datetime, timezone
@@ -322,7 +322,7 @@ def load_msh_sc_data(
             newdata = filter_func(newdata, size=filt)
         elif lpfilt:
             sos = butter(10, lpfilt, "lowpass", fs=int(1 / dt), output="sos")
-            newdata = sosfilt(sos, newdata)
+            newdata = sosfiltfilt(sos, newdata)
             # filtered = signal.sosfilt(sos, sig)
         return (newtime, newdata)
     else:
@@ -332,7 +332,7 @@ def load_msh_sc_data(
             data_list = filter_func(data_list, size=filt)
         elif lpfilt:
             sos = butter(10, lpfilt, "lowpass", fs=int(1 / dt), output="sos")
-            data_list = sosfilt(sos, data_list)
+            data_list = sosfiltfilt(sos, data_list)
         return (time_list, data_list)
 
 
