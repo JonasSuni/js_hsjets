@@ -1624,7 +1624,7 @@ def mms_tension_vel(
     ax.psd(outdata_arr[0, 0, :], Fs=int(1 / dt))
     fig.savefig(
         outdir
-        + "mms_B_psd_t0{}_t1{}_lpfilt{}_filt{}.png".format(t0plot, t1plot, filt, lpfilt)
+        + "mms_B_psd_t0{}_t1{}_lpfilt{}_filt{}.png".format(t0plot, t1plot, lpfilt, filt)
     )
     plt.close(fig)
 
