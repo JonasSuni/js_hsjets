@@ -1242,6 +1242,57 @@ def plot_themis(t0, t1, mva=False, dt=1, peakonly=False):
     plt.close(fig)
 
 
+def mms_plot_vdf(
+    t0,
+    t1,
+    probe="1",
+    fmin=1e-24,
+    fmax=1e-20,
+    fcut=1e-24,
+    vlim=1500,
+):
+
+    # t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
+    # t1plot = datetime.strptime(t1, "%Y-%m-%d/%H:%M:%S")
+
+    outdir = wrkdir_DNR + "Figs/satellite/VDF/"
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    for s in np.arange(t0, t1):
+        ct = "2022-03-27/21:21:{}".format(s)
+        slice = pyspedas.mms_part_slice2d(
+            time=ct,
+            probe=probe,
+            instrument="fpi",
+            species="i",
+            data_rate="brst",
+            mag_data_rate="brst",
+            rotation="bv",
+            slice_norm=np.array([0, 0, 1]),
+            interpolation="2d",
+            return_slice=True,
+            window=1,
+            center_time=True,
+        )
+        data, xmesh, ymesh = slice["data"], slice["xgrid"], slice["ygrid"]
+        data[data < fcut] = np.nan
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
+        im = ax.pcolormesh(
+            xmesh, ymesh, data, norm="log", cmap="batlow", vmin=fmin, vmax=fmax
+        )
+        cb = plt.colorbar(im, ax=ax)
+        ax.set_xlabel("$v_B$ [km/s]")
+        ax.set_xlim(-vlim, vlim)
+        ax.set_ylabel("$v_{B\\times v}$ [km/s]")
+        ax.set_ylim(-vlim, vlim)
+        fig.savefig(outdir + "{}.png".format(ct.replace("/", "_")))
+        plt.close(fig)
+
+
 def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
