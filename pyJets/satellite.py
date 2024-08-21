@@ -1643,6 +1643,55 @@ def mms_tension_vel(
     )
     plt.close(fig)
 
+    rel_pos = [
+        np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 4)
+    ]
+
+    timing = timing_analysis_arb(
+        [
+            time_arr,
+            time_arr,
+            time_arr,
+            time_arr,
+        ],
+        [
+            data_arr[0, 5, :],
+            data_arr[1, 5, :],
+            data_arr[2, 5, :],
+            data_arr[3, 5, :],
+        ],
+        rel_pos,
+        prnt=False,
+        bulkv=np.array([1e-7, 1e-7, 1e-7]),
+    )
+
+    wave_vector = np.array(timing["wave_vector"]).flatten()
+
+    vpar = np.array(
+        [np.dot(outdata_arr[1, :, idx], wave_vector) for idx in range(time_arr.size)]
+    )
+    vperp = np.array(
+        [
+            np.sqrt(np.linalg.norm(outdata_arr[1, :, idx]) ** 2 - vpar[idx] ** 2)
+            for idx in range(time_arr.size)
+        ]
+    )
+
+    fig, ax = plt.subplots(1, 1, figsize=(8, 4), constrained_layout=True)
+    ax.plot(time_arr, vpar, color=CB_color_cycle[0], label="Vpar")
+    ax.plot(time_arr, vperp, color=CB_color_cycle[1], label="Vperp")
+    ax.legend()
+    ax.set_xlim(t0plot, t1plot)
+    ax.grid()
+
+    fig.savefig(
+        outdir
+        + "mms_v_par_perp_t0{}_t1{}_lpfilt{}_filt{}.png".format(
+            t0plot, t1plot, lpfilt, filt
+        )
+    )
+    plt.close(fig)
+
 
 def tetra_kvec(r):
 
