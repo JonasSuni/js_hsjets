@@ -1280,6 +1280,7 @@ def mms_plot_vdf(
         )
         data, xmesh, ymesh = slice["data"], slice["xgrid"], slice["ygrid"]
         data[data < fcut] = np.nan
+        data[data > 1] = np.nan
         fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
         im = ax.pcolormesh(
             xmesh, ymesh, data, norm="log", cmap="batlow", vmin=fmin, vmax=fmax
@@ -1289,6 +1290,7 @@ def mms_plot_vdf(
         ax.set_xlim(-vlim, vlim)
         ax.set_ylabel("$v_{B\\times v}$ [km/s]")
         ax.set_ylim(-vlim, vlim)
+        ax.grid()
         fig.savefig(outdir + "{}.png".format(ct.replace("/", "_")))
         plt.close(fig)
 
