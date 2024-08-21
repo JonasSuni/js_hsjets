@@ -1679,8 +1679,8 @@ def mms_tension_vel(
     )
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 4), constrained_layout=True)
-    ax.plot(time_arr, vpar, color=CB_color_cycle[0], label="Vpar")
-    ax.plot(time_arr, vperp, color=CB_color_cycle[1], label="Vperp")
+    ax.plot(time_arr, vpar, color=CB_color_cycle[0], label="$v_n$")
+    ax.plot(time_arr, vperp, color=CB_color_cycle[1], label="$v_t$")
     ax.legend()
     ax.set_xlim(t0plot, t1plot)
     ax.grid()
