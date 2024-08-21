@@ -1483,7 +1483,14 @@ def diag_mms(t0, t1, dt=0.1, grain=1, ij=None, bv=False):
 
 
 def mms_tension_vel(
-    t0, t1, dt=0.1, filt=None, species="i", lpfilt=None, normalise=False
+    t0,
+    t1,
+    dt=0.1,
+    filt=None,
+    species="i",
+    lpfilt=None,
+    normalise=False,
+    dbdt=False,
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -1577,6 +1584,9 @@ def mms_tension_vel(
             outdata_arr[0, :, idx] /= np.linalg.norm(outdata_arr[0, :, idx])
             outdata_arr[1, :, idx] /= np.linalg.norm(outdata_arr[1, :, idx])
 
+    if dbdt:
+        outdata_arr[0] = np.gradient(outdata_arr[0], dt, axis=-1)
+
     fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
 
     complabels = ["x", "y", "z"]
@@ -1597,7 +1607,10 @@ def mms_tension_vel(
         ax_list[1].set_ylabel("$\\hat{v}$")
     else:
         # ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
-        ax_list[0].set_ylabel("$B$")
+        if dbdt:
+            ax_list[0].set_ylabel("$dB/dt$")
+        else:
+            ax_list[0].set_ylabel("$B$")
         ax_list[1].set_ylabel("$v$")
     ax_list[0].set_xlim(t0plot, t1plot)
     ax_list[1].legend()
