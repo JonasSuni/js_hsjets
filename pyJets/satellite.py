@@ -1263,7 +1263,7 @@ def mms_plot_vdf(
             pass
 
     for s in np.arange(t0, t1):
-        ct = "2022-03-27/21:21:{}".format(s)
+        ct = "2022-03-27/21:21:{}".format(str(s).zfill(2))
         slice = pyspedas.mms_part_slice2d(
             time=ct,
             probe=probe,
