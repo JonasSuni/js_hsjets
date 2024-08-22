@@ -1721,8 +1721,22 @@ def mms_tension_vel(
     wave_vector = np.array(timing["wave_vector"]).flatten()
     print(timing["cross_corr_values"])
 
-    vpar = np.array(
+    vn = np.array(
         [np.dot(outdata_arr[1, :, idx], wave_vector) for idx in range(time_arr.size)]
+    )
+    vt = np.array(
+        [
+            np.sqrt(np.linalg.norm(outdata_arr[1, :, idx]) ** 2 - vn[idx] ** 2)
+            for idx in range(time_arr.size)
+        ]
+    )
+
+    vpar = np.array(
+        [
+            np.dot(outdata_arr[1, :, idx], outdata_arr[0, :, idx])
+            / np.linalg.norm(outdata_arr[0, :, idx])
+            for idx in range(time_arr.size)
+        ]
     )
     vperp = np.array(
         [
@@ -1731,12 +1745,18 @@ def mms_tension_vel(
         ]
     )
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 4), constrained_layout=True)
-    ax.plot(time_arr, vpar, color=CB_color_cycle[0], label="$v_n$")
-    ax.plot(time_arr, vperp, color=CB_color_cycle[1], label="$v_t$")
-    ax.legend()
-    ax.set_xlim(t0plot, t1plot)
-    ax.grid()
+    fig, ax = plt.subplots(2, 1, figsize=(8, 8), constrained_layout=True)
+    ax_list[0].plot(time_arr, vn, color=CB_color_cycle[0], label="$v_n$")
+    ax_list[0].plot(time_arr, vt, color=CB_color_cycle[1], label="$v_t$")
+    ax_list[0].legend()
+    ax_list[0].set_xlim(t0plot, t1plot)
+    ax_list[0].grid()
+
+    ax_list[1].plot(time_arr, vpar, color=CB_color_cycle[0], label="$v_\\parallel$")
+    ax_list[1].plot(time_arr, vperp, color=CB_color_cycle[1], label="$v_\\perp$")
+    ax_list[1].legend()
+    ax_list[1].set_xlim(t0plot, t1plot)
+    ax_list[1].grid()
 
     fig.savefig(
         outdir
