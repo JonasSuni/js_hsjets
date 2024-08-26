@@ -95,24 +95,29 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
 
     fig, ax_list = plt.subplots(
         2,
-        2,
-        figsize=(8, 8),
+        3,
+        figsize=(12, 8),
         constrained_layout=True,
         sharex=True,
         sharey=True,
     )
     mpeak_path = os.environ["WRK"] + "/multipeak_FIE/"
-    ax_flat = ax_list.flatten()
+    # ax_flat = ax_list.flatten()
 
-    ax_flat[-1].set_axis_off()
+    # ax_flat[-1].set_axis_off()
 
-    filename = "fullf.0000001.vlsv"
-    vobj = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename))
+    filename0 = "fullf.0000000.vlsv"
+    filename1 = "fullf.0000001.vlsv"
+    vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
+    vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
+
+    ax_list[0, 1].set_title("t = {}".format(vobj0.read_parameter("t")))
+    ax_list[1, 1].set_title("t = {}".format(vobj1.read_parameter("t")))
 
     pt.plot.plot_vdf(
-        vlsvobj=vobj,
+        vlsvobj=vobj0,
         cellids=[cellid],
-        axes=ax_flat[0],
+        axes=ax_list[0, 0],
         # fmin=1e-18,
         xy=True,
         setThreshold=1e-18,
@@ -123,9 +128,9 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
         slicethick=0,
     )
     pt.plot.plot_vdf(
-        vlsvobj=vobj,
+        vlsvobj=vobj0,
         cellids=[cellid],
-        axes=ax_flat[1],
+        axes=ax_list[0, 1],
         # fmin=1e-18,
         xz=True,
         setThreshold=1e-18,
@@ -136,9 +141,9 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
         slicethick=0,
     )
     pt.plot.plot_vdf(
-        vlsvobj=vobj,
+        vlsvobj=vobj0,
         cellids=[cellid],
-        axes=ax_flat[2],
+        axes=ax_list[0, 2],
         # fmin=1e-18,
         yz=True,
         setThreshold=1e-18,
@@ -148,6 +153,47 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
         # reducer="average",
         slicethick=0,
     )
+
+    pt.plot.plot_vdf(
+        vlsvobj=vobj1,
+        cellids=[cellid],
+        axes=ax_list[1, 0],
+        # fmin=1e-18,
+        xy=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj1,
+        cellids=[cellid],
+        axes=ax_list[1, 1],
+        # fmin=1e-18,
+        xz=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj1,
+        cellids=[cellid],
+        axes=ax_list[1, 2],
+        # fmin=1e-18,
+        yz=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+
     fig.suptitle("res = {}, cellid = {}".format(resol, cellid))
     ax_list.flatten()[-1].set_axis_off()
     res = str(resol).replace("/", "_")
