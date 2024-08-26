@@ -112,9 +112,8 @@ def multipeak_cuts(resol):
 
     meshsize = vobj1.get_spatial_mesh_size()
     meshext = vobj1.get_spatial_mesh_extent()
-    print(meshsize[0])
 
-    x_arr = np.linspace(meshext[0], meshext[3], meshsize[0] + 1)
+    x_arr = np.linspace(meshext[0], meshext[3], int(meshsize[0] + 1))
     dx = x_arr[1] - x_arr[0]
     x_arr = (x_arr + dx / 2.0)[:-1]
 
