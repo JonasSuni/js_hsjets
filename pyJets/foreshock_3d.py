@@ -94,7 +94,7 @@ wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 def multipeak_cuts(resol):
 
     fig, ax_list = plt.subplots(
-        1, 1, figsize=(12, 8), constrained_layout=True, sharex=True
+        2, 1, figsize=(12, 8), constrained_layout=True, sharex=True
     )
 
     mpeak_path = os.environ["WRK"] + "/multipeak_FIE/"
