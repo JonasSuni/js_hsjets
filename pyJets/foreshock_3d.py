@@ -195,7 +195,7 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
     )
 
     fig.suptitle("res = {}, cellid = {}".format(resol, cellid))
-    ax_list.flatten()[-1].set_axis_off()
+    # ax_list.flatten()[-1].set_axis_off()
     res = str(resol).replace("/", "_")
     fig.savefig(wrkdir_DNR + "Figs/multipeak_vdf_r{}_c{}.png".format(res, cellid))
     plt.close(fig)
