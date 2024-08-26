@@ -91,6 +91,67 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
+def multipeak_cuts(resol):
+
+    fig, ax_list = plt.subplots(
+        1, 1, figsize=(12, 8), constrained_layout=True, sharex=True
+    )
+
+    mpeak_path = os.environ["WRK"] + "/multipeak_FIE/"
+    # ax_flat = ax_list.flatten()
+
+    # ax_flat[-1].set_axis_off()
+
+    filename0 = "fullf.0000000.vlsv"
+    filename1 = "fullf.0000001.vlsv"
+    vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
+    vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
+
+    # ax_list[0].set_title("t = {}".format(vobj0.read_parameter("t")))
+    # ax_list[1].set_title("t = {}".format(vobj1.read_parameter("t")))
+
+    meshsize = vobj1.get_spatial_mesh_size()
+    meshext = vobj1.get_spatial_mesh_extent()
+
+    x_arr = np.linspace(meshext[0], meshext[3], meshsize[0] + 1)
+    dx = x_arr[1] - x_arr[0]
+    x_arr = (x_arr + dx / 2.0)[:-1]
+
+    ax_list[0].plot(
+        x_arr,
+        vobj0.read_variable("vg_b_vol", operator="z") * 1e9,
+        color=CB_color_cycle[0],
+    )
+    ax_list[0].plot(
+        x_arr,
+        vobj1.read_variable("vg_b_vol", operator="z") * 1e9,
+        color=CB_color_cycle[1],
+    )
+    ax_list[0].set_ylabel("$B_z$ [nT]")
+    ax_list[0].grid()
+
+    ax_list[1].plot(
+        x_arr,
+        vobj0.read_variable("vg_e_vol", operator="z") * 1e3,
+        color=CB_color_cycle[0],
+    )
+    ax_list[1].plot(
+        x_arr,
+        vobj1.read_variable("vg_e_vol", operator="z") * 1e3,
+        color=CB_color_cycle[1],
+    )
+    ax_list[1].set_ylabel("$E_z$ [mV/m]")
+    ax_list[1].grid()
+
+    ax_list[-1].set_xlabel("X [m]")
+
+    fig.suptitle("res = {}".format(resol))
+    # ax_list.flatten()[-1].set_axis_off()
+    res = str(resol).replace("/", "_")
+    fig.savefig(wrkdir_DNR + "Figs/multipeak_cut_r{}.png".format(res))
+    plt.close(fig)
+
+
 def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
 
     fig, ax_list = plt.subplots(
