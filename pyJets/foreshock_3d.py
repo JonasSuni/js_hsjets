@@ -91,6 +91,70 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
+def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
+
+    fig, ax_list = plt.subplots(
+        2,
+        2,
+        figsize=(8, 8),
+        constrained_layout=True,
+        sharex=True,
+        sharey=True,
+    )
+    mpeak_path = os.environ["WRK"] + "/multipeak_FIE/"
+    ax_flat = ax_list.flatten()
+
+    ax_flat[-1].set_axis_off()
+
+    filename = "fullf.0000001.vlsv"
+    vobj = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename))
+
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[0],
+        # fmin=1e-18,
+        xy=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[1],
+        # fmin=1e-18,
+        xz=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    pt.plot.plot_vdf(
+        vlsvobj=vobj,
+        cellids=[cellid],
+        axes=ax_flat[2],
+        # fmin=1e-18,
+        yz=True,
+        setThreshold=1e-18,
+        box=box,
+        # fmax=1e-5,
+        # slicethick=1,
+        # reducer="average",
+        slicethick=0,
+    )
+    fig.suptitle("res = {}, cellid = {}".format(resol, cellid))
+    ax_list.flatten()[-1].set_axis_off()
+    res = str(resol).replace("/", "_")
+    fig.savefig(wrkdir_DNR + "Figs/multipeak_vdf_r{}_c{}.png".format(res, cellid))
+    plt.close(fig)
+
+
 def resol_vdf(resol, cellid, box=[-6e6, 6e6, -6e6, 6e6]):
 
     fig, ax_list = plt.subplots(
