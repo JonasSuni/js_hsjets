@@ -128,7 +128,6 @@ def multipeak_cuts(resol):
         color=CB_color_cycle[1],
     )
     ax_list[0].set_ylabel("$B_z$ [nT]")
-    ax_list[0].grid()
 
     ax_list[1].plot(
         x_arr,
@@ -141,9 +140,12 @@ def multipeak_cuts(resol):
         color=CB_color_cycle[1],
     )
     ax_list[1].set_ylabel("$E_z$ [mV/m]")
-    ax_list[1].grid()
 
     ax_list[-1].set_xlabel("X [m]")
+
+    for ax in ax_list:
+        ax.grid()
+        ax.set_xlim(x_arr[0], x_arr[-1])
 
     fig.suptitle("res = {}".format(resol))
     # ax_list.flatten()[-1].set_axis_off()
