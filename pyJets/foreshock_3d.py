@@ -94,7 +94,7 @@ wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 def multipeak_cuts(resol):
 
     fig, ax_list = plt.subplots(
-        2, 1, figsize=(12, 8), constrained_layout=True, sharex=True
+        3, 1, figsize=(12, 12), constrained_layout=True, sharex=True
     )
 
     mpeak_path = os.environ["WRK"] + "/multipeak_FIE/"
@@ -140,6 +140,20 @@ def multipeak_cuts(resol):
         color=CB_color_cycle[1],
     )
     ax_list[1].set_ylabel("$E_z$ [mV/m]")
+
+    ax_list[2].plot(
+        x_arr,
+        vobj0.read_variable("proton/vg_p_perpendicular")
+        / vobj0.read_variable("proton/vg_p_parallel"),
+        color=CB_color_cycle[0],
+    )
+    ax_list[2].plot(
+        x_arr,
+        vobj1.read_variable("proton/vg_p_perpendicular")
+        / vobj0.read_variable("proton/vg_p_parallel"),
+        color=CB_color_cycle[1],
+    )
+    ax_list[2].set_ylabel("$P_\\perp/P_\\parallel$")
 
     ax_list[-1].set_xlabel("X [m]")
 
