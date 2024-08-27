@@ -91,7 +91,7 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def multipeak_cuts(resol, fnr1=1):
+def multipeak_cuts(resol, fnr1=1, bulkpath=""):
 
     fig, ax_list = plt.subplots(
         3, 1, figsize=(12, 12), constrained_layout=True, sharex=True
@@ -104,8 +104,12 @@ def multipeak_cuts(resol, fnr1=1):
 
     filename0 = "fullf.0000000.vlsv"
     filename1 = "fullf.000000{}.vlsv".format(fnr1)
-    vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
-    vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
+    vobj0 = pt.vlsvfile.VlsvReader(
+        mpeak_path + "{}/{}{}".format(resol, bulkpath, filename0)
+    )
+    vobj1 = pt.vlsvfile.VlsvReader(
+        mpeak_path + "{}/{}{}".format(resol, bulkpath, filename1)
+    )
 
     # ax_list[0].set_title("t = {}".format(vobj0.read_parameter("t")))
     # ax_list[1].set_title("t = {}".format(vobj1.read_parameter("t")))
@@ -171,7 +175,7 @@ def multipeak_cuts(resol, fnr1=1):
     plt.close(fig)
 
 
-def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6], fnr1=1):
+def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6], fnr1=1, bulkpath=""):
 
     fig, ax_list = plt.subplots(
         2,
@@ -188,8 +192,12 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6], fnr1=1):
 
     filename0 = "fullf.0000000.vlsv"
     filename1 = "fullf.000000{}.vlsv".format(fnr1)
-    vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
-    vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
+    vobj0 = pt.vlsvfile.VlsvReader(
+        mpeak_path + "{}/{}{}".format(resol, bulkpath, filename0)
+    )
+    vobj1 = pt.vlsvfile.VlsvReader(
+        mpeak_path + "{}/{}{}".format(resol, bulkpath, filename1)
+    )
 
     ax_list[0, 1].set_title("t = {}".format(vobj0.read_parameter("t")))
     ax_list[1, 1].set_title("t = {}".format(vobj1.read_parameter("t")))
