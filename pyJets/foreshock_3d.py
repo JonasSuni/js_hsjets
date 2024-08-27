@@ -121,13 +121,16 @@ def multipeak_cuts(resol):
         x_arr,
         vobj0.read_variable("vg_b_vol", operator="z") * 1e9,
         color=CB_color_cycle[0],
+        label="t={} s".format(vobj0.read_parameter("t")),
     )
     ax_list[0].plot(
         x_arr,
         vobj1.read_variable("vg_b_vol", operator="z") * 1e9,
         color=CB_color_cycle[1],
+        label="t={} s".format(vobj1.read_parameter("t")),
     )
     ax_list[0].set_ylabel("$B_z$ [nT]")
+    ax_list[0].legend()
 
     ax_list[1].plot(
         x_arr,
