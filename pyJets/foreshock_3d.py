@@ -110,6 +110,8 @@ def multipeak_cuts(resol, fnr1=1, bulkpath=""):
     vobj1 = pt.vlsvfile.VlsvReader(
         mpeak_path + "{}/{}{}".format(resol, bulkpath, filename1)
     )
+    cell0 = vobj0.read_variable("CellID")
+    cell1 = vobj1.read_variable("CellID")
 
     # ax_list[0].set_title("t = {}".format(vobj0.read_parameter("t")))
     # ax_list[1].set_title("t = {}".format(vobj1.read_parameter("t")))
@@ -123,13 +125,13 @@ def multipeak_cuts(resol, fnr1=1, bulkpath=""):
 
     ax_list[0].plot(
         x_arr,
-        vobj0.read_variable("vg_b_vol", operator="z") * 1e9,
+        vobj0.read_variable("vg_b_vol", operator="z")[np.argsort(cell0)] * 1e9,
         color=CB_color_cycle[0],
         label="t={} s".format(vobj0.read_parameter("t")),
     )
     ax_list[0].plot(
         x_arr,
-        vobj1.read_variable("vg_b_vol", operator="z") * 1e9,
+        vobj1.read_variable("vg_b_vol", operator="z")[np.argsort(cell1)] * 1e9,
         color=CB_color_cycle[1],
         label="t={} s".format(vobj1.read_parameter("t")),
     )
@@ -138,26 +140,26 @@ def multipeak_cuts(resol, fnr1=1, bulkpath=""):
 
     ax_list[1].plot(
         x_arr,
-        vobj0.read_variable("vg_e_vol", operator="z") * 1e3,
+        vobj0.read_variable("vg_e_vol", operator="z")[np.argsort(cell0)] * 1e3,
         color=CB_color_cycle[0],
     )
     ax_list[1].plot(
         x_arr,
-        vobj1.read_variable("vg_e_vol", operator="z") * 1e3,
+        vobj1.read_variable("vg_e_vol", operator="z")[np.argsort(cell1)] * 1e3,
         color=CB_color_cycle[1],
     )
     ax_list[1].set_ylabel("$E_z$ [mV/m]")
 
     ax_list[2].plot(
         x_arr,
-        vobj0.read_variable("proton/vg_p_perpendicular")
-        / vobj0.read_variable("proton/vg_p_parallel"),
+        vobj0.read_variable("proton/vg_p_perpendicular")[np.argsort(cell0)]
+        / vobj0.read_variable("proton/vg_p_parallel")[np.argsort(cell0)],
         color=CB_color_cycle[0],
     )
     ax_list[2].plot(
         x_arr,
-        vobj1.read_variable("proton/vg_p_perpendicular")
-        / vobj0.read_variable("proton/vg_p_parallel"),
+        vobj1.read_variable("proton/vg_p_perpendicular")[np.argsort(cell1)]
+        / vobj0.read_variable("proton/vg_p_parallel")[np.argsort(cell1)],
         color=CB_color_cycle[1],
     )
     ax_list[2].set_ylabel("$P_\\perp/P_\\parallel$")
