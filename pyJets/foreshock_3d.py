@@ -91,7 +91,7 @@ except:
 wrkdir_DNR = wrkdir_DNR + "3d_foreshock/"
 
 
-def multipeak_cuts(resol):
+def multipeak_cuts(resol, fnr1=1):
 
     fig, ax_list = plt.subplots(
         3, 1, figsize=(12, 12), constrained_layout=True, sharex=True
@@ -103,7 +103,7 @@ def multipeak_cuts(resol):
     # ax_flat[-1].set_axis_off()
 
     filename0 = "fullf.0000000.vlsv"
-    filename1 = "fullf.0000001.vlsv"
+    filename1 = "fullf.000000{}.vlsv".format(fnr1)
     vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
     vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
 
@@ -171,7 +171,7 @@ def multipeak_cuts(resol):
     plt.close(fig)
 
 
-def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
+def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6], fnr1=1):
 
     fig, ax_list = plt.subplots(
         2,
@@ -187,7 +187,7 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6]):
     # ax_flat[-1].set_axis_off()
 
     filename0 = "fullf.0000000.vlsv"
-    filename1 = "fullf.0000001.vlsv"
+    filename1 = "fullf.000000{}.vlsv".format(fnr1)
     vobj0 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename0))
     vobj1 = pt.vlsvfile.VlsvReader(mpeak_path + "{}/{}".format(resol, filename1))
 
