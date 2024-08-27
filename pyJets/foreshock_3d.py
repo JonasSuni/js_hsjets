@@ -103,7 +103,7 @@ def multipeak_cuts(resol, fnr1=1, bulkpath=""):
     # ax_flat[-1].set_axis_off()
 
     filename0 = "fullf.0000000.vlsv"
-    filename1 = "fullf.000000{}.vlsv".format(fnr1)
+    filename1 = "fullf.{}.vlsv".format(str(fnr1).zfill(7))
     vobj0 = pt.vlsvfile.VlsvReader(
         mpeak_path + "{}/{}{}".format(resol, bulkpath, filename0)
     )
@@ -193,7 +193,7 @@ def multipeak_vdf(resol, cellid, box=[-4e6, 4e6, -4e6, 4e6], fnr1=1, bulkpath=""
     # ax_flat[-1].set_axis_off()
 
     filename0 = "fullf.0000000.vlsv"
-    filename1 = "fullf.000000{}.vlsv".format(fnr1)
+    filename1 = "fullf.{}.vlsv".format(str(fnr1).zfill(7))
     vobj0 = pt.vlsvfile.VlsvReader(
         mpeak_path + "{}/{}{}".format(resol, bulkpath, filename0)
     )
