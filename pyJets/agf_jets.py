@@ -4501,6 +4501,7 @@ def pos_vdf_1d_spectrogram(
     logcb=False,
     rotatetob=False,
     filtsize=60,
+    clevels=10,
 ):
     runids = ["AGF", "AIA", "AIB", "AIC"]
     bulkpath = find_bulkpath(runid)
@@ -4663,11 +4664,22 @@ def pos_vdf_1d_spectrogram(
     pcx = ax_list[0].pcolormesh(
         t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow", norm=norm
     )
+    cox = ax_list[0].contour(
+        t_arr, v_arr[0] * scales[0], vx_arr, levels=clevels, colors="white"
+    )
+
     pcy = ax_list[1].pcolormesh(
         t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow", norm=norm
     )
+    coy = ax_list[1].contour(
+        t_arr, v_arr[1] * scales[1], vy_arr, levels=clevels, colors="white"
+    )
+
     pcz = ax_list[2].pcolormesh(
         t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow", norm=norm
+    )
+    coz = ax_list[2].contour(
+        t_arr, v_arr[2] * scales[2], vz_arr, levels=clevels, colors="white"
     )
 
     if overplot_v:
