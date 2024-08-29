@@ -4688,7 +4688,7 @@ def pos_vdf_1d_spectrogram(
 
     labels = ["$V_x$ [km/s]", "$V_y$ [km/s]", "$V_z$ [km/s]"]
     if parperp:
-        labels = ["$\\cos\\mu$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
+        labels = ["$\\cos\\alpha$", "$V_\\parallel$ [km/s]", "$V_\\perp$ [km/s]"]
 
     for idx2, ax in enumerate(ax_list):
         ax.set(
@@ -5132,6 +5132,10 @@ def pos_vdf_plotter(
                 "proton/vg_Pdynx",
                 "proton/vg_beta_star",
             ],
+            streamlines="vg_b_vol",
+            streamlinedensity=0.4,
+            streamlinecolor="white",
+            streamlinethick=0.7,
         )
         ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
         ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
