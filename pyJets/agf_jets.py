@@ -5148,6 +5148,7 @@ def pos_vdf_plotter(
             streamlinedensity=0.4,
             streamlinecolor="white",
             streamlinethick=0.7,
+            streamlinestartpoints=np.array([[x0, y0]]),
         )
         ax_list[0][0].axhline(y_re, linestyle="dashed", linewidth=0.6, color="k")
         ax_list[0][0].axvline(x_re, linestyle="dashed", linewidth=0.6, color="k")
