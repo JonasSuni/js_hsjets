@@ -4665,21 +4665,37 @@ def pos_vdf_1d_spectrogram(
         t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow", norm=norm
     )
     cox = ax_list[0].contour(
-        t_arr, v_arr[0] * scales[0], vx_arr, levels=clevels, colors="white"
+        t_arr,
+        v_arr[0] * scales[0],
+        vx_arr,
+        levels=clevels,
+        colors="white",
+        norm=norm,alpha=0.7,
     )
 
     pcy = ax_list[1].pcolormesh(
         t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow", norm=norm
     )
     coy = ax_list[1].contour(
-        t_arr, v_arr[1] * scales[1], vy_arr, levels=clevels, colors="white"
+        t_arr,
+        v_arr[1] * scales[1],
+        vy_arr,
+        levels=clevels,
+        colors="white",
+        norm=norm,
+        alpha=0.7,
     )
 
     pcz = ax_list[2].pcolormesh(
         t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow", norm=norm
     )
     coz = ax_list[2].contour(
-        t_arr, v_arr[2] * scales[2], vz_arr, levels=clevels, colors="white"
+        t_arr,
+        v_arr[2] * scales[2],
+        vz_arr,
+        levels=clevels,
+        colors="white",
+        norm=norm,alpha=0.7,
     )
 
     if overplot_v:
