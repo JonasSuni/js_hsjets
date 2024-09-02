@@ -1705,7 +1705,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 umagten_y[::10, ::10],
                 scale_units="xy",
                 angles="xy",
-                #scale=1,
+                # scale=1,
             )
 
     if Blines_g:
@@ -2155,7 +2155,7 @@ def v5_plotter(
     stop,
     boxre=[-10, 20, -20, 20],
     tickint=5.0,
-    blines=True,
+    blines=False,
     nstp=40,
     pdynmax=1.5,
     pdynmin=0.1,
@@ -2167,7 +2167,7 @@ def v5_plotter(
     By0=True,
     leg=True,
     track_jets=True,
-    qperp=True,
+    qperp=False,
     linestartstop=[],
     magten=False,
     usesci=0,
