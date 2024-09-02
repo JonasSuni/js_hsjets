@@ -4658,11 +4658,19 @@ def pos_vdf_1d_spectrogram(
 
     if logcb:
         norm = "log"
+        vmin = 1e-2
     else:
         norm = None
+        vmin = None
 
     pcx = ax_list[0].pcolormesh(
-        t_arr, v_arr[0] * scales[0], vx_arr, shading="nearest", cmap="batlow", norm=norm
+        t_arr,
+        v_arr[0] * scales[0],
+        vx_arr,
+        shading="nearest",
+        cmap="batlow",
+        norm=norm,
+        vmin=vmin,
     )
     cox = ax_list[0].contour(
         t_arr,
@@ -4670,11 +4678,19 @@ def pos_vdf_1d_spectrogram(
         vx_arr,
         levels=clevels,
         colors="white",
-        norm=norm,alpha=0.7,
+        norm=norm,
+        alpha=0.7,
+        vmin=vmin,
     )
 
     pcy = ax_list[1].pcolormesh(
-        t_arr, v_arr[1] * scales[1], vy_arr, shading="nearest", cmap="batlow", norm=norm
+        t_arr,
+        v_arr[1] * scales[1],
+        vy_arr,
+        shading="nearest",
+        cmap="batlow",
+        norm=norm,
+        vmin=vmin,
     )
     coy = ax_list[1].contour(
         t_arr,
@@ -4684,10 +4700,17 @@ def pos_vdf_1d_spectrogram(
         colors="white",
         norm=norm,
         alpha=0.7,
+        vmin=vmin,
     )
 
     pcz = ax_list[2].pcolormesh(
-        t_arr, v_arr[2] * scales[2], vz_arr, shading="nearest", cmap="batlow", norm=norm
+        t_arr,
+        v_arr[2] * scales[2],
+        vz_arr,
+        shading="nearest",
+        cmap="batlow",
+        norm=norm,
+        vmin=vmin,
     )
     coz = ax_list[2].contour(
         t_arr,
@@ -4695,7 +4718,9 @@ def pos_vdf_1d_spectrogram(
         vz_arr,
         levels=clevels,
         colors="white",
-        norm=norm,alpha=0.7,
+        norm=norm,
+        alpha=0.7,
+        vmin=vmin,
     )
 
     if overplot_v:
