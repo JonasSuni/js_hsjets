@@ -1705,7 +1705,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 umagten_y[::10, ::10],
                 scale_units="xy",
                 angles="xy",
-                scale=1,
+                #scale=1,
             )
 
     if Blines_g:
