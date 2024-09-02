@@ -155,6 +155,8 @@ propfile_var_list = [
 ]
 propfile_header_list = "time [s],x_mean [R_e],y_mean [R_e],z_mean [R_e],x_wmean [R_e],y_wmean [R_e],z_wmean [R_e],A [R_e^2],Nr_cells,size_rad [R_e],size_tan [R_e],size_vpar [R_e],size_vperp [R_e],size_Bpar [R_e],size_Bperp [R_e],x_max [R_e],y_max [R_e],z_max [R_e],n_avg [1/cm^3],n_med [1/cm^3],n_max [1/cm^3],v_avg [km/s],v_med [km/s],v_max [km/s],B_avg [nT],B_med [nT],B_max [nT],T_avg [MK],T_med [MK],T_max [MK],TPar_avg [MK],TPar_med [MK],TPar_max [MK],TPerp_avg [MK],TPerp_med [MK],TPerp_max [MK],beta_avg,beta_med,beta_max,x_min [R_e],rho_vmax [1/cm^3],b_vmax,pd_avg [nPa],pd_med [nPa],pd_max [nPa],B_sheath [nT],TPar_sheath [MK],TPerp_sheath [MK],T_sheath [MK],n_sheath [1/cm^3],v_sheath [km/s],pd_sheath [nPa],is_upstream [bool],ew_pd_enh [nPa],is_slams [bool],is_jet [bool],is_merger [bool],is_splinter [bool],at_bow_shock [bool],at_jet [bool],at_jet [bool]"
 
+default_globals = set(globals())
+
 
 class NeoTransient:
     # Class for identifying and handling individual jets and their properties
@@ -1598,7 +1600,11 @@ def jet_tracker(runid, start, stop, threshold=0.5, transient="jet", dbg=False):
 
 
 def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
+
+    my_globals = set(globals()) - default_globals
+
     B = pass_maps["vg_b_vol"]
+    v = pass_maps["proton/vg_v"]
     rho = pass_maps["proton/vg_rho"]
     cellids = pass_maps["CellID"]
     mmsx = pass_maps["proton/vg_mmsx"]
@@ -1681,6 +1687,26 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ).T
     # nstp = 40
     # start_points = np.array([np.ones(nstp) * 17, np.linspace(-20, 20, nstp)]).T
+
+    if "umagten_g" in my_globals:
+        if globals()["umagten_g"]:
+            magten_arr = magten_vec(cellids, B, v)
+            magten_mag = np.sqrt(
+                magten_arr[:, :, 0] ** 2
+                + magten_arr[:, :, 1] ** 2
+                + magten_arr[:, :, 2] ** 2
+            )
+            umagten_x = magten_arr[:, :, 0] / magten_mag
+            umagten_y = magten_arr[:, :, 1] / magten_mag
+            ax.quiver(
+                XmeshXY,
+                YmeshXY,
+                umagten_x,
+                umagten_y,
+                scale_units="xy",
+                angles="xy",
+                scale=1,
+            )
 
     if Blines_g:
         blines_bx = np.copy(B[:, :, 0])
@@ -2145,6 +2171,7 @@ def v5_plotter(
     linestartstop=[],
     magten=False,
     usesci=0,
+    magtenvec=False,
 ):
     var = "proton/vg_Pdyn"
 
@@ -2164,7 +2191,8 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g
+    umagten_g = magtenvec
     runid_g = runid
     Blines_g = blines
     drawBy0 = By0
@@ -2270,6 +2298,28 @@ def v5_plotter(
                 "proton/vg_beta_star",
             ],
         )
+
+
+def magten_vec(outcells, B, v):
+
+    origshape = outcells.shape
+    outcells = outcells.flatten()
+    print(outcells.shape)
+    print(B.shape)
+    B = np.reshape(B, (outcells.size, 3))
+    v = np.reshape(v, (outcells.size, 3))
+    print(v.shape)
+    vg_b_jacobian = make_vg_b_jacobian(vobj)
+    print(vg_b_jacobian.shape)
+    vg_b_jacobian = vg_b_jacobian[(outcells - 1)]
+
+    B_reshaped = np.rollaxis(np.array([B]), 1, 0)
+
+    magten = np.rollaxis(B_reshaped @ vg_b_jacobian, 1, 0)[0] / mu0
+
+    magten = np.reshape(magten, (origshape[0], origshape[1], 3))
+
+    return magten
 
 
 def expr_magten(pass_maps):
