@@ -1696,8 +1696,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 + magten_arr[:, :, 1] ** 2
                 + magten_arr[:, :, 2] ** 2
             )
-            umagten_x = magten_arr[:, :, 0] / magten_mag
-            umagten_y = magten_arr[:, :, 1] / magten_mag
+            umagten_x = magten_arr[:, :, 0] / (magten_mag + 1e-27)
+            umagten_y = magten_arr[:, :, 1] / (magten_mag + 1e-27)
             ax.quiver(
                 XmeshXY,
                 YmeshXY,
@@ -1705,7 +1705,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 umagten_y,
                 scale_units="xy",
                 angles="xy",
-                scale=1,
+                # scale=1,
             )
 
     if Blines_g:
