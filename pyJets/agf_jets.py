@@ -2304,13 +2304,13 @@ def magten_vec(outcells, B, v):
 
     origshape = outcells.shape
     outcells = outcells.flatten()
-    print(outcells.shape)
-    print(B.shape)
+    # print(outcells.shape)
+    # print(B.shape)
     B = np.reshape(B, (outcells.size, 3))
     v = np.reshape(v, (outcells.size, 3))
-    print(v.shape)
+    # print(v.shape)
     vg_b_jacobian = make_vg_b_jacobian(vobj)
-    print(vg_b_jacobian.shape)
+    # print(vg_b_jacobian.shape)
     vg_b_jacobian = vg_b_jacobian[(outcells - 1)]
 
     B_reshaped = np.rollaxis(np.array([B]), 1, 0)
