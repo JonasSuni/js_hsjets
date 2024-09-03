@@ -2987,7 +2987,6 @@ def VSC_timeseries(
                 color=CB_color_cycle[0],
                 linestyle="dashed",
                 label="$2\\langle P_\mathrm{dyn}\\rangle$",
-                linestyle=linestyle,
             )
         elif idx == 5 and pdx:
             pdynx = (
