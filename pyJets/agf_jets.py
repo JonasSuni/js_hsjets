@@ -5121,6 +5121,7 @@ def pos_vdf_plotter(
     pdmax=1.0,
     ncont=5,
     rboxw=2,
+    boxre=None,
     fmin=1e-10,
     fmax=1e-4,
 ):
@@ -5204,6 +5205,9 @@ def pos_vdf_plotter(
         x0 = x_re
         y0 = y_re
 
+        if type(boxre) is not list:
+            boxre = [x_re - rboxw, x_re + rboxw, y_re - rboxw, y_re + rboxw]
+
         fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
 
         pt.plot.plot_colormap(
@@ -5215,7 +5219,7 @@ def pos_vdf_plotter(
             vscale=1e9,
             cbtitle="$P_\mathrm{dyn}$ [nPa]",
             usesci=0,
-            boxre=[x_re - rboxw, x_re + rboxw, y_re - rboxw, y_re + rboxw],
+            boxre=boxre,
             # internalcb=True,
             # lin=1,
             colormap="batlow",
