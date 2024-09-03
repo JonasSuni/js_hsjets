@@ -1905,11 +1905,11 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     if plaschke_g:
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[7]]))
-        proxy_labs.append("$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
+        proxy_labs.append(r"$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append(
-            "$P_\mathrm{dyn} \geq 2 \\langle P_\mathrm{dyn} \\rangle_\mathrm{3min}$"
+            r"$P_\mathrm{dyn} \geq 2 \langle P_\mathrm{dyn} \rangle_\mathrm{3min}$"
         )
     # if ~(slams_mask == 0).all():
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
