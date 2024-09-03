@@ -2745,7 +2745,7 @@ def VSC_timeseries(
     grain=1,
     maxwidth=None,
     cutoff=0.9,
-    linestyle="-",
+    fmt="-",
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2968,22 +2968,23 @@ def VSC_timeseries(
             ax.plot(
                 t_arr,
                 data_arr[idx] - uniform_filter1d(data_arr[idx], size=delta),
+                fmt,
                 color=plot_colors[idx],
                 label=plot_labels[idx],
-                linestyle=linestyle,
             )
         else:
             ax.plot(
                 t_arr,
                 data_arr[idx],
+                fmt,
                 color=plot_colors[idx],
                 label=plot_labels[idx],
-                linestyle=linestyle,
             )
         if idx == 5 and pdavg and not delta:
             ax.plot(
                 t_arr,
                 2 * tavg_arr,
+                fmt,
                 color=CB_color_cycle[0],
                 linestyle="dashed",
                 label="$2\\langle P_\mathrm{dyn}\\rangle$",
@@ -2996,17 +2997,17 @@ def VSC_timeseries(
                 ax.plot(
                     t_arr,
                     pdynx - uniform_filter1d(pdynx, size=delta),
+                    fmt,
                     color=CB_color_cycle[0],
                     label="$P_{\mathrm{dyn},x}$",
-                    linestyle=linestyle,
                 )
             else:
                 ax.plot(
                     t_arr,
                     pdynx,
+                    fmt,
                     color=CB_color_cycle[0],
                     label="$P_{\mathrm{dyn},x}$",
-                    linestyle=linestyle,
                 )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
