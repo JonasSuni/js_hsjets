@@ -1705,6 +1705,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 umagten_y[::10, ::10],
                 scale_units="xy",
                 angles="xy",
+                pivot="mid",
                 # scale=1,
             )
 
