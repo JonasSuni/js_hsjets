@@ -2907,7 +2907,7 @@ def VSC_timeseries(
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
-    data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+    data_arr = np.zeros((len(var_list) + 3, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
     for idx, fnr in enumerate(fnr_arr):
@@ -2931,6 +2931,11 @@ def VSC_timeseries(
                 * scales[idx2]
                 # / run_norm[idx2]
             )
+        data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
+            pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+        )
         # except:
         #     print("Something went wrong!")
         #     data_arr[:, idx] = np.nan
@@ -2957,7 +2962,7 @@ def VSC_timeseries(
         plot_labels[10:13] = ["$E_N$", "$E_M$", "$E_L$"]
 
     fig, ax_list = plt.subplots(
-        len(ylabels), 1, sharex=True, figsize=(6, 8), constrained_layout=True
+        len(ylabels) + 1, 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
     ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
     for idx in range(len(var_list)):
@@ -3012,6 +3017,32 @@ def VSC_timeseries(
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    ylabels.append("$n_F$ [nPa/m]")
+    ax_list[-1].plot(
+        t_arr,
+        data_arr[-3],
+        color=CB_color_cycle[0],
+        # label="$\\nabla p$",
+        label="x",
+    )
+    ax_list[-1].plot(
+        t_arr,
+        data_arr[-2],
+        color=CB_color_cycle[1],
+        # label="$\\nabla (B^2/2\\mu_0)$",
+        label="y",
+    )
+    ax_list[-1].plot(
+        t_arr,
+        data_arr[-1],
+        color=CB_color_cycle[2],
+        # label="$(B\\cdot\\nabla B)/\\mu_0$",
+        label="z",
+    )
+    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+    for vline in vlines:
+        ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
+    ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
     ax_list[-1].set_xlabel("Simulation time [s]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
