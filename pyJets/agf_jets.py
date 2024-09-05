@@ -3017,24 +3017,24 @@ def VSC_timeseries(
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    ylabels.append("$n_F$ [nPa/m]")
+    ylabels.append("$\\int n_F~dt$ [nPa s/m]")
     ax_list[-1].plot(
         t_arr,
-        data_arr[-3],
+        np.cumsum(data_arr[-3]) * 0.5,
         color=CB_color_cycle[0],
         # label="$\\nabla p$",
         label="x",
     )
     ax_list[-1].plot(
         t_arr,
-        data_arr[-2],
+        np.cumsum(data_arr[-2]) * 0.5,
         color=CB_color_cycle[1],
         # label="$\\nabla (B^2/2\\mu_0)$",
         label="y",
     )
     ax_list[-1].plot(
         t_arr,
-        data_arr[-1],
+        np.cumsum(data_arr[-1]) * 0.5,
         color=CB_color_cycle[2],
         # label="$(B\\cdot\\nabla B)/\\mu_0$",
         label="z",
