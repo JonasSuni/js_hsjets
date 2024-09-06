@@ -1691,6 +1691,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if "umagten_g" in my_globals:
         if globals()["umagten_g"]:
             magten_arr = magten_vec(cellids, B, v)
+            print(magten_arr.shape)
             magten_mag = np.sqrt(
                 magten_arr[:, :, 0] ** 2
                 + magten_arr[:, :, 1] ** 2
