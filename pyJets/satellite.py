@@ -1623,13 +1623,13 @@ def mms_tension_vel(
     outdata_arr = np.empty((2, 3, time_arr.size), dtype=float)
 
     for idx in range(time_arr.size):
-        # outdata_arr[0, :, idx] = (
-        #     tetra_mag_tension(data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx])
-        #     / mu0
-        # )
-        outdata_arr[0, :, idx] = tetra_linear_interp(
-            data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
+        outdata_arr[0, :, idx] = (
+            tetra_mag_tension(data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx])
+            / mu0
         )
+        # outdata_arr[0, :, idx] = tetra_linear_interp(
+        #     data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
+        # )
         outdata_arr[1, :, idx] = tetra_linear_interp(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [6, 7, 8], idx]
         )
@@ -1655,15 +1655,15 @@ def mms_tension_vel(
 
     ax_list[0].set_title("MMS1-4")
     if normalise:
-        # ax_list[0].set_ylabel("$\\hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
-        ax_list[0].set_ylabel("$\\hat{B}$")
+        ax_list[0].set_ylabel("$\\hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
+        # ax_list[0].set_ylabel("$\\hat{B}$")
         ax_list[1].set_ylabel("$\\hat{v}$")
     else:
-        # ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
-        if dbdt:
-            ax_list[0].set_ylabel("$dB/dt$")
-        else:
-            ax_list[0].set_ylabel("$B$")
+        ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
+        # if dbdt:
+        #     ax_list[0].set_ylabel("$dB/dt$")
+        # else:
+        #     ax_list[0].set_ylabel("$B$")
         ax_list[1].set_ylabel("$v$")
     ax_list[0].set_xlim(t0plot, t1plot)
     ax_list[1].legend()
