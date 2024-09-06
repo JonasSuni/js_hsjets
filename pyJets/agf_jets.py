@@ -2544,9 +2544,10 @@ def VSC_cut_through(
         # )
         # data_arr[idx2 + 3, idx] = np.linalg.norm(pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9)
         data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+            # pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            # + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            # + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+            pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
         )
 
     fig, ax_list = plt.subplots(
