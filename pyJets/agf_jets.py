@@ -2544,10 +2544,10 @@ def VSC_cut_through(
         # )
         # data_arr[idx2 + 3, idx] = np.linalg.norm(pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9)
         data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
-            # pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+            # pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            # + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+            # + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+            pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
         )
 
     fig, ax_list = plt.subplots(
@@ -2574,7 +2574,8 @@ def VSC_cut_through(
         ax.set_xlim(n_arr[0], n_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    ylabels.append("$n_F$ [nPa/m]")
+    # ylabels.append("$n_F$ [nPa/m]")
+    ylabels.append("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
     ax_list[-1].plot(
         n_arr,
         data_arr[-3],
