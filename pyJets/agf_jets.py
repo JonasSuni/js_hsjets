@@ -2674,7 +2674,7 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
         - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="z")
     ) / (2.0 * dx)
 
-    B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]])
+    B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]]).T
     B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
 
     BdotJacobian = B @ B_jacobian
