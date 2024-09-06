@@ -4340,9 +4340,16 @@ def make_vg_b_jacobian(vobj):
     return np.rollaxis(
         np.array(
             [
-                [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-                [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-                [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                # [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                # [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                # [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
+                [dFx_dx.flatten(), dFy_dx.flatten(), dFz_dx.flatten()],
+                [dFx_dy.flatten(), dFy_dy.flatten(), dFz_dy.flatten()],
+                [
+                    np.zeros_like(dFx_dx).flatten(),
+                    np.zeros_like(dFx_dx).flatten(),
+                    np.zeros_like(dFx_dx).flatten(),
+                ],
             ]
         ),
         2,
