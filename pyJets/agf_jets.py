@@ -2656,10 +2656,13 @@ def VSC_cut_through(
         T = dr
         yf = fft(fourier_var)
         xf = fftfreq(N, T)[: N // 2]
-        fig, ax = plt.subplots(1, 1, constrained_layout=True)
-        ax.plot(xf, 2.0 / N * np.abs(yf[0 : N // 2]))
-        ax.grid()
-        ax.set_xlabel("k [1/RE]")
+        fig, ax = plt.subplots(1, 2, figsize=(10, 6), constrained_layout=True)
+        ax[0].plot(xf, 2.0 / N * np.abs(yf[0 : N // 2]))
+        ax[0].grid()
+        ax[0].set_xlabel("k [1/RE]")
+        ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf[1 : N // 2]))
+        ax[1].grid()
+        ax[1].set_xlabel("$\lambda$ [RE]")
         fig.savefig(
             figdir
             + "{}_x{}_{}_y{}_{}_t0{}_fft_{}.png".format(
