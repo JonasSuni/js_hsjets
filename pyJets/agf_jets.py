@@ -28,6 +28,7 @@ from scipy.linalg import eig
 from scipy.fft import rfft2
 from scipy.signal import butter, sosfilt, cwt, morlet2
 from scipy.ndimage import uniform_filter1d
+from scipy.fft import fft, fftfreq
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2366,6 +2367,7 @@ def VSC_cut_through(
     t0,
     pdx=False,
     vlines=[],
+    fourier=None,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2645,6 +2647,25 @@ def VSC_cut_through(
         data_arr,
     )
     plt.close(fig)
+
+    if fourier:
+        fourier_var = data_arr[fourier]
+        r_arr = n_arr * dr
+        N = r_arr.size
+        T = dr
+        yf = fft(fourier_var)
+        xf = fftfreq(N, T)[: N // 2]
+        fig, ax = plt.subplots(1, 1, constrained_layout=True)
+        ax.plot(xf, 2.0 / N * np.abs(yf[0 : N // 2]))
+        ax.grid()
+        ax.set_xlabel("k [1/RE]")
+        fig.savefig(
+            figdir
+            + "{}_x{}_{}_y{}_{}_t0{}_fft_{}.png".format(
+                runid, x0, x1, y0, y1, t0, fourier
+            ),
+            dpi=300,
+        )
 
 
 def pos_mag_tension(vlsvobj, x, y, dx=300e3):
