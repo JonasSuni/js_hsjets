@@ -2402,7 +2402,7 @@ def VSC_cut_through(
         "$v_y$",
         "$v_z$",
         "$|v|$",
-        "$P_\mathrm{dyn}$",
+        "$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
@@ -3313,7 +3313,7 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "$v_y~[km/s]$",
         "$v_z~[km/s]$",
         "$v~[km/s]$",
-        "$P_\mathrm{dyn}~[nPa]$",
+        "$P_\\mathrm{dyn}~[nPa]$",
         "$B_x~[nT]$",
         "$B_y~[nT]$",
         "$B_z~[nT]$",
@@ -3322,8 +3322,8 @@ def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=Fals
         "$E_y~[mV/m]$",
         "$E_z~[mV/m]$",
         "$E~[mV/m]$",
-        "$T_\parallel~[MK]$",
-        "$T_\perp~[MK]$",
+        "$T_\\parallel~[MK]$",
+        "$T_\\perp~[MK]$",
     ]
     if delta:
         for idx, lab in enumerate(ts_v_labels):
