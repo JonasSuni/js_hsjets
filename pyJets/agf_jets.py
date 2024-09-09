@@ -2660,13 +2660,13 @@ def VSC_cut_through(
         lin0 = ax[0].plot(xf, 2.0 / N * np.abs(yf[0 : N // 2]))
         ax[0].grid()
         ax[0].set_xlabel("k [1/RE]")
-        x0, y0 = lin0[0].get_data()
-        ax[0].set_title("k(max) = {}".format(x0[y0 == np.max(y0)]))
+        xf0, yf0 = lin0[0].get_data()
+        ax[0].set_title("k(max) = {}".format(xf0[yf0 == np.max(yf0)]))
         lin1 = ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf[1 : N // 2]))
         ax[1].grid()
         ax[1].set_xlabel("$\\lambda$ [RE]")
-        x1, y1 = lin1[0].get_data()
-        ax[1].set_title("$\\lambda$(max) = {}".format(x1[y1 == np.max(y1)]))
+        xf1, yf1 = lin1[0].get_data()
+        ax[1].set_title("$\\lambda$(max) = {}".format(xf1[yf1 == np.max(yf1)]))
         fig.savefig(
             figdir
             + "{}_x{}_{}_y{}_{}_t0{}_fft_{}.png".format(
