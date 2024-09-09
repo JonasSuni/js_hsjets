@@ -2662,7 +2662,7 @@ def VSC_cut_through(
         ax[0].set_xlabel("k [1/RE]")
         ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf[1 : N // 2]))
         ax[1].grid()
-        ax[1].set_xlabel("$\lambda$ [RE]")
+        ax[1].set_xlabel("$\\lambda$ [RE]")
         fig.savefig(
             figdir
             + "{}_x{}_{}_y{}_{}_t0{}_fft_{}.png".format(
