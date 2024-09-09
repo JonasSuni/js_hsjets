@@ -6685,7 +6685,7 @@ def hodogram(runid, x0, y0, t0, t1, electric=False, filt=None):
     plt.close(fig)
 
 
-def wavelet_analysis(runid, x0, y0, t0, t1, var, op="x"):
+def wavelet_analysis(runid, x0, y0, t0, t1, var="vg_b_vol", op="x"):
 
     dt = 0.5
     fs = 1 / dt
