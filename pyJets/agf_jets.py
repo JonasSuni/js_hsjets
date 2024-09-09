@@ -2649,7 +2649,7 @@ def VSC_cut_through(
     plt.close(fig)
 
     if fourier:
-        fourier_var = data_arr[fourier]
+        fourier_var = data_arr[fourier-1]
         r_arr = n_arr * dr
         N = r_arr.size
         T = dr
@@ -2662,7 +2662,7 @@ def VSC_cut_through(
         fig.savefig(
             figdir
             + "{}_x{}_{}_y{}_{}_t0{}_fft_{}.png".format(
-                runid, x0, x1, y0, y1, t0, fourier
+                runid, x0, x1, y0, y1, t0, fourier-1
             ),
             dpi=300,
         )
