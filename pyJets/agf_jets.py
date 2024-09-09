@@ -2666,6 +2666,7 @@ def VSC_cut_through(
             ),
             dpi=300,
         )
+        plt.close(fig)
 
 
 def pos_mag_tension(vlsvobj, x, y, dx=300e3):
