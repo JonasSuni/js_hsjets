@@ -1883,8 +1883,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     # proxy_labs = (
-    #         "$n=2n_\mathrm{sw}$",
-    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$n=2n_\\mathrm{sw}$",
+    #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #         "$M_{\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
@@ -1893,11 +1893,11 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #     )
 
     proxy_labs = [
-        # "$n=2n_\mathrm{sw}$",
-        # "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        # "$n=2n_\\mathrm{sw}$",
+        # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
         "$\\beta^* = 0.3$",
         # "$M_{\mathrm{MS},x}=1$",
-        # "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
+        # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
     ]
 
     proxy = [
@@ -1914,11 +1914,11 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
 
     if plaschke_g:
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[7]]))
-        proxy_labs.append(r"$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
+        proxy_labs.append("$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$")
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append(
-            r"$P_\mathrm{dyn} \geq 2 \langle P_\mathrm{dyn} \rangle_\mathrm{3min}$"
+            "$P_\\mathrm{dyn} \geq 2 \langle P_\\mathrm{dyn} \rangle_\\mathrm{3min}$"
         )
     # if ~(slams_mask == 0).all():
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
@@ -2453,18 +2453,18 @@ def VSC_cut_through(
         True,
     ]
     ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B~[\mathrm{nT}]$",
-        "$E~[\mathrm{mV/m}]$",
-        "$T~[\mathrm{MK}]$",
-        # "$\\rho~[\\rho_\mathrm{sw}]$",
-        # "$v~[v_\mathrm{sw}]$",
-        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        # "$B~[B_\mathrm{IMF}]$",
-        # "$E~[E_\mathrm{sw}]$",
-        # "$T~[T_\mathrm{sw}]$",
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\\mathrm{sw}]$",
+        # "$v~[v_\\mathrm{sw}]$",
+        # "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        # "$B~[B_\\mathrm{IMF}]$",
+        # "$E~[E_\\mathrm{sw}]$",
+        # "$T~[T_\\mathrm{sw}]$",
     ]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     norm = [
@@ -2815,7 +2815,7 @@ def VSC_timeseries(
         "$v_y$",
         "$v_z$",
         "$|v|$",
-        "$P_\mathrm{dyn}$",
+        "$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
@@ -2864,18 +2864,18 @@ def VSC_timeseries(
         True,
     ]
     ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B~[\mathrm{nT}]$",
-        "$E~[\mathrm{mV/m}]$",
-        "$T~[\mathrm{MK}]$",
-        # "$\\rho~[\\rho_\mathrm{sw}]$",
-        # "$v~[v_\mathrm{sw}]$",
-        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        # "$B~[B_\mathrm{IMF}]$",
-        # "$E~[E_\mathrm{sw}]$",
-        # "$T~[T_\mathrm{sw}]$",
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\\mathrm{sw}]$",
+        # "$v~[v_\\mathrm{sw}]$",
+        # "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        # "$B~[B_\\mathrm{IMF}]$",
+        # "$E~[E_\\mathrm{sw}]$",
+        # "$T~[T_\\mathrm{sw}]$",
     ]
     if delta:
         for idx in range(len(ylabels)):
@@ -3034,7 +3034,7 @@ def VSC_timeseries(
                 fmt,
                 color=CB_color_cycle[0],
                 linestyle="dashed",
-                label="$2\\langle P_\mathrm{dyn}\\rangle$",
+                label="$2\\langle P_\\mathrm{dyn}\\rangle$",
             )
         elif idx == 5 and pdx:
             pdynx = (
@@ -3576,10 +3576,10 @@ def plot_fft(
     cellnr = range(xlist.size)
     if xlist[-1] != xlist[0]:
         xplot_list = xlist
-        xlab = "$X~[R_\mathrm{E}]$"
+        xlab = "$X~[R_\\mathrm{E}]$"
     else:
         xplot_list = ylist
-        xlab = "$Y~[R_\mathrm{E}]$"
+        xlab = "$Y~[R_\\mathrm{E}]$"
 
     XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
 
@@ -3927,7 +3927,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             )
             # ax_list.flatten()[idx].set(
             #     title=varlab_list[idx],
-            #     # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+            #     # xlabel="$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
             #     xlim=(
             #         np.min(
             #             [
@@ -3947,7 +3947,7 @@ def msheath_pdyn_hist(x0, x1, y0, y1, t0, t1):
             # )
             ax_list.flatten()[idx].set(
                 title=varlab_list[idx],
-                # xlabel="$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
+                # xlabel="$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
                 xlim=(
                     np.min(data_arr[:, idx, :, :]),
                     np.max(data_arr[:, idx, :, :]),
@@ -3998,7 +3998,7 @@ def jplots(
     varname_list = [
         "$\\rho$ [cm$^{-3}$]",
         "$v_x$ [km/s]",
-        "$P_\mathrm{dyn}$ [nPa]",
+        "$P_\\mathrm{dyn}$ [nPa]",
         "$B$ [nT]",
         # "$T$ [MK]",
         "$E$ [mV/m]",
@@ -4109,11 +4109,11 @@ def jplots(
     cellnr = range(xlist.size)
     if xlist[-1] != xlist[0]:
         xplot_list = xlist
-        xlab = "$X~[R_\mathrm{E}]$"
+        xlab = "$X~[R_\\mathrm{E}]$"
         XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
     else:
         xplot_list = ylist
-        xlab = "$Y~[R_\mathrm{E}]$"
+        xlab = "$Y~[R_\\mathrm{E}]$"
         XmeshXY, YmeshXY = np.meshgrid(ylist, t_range)
 
     data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
@@ -4423,8 +4423,8 @@ def make_vg_b_jacobian(vobj):
                 #     np.zeros_like(dFx_dx).flatten(),
                 #     np.zeros_like(dFx_dx).flatten(),
                 # ],
-                [dFx_dx.flatten(), dFy_dx.flatten(), 0],
-                [dFx_dy.flatten(), dFy_dy.flatten(), 0],
+                [dFx_dx.flatten(), dFy_dx.flatten(), np.zeros_like(dFx_dx).flatten()],
+                [dFx_dy.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
                 [
                     np.zeros_like(dFx_dx).flatten(),
                     np.zeros_like(dFx_dx).flatten(),
@@ -5116,7 +5116,7 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
             vmin=0,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
             usesci=0,
             boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
             # internalcb=True,
@@ -5182,8 +5182,8 @@ def pos_vdf_profile_plotter(runid, x, y, t0, t1, vmin=None, vmax=None):
         )
         ax_list[1].legend(loc="upper right")
         ax_list[1].set_xlim(-2000, 2000)
-        ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
-        ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
+        ax_list[1].set_xlabel("$v~[\\mathrm{kms}^{-1}]$")
+        ax_list[1].set_ylabel("$f(v)~[\\mathrm{sm}^{-4}]$")
 
         # plt.subplots_adjust(wspace=1, hspace=1)
 
@@ -5331,7 +5331,7 @@ def multipos_vdf_plotter(
             vmin=0.01,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
             usesci=0,
             boxre=[
                 x_re - dr_vdf_re * 2,
@@ -5535,7 +5535,7 @@ def pos_vdf_plotter(
             vmin=0.01,
             vmax=pdmax,
             vscale=1e9,
-            cbtitle="$P_\mathrm{dyn}$ [nPa]",
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
             usesci=0,
             boxre=boxre,
             # internalcb=True,
@@ -5802,7 +5802,7 @@ def jet_vdf_plotter(runid, skip=[]):
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
-                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    cbtitle="$P_\\mathrm{dyn}$ [nPa]",
                     usesci=0,
                     boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                     # internalcb=True,
@@ -5995,7 +5995,7 @@ def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
-                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    cbtitle="$P_\\mathrm{dyn}$ [nPa]",
                     usesci=0,
                     boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                     # internalcb=True,
@@ -6046,8 +6046,8 @@ def jet_vdf_profile_plotter(runid, skip=[], vmin=None, vmax=None):
                 ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
                 ax_list[1].set_xlim(-2000, 2000)
-                ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
-                ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
+                ax_list[1].set_xlabel("$v~[\\mathrm{kms}^{-1}]$")
+                ax_list[1].set_ylabel("$f(v)~[\\mathrm{sm}^{-4}]$")
                 # ax_list[1].set_ylim(0, 30)
 
                 # pt.plot.plot_vdf_profiles(
@@ -6560,8 +6560,8 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     # proxy_labs = (
-    #         "$n=2n_\mathrm{sw}$",
-    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$n=2n_\\mathrm{sw}$",
+    #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #         "$M_{\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
@@ -6570,11 +6570,11 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #     )
 
     # proxy_labs = [
-    #     # "$n=2n_\mathrm{sw}$",
-    #     # "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #     # "$n=2n_\\mathrm{sw}$",
+    #     # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #     "$\\beta^* = 0.3$",
     #     # "$M_{\mathrm{MS},x}=1$",
-    #     # "$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$",
+    #     # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
     # ]
 
     # proxy = [
@@ -6591,11 +6591,11 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
 
     # if plaschke_g:
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[7]]))
-    #     proxy_labs.append("$P_\mathrm{dyn,x}>0.25 P_\mathrm{dyn,sw}$")
+    #     proxy_labs.append("$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$")
     # if ~(jet_mask == 0).all():
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
     #     proxy_labs.append(
-    #         "$P_\mathrm{dyn} \geq 2 \\langle P_\mathrm{dyn} \\rangle_\mathrm{3min}$"
+    #         "$P_\\mathrm{dyn} \geq 2 \\langle P_\\mathrm{dyn} \\rangle_\\mathrm{3min}$"
     #     )
     # # if ~(slams_mask == 0).all():
     # #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
@@ -7055,7 +7055,7 @@ def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
         "$v_y$",
         "$v_z$",
         "$|v|$",
-        "$P_\mathrm{dyn}$",
+        "$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
@@ -7104,18 +7104,18 @@ def cut_animation(runid, x0, x1, y0, t0, t1, intpol=False):
         True,
     ]
     ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B~[\mathrm{nT}]$",
-        "$E~[\mathrm{mV/m}]$",
-        "$T~[\mathrm{MK}]$",
-        # "$\\rho~[\\rho_\mathrm{sw}]$",
-        # "$v~[v_\mathrm{sw}]$",
-        # "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        # "$B~[B_\mathrm{IMF}]$",
-        # "$E~[E_\mathrm{sw}]$",
-        # "$T~[T_\mathrm{sw}]$",
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+        # "$\\rho~[\\rho_\\mathrm{sw}]$",
+        # "$v~[v_\\mathrm{sw}]$",
+        # "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        # "$B~[B_\\mathrm{IMF}]$",
+        # "$E~[E_\\mathrm{sw}]$",
+        # "$T~[T_\\mathrm{sw}]$",
     ]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     norm = [
@@ -7299,7 +7299,7 @@ def cut_update(idx3):
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     ax_list[0].set_title("t = {}s".format(fnr / 2.0))
-    ax_list[-1].set_xlabel("X [$R_\mathrm{E}$]")
+    ax_list[-1].set_xlabel("X [$R_\\mathrm{E}$]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
@@ -7439,22 +7439,22 @@ def AGF_AIC_comp(x0, y0, t0, t1):
         "pass",
     ]
     plot_labels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$v_x~[\mathrm{km/s}]$",
-        "$v_y~[\mathrm{km/s}]$",
-        "$v_z~[\mathrm{km/s}]$",
-        "$|v|~[\mathrm{km/s}]$",
-        "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        "$B_x~[\mathrm{nT}]$",
-        "$B_y~[\mathrm{nT}]$",
-        "$B_z~[\mathrm{nT}]$",
-        "$|B|~[\mathrm{nT}]$",
-        "$E_x~[\mathrm{mV/m}]$",
-        "$E_y~[\mathrm{mV/m}]$",
-        "$E_z~[\mathrm{mV/m}]$",
-        "$|E|~[\mathrm{mV/m}]$",
-        "$T_\\parallel~[\mathrm{MK}]$",
-        "$T_\\perp~[\mathrm{MK}]$",
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v_x~[\\mathrm{km/s}]$",
+        "$v_y~[\\mathrm{km/s}]$",
+        "$v_z~[\\mathrm{km/s}]$",
+        "$|v|~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B_x~[\\mathrm{nT}]$",
+        "$B_y~[\\mathrm{nT}]$",
+        "$B_z~[\\mathrm{nT}]$",
+        "$|B|~[\\mathrm{nT}]$",
+        "$E_x~[\\mathrm{mV/m}]$",
+        "$E_y~[\\mathrm{mV/m}]$",
+        "$E_z~[\\mathrm{mV/m}]$",
+        "$|E|~[\\mathrm{mV/m}]$",
+        "$T_\\parallel~[\\mathrm{MK}]$",
+        "$T_\\perp~[\\mathrm{MK}]$",
     ]
     scales = [
         1e-6,
