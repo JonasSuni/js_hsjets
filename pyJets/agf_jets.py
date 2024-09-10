@@ -2974,9 +2974,10 @@ def VSC_timeseries(
                 # / run_norm[idx2]
             )
         data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+            # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+            pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
         )
         # except:
         #     print("Something went wrong!")
@@ -3059,7 +3060,7 @@ def VSC_timeseries(
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    ylabels.append("$\\int n_F~dt$ [nPa s/m]")
+    ylabels.append("$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]")
     ax_list[-1].plot(
         t_arr,
         np.cumsum(data_arr[-3]) * 0.5,
