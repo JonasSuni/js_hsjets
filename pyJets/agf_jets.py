@@ -1885,7 +1885,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # proxy_labs = (
     #         "$n=2n_\\mathrm{sw}$",
     #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-    #         "$M_{\mathrm{MS},x}=1$",
+    #         "$M_{\\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
     #         "Non-FCS jet",
@@ -1896,7 +1896,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         # "$n=2n_\\mathrm{sw}$",
         # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
         "$\\beta^* = 0.3$",
-        # "$M_{\mathrm{MS},x}=1$",
+        # "$M_{\\mathrm{MS},x}=1$",
         # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
     ]
 
@@ -1918,7 +1918,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if ~(jet_mask == 0).all():
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[3]]))
         proxy_labs.append(
-            "$P_\\mathrm{dyn} \geq 2 \langle P_\\mathrm{dyn} \rangle_\\mathrm{3min}$"
+            "$P_\\mathrm{dyn} \\geq 2 \\langle P_\\mathrm{dyn} \\rangle_\\mathrm{3min}$"
         )
     # if ~(slams_mask == 0).all():
     #     proxy.append(mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[4]]))
@@ -2580,13 +2580,13 @@ def VSC_cut_through(
                 n_arr,
                 pdynx,
                 color=CB_color_cycle[0],
-                label="$P_{\mathrm{dyn},x}$",
+                label="$P_{\\mathrm{dyn},x}$",
             )
         ax.set_xlim(n_arr[0], n_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     # ylabels.append("$n_F$ [nPa/m]")
-    ylabels.append("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
+    ylabels.append("$(\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$")
     ax_list[-1].plot(
         n_arr,
         data_arr[-3],
@@ -3046,7 +3046,7 @@ def VSC_timeseries(
                     pdynx - uniform_filter1d(pdynx, size=delta),
                     fmt,
                     color=CB_color_cycle[0],
-                    label="$P_{\mathrm{dyn},x}$",
+                    label="$P_{\\mathrm{dyn},x}$",
                 )
             else:
                 ax.plot(
@@ -3054,7 +3054,7 @@ def VSC_timeseries(
                     pdynx,
                     fmt,
                     color=CB_color_cycle[0],
-                    label="$P_{\mathrm{dyn},x}$",
+                    label="$P_{\\mathrm{dyn},x}$",
                 )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
@@ -6562,7 +6562,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # proxy_labs = (
     #         "$n=2n_\\mathrm{sw}$",
     #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-    #         "$M_{\mathrm{MS},x}=1$",
+    #         "$M_{\\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
     #         "Non-FCS jet",
@@ -6573,7 +6573,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     #     # "$n=2n_\\mathrm{sw}$",
     #     # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #     "$\\beta^* = 0.3$",
-    #     # "$M_{\mathrm{MS},x}=1$",
+    #     # "$M_{\\mathrm{MS},x}=1$",
     #     # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
     # ]
 
@@ -7293,7 +7293,7 @@ def cut_update(idx3):
                 x_arr / r_e,
                 pdynx,
                 color=CB_color_cycle[0],
-                label="$P_{\mathrm{dyn},x}$",
+                label="$P_{\\mathrm{dyn},x}$",
             )
 
         if draw_legend[idx]:
