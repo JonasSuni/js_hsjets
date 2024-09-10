@@ -1715,6 +1715,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 pivot="mid",
                 # scale=1,
                 cmap="lipari",
+                norm="log",
             )
 
     if Blines_g:
@@ -2713,7 +2714,8 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
         - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="z")
     ) / (2.0 * dx)
 
-    B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]]).T
+    # B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]]).T
+    B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [0, 0, 0]]).T
     B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
 
     BdotJacobian = B @ B_jacobian
@@ -4414,8 +4416,15 @@ def make_vg_b_jacobian(vobj):
                 # [dFx_dx.flatten(), dFx_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
                 # [dFy_dx.flatten(), dFy_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
                 # [dFz_dx.flatten(), dFz_dy.flatten(), np.zeros_like(dFx_dx).flatten()],
-                [dFx_dx.flatten(), dFy_dx.flatten(), dFz_dx.flatten()],
-                [dFx_dy.flatten(), dFy_dy.flatten(), dFz_dy.flatten()],
+                # [dFx_dx.flatten(), dFy_dx.flatten(), dFz_dx.flatten()],
+                # [dFx_dy.flatten(), dFy_dy.flatten(), dFz_dy.flatten()],
+                # [
+                #     np.zeros_like(dFx_dx).flatten(),
+                #     np.zeros_like(dFx_dx).flatten(),
+                #     np.zeros_like(dFx_dx).flatten(),
+                # ],
+                [dFx_dx.flatten(), dFy_dx.flatten(), 0],
+                [dFx_dy.flatten(), dFy_dy.flatten(), 0],
                 [
                     np.zeros_like(dFx_dx).flatten(),
                     np.zeros_like(dFx_dx).flatten(),
