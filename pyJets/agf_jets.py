@@ -5271,7 +5271,7 @@ def multipos_vdf_plotter(
             [x_re + dr_vdf_re, y_re - dr_vdf_re, 0],
         ]
     )
-    cellid_list = np.array([int(vobj.get_cellid(coord)) * r_e for coord in coords_list])
+    cellid_list = np.array([vobj.get_cellid(coord * r_e) for coord in coords_list])
     vdf_cellid_list = np.array(
         [getNearestCellWithVspace(vobj, ci) for ci in cellid_list]
     )
