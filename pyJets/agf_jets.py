@@ -2183,6 +2183,7 @@ def v5_plotter(
     magten=False,
     usesci=0,
     magtenvec=False,
+    pt_blines=False,
 ):
     var = "proton/vg_Pdyn"
 
@@ -2265,6 +2266,11 @@ def v5_plotter(
     # y0 = props.read("y_wmean")[0]
     # fnr0 = int(t0 * 2)
 
+    if pt_blines:
+        streamlines = "vg_b_vol"
+    else:
+        streamlines = None
+
     for fnr in range(start, stop + 1):
         filenr_g = fnr
 
@@ -2308,6 +2314,10 @@ def v5_plotter(
                 "proton/vg_Pdynx",
                 "proton/vg_beta_star",
             ],
+            streamlines=streamlines,
+            streamlinedensity=0.4,
+            streamlinecolor="white",
+            streamlinethick=1,
         )
 
 
