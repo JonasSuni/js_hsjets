@@ -3076,9 +3076,9 @@ def VSC_timeseries(
             "$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]"
         )
         boxcar = np.ones(integrate, dtype=float) * (t_arr[1] - t_arr[0])
-        tension_x = np.convolve(data_arr[-3], boxcar)
-        tension_y = np.convolve(data_arr[-2], boxcar)
-        tension_z = np.convolve(data_arr[-1], boxcar)
+        tension_x = np.convolve(data_arr[-3], boxcar, mode="same")
+        tension_y = np.convolve(data_arr[-2], boxcar, mode="same")
+        tension_z = np.convolve(data_arr[-1], boxcar, mode="same")
     else:
         ylabels.append("$\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$ [nPa/m]")
         tension_x = data_arr[-3]
