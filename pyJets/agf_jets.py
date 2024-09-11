@@ -5296,7 +5296,7 @@ def multipos_vdf_plotter(
             * 1e-3
         )
 
-        fig = plt.figure(figsize=(20, 9), constrained_layout=True)
+        fig = plt.figure(figsize=(24, 12), constrained_layout=True)
 
         gs = fig.add_gridspec(9, 20)
 
@@ -5365,9 +5365,9 @@ def multipos_vdf_plotter(
             streamlinethick=1,
             streamlinestartpoints=coords_list[:, :2],
         )
-        for xp in np.unique(coords_list[0, :]):
+        for xp in np.unique(coords_list[:, 0]):
             cmap_ax.axvline(xp, linestyle="dashed", linewidth=0.6, color="k")
-        for yp in np.unique(coords_list[1, :]):
+        for yp in np.unique(coords_list[:, 0]):
             cmap_ax.axhline(yp, linestyle="dashed", linewidth=0.6, color="k")
 
         for idx in range(9):
