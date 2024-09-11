@@ -5365,10 +5365,13 @@ def multipos_vdf_plotter(
             streamlinethick=1,
             streamlinestartpoints=coords_list[:, :2],
         )
+        # for xp in np.unique(coords_list[:, 0]):
+        #     cmap_ax.axvline(xp, linestyle="dashed", linewidth=0.6, color="k")
+        # for yp in np.unique(coords_list[:, 1]):
+        #     cmap_ax.axhline(yp, linestyle="dashed", linewidth=0.6, color="k")
         for xp in np.unique(coords_list[:, 0]):
-            cmap_ax.axvline(xp, linestyle="dashed", linewidth=0.6, color="k")
-        for yp in np.unique(coords_list[:, 1]):
-            cmap_ax.axhline(yp, linestyle="dashed", linewidth=0.6, color="k")
+            for yp in np.unique(coords_list[:, 1]):
+                cmap_ax.plot(xp, yp, "x", color="red")
 
         for idx in range(9):
             if idx == 0:
@@ -5397,15 +5400,15 @@ def multipos_vdf_plotter(
                 nocb=nocb,
             )
             vdf_ax_list[idx].plot(v_list[idx][0], v_list[idx][1], "x", color="red")
-            vdf_ax_list[idx].add_patch(
-                plt.Circle(
-                    (v_list[idx][0], v_list[idx][1]),
-                    radius=vth_list[idx],
-                    fill=False,
-                    ec="red",
-                    linestyle="dashed",
-                )
-            )
+            # vdf_ax_list[idx].add_patch(
+            #     plt.Circle(
+            #         (v_list[idx][0], v_list[idx][1]),
+            #         radius=vth_list[idx],
+            #         fill=False,
+            #         ec="red",
+            #         linestyle="dashed",
+            #     )
+            # )
 
         if not os.path.exists(outdir):
             try:
