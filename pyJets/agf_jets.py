@@ -2315,9 +2315,9 @@ def v5_plotter(
                 "proton/vg_beta_star",
             ],
             streamlines=streamlines,
-            streamlinedensity=0.4,
+            streamlinedensity=0.3,
             streamlinecolor="white",
-            streamlinethick=1,
+            streamlinethick=0.8,
         )
 
 
