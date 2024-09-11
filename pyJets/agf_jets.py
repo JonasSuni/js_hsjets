@@ -5323,7 +5323,6 @@ def multipos_vdf_plotter(
             vdf33_ax,
         ]
         vdf_cb_ax = fig.add_subplot(gs[0:9, 19])
-
         pt.plot.plot_colormap(
             axes=cmap_ax,
             cbaxes=cmap_cb_ax,
@@ -5364,7 +5363,7 @@ def multipos_vdf_plotter(
             streamlinedensity=0.4,
             streamlinecolor="white",
             streamlinethick=1,
-            streamlinestartpoints=coords_list[:2, :],
+            streamlinestartpoints=coords_list[:, :2],
         )
         for xp in np.unique(coords_list[0, :]):
             cmap_ax.axvline(xp, linestyle="dashed", linewidth=0.6, color="k")
