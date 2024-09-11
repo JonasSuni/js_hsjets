@@ -5367,7 +5367,7 @@ def multipos_vdf_plotter(
         )
         for xp in np.unique(coords_list[:, 0]):
             cmap_ax.axvline(xp, linestyle="dashed", linewidth=0.6, color="k")
-        for yp in np.unique(coords_list[:, 0]):
+        for yp in np.unique(coords_list[:, 1]):
             cmap_ax.axhline(yp, linestyle="dashed", linewidth=0.6, color="k")
 
         for idx in range(9):
