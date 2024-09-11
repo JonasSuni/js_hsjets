@@ -5301,16 +5301,16 @@ def multipos_vdf_plotter(
         gs = fig.add_gridspec(9, 20)
 
         cmap_ax = fig.add_subplot(gs[0:9, 0:9])
-        cmap_cb_ax = fig.add_subplot(gs[9, 0:9])
-        vdf11_ax = fig.add_subplot(gs[10 : 10 + 3, 0 : 0 + 3])
-        vdf12_ax = fig.add_subplot(gs[13 : 13 + 3, 0 : 0 + 3])
-        vdf13_ax = fig.add_subplot(gs[16 : 16 + 3, 0 : 0 + 3])
-        vdf21_ax = fig.add_subplot(gs[10 : 10 + 3, 3 : 3 + 3])
-        vdf22_ax = fig.add_subplot(gs[13 : 13 + 3, 3 : 3 + 3])
-        vdf23_ax = fig.add_subplot(gs[16 : 16 + 3, 3 : 3 + 3])
-        vdf31_ax = fig.add_subplot(gs[10 : 10 + 3, 6 : 6 + 3])
-        vdf32_ax = fig.add_subplot(gs[13 : 13 + 3, 6 : 6 + 3])
-        vdf33_ax = fig.add_subplot(gs[16 : 16 + 3, 6 : 6 + 3])
+        cmap_cb_ax = fig.add_subplot(gs[0:9, 9])
+        vdf11_ax = fig.add_subplot(gs[0 : 0 + 3, 10 : 10 + 3])
+        vdf12_ax = fig.add_subplot(gs[0 : 0 + 3, 13 : 13 + 3])
+        vdf13_ax = fig.add_subplot(gs[0 : 0 + 3, 16 : 16 + 3])
+        vdf21_ax = fig.add_subplot(gs[3 : 3 + 3, 10 : 10 + 3])
+        vdf22_ax = fig.add_subplot(gs[3 : 3 + 3, 13 : 13 + 3])
+        vdf23_ax = fig.add_subplot(gs[3 : 3 + 3, 16 : 16 + 3])
+        vdf31_ax = fig.add_subplot(gs[6 : 6 + 3, 10 : 10 + 3])
+        vdf32_ax = fig.add_subplot(gs[6 : 6 + 3, 13 : 13 + 3])
+        vdf33_ax = fig.add_subplot(gs[6 : 6 + 3, 16 : 16 + 3])
         vdf_ax_list = [
             vdf11_ax,
             vdf12_ax,
@@ -5322,7 +5322,7 @@ def multipos_vdf_plotter(
             vdf32_ax,
             vdf33_ax,
         ]
-        vdf_cb_ax = fig.add_subplot(gs[19, 0:9])
+        vdf_cb_ax = fig.add_subplot(gs[0:9, 19])
 
         pt.plot.plot_colormap(
             axes=cmap_ax,
