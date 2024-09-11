@@ -2798,6 +2798,7 @@ def VSC_timeseries(
     maxwidth=None,
     cutoff=0.9,
     fmt="-",
+    integrate=None,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3070,24 +3071,36 @@ def VSC_timeseries(
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    ylabels.append("$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]")
+    if integrate:
+        ylabels.append(
+            "$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]"
+        )
+        boxcar = np.ones(integrate, dtype=float) * (t_arr[1] - t_arr[0])
+        tension_x = np.convolve(data_arr[-3], boxcar)
+        tension_y = np.convolve(data_arr[-2], boxcar)
+        tension_z = np.convolve(data_arr[-1], boxcar)
+    else:
+        ylabels.append("$\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$ [nPa/m]")
+        tension_x = data_arr[-3]
+        tension_y = data_arr[-2]
+        tension_z = data_arr[-1]
     ax_list[-1].plot(
         t_arr,
-        np.cumsum(data_arr[-3]) * 0.5,
+        tension_x,
         color=CB_color_cycle[0],
         # label="$\\nabla p$",
         label="x",
     )
     ax_list[-1].plot(
         t_arr,
-        np.cumsum(data_arr[-2]) * 0.5,
+        tension_y,
         color=CB_color_cycle[1],
         # label="$\\nabla (B^2/2\\mu_0)$",
         label="y",
     )
     ax_list[-1].plot(
         t_arr,
-        np.cumsum(data_arr[-1]) * 0.5,
+        tension_z,
         color=CB_color_cycle[2],
         # label="$(B\\cdot\\nabla B)/\\mu_0$",
         label="z",
@@ -3117,15 +3130,15 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}.png".format(
-            runid, x0, y0, t0, t1, delta, mva
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+            runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         dpi=300,
     )
     np.savetxt(
         txtdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}.txt".format(
-            runid, x0, y0, t0, t1, delta, mva
+        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}_integrate{}.txt".format(
+            runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         data_arr,
     )
