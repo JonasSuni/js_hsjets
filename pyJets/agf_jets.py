@@ -5533,7 +5533,7 @@ def vdf_along_fieldline(
             "vg_b_vol", [xcurr * r_e, ycurr * r_e, 0]
         )
         bx, by = Bcurr[:2] / np.linalg.norm(Bcurr[:2])
-        xnew, ynew = (xcurr+bx * dr * dr_sgn, ycurr+by * dr * dr_sgn)
+        xnew, ynew = (xcurr + bx * dr * dr_sgn, ycurr + by * dr * dr_sgn)
         curr_cell = vobj.get_cellid([xnew * r_e, ynew * r_e, 0])
         closest_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
         dist_to_vdf = (
