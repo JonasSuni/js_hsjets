@@ -5453,6 +5453,269 @@ def multipos_vdf_plotter(
     return None
 
 
+def vdf_along_fieldline(
+    runid,
+    x,
+    y,
+    t0,
+    t1,
+    skip=False,
+    xyz=False,
+    boxwidth=2000e3,
+    pdmax=1.0,
+    ncont=5,
+    margin=1,
+    fmin=1e-10,
+    fmax=1e-4,
+    npoints=5,
+    max_dist=0.1,
+    direction="forward",
+    dr=0.1,
+):
+
+    runids = ["AGF", "AIA", "AIC"]
+    # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
+    bulkpath = find_bulkpath(runid)
+
+    global xg, yg
+
+    xg = []
+    yg = []
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, x0, y0, plaschke_g, drawBy0, linsg, draw_qperp, leg_g
+    drawBy0 = True
+    draw_qperp = False
+    plaschke_g = False
+    runid_g = runid
+
+    linsg = False
+    leg_g = False
+    Blines_g = False
+
+    non_ids = []
+    sj_ids = []
+
+    sj_ids_g = sj_ids
+    non_ids_g = non_ids
+
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    vobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(t0 * 2)).zfill(7))
+    )
+    cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+    vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+    x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+
+    outdir = wrkdir_DNR + "VDFs/Balong_{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}_xyz{}".format(
+        runid, x_re, y_re, t0, t1, xyz
+    )
+
+    along_cellids = [vdf_cellid]
+    along_coords = [np.array([x_re, y_re, z_re])]
+    traveled_dist = 0.0
+    xcurr, ycurr = (x_re, y_re)
+    if direction == "backward":
+        dr_sgn = -1
+    else:
+        dr_sgn = 1
+
+    while len(along_cellids) < npoints:
+        Bcurr = vobj.read_interpolated_variable(
+            "vg_b_vol", [xcurr * r_e, ycurr * r_e, 0]
+        )
+        bx, by = Bcurr[:2] / np.linalg.norm(Bcurr[:2])
+        xnew, ynew = (bx * dr * dr_sgn, by * dr * dr_sgn)
+        curr_cell = vobj.get_cellid([xnew * r_e, ynew * r_e, 0])
+        closest_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
+        if (
+            np.linalg.norm(
+                vobj.get_cell_coordinates(curr_cell)
+                - vobj.get_cell_coordinates(closest_vdf_cell)
+            )
+            / r_e
+            < max_dist
+            and closest_vdf_cell not in along_cellids
+        ):
+            along_cellids.append(closest_vdf_cell)
+            along_coords.append(vobj.get_cell_coordinates(closest_vdf_cell) / r_e)
+        traveled_dist += dr
+        xcurr, ycurr = (xnew, ynew)
+        if traveled_dist > 20:
+            break
+
+    along_coords = np.array(along_coords)
+
+    if xyz:
+        bpara = [None, None, None]
+        bpara1 = [None, None, None]
+        bperp = [None, None, None]
+        xy = [1, None, None]
+        xz = [None, 1, None]
+        yz = [None, None, 1]
+        bvector = [1, 1, 1]
+    else:
+        bpara = [1, None, None]
+        bpara1 = [None, 1, None]
+        bperp = [None, None, 1]
+        xy = [None, None, None]
+        xz = [None, None, None]
+        yz = [None, None, None]
+        bvector = [None, None, None]
+
+    for t in np.arange(t0, t1 + 0.1, 0.5):
+        print("t = {}s".format(t))
+        fnr = int(t * 2)
+        if skip and os.path.isfile(outdir + "/{}.png".format(fnr)):
+            continue
+        filenr_g = fnr
+        vobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+
+        v = vobj.read_variable("proton/vg_v", cellids=vdf_cellid) * 1e-3
+        vth = vobj.read_variable("proton/vg_thermalvelocity", cellids=vdf_cellid) * 1e-3
+
+        if not xyz:
+            B = vobj.read_variable("vg_b_vol", cellids=vdf_cellid)
+            b = B / np.linalg.norm(B)
+            vpar = np.dot(v, b)
+            vperp1 = np.cross(b, v)
+            vperp2 = np.cross(b, np.cross(b, v))
+
+        x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
+
+        x0 = x_re
+        y0 = y_re
+
+        boxre = [
+            np.min(along_coords[:, 0]) - margin,
+            np.max(along_coords[:, 0]) + margin,
+            np.min(along_coords[:, 1]) - margin,
+            np.max(along_coords[:, 1]) + margin,
+        ]
+
+        # fig, ax_list = plt.subplots(2, 2, figsize=(11, 10), constrained_layout=True)
+        fig = plt.figure(
+            figsize=(12 + 4 * len(along_cellids), 12), constrained_layout=True
+        )
+
+        gs = fig.add_gridspec(9, 2 + 3 * len(along_cellids))
+
+        cmap_ax = fig.add_subplot(gs[0:9, 0:9])
+        cmap_cb_ax = fig.add_subplot(gs[0:9, 9])
+        vdf_ax_list = np.empty((3, len(along_cellids)), dtype=object)
+        for row_idx in range(3):
+            for col_idx in range(len(along_cellids)):
+                vdf_ax_list[row_idx, col_idx] = fig.add_subplot(
+                    gs[
+                        3 * row_idx : 3 * row_idx + 3,
+                        10 + 3 * col_idx : 10 + 3 * col_idx + 3,
+                    ]
+                )
+        vdf_cb_ax = fig.add_subplot(gs[0:9, -1])
+
+        pt.plot.plot_colormap(
+            axes=cmap_ax,
+            cbaxes=cmap_cb_ax,
+            vlsvobj=vobj,
+            var="proton/vg_Pdyn",
+            vmin=0.01,
+            vmax=pdmax,
+            vscale=1e9,
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=boxre,
+            # internalcb=True,
+            # lin=1,
+            colormap="batlow",
+            scale=1.3,
+            tickinterval=1.0,
+            external=ext_jet,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+            streamlines="vg_b_vol",
+            streamlinedensity=0.4,
+            streamlinecolor="white",
+            streamlinethick=1,
+            streamlinestartpoints=np.array([[x0, y0]]),
+        )
+        cmap_ax.plot(along_coords[:, 0], along_coords[:, 1], "x", color="red")
+
+        for row_idx in range(3):
+            for col_idx in range(len(along_cellids)):
+                if row_idx == 0 and col_idx == 0:
+                    cbaxes = vdf_cb_ax
+                    nocb = None
+                else:
+                    cbaxes = None
+                    nocb = True
+                pt.plot.plot_vdf(
+                    axes=vdf_ax_list[row_idx, col_idx],
+                    vlsvobj=vobj,
+                    cellids=[along_cellids[col_idx]],
+                    colormap="batlow",
+                    bvector=bvector[row_idx],
+                    xy=xy[row_idx],
+                    xz=xz[row_idx],
+                    yz=yz[row_idx],
+                    bpara=bpara[row_idx],
+                    bpara1=bpara1[row_idx],
+                    bperp=bperp[row_idx],
+                    slicethick=0,
+                    box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+                    # internalcb=True,
+                    setThreshold=1e-15,
+                    scale=1.3,
+                    fmin=fmin,
+                    fmax=fmax,
+                    contours=ncont,
+                    cbaxes=cbaxes,
+                    nocb=nocb,
+                )
+
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
+
+        fig.suptitle(
+            "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t)
+        )
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
+        fig.savefig(outdir + "/{}.png".format(fnr))
+        plt.close(fig)
+
+    return None
+
+
 def pos_vdf_plotter(
     runid,
     x,
