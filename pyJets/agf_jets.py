@@ -5674,7 +5674,13 @@ def vdf_along_fieldline(
         #     markersize=10,
         # )
         for col_idx in range(len(along_cellids)):
-            cmap_ax.plot(along_coords[col_idx,0],along_coords[col_idx,0],linestyle="",marker="$"+str(col_idx+1)+"$",markersize=10)
+            cmap_ax.plot(
+                along_coords[col_idx, 0],
+                along_coords[col_idx, 1],
+                linestyle="",
+                marker="$" + str(col_idx + 1) + "$",
+                markersize=10,
+            )
 
         for row_idx in range(3):
             for col_idx in range(len(along_cellids)):
