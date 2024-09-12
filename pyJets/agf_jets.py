@@ -5613,24 +5613,24 @@ def vdf_along_fieldline(
             figsize=(12 + 4 * len(along_cellids), 12), constrained_layout=True
         )
 
-        gs = fig.add_gridspec(9, 9 + 2 + 3 * len(along_cellids))
+        gs = fig.add_gridspec(9, 9 + 1 + 3 * len(along_cellids))
 
         cmap_ax = fig.add_subplot(gs[0:9, 0:9])
-        cmap_cb_ax = fig.add_subplot(gs[0:9, 9])
+        # cmap_cb_ax = fig.add_subplot(gs[0:9, 9])
         vdf_ax_list = np.empty((3, len(along_cellids)), dtype=object)
         for row_idx in range(3):
             for col_idx in range(len(along_cellids)):
                 vdf_ax_list[row_idx, col_idx] = fig.add_subplot(
                     gs[
                         3 * row_idx : 3 * row_idx + 3,
-                        10 + 3 * col_idx : 10 + 3 * col_idx + 3,
+                        9 + 3 * col_idx : 9 + 3 * col_idx + 3,
                     ]
                 )
         vdf_cb_ax = fig.add_subplot(gs[0:9, -1])
 
         pt.plot.plot_colormap(
             axes=cmap_ax,
-            cbaxes=cmap_cb_ax,
+            # cbaxes=cmap_cb_ax,
             vlsvobj=vobj,
             var="proton/vg_Pdyn",
             vmin=0.01,
@@ -5715,7 +5715,8 @@ def vdf_along_fieldline(
                 pass
 
         fig.suptitle(
-            "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t)
+            "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t),
+            fontsize=20,
         )
         if not os.path.exists(outdir):
             try:
