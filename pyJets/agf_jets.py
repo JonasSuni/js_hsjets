@@ -5642,7 +5642,7 @@ def vdf_along_fieldline(
             # internalcb=True,
             # lin=1,
             colormap="batlow",
-            scale=1.3,
+            scale=1.6,
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -5691,13 +5691,17 @@ def vdf_along_fieldline(
                     box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
                     # internalcb=True,
                     setThreshold=1e-15,
-                    scale=1.3,
+                    scale=1.6,
                     fmin=fmin,
                     fmax=fmax,
                     contours=ncont,
                     cbaxes=cbaxes,
                     nocb=nocb,
                 )
+                if row_idx != 2:
+                    vdf_ax_list[row_idx, col_idx].xaxis.set_visible(False)
+                if col_idx != 0:
+                    vdf_ax_list[row_idx, col_idx].yaxis.set_visible(False)
 
         if not os.path.exists(outdir):
             try:
