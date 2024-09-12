@@ -5536,20 +5536,20 @@ def vdf_along_fieldline(
         xnew, ynew = (bx * dr * dr_sgn, by * dr * dr_sgn)
         curr_cell = vobj.get_cellid([xnew * r_e, ynew * r_e, 0])
         closest_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
-        if (
+        dist_to_vdf = (
             np.linalg.norm(
                 vobj.get_cell_coordinates(curr_cell)
                 - vobj.get_cell_coordinates(closest_vdf_cell)
             )
             / r_e
-            < max_dist
-            and closest_vdf_cell not in along_cellids
-        ):
+        )
+        print(dist_to_vdf)
+        if dist_to_vdf < max_dist and closest_vdf_cell not in along_cellids:
             along_cellids.append(closest_vdf_cell)
             along_coords.append(vobj.get_cell_coordinates(closest_vdf_cell) / r_e)
         traveled_dist += dr
         xcurr, ycurr = (xnew, ynew)
-        print(xnew,ynew)
+        print(xnew, ynew)
         if traveled_dist > 20:
             break
 
