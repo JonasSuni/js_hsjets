@@ -5549,7 +5549,7 @@ def vdf_along_fieldline(
             along_coords.append(vobj.get_cell_coordinates(closest_vdf_cell) / r_e)
         traveled_dist += dr
         xcurr, ycurr = (xnew, ynew)
-        print(traveled_dist)
+        print(xnew,ynew)
         if traveled_dist > 20:
             break
 
