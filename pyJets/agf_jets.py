@@ -5665,14 +5665,16 @@ def vdf_along_fieldline(
             streamlinethick=1,
             streamlinestartpoints=np.array([[x0, y0]]),
         )
-        cmap_ax.plot(
-            along_coords[:, 0],
-            along_coords[:, 1],
-            linestyle="",
-            marker=["$" + str(iii + 1) + "$" for iii in range(len(along_cellids))],
-            color="red",
-            markersize=10,
-        )
+        # cmap_ax.plot(
+        #     along_coords[:, 0],
+        #     along_coords[:, 1],
+        #     linestyle="",
+        #     marker=["$" + str(iii + 1) + "$" for iii in range(len(along_cellids))],
+        #     color="red",
+        #     markersize=10,
+        # )
+        for col_idx in range(len(along_cellids)):
+            cmap_ax.plot(along_coords[col_idx,0],along_coords[col_idx,0],linestyle="",marker="$"+str(col_idx+1)+"$",markersize=10)
 
         for row_idx in range(3):
             for col_idx in range(len(along_cellids)):
