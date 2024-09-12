@@ -5680,6 +5680,7 @@ def vdf_along_fieldline(
                 linestyle="",
                 marker="$" + str(col_idx + 1) + "$",
                 markersize=10,
+                color="red",
             )
 
         for row_idx in range(3):
