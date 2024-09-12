@@ -5666,7 +5666,12 @@ def vdf_along_fieldline(
             streamlinestartpoints=np.array([[x0, y0]]),
         )
         cmap_ax.plot(
-            along_coords[:, 0], along_coords[:, 1], "x", color="red", markersize=10
+            along_coords[:, 0],
+            along_coords[:, 1],
+            linestyle="",
+            marker=["$" + str(iii + 1) + "$" for iii in range(len(along_cellids))],
+            color="red",
+            markersize=10,
         )
 
         for row_idx in range(3):
@@ -5701,12 +5706,16 @@ def vdf_along_fieldline(
                     nocb=nocb,
                     title="",
                 )
-                if row_idx != 2:
-                    vdf_ax_list[row_idx, col_idx].xaxis.set_ticklabels([])
-                    vdf_ax_list[row_idx, col_idx].set_xlabel("")
-                if col_idx != 0:
-                    vdf_ax_list[row_idx, col_idx].yaxis.set_ticklabels([])
-                    vdf_ax_list[row_idx, col_idx].set_ylabel("")
+                # if row_idx != 2:
+                #     vdf_ax_list[row_idx, col_idx].xaxis.set_ticklabels([])
+                #     vdf_ax_list[row_idx, col_idx].set_xlabel("")
+                # if col_idx != 0:
+                #     vdf_ax_list[row_idx, col_idx].yaxis.set_ticklabels([])
+                #     vdf_ax_list[row_idx, col_idx].set_ylabel("")
+                if row_idx == 0:
+                    vdf_ax_list[row_idx, col_idx].set_title(
+                        "{}".format(col_idx + 1), fontsize=20
+                    )
 
         if not os.path.exists(outdir):
             try:
