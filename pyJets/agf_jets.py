@@ -5553,6 +5553,7 @@ def vdf_along_fieldline(
             break
 
     along_coords = np.array(along_coords)
+    print(along_cellids)
 
     if xyz:
         bpara = [None, None, None]
@@ -5610,7 +5611,7 @@ def vdf_along_fieldline(
             figsize=(12 + 4 * len(along_cellids), 12), constrained_layout=True
         )
 
-        gs = fig.add_gridspec(9, 2 + 3 * len(along_cellids))
+        gs = fig.add_gridspec(9, 9 + 2 + 3 * len(along_cellids))
 
         cmap_ax = fig.add_subplot(gs[0:9, 0:9])
         cmap_cb_ax = fig.add_subplot(gs[0:9, 9])
