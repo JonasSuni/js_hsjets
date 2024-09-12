@@ -5550,6 +5550,7 @@ def vdf_along_fieldline(
         traveled_dist += dr
         xcurr, ycurr = (xnew, ynew)
         # print(xnew, ynew)
+        print(traveled_dist)
         if traveled_dist > 20:
             break
 
