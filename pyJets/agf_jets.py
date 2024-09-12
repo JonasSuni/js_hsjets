@@ -5642,7 +5642,7 @@ def vdf_along_fieldline(
             # internalcb=True,
             # lin=1,
             colormap="batlow",
-            scale=1.6,
+            scale=2,
             tickinterval=1.0,
             external=ext_jet,
             pass_vars=[
@@ -5665,7 +5665,9 @@ def vdf_along_fieldline(
             streamlinethick=1,
             streamlinestartpoints=np.array([[x0, y0]]),
         )
-        cmap_ax.plot(along_coords[:, 0], along_coords[:, 1], "x", color="red")
+        cmap_ax.plot(
+            along_coords[:, 0], along_coords[:, 1], "x", color="red", markersize=10
+        )
 
         for row_idx in range(3):
             for col_idx in range(len(along_cellids)):
@@ -5691,12 +5693,13 @@ def vdf_along_fieldline(
                     box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
                     # internalcb=True,
                     setThreshold=1e-15,
-                    scale=1.6,
+                    scale=2,
                     fmin=fmin,
                     fmax=fmax,
                     contours=ncont,
                     cbaxes=cbaxes,
                     nocb=nocb,
+                    title="",
                 )
                 if row_idx != 2:
                     vdf_ax_list[row_idx, col_idx].xaxis.set_ticklabels([])
