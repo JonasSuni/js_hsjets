@@ -5699,9 +5699,11 @@ def vdf_along_fieldline(
                     nocb=nocb,
                 )
                 if row_idx != 2:
-                    vdf_ax_list[row_idx, col_idx].xaxis.set_visible(False)
+                    vdf_ax_list[row_idx, col_idx].xaxis.set_ticklabels([])
+                    vdf_ax_list[row_idx, col_idx].set_xlabel("")
                 if col_idx != 0:
-                    vdf_ax_list[row_idx, col_idx].yaxis.set_visible(False)
+                    vdf_ax_list[row_idx, col_idx].yaxis.set_ticklabels([])
+                    vdf_ax_list[row_idx, col_idx].set_ylabel("")
 
         if not os.path.exists(outdir):
             try:
