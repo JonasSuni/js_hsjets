@@ -1769,6 +1769,7 @@ def mms_tension_vel(
         )
     )
     plt.close(fig)
+    return (timing["wave_vector"], timing["cross_corr_values"])
 
 
 def tetra_kvec(r):
