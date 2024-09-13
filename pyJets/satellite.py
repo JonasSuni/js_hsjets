@@ -1747,10 +1747,11 @@ def mms_tension_vel(
     ax_list[0].grid()
     ax_list[0].label_outer()
     ax_list[0].set_title(
-        "$c_\\mathrm{min}$"
-        + " = {:.3f}, $n$ = ({:.3f}, {:.3f}, {:.3f})".format(
-            np.min(timing["cross_corr_values"]), *timing["wave_vector"]
-        )
+        "$c_\\mathrm{min}$" + " = {:.3f}".format(np.min(timing["cross_corr_values"])),
+        +"$n$"
+        + "= ({:.3f}, {:.3f}, {:.3f})".format(
+            timing["wave_vector"][0], timing["wave_vector"][1], timing["wave_vector"][2]
+        ),
     )
 
     ax_list[1].plot(time_arr, vpar, color=CB_color_cycle[0], label="$v_\\parallel$")
