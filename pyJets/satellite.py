@@ -1635,7 +1635,7 @@ def mms_tension_vel(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
         )
 
-    fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
+    fig, ax_list = plt.subplots(3, 1, figsize=(8, 6), constrained_layout=True)
 
     complabels = ["x", "y", "z"]
 
@@ -1649,7 +1649,7 @@ def mms_tension_vel(
             )
 
     ax_list[0].set_title("MMS1-4")
-    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$ [nPa/m]")
+    ax_list[0].set_ylabel("$(\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$ [nPa/m]")
     ax_list[1].set_ylabel("$v$ [km/s]")
     ax_list[2].set_ylabel("$B$ [nT]]")
     ax_list[0].set_xlim(t0plot, t1plot)
