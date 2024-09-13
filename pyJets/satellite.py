@@ -1542,8 +1542,6 @@ def mms_tension_vel(
     filt=None,
     species="i",
     lpfilt=None,
-    normalise=False,
-    dbdt=False,
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -1626,7 +1624,7 @@ def mms_tension_vel(
         outdata_arr[0, :, idx] = (
             tetra_mag_tension(data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx])
             / mu0
-        )
+        ) * 1e9
         # outdata_arr[0, :, idx] = tetra_linear_interp(
         #     data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
         # )
@@ -1636,19 +1634,13 @@ def mms_tension_vel(
         outdata_arr[2, :, idx] = tetra_linear_interp(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
         )
-        if normalise:
-            outdata_arr[0, :, idx] /= np.linalg.norm(outdata_arr[0, :, idx])
-            outdata_arr[1, :, idx] /= np.linalg.norm(outdata_arr[1, :, idx])
-
-    if dbdt:
-        outdata_arr[0] = np.gradient(outdata_arr[0], dt, axis=-1)
 
     fig, ax_list = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
 
     complabels = ["x", "y", "z"]
 
     for idx in range(3):
-        for idx2 in range(2):
+        for idx2 in range(3):
             ax_list[idx2].plot(
                 time_arr,
                 outdata_arr[idx2, idx, :],
@@ -1657,22 +1649,16 @@ def mms_tension_vel(
             )
 
     ax_list[0].set_title("MMS1-4")
-    if normalise:
-        ax_list[0].set_ylabel("$\\hat{(\mathbf{B}\\cdot\\nabla)\mathbf{B}}$")
-        # ax_list[0].set_ylabel("$\\hat{B}$")
-        ax_list[1].set_ylabel("$\\hat{v}$")
-    else:
-        ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$")
-        # if dbdt:
-        #     ax_list[0].set_ylabel("$dB/dt$")
-        # else:
-        #     ax_list[0].set_ylabel("$B$")
-        ax_list[1].set_ylabel("$v$")
+    ax_list[0].set_ylabel("$(\mathbf{B}\\cdot\\nabla)\mathbf{B}/\\mu_0$ [nPa/m]")
+    ax_list[1].set_ylabel("$v$ [km/s]")
+    ax_list[2].set_ylabel("$B$ [nT]]")
     ax_list[0].set_xlim(t0plot, t1plot)
-    ax_list[1].legend()
+    ax_list[2].set_xlim(t0plot, t1plot)
+    ax_list[-1].legend()
     ax_list[1].set_xlim(t0plot, t1plot)
     for ax in ax_list:
         ax.grid()
+        ax.label_outer()
 
     outdir = wrkdir_DNR + "Figs/satellite/"
     if not os.path.exists(outdir):
@@ -1683,8 +1669,12 @@ def mms_tension_vel(
 
     fig.savefig(
         outdir
-        + "mms_tension_velocity_t0{}_t1{}_species{}_norm{}.png".format(
-            t0plot, t1plot, species, normalise
+        + "mms_tension_velocity_t0{}_t1{}_species{}_filt{}_lpfilt{}.png".format(
+            t0plot,
+            t1plot,
+            species,
+            filt,
+            lpfilt,
         )
     )
     plt.close(fig)
@@ -1755,12 +1745,19 @@ def mms_tension_vel(
     ax_list[0].legend()
     ax_list[0].set_xlim(t0plot, t1plot)
     ax_list[0].grid()
+    ax_list[0].label_outer()
+    ax_list[0].set_title(
+        "$c_\\mathrm{min}$ = {:.3f}, $n$ = ({:.3f}, {:.3f}, {:.3f})".format(
+            np.min(timing["cross_corr_values"]), *timing["wave_vector"]
+        )
+    )
 
     ax_list[1].plot(time_arr, vpar, color=CB_color_cycle[0], label="$v_\\parallel$")
     ax_list[1].plot(time_arr, vperp, color=CB_color_cycle[1], label="$v_\\perp$")
     ax_list[1].legend()
     ax_list[1].set_xlim(t0plot, t1plot)
     ax_list[1].grid()
+    ax_list[1].label_outer()
 
     fig.savefig(
         outdir
