@@ -1751,7 +1751,9 @@ def mms_tension_vel(
         + " = {:.3f}".format(np.min(timing["cross_corr_values"]))
         + "$n$ "
         + "= ({:.3f}, {:.3f}, {:.3f})".format(
-            timing["wave_vector"][0], timing["wave_vector"][1], timing["wave_vector"][2]
+            timing["wave_vector"][0][0],
+            timing["wave_vector"][1][0],
+            timing["wave_vector"][2][0],
         ),
     )
 
