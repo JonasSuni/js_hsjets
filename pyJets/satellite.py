@@ -1718,7 +1718,7 @@ def mms_tension_vel(
         ],
         rel_pos,
         prnt=False,
-        bulkv=np.array([1e-7, 1e-7, 1e-7]),
+        bulkv=np.array([1e-27, 1e-27, 1e-27]),
     )
 
     wave_vector = np.array(timing["wave_vector"]).flatten()
