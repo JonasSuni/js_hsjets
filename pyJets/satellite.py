@@ -1620,7 +1620,7 @@ def mms_tension_vel(
             sc_v[idx][1][2],
         ]
 
-    outdata_arr = np.empty((2, 3, time_arr.size), dtype=float)
+    outdata_arr = np.empty((3, 3, time_arr.size), dtype=float)
 
     for idx in range(time_arr.size):
         outdata_arr[0, :, idx] = (
@@ -1632,6 +1632,9 @@ def mms_tension_vel(
         # )
         outdata_arr[1, :, idx] = tetra_linear_interp(
             data_arr[:, [0, 1, 2], idx], data_arr[:, [6, 7, 8], idx]
+        )
+        outdata_arr[2, :, idx] = tetra_linear_interp(
+            data_arr[:, [0, 1, 2], idx], data_arr[:, [3, 4, 5], idx]
         )
         if normalise:
             outdata_arr[0, :, idx] /= np.linalg.norm(outdata_arr[0, :, idx])
@@ -1733,8 +1736,8 @@ def mms_tension_vel(
 
     vpar = np.array(
         [
-            np.dot(outdata_arr[1, :, idx], outdata_arr[0, :, idx])
-            / np.linalg.norm(outdata_arr[0, :, idx])
+            np.dot(outdata_arr[1, :, idx], outdata_arr[2, :, idx])
+            / np.linalg.norm(outdata_arr[2, :, idx])
             for idx in range(time_arr.size)
         ]
     )
