@@ -1723,6 +1723,7 @@ def mms_tension_vel(
 
     wave_vector = np.array(timing["wave_vector"]).flatten()
     print(timing["cross_corr_values"])
+    print(timing["wave_vector"])
 
     vn = np.array(
         [np.dot(outdata_arr[1, :, idx], wave_vector) for idx in range(time_arr.size)]
