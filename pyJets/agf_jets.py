@@ -2404,7 +2404,7 @@ def VSC_cut_Ecomponents(
     ]
 
     complabels = [
-        "$\\mathbf{v}\\times\\mathbf{B}$",
+        "$-\\mathbf{v}\\times\\mathbf{B}$",
         "$\\mathbf{J}\\times\\mathbf{B}/ne$",
         "$\\mathbf{B}\\cdot\\nabla\\mathbf{B}/\\mu_0 ne$",
         "$-\\nabla(B^2)/2\\mu_0 ne$",
@@ -2432,7 +2432,7 @@ def VSC_cut_Ecomponents(
         ]
 
         data_arr[0, idx, :] = v * 1e-3
-        data_arr[1, idx, :] = np.cross(v, B) * 1e3
+        data_arr[1, idx, :] = -np.cross(v, B) * 1e3
         data_arr[2, idx, :] = (
             (
                 -pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
@@ -2462,7 +2462,7 @@ def VSC_cut_Ecomponents(
     )
     ax_list[0].legend()
 
-    for idx in range(1, len(complabels)):
+    for idx in range(len(complabels)):
         ax_list[1].plot(
             n_arr,
             data_arr[idx + 1, :, 0],
