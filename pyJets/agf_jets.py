@@ -2168,6 +2168,7 @@ def v5_plotter(
     boxre=[-10, 20, -20, 20],
     tickint=5.0,
     blines=False,
+    vscale=1e9,
     nstp=40,
     pdynmax=1.5,
     pdynmin=0.1,
@@ -2193,7 +2194,7 @@ def v5_plotter(
         expression = expr_magten
         usesci = 1
     else:
-        vscale = 1e9
+        vscale = vscale
         expression = None
         usesci = 0
 
