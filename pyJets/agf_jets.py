@@ -2407,8 +2407,8 @@ def VSC_cut_Ecomponents(
         "$\\mathbf{v}\\times\\mathbf{B}$",
         "$\\mathbf{J}\\times\\mathbf{B}/ne$",
         "$\\mathbf{B}\\cdot\\nabla\\mathbf{B}/\\mu_0 ne$",
-        "$\\nabla(B^2)/2\\mu_0 ne$",
-        "$\\nabla(P_e)/ne$",
+        "$-\\nabla(B^2)/2\\mu_0 ne$",
+        "$-\\nabla(P_e)/ne$",
     ]
 
     alpha = np.arctan2(y1 - y0, x1 - x0)
