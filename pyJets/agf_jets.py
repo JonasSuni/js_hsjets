@@ -2376,6 +2376,141 @@ def expr_magten(pass_maps):
     return magten
 
 
+def VSC_cut_Ecomponents(
+    runid,
+    x0,
+    y0,
+    x1,
+    y1,
+    dr,
+    t0,
+):
+    bulkpath = find_bulkpath(runid)
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_pressure",
+        "vg_e_gradpe",
+    ]
+
+    ylabels = [
+        "$v$ [km/s]",
+        "$E_x$ [mV/m]",
+        "$E_y$ [mV/m]",
+        "$E_z$ [mV/m]",
+    ]
+
+    complabels = [
+        "$\\mathbf{v}\\times\\mathbf{B}$",
+        "$\\mathbf{J}\\times\\mathbf{B}/ne$",
+        "$\\mathbf{B}\\cdot\\nabla\\mathbf{B}/\\mu_0 ne$",
+        "$\\nabla(B^2)/2\\mu_0 ne$",
+        "$\\nabla(P_e)/\\ne$",
+    ]
+
+    alpha = np.arctan2(y1 - y0, x1 - x0)
+    dx = dr * np.cos(alpha)
+    nx = 1 + int((x1 - x0) / dx)
+    x_arr = np.linspace(x0, x1, nx) * r_e
+    y_arr = np.linspace(y0, y1, nx) * r_e
+    n_arr = np.arange(x_arr.size)
+
+    fnr0 = int(t0 * 2)
+    data_arr = np.zeros((len(complabels) + 1, x_arr.size, 3), dtype=float)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+
+    for idx in range(x_arr.size):
+
+        rho, v, B, E, Pressure, EgradPe = [
+            vlsvobj.read_interpolated_variable(var, [x_arr[idx], y_arr[idx], 0])
+            for var in var_list
+        ]
+
+        data_arr[0, idx, :] = v * 1e-3
+        data_arr[1, idx, :] = np.cross(v, B) * 1e3
+        data_arr[2, idx, :] = (
+            (
+                pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+                + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+            )
+            / q_p
+            / rho
+            * 1e3
+        )
+        data_arr[3, idx, :] = (
+            pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
+        )
+        data_arr[4, idx, :] = (
+            pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
+        )
+        data_arr[5, idx, :] = EgradPe * 1e3
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, figsize=(9, 9), constrained_layout=True
+    )
+
+    ax_list[0].plot(n_arr, data_arr[0, :, 0], color=CB_color_cycle[0], label="x")
+    ax_list[0].plot(n_arr, data_arr[0, :, 1], color=CB_color_cycle[1], label="y")
+    ax_list[0].plot(n_arr, data_arr[0, :, 2], color=CB_color_cycle[2], label="z")
+    ax_list[0].plot(
+        n_arr, np.linalg.norm(data_arr[0, :, :], axis=-1), color="k", label="mag"
+    )
+    ax_list[0].legend()
+
+    for idx in range(len(complabels)):
+        ax_list[1].plot(
+            n_arr,
+            data_arr[idx + 1, :, 0],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+        ax_list[2].plot(
+            n_arr,
+            data_arr[idx + 1, :, 1],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+        ax_list[3].plot(
+            n_arr,
+            data_arr[idx + 1, :, 2],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_xlim(n_arr[0], n_arr[-1])
+        ax.set_ylabel(ylabels[idx])
+
+    ax_list[1].legend()
+
+    figdir = wrkdir_DNR + "Figs/cuts/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "Ecomps_{}_x{}_{}_y{}_{}_t0{}.png".format(
+            runid,
+            x0,
+            x1,
+            y0,
+            y1,
+            t0,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def VSC_cut_through(
     runid,
     x0,
