@@ -2435,8 +2435,8 @@ def VSC_cut_Ecomponents(
         data_arr[1, idx, :] = np.cross(v, B) * 1e3
         data_arr[2, idx, :] = (
             (
-                pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-                - pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+                -pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
+                + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
             )
             / q_p
             / rho
