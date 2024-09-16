@@ -2163,6 +2163,7 @@ def v5_plotter(
     runid,
     start,
     stop,
+    var="proton/vg_Pdyn",
     boxre=[-10, 20, -20, 20],
     tickint=5.0,
     blines=False,
@@ -2185,7 +2186,6 @@ def v5_plotter(
     magtenvec=False,
     pt_blines=False,
 ):
-    var = "proton/vg_Pdyn"
 
     if magten:
         vscale = 1
