@@ -2436,7 +2436,7 @@ def VSC_cut_Ecomponents(
         data_arr[2, idx, :] = (
             (
                 pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-                + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
+                - pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
             )
             / q_p
             / rho
@@ -2448,7 +2448,7 @@ def VSC_cut_Ecomponents(
         data_arr[4, idx, :] = (
             pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
         )
-        data_arr[5, idx, :] = EgradPe * 1e3
+        data_arr[5, idx, :] = -EgradPe * 1e3
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, figsize=(9, 9), constrained_layout=True
@@ -2462,7 +2462,7 @@ def VSC_cut_Ecomponents(
     )
     ax_list[0].legend()
 
-    for idx in range(len(complabels)):
+    for idx in range(1, len(complabels)):
         ax_list[1].plot(
             n_arr,
             data_arr[idx + 1, :, 0],
