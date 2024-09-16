@@ -2446,7 +2446,7 @@ def VSC_cut_Ecomponents(
             pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
         )
         data_arr[4, idx, :] = (
-            pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
+            -pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) / q_p / rho * 1e3
         )
         data_arr[5, idx, :] = -EgradPe * 1e3
 
