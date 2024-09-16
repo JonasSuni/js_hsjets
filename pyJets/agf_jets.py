@@ -2376,6 +2376,133 @@ def expr_magten(pass_maps):
     return magten
 
 
+def VSC_time_Ecomponents(
+    runid,
+    x0,
+    y0,
+    t0,
+    t1,
+):
+    bulkpath = find_bulkpath(runid)
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_pressure",
+        "vg_e_gradpe",
+    ]
+
+    ylabels = [
+        "$v$ [km/s]",
+        "$E_x$ [mV/m]",
+        "$E_y$ [mV/m]",
+        "$E_z$ [mV/m]",
+    ]
+
+    complabels = [
+        "$-\\mathbf{v}\\times\\mathbf{B}$",
+        "$\\mathbf{J}\\times\\mathbf{B}/ne$",
+        "$\\mathbf{B}\\cdot\\nabla\\mathbf{B}/\\mu_0 ne$",
+        "$-\\nabla(B^2)/2\\mu_0 ne$",
+        "$-\\nabla(P_e)/ne$",
+    ]
+
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+    data_arr = np.zeros((len(complabels) + 1, t_arr.size, 3), dtype=float)
+
+    for idx in range(t_arr.size):
+        fnr = int(t_arr[idx] * 2)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+
+        rho, v, B, E, Pressure, EgradPe = [
+            vlsvobj.read_interpolated_variable(var, [x0 * r_e, y0 * r_e, 0])
+            for var in var_list
+        ]
+
+        data_arr[0, idx, :] = v * 1e-3
+        data_arr[1, idx, :] = -np.cross(v, B) * 1e3
+        data_arr[2, idx, :] = (
+            (
+                -pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+                + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+            )
+            / q_p
+            / rho
+            * 1e3
+        )
+        data_arr[3, idx, :] = (
+            pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e) / q_p / rho * 1e3
+        )
+        data_arr[4, idx, :] = (
+            -pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e) / q_p / rho * 1e3
+        )
+        data_arr[5, idx, :] = -EgradPe * 1e3
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, figsize=(9, 9), constrained_layout=True
+    )
+
+    ax_list[0].plot(t_arr, data_arr[0, :, 0], color=CB_color_cycle[0], label="x")
+    ax_list[0].plot(t_arr, data_arr[0, :, 1], color=CB_color_cycle[1], label="y")
+    ax_list[0].plot(t_arr, data_arr[0, :, 2], color=CB_color_cycle[2], label="z")
+    ax_list[0].plot(
+        t_arr, np.linalg.norm(data_arr[0, :, :], axis=-1), color="k", label="mag"
+    )
+    ax_list[0].legend()
+
+    for idx in range(len(complabels)):
+        ax_list[1].plot(
+            t_arr,
+            data_arr[idx + 1, :, 0],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+        ax_list[2].plot(
+            t_arr,
+            data_arr[idx + 1, :, 1],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+        ax_list[3].plot(
+            t_arr,
+            data_arr[idx + 1, :, 2],
+            color=CB_color_cycle[idx],
+            label=complabels[idx],
+        )
+
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_xlim(t_arr[0], t_arr[-1])
+        ax.set_ylabel(ylabels[idx])
+
+    ax_list[1].legend()
+    ax_list[-1].set_xlabel("Simulation time [s]")
+
+    figdir = wrkdir_DNR + "Figs/timeseries/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "Ecomps_{}_x{}_y{}_t0{}_t1{}.png".format(
+            runid,
+            x0,
+            y0,
+            t0,
+            t1,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def VSC_cut_Ecomponents(
     runid,
     x0,
@@ -2488,6 +2615,7 @@ def VSC_cut_Ecomponents(
         ax.set_ylabel(ylabels[idx])
 
     ax_list[1].legend()
+    ax_list[-1].set_xlabel("Point along cut")
 
     figdir = wrkdir_DNR + "Figs/cuts/"
     if not os.path.exists(figdir):
