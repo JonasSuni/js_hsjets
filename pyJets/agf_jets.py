@@ -6066,6 +6066,8 @@ def plot_vdf_at_jets(runid, boxre=None):
                 max(400, first_vdf_time - 10),
                 min(1000, last_vdf_time + 10),
                 xyz=True,
+                boxwidth=3000e3,
+                rboxw=3,
                 pdmax=2.0,
                 prefix="jets/{}/".format(n1),
             )
