@@ -6013,6 +6013,62 @@ def vdf_along_fieldline(
     return None
 
 
+def plot_vdf_at_jets(runid, boxre=None):
+
+    # non_ids = []
+
+    bulkpath = find_bulkpath(runid)
+    vobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(401)).zfill(7))
+    )
+    ci = vobj.read_variable("CellID")
+    fsaved = vobj.read_variable("vg_f_saved")
+    vdf_cells = ci[fsaved == 1]
+    if boxre:
+        restr_ci = restrict_area(vobj, boxre)
+        restr_vdf_ci = np.intersect1d(restr_ci, vdf_cells)
+    else:
+        restr_vdf_ci = vdf_cells
+
+    for n1 in range(6000):
+        try:
+            props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        jet_times = props.get_times()
+        jet_cells = props.get_cells()
+        jet_is_on_vdf = [np.in1d(c, restr_vdf_ci).any() for c in jet_cells]
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
+
+        vdf_times = np.array(jet_times)[jet_is_on_vdf]
+        if vdf_times.size > 0:
+            first_vdf_time = vdf_times[0]
+            last_vdf_time = vdf_times[-1]
+            x0 = xmean[jet_is_on_vdf][0]
+            y0 = ymean[jet_is_on_vdf][0]
+
+            print(
+                "Plotting VDF at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
+                    x0, y0, first_vdf_time, last_vdf_time, n1
+                )
+            )
+
+            pos_vdf_plotter(
+                runid,
+                x0,
+                y0,
+                np.max(400, first_vdf_time - 10),
+                np.min(1000, last_vdf_time + 10),
+                xyz=True,
+                pdmax=2.0,
+                prefix="{}/".format(n1),
+            )
+
+        # non_ids.append(n1)
+
+
 def pos_vdf_plotter(
     runid,
     x,
