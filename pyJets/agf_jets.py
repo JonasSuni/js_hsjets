@@ -6028,6 +6028,7 @@ def pos_vdf_plotter(
     boxre=None,
     fmin=1e-10,
     fmax=1e-4,
+    prefix="",
 ):
     runids = ["AGF", "AIA", "AIC"]
     # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
@@ -6078,8 +6079,8 @@ def pos_vdf_plotter(
 
     x_re, y_re, z_re = vobj.get_cell_coordinates(vdf_cellid) / r_e
 
-    outdir = wrkdir_DNR + "VDFs/{}/x_{:.3f}_y_{:.3f}_t0_{}_t1_{}_xyz{}".format(
-        runid, x_re, y_re, t0, t1, xyz
+    outdir = wrkdir_DNR + "VDFs/{}/{}x_{:.3f}_y_{:.3f}_t0_{}_t1_{}_xyz{}".format(
+        runid, prefix, x_re, y_re, t0, t1, xyz
     )
 
     for t in np.arange(t0, t1 + 0.1, 0.5):
