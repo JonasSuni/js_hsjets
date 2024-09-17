@@ -6063,7 +6063,7 @@ def plot_vdf_at_jets(runid, boxre=None):
                 min(1000, last_vdf_time + 10),
                 xyz=True,
                 pdmax=2.0,
-                prefix="{}/".format(n1),
+                prefix="jets/{}/".format(n1),
             )
 
         # non_ids.append(n1)
