@@ -6051,7 +6051,11 @@ def plot_vdf_at_jets(runid, boxre=None):
 
             print(
                 "Plotting VDF at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
-                    x0, y0, first_vdf_time, last_vdf_time, n1
+                    x0,
+                    y0,
+                    max(400, first_vdf_time - 10),
+                    min(1000, last_vdf_time + 10),
+                    n1,
                 )
             )
 
