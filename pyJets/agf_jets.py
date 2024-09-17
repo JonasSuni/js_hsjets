@@ -6019,7 +6019,7 @@ def plot_vdf_at_jets(runid, boxre=None):
 
     bulkpath = find_bulkpath(runid)
     vobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(int(401*2)).zfill(7))
+        bulkpath + "bulk.{}.vlsv".format(str(int(401 * 2)).zfill(7))
     )
     ci = vobj.read_variable("CellID")
     fsaved = vobj.read_variable("vg_f_saved")
@@ -6059,8 +6059,8 @@ def plot_vdf_at_jets(runid, boxre=None):
                 runid,
                 x0,
                 y0,
-                np.max(400, first_vdf_time - 10),
-                np.min(1000, last_vdf_time + 10),
+                int(np.max(400, first_vdf_time - 10)),
+                int(np.min(1000, last_vdf_time + 10)),
                 xyz=True,
                 pdmax=2.0,
                 prefix="{}/".format(n1),
