@@ -6073,6 +6073,7 @@ def plot_vdf_at_jets(runid, boxre=None):
                 rboxw=3,
                 pdmax=2.0,
                 prefix="jets/{}/".format(n1),
+                print_unicorn=True,
             )
 
         # non_ids.append(n1)
@@ -6094,6 +6095,7 @@ def pos_vdf_plotter(
     fmin=1e-10,
     fmax=1e-4,
     prefix="",
+    print_unicorn=False,
 ):
     runids = ["AGF", "AIA", "AIC"]
     # pdmax = [1.0, 1.0, 1.0][runids.index(runid)]
@@ -6159,7 +6161,6 @@ def pos_vdf_plotter(
         )
         cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
         vdf_cellid = getNearestCellWithVspace(vobj, cellid)
-
         v = vobj.read_variable("proton/vg_v", cellids=vdf_cellid) * 1e-3
         vth = vobj.read_variable("proton/vg_thermalvelocity", cellids=vdf_cellid) * 1e-3
 
@@ -6353,6 +6354,17 @@ def pos_vdf_plotter(
         fig.suptitle(
             "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s".format(runid, x_re, y_re, t)
         )
+        if print_unicorn:
+            events = eventfile_read(runid, fnr)
+            for event in events:
+                if np.in1d(event, [vdf_cellid]).any():
+                    fig.suptitle(
+                        "Run: {}, x: {:.3f}, y: {:.3f}, Time: {}s, UNICORN".format(
+                            runid, x_re, y_re, t
+                        )
+                    )
+                    break
+
         if not os.path.exists(outdir):
             try:
                 os.makedirs(outdir)
