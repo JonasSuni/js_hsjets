@@ -6019,7 +6019,7 @@ def plot_vdf_at_jets(runid, boxre=None):
 
     bulkpath = find_bulkpath(runid)
     vobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(int(401)).zfill(7))
+        bulkpath + "bulk.{}.vlsv".format(str(int(401*2)).zfill(7))
     )
     ci = vobj.read_variable("CellID")
     fsaved = vobj.read_variable("vg_f_saved")
