@@ -6013,7 +6013,7 @@ def vdf_along_fieldline(
     return None
 
 
-def plot_vdf_at_jets(runid, boxre=None):
+def plot_vdf_at_jets(runid, boxre=None,skip=False):
 
     # non_ids = []
 
@@ -6085,7 +6085,7 @@ def pos_vdf_plotter(
     y,
     t0,
     t1,
-    skip=False,
+    skip=skip,
     xyz=False,
     boxwidth=2000e3,
     pdmax=1.0,
