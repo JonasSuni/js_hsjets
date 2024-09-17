@@ -6049,6 +6049,9 @@ def plot_vdf_at_jets(runid, boxre=None):
             x0 = xmean[jet_is_on_vdf][0]
             y0 = ymean[jet_is_on_vdf][0]
 
+            if last_vdf_time < 400 or first_vdf_time > 1000:
+                continue
+
             print(
                 "Plotting VDF at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
                     x0,
