@@ -6074,6 +6074,7 @@ def plot_vdf_at_jets(runid, boxre=None, skip=False):
                 pdmax=2.0,
                 prefix="jets/{}/".format(n1),
                 print_unicorn=True,
+                skip=skip,
             )
 
         # non_ids.append(n1)
@@ -6085,7 +6086,7 @@ def pos_vdf_plotter(
     y,
     t0,
     t1,
-    skip=skip,
+    skip=False,
     xyz=False,
     boxwidth=2000e3,
     pdmax=1.0,
