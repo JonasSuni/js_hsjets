@@ -3424,9 +3424,10 @@ def VSC_timeseries(
                 0,
                 1,
                 where=data_arr[5, :] > 2 * tavg_arr,
-                color="green",
-                alpha=0.5,
+                color="red",
+                alpha=0.4,
                 transform=ax.get_xaxis_transform(),
+                linewidth=0,
             )
     # plt.tight_layout()
     figdir = wrkdir_DNR + "Figs/timeseries/"
