@@ -3309,12 +3309,11 @@ def VSC_timeseries(
             ax.plot(
                 t_arr,
                 2 * tavg_arr,
-                fmt,
-                color=CB_color_cycle[0],
+                color=CB_color_cycle[1],
                 linestyle="dashed",
                 label="$2\\langle P_\\mathrm{dyn}\\rangle$",
             )
-        elif idx == 5 and pdx:
+        if idx == 5 and pdx:
             pdynx = (
                 m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
             )
