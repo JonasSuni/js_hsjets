@@ -4937,7 +4937,7 @@ def pos_vdf_1d_spectrogram(
     parperp=False,
     logcb=False,
     rotatetob=False,
-    filtsize=60,
+    filtsize=None,
     clevels=10,
 ):
     runids = ["AGF", "AIA", "AIB", "AIC"]
@@ -5017,7 +5017,8 @@ def pos_vdf_1d_spectrogram(
         b = b / np.linalg.norm(b)
         b_arr[idx] = b
 
-    b_arr = uniform_filter1d(b_arr, size=filtsize)
+    if filtsize:
+        b_arr = uniform_filter1d(b_arr, size=filtsize)
 
     for idx, t in enumerate(np.arange(t0, t1 + 0.1, 0.5)):
         fnr = int(t * 2)
