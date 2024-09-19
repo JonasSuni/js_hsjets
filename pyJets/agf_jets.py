@@ -2954,7 +2954,7 @@ def VSC_cut_through(
     )
 
     for ax in ax_list:
-        ax.set_xlim(n_arr[0], n_arr[1])
+        ax.set_xlim(n_arr[0], n_arr[-1])
         ax.grid()
         ax.label_outer()
 
