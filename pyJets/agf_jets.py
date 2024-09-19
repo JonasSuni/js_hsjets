@@ -6052,7 +6052,7 @@ def vdf_along_fieldline(
     return None
 
 
-def plot_vdf_at_jets(runid, boxre=None, skip=False):
+def plot_vdf_at_jets(runid, boxre=None, skip=False, pdmin=0.01):
 
     # non_ids = []
 
@@ -6114,6 +6114,7 @@ def plot_vdf_at_jets(runid, boxre=None, skip=False):
                 prefix="jets/{}/".format(n1),
                 print_unicorn=True,
                 skip=skip,
+                pdmin=pdmin,
             )
 
         # non_ids.append(n1)
@@ -6129,6 +6130,7 @@ def pos_vdf_plotter(
     xyz=False,
     boxwidth=2000e3,
     pdmax=1.0,
+    pdmin=0.01,
     ncont=5,
     rboxw=2,
     boxre=None,
@@ -6225,7 +6227,7 @@ def pos_vdf_plotter(
             axes=ax_list[0][0],
             vlsvobj=vobj,
             var="proton/vg_Pdyn",
-            vmin=0.01,
+            vmin=pdmin,
             vmax=pdmax,
             vscale=1e9,
             cbtitle="$P_\\mathrm{dyn}$ [nPa]",
