@@ -3425,7 +3425,7 @@ def VSC_timeseries(
                 1,
                 where=data_arr[5, :] > 2 * tavg_arr,
                 color="red",
-                alpha=0.4,
+                alpha=0.1,
                 transform=ax.get_xaxis_transform(),
                 linewidth=0,
             )
