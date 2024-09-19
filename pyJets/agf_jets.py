@@ -3418,6 +3418,16 @@ def VSC_timeseries(
         ax.grid()
         ax.set_ylabel(ylabels[idx])
         ax.axvline(t0, linestyle="dashed")
+        if pdavg:
+            ax.fill_between(
+                t_arr,
+                0,
+                1,
+                where=data_arr[5, :] > 2 * tavg_arr,
+                color="green",
+                alpha=0.5,
+                transform=ax.get_xaxis_transform(),
+            )
     # plt.tight_layout()
     figdir = wrkdir_DNR + "Figs/timeseries/"
     txtdir = wrkdir_DNR + "txts/timeseries/"
