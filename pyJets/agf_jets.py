@@ -2933,6 +2933,45 @@ def VSC_cut_through(
     )
     plt.close(fig)
 
+    gyroperiod = 2 * np.pi / (q_p * data_arr[9, :] * 1e-9 / m_p)
+    vel_magnitude = data_arr[4, :] * 1e3
+    gyro_distance = gyroperiod * vel_magnitude
+
+    fig, ax_list = plt.subplots(3, 1, figsize=(9, 9), constrained_layout=True)
+
+    ax_list[0].plot(n_arr, gyroperiod)
+    ax_list[0].set_ylabel("Gyroperiod [s]")
+
+    ax_list[1].plot(n_arr, vel_magnitude * 1e-3)
+    ax_list[1].set_ylabel("Plasma speed [km/s]")
+
+    ax_list[2].plot(n_arr, gyro_distance / r_e)
+    ax_list[2].set_ylabel("Gyro distance [RE]")
+
+    ax_list[-1].set_xlabel("Point along cut")
+    ax_list[0].set_title(
+        "Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0), (x1, y1))
+    )
+
+    for ax in ax_list:
+        ax.set_xlim(n_arr[0], n_arr[1])
+        ax.grid()
+        ax.label_outer()
+
+    fig.savefig(
+        figdir
+        + "Gyro_{}_x{}_{}_y{}_{}_t0{}.png".format(
+            runid,
+            x0,
+            x1,
+            y0,
+            y1,
+            t0,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
     if fourier:
         fourier_var = data_arr[fourier - 1]
         fourier_var -= np.mean(fourier_var)
