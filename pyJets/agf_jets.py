@@ -6066,16 +6066,6 @@ def vdf_along_fieldline(
 
 def plot_timeseries_at_jets(runid, boxre=None):
 
-    bulkpath = find_bulkpath(runid)
-    vobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(int(401 * 2)).zfill(7))
-    )
-
-    # if boxre:
-    #     ci = restrict_area(vobj, boxre)
-    # else:
-    #     ci = vobj.read_variable("CellID")
-
     for n1 in range(6000):
         try:
             props = PropReader(str(n1).zfill(5), runid, transient="jet")
