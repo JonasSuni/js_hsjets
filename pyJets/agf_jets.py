@@ -3446,14 +3446,14 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
             runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         dpi=300,
     )
     np.savetxt(
         txtdir
-        + "{}_x{}_y{}_t0{}_t1{}_delta{}_mva{}_integrate{}.txt".format(
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.txt".format(
             runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         data_arr,
