@@ -3324,7 +3324,7 @@ def VSC_timeseries(
     fig, ax_list = plt.subplots(
         len(ylabels) + 1, 1, sharex=True, figsize=(6, 8), constrained_layout=True
     )
-    ax_list[0].set_title("Run: {}, $x_0$: {}, $y_0$: {}".format(runid, x0, y0))
+    ax_list[0].set_title("Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}".format(runid, x0, y0))
     for idx in range(len(var_list)):
         ax = ax_list[plot_index[idx]]
         for vline in vlines:
@@ -6097,15 +6097,15 @@ def plot_timeseries_at_jets(runid, boxre=None):
         x0, y0 = (xmean[0], ymean[0])
         t0 = props.get_times()[0]
 
-        if t0 < 400 or t0 > 1000:
+        if t0 <= 400 or t0 > 1000:
             continue
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
                 x0,
                 y0,
-                max(400, t0 - 30),
-                min(1000, t0 + 30),
+                max(400, t0 - 20),
+                min(1000, t0 + 20),
                 n1,
             )
         )
@@ -6114,8 +6114,8 @@ def plot_timeseries_at_jets(runid, boxre=None):
             runid,
             x0,
             y0,
-            max(t0 - 30, 400),
-            min(t0 + 30, 1000),
+            max(t0 - 20, 400),
+            min(t0 + 20, 1000),
             pdavg=True,
             pdx=True,
             integrate=None,
