@@ -3104,6 +3104,7 @@ def VSC_timeseries(
     cutoff=0.9,
     fmt="-",
     integrate=None,
+    prefix="",
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3425,12 +3426,12 @@ def VSC_timeseries(
                 1,
                 where=data_arr[5, :] > 2 * tavg_arr,
                 color="red",
-                alpha=0.1,
+                alpha=0.2,
                 transform=ax.get_xaxis_transform(),
                 linewidth=0,
             )
     # plt.tight_layout()
-    figdir = wrkdir_DNR + "Figs/timeseries/"
+    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(prefix)
     txtdir = wrkdir_DNR + "txts/timeseries/"
     if not os.path.exists(figdir):
         try:
@@ -6061,6 +6062,62 @@ def vdf_along_fieldline(
         plt.close(fig)
 
     return None
+
+
+def plot_timeseries_at_jets(runid, boxre=None):
+
+    bulkpath = find_bulkpath(runid)
+    vobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(401 * 2)).zfill(7))
+    )
+
+    # if boxre:
+    #     ci = restrict_area(vobj, boxre)
+    # else:
+    #     ci = vobj.read_variable("CellID")
+
+    for n1 in range(6000):
+        try:
+            props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
+
+        if boxre:
+            if not (
+                xmean[0] >= boxre[0]
+                and xmean[0] <= boxre[1]
+                and ymean[0] >= boxre[2]
+                and ymean[0] <= boxre[3]
+            ):
+                continue
+
+        x0, y0 = (xmean[0], ymean[0])
+        t0 = props.get_times()[0]
+
+        print(
+            "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
+                x0,
+                y0,
+                max(400, t0 - 30),
+                min(1000, t0 + 30),
+                n1,
+            )
+        )
+
+        VSC_timeseries(
+            runid,
+            x0,
+            y0,
+            max(t0 - 30, 400),
+            min(t0 + 30, 1000),
+            pdavg=True,
+            pdx=True,
+            integrate=None,
+            prefix="jets/{}/".format(n1),
+        )
 
 
 def plot_vdf_at_jets(runid, boxre=None, skip=False, pdmin=0.01):
