@@ -6097,6 +6097,9 @@ def plot_timeseries_at_jets(runid, boxre=None):
         x0, y0 = (xmean[0], ymean[0])
         t0 = props.get_times()[0]
 
+        if t0 < 400 or t0 > 1000:
+            continue
+
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
                 x0,
