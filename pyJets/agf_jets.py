@@ -3105,6 +3105,7 @@ def VSC_timeseries(
     fmt="-",
     integrate=None,
     prefix="",
+    shift=None,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3299,6 +3300,26 @@ def VSC_timeseries(
         # except:
         #     print("Something went wrong!")
         #     data_arr[:, idx] = np.nan
+
+    if shift:
+        if type(shift) == str:
+            shift = data_arr[[1, 2, 3], :].T[np.argsort(np.abs(data_arr[7, :]))][0]
+        data_arr[1, :] = data_arr[1, :] - shift[0]
+        data_arr[2, :] = data_arr[2, :] - shift[1]
+        data_arr[3, :] = data_arr[3, :] - shift[2]
+        data_arr[4, :] = np.sqrt(
+            data_arr[1, :] ** 2 + data_arr[2, :] ** 2 + data_arr[3, :] ** 2
+        )
+
+        Eshift = -1e3 * np.cross(1e3 * shift, 1e-9 * data_arr[[6, 7, 8], :].T).T
+
+        data_arr[10, :] = data_arr[10, :] - Eshift[0]
+        data_arr[11, :] = data_arr[11, :] - Eshift[1]
+        data_arr[12, :] = data_arr[12, :] - Eshift[2]
+
+        data_arr[13, :] = np.sqrt(
+            data_arr[10, :] ** 2 + data_arr[11, :] ** 2 + data_arr[12, :] ** 2
+        )
 
     if filt:
         for idx in range(len(var_list)):
