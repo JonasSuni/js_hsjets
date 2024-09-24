@@ -3304,6 +3304,8 @@ def VSC_timeseries(
     if shift:
         if type(shift) == str:
             shift = data_arr[[1, 2, 3], :].T[np.argsort(np.abs(data_arr[7, :]))][0]
+        elif type(shift) == list:
+            shift = np.array(shift)
         data_arr[1, :] = data_arr[1, :] - shift[0]
         data_arr[2, :] = data_arr[2, :] - shift[1]
         data_arr[3, :] = data_arr[3, :] - shift[2]
