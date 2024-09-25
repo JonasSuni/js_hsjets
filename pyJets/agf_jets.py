@@ -2733,7 +2733,7 @@ def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5,nsteps
     vyarr[0] = vy
     vzarr[0] = vz
 
-    for n in range(1,nsteps+1):
+    for n in range(1,nsteps):
         a = (q_p/m_p)*(np.array([polys[3](x),polys[4](x),polys[5](x)])+np.cross(np.array([vx,vy,vz]),np.array([polys[0](x),polys[1](x),polys[2](x)])))
         
         x = x + vx*dt
