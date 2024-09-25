@@ -2720,7 +2720,7 @@ def speiser(
     time_arr = np.zeros(nsteps, dtype=float)
     time_arr[0] = y0 * r_e
 
-    x, y, z = (x_arr[np.argsort(np.abs(data_arr[1, :]))][0] + 3000e3, y0 * r_e, 0)
+    x, y, z = (x_arr[np.argsort(np.abs(data_arr[1, :]))][0] + 900e3, y0 * r_e, 0)
     xarr = np.zeros_like(time_arr)
     yarr = np.zeros_like(time_arr)
     zarr = np.zeros_like(time_arr)
