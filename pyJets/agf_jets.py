@@ -2761,7 +2761,7 @@ def speiser(
 
     fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
     ax.grid()
-    ax.plot(xarr, zarr)
+    ax.plot(xarr / r_e, zarr / r_e)
 
     fig.savefig(
         figdir
