@@ -2683,7 +2683,7 @@ def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5):
         polys.append(poly)
 
     fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(6, 18), constrained_layout=True
+        len(var_list), 1, figsize=(12, 12), constrained_layout=True
     )
 
     for idx in range(len(var_list)):
