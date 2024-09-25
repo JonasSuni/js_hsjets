@@ -2642,7 +2642,7 @@ def VSC_cut_Ecomponents(
     plt.close(fig)
 
 
-def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5):
+def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5,nsteps=1000,dt=0.01):
 
     bulkpath = find_bulkpath(runid)
     var_list = [
@@ -2715,6 +2715,59 @@ def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5):
     )
     plt.close(fig)
 
+    time_arr = np.zeros(nsteps,dtype=float)
+    time_arr[0] = y0*r_e
+    
+    x,y,z = (x_arr[np.argsort(np.abs(data_arr[1,:]))][0]+3000e3,y0*r_e,0)
+    xarr = np.zeros_like(time_arr)
+    yarr = np.zeros_like(time_arr)
+    zarr = np.zeros_like(time_arr)
+    vxarr = np.zeros_like(time_arr)
+    vyarr = np.zeros_like(time_arr)
+    vzarr = np.zeros_like(time_arr)
+    xarr[0] = x
+    yarr[0] = y
+    zarr[0] = z
+    vx,vy,vz = (-500e3,0,0)
+    vxarr[0] = vx
+    vyarr[0] = vy
+    vzarr[0] = vz
+
+    for n in range(1,nsteps+1):
+        a = (q_p/m_p)*(np.array([polys[3](x),polys[4](x),polys[5](x)])+np.cross(np.array([vx,vy,vz]),np.array([polys[0](x),polys[1](x),polys[2](x)])))
+        
+        x = x + vx*dt
+        y = y + vy*dt
+        z = z + vz*dt
+        vx = vx + a[0]*dt
+        vy = vy + a[1]*dt
+        vz = vz + a[2]*dt
+
+        xarr[n] = x
+        yarr[n] = y
+        zarr[n] = z
+
+        vxarr[n] = vx
+        vyarr[n] = vy
+        vzarr[n] = vz
+
+    fig,ax = plt.subplots(1,1,figsize=(6,6),constrained_layout=True)
+    ax.grid()
+    ax.plot(xarr,zarr)
+
+    fig.savefig(
+        figdir
+        + "xz_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+            runid,
+            x0,
+            x1,
+            y0,
+            t0,
+            polydeg,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
 
 def VSC_cut_through(
     runid,
