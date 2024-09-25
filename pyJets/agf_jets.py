@@ -2683,13 +2683,14 @@ def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5):
         polys.append(poly)
 
     fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(18, 6), constrained_layout=True
+        len(var_list), 1, figsize=(6, 18), constrained_layout=True
     )
 
     for idx in range(len(var_list)):
         ax_list[idx].grid()
         ax_list[idx].plot(x_arr, data_arr[idx, :], color="black")
         ax_list[idx].plot(x_arr, polys[idx](x_arr), color="black", linestyle="dashed")
+        ax_list[idx].set_xlim(x_arr[0], x_arr[-1])
 
     ax_list[0].set_title("Polynomial degree = {}".format(polydeg))
 
