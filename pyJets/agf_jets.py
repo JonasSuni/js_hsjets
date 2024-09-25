@@ -2642,6 +2642,79 @@ def VSC_cut_Ecomponents(
     plt.close(fig)
 
 
+def speiser(runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5):
+
+    bulkpath = find_bulkpath(runid)
+    var_list = [
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+    ]
+    ops = [
+        "x",
+        "y",
+        "z",
+        "x",
+        "y",
+        "z",
+    ]
+
+    x_arr = np.linspace(x0, x1, int((x1 - x0) / dr) + 1) * r_e
+
+    fnr0 = int(t0 * 2)
+    data_arr = np.zeros((6, x_arr.size), dtype=float)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+    for idx in range(x_arr.size):
+
+        for idx2, var in enumerate(var_list):
+            data_arr[idx2, idx] = vlsvobj.read_interpolated_variable(
+                var, [x_arr[idx], y0 * r_e, 0], operator=ops[idx2]
+            )
+
+    polys = []
+
+    for idx in range(len(var_list)):
+        poly = np.polynomial.Polynomial.fit(x_arr, data_arr[idx, :], deg=polydeg)
+        polys.append(poly)
+
+    fig, ax_list = plt.subplots(
+        len(var_list), 1, figsize=(18, 6), constrained_layout=True
+    )
+
+    for idx in range(len(var_list)):
+        ax_list[idx].grid()
+        ax_list[idx].plot(x_arr, data_arr[idx, :], color="black")
+        ax_list[idx].plot(x_arr, polys[idx](x_arr), color="black", linestyle="dashed")
+
+    ax_list[0].set_title("Polynomial degree = {}".format(polydeg))
+
+    figdir = wrkdir_DNR + "Figs/speiser/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "diag_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+            runid,
+            x0,
+            x1,
+            y0,
+            t0,
+            polydeg,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def VSC_cut_through(
     runid,
     x0,
