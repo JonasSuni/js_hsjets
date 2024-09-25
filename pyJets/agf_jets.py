@@ -2777,6 +2777,24 @@ def speiser(
     )
     plt.close(fig)
 
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
+    ax.grid()
+    ax.plot(xarr / r_e, yarr / r_e)
+
+    fig.savefig(
+        figdir
+        + "xy_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+            runid,
+            x0,
+            x1,
+            y0,
+            t0,
+            polydeg,
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
+
 
 def VSC_cut_through(
     runid,
