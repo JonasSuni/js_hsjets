@@ -2736,20 +2736,31 @@ def speiser(
     vzarr[0] = vz
 
     for n in range(1, nsteps):
-        a = (q_p / m_p) * (
-            np.array([polys[3](x), polys[4](x), polys[5](x)])
-            + np.cross(
-                np.array([vx, vy, vz]),
-                np.array([polys[0](x), polys[1](x), polys[2](x)]),
-            )
-        )
+        E = np.array([polys[3](x), polys[4](x), polys[5](x)])
+        B = np.array([polys[0](x), polys[1](x), polys[2](x)])
+        Omega = (q_p / m_p) * B
+        v = np.array([vx, vy, vz])
+        v1 = v + (q_p * dt / m_p / 2.0) * E
+        v2 = (
+            v * (1 - (np.linalg.norm(Omega) * dt / 2) ** 2)
+            + np.cross(v1, Omega) * dt
+            + 0.5 * (dt**2) * np.dot(v1, Omega) * Omega
+        ) / (1 + (np.linalg.norm(Omega) * dt / 2) ** 2)
+        # a = (q_p / m_p) * (
+        #     np.array([polys[3](x), polys[4](x), polys[5](x)])
+        #     + np.cross(
+        #         np.array([vx, vy, vz]),
+        #         np.array([polys[0](x), polys[1](x), polys[2](x)]),
+        #     )
+        # )
+        v3 = v2 + (q_p * dt / m_p / 2.0) * E
 
         x = x + vx * dt
         y = y + vy * dt
         z = z + vz * dt
-        vx = vx + a[0] * dt
-        vy = vy + a[1] * dt
-        vz = vz + a[2] * dt
+        vx = v3[0]
+        vy = v3[1]
+        vz = v3[2]
 
         xarr[n] = x
         yarr[n] = y
