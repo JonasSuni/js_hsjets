@@ -2720,7 +2720,9 @@ def speiser(
     time_arr = np.zeros(nsteps, dtype=float)
     time_arr[0] = y0 * r_e
 
-    x, y, z = (x_arr[np.argsort(np.abs(data_arr[1, :]))][0] + 900e3, y0 * r_e, 0)
+    xby0 = x_arr[np.argsort(np.abs(data_arr[1, :]))][0]
+
+    x, y, z = (xby0 + 900e3, y0 * r_e, 0)
     xarr = np.zeros_like(time_arr)
     yarr = np.zeros_like(time_arr)
     zarr = np.zeros_like(time_arr)
@@ -2730,7 +2732,7 @@ def speiser(
     xarr[0] = x
     yarr[0] = y
     zarr[0] = z
-    vx, vy, vz = (-500e3, 0, 0)
+    vx, vy, vz = (-100e3, 0, 0)
     vxarr[0] = vx
     vyarr[0] = vy
     vzarr[0] = vz
@@ -2773,6 +2775,7 @@ def speiser(
     fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
     ax.grid()
     ax.plot(xarr / r_e, zarr / r_e)
+    ax.axvline(xby0 / r_e, linestyle="dashed", color="red")
 
     fig.savefig(
         figdir
@@ -2791,6 +2794,7 @@ def speiser(
     fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
     ax.grid()
     ax.plot(xarr / r_e, yarr / r_e)
+    ax.axvline(xby0 / r_e, linestyle="dashed", color="red")
 
     fig.savefig(
         figdir
