@@ -2732,7 +2732,7 @@ def speiser(
     xarr[0] = x
     yarr[0] = y
     zarr[0] = z
-    vx, vy, vz = (-100e3, 0, 0)
+    vx, vy, vz = (-500e3, 0, 0)
     vxarr[0] = vx
     vyarr[0] = vy
     vzarr[0] = vz
