@@ -2729,7 +2729,8 @@ def speiser(
     plt.close(fig)
 
     time_arr = np.zeros(nsteps, dtype=float)
-    time_arr[0] = y0 * r_e
+    time_arr[0] = t0
+    t = t0
 
     xby0 = x_arr[np.argsort(np.abs(data_arr[1, :]))][0]
 
@@ -2767,6 +2768,7 @@ def speiser(
         vx = v3[0]
         vy = v3[1]
         vz = v3[2]
+        t = t + dt
 
         xarr[n] = x
         yarr[n] = y
@@ -2775,6 +2777,8 @@ def speiser(
         vxarr[n] = vx
         vyarr[n] = vy
         vzarr[n] = vz
+
+        time_arr[n] = t
 
     fig, ax = plt.subplots(1, 2, figsize=(12, 6), constrained_layout=True)
     ax[0].grid()
@@ -2803,7 +2807,7 @@ def speiser(
     )
     plt.close(fig)
 
-    fig, ax = plt.subplots(2, 1, figsize=(6, 12), constrained_layout=True)
+    fig, ax = plt.subplots(2, 1, figsize=(12, 12), constrained_layout=True)
     ax[0].grid()
     ax[0].plot(time_arr, xarr / r_e, color=CB_color_cycle[0], label="x")
     ax[0].plot(time_arr, yarr / r_e, color=CB_color_cycle[1], label="y")
