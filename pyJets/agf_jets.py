@@ -2754,6 +2754,9 @@ def speiser(
     vyarr[0] = vy
     vzarr[0] = vz
 
+    Barr = np.zeros((nsteps, 3), dtype=float)
+    Barr[0, :] = np.array([polys[0](x - xrdo), polys[1](x - xrdo), polys[2](x - xrdo)])
+
     for n in range(1, nsteps):
         E = np.array([polys[3](x - xrdo), polys[4](x - xrdo), polys[5](x - xrdo)])
         B = np.array([polys[0](x - xrdo), polys[1](x - xrdo), polys[2](x - xrdo)])
@@ -2785,6 +2788,9 @@ def speiser(
         vzarr[n] = vz
 
         time_arr[n] = t
+        Barr[n, :] = np.array(
+            [polys[0](x - xrdo), polys[1](x - xrdo), polys[2](x - xrdo)]
+        )
 
     fig, ax = plt.subplots(1, 2, figsize=(12, 6), constrained_layout=True)
     ax[0].grid()
@@ -2813,7 +2819,7 @@ def speiser(
     )
     plt.close(fig)
 
-    fig, ax = plt.subplots(2, 1, figsize=(12, 8), constrained_layout=True)
+    fig, ax = plt.subplots(3, 1, figsize=(12, 12), constrained_layout=True)
     ax[0].grid()
     ax[0].plot(time_arr, xarr / r_e, color=CB_color_cycle[0], label="x")
     ax[0].plot(time_arr, yarr / r_e, color=CB_color_cycle[1], label="y")
@@ -2841,6 +2847,24 @@ def speiser(
     )
     ax[1].legend()
     ax[1].set(xlabel="Time [s]", ylabel="v [km/s]", xlim=(time_arr[0], time_arr[-1]))
+
+    vpararr = (np.array([vxarr, vyarr, vzarr]).T * Barr).sum(-1) / np.linalg.norm(
+        Barr, axis=-1
+    )
+    vperparr = np.sqrt(vxarr**2 + vyarr**2 + vzarr**2 - vpararr**2)
+
+    ax[2].grid()
+    ax[2].plot(time_arr, vpararr / 1e3, color=CB_color_cycle[0], label="vpar")
+    ax[2].plot(time_arr, vperparr / 1e3, color=CB_color_cycle[1], label="vperp")
+    ax[2].plot(
+        time_arr,
+        np.sqrt(vxarr**2 + vyarr**2 + vzarr**2) / 1e3,
+        color="black",
+        linestyle="dashed",
+        label="v",
+    )
+    ax[2].legend()
+    ax[2].set(xlabel="Time [s]", ylabel="v [km/s]", xlim=(time_arr[0], time_arr[-1]))
 
     fig.savefig(
         figdir
