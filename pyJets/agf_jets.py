@@ -2737,6 +2737,7 @@ def speiser(
     t = t0
 
     xby0 = x_arr[np.argsort(np.abs(data_arr[1, :]))][0]
+    xrdo = 0
 
     x, y, z = (xby0 + xoffset * 1e3, y0 * r_e, 0)
     xarr = np.zeros_like(time_arr)
@@ -2754,8 +2755,8 @@ def speiser(
     vzarr[0] = vz
 
     for n in range(1, nsteps):
-        E = np.array([polys[3](x), polys[4](x), polys[5](x)])
-        B = np.array([polys[0](x), polys[1](x), polys[2](x)])
+        E = np.array([polys[3](x - xrdo), polys[4](x - xrdo), polys[5](x - xrdo)])
+        B = np.array([polys[0](x - xrdo), polys[1](x - xrdo), polys[2](x - xrdo)])
         Omega = (q_p / m_p) * B
         v = np.array([vx, vy, vz])
         v1 = v + (q_p * dt / m_p / 2.0) * E
@@ -2773,6 +2774,7 @@ def speiser(
         vy = v3[1]
         vz = v3[2]
         t = t + dt
+        xrdo = xrdo + vdc * dt
 
         xarr[n] = x
         yarr[n] = y
