@@ -2813,14 +2813,14 @@ def speiser(
     ax[0].plot(time_arr, yarr / r_e, color=CB_color_cycle[1], label="y")
     ax[0].plot(time_arr, zarr / r_e, color=CB_color_cycle[2], label="z")
     ax[0].legend()
-    ax[0].set(xlabel="Time [s]", ylabel="r [RE]",xlim=(time_arr[0],time_arr[-1]))
+    ax[0].set(xlabel="Time [s]", ylabel="r [RE]", xlim=(time_arr[0], time_arr[-1]))
 
     ax[1].grid()
     ax[1].plot(time_arr, vxarr / 1e3, color=CB_color_cycle[0], label="vx")
     ax[1].plot(time_arr, vyarr / 1e3, color=CB_color_cycle[1], label="vy")
     ax[1].plot(time_arr, vzarr / 1e3, color=CB_color_cycle[2], label="vz")
     ax[1].legend()
-    ax[1].set(xlabel="Time [s]", ylabel="v [km/s]",xlim=(time_arr[0],time_arr[-1]))
+    ax[1].set(xlabel="Time [s]", ylabel="v [km/s]", xlim=(time_arr[0], time_arr[-1]))
 
     fig.savefig(
         figdir
