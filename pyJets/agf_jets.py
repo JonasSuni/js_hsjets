@@ -2830,7 +2830,7 @@ def speiser(
     ax[1].plot(time_arr, vxarr / 1e3, color=CB_color_cycle[0], label="vx")
     ax[1].plot(time_arr, vyarr / 1e3, color=CB_color_cycle[1], label="vy")
     ax[1].plot(time_arr, vzarr / 1e3, color=CB_color_cycle[2], label="vz")
-    ax[2].plot(
+    ax[1].plot(
         time_arr,
         np.sqrt(vxarr**2 + vyarr**2 + vzarr**2) / 1e3,
         color="black",
