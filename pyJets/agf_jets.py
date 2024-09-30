@@ -2643,7 +2643,18 @@ def VSC_cut_Ecomponents(
 
 
 def speiser(
-    runid, x0, y0, x1, dr, t0, vdc=-85.3441844657656e3, polydeg=5, nsteps=1000, dt=0.01
+    runid,
+    x0,
+    y0,
+    x1,
+    dr,
+    t0,
+    vdc=-85.3441844657656e3,
+    polydeg=5,
+    nsteps=1000,
+    dt=0.01,
+    xoffset=900e3,
+    vx0=-500e3,
 ):
 
     bulkpath = find_bulkpath(runid)
@@ -2722,7 +2733,7 @@ def speiser(
 
     xby0 = x_arr[np.argsort(np.abs(data_arr[1, :]))][0]
 
-    x, y, z = (xby0 + 900e3, y0 * r_e, 0)
+    x, y, z = (xby0 + xoffset, y0 * r_e, 0)
     xarr = np.zeros_like(time_arr)
     yarr = np.zeros_like(time_arr)
     zarr = np.zeros_like(time_arr)
@@ -2732,7 +2743,7 @@ def speiser(
     xarr[0] = x
     yarr[0] = y
     zarr[0] = z
-    vx, vy, vz = (-500e3, 0, 0)
+    vx, vy, vz = (vx0, 0, 0)
     vxarr[0] = vx
     vyarr[0] = vy
     vzarr[0] = vz
@@ -2748,13 +2759,6 @@ def speiser(
             + np.cross(v1, Omega) * dt
             + 0.5 * (dt**2) * np.dot(v1, Omega) * Omega
         ) / (1 + (np.linalg.norm(Omega) * dt / 2) ** 2)
-        # a = (q_p / m_p) * (
-        #     np.array([polys[3](x), polys[4](x), polys[5](x)])
-        #     + np.cross(
-        #         np.array([vx, vy, vz]),
-        #         np.array([polys[0](x), polys[1](x), polys[2](x)]),
-        #     )
-        # )
         v3 = v2 + (q_p * dt / m_p / 2.0) * E
 
         x = x + vx * dt
@@ -2772,39 +2776,58 @@ def speiser(
         vyarr[n] = vy
         vzarr[n] = vz
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
-    ax.grid()
-    ax.plot(xarr / r_e, zarr / r_e)
-    ax.axvline(xby0 / r_e, linestyle="dashed", color="red")
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6), constrained_layout=True)
+    ax[0].grid()
+    ax[0].plot(xarr / r_e, yarr / r_e)
+    ax[0].plot(xarr[0] / r_e, yarr[0] / r_e, "o", color="blue")
+    ax[0].axvline(xby0 / r_e, linestyle="dashed", color="red")
+    ax[0].set(xlabel="X [RE]", ylabel="Y [RE]")
+    ax[1].grid()
+    ax[1].plot(xarr / r_e, zarr / r_e)
+    ax[1].plot(xarr[0] / r_e, zarr[0] / r_e, "o", color="blue")
+    ax[1].axvline(xby0 / r_e, linestyle="dashed", color="red")
+    ax[1].set(xlabel="X [RE]", ylabel="Z [RE]")
 
     fig.savefig(
         figdir
-        + "xz_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+        + "xyz_{}_x{}_{}_y{}_t0{}_xoffset{}_vx0{}.png".format(
             runid,
             x0,
             x1,
             y0,
             t0,
-            polydeg,
+            xoffset,
+            vx0,
         ),
         dpi=300,
     )
     plt.close(fig)
 
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6), constrained_layout=True)
-    ax.grid()
-    ax.plot(xarr / r_e, yarr / r_e)
-    ax.axvline(xby0 / r_e, linestyle="dashed", color="red")
+    fig, ax = plt.subplots(2, 1, figsize=(6, 12), constrained_layout=True)
+    ax[0].grid()
+    ax[0].plot(time_arr, xarr / r_e, color=CB_color_cycle[0], label="x")
+    ax[0].plot(time_arr, yarr / r_e, color=CB_color_cycle[1], label="y")
+    ax[0].plot(time_arr, zarr / r_e, color=CB_color_cycle[2], label="z")
+    ax[0].legend()
+    ax[0].set(xlabel="Time [s]", ylabel="r [RE]")
+
+    ax[1].grid()
+    ax[1].plot(time_arr, vxarr / 1e3, color=CB_color_cycle[0], label="vx")
+    ax[1].plot(time_arr, vyarr / 1e3, color=CB_color_cycle[1], label="vy")
+    ax[1].plot(time_arr, vzarr / 1e3, color=CB_color_cycle[2], label="vz")
+    ax[1].legend()
+    ax[1].set(xlabel="Time [s]", ylabel="v [km/s]")
 
     fig.savefig(
         figdir
-        + "xy_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+        + "time_{}_x{}_{}_y{}_t0{}_xoffset{}_vx0{}.png".format(
             runid,
             x0,
             x1,
             y0,
             t0,
-            polydeg,
+            xoffset,
+            vx0,
         ),
         dpi=300,
     )
