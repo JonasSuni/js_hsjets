@@ -2649,7 +2649,7 @@ def speiser(
     x1,
     dr,
     t0,
-    vdc=-85.3441844657656e3,
+    vdc=-85.3441844657656,
     polydeg=5,
     nsteps=1000,
     dt=0.01,
