@@ -2702,7 +2702,7 @@ def speiser(
             os.makedirs(figdir)
         except OSError:
             pass
-    
+
     if diag:
         fig, ax_list = plt.subplots(
             len(var_list), 1, figsize=(12, 12), constrained_layout=True
@@ -2711,12 +2711,12 @@ def speiser(
         for idx in range(len(var_list)):
             ax_list[idx].grid()
             ax_list[idx].plot(x_arr, data_arr[idx, :], color="black")
-            ax_list[idx].plot(x_arr, polys[idx](x_arr), color="black", linestyle="dashed")
+            ax_list[idx].plot(
+                x_arr, polys[idx](x_arr), color="black", linestyle="dashed"
+            )
             ax_list[idx].set_xlim(x_arr[0], x_arr[-1])
 
         ax_list[0].set_title("Polynomial degree = {}".format(polydeg))
-
-        
 
         fig.savefig(
             figdir
@@ -2816,6 +2816,13 @@ def speiser(
     ax[0].plot(time_arr, xarr / r_e, color=CB_color_cycle[0], label="x")
     ax[0].plot(time_arr, yarr / r_e, color=CB_color_cycle[1], label="y")
     ax[0].plot(time_arr, zarr / r_e, color=CB_color_cycle[2], label="z")
+    ax[0].plot(
+        time_arr,
+        np.sqrt(xarr**2 + yarr**2 + zarr**2) / r_e,
+        color="black",
+        linestyle="dashed",
+        label="r",
+    )
     ax[0].legend()
     ax[0].set(xlabel="Time [s]", ylabel="r [RE]", xlim=(time_arr[0], time_arr[-1]))
 
@@ -2823,6 +2830,13 @@ def speiser(
     ax[1].plot(time_arr, vxarr / 1e3, color=CB_color_cycle[0], label="vx")
     ax[1].plot(time_arr, vyarr / 1e3, color=CB_color_cycle[1], label="vy")
     ax[1].plot(time_arr, vzarr / 1e3, color=CB_color_cycle[2], label="vz")
+    ax[2].plot(
+        time_arr,
+        np.sqrt(vxarr**2 + vyarr**2 + vzarr**2) / 1e3,
+        color="black",
+        linestyle="dashed",
+        label="v",
+    )
     ax[1].legend()
     ax[1].set(xlabel="Time [s]", ylabel="v [km/s]", xlim=(time_arr[0], time_arr[-1]))
 
