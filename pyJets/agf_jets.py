@@ -2774,7 +2774,7 @@ def speiser(
         vy = v3[1]
         vz = v3[2]
         t = t + dt
-        xrdo = xrdo + vdc * dt
+        xrdo = xrdo + vdc * 1e3 * dt
 
         xarr[n] = x
         yarr[n] = y
