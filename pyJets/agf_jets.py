@@ -2653,8 +2653,8 @@ def speiser(
     polydeg=5,
     nsteps=1000,
     dt=0.01,
-    xoffset=900e3,
-    vx0=-500e3,
+    xoffset=900,
+    vx0=-500,
 ):
 
     bulkpath = find_bulkpath(runid)
@@ -2734,7 +2734,7 @@ def speiser(
 
     xby0 = x_arr[np.argsort(np.abs(data_arr[1, :]))][0]
 
-    x, y, z = (xby0 + xoffset, y0 * r_e, 0)
+    x, y, z = (xby0 + xoffset * 1e3, y0 * r_e, 0)
     xarr = np.zeros_like(time_arr)
     yarr = np.zeros_like(time_arr)
     zarr = np.zeros_like(time_arr)
@@ -2744,7 +2744,7 @@ def speiser(
     xarr[0] = x
     yarr[0] = y
     zarr[0] = z
-    vx, vy, vz = (vx0, 0, 0)
+    vx, vy, vz = (vx0 * 1e3, 0, 0)
     vxarr[0] = vx
     vyarr[0] = vy
     vzarr[0] = vz
