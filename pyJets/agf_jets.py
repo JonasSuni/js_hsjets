@@ -2655,6 +2655,7 @@ def speiser(
     dt=0.01,
     xoffset=900,
     vx0=-500,
+    diag=False,
 ):
 
     bulkpath = find_bulkpath(runid)
@@ -2695,38 +2696,41 @@ def speiser(
         poly = np.polynomial.Polynomial.fit(x_arr, data_arr[idx, :], deg=polydeg)
         polys.append(poly)
 
-    fig, ax_list = plt.subplots(
-        len(var_list), 1, figsize=(12, 12), constrained_layout=True
-    )
-
-    for idx in range(len(var_list)):
-        ax_list[idx].grid()
-        ax_list[idx].plot(x_arr, data_arr[idx, :], color="black")
-        ax_list[idx].plot(x_arr, polys[idx](x_arr), color="black", linestyle="dashed")
-        ax_list[idx].set_xlim(x_arr[0], x_arr[-1])
-
-    ax_list[0].set_title("Polynomial degree = {}".format(polydeg))
-
     figdir = wrkdir_DNR + "Figs/speiser/"
     if not os.path.exists(figdir):
         try:
             os.makedirs(figdir)
         except OSError:
             pass
+    
+    if diag:
+        fig, ax_list = plt.subplots(
+            len(var_list), 1, figsize=(12, 12), constrained_layout=True
+        )
 
-    fig.savefig(
-        figdir
-        + "diag_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
-            runid,
-            x0,
-            x1,
-            y0,
-            t0,
-            polydeg,
-        ),
-        dpi=300,
-    )
-    plt.close(fig)
+        for idx in range(len(var_list)):
+            ax_list[idx].grid()
+            ax_list[idx].plot(x_arr, data_arr[idx, :], color="black")
+            ax_list[idx].plot(x_arr, polys[idx](x_arr), color="black", linestyle="dashed")
+            ax_list[idx].set_xlim(x_arr[0], x_arr[-1])
+
+        ax_list[0].set_title("Polynomial degree = {}".format(polydeg))
+
+        
+
+        fig.savefig(
+            figdir
+            + "diag_{}_x{}_{}_y{}_t0{}_polydeg{}.png".format(
+                runid,
+                x0,
+                x1,
+                y0,
+                t0,
+                polydeg,
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
 
     time_arr = np.zeros(nsteps, dtype=float)
     time_arr[0] = t0
