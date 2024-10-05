@@ -6341,33 +6341,35 @@ def plot_timeseries_at_jets(
         except:
             continue
 
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
         xmean = props.read("x_mean")
         ymean = props.read("y_mean")
-
-        if boxre:
-            if not (
-                xmean[0] >= boxre[0]
-                and xmean[0] <= boxre[1]
-                and ymean[0] >= boxre[2]
-                and ymean[0] <= boxre[3]
-            ):
-                continue
 
         x0, y0 = (xmean[0], ymean[0])
         t0 = props.get_times()[0]
 
-        if t0 <= 400 or t0 > 1000:
+        if t0 <= 391 or t0 > 1000:
             continue
-        if tmin and t0 < tmin:
-            continue
-        if tmax and t0 > tmax:
-            continue
+        if tmin:
+            if t0 < tmin:
+                continue
+        if tmax:
+            if t0 > tmax:
+                continue
+
+        if boxre:
+            if not (
+                x0 >= boxre[0] and x0 <= boxre[1] and y0 >= boxre[2] and y0 <= boxre[3]
+            ):
+                continue
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
                 x0,
                 y0,
-                max(400, t0 - 20),
+                max(391, t0 - 20),
                 min(1000, t0 + 20),
                 n1,
             )
@@ -6377,7 +6379,7 @@ def plot_timeseries_at_jets(
             runid,
             x0,
             y0,
-            max(t0 - 20, 400),
+            max(t0 - 20, 391),
             min(t0 + 20, 1000),
             pdavg=True,
             pdx=True,
