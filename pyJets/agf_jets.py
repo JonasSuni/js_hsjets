@@ -3346,6 +3346,7 @@ def VSC_timeseries(
     integrate=None,
     prefix="",
     shift=None,
+    dirprefix="",
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3694,7 +3695,7 @@ def VSC_timeseries(
                 linewidth=0,
             )
     # plt.tight_layout()
-    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(prefix)
+    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
     txtdir = wrkdir_DNR + "txts/timeseries/"
     if not os.path.exists(figdir):
         try:
@@ -3709,8 +3710,8 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-            runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+            prefix, runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         dpi=300,
     )
@@ -6332,7 +6333,7 @@ def plot_timeseries_at_jets(
     boxre=None,
     tmin=None,
     tmax=None,
-    folder_suffix="",
+    folder_suffix="jets",
 ):
 
     for n1 in range(6000):
@@ -6384,7 +6385,8 @@ def plot_timeseries_at_jets(
             pdavg=True,
             pdx=True,
             integrate=None,
-            prefix="jets{}/{}/".format(folder_suffix, n1),
+            prefix="{}".format(n1),
+            dirprefix="{}/".format(folder_suffix),
         )
 
 
