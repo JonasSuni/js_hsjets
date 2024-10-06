@@ -3347,8 +3347,26 @@ def VSC_timeseries(
     prefix="",
     shift=None,
     dirprefix="",
+    skip=False,
 ):
     bulkpath = find_bulkpath(runid)
+
+    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
+    # fig.savefig(
+    #     figdir
+    #     + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+    #         prefix, runid, x0, y0, t0, t1, delta, mva, integrate
+    #     ),
+    #     dpi=300,
+    # )
+    if skip and os.path.isfile(
+        figdir
+        + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+            prefix, runid, x0, y0, t0, t1, delta, mva, integrate
+        )
+    ):
+        print("Skip is True and file already exists, exiting.")
+        return None
 
     var_list = [
         "proton/vg_rho",
@@ -3695,7 +3713,7 @@ def VSC_timeseries(
                 linewidth=0,
             )
     # plt.tight_layout()
-    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
+
     txtdir = wrkdir_DNR + "txts/timeseries/"
     if not os.path.exists(figdir):
         try:
@@ -6334,6 +6352,7 @@ def plot_timeseries_at_jets(
     tmin=None,
     tmax=None,
     folder_suffix="jets",
+    skip=False,
 ):
 
     for n1 in range(6000):
@@ -6385,8 +6404,10 @@ def plot_timeseries_at_jets(
             pdavg=True,
             pdx=True,
             integrate=None,
-            prefix="{}".format(n1),
+            # prefix="{}".format(n1),
+            prefix="jet",
             dirprefix="{}/".format(folder_suffix),
+            skip=skip,
         )
 
 
