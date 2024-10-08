@@ -3604,7 +3604,7 @@ def VSC_timeseries(
         plot_labels[10:13] = ["$E_N$", "$E_M$", "$E_L$"]
 
     fig, ax_list = plt.subplots(
-        len(ylabels) + 1, 1, sharex=True, figsize=(6, 8), constrained_layout=True
+        len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
     )
     ax_list[0].set_title("Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}".format(runid, x0, y0))
     for idx in range(len(var_list)):
@@ -3671,7 +3671,7 @@ def VSC_timeseries(
         if draw_legend[idx]:
             ncols = 1
             if idx == 5:
-                ncols = 2
+                ncols = 1
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
     # if integrate:
     #     ylabels.append(
@@ -3735,7 +3735,7 @@ def VSC_timeseries(
     ax_list[-1].plot(t_arr, vz_term, color=CB_color_cycle[3], label="$v_z^2$")
     ax_list[-1].plot(t_arr, corr_term, color=CB_color_cycle[4], label="Corr")
 
-    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=2)
+    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
     for vline in vlines:
         ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
     ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
