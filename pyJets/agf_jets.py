@@ -3344,7 +3344,6 @@ def VSC_timeseries(
     cutoff=0.9,
     fmt="-",
     integrate=None,
-    prefix="",
     shift=None,
     dirprefix="",
     skip=False,
@@ -3361,8 +3360,8 @@ def VSC_timeseries(
     # )
     if skip and os.path.isfile(
         figdir
-        + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-            prefix, runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+            runid, x0, y0, t0, t1, delta, mva, integrate
         )
     ):
         print("Skip is True and file already exists, exiting.")
@@ -3458,6 +3457,7 @@ def VSC_timeseries(
         for idx in range(len(ylabels)):
             ylabels[idx] = "$\\delta " + ylabels[idx][1:]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
+    pdsw_npa = m_p * 1e6 * 750e3 * 750e3 / 1e-9
     norm = [
         [
             1,
@@ -3635,6 +3635,18 @@ def VSC_timeseries(
                 linestyle="dashed",
                 label="$2\\langle P_\\mathrm{dyn}\\rangle$",
             )
+            ax.axhline(
+                0.5 * pdsw_npa,
+                color=CB_color_cycle[2],
+                linestyle="dotted",
+                label="$0.5P_\mathrm{dyn,sw}$",
+            )
+            ax.axhline(
+                0.25 * pdsw_npa,
+                color=CB_color_cycle[3],
+                linestyle="dotted",
+                label="$0.25P_\mathrm{dyn,sw}$",
+            )
         if idx == 5 and pdx:
             pdynx = (
                 m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
@@ -3657,42 +3669,73 @@ def VSC_timeseries(
                 )
         ax.set_xlim(t_arr[0], t_arr[-1])
         if draw_legend[idx]:
-            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    if integrate:
-        ylabels.append(
-            "$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]"
-        )
-        boxcar = np.ones(integrate, dtype=float) * (t_arr[1] - t_arr[0])
-        tension_x = np.convolve(data_arr[-3], boxcar, mode="same")
-        tension_y = np.convolve(data_arr[-2], boxcar, mode="same")
-        tension_z = np.convolve(data_arr[-1], boxcar, mode="same")
-    else:
-        ylabels.append("$\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$ [nPa/m]")
-        tension_x = data_arr[-3]
-        tension_y = data_arr[-2]
-        tension_z = data_arr[-1]
-    ax_list[-1].plot(
-        t_arr,
-        tension_x,
-        color=CB_color_cycle[0],
-        # label="$\\nabla p$",
-        label="x",
-    )
-    ax_list[-1].plot(
-        t_arr,
-        tension_y,
-        color=CB_color_cycle[1],
-        # label="$\\nabla (B^2/2\\mu_0)$",
-        label="y",
-    )
-    ax_list[-1].plot(
-        t_arr,
-        tension_z,
-        color=CB_color_cycle[2],
-        # label="$(B\\cdot\\nabla B)/\\mu_0$",
-        label="z",
-    )
-    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+            ncols = 1
+            if idx == 5:
+                ncols = 2
+            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
+    # if integrate:
+    #     ylabels.append(
+    #         "$\\int (\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0~dt$ [nPa s/m]"
+    #     )
+    #     boxcar = np.ones(integrate, dtype=float) * (t_arr[1] - t_arr[0])
+    #     tension_x = np.convolve(data_arr[-3], boxcar, mode="same")
+    #     tension_y = np.convolve(data_arr[-2], boxcar, mode="same")
+    #     tension_z = np.convolve(data_arr[-1], boxcar, mode="same")
+    # else:
+    #     ylabels.append("$\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$ [nPa/m]")
+    #     tension_x = data_arr[-3]
+    #     tension_y = data_arr[-2]
+    #     tension_z = data_arr[-1]
+    # ax_list[-1].plot(
+    #     t_arr,
+    #     tension_x,
+    #     color=CB_color_cycle[0],
+    #     # label="$\\nabla p$",
+    #     label="x",
+    # )
+    # ax_list[-1].plot(
+    #     t_arr,
+    #     tension_y,
+    #     color=CB_color_cycle[1],
+    #     # label="$\\nabla (B^2/2\\mu_0)$",
+    #     label="y",
+    # )
+    # ax_list[-1].plot(
+    #     t_arr,
+    #     tension_z,
+    #     color=CB_color_cycle[2],
+    #     # label="$(B\\cdot\\nabla B)/\\mu_0$",
+    #     label="z",
+    # )
+    ylabels.append("$\\delta P_{dyn}$\ncontribution")
+
+    rho_lp = data_arr[0, :]
+    vx_lp = data_arr[1, :]
+    vy_lp = data_arr[2, :]
+    vz_lp = data_arr[3, :]
+    vt_lp = data_arr[4, :]
+    pd_lp = data_arr[5, :]
+
+    rho_per_norm = (rho_lp - np.nanmean(rho_lp)) / np.nanmean(rho_lp)
+    vx2_per_norm = (vx_lp**2 - np.nanmean(vx_lp**2)) / np.nanmean(vt_lp**2)
+    vy2_per_norm = (vy_lp**2 - np.nanmean(vy_lp**2)) / np.nanmean(vt_lp**2)
+    vz2_per_norm = (vz_lp**2 - np.nanmean(vz_lp**2)) / np.nanmean(vt_lp**2)
+    vt2_per_norm = (vt_lp**2 - np.nanmean(vt_lp**2)) / np.nanmean(vt_lp**2)
+    pd_per_norm = (pd_lp - np.nanmean(pd_lp)) / np.nanmean(pd_lp)
+
+    rho_term = rho_per_norm / (pd_per_norm + 1e-27)
+    vx_term = vx2_per_norm / (pd_per_norm + 1e-27)
+    vy_term = vy2_per_norm / (pd_per_norm + 1e-27)
+    vz_term = vz2_per_norm / (pd_per_norm + 1e-27)
+    corr_term = (rho_per_norm * vt2_per_norm) / (pd_per_norm + 1e-27)
+
+    ax_list[-1].plot(t_arr, rho_term, color=CB_color_cycle[0], label="$\\rho$")
+    ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[1], label="$v_x^2$")
+    ax_list[-1].plot(t_arr, vy_term, color=CB_color_cycle[2], label="$v_y^2$")
+    ax_list[-1].plot(t_arr, vz_term, color=CB_color_cycle[3], label="$v_z^2$")
+    ax_list[-1].plot(t_arr, corr_term, color=CB_color_cycle[4], label="Corr")
+
+    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=2)
     for vline in vlines:
         ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
     ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
@@ -3728,8 +3771,8 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-            prefix, runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
+            runid, x0, y0, t0, t1, delta, mva, integrate
         ),
         dpi=300,
     )
@@ -6405,7 +6448,6 @@ def plot_timeseries_at_jets(
             pdx=True,
             integrate=None,
             # prefix="{}".format(n1),
-            prefix="jet",
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
         )
