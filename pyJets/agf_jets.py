@@ -3730,10 +3730,10 @@ def VSC_timeseries(
     # vz_term = vz2_per_norm / (pd_per_norm + 1e-27)
     # corr_term = (rho_per_norm * vt2_per_norm) / (pd_per_norm + 1e-27)
 
-    rho_term = rho_lp * np.nanmean(vt_lp**2) / (pd_lp + 1e-27)
-    vx_term = np.nanmean(rho_lp) * vx_lp**2 / (pd_lp + 1e-27)
-    vy_term = np.nanmean(rho_lp) * vy_lp**2 / (pd_lp + 1e-27)
-    vz_term = np.nanmean(rho_lp) * vz_lp**2 / (pd_lp + 1e-27)
+    rho_term = rho_lp * np.nanmean(vt_lp**2) / np.nanmean(pd_lp)
+    vx_term = np.nanmean(rho_lp) * vx_lp**2 / np.nanmean(pd_lp)
+    vy_term = np.nanmean(rho_lp) * vy_lp**2 / np.nanmean(pd_lp)
+    vz_term = np.nanmean(rho_lp) * vz_lp**2 / np.nanmean(pd_lp)
 
     ax_list[-1].plot(t_arr, rho_term, color="black", label="$\\rho$")
     ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
