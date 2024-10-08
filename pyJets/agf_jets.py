@@ -3739,6 +3739,7 @@ def VSC_timeseries(
     for vline in vlines:
         ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
     ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
+    ax_list[-1].set_ylim(-1, 1)
     ax_list[-1].set_xlabel("Simulation time [s]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
