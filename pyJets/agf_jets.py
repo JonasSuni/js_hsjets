@@ -3639,13 +3639,13 @@ def VSC_timeseries(
                 0.5 * pdsw_npa,
                 color=CB_color_cycle[2],
                 linestyle="dotted",
-                label="$0.5P_\mathrm{dyn,sw}$",
+                label="$0.5P_\\mathrm{dyn,sw}$",
             )
             ax.axhline(
                 0.25 * pdsw_npa,
                 color=CB_color_cycle[3],
                 linestyle="dotted",
-                label="$0.25P_\mathrm{dyn,sw}$",
+                label="$0.25P_\\mathrm{dyn,sw}$",
             )
         if idx == 5 and pdx:
             pdynx = (
