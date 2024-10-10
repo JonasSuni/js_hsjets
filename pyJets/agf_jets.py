@@ -6120,6 +6120,7 @@ def vdf_along_fieldline(
     max_dist=0.1,
     direction="forward",
     dr=0.1,
+    justline=False,
 ):
 
     runids = ["AGF", "AIA", "AIC"]
@@ -6172,36 +6173,46 @@ def vdf_along_fieldline(
     along_coords = [np.array([x_re, y_re, z_re])]
     traveled_dist = 0.0
     xcurr, ycurr = (x_re, y_re)
+
     if direction == "backward":
         dr_sgn = -1
     else:
         dr_sgn = 1
 
-    while len(along_cellids) < npoints:
-        Bcurr = vobj.read_interpolated_variable(
-            "vg_b_vol", [xcurr * r_e, ycurr * r_e, 0]
-        )
-        bx, by = Bcurr[:2] / np.linalg.norm(Bcurr[:2])
-        xnew, ynew = (xcurr + bx * dr * dr_sgn, ycurr + by * dr * dr_sgn)
-        curr_cell = vobj.get_cellid([xnew * r_e, ynew * r_e, 0])
-        closest_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
-        dist_to_vdf = (
-            np.linalg.norm(
-                vobj.get_cell_coordinates(curr_cell)
-                - vobj.get_cell_coordinates(closest_vdf_cell)
+    if not justline:
+
+        while len(along_cellids) < npoints:
+            Bcurr = vobj.read_interpolated_variable(
+                "vg_b_vol", [xcurr * r_e, ycurr * r_e, 0]
             )
-            / r_e
-        )
-        # print(dist_to_vdf)
-        if dist_to_vdf < max_dist and closest_vdf_cell not in along_cellids:
-            along_cellids.append(closest_vdf_cell)
-            along_coords.append(vobj.get_cell_coordinates(closest_vdf_cell) / r_e)
-        traveled_dist += dr
-        xcurr, ycurr = (xnew, ynew)
-        # print(xnew, ynew)
-        print(traveled_dist)
-        if traveled_dist > 20:
-            break
+            bx, by = Bcurr[:2] / np.linalg.norm(Bcurr[:2])
+            xnew, ynew = (xcurr + bx * dr * dr_sgn, ycurr + by * dr * dr_sgn)
+            curr_cell = vobj.get_cellid([xnew * r_e, ynew * r_e, 0])
+            closest_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
+            dist_to_vdf = (
+                np.linalg.norm(
+                    vobj.get_cell_coordinates(curr_cell)
+                    - vobj.get_cell_coordinates(closest_vdf_cell)
+                )
+                / r_e
+            )
+            # print(dist_to_vdf)
+            if dist_to_vdf < max_dist and closest_vdf_cell not in along_cellids:
+                along_cellids.append(closest_vdf_cell)
+                along_coords.append(vobj.get_cell_coordinates(closest_vdf_cell) / r_e)
+            traveled_dist += dr
+            xcurr, ycurr = (xnew, ynew)
+            # print(xnew, ynew)
+            print(traveled_dist)
+            if traveled_dist > 20:
+                break
+    else:
+        for idx in range(1, npoints):
+            curr_coord = np.array([x_re, y_re + dr_sgn * idx * 25 * 300e3 / r_e, z_re])
+            curr_cell = vobj.get_cellid(curr_coord * r_e)
+            curr_vdf_cell = getNearestCellWithVspace(vobj, curr_cell)
+            along_coords.append(vobj.get_cell_coordinates(curr_vdf_cell) / r_e)
+            along_cellids.append(curr_vdf_cell)
 
     along_coords = np.array(along_coords)
     print(along_cellids)
