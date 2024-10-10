@@ -4238,8 +4238,8 @@ def mini_jplots(
         #     XmeshXY, YmeshXY, data_arr[-2].T, [bs_thresh], colors=[CB_color_cycle[1]]
         # )
         ax.contour(
-                XmeshXY, YmeshXY, data_arr[-1].T, [3*T_sw], colors=[CB_color_cycle[1]]
-            )
+            XmeshXY, YmeshXY, data_arr[-1].T, [3 * Tsw], colors=[CB_color_cycle[1]]
+        )
         # ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
 
         ax.set_title(varname_list[idx], fontsize=24, pad=10)
