@@ -4079,6 +4079,7 @@ def mini_jplots(
         "z",
         "pass",
         "pass",
+        "pass",
     ]
     scale_list = [
         1e-3,
@@ -4091,12 +4092,15 @@ def mini_jplots(
         1e9,
         1e-6,
         1e-6,
+        1,
     ]
-    vmin = [1, -250, 0, 5, 0]
-    vmax = [5, 0, 0.3, 40, 4]
-    if delta:
-        vmin = [-1, -100, -0.25, -7.5, -1]
-        vmax = [1, 100, 0.25, 7.5, 1]
+    # vmin = [1, -250, 0, 5, 0]
+    # vmax = [5, 0, 0.3, 40, 4]
+    vmin = [-250,-250,-250,0,0,-10,-10,-10,0,0]
+    vmax = [250,250,250,5,2,10,10,10,20,20]
+    # if delta:
+    #     vmin = [-1, -100, -0.25, -7.5, -1]
+    #     vmax = [1, 100, 0.25, 7.5, 1]
 
     bulkpath = find_bulkpath(runid)
 
@@ -4157,14 +4161,14 @@ def mini_jplots(
 
     # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = [
+        "vik",
+        "vik",
+        "vik",
         "Blues_r",
         "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
-        "Blues_r",
+        "vik",
+        "vik",
+        "vik",
         "Blues_r",
         "Blues_r",
     ]
