@@ -4096,8 +4096,8 @@ def mini_jplots(
     ]
     # vmin = [1, -250, 0, 5, 0]
     # vmax = [5, 0, 0.3, 40, 4]
-    vmin = [-250,-250,-250,0,0,-10,-10,-10,0,0]
-    vmax = [250,250,250,5,2,10,10,10,20,20]
+    vmin = [-250, -250, -250, 0, 0, -10, -10, -10, 0, 0]
+    vmax = [250, 250, 250, 5, 2, 10, 10, 10, 20, 20]
     # if delta:
     #     vmin = [-1, -100, -0.25, -7.5, -1]
     #     vmax = [1, 100, 0.25, 7.5, 1]
@@ -4210,7 +4210,7 @@ def mini_jplots(
     im_list = []
     cb_list = []
     fig.suptitle(
-        "Run: {}, x0: {}, y0: {}, x1: {}, y1: {}".format(runid, x0, y0),
+        "Run: {}, x0: {}, y0: {}".format(runid, x0, y0),
         fontsize=28,
     )
     for idx in range(len(varname_list)):
