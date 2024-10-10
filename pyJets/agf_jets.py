@@ -4067,6 +4067,7 @@ def mini_jplots(
         "proton/vg_t_perpendicular",
         "proton/vg_t_parallel",
         "proton/vg_beta_star",
+        "proton/vg_t_thermal",
     ]
     ops_list = [
         "x",
@@ -4077,6 +4078,7 @@ def mini_jplots(
         "x",
         "y",
         "z",
+        "pass",
         "pass",
         "pass",
         "pass",
@@ -4093,11 +4095,13 @@ def mini_jplots(
         1e-6,
         1e-6,
         1,
+        1,
     ]
     # vmin = [1, -250, 0, 5, 0]
     # vmax = [5, 0, 0.3, 40, 4]
     vmin = [-250, -250, -250, 0, 0, -10, -10, -10, 0, 0]
     vmax = [250, 250, 250, 5, 2, 10, 10, 10, 20, 20]
+    Tsw = 500e3
     # if delta:
     #     vmin = [-1, -100, -0.25, -7.5, -1]
     #     vmax = [1, 100, 0.25, 7.5, 1]
@@ -4230,10 +4234,13 @@ def mini_jplots(
         )
         cb_list.append(fig.colorbar(im_list[-1], ax=ax))
         cb_list[-1].ax.tick_params(labelsize=20)
+        # ax.contour(
+        #     XmeshXY, YmeshXY, data_arr[-2].T, [bs_thresh], colors=[CB_color_cycle[1]]
+        # )
         ax.contour(
-            XmeshXY, YmeshXY, data_arr[-1].T, [bs_thresh], colors=[CB_color_cycle[1]]
-        )
-        ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
+                XmeshXY, YmeshXY, data_arr[-1].T, [3*T_sw], colors=[CB_color_cycle[1]]
+            )
+        # ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
 
         ax.set_title(varname_list[idx], fontsize=24, pad=10)
         ax.set_xlim(xplot_list[0], xplot_list[-1])
