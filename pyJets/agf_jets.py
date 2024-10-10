@@ -4016,21 +4016,255 @@ def calc_velocities(dx, dy, vx, vy, Bx, By, va, vs, vms):
 def mini_jplots(
     x0,
     y0,
-    x1,
-    y1,
     t0,
     t1,
+    xwidth=1,
     runid="AIC",
     bs_thresh=0.3,
     intpol=False,
     legsize=12,
     delta=None,
+    folder_suffix="",
+    skip=False,
 ):
 
     dr = 300e3 / r_e
     dr_km = 300
 
-    
+    figdir = wrkdir_DNR + "Figs/jmaps/{}".format(folder_suffix)
+    if skip and os.path.isfile(
+        figdir
+        + "{}_x0_{}_y0_{}_t0_{}_t1_{}_delta_{}.png".format(runid, x0, y0, t0, t1, delta)
+    ):
+        print("Skip is true and file already exists, skipping.")
+        return None
+
+    varname_list = [
+        "$v_x$ [km/s]",
+        "$v_y$ [km/s]",
+        "$v_z$ [km/s]",
+        "$\\rho$ [cm$^{-3}$]",
+        "$P_\\mathrm{dyn}$ [nPa]",
+        "$B_x$ [nT]",
+        "$B_y$ [nT]",
+        "$B_z$ [nT]",
+        "$T_\\perp$ [MK]",
+        "$T_\\parallel$ [MK]",
+    ]
+    if delta:
+        for idx in range(len(varname_list)):
+            varname_list[idx] = "$\\delta " + varname_list[idx][1:]
+
+    vars_list = [
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_rho",
+        "proton/vg_pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "proton/vg_t_perpendicular",
+        "proton/vg_t_parallel",
+        "proton/vg_beta_star",
+    ]
+    ops_list = [
+        "x",
+        "y",
+        "z",
+        "pass",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "pass",
+        "pass",
+    ]
+    scale_list = [
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-6,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e-6,
+        1e-6,
+    ]
+    vmin = [1, -250, 0, 5, 0]
+    vmax = [5, 0, 0.3, 40, 4]
+    if delta:
+        vmin = [-1, -100, -0.25, -7.5, -1]
+        vmax = [1, 100, 0.25, 7.5, 1]
+
+    bulkpath = find_bulkpath(runid)
+
+    fnr0 = int(t0 * 2)
+    fnr1 = int(t1 * 2)
+
+    fnr_range = np.arange(fnr0, fnr1 + 1, 1, dtype=int)
+    t_range = np.arange(t0, t1 + 0.1, 0.5)
+
+    npoints = int((2 * xwidth) / dr) + 1
+
+    xlist = np.linspace(x0 - xwidth, x0 + xwidth, npoints)
+
+    if intpol:
+        coords = [[xlist[idx] * r_e, y0 * r_e, 0] for idx in range(xlist.size)]
+
+    fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
+
+    cellids = [
+        int(fobj.get_cellid([xlist[idx] * r_e, y0 * r_e, 0]))
+        for idx in range(xlist.size)
+    ]
+    xplot_list = xlist
+    xlab = "$X~[R_\\mathrm{E}]$"
+    XmeshXY, YmeshXY = np.meshgrid(xlist, t_range)
+
+    data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
+
+    for idx in range(fnr_range.size):
+        fnr = fnr_range[idx]
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        for idx2 in range(len(vars_list)):
+            if intpol:
+                data_arr[idx2, :, idx] = [
+                    vlsvobj.read_interpolated_variable(
+                        vars_list[idx2], coords[idx3], operator=ops_list[idx2]
+                    )
+                    * scale_list[idx2]
+                    for idx3 in range(xlist.size)
+                ]
+            else:
+                data_arr[idx2, :, idx] = (
+                    vlsvobj.read_variable(
+                        vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                    )
+                    * scale_list[idx2]
+                )
+
+    if delta:
+        for idx in range(len(varname_list)):
+            for idx2 in range(xplot_list.size):
+                # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
+                data_arr[idx, idx2, :] = data_arr[idx, idx2, :] - uniform_filter1d(
+                    data_arr[idx, idx2, :], size=delta
+                )
+
+    # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
+    cmap = [
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+        "Blues_r",
+    ]
+    if delta:
+        cmap = [
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+            "vik",
+        ]
+    annot = [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+    ]
+
+    fig, ax_list = plt.subplots(
+        2,
+        5,
+        figsize=(20, 8),
+        sharex=True,
+        sharey=True,
+        constrained_layout=True,
+    )
+    ax_list = ax_list.flatten()
+    im_list = []
+    cb_list = []
+    fig.suptitle(
+        "Run: {}, x0: {}, y0: {}, x1: {}, y1: {}".format(runid, x0, y0),
+        fontsize=28,
+    )
+    for idx in range(len(varname_list)):
+        ax = ax_list[idx]
+        ax.tick_params(labelsize=20)
+        im_list.append(
+            ax.pcolormesh(
+                XmeshXY,
+                YmeshXY,
+                data_arr[idx].T,
+                shading="nearest",
+                cmap=cmap[idx],
+                vmin=vmin[idx],
+                vmax=vmax[idx],
+                rasterized=True,
+            )
+        )
+        cb_list.append(fig.colorbar(im_list[-1], ax=ax))
+        cb_list[-1].ax.tick_params(labelsize=20)
+        ax.contour(
+            XmeshXY, YmeshXY, data_arr[-1].T, [bs_thresh], colors=[CB_color_cycle[1]]
+        )
+        ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
+
+        ax.set_title(varname_list[idx], fontsize=24, pad=10)
+        ax.set_xlim(xplot_list[0], xplot_list[-1])
+        ax.set_ylim(t_range[0], t_range[-1])
+        if idx in [5, 6, 7, 8, 9]:
+            ax.set_xlabel(xlab, fontsize=24, labelpad=10)
+        ax.annotate(
+            annot[idx],
+            (0.05, 0.90),
+            xycoords="axes fraction",
+            fontsize=24,
+            bbox=dict(
+                boxstyle="square,pad=0.15",
+                fc="white",
+                ec="k",
+                lw=0.5,
+            ),
+        )
+    ax_list[0].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+    ax_list[5].set_ylabel("Simulation time [s]", fontsize=28, labelpad=10)
+    # ax_list[0].legend(fontsize=legsize, loc="lower left", ncols=2)
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    fig.savefig(
+        figdir
+        + "{}_x0_{}_y0_{}_t0_{}_t1_{}_delta_{}.png".format(
+            runid, x0, y0, t0, t1, delta
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
 
 
 def jplots(
