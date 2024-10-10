@@ -1542,6 +1542,7 @@ def mms_tension_vel(
     filt=None,
     species="i",
     lpfilt=None,
+    dBzdt=False,
 ):
 
     t0plot = datetime.strptime(t0, "%Y-%m-%d/%H:%M:%S")
@@ -1692,6 +1693,10 @@ def mms_tension_vel(
     rel_pos = [
         np.nanmean(sc_pos[idx][1] - sc_pos[0][1], axis=-1).T for idx in range(1, 4)
     ]
+    if dBzdt:
+        BforTiming = [np.gradient(data_arr[idx, 5, :], dt) for idx in range(4)]
+    else:
+        BforTiming = [data_arr[idx, 5, :] for idx in range(4)]
 
     timing = timing_analysis_arb(
         [
@@ -1701,10 +1706,10 @@ def mms_tension_vel(
             time_arr,
         ],
         [
-            data_arr[0, 5, :],
-            data_arr[1, 5, :],
-            data_arr[2, 5, :],
-            data_arr[3, 5, :],
+            BforTiming[0],
+            BforTiming[1],
+            BforTiming[2],
+            BforTiming[3],
         ],
         rel_pos,
         prnt=False,
