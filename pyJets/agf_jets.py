@@ -5798,7 +5798,7 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
     ax.set_ylabel("Y0 [RE]")
-    ax.set_xlabel("t [s]")
+    ax.set_xlabel("t0 [s]")
 
     figdir = wrkdir_DNR + "Figs/"
 
