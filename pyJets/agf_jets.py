@@ -5753,7 +5753,7 @@ def vdf_along_fieldline(
     return None
 
 
-def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax):
+def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
 
     y_values = []
     t_values = []
@@ -5774,8 +5774,11 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax):
         ymean = props.read("y_mean")
 
         x0, y0 = (xmean[0], ymean[0])
-        t0 = props.get_times()[0]
+        t = props.get_times()
+        t0 = t[0]
 
+        if t[-1] - t[0] < minduration + 0.5:
+            continue
         if t0 < tmin:
             continue
         if t0 > tmax:
