@@ -5777,7 +5777,7 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
         t = props.get_times()
         t0 = t[0]
 
-        if t[-1] - t[0] < minduration + 0.5:
+        if t[-1] - t[0] + 0.5 < minduration:
             continue
         if t0 < tmin:
             continue
