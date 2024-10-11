@@ -5753,6 +5753,56 @@ def vdf_along_fieldline(
     return None
 
 
+def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax):
+
+    y_values = []
+    t_values = []
+
+    for n1 in range(6000):
+        try:
+            props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        if "splinter" in props.meta:
+            continue
+
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
+
+        x0, y0 = (xmean[0], ymean[0])
+        t0 = props.get_times()[0]
+
+        if t0 < tmin:
+            continue
+        if t0 > tmax:
+            continue
+        if y0 < ymin:
+            continue
+        if y0 > ymax:
+            continue
+
+        y_values.append(y0)
+        t_values.append(t0)
+
+    fig, ax = plt.subplots(1, 1, figsize=(8, 12), constrained_layout=True)
+
+    ax.plot(y_values, t_values, "o", color=CB_color_cycle[0])
+    ax.grid()
+    ax.set_xlim(ymin, ymax)
+    ax.set_ylim(tmin, tmax)
+    ax.set_xlabel("Y0 [RE]")
+    ax.set_ylabel("t [s]")
+
+    figdir = wrkdir_DNR + "Figs/"
+
+    fig.savefig(figdir + "formation_postime.png", dpi=300)
+    plt.close(fig)
+
+
 def plot_timeseries_at_jets(
     runid,
     boxre=None,
