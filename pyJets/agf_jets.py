@@ -5788,14 +5788,14 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax):
         y_values.append(y0)
         t_values.append(t0)
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 12), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
 
-    ax.plot(y_values, t_values, "o", color=CB_color_cycle[0])
+    ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
     ax.grid()
-    ax.set_xlim(ymin, ymax)
-    ax.set_ylim(tmin, tmax)
-    ax.set_xlabel("Y0 [RE]")
-    ax.set_ylabel("t [s]")
+    ax.set_ylim(ymin, ymax)
+    ax.set_xlim(tmin, tmax)
+    ax.set_ylabel("Y0 [RE]")
+    ax.set_xlabel("t [s]")
 
     figdir = wrkdir_DNR + "Figs/"
 
