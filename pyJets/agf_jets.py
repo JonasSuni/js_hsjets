@@ -5808,7 +5808,7 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
         y_values,
         s=maxsize_values,
         c=duration_values,
-        cmap="batlow",
+        cmap="lipari",
         marker="o",
         norm="log",
         alpha=0.5,
