@@ -5803,7 +5803,9 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
-    ax.scatter(t_values, y_values, c=maxsize_values, cmap="batlow", marker="o")
+    ax.scatter(
+        t_values, y_values, c=maxsize_values, cmap="batlow", marker="o", norm="log"
+    )
     ax.grid()
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
