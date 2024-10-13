@@ -5753,7 +5753,9 @@ def vdf_along_fieldline(
     return None
 
 
-def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
+def plot_jet_formation_postime(
+    runid, ymin, ymax, tmin, tmax, minduration=0.0, cmap="lipari"
+):
 
     y_values = []
     t_values = []
@@ -5808,10 +5810,11 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
         y_values,
         s=maxsize_values,
         c=duration_values,
-        cmap="lipari",
+        cmap=cmap,
         marker="o",
         norm="log",
         alpha=0.5,
+        edgecolors="k",
     )
     ax.grid()
     ax.set_ylim(ymin, ymax)
