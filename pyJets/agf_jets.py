@@ -5757,6 +5757,8 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
 
     y_values = []
     t_values = []
+    maxsize_values = []
+    duration_values = []
 
     for n1 in range(6000):
         try:
@@ -5776,10 +5778,11 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
         x0, y0 = (xmean[0], ymean[0])
         t = props.get_times()
         t0 = t[0]
+        duration = t[-1] - t[0] + 0.5
 
         if np.sqrt(x0**2 + y0**2) < 8:
             continue
-        if t[-1] - t[0] + 0.5 < minduration:
+        if duration < minduration:
             continue
         if t0 < tmin:
             continue
@@ -5790,12 +5793,17 @@ def plot_jet_formation_postime(runid, ymin, ymax, tmin, tmax, minduration=0.0):
         if y0 > ymax:
             continue
 
+        maxsize = max(props.read("Nr_cells"))
+
         y_values.append(y0)
         t_values.append(t0)
+        maxsize_values.append(maxsize)
+        duration_values.append(duration)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
 
-    ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
+    # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
+    ax.scatter(t_values, y_values, c=maxsize_values, cmap="batlow", marker="o")
     ax.grid()
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
