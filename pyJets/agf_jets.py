@@ -3063,17 +3063,7 @@ def VSC_cut_through(
                 )
                 * scales[idx2]
             )
-        # data_arr[idx2 + 1, idx] = np.linalg.norm(
-        #     pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
-        # )
-        # data_arr[idx2 + 2, idx] = np.linalg.norm(
-        #     pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9
-        # )
-        # data_arr[idx2 + 3, idx] = np.linalg.norm(pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx]) * 1e9)
         data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            # pos_pressure_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            # + pos_mag_gradient(vlsvobj, x_arr[idx], y_arr[idx])
-            # + pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
             pos_mag_tension(vlsvobj, x_arr[idx], y_arr[idx])
         )
 
@@ -3338,10 +3328,6 @@ def VSC_timeseries(
     delta=None,
     vlines=[],
     mva=False,
-    mva_diag=False,
-    grain=1,
-    maxwidth=None,
-    cutoff=0.9,
     fmt="-",
     integrate=None,
     shift=None,
