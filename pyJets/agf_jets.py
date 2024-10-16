@@ -3056,7 +3056,7 @@ def VSC_cut_through(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
     cellids = np.array(
-        [vlsvobj.get_cellid(x_arr[idx], y_arr[idx], 0) for idx in range(len(x_arr))]
+        [vlsvobj.get_cellid([x_arr[idx], y_arr[idx], 0]) for idx in range(len(x_arr))]
     )
     cellid_coords = np.array(
         [vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]
