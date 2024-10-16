@@ -5881,8 +5881,8 @@ def plot_jet_formation_postime(
     ax.grid()
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
-    ax.set_ylabel("Y0 [RE]", fontsize=20, labelpad=10)
-    ax.set_xlabel("t0 [s]", fontsize=20, labelpad=10)
+    ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
+    ax.set_xlabel("$t_0~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
 
     figdir = wrkdir_DNR + "Figs/"
