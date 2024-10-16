@@ -3119,19 +3119,19 @@ def VSC_cut_through(
                     2 * pdavg_arr_interp,
                     color=CB_color_cycle[1],
                     linestyle="dashed",
-                    label="$2\\langleP_\\mathrm{dyn}\\rangle$",
+                    label="$2\\langle P_\\mathrm{dyn} \\rangle$",
                 )
                 ax.axhline(
                     0.25 * pdsw,
                     linestyle="dotted",
                     color=CB_color_cycle[2],
-                    label="0.25P_\\mathrm{dyn,sw}",
+                    label="$0.25P_\\mathrm{dyn,sw}$",
                 )
                 ax.axhline(
                     0.5 * pdsw,
                     linestyle="dotted",
                     color=CB_color_cycle[3],
-                    label="0.5P_\\mathrm{dyn,sw}",
+                    label="$0.5P_\\mathrm{dyn,sw}$",
                 )
 
         ax.set_xlim(n_arr[0], n_arr[-1])
