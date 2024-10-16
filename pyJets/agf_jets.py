@@ -1969,7 +1969,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     gprox_labs = proxy_labs
 
 
-def get_jets(runid):
+def get_jets(runid, min_duration=0):
     non_ids = []
 
     singular_counter = 0
@@ -1981,6 +1981,9 @@ def get_jets(runid):
             continue
 
         if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        if props.read("time")[-1] - props.read("time")[0] + 0.5 < min_duration:
             continue
 
         # if props.read("time")[0] == 290.0:
@@ -2187,6 +2190,7 @@ def v5_plotter(
     usesci=0,
     magtenvec=False,
     pt_blines=False,
+    min_duration=0,
 ):
 
     if magten:
@@ -2237,7 +2241,7 @@ def v5_plotter(
     bulkpath = find_bulkpath(runid)
 
     if track_jets:
-        non_ids = get_jets(runid)
+        non_ids = get_jets(runid, min_duration=min_duration)
     else:
         non_ids = []
 
@@ -5811,7 +5815,7 @@ def vdf_along_fieldline(
 
 
 def plot_jet_formation_postime(
-    runid, ymin, ymax, tmin, tmax, minduration=0.0, cmap="lipari"
+    runid, ymin, ymax, tmin, tmax, minduration=0.0, minsize=0, cmap="lipari"
 ):
 
     y_values = []
@@ -5838,10 +5842,13 @@ def plot_jet_formation_postime(
         t = props.get_times()
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
+        maxsize = max(props.read("Nr_cells"))
 
         if np.sqrt(x0**2 + y0**2) < 8:
             continue
         if duration < minduration:
+            continue
+        if maxsize < minsize:
             continue
         if t0 < tmin:
             continue
@@ -5851,8 +5858,6 @@ def plot_jet_formation_postime(
             continue
         if y0 > ymax:
             continue
-
-        maxsize = max(props.read("Nr_cells"))
 
         y_values.append(y0)
         t_values.append(t0)
@@ -5876,8 +5881,9 @@ def plot_jet_formation_postime(
     ax.grid()
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
-    ax.set_ylabel("Y0 [RE]")
-    ax.set_xlabel("t0 [s]")
+    ax.set_ylabel("Y0 [RE]", fontsize=20, labelpad=10)
+    ax.set_xlabel("t0 [s]", fontsize=20, labelpad=10)
+    ax.tick_params(labelsize=16)
 
     figdir = wrkdir_DNR + "Figs/"
 
