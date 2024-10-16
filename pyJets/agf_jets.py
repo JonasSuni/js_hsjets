@@ -2894,6 +2894,7 @@ def VSC_cut_through(
     vlines=[],
     fourier=None,
     pdavg=False,
+    plot_gyro=False,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3137,28 +3138,51 @@ def VSC_cut_through(
         ax.set_xlim(n_arr[0], n_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-    # ylabels.append("$n_F$ [nPa/m]")
-    ylabels.append("$(\\mathbf{B}\\cdot\\nabla)\\mathbf{B}/\\mu_0$")
+
+    ylabels.append("$P_\\mathrm{dyn}$ contribution")
+
+    avg_pdyn = np.nanmean(data_arr[5, :]) * 1e-9
+    avg_rho = np.nanmean(data_arr[0, :]) * 1e6
+    # avg_vx2 = np.nanmean(data_arr[1,:]*data_arr[1,:])*1e6
+    # avg_vy2 = np.nanmean(data_arr[2,:]*data_arr[2,:])*1e6
+    # avg_vz2 = np.nanmean(data_arr[3,:]*data_arr[3,:])*1e6
+    avg_vt2 = np.nanmean(data_arr[4, :] * data_arr[4, :]) * 1e6
+
+    rho_contrib = m_p * data_arr[0, :] * 1e6 * avg_vt2 / (avg_pdyn + 1e-27)
+    vx2_contrib = (
+        m_p * avg_rho * (data_arr[1, :] * data_arr[1, :]) * 1e6 / (avg_pdyn + 1e-27)
+    )
+    vy2_contrib = (
+        m_p * avg_rho * (data_arr[2, :] * data_arr[2, :]) * 1e6 / (avg_pdyn + 1e-27)
+    )
+    vz2_contrib = (
+        m_p * avg_rho * (data_arr[3, :] * data_arr[3, :]) * 1e6 / (avg_pdyn + 1e-27)
+    )
+
     ax_list[-1].plot(
         n_arr,
-        data_arr[-3],
-        color=CB_color_cycle[0],
+        rho_contrib,
+        color="k",
         # label="$\\nabla p$",
-        label="x",
+        label="$\\rho$",
     )
     ax_list[-1].plot(
         n_arr,
-        data_arr[-2],
+        vx2_contrib,
+        color=CB_color_cycle[0],
+        label="$v_x^2$",
+    )
+    ax_list[-1].plot(
+        n_arr,
+        vy2_contrib,
         color=CB_color_cycle[1],
-        # label="$\\nabla (B^2/2\\mu_0)$",
-        label="y",
+        label="$v_y^2$",
     )
     ax_list[-1].plot(
         n_arr,
-        data_arr[-1],
+        vz2_contrib,
         color=CB_color_cycle[2],
-        # label="$(B\\cdot\\nabla B)/\\mu_0$",
-        label="z",
+        label="$v_z^2$",
     )
     ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
     for vline in vlines:
@@ -3209,44 +3233,45 @@ def VSC_cut_through(
     )
     plt.close(fig)
 
-    gyroperiod = 2 * np.pi / (q_p * data_arr[9, :] * 1e-9 / m_p)
-    vel_magnitude = data_arr[4, :] * 1e3
-    gyro_distance = gyroperiod * vel_magnitude
+    if plot_gyro:
+        gyroperiod = 2 * np.pi / (q_p * data_arr[9, :] * 1e-9 / m_p)
+        vel_magnitude = data_arr[4, :] * 1e3
+        gyro_distance = gyroperiod * vel_magnitude
 
-    fig, ax_list = plt.subplots(3, 1, figsize=(9, 9), constrained_layout=True)
+        fig, ax_list = plt.subplots(3, 1, figsize=(9, 9), constrained_layout=True)
 
-    ax_list[0].plot(n_arr, gyroperiod)
-    ax_list[0].set_ylabel("Gyroperiod [s]")
+        ax_list[0].plot(n_arr, gyroperiod)
+        ax_list[0].set_ylabel("Gyroperiod [s]")
 
-    ax_list[1].plot(n_arr, vel_magnitude * 1e-3)
-    ax_list[1].set_ylabel("Plasma speed [km/s]")
+        ax_list[1].plot(n_arr, vel_magnitude * 1e-3)
+        ax_list[1].set_ylabel("Plasma speed [km/s]")
 
-    ax_list[2].plot(n_arr, gyro_distance / r_e)
-    ax_list[2].set_ylabel("Gyro distance [RE]")
+        ax_list[2].plot(n_arr, gyro_distance / r_e)
+        ax_list[2].set_ylabel("Gyro distance [RE]")
 
-    ax_list[-1].set_xlabel("Point along cut")
-    ax_list[0].set_title(
-        "Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0), (x1, y1))
-    )
+        ax_list[-1].set_xlabel("Point along cut")
+        ax_list[0].set_title(
+            "Run: {}, $(x,y)_0$: {}, $(x,y)_1$: {}".format(runid, (x0, y0), (x1, y1))
+        )
 
-    for ax in ax_list:
-        ax.set_xlim(n_arr[0], n_arr[-1])
-        ax.grid()
-        ax.label_outer()
+        for ax in ax_list:
+            ax.set_xlim(n_arr[0], n_arr[-1])
+            ax.grid()
+            ax.label_outer()
 
-    fig.savefig(
-        figdir
-        + "Gyro_{}_x{}_{}_y{}_{}_t0{}.png".format(
-            runid,
-            x0,
-            x1,
-            y0,
-            y1,
-            t0,
-        ),
-        dpi=300,
-    )
-    plt.close(fig)
+        fig.savefig(
+            figdir
+            + "Gyro_{}_x{}_{}_y{}_{}_t0{}.png".format(
+                runid,
+                x0,
+                x1,
+                y0,
+                y1,
+                t0,
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
 
     if fourier:
         fourier_var = data_arr[fourier - 1]
