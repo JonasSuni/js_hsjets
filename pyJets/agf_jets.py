@@ -2893,6 +2893,7 @@ def VSC_cut_through(
     pdx=False,
     vlines=[],
     fourier=None,
+    pdavg=False,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -2983,6 +2984,7 @@ def VSC_cut_through(
         # "$T~[T_\\mathrm{sw}]$",
     ]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
+    pdsw = m_p * 1e6 * 750e3 * 750e3 * 1e9
     norm = [
         [
             1,
@@ -3053,6 +3055,21 @@ def VSC_cut_through(
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
+    cellids = np.array(
+        [vlsvobj.get_cellid(x_arr[idx], y_arr[idx], 0) for idx in range(len(x_arr))]
+    )
+    cellid_coords = np.array(
+        [vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]
+    )
+    try:
+        pdavg_arr = np.loadtxt(tavgdir + "/" + runid + "/" + str(fnr0) + "_pdyn.tavg")[
+            cellids - 1
+        ]
+        pdavg_arr_interp = np.interp(x_arr, cellid_coords[:, 0], pdavg_arr) * 1e9
+    except:
+        pdavg_arr = np.empty_like(x_arr)
+        pdavg_arr[:] = np.nan
+        pdavg_arr_interp = pdavg_arr * 1e9
 
     for idx in range(x_arr.size):
 
@@ -3078,16 +3095,45 @@ def VSC_cut_through(
         for vline in vlines:
             ax.axvline(vline, linestyle="dashed", linewidth=0.6)
         ax.plot(n_arr, data_arr[idx], color=plot_colors[idx], label=plot_labels[idx])
-        if idx == 5 and pdx:
-            pdynx = (
-                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
-            )
-            ax.plot(
-                n_arr,
-                pdynx,
-                color=CB_color_cycle[0],
-                label="$P_{\\mathrm{dyn},x}$",
-            )
+        if idx == 5:
+            if pdx:
+                pdynx = (
+                    m_p
+                    * data_arr[0]
+                    * 1e6
+                    * data_arr[1]
+                    * 1e3
+                    * data_arr[1]
+                    * 1e3
+                    * 1e9
+                )
+                ax.plot(
+                    n_arr,
+                    pdynx,
+                    color=CB_color_cycle[0],
+                    label="$P_{\\mathrm{dyn},x}$",
+                )
+            if pdavg:
+                ax.plot(
+                    n_arr,
+                    2 * pdavg_arr_interp,
+                    color=CB_color_cycle[1],
+                    linestyle="dashed",
+                    label="$2\\langleP_\\mathrm{dyn}\\rangle$",
+                )
+                ax.axhline(
+                    0.25 * pdsw,
+                    linestyle="dotted",
+                    color=CB_color_cycle[2],
+                    label="0.25P_\\mathrm{dyn,sw}",
+                )
+                ax.axhline(
+                    0.5 * pdsw,
+                    linestyle="dotted",
+                    color=CB_color_cycle[3],
+                    label="0.5P_\\mathrm{dyn,sw}",
+                )
+
         ax.set_xlim(n_arr[0], n_arr[-1])
         if draw_legend[idx]:
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
