@@ -1968,9 +1968,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             proxy_labs,
             frameon=True,
             numpoints=1,
-            markerscale=1,
+            markerscale=1 * highres_g,
             loc="lower left",
-            fontsize=5,
+            fontsize=5 * highres_g,
         )
 
     global gprox, gprox_labs
