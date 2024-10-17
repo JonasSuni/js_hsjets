@@ -2198,6 +2198,7 @@ def v5_plotter(
     pt_blines=False,
     min_duration=0,
     minsize=0,
+    highres=None,
 ):
 
     if magten:
@@ -2308,6 +2309,7 @@ def v5_plotter(
             boxre=boxre,
             internalcb=False,
             lin=lin,
+            highres=highres,
             colormap=cmap,
             tickinterval=tickint,
             fsaved=fsaved,
