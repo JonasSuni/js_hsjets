@@ -1737,9 +1737,9 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             start_points=start_points,
         )
 
-    lws = 0.6
-    mrks = 2
-    mews = 0.4
+    lws = 0.3 * highres_g
+    mrks = 2 * highres_g
+    mews = 0.4 * highres_g
 
     if draw_qperp:
         by_mask = np.ones_like(By, dtype=int)
@@ -1784,22 +1784,23 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         linestyles=["solid"],
     )
 
-    # ch_cont = ax.contour(
-    #     XmeshXY,
-    #     YmeshXY,
-    #     ch_mask,
-    #     [0.5],
-    #     linewidths=lws,
-    #     colors=CB_color_cycle[1],
-    #     linestyles=["solid"],
-    # )
+    if chg:
+        ch_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            ch_mask,
+            [0.5],
+            linewidths=lws,
+            colors=CB_color_cycle[1],
+            linestyles=["solid"],
+        )
     bs_cont = ax.contour(
         XmeshXY,
         YmeshXY,
         beta_star,
         [0.3],
         linewidths=lws,
-        colors=CB_color_cycle[1],
+        colors=CB_color_cycle[0],
         linestyles=["solid"],
     )
 
@@ -1892,18 +1893,27 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #         "FCS-jet"
     #     )
 
-    proxy_labs = [
-        # "$n=2n_\\mathrm{sw}$",
-        # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-        "$\\beta^* = 0.3$",
-        # "$M_{\\mathrm{MS},x}=1$",
-        # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
-    ]
+    # proxy_labs = [
+    #     # "$n=2n_\\mathrm{sw}$",
+    #     # "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
+    #     "$\\beta^* = 0.3$",
+    #     # "$M_{\\mathrm{MS},x}=1$",
+    #     # "$P_\\mathrm{dyn,x}>0.25 P_\\mathrm{dyn,sw}$",
+    # ]
 
-    proxy = [
-        mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
-        for itr in range(len(proxy_labs))
-    ]
+    # proxy = [
+    #     mlines.Line2D([], [], color=CB_color_cycle[itr_jumbled[itr]])
+    #     for itr in range(len(proxy_labs))
+    # ]
+    proxy = []
+    proxy_labs = []
+
+    proxy.append(mlines.Line2D([], [], color=CB_color_cycle[0]))
+    proxy_labs.append("$\\beta^* = 0.3$")
+
+    if chg:
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[1]))
+        proxy_labs.append("$T_\\mathrm{core}=3T_\\mathrm{sw}$")
 
     xmin, xmax, ymin, ymax = (
         np.min(XmeshXY),
@@ -2200,6 +2210,7 @@ def v5_plotter(
     minsize=0,
     highres=None,
     plot_fluxfunc=False,
+    draw_ch=False,
 ):
 
     if magten:
@@ -2218,7 +2229,7 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g
     umagten_g = magtenvec
     runid_g = runid
     Blines_g = blines
@@ -2226,6 +2237,8 @@ def v5_plotter(
     plaschke_g = False
     leg_g = leg
     draw_qperp = qperp
+    chg = draw_ch
+    highres_g = highres
 
     global xg, yg, linsg, lineg
     xg = pointsx
