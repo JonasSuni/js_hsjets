@@ -2197,6 +2197,7 @@ def v5_plotter(
     magtenvec=False,
     pt_blines=False,
     min_duration=0,
+    minsize=0,
 ):
 
     if magten:
@@ -2247,7 +2248,7 @@ def v5_plotter(
     bulkpath = find_bulkpath(runid)
 
     if track_jets:
-        non_ids = get_jets(runid, min_duration=min_duration)
+        non_ids = get_jets(runid, min_duration=min_duration,minsize=minsize)
     else:
         non_ids = []
 
