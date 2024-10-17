@@ -1969,10 +1969,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     gprox_labs = proxy_labs
 
 
-def get_jets(runid, min_duration=0):
+def get_jets(runid, min_duration=0, minsize=0):
     non_ids = []
 
-    singular_counter = 0
+    # singular_counter = 0
 
     for n1 in range(6000):
         try:
@@ -1984,6 +1984,12 @@ def get_jets(runid, min_duration=0):
             continue
 
         if props.read("time")[-1] - props.read("time")[0] + 0.5 < min_duration:
+            continue
+
+        if max(props.read("Nr_cells")) < minsize:
+            continue
+
+        if np.sqrt(props.read("x_mean") ** 2 + props.read("y_mean") ** 2)[0] < 8:
             continue
 
         # if props.read("time")[0] == 290.0:
