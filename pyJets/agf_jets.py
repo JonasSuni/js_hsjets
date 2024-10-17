@@ -2199,6 +2199,7 @@ def v5_plotter(
     min_duration=0,
     minsize=0,
     highres=None,
+    plot_fluxfunc=False,
 ):
 
     if magten:
@@ -2292,6 +2293,19 @@ def v5_plotter(
 
         vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
 
+        if plot_fluxfunc:
+            fluxfile = fname + ".bin"
+            fluxdir = bulkpath + "../fluxfunction"
+            flux_levels = None
+            fluxthick = 1.0
+            fluxlines = 1
+        else:
+            fluxfile = None
+            fluxdir = None
+            flux_levels = None
+            fluxthick = 1.0
+            fluxlines = 1
+
         pt.plot.plot_colormap(
             vlsvobj=vobj,
             outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
@@ -2334,6 +2348,11 @@ def v5_plotter(
             streamlinedensity=0.3,
             streamlinecolor="white",
             streamlinethick=0.8,
+            fluxfile=fluxfile,
+            fluxdir=fluxdir,
+            flux_levels=flux_levels,
+            fluxthick=fluxthick,
+            fluxlines=fluxlines,
         )
 
 
