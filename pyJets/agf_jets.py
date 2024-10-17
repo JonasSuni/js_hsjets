@@ -1737,7 +1737,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             start_points=start_points,
         )
 
-    lws = 0.3 * highres_g
+    lws = 0.4 * highres_g
     mrks = 2 * highres_g
     mews = 0.4 * highres_g
 
