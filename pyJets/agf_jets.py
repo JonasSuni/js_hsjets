@@ -2297,8 +2297,8 @@ def v5_plotter(
             fluxfile = vlasdir + "/2D/AIC/fluxfunction/" + fname + ".bin"
             fluxdir = None
             flux_levels = None
-            fluxthick = 1.0
-            fluxlines = 1
+            fluxthick = 0.5
+            fluxlines = 5
         else:
             fluxfile = None
             fluxdir = None
