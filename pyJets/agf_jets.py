@@ -2295,7 +2295,7 @@ def v5_plotter(
 
         if plot_fluxfunc:
             fluxfile = fname + ".bin"
-            fluxdir = bulkpath + "../fluxfunction"
+            fluxdir = vlasdir + "/2D/AIC/fluxfunction"
             flux_levels = None
             fluxthick = 1.0
             fluxlines = 1
