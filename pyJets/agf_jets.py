@@ -1836,15 +1836,16 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     #     linestyles=["solid"],
     # )
 
-    # mach_cont = ax.contour(
-    #     XmeshXY,
-    #     YmeshXY,
-    #     mach_mask,
-    #     [0.5],
-    #     linewidths=lws,
-    #     colors=CB_color_cycle[4],
-    #     linestyles=["solid"],
-    # )
+    if mmsg:
+        mach_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            mach_mask,
+            [0.5],
+            linewidths=lws,
+            colors=CB_color_cycle[3],
+            linestyles=["solid"],
+        )
 
     (non_pos,) = ax.plot(
         non_xlist,
@@ -1916,6 +1917,10 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     if chg:
         proxy.append(mlines.Line2D([], [], color=CB_color_cycle[1]))
         proxy_labs.append("$T_\\mathrm{core}=3T_\\mathrm{sw}$")
+
+    if mmsg:
+        proxy.append(mlines.Line2D([], [], color=CB_color_cycle[3]))
+        proxy_labs.append("$M_{\\mathrm{MS},x}=1$")
 
     xmin, xmax, ymin, ymax = (
         np.min(XmeshXY),
@@ -2214,6 +2219,7 @@ def v5_plotter(
     plot_fluxfunc=False,
     draw_ch=False,
     draw_bs=True,
+    draw_mms=False,
 ):
 
     if magten:
@@ -2232,7 +2238,7 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg
     umagten_g = magtenvec
     runid_g = runid
     Blines_g = blines
@@ -2243,6 +2249,7 @@ def v5_plotter(
     chg = draw_ch
     highres_g = highres
     bsg = draw_bs
+    mmsg = draw_mms
 
     global xg, yg, linsg, lineg
     xg = pointsx
