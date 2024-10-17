@@ -2294,8 +2294,8 @@ def v5_plotter(
         vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
 
         if plot_fluxfunc:
-            fluxfile = fname + ".bin"
-            fluxdir = vlasdir + "/2D/AIC/fluxfunction"
+            fluxfile = vlasdir + "/2D/AIC/fluxfunction/" + fname + ".bin"
+            fluxdir = None
             flux_levels = None
             fluxthick = 1.0
             fluxlines = 1
