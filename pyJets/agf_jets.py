@@ -2248,7 +2248,7 @@ def v5_plotter(
     bulkpath = find_bulkpath(runid)
 
     if track_jets:
-        non_ids = get_jets(runid, min_duration=min_duration,minsize=minsize)
+        non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
     else:
         non_ids = []
 
