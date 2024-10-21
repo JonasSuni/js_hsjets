@@ -3879,6 +3879,7 @@ def VSC_timeseries(
                 )
 
         ax.set_title("Variable cross-correlation")
+        ax.spines[:].set_visible(False)
         fig.tight_layout()
         fig.savefig(
             figdir
@@ -3895,7 +3896,7 @@ def calc_cross_correlation(var1, var2):
     var1_standard = (var1 - np.nanmean(var1)) / (np.nanstd(var1, ddof=1) * var1.size)
     var2_standard = (var2 - np.nanmean(var2)) / (np.nanstd(var2, ddof=1))
 
-    return np.correlate(var1_standard, var2_standard)[1]
+    return np.correlate(var1_standard, var2_standard, mode="full")[0]
 
 
 def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=False):
