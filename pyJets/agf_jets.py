@@ -3454,12 +3454,11 @@ def VSC_timeseries(
     pdx=False,
     delta=None,
     vlines=[],
-    mva=False,
     fmt="-",
-    integrate=None,
     shift=None,
     dirprefix="",
     skip=False,
+    corr_matrix=False,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3473,8 +3472,8 @@ def VSC_timeseries(
     # )
     if skip and os.path.isfile(
         figdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-            runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
+            runid, x0, y0, t0, t1, delta
         )
     ):
         print("Skip is True and file already exists, exiting.")
@@ -3663,12 +3662,12 @@ def VSC_timeseries(
                 * scales[idx2]
                 # / run_norm[idx2]
             )
-        data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-            pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-        )
+        # data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
+        #     # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+        #     # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+        #     # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+        #     pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+        # )
         # except:
         #     print("Something went wrong!")
         #     data_arr[:, idx] = np.nan
@@ -3839,19 +3838,64 @@ def VSC_timeseries(
 
     fig.savefig(
         figdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-            runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
+            runid, x0, y0, t0, t1, delta
         ),
         dpi=300,
     )
     np.savetxt(
         txtdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.txt".format(
-            runid, x0, y0, t0, t1, delta, mva, integrate
+        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            runid, x0, y0, t0, t1, delta
         ),
         data_arr,
     )
     plt.close(fig)
+
+    if corr_matrix:
+        corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
+        corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
+        corr_mat = np.zeros((len(corr_labels), len(corr_labels)), dtype=float)
+        for i in range(len(corr_labels)):
+            for j in range(len(corr_labels)):
+                corr_mat[i, j] = calc_cross_correlation(corr_vars[i], corr_vars[j])
+
+        fig, ax = plt.subplots()
+        im = ax.imshow(corr_mat)
+
+        # Show all ticks and label them with the respective list entries
+        ax.set_xticks(np.arange(len(corr_labels)), labels=corr_labels)
+        ax.set_yticks(np.arange(len(corr_labels)), labels=corr_labels)
+
+        # Rotate the tick labels and set their alignment.
+        # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+        #         rotation_mode="anchor")
+
+        # Loop over data dimensions and create text annotations.
+        for i in range(len(corr_labels)):
+            for j in range(len(corr_labels)):
+                text = ax.text(
+                    j, i, corr_matrix[i, j], ha="center", va="center", color="w"
+                )
+
+        ax.set_title("Variable cross-correlation")
+        fig.tight_layout()
+        fig.savefig(
+            figdir
+            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.png".format(
+                runid, x0, y0, t0, t1, delta
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
+
+
+def calc_cross_correlation(var1, var2):
+
+    var1_standard = (var1 - np.nanmean(var1)) / (np.nanstd(var1, ddof=1) * var1.size)
+    var2_standard = (var2 - np.nanmean(var2)) / (np.nanstd(var2, ddof=1))
+
+    return np.correlate(var1, var2)[0]
 
 
 def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=False):
@@ -5950,6 +5994,7 @@ def plot_timeseries_at_jets(
     tmax=None,
     folder_suffix="jets",
     skip=False,
+    corr_matrix=False,
 ):
 
     for n1 in range(6000):
@@ -6004,6 +6049,7 @@ def plot_timeseries_at_jets(
             # prefix="{}".format(n1),
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
+            corr_matrix=corr_matrix,
         )
 
 
