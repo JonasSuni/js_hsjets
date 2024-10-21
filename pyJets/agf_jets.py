@@ -3875,7 +3875,7 @@ def VSC_timeseries(
         for i in range(len(corr_labels)):
             for j in range(len(corr_labels)):
                 text = ax.text(
-                    j, i, round(corr_matrix[i, j],2), ha="center", va="center", color="w"
+                    j, i, round(corr_mat[i, j], 2), ha="center", va="center", color="w"
                 )
 
         ax.set_title("Variable cross-correlation")
