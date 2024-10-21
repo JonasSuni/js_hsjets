@@ -3875,7 +3875,7 @@ def VSC_timeseries(
         for i in range(len(corr_labels)):
             for j in range(len(corr_labels)):
                 text = ax.text(
-                    j, i, corr_matrix[i, j], ha="center", va="center", color="w"
+                    j, i, round(corr_matrix[i, j],2), ha="center", va="center", color="w"
                 )
 
         ax.set_title("Variable cross-correlation")
@@ -3895,7 +3895,7 @@ def calc_cross_correlation(var1, var2):
     var1_standard = (var1 - np.nanmean(var1)) / (np.nanstd(var1, ddof=1) * var1.size)
     var2_standard = (var2 - np.nanmean(var2)) / (np.nanstd(var2, ddof=1))
 
-    return np.correlate(var1, var2)[0]
+    return np.correlate(var1_standard, var2_standard)[0]
 
 
 def multi_VSC_timeseries(runid="AGF", time0=480, x=[8], y=[7], pm=60, delta=False):
@@ -6045,7 +6045,6 @@ def plot_timeseries_at_jets(
             min(t0 + 20, 1000),
             pdavg=True,
             pdx=True,
-            integrate=None,
             # prefix="{}".format(n1),
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
