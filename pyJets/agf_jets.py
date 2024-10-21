@@ -3861,7 +3861,7 @@ def VSC_timeseries(
                 corr_mat[i, j] = calc_cross_correlation(corr_vars[i], corr_vars[j])
 
         fig, ax = plt.subplots()
-        im = ax.imshow(corr_mat,cmap="vik",vmin=-1,vmax=1)
+        im = ax.imshow(corr_mat, cmap="vik", vmin=-1, vmax=1)
 
         # Show all ticks and label them with the respective list entries
         ax.set_xticks(np.arange(len(corr_labels)), labels=corr_labels)
