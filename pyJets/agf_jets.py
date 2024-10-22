@@ -3877,7 +3877,7 @@ def VSC_timeseries(
                 text = ax.text(
                     j,
                     i,
-                    "${{{vala}}}_{-{{{valm}}}}^{+{{{valp}}}$".format(
+                    r"${{{vala}}}_{-{{{valm}}}}^{+{{{valp}}}$".format(
                         vala=round(corr_mat[i, j], 2), valm=0, valp=0
                     ),
                     ha="center",
