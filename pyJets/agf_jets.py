@@ -3875,7 +3875,14 @@ def VSC_timeseries(
         for i in range(len(corr_labels)):
             for j in range(len(corr_labels)):
                 text = ax.text(
-                    j, i, "${{vala}}_{-{{valm}}}^{+{{valp}}}$".format(vala=round(corr_mat[i, j], 2),valm=0,valp=0), ha="center", va="center", color="w"
+                    j,
+                    i,
+                    "${{vala}}_{-{valm}}^{+{valp}}$".format(
+                        vala=round(corr_mat[i, j], 2), valm=0, valp=0
+                    ),
+                    ha="center",
+                    va="center",
+                    color="w",
                 )
 
         ax.set_title("Variable cross-correlation")
@@ -6045,7 +6052,6 @@ def get_jet_category_properties(
             continue
         if maxsize < minsize:
             continue
-
 
 
 def plot_timeseries_at_jets(
