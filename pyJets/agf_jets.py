@@ -3880,6 +3880,7 @@ def VSC_timeseries(
 
         ax.set_title("Variable cross-correlation")
         ax.spines[:].set_visible(False)
+        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
         fig.tight_layout()
         fig.savefig(
             figdir
