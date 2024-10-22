@@ -3874,12 +3874,13 @@ def VSC_timeseries(
         # Loop over data dimensions and create text annotations.
         for i in range(len(corr_labels)):
             for j in range(len(corr_labels)):
+                textstr = "{vala}_\{-{valm}\}^\{+{valp}\}".format(
+                    vala=round(corr_mat[i, j], 2), valm=0, valp=0
+                )
                 text = ax.text(
                     j,
                     i,
-                    r"${{vala}}_{-{{valm}}}^{+{{valp}}$".format(
-                        vala=round(corr_mat[i, j], 2), valm=0, valp=0
-                    ),
+                    "$" + textstr + "$",
                     ha="center",
                     va="center",
                     color="w",
