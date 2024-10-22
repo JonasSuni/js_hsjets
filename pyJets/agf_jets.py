@@ -3875,7 +3875,7 @@ def VSC_timeseries(
         for i in range(len(corr_labels)):
             for j in range(len(corr_labels)):
                 text = ax.text(
-                    j, i, round(corr_mat[i, j], 2), ha="center", va="center", color="w"
+                    j, i, "${{vala}}_{-{{valm}}}^{+{{valp}}}$".format(vala=round(corr_mat[i, j], 2),valm=0,valp=0), ha="center", va="center", color="w"
                 )
 
         ax.set_title("Variable cross-correlation")
@@ -3893,7 +3893,9 @@ def VSC_timeseries(
 
 def calc_cross_correlation(var1, var2):
 
-    var1_standard = (var1 - np.nanmean(var1)) / (np.nanstd(var1, ddof=1) * (var1.size-1))
+    var1_standard = (var1 - np.nanmean(var1)) / (
+        np.nanstd(var1, ddof=1) * (var1.size - 1)
+    )
     var2_standard = (var2 - np.nanmean(var2)) / (np.nanstd(var2, ddof=1))
 
     return np.correlate(var1_standard, var2_standard, mode="valid")[0]
@@ -5988,6 +5990,63 @@ def plot_jet_formation_postime(
     plt.close(fig)
 
 
+def get_jet_category_properties(
+    runid,
+    boxre=None,
+    tmin=None,
+    tmax=None,
+    folder_suffix="jets",
+    minduration=0,
+    minsize=0,
+):
+
+    txtdir = wrkdir_DNR + "jet_categories/"
+    jet_ids = []
+    durs = []
+    maxs = []
+
+    for n1 in range(6000):
+        try:
+            props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        except:
+            continue
+
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
+
+        x0, y0 = (xmean[0], ymean[0])
+        t0 = props.get_times()[0]
+        tarr = props.read("time")
+        duration = tarr[-1] - tarr[0] + 0.5
+        maxsize = max(props.read("Nr_cells"))
+
+        if t0 <= 391 or t0 > 1000:
+            continue
+        if tmin:
+            if t0 < tmin:
+                continue
+        if tmax:
+            if t0 > tmax:
+                continue
+
+        if boxre:
+            if not (
+                x0 >= boxre[0] and x0 <= boxre[1] and y0 >= boxre[2] and y0 <= boxre[3]
+            ):
+                continue
+
+        if np.sqrt(x0**2 + y0**2) < 8:
+            continue
+        if duration < minduration:
+            continue
+        if maxsize < minsize:
+            continue
+
+
+
 def plot_timeseries_at_jets(
     runid,
     boxre=None,
@@ -5996,6 +6055,8 @@ def plot_timeseries_at_jets(
     folder_suffix="jets",
     skip=False,
     corr_matrix=False,
+    minduration=0,
+    minsize=0,
 ):
 
     for n1 in range(6000):
@@ -6012,6 +6073,9 @@ def plot_timeseries_at_jets(
 
         x0, y0 = (xmean[0], ymean[0])
         t0 = props.get_times()[0]
+        tarr = props.read("time")
+        duration = tarr[-1] - tarr[0] + 0.5
+        maxsize = max(props.read("Nr_cells"))
 
         if t0 <= 391 or t0 > 1000:
             continue
@@ -6027,6 +6091,13 @@ def plot_timeseries_at_jets(
                 x0 >= boxre[0] and x0 <= boxre[1] and y0 >= boxre[2] and y0 <= boxre[3]
             ):
                 continue
+
+        if np.sqrt(x0**2 + y0**2) < 8:
+            continue
+        if duration < minduration:
+            continue
+        if maxsize < minsize:
+            continue
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
