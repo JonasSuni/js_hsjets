@@ -3853,6 +3853,15 @@ def VSC_timeseries(
     plt.close(fig)
 
     if corr_matrix:
+
+        corrtxtdir = txtdir + dirprefix + "/"
+
+        if not os.path.exists(corrtxtdir):
+            try:
+                os.makedirs(corrtxtdir)
+            except OSError:
+                pass
+
         corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
         corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
         corr_mat = np.zeros((len(corr_labels), len(corr_labels)), dtype=float)
@@ -3906,6 +3915,14 @@ def VSC_timeseries(
             dpi=300,
         )
         plt.close(fig)
+
+        np.savetxt(
+            corrtxtdir
+            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.txt".format(
+                runid, x0, y0, t0, t1, delta
+            ),
+            corr_matrix,
+        )
 
 
 def calc_cross_correlation(var1, var2):
@@ -6018,6 +6035,13 @@ def get_jet_category_properties(
 ):
 
     txtdir = wrkdir_DNR + "jet_categories/"
+
+    if not os.path.exists(txtdir):
+        try:
+            os.makedirs(txtdir)
+        except OSError:
+            pass
+
     jet_ids = []
     durs = []
     maxs = []
@@ -6061,6 +6085,10 @@ def get_jet_category_properties(
             continue
         if maxsize < minsize:
             continue
+
+        jet_ids.append(n1)
+        durs.append(duration)
+        maxs.append(maxsize)
 
 
 def plot_timeseries_at_jets(
