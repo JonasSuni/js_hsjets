@@ -3921,7 +3921,7 @@ def VSC_timeseries(
             + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.txt".format(
                 runid, x0, y0, t0, t1, delta
             ),
-            corr_matrix,
+            corr_mat,
         )
 
 
