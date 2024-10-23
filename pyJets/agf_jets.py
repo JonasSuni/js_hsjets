@@ -6207,6 +6207,8 @@ def plot_timeseries_at_jets(
             continue
         if maxsize < minsize:
             continue
+        if "splinter" in props.meta:
+            continue
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
