@@ -6091,6 +6091,71 @@ def get_jet_category_properties(
         maxs.append(maxsize)
 
 
+def plot_category_correlation(runid, folder_suffix="jets"):
+
+    corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
+    # corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
+    filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+    corr_mat = np.zeros(
+        (len(corr_labels), len(corr_labels), len(filenames)), dtype=float
+    )
+    for idx, fn in enumerate(filenames):
+        corr_mat[:, :, idx] = np.loadtxt(
+            wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+        )
+
+    corr_meds = np.median(corr_mat, axis=-1)
+    corr_25 = np.percentile(corr_mat, 25, axis=-1)
+    corr_75 = np.percentile(corr_mat, 75, axis=-1)
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(corr_mat, cmap="vik", vmin=-1, vmax=1)
+
+    # Show all ticks and label them with the respective list entries
+    ax.set_xticks(np.arange(len(corr_labels)), labels=corr_labels)
+    ax.set_yticks(np.arange(len(corr_labels)), labels=corr_labels)
+
+    # Rotate the tick labels and set their alignment.
+    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+    #         rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    for i in range(len(corr_labels)):
+        for j in range(len(corr_labels)):
+            textstr = "{vala}_{{-{valm}}}^{{+{valp}}}".format(
+                vala=round(corr_meds, 2),
+                valm=round(corr_meds - corr_25, 2),
+                valp=round(corr_75 - corr_meds, 2),
+            )
+            text = ax.text(
+                j,
+                i,
+                "$" + textstr + "$",
+                ha="center",
+                va="center",
+                color="w",
+            )
+            # text = ax.text(
+            #     j,
+            #     i,
+            #     round(corr_mat[i, j], 2),
+            #     ha="center",
+            #     va="center",
+            #     color="w",
+            # )
+
+    ax.set_title("Variable cross-correlation")
+    ax.spines[:].set_visible(False)
+    ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
+    fig.tight_layout()
+    figdir = wrkdir_DNR + "Figs/"
+    fig.savefig(
+        figdir + "jet_correlation_{}_{}.png".format(runid, folder_suffix),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def plot_timeseries_at_jets(
     runid,
     boxre=None,
