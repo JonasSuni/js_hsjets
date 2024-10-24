@@ -6109,7 +6109,7 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     corr_75 = np.percentile(corr_mat, 75, axis=-1)
 
     fig, ax = plt.subplots()
-    im = ax.imshow(corr_mat, cmap="vik", vmin=-1, vmax=1)
+    im = ax.imshow(corr_meds, cmap="vik", vmin=-1, vmax=1)
 
     # Show all ticks and label them with the respective list entries
     ax.set_xticks(np.arange(len(corr_labels)), labels=corr_labels)
