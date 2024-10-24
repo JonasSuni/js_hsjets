@@ -6123,9 +6123,9 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     for i in range(len(corr_labels)):
         for j in range(len(corr_labels)):
             textstr = "{vala}_{{-{valm}}}^{{+{valp}}}".format(
-                vala=round(corr_meds, 2),
-                valm=round(corr_meds - corr_25, 2),
-                valp=round(corr_75 - corr_meds, 2),
+                vala=round(corr_meds[i, j], 2),
+                valm=round(corr_meds[i, j] - corr_25[i, j], 2),
+                valp=round(corr_75[i, j] - corr_meds[i, j], 2),
             )
             text = ax.text(
                 j,
