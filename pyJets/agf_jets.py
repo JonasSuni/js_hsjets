@@ -3851,18 +3851,6 @@ def VSC_timeseries(
             )
     # plt.tight_layout()
 
-    txtdir = wrkdir_DNR + "txts/timeseries/"
-    if not os.path.exists(figdir):
-        try:
-            os.makedirs(figdir)
-        except OSError:
-            pass
-    if not os.path.exists(txtdir):
-        try:
-            os.makedirs(txtdir)
-        except OSError:
-            pass
-
     fig.savefig(
         figdir
         + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
