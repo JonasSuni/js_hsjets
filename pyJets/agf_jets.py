@@ -3459,10 +3459,22 @@ def VSC_timeseries(
     dirprefix="",
     skip=False,
     corr_matrix=False,
+    fromtxt=False,
 ):
     bulkpath = find_bulkpath(runid)
 
     figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format(dirprefix)
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+    if not os.path.exists(txtdir):
+        try:
+            os.makedirs(txtdir)
+        except OSError:
+            pass
     # fig.savefig(
     #     figdir
     #     + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
@@ -3638,65 +3650,74 @@ def VSC_timeseries(
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
-    data_arr = np.zeros((len(var_list) + 3, fnr_arr.size), dtype=float)
+    data_arr = np.zeros((len(var_list) + 5, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
-    for idx, fnr in enumerate(fnr_arr):
-        if pdavg:
-            try:
-                tavg_pdyn = np.loadtxt(
-                    tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
-                )[int(cellid) - 1]
-            except:
-                tavg_pdyn = np.nan
-            tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
-        # try:
-        vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-        )
-        for idx2, var in enumerate(var_list):
-            data_arr[idx2, idx] = (
-                vlsvobj.read_interpolated_variable(
-                    var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-                )
-                * scales[idx2]
-                # / run_norm[idx2]
+    if fromtxt:
+        data_arr = np.loadtxt(
+            txtdir
+            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.txt".format(
+                runid, x0, y0, t0, t1, delta
             )
-        # data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-        #     # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-        #     # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-        #     # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-        #     pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-        # )
-        # except:
-        #     print("Something went wrong!")
-        #     data_arr[:, idx] = np.nan
-
-    if shift:
-        if type(shift) == str:
-            shift = data_arr[[1, 2, 3], :].T[np.argsort(np.abs(data_arr[7, :]))][0]
-        elif type(shift) == list:
-            shift = np.array(shift)
-        data_arr[1, :] = data_arr[1, :] - shift[0]
-        data_arr[2, :] = data_arr[2, :] - shift[1]
-        data_arr[3, :] = data_arr[3, :] - shift[2]
-        data_arr[4, :] = np.sqrt(
-            data_arr[1, :] ** 2 + data_arr[2, :] ** 2 + data_arr[3, :] ** 2
         )
+        tavg_arr = data_arr[-1, :]
+    else:
+        for idx, fnr in enumerate(fnr_arr):
+            if pdavg:
+                try:
+                    tavg_pdyn = np.loadtxt(
+                        tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+                    )[int(cellid) - 1]
+                except:
+                    tavg_pdyn = np.nan
+                tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
+            # try:
+            vlsvobj = pt.vlsvfile.VlsvReader(
+                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            )
+            for idx2, var in enumerate(var_list):
+                data_arr[idx2, idx] = (
+                    vlsvobj.read_interpolated_variable(
+                        var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                    )
+                    * scales[idx2]
+                    # / run_norm[idx2]
+                )
+            # data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
+            #     # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            #     # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
+            #     # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+            #     pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
+            # )
+            # except:
+            #     print("Something went wrong!")
+            #     data_arr[:, idx] = np.nan
 
-        Eshift = -1e3 * np.cross(1e3 * shift, 1e-9 * data_arr[[6, 7, 8], :].T).T
+        if shift:
+            if type(shift) == str:
+                shift = data_arr[[1, 2, 3], :].T[np.argsort(np.abs(data_arr[7, :]))][0]
+            elif type(shift) == list:
+                shift = np.array(shift)
+            data_arr[1, :] = data_arr[1, :] - shift[0]
+            data_arr[2, :] = data_arr[2, :] - shift[1]
+            data_arr[3, :] = data_arr[3, :] - shift[2]
+            data_arr[4, :] = np.sqrt(
+                data_arr[1, :] ** 2 + data_arr[2, :] ** 2 + data_arr[3, :] ** 2
+            )
 
-        data_arr[10, :] = data_arr[10, :] - Eshift[0]
-        data_arr[11, :] = data_arr[11, :] - Eshift[1]
-        data_arr[12, :] = data_arr[12, :] - Eshift[2]
+            Eshift = -1e3 * np.cross(1e3 * shift, 1e-9 * data_arr[[6, 7, 8], :].T).T
 
-        data_arr[13, :] = np.sqrt(
-            data_arr[10, :] ** 2 + data_arr[11, :] ** 2 + data_arr[12, :] ** 2
-        )
+            data_arr[10, :] = data_arr[10, :] - Eshift[0]
+            data_arr[11, :] = data_arr[11, :] - Eshift[1]
+            data_arr[12, :] = data_arr[12, :] - Eshift[2]
 
-    if filt:
-        for idx in range(len(var_list)):
-            data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
+            data_arr[13, :] = np.sqrt(
+                data_arr[10, :] ** 2 + data_arr[11, :] ** 2 + data_arr[12, :] ** 2
+            )
+
+        if filt:
+            for idx in range(len(var_list)):
+                data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
 
     fig, ax_list = plt.subplots(
         len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
@@ -3794,6 +3815,12 @@ def VSC_timeseries(
     vx_term = np.nanmean(rho_lp) * vx_lp**2 / np.nanmean(pd_lp)
     vy_term = np.nanmean(rho_lp) * vy_lp**2 / np.nanmean(pd_lp)
     vz_term = np.nanmean(rho_lp) * vz_lp**2 / np.nanmean(pd_lp)
+
+    data_arr[-5, :] = rho_term
+    data_arr[-4, :] = vx_term
+    data_arr[-3, :] = vy_term
+    data_arr[-2, :] = vz_term
+    data_arr[-1, :] = tavg_arr
 
     ax_list[-1].plot(t_arr, rho_term, color="black", label="$\\rho$")
     ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
