@@ -6152,7 +6152,7 @@ def plot_category_correlation(runid, folder_suffix="jets"):
             #     color="w",
             # )
 
-    ax.set_title("Variable cross-correlation")
+    ax.set_title("Variable cross-correlation, N = {}".format(len(filenames)))
     ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
