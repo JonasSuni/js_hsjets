@@ -6194,6 +6194,7 @@ def plot_timeseries_at_jets(
     corr_matrix=False,
     minduration=0,
     minsize=0,
+    pdavg=True,
 ):
 
     for n1 in range(6000):
@@ -6254,7 +6255,7 @@ def plot_timeseries_at_jets(
             y0,
             max(t0 - 20, 391),
             min(t0 + 20, 1000),
-            pdavg=True,
+            pdavg=pdavg,
             pdx=True,
             # prefix="{}".format(n1),
             dirprefix="{}/".format(folder_suffix),
