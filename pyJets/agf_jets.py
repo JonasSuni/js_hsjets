@@ -6123,6 +6123,7 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
     # corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
     filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+    filenames = [fname for fname in filenames if "corr" in fname]
     corr_mat = np.zeros(
         (len(corr_labels), len(corr_labels), len(filenames)), dtype=float
     )
