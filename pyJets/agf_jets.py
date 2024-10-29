@@ -3869,14 +3869,6 @@ def VSC_timeseries(
 
     if corr_matrix:
 
-        corrtxtdir = txtdir + dirprefix + "/"
-
-        if not os.path.exists(corrtxtdir):
-            try:
-                os.makedirs(corrtxtdir)
-            except OSError:
-                pass
-
         corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
         corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
         corr_mat = np.zeros((len(corr_labels), len(corr_labels)), dtype=float)
@@ -3932,7 +3924,7 @@ def VSC_timeseries(
         plt.close(fig)
 
         np.savetxt(
-            corrtxtdir
+            txtdir
             + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.txt".format(
                 runid, x0, y0, t0, t1, delta
             ),
