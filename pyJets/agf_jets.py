@@ -6165,6 +6165,7 @@ def plot_category_histograms(
                 label=sfx_labels[idx2],
                 color=CB_color_cycle[idx2],
                 histtype="step",
+                alpha=0.5,
             )
         ax.hist(
             all_arrs[idx],
