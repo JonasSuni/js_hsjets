@@ -6144,7 +6144,7 @@ def plot_category_histograms(
     bin_edges = [
         10 ** np.histogram_bin_edges(np.log10(durs_all)),
         10 ** np.histogram_bin_edges(np.log10(maxs_all)),
-        rpen_all,
+        np.histogram_bin_edges(rpen_all),
     ]
 
     categories_list = []
