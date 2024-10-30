@@ -6052,6 +6052,7 @@ def get_jet_category_properties(
     jet_ids = []
     durs = []
     maxs = []
+    rpen = []
 
     for n1 in range(6000):
         try:
@@ -6093,9 +6094,92 @@ def get_jet_category_properties(
         if maxsize < minsize:
             continue
 
+        rmean = props.read("r_mean")
+
         jet_ids.append(n1)
         durs.append(duration)
         maxs.append(maxsize)
+        rpen.append(rmean[-1] - rmean[0])
+
+    outarr = np.array([jet_ids, durs, maxs, rpen], dtype=float)
+
+    np.savetxt(txtdir + "{}.txt".format(folder_suffix), outarr)
+
+
+def plot_category_histograms(
+    folder_suffixes=[
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+    ]
+):
+
+    sfx_valid = [
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+    ]
+    sfx_labels = [
+        "$Q\\parallel$ steady",
+        "$Q\\parallel$ FB",
+        "$Q\\perp$ RD",
+        "$Q\\perp$ steady",
+    ]
+
+    prop_labels = ["Duration [s]", "Max. size [#]", "Radial depth [$R_\\mathrm{E}$]"]
+
+    txtdir = wrkdir_DNR + "jet_categories/"
+
+    jetids_all, durs_all, maxs_all, rpen_all = np.loadtxt(
+        txtdir + "{}.txt".format("jets_all")
+    )
+    all_arrs = [durs_all, maxs_all, rpen_all]
+
+    bin_edges = [np.histogram_bin_edges(q) for q in all_arrs]
+
+    categories_list = []
+
+    for sfx in folder_suffixes:
+        jetids, durs, maxs, rpens = np.loadtxt(txtdir + "{}.txt".format(sfx))
+        categories_list.append([durs, maxs, rpens])
+
+    fig, ax_list = plt.subplots(
+        1, len(prop_labels), figsize=(12, 5), constrained_layout=True
+    )
+
+    for idx in range(len(prop_labels)):
+        ax = ax_list[idx]
+        ax.set_xlabel(prop_labels[idx])
+        ax.grid()
+        for idx2 in range(len(folder_suffixes)):
+            ax.hist(
+                categories_list[idx2][idx],
+                bins=bin_edges[idx],
+                density=True,
+                label=sfx_labels[idx2],
+                color=CB_color_cycle[idx2],
+                histtype="step",
+            )
+        ax.hist(
+            all_arrs[idx],
+            bins=bin_edges[idx],
+            density=True,
+            label="All",
+            color="k",
+            histtype="step",
+            alpha=0.5,
+        )
+        if idx == 0:
+            ax.set_ylabel("Prob. density")
+            ax.legend()
+
+    figdir = wrkdir_DNR + "Figs/"
+
+    fig.savefig(figdir + "jet_comp_hist.png", dpi=300)
+
+    plt.close(fig)
 
 
 def plot_category_correlation(runid, folder_suffix="jets"):
