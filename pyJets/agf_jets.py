@@ -6141,7 +6141,11 @@ def plot_category_histograms(
     )
     all_arrs = [durs_all, maxs_all, rpen_all]
 
-    bin_edges = [np.histogram_bin_edges(q) for q in all_arrs]
+    bin_edges = [
+        10 ** np.histogram_bin_edges(np.log10(durs_all)),
+        10 ** np.histogram_bin_edges(np.log10(maxs_all)),
+        rpen_all,
+    ]
 
     categories_list = []
 
@@ -6179,6 +6183,9 @@ def plot_category_histograms(
         if idx == 0:
             ax.set_ylabel("Prob. density")
             ax.legend()
+            ax.set_xscale("log")
+        if idx == 1:
+            ax.set_xscale("log")
 
     figdir = wrkdir_DNR + "Figs/"
 
