@@ -6128,7 +6128,7 @@ def plot_category_histograms(
         "$Q\\perp$ steady",
     ]
 
-    prop_labels = ["Duration [s]", "Max. size [#]", "Radial depth [$R_\\mathrm{E}$]"]
+    prop_labels = ["Duration [s]", "Max. size [\#]", "Radial depth [$R_\\mathrm{E}$]"]
 
     txtdir = wrkdir_DNR + "jet_categories/"
 
