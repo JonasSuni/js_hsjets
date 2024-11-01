@@ -6304,6 +6304,7 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
                 data_arr[idx, idx2, :] -= ts_avgs[idx, idx2]
 
     cat_avgs = np.nanmean(data_arr, axis=0)
+    cat_meds = np.nanmedian(data_arr, axis=0)
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, figsize=(7, 9), constrained_layout=True
@@ -6312,9 +6313,8 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
         for idx in range(len(filenames)):
-            t_arr = sea_t_arr
             ax.plot(
-                t_arr,
+                sea_t_arr,
                 data_arr[idx, idx2, :],
                 color=plot_colors[idx2],
                 alpha=0.2,
@@ -6323,14 +6323,14 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
             )
         ax.plot(
             sea_t_arr,
-            cat_avgs[idx2, :],
+            cat_meds[idx2, :],
             color=plot_colors[idx2],
             label=plot_labels[idx2],
             linewidth=1.2,
             zorder=1,
         )
         if draw_legend[idx2]:
-            ax.legend()
+            ax.legend(loc="upper right")
 
     for idx, ax in enumerate(ax_list):
         ax.grid()
