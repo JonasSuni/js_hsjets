@@ -6305,6 +6305,8 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
     cat_avgs = np.nanmean(data_arr, axis=0)
     cat_meds = np.nanmedian(data_arr, axis=0)
+    cat_25 = np.percentile(data_arr, 25, axis=0)
+    cat_75 = np.percentile(data_arr, 75, axis=0)
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, figsize=(7, 9), constrained_layout=True
@@ -6312,22 +6314,30 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
-        for idx in range(len(filenames)):
-            ax.plot(
-                sea_t_arr,
-                data_arr[idx, idx2, :],
-                color=plot_colors[idx2],
-                alpha=0.2,
-                linewidth=0.4,
-                zorder=0,
-            )
+        # for idx in range(len(filenames)):
+        #     ax.plot(
+        #         sea_t_arr,
+        #         data_arr[idx, idx2, :],
+        #         color=plot_colors[idx2],
+        #         alpha=0.2,
+        #         linewidth=0.4,
+        #         zorder=0,
+        #     )
         ax.plot(
             sea_t_arr,
-            cat_meds[idx2, :],
+            cat_avgs[idx2, :],
             color=plot_colors[idx2],
             label=plot_labels[idx2],
             linewidth=1.2,
             zorder=1,
+        )
+        ax.fill_between(
+            sea_t_arr,
+            cat_25,
+            cat_75,
+            facecolor=plot_colors[idx2],
+            alpha=0.2,
+            zorder=0,
         )
         if draw_legend[idx2]:
             ax.legend(loc="upper right")
