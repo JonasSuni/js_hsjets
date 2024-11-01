@@ -6333,8 +6333,8 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
         )
         ax.fill_between(
             sea_t_arr,
-            cat_25,
-            cat_75,
+            cat_25[idx2],
+            cat_75[idx2],
             facecolor=plot_colors[idx2],
             alpha=0.2,
             zorder=0,
