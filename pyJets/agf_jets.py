@@ -6329,7 +6329,7 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
             color=plot_colors[idx2],
             label=plot_labels[idx2],
             linewidth=1.2,
-            zorder=1,
+            zorder=2,
         )
         ax.fill_between(
             sea_t_arr,
@@ -6337,13 +6337,13 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
             cat_75[idx2],
             facecolor=plot_colors[idx2],
             alpha=0.2,
-            zorder=0,
+            zorder=1,
         )
         if draw_legend[idx2]:
             ax.legend(loc="upper right")
 
     for idx, ax in enumerate(ax_list):
-        ax.grid()
+        ax.grid(zorder=0)
         ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
         ax.set_ylabel(ylabels[idx])
     ax_list[-1].set_xlabel("Epoch time [s]")
