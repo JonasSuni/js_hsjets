@@ -3460,6 +3460,7 @@ def VSC_timeseries(
     skip=False,
     corr_matrix=False,
     fromtxt=False,
+    jett0=0.0,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3650,7 +3651,7 @@ def VSC_timeseries(
     cellid = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     ).get_cellid([x0 * r_e, y0 * r_e, 0 * r_e])
-    data_arr = np.zeros((len(var_list) + 5, fnr_arr.size), dtype=float)
+    data_arr = np.zeros((len(var_list) + 7, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
     if fromtxt:
@@ -3816,11 +3817,13 @@ def VSC_timeseries(
     vy_term = np.nanmean(rho_lp) * vy_lp**2 / np.nanmean(pd_lp)
     vz_term = np.nanmean(rho_lp) * vz_lp**2 / np.nanmean(pd_lp)
 
-    data_arr[-5, :] = rho_term
-    data_arr[-4, :] = vx_term
-    data_arr[-3, :] = vy_term
-    data_arr[-2, :] = vz_term
-    data_arr[-1, :] = tavg_arr
+    data_arr[-7, :] = rho_term
+    data_arr[-6, :] = vx_term
+    data_arr[-5, :] = vy_term
+    data_arr[-4, :] = vz_term
+    data_arr[-3, :] = tavg_arr
+    data_arr[-2, :] = t_arr
+    data_arr[-1, :] = np.ones_like(t_arr) * jett0
 
     ax_list[-1].plot(t_arr, rho_term, color="black", label="$\\rho$")
     ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
@@ -6194,6 +6197,146 @@ def plot_category_histograms(
     plt.close(fig)
 
 
+def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
+
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+        "$\\rho$",
+        "$v_x^2$",
+        "$v_y^2$",
+        "$v_z^2$",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+        "$P_\\mathrm{dyn}$\ncontribution",
+    ]
+    if delta:
+        for idx in range(len(ylabels)):
+            ylabels[idx] = "$\\delta " + ylabels[idx][1:]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 6]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+    ]
+
+    filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+    filenames = [fname for fname in filenames if "corr" not in fname]
+
+    test_data = np.loadtxt(
+        wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + filenames[0]
+    )
+
+    data_arr = np.zeros(
+        (len(filenames), test_data.shape[0], test_data.shape[1]), dtype=float
+    )
+    for idx, fn in enumerate(filenames):
+        data_arr[idx, :, :] = np.loadtxt(
+            wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+        )
+
+    sea_t_arr = np.arange(-20, 20 + 0.1, 0.5)
+
+    ts_avgs = np.nanmean(data_arr, axis=2)
+    cat_avgs = np.nanmean(data_arr, axis=0)
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, figsize=(7, 9), constrained_layout=True
+    )
+
+    for idx2 in range(len(plot_index)):
+        ax = ax_list[plot_index[idx2]]
+        for idx in range(len(filenames)):
+            t_arr = data_arr[idx, -2, :] - data_arr[idx, -1, :]
+            ax.plot(
+                t_arr,
+                data_arr[idx, idx2, :],
+                color=plot_colors[idx2],
+                alpha=0.5,
+                linewidth=0.5,
+                zorder=0,
+            )
+        ax.plot(
+            sea_t_arr,
+            cat_avgs[idx2, :],
+            color=plot_colors[idx2],
+            label=plot_labels[idx2],
+            linewidth=1,
+            zorder=1,
+        )
+        if draw_legend[idx2]:
+            ax.legend()
+
+    for idx, ax in enumerate(ax_list):
+        ax.grid()
+        ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
+        ax.set_ylabel(ylabels[idx])
+    ax_list[-1].set_xlabel("Epoch time [s]")
+
+    fig.savefig(wrkdir_DNR + "Figs/SEA_{}.png".format(folder_suffix), dpi=300)
+
+    plt.close(fig)
+
+
 def plot_category_correlation(runid, folder_suffix="jets"):
 
     corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
@@ -6315,12 +6458,19 @@ def plot_timeseries_at_jets(
         if "splinter" in props.meta:
             continue
 
+        if pdavg:
+            plott0 = max(391, t0 - 20)
+            plott1 = min(1000, t0 + 20)
+        else:
+            plott0 = t0 - 20
+            plott1 = t0 + 20
+
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
                 x0,
                 y0,
-                max(391, t0 - 20),
-                min(1000, t0 + 20),
+                plott0,
+                plott1,
                 n1,
             )
         )
@@ -6329,14 +6479,15 @@ def plot_timeseries_at_jets(
             runid,
             x0,
             y0,
-            max(t0 - 20, 391),
-            min(t0 + 20, 1000),
+            plott0,
+            plott1,
             pdavg=pdavg,
             pdx=True,
             # prefix="{}".format(n1),
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
             corr_matrix=corr_matrix,
+            jett0=t0,
         )
 
 
