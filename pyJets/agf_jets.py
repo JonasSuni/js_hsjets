@@ -6028,7 +6028,7 @@ def plot_jet_formation_postime(
         mpatches.Rectangle(
             (509, -13),
             600 - 509,
-            -3 - (-13),
+            -3 - (-17),
             color=CB_color_cycle[0],
             label="$Q\\perp$ inter",
             fill=False,
