@@ -6008,6 +6008,7 @@ def plot_jet_formation_postime(
         duration_values.append(duration)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
+    ax.grid(zorder=0)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
     ax.scatter(
@@ -6036,7 +6037,6 @@ def plot_jet_formation_postime(
         )
     )
 
-    ax.grid(zorder=0)
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
     ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
