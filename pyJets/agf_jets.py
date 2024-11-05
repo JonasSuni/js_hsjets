@@ -6020,6 +6020,7 @@ def plot_jet_formation_postime(
         norm="log",
         alpha=0.5,
         edgecolors="k",
+        zorder=2,
     )
 
     ax.add_patch(
@@ -6030,10 +6031,12 @@ def plot_jet_formation_postime(
             color=CB_color_cycle[0],
             label="$Q\\perp$ inter",
             fill=False,
+            linestyle="dashed",
+            zorder=1,
         )
     )
 
-    ax.grid()
+    ax.grid(zorder=0)
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
     ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
