@@ -6008,7 +6008,7 @@ def plot_jet_formation_postime(
         duration_values.append(duration)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
-    ax.grid(zorder=0, alpha=0.5)
+    ax.grid(zorder=2.5)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
     ax.scatter(
@@ -6021,7 +6021,7 @@ def plot_jet_formation_postime(
         norm="log",
         alpha=0.5,
         edgecolors="k",
-        zorder=2,
+        zorder=4.5,
     )
 
     ax.add_patch(
@@ -6033,7 +6033,7 @@ def plot_jet_formation_postime(
             label="$Q\\perp$ inter",
             fill=False,
             linestyle="dashed",
-            zorder=1,
+            zorder=3.5,
         )
     )
 
