@@ -6008,7 +6008,7 @@ def plot_jet_formation_postime(
         duration_values.append(duration)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
-    ax.grid(zorder=0)
+    ax.grid(zorder=0, alpha=0.5)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
     ax.scatter(
