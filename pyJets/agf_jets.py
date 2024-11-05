@@ -6375,7 +6375,9 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
         ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
         ax.set_ylabel(ylabels[idx])
     ax_list[-1].set_xlabel("Epoch time [s]")
-    ax_list[0].set_title(folder_suffix.replace("_"," ").title()+" N = {}".format(len(filenames)))
+    ax_list[0].set_title(
+        folder_suffix.replace("_", " ").title() + ", N = {}".format(len(filenames))
+    )
 
     fig.savefig(wrkdir_DNR + "Figs/SEA_{}.png".format(folder_suffix), dpi=300)
 
