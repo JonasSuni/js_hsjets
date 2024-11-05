@@ -6021,12 +6021,16 @@ def plot_jet_formation_postime(
         alpha=0.5,
         edgecolors="k",
     )
+
+    ax.add_patch(mpatches.Rectangle((509,-13),600-509,-3-(-13),color=CB_color_cycle[0],label="$Q\\perp$ inter"))
+
     ax.grid()
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
     ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
     ax.set_xlabel("$t_0~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
+    ax.legend(loc="center right")
 
     figdir = wrkdir_DNR + "Figs/"
 
