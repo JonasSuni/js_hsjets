@@ -6026,11 +6026,23 @@ def plot_jet_formation_postime(
 
     ax.add_patch(
         mpatches.Rectangle(
-            (509, -13),
+            (509, -17),
             600 - 509,
             -3 - (-17),
             color=CB_color_cycle[0],
             label="$Q\\perp$ inter",
+            fill=False,
+            linestyle="dashed",
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
+            (600, -17),
+            700 - 600,
+            -3 - (-17),
+            color=CB_color_cycle[1],
+            label="$Q\\perp$ after",
             fill=False,
             linestyle="dashed",
             zorder=3.5,
