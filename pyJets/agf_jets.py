@@ -6022,7 +6022,16 @@ def plot_jet_formation_postime(
         edgecolors="k",
     )
 
-    ax.add_patch(mpatches.Rectangle((509,-13),600-509,-3-(-13),color=CB_color_cycle[0],label="$Q\\perp$ inter"))
+    ax.add_patch(
+        mpatches.Rectangle(
+            (509, -13),
+            600 - 509,
+            -3 - (-13),
+            color=CB_color_cycle[0],
+            label="$Q\\perp$ inter",
+            fill=False,
+        )
+    )
 
     ax.grid()
     ax.set_ylim(ymin, ymax)
