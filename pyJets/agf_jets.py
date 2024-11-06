@@ -6207,7 +6207,8 @@ def plot_category_props(
         "jets_qpar_after",
         "jets_all",
     ],
-    aspect=1,
+    aspect=0.5,
+    avg=False,
 ):
     sfx_valid = [
         "jets_qpar_before",
@@ -6258,29 +6259,48 @@ def plot_category_props(
     # Loop over data dimensions and create text annotations.
     for i in range(len(folder_suffixes)):
         for j in range(len(prop_labels)):
-            text = ax.text(
-                j,
-                i,
-                "{:.3f}".format(np.nanmedian(categories_list[i][j])),
-                ha="center",
-                va="center",
-                color="k",
-            )
+            if avg:
+                text = ax.text(
+                    j,
+                    i,
+                    "{:.3f}".format(np.nanmean(categories_list[i][j])),
+                    ha="center",
+                    va="center",
+                    color="k",
+                )
+            else:
+                text = ax.text(
+                    j,
+                    i,
+                    "{:.3f}".format(np.nanmedian(categories_list[i][j])),
+                    ha="center",
+                    va="center",
+                    color="k",
+                )
 
     for i in range(len(sfx_labels) - 1):
         ax.axhline(i + 0.5, color="k")
     for j in range(len(prop_labels) - 1):
         ax.axvline(j + 0.5, color="k")
 
-    ax.set_title("Median properties")
+    if avg:
+        ax.set_title("Average properties")
+    else:
+        ax.set_title("Median properties")
     # ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
     figdir = wrkdir_DNR + "Figs/"
-    fig.savefig(
-        figdir + "jet_prop_medians.png",
-        dpi=300,
-    )
+    if avg:
+        fig.savefig(
+            figdir + "jet_prop_averages.png",
+            dpi=300,
+        )
+    else:
+        fig.savefig(
+            figdir + "jet_prop_medians.png",
+            dpi=300,
+        )
     plt.close(fig)
 
 
