@@ -6233,6 +6233,7 @@ def plot_category_props(
         "Duration [s]",
         "Max. size\n[nr. cells]",
         "Radial depth\n[$R_\\mathrm{E}$]",
+        "Number of\njets",
     ]
 
     txtdir = wrkdir_DNR + "jet_categories/"
@@ -6241,7 +6242,8 @@ def plot_category_props(
 
     for sfx in folder_suffixes:
         jetids, durs, maxs, rpens = np.loadtxt(txtdir + "{}.txt".format(sfx))
-        categories_list.append([durs, maxs, rpens])
+        njets = np.ones_like(durs) * jetids.size
+        categories_list.append([durs, maxs, rpens, njets])
 
     carr = np.ones((len(folder_suffixes), len(prop_labels)), dtype=float) * np.nan
 
