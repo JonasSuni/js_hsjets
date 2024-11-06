@@ -6090,7 +6090,7 @@ def plot_jet_formation_postime(
             800 - 470,
             17 - (3),
             color=CB_color_cycle[4],
-            label="$Q\\par$ after",
+            label="$Q\\parallel$ after",
             fill=False,
             linestyle="dashed",
             zorder=3.5,
