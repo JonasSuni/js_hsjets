@@ -6026,6 +6026,42 @@ def plot_jet_formation_postime(
 
     ax.add_patch(
         mpatches.Rectangle(
+            (391, 3),
+            426 - 391,
+            3 - (17),
+            color=CB_color_cycle[0],
+            label="$Q\\parallel$ before",
+            fill=False,
+            linestyle="dashed",
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
+            (430, 3),
+            470 - 430,
+            3 - (17),
+            color=CB_color_cycle[1],
+            label="$Q\\parallel$ FB",
+            fill=False,
+            linestyle="dashed",
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
+            (430, -17),
+            470 - 430,
+            0 - (-17),
+            color=CB_color_cycle[2],
+            label="$Q\\perp$ RD",
+            fill=False,
+            linestyle="dashed",
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
             (509, -17),
             600 - 509,
             -3 - (-17),
@@ -6043,6 +6079,18 @@ def plot_jet_formation_postime(
             -3 - (-17),
             color=CB_color_cycle[5],
             label="$Q\\perp$ after",
+            fill=False,
+            linestyle="dashed",
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
+            (391, -17),
+            800 - 391,
+            17 - (-17),
+            color=CB_color_cycle[6],
+            label="All",
             fill=False,
             linestyle="dashed",
             zorder=3.5,
