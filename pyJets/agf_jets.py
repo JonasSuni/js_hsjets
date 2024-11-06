@@ -6267,8 +6267,12 @@ def plot_category_props(
                 color="k",
             )
 
+    for i in range(len(sfx_labels) - 1):
+        ax.axhline(i + 0.5, alpha=0.5, color="gray")
+    for j in range(len(prop_labels) - 1):
+        ax.axvline(j + 0.5, alpha=0.5, color="gray")
+
     ax.set_title("Median properties")
-    ax.grid(which="minor")
     # ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
