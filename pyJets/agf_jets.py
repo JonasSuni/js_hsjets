@@ -6206,7 +6206,8 @@ def plot_category_props(
         "jets_qperp_inter",
         "jets_qpar_after",
         "jets_all",
-    ]
+    ],
+    aspect=1,
 ):
     sfx_valid = [
         "jets_qpar_before",
@@ -6244,7 +6245,7 @@ def plot_category_props(
     carr = np.ones((len(folder_suffixes), len(prop_labels)), dtype=float) * np.nan
 
     fig, ax = plt.subplots()
-    im = ax.imshow(carr, aspect=1)
+    im = ax.imshow(carr, aspect=aspect)
 
     # Show all ticks and label them with the respective list entries
     ax.set_xticks(np.arange(len(prop_labels)), labels=prop_labels)
@@ -6267,6 +6268,7 @@ def plot_category_props(
             )
 
     ax.set_title("Median properties")
+    ax.grid()
     # ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
