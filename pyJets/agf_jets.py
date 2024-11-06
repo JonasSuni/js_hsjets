@@ -6028,7 +6028,7 @@ def plot_jet_formation_postime(
         mpatches.Rectangle(
             (391, 3),
             426 - 391,
-            3 - (17),
+            17 - (3),
             color=CB_color_cycle[0],
             label="$Q\\parallel$ before",
             fill=False,
@@ -6040,7 +6040,7 @@ def plot_jet_formation_postime(
         mpatches.Rectangle(
             (430, 3),
             470 - 430,
-            3 - (17),
+            17 - (3),
             color=CB_color_cycle[1],
             label="$Q\\parallel$ FB",
             fill=False,
