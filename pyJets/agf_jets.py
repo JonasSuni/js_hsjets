@@ -6289,6 +6289,7 @@ def plot_category_histograms(
         if idx == 1:
             ax.set_xscale("log")
         ax.set_yscale("log")
+        ax.set_ylim(0.01, None)
 
     figdir = wrkdir_DNR + "Figs/"
 
