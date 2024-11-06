@@ -6203,6 +6203,8 @@ def plot_category_histograms(
         "jets_qpar_fb",
         "jets_qperp_rd",
         "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
     ]
 ):
 
@@ -6211,12 +6213,16 @@ def plot_category_histograms(
         "jets_qpar_fb",
         "jets_qperp_rd",
         "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
     ]
     sfx_labels = [
         "$Q\\parallel$ steady",
         "$Q\\parallel$ FB",
         "$Q\\perp$ RD",
         "$Q\\perp$ steady",
+        "$Q\\perp$ inter",
+        "$Q\\parallel$ after",
     ]
 
     prop_labels = [
