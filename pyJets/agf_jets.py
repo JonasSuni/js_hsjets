@@ -6262,7 +6262,12 @@ def plot_category_histograms(
             ax.hist(
                 categories_list[idx2][idx],
                 bins=bin_edges[idx],
-                density=True,
+                # density=True,
+                weights=1.0
+                / (
+                    np.ones(len(categories_list[idx2][idx]), dtype=float)
+                    * len(categories_list[idx2][idx])
+                ),
                 label=sfx_labels[idx2],
                 color=CB_color_cycle[idx2],
                 histtype="step",
@@ -6278,11 +6283,12 @@ def plot_category_histograms(
             alpha=0.5,
         )
         if idx == 0:
-            ax.set_ylabel("Prob. density")
+            ax.set_ylabel("Fraction of jets")
             ax.legend()
             ax.set_xscale("log")
         if idx == 1:
             ax.set_xscale("log")
+        ax.set_yscale("log")
 
     figdir = wrkdir_DNR + "Figs/"
 
