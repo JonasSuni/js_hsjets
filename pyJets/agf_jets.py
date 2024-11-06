@@ -6244,7 +6244,7 @@ def plot_category_props(
     carr = np.ones((len(folder_suffixes), len(prop_labels)), dtype=float) * np.nan
 
     fig, ax = plt.subplots()
-    im = ax.imshow(carr)
+    im = ax.imshow(carr, aspect=1)
 
     # Show all ticks and label them with the respective list entries
     ax.set_xticks(np.arange(len(prop_labels)), labels=prop_labels)
@@ -6267,7 +6267,7 @@ def plot_category_props(
             )
 
     ax.set_title("Median properties")
-    ax.spines[:].set_visible(False)
+    # ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
     figdir = wrkdir_DNR + "Figs/"
