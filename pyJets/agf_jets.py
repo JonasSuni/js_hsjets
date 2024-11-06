@@ -6268,7 +6268,7 @@ def plot_category_props(
             )
 
     ax.set_title("Median properties")
-    ax.grid()
+    ax.grid(which="minor")
     # ax.spines[:].set_visible(False)
     ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
     fig.tight_layout()
