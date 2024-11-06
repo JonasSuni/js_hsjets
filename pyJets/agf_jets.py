@@ -6197,6 +6197,87 @@ def get_jet_category_properties(
     np.savetxt(txtdir + "{}.txt".format(folder_suffix), outarr)
 
 
+def plot_category_props(
+    folder_suffixes=[
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
+        "jets_all",
+    ]
+):
+    sfx_valid = [
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
+        "jets_all",
+    ]
+    sfx_labels = [
+        "$Q\\parallel$\nbefore",
+        "$Q\\parallel$ FB",
+        "$Q\\perp$ RD",
+        "$Q\\perp$\nafter",
+        "$Q\\perp$\ninter",
+        "$Q\\parallel$\nafter",
+        "All",
+    ]
+
+    prop_labels = [
+        "Duration [s]",
+        "Max. size\n[nr. cells]",
+        "Radial depth\n[$R_\\mathrm{E}$]",
+    ]
+
+    txtdir = wrkdir_DNR + "jet_categories/"
+
+    categories_list = []
+
+    for sfx in folder_suffixes:
+        jetids, durs, maxs, rpens = np.loadtxt(txtdir + "{}.txt".format(sfx))
+        categories_list.append([durs, maxs, rpens])
+
+    carr = np.ones((len(folder_suffixes), len(prop_labels)), dtype=float) * np.nan
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(carr)
+
+    # Show all ticks and label them with the respective list entries
+    ax.set_xticks(np.arange(len(prop_labels)), labels=prop_labels)
+    ax.set_yticks(np.arange(len(sfx_labels)), labels=sfx_labels)
+
+    # Rotate the tick labels and set their alignment.
+    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+    #         rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    for i in range(len(folder_suffixes)):
+        for j in range(len(prop_labels)):
+            text = ax.text(
+                j,
+                i,
+                "{:.3f}".format(np.nanmedian(categories_list[i][j])),
+                ha="center",
+                va="center",
+                color="k",
+            )
+
+    ax.set_title("Median properties")
+    ax.spines[:].set_visible(False)
+    ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
+    fig.tight_layout()
+    figdir = wrkdir_DNR + "Figs/"
+    fig.savefig(
+        figdir + "jet_prop_medians.png",
+        dpi=300,
+    )
+    plt.close(fig)
+
+
 def plot_category_histograms(
     folder_suffixes=[
         "jets_qpar_before",
