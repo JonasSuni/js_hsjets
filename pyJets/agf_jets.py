@@ -4798,7 +4798,7 @@ def jplots(
                     YmeshXY,
                     pdavg_arr_interp.T,
                     [0.5],
-                    color=[CB_color_cycle[2]],
+                    colors=[CB_color_cycle[2]],
                 )
             ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
