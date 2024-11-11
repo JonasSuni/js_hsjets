@@ -4652,6 +4652,7 @@ def jplots(
     else:
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
+            print(fnr)
             if pdavg:
                 try:
                     pdavg_arr = np.loadtxt(
