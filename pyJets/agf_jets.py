@@ -4673,7 +4673,7 @@ def jplots(
                                 * 1e9
                             )
                     else:
-                        pdavg_arr_interp[:, idx] = pdavg_arr
+                        pdavg_arr_interp[:, idx] = pdavg_arr * 1e9
                     print(pdavg_arr_interp[:, idx])
                 except:
                     pass
