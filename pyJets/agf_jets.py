@@ -4796,7 +4796,7 @@ def jplots(
                 ax.contour(
                     XmeshXY,
                     YmeshXY,
-                    pdavg_arr_interp.T,
+                    jetmask,
                     [0.5],
                     colors=[CB_color_cycle[2]],
                 )
