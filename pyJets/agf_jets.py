@@ -4653,6 +4653,7 @@ def jplots(
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
             print(fnr)
+            print(tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg")
             if pdavg:
                 try:
                     pdavg_arr = np.loadtxt(
