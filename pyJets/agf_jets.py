@@ -4483,6 +4483,59 @@ def mini_jplots(
     plt.close(fig)
 
 
+def process_timestep_jplots(args):
+    """Helper function for parallel processing in jplots"""
+    fnr, vars_list, ops_list, scale_list, intpol, coords, cellids, xlist, pdavg, runid, tavgdir, cellid_coords = args
+    try:
+        result = np.zeros((len(vars_list), xlist.size), dtype=float)
+        bulkpath = find_bulkpath(runid)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        if pdavg:
+            try:
+                pdavg_arr = np.loadtxt(
+                    tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
+                )[cellids - 1]
+                if intpol:
+                    if xlist[-1] != xlist[0]:
+                        pdavg_arr_interp = (
+                            np.interp(coords[:, 0], cellid_coords[:, 0], pdavg_arr)
+                            * 1e9
+                        )
+                    else:
+                        pdavg_arr_interp = (
+                            np.interp(coords[:, 1], cellid_coords[:, 1], pdavg_arr)
+                            * 1e9
+                        )
+                else:
+                    pdavg_arr_interp = pdavg_arr * 1e9
+            except:
+                pdavg_arr_interp = np.ones(xlist.size) * np.nan
+        else:
+            pdavg_arr_interp = None
+
+        for idx2 in range(len(vars_list)):
+            if intpol:
+                result[idx2, :] = [
+                    vlsvobj.read_interpolated_variable(
+                        vars_list[idx2], coords[idx3], operator=ops_list[idx2]
+                    )
+                    * scale_list[idx2]
+                    for idx3 in range(xlist.size)
+                ]
+            else:
+                result[idx2, :] = (
+                    vlsvobj.read_variable(
+                        vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                    )
+                    * scale_list[idx2]
+                )
+        return fnr, result, pdavg_arr_interp
+    except Exception as e:
+        print(f"Error processing timestep {fnr}: {str(e)}")
+        return fnr, None, None
+
 def jplots(
     x0,
     y0,
@@ -4511,7 +4564,7 @@ def jplots(
         "$v_x$ [km/s]",
         "$P_\\mathrm{dyn}$ [nPa]",
         "$B$ [nT]",
-        # "$T$ [MK]",
+        # "$T$ [MK]", 
         "$E$ [mV/m]",
     ]
     if filt:
@@ -4651,64 +4704,33 @@ def jplots(
             )
         )
     else:
-        def process_timestep(fnr):
-            try:
-                result = np.zeros((len(vars_list), xplot_list.size), dtype=float)
-                vlsvobj = pt.vlsvfile.VlsvReader(
-                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-                )
-                if pdavg:
-                    try:
-                        pdavg_arr = np.loadtxt(
-                            tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
-                        )[cellids - 1]
-                        if intpol:
-                            if xlist[-1] != xlist[0]:
-                                pdavg_arr_interp = (
-                                    np.interp(coords[:, 0], cellid_coords[:, 0], pdavg_arr)
-                                    * 1e9
-                                )
-                            else:
-                                pdavg_arr_interp = (
-                                    np.interp(coords[:, 1], cellid_coords[:, 1], pdavg_arr)
-                                    * 1e9
-                                )
-                        else:
-                            pdavg_arr_interp = pdavg_arr * 1e9
-                    except:
-                        pdavg_arr_interp = np.ones(xplot_list.size) * np.nan
-                else:
-                    pdavg_arr_interp = None
-
-                for idx2 in range(len(vars_list)):
-                    if intpol:
-                        result[idx2, :] = [
-                            vlsvobj.read_interpolated_variable(
-                                vars_list[idx2], coords[idx3], operator=ops_list[idx2]
-                            )
-                            * scale_list[idx2]
-                            for idx3 in range(xlist.size)
-                        ]
-                    else:
-                        result[idx2, :] = (
-                            vlsvobj.read_variable(
-                                vars_list[idx2], operator=ops_list[idx2], cellids=cellids
-                            )
-                            * scale_list[idx2]
-                        )
-                return fnr, result, pdavg_arr_interp
-            except Exception as e:
-                print(f"Error processing timestep {fnr}: {str(e)}")
-                return fnr, None, None
-
         # Initialize arrays
         data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
         pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
 
+        # Prepare arguments for parallel processing
+        args_list = [
+            (
+                fnr,
+                vars_list,
+                ops_list,
+                scale_list,
+                intpol,
+                coords if intpol else None,
+                cellids,
+                xlist,
+                pdavg,
+                runid,
+                tavgdir,
+                cellid_coords,
+            )
+            for fnr in fnr_range
+        ]
+
         # Use multiprocessing Pool
         from multiprocessing import Pool
         with Pool(processes=n_processes) as pool:
-            results = pool.map(process_timestep, fnr_range)
+            results = pool.map(process_timestep_jplots, args_list)
 
             # Process results
             for fnr, result, pdavg_result in results:
