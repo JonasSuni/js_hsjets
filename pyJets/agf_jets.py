@@ -4637,9 +4637,7 @@ def jplots(
     # cellids = np.array(
     #     [vlsvobj.get_cellid([x_arr[idx], y_arr[idx], 0]) for idx in range(len(x_arr))]
     # )
-    cellid_coords = np.array(
-        [vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]
-    )
+    cellid_coords = np.array([fobj.get_cell_coordinates(cellid) for cellid in cellids])
     pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
 
     if txt:
