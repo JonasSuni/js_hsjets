@@ -3120,7 +3120,7 @@ def VSC_cut_through(
         [vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]
     )
     try:
-        pdavg_arr = np.loadtxt(tavgdir + "/" + runid + "/" + str(fnr0) + "_pdyn.tavg")[
+        pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr0) + "_pdyn.tavg")[
             cellids - 1
         ]
         pdavg_arr_interp = np.interp(x_arr, cellid_coords[:, 0], pdavg_arr) * 1e9
@@ -4639,7 +4639,7 @@ def jplots(
     # )
     cellid_coords = np.array([fobj.get_cell_coordinates(cellid) for cellid in cellids])
     pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
-    
+
     if txt:
         data_arr = np.load(
             txtdir
@@ -4650,12 +4650,10 @@ def jplots(
     else:
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
-            print(fnr)
-            print(tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg")
             if pdavg:
                 try:
                     pdavg_arr = np.loadtxt(
-                        tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+                        tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
                     )[cellids - 1]
                     if intpol:
                         if xlist[-1] != xlist[0]:
@@ -4670,7 +4668,6 @@ def jplots(
                             )
                     else:
                         pdavg_arr_interp[:, idx] = pdavg_arr
-                    print(pdavg_arr_interp[:, idx])
                 except:
                     pass
 
