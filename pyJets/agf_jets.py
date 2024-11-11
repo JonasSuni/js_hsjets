@@ -4641,7 +4641,6 @@ def jplots(
     pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
 
     print(cellid_coords / r_e)
-    print(coords / r_e)
 
     if txt:
         data_arr = np.load(
