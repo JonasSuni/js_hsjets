@@ -2951,6 +2951,7 @@ def VSC_cut_through(
     fourier=None,
     pdavg=False,
     plot_gyro=False,
+    dirprefix="",
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3250,8 +3251,8 @@ def VSC_cut_through(
         ax.set_ylabel(ylabels[idx])
         # ax.axvline(t0, linestyle="dashed")
     # plt.tight_layout()
-    figdir = wrkdir_DNR + "Figs/cuts/"
-    txtdir = wrkdir_DNR + "txts/cuts/"
+    figdir = wrkdir_DNR + "Figs/cuts/{}".format(dirprefix)
+    txtdir = wrkdir_DNR + "txts/cuts/{}".format(dirprefix)
     if not os.path.exists(figdir):
         try:
             os.makedirs(figdir)
@@ -4500,6 +4501,7 @@ def jplots(
     vels_to_plot=[0, 1, 2, 3, 4, 5, 6],
     legsize=12,
     filt=False,
+    pdavg=False,
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -4632,6 +4634,14 @@ def jplots(
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
 
+    # cellids = np.array(
+    #     [vlsvobj.get_cellid([x_arr[idx], y_arr[idx], 0]) for idx in range(len(x_arr))]
+    # )
+    cellid_coords = np.array(
+        [vlsvobj.get_cell_coordinates(cellid) for cellid in cellids]
+    )
+    pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
+
     if txt:
         data_arr = np.load(
             txtdir
@@ -4642,6 +4652,27 @@ def jplots(
     else:
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
+            try:
+                if pdavg:
+                    pdavg_arr = np.loadtxt(
+                        tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+                    )[cellids - 1]
+                    if intpol:
+                        if xlist[-1] != xlist[0]:
+                            pdavg_arr_interp[:, idx] = (
+                                np.interp(coords[:, 0], cellid_coords[:, 0], pdavg_arr)
+                                * 1e9
+                            )
+                        else:
+                            pdavg_arr_interp[:, idx] = (
+                                np.interp(coords[:, 1], cellid_coords[:, 1], pdavg_arr)
+                                * 1e9
+                            )
+                    else:
+                        pdavg_arr_interp[:, idx] = pdavg_arr
+            except:
+                pass
+
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
@@ -4661,6 +4692,8 @@ def jplots(
                         )
                         * scale_list[idx2]
                     )
+
+    jetmask = (data_arr[2, :, :] > 2 * pdavg_arr_interp).astype(int)
 
     # vpar,vpvapar,vmvapar,vpvspar,vmvspar,vpvmspar,vmvmspar
     outvels = calc_velocities(
@@ -4761,6 +4794,14 @@ def jplots(
             # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[-1].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=["k"])
+            if pdavg:
+                ax.contour(
+                    XmeshXY,
+                    YmeshXY,
+                    pdavg_arr_interp.T,
+                    [0.5],
+                    color=[CB_color_cycle[2]],
+                )
             ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
                 ax.streamplot(
