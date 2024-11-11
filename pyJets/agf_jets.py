@@ -36,6 +36,7 @@ import matplotlib.colors as colors
 import matplotlib.lines as mlines
 import matplotlib.ticker as ticker
 import matplotlib.patches as mpatches
+from multiprocessing import Pool
 
 mpl.rcParams["hatch.linewidth"] = 0.1
 
@@ -4739,7 +4740,6 @@ def jplots(
         ]
 
         # Use multiprocessing Pool
-        from multiprocessing import Pool
 
         with Pool(processes=n_processes) as pool:
             results = pool.map(process_timestep_jplots, args_list)
