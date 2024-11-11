@@ -4639,9 +4639,7 @@ def jplots(
     # )
     cellid_coords = np.array([fobj.get_cell_coordinates(cellid) for cellid in cellids])
     pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
-
-    print(cellid_coords / r_e)
-
+    
     if txt:
         data_arr = np.load(
             txtdir
