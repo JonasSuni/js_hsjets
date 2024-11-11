@@ -4612,10 +4612,12 @@ def jplots(
 
     fobj = pt.vlsvfile.VlsvReader(bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7)))
 
-    cellids = [
-        int(fobj.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
-        for idx in range(xlist.size)
-    ]
+    cellids = np.array(
+        [
+            int(fobj.get_cellid([xlist[idx] * r_e, ylist[idx] * r_e, 0]))
+            for idx in range(xlist.size)
+        ]
+    )
     cellnr = range(xlist.size)
     if xlist[-1] != xlist[0]:
         xplot_list = xlist
@@ -4652,9 +4654,9 @@ def jplots(
             fnr = fnr_range[idx]
             print(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")
             if pdavg:
-                pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
-                    cellids - 1
-                ]
+                # pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
+                #     cellids - 1
+                # ]
                 try:
                     pdavg_arr = np.loadtxt(
                         tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
