@@ -4805,7 +4805,6 @@ def jplots(
     if draw:
         fig, ax_list = plt.subplots(
             1,
-            # len(varname_list),
             len(vars_to_plot),
             figsize=(6 * len(vars_to_plot), figh),
             sharex=True,
@@ -4851,6 +4850,7 @@ def jplots(
                     [0.5],
                     colors=[CB_color_cycle[2]],
                     linestyles=["dotted"],
+                    linewidths=[1.2],
                 )
             ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
