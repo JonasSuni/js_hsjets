@@ -4502,6 +4502,7 @@ def jplots(
     legsize=12,
     filt=False,
     pdavg=False,
+    n_processes=None,
 ):
     dr = 300e3 / r_e
     dr_km = 300
@@ -4650,53 +4651,72 @@ def jplots(
             )
         )
     else:
-        for idx in range(fnr_range.size):
-            fnr = fnr_range[idx]
-            # print(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")
-            if pdavg:
-                # pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
-                #     cellids - 1
-                # ]
-                try:
-                    pdavg_arr = np.loadtxt(
-                        tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
-                    )[cellids - 1]
-                    if intpol:
-                        if xlist[-1] != xlist[0]:
-                            pdavg_arr_interp[:, idx] = (
-                                np.interp(coords[:, 0], cellid_coords[:, 0], pdavg_arr)
-                                * 1e9
-                            )
+        def process_timestep(fnr):
+            try:
+                result = np.zeros((len(vars_list), xplot_list.size), dtype=float)
+                vlsvobj = pt.vlsvfile.VlsvReader(
+                    bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+                )
+                if pdavg:
+                    try:
+                        pdavg_arr = np.loadtxt(
+                            tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
+                        )[cellids - 1]
+                        if intpol:
+                            if xlist[-1] != xlist[0]:
+                                pdavg_arr_interp = (
+                                    np.interp(coords[:, 0], cellid_coords[:, 0], pdavg_arr)
+                                    * 1e9
+                                )
+                            else:
+                                pdavg_arr_interp = (
+                                    np.interp(coords[:, 1], cellid_coords[:, 1], pdavg_arr)
+                                    * 1e9
+                                )
                         else:
-                            pdavg_arr_interp[:, idx] = (
-                                np.interp(coords[:, 1], cellid_coords[:, 1], pdavg_arr)
-                                * 1e9
-                            )
-                    else:
-                        pdavg_arr_interp[:, idx] = pdavg_arr * 1e9
-                    # print(pdavg_arr_interp[:, idx])
-                except:
-                    pass
-
-            vlsvobj = pt.vlsvfile.VlsvReader(
-                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-            )
-            for idx2 in range(len(vars_list)):
-                if intpol:
-                    data_arr[idx2, :, idx] = [
-                        vlsvobj.read_interpolated_variable(
-                            vars_list[idx2], coords[idx3], operator=ops_list[idx2]
-                        )
-                        * scale_list[idx2]
-                        for idx3 in range(xlist.size)
-                    ]
+                            pdavg_arr_interp = pdavg_arr * 1e9
+                    except:
+                        pdavg_arr_interp = np.ones(xplot_list.size) * np.nan
                 else:
-                    data_arr[idx2, :, idx] = (
-                        vlsvobj.read_variable(
-                            vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                    pdavg_arr_interp = None
+
+                for idx2 in range(len(vars_list)):
+                    if intpol:
+                        result[idx2, :] = [
+                            vlsvobj.read_interpolated_variable(
+                                vars_list[idx2], coords[idx3], operator=ops_list[idx2]
+                            )
+                            * scale_list[idx2]
+                            for idx3 in range(xlist.size)
+                        ]
+                    else:
+                        result[idx2, :] = (
+                            vlsvobj.read_variable(
+                                vars_list[idx2], operator=ops_list[idx2], cellids=cellids
+                            )
+                            * scale_list[idx2]
                         )
-                        * scale_list[idx2]
-                    )
+                return fnr, result, pdavg_arr_interp
+            except Exception as e:
+                print(f"Error processing timestep {fnr}: {str(e)}")
+                return fnr, None, None
+
+        # Initialize arrays
+        data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
+        pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
+
+        # Use multiprocessing Pool
+        from multiprocessing import Pool
+        with Pool(processes=n_processes) as pool:
+            results = pool.map(process_timestep, fnr_range)
+
+            # Process results
+            for fnr, result, pdavg_result in results:
+                if result is not None:
+                    idx = np.where(fnr_range == fnr)[0][0]
+                    data_arr[:, :, idx] = result
+                    if pdavg and pdavg_result is not None:
+                        pdavg_arr_interp[:, idx] = pdavg_result
 
     jetmask = (data_arr[2, :, :] > 2 * pdavg_arr_interp).astype(int)
 
