@@ -4652,7 +4652,7 @@ def jplots(
     else:
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
-            print(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")
+            # print(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")
             if pdavg:
                 # pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
                 #     cellids - 1
@@ -4674,7 +4674,7 @@ def jplots(
                             )
                     else:
                         pdavg_arr_interp[:, idx] = pdavg_arr * 1e9
-                    print(pdavg_arr_interp[:, idx])
+                    # print(pdavg_arr_interp[:, idx])
                 except:
                     pass
 
