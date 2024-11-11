@@ -4485,7 +4485,20 @@ def mini_jplots(
 
 def process_timestep_jplots(args):
     """Helper function for parallel processing in jplots"""
-    fnr, vars_list, ops_list, scale_list, intpol, coords, cellids, xlist, pdavg, runid, tavgdir, cellid_coords = args
+    (
+        fnr,
+        vars_list,
+        ops_list,
+        scale_list,
+        intpol,
+        coords,
+        cellids,
+        xlist,
+        pdavg,
+        runid,
+        tavgdir,
+        cellid_coords,
+    ) = args
     try:
         result = np.zeros((len(vars_list), xlist.size), dtype=float)
         bulkpath = find_bulkpath(runid)
@@ -4494,9 +4507,9 @@ def process_timestep_jplots(args):
         )
         if pdavg:
             try:
-                pdavg_arr = np.loadtxt(
-                    tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
-                )[cellids - 1]
+                pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
+                    cellids - 1
+                ]
                 if intpol:
                     if xlist[-1] != xlist[0]:
                         pdavg_arr_interp = (
@@ -4536,6 +4549,7 @@ def process_timestep_jplots(args):
         print(f"Error processing timestep {fnr}: {str(e)}")
         return fnr, None, None
 
+
 def jplots(
     x0,
     y0,
@@ -4564,7 +4578,7 @@ def jplots(
         "$v_x$ [km/s]",
         "$P_\\mathrm{dyn}$ [nPa]",
         "$B$ [nT]",
-        # "$T$ [MK]", 
+        # "$T$ [MK]",
         "$E$ [mV/m]",
     ]
     if filt:
@@ -4635,11 +4649,7 @@ def jplots(
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
         [1.0e6, 750.0e3, 3.0e-9, 0.5e6],
     ]
-    n_sw, v_sw, B_sw, T_sw = sw_pars[runid_list.index(runid)]
-    pdyn_sw = m_p * n_sw * v_sw * v_sw
 
-    # vmin_norm = [1.0 / 2, -2.0, 1.0 / 6, 1.0 / 2, 1.0]
-    # vmax_norm = [6.0, 2.0, 2.0, 6.0, 36.0]
     vmin = [1, -250, 0, 5, 0]
     vmax = [5, 0, 0.3, 40, 4]
     if filt:
@@ -4672,7 +4682,7 @@ def jplots(
             for idx in range(xlist.size)
         ]
     )
-    cellnr = range(xlist.size)
+
     if xlist[-1] != xlist[0]:
         xplot_list = xlist
         xlab = "$X~[R_\\mathrm{E}]$"
@@ -4690,9 +4700,6 @@ def jplots(
     figdir = wrkdir_DNR + "Figs/jmaps/"
     txtdir = wrkdir_DNR + "txts/jmaps/"
 
-    # cellids = np.array(
-    #     [vlsvobj.get_cellid([x_arr[idx], y_arr[idx], 0]) for idx in range(len(x_arr))]
-    # )
     cellid_coords = np.array([fobj.get_cell_coordinates(cellid) for cellid in cellids])
     pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
 
@@ -4705,8 +4712,12 @@ def jplots(
         )
     else:
         # Initialize arrays
-        data_arr = np.zeros((len(vars_list), xplot_list.size, t_range.size), dtype=float)
-        pdavg_arr_interp = np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
+        data_arr = np.zeros(
+            (len(vars_list), xplot_list.size, t_range.size), dtype=float
+        )
+        pdavg_arr_interp = (
+            np.ones((xplot_list.size, t_range.size), dtype=float) * np.nan
+        )
 
         # Prepare arguments for parallel processing
         args_list = [
@@ -4729,6 +4740,7 @@ def jplots(
 
         # Use multiprocessing Pool
         from multiprocessing import Pool
+
         with Pool(processes=n_processes) as pool:
             results = pool.map(process_timestep_jplots, args_list)
 
@@ -4758,7 +4770,6 @@ def jplots(
     if filt:
         for idx in range(5):
             for idx2 in range(xplot_list.size):
-                # data_arr[idx, idx2, :] = sosfilt(sos, data_arr[idx, idx2, :])
                 data_arr[idx, idx2, :] = data_arr[idx, idx2, :] - uniform_filter1d(
                     data_arr[idx, idx2, :], size=60
                 )
@@ -4783,15 +4794,11 @@ def jplots(
             ]
         ).T
 
-    # data_arr = [rho_arr, v_arr, pdyn_arr, B_arr, T_arr]
     cmap = ["Blues_r", "Blues_r", "Blues_r", "Blues_r", "Blues_r"]
     if filt:
         cmap = ["vik", "vik", "vik", "vik", "vik"]
     annot = ["a", "b", "c", "d", "e"]
 
-    # fig, ax_list = plt.subplots(
-    #     1, len(varname_list), figsize=(20, 5), sharex=True, sharey=True
-    # )
     figh = 10
     if len(vels_to_plot) < 4:
         figh = 8
@@ -4833,12 +4840,7 @@ def jplots(
                     rasterized=True,
                 )
             )
-            # if idx == 1:
-            #     cb_list.append(fig.colorbar(im_list[idx], ax=ax, extend="max"))
-            #     cb_list[idx].cmap.set_over("red")
-            # else:
             cb_list.append(fig.colorbar(im_list[-1], ax=ax))
-            # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
             cb_list[-1].ax.tick_params(labelsize=20)
             ax.contour(XmeshXY, YmeshXY, data_arr[5].T, [bs_thresh], colors=["k"])
             if pdavg:
@@ -4913,14 +4915,10 @@ def jplots(
                         color=CB_color_cycle[::-1][itr + 1],
                         label=vels_labels[itr],
                     )
-            # ax.contour(XmeshXY, YmeshXY, Tcore_arr, [3], colors=[CB_color_cycle[1]])
-            # ax.contour(XmeshXY, YmeshXY, mmsx_arr, [1.0], colors=[CB_color_cycle[4]])
             ax.set_title(varname_list[idx], fontsize=24, pad=10)
             ax.set_xlim(xplot_list[0], xplot_list[-1])
             ax.set_ylim(t_range[0], t_range[-1])
             ax.set_xlabel(xlab, fontsize=24, labelpad=10)
-            # ax.axhline(t0, linestyle="dashed", linewidth=0.6)
-            # ax.axvline(x0, linestyle="dashed", linewidth=0.6)
             ax.annotate(
                 annot[idx],
                 (0.05, 0.90),
@@ -4944,18 +4942,6 @@ def jplots(
             )
         else:
             ax_list[0].legend(fontsize=legsize, loc="lower left", ncols=2)
-        # ax_list[int(np.ceil(len(varname_list) / 2.0))].set_ylabel(
-        #     "Simulation time [s]", fontsize=28, labelpad=10
-        # )
-        # ax_list[-1].set_axis_off()
-
-        # Save figure
-        # plt.tight_layout()
-
-        # fig.savefig(
-        #     wrkdir_DNR
-        #     + "papu22/Figures/jmaps/{}_{}.pdf".format(runid, str(non_id).zfill(5))
-        # )
         if not os.path.exists(figdir):
             try:
                 os.makedirs(figdir)
