@@ -4799,6 +4799,7 @@ def jplots(
                     jetmask.T,
                     [0.5],
                     colors=[CB_color_cycle[2]],
+                    linestyles=["dotted"],
                 )
             ax.plot([1, 2], [0, 1], color="k", label="$\\beta^*=$ {}".format(bs_thresh))
             if vel_lines:
