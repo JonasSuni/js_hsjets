@@ -4650,8 +4650,8 @@ def jplots(
     else:
         for idx in range(fnr_range.size):
             fnr = fnr_range[idx]
-            try:
-                if pdavg:
+            if pdavg:
+                try:
                     pdavg_arr = np.loadtxt(
                         tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
                     )[cellids - 1]
@@ -4668,8 +4668,8 @@ def jplots(
                             )
                     else:
                         pdavg_arr_interp[:, idx] = pdavg_arr
-            except:
-                pass
+                except:
+                    pass
 
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
