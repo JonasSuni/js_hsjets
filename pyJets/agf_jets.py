@@ -4652,6 +4652,9 @@ def jplots(
             fnr = fnr_range[idx]
             print(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")
             if pdavg:
+                pdavg_arr = np.loadtxt(tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg")[
+                    cellids - 1
+                ]
                 try:
                     pdavg_arr = np.loadtxt(
                         tavgdir + runid + "/" + str(fnr) + "_pdyn.tavg"
