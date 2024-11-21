@@ -5017,7 +5017,7 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op=None, lt=True):
             selected_cells = y_cells[y_vals > threshold]
         
         # Get the x-coordinates of the selected cells
-        x_coords = coords[restricted_cells == selected_cells][:, 0]
+        x_coords = coords[np.isin(restricted_cells,selected_cells)][:, 0]
         
         xlist.extend(x_coords)
         cell_list.extend(selected_cells)
