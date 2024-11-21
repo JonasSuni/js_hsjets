@@ -2185,7 +2185,6 @@ def fig1(runid, panel_nums=True, vmax=1.0):
     fig.savefig(outputdir + "../fig1.png", dpi=300)
     plt.close(fig)
 
-
 def v5_plotter(
     runid,
     start,
@@ -4972,6 +4971,62 @@ def jplots(
             data_arr,
         )
 
+def get_contour_cells(vlsvobj, boxre, threshold, var, op=None, lt=True):
+    """
+    Get the cell IDs and coordinates of cells that meet a certain threshold condition.
+
+    Parameters:
+    vlsvobj (VlsvReader): The VLSV file reader object.
+    boxre (list): The region of interest in the format [xmin, xmax, ymin, ymax].
+    threshold (float): The threshold value to compare against.
+    var (str): The variable to read from the VLSV file.
+    op (str, optional): The operator to apply when reading the variable. Defaults to None.
+    lt (bool, optional): If True, select cells with values less than the threshold. If False, select cells with values greater than the threshold. Defaults to True.
+
+    Returns:
+    tuple: A tuple containing:
+        - cell_list (numpy.ndarray): Array of cell IDs that meet the threshold condition.
+        - xlist (numpy.ndarray): Array of x-coordinates of the selected cells.
+        - y_unique (numpy.ndarray): Array of unique y-coordinates of the selected cells.
+    """
+    # Restrict the cells to the specified region
+    restricted_cells = restrict_area(vlsvobj, boxre)
+    
+    # Get the coordinates of the restricted cells
+    coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in restricted_cells])
+    
+    # Read the variable values for the restricted cells
+    vals = vlsvobj.read_variable(var, operator=op, cellids=restricted_cells)
+    
+    # Get unique y-coordinates
+    y_unique = np.unique(coords[:, 1])
+    
+    xlist = []
+    cell_list = []
+    
+    # Iterate over unique y-coordinates
+    for yun in y_unique:
+        # Select cells with the current y-coordinate
+        y_cells = restricted_cells[coords[:, 1] == yun]
+        y_vals = vals[coords[:, 1] == yun]
+        
+        # Apply the threshold condition
+        if lt:
+            selected_cells = y_cells[y_vals < threshold]
+        else:
+            selected_cells = y_cells[y_vals > threshold]
+        
+        # Get the x-coordinates of the selected cells
+        x_coords = coords[restricted_cells == selected_cells][:, 0]
+        
+        xlist.extend(x_coords)
+        cell_list.extend(selected_cells)
+    
+    xlist = np.array(xlist)
+    cell_list = np.array(cell_list)
+    
+    return (cell_list, xlist, y_unique)
+    
 
 def make_vg_b_jacobian(vobj):
 
