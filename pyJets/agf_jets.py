@@ -4992,7 +4992,7 @@ def get_contour_cells(vlsvobj,boxre,threshold,var,op="pass",lt=True):
         cell_list.append(restricted_cells[(coords[:,0]==xright) & (coords[:,1]==yun)])
 
     xlist = np.array(xlist)
-    cell_list = np.array(cell_list)
+    cell_list = np.array(cell_list).flatten()
 
     return (cell_list,xlist,y_unique)    
 
