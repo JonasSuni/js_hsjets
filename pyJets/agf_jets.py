@@ -4972,7 +4972,7 @@ def jplots(
         )
 
 def get_contour_cells(vlsvobj,boxre,threshold,var,op="pass",lt=True):
-
+    
     restricted_cells = restrict_area(vlsvobj,boxre)
     coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in restricted_cells])
     vals = vlsvobj.read_variable(var,operator=op,cellids=restricted_cells)
