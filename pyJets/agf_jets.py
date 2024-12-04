@@ -3360,7 +3360,32 @@ def VSC_cut_through(
 
 
 def pos_mag_tension(vlsvobj, x, y, dx=300e3):
+    """
+    Calculate the magnetic tension force (B·∇)B/μ0 at a given point using finite differences.
 
+    Parameters
+    ----------
+    vlsvobj : vlsvfile.VlsvReader object
+        VLSV file object to read the magnetic field data from
+    x : float 
+        X-coordinate in meters of the point where to calculate tension
+    y : float
+        Y-coordinate in meters of the point where to calculate tension 
+    dx : float, optional
+        Step size in meters for finite difference calculation, default 300 km
+
+    Returns
+    -------
+    ndarray
+        3D vector of magnetic tension force components [x,y,z] in units of N/m^3
+
+    Notes
+    -----
+    Uses central finite differences to calculate the gradient tensor. Only 
+    calculates gradients in x and y directions since simulation is 2D.
+    """
+
+    # Calculate B gradients in x and y directions using central differences
     dBxdx = (
         vlsvobj.read_interpolated_variable("vg_b_vol", [x + dx, y, 0], operator="x")
         - vlsvobj.read_interpolated_variable("vg_b_vol", [x - dx, y, 0], operator="x")
@@ -3387,12 +3412,16 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
         - vlsvobj.read_interpolated_variable("vg_b_vol", [x, y - dx, 0], operator="z")
     ) / (2.0 * dx)
 
-    # B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [dBzdx, dBzdy, 0]]).T
+    # Construct the gradient tensor matrix (z-derivatives are 0 in 2D)
     B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [0, 0, 0]]).T
+    
+    # Get magnetic field vector at the point
     B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
 
+    # Calculate B·∇B by matrix multiplication
     BdotJacobian = B @ B_jacobian
 
+    # Return magnetic tension force divided by μ0
     return BdotJacobian / mu0
 
 
