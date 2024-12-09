@@ -2185,6 +2185,7 @@ def fig1(runid, panel_nums=True, vmax=1.0):
     fig.savefig(outputdir + "../fig1.png", dpi=300)
     plt.close(fig)
 
+
 def v5_plotter(
     runid,
     start,
@@ -3367,10 +3368,10 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
     ----------
     vlsvobj : vlsvfile.VlsvReader object
         VLSV file object to read the magnetic field data from
-    x : float 
+    x : float
         X-coordinate in meters of the point where to calculate tension
     y : float
-        Y-coordinate in meters of the point where to calculate tension 
+        Y-coordinate in meters of the point where to calculate tension
     dx : float, optional
         Step size in meters for finite difference calculation, default 300 km
 
@@ -3381,7 +3382,7 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
 
     Notes
     -----
-    Uses central finite differences to calculate the gradient tensor. Only 
+    Uses central finite differences to calculate the gradient tensor. Only
     calculates gradients in x and y directions since simulation is 2D.
     """
 
@@ -3414,7 +3415,7 @@ def pos_mag_tension(vlsvobj, x, y, dx=300e3):
 
     # Construct the gradient tensor matrix (z-derivatives are 0 in 2D)
     B_jacobian = np.array([[dBxdx, dBxdy, 0], [dBydx, dBydy, 0], [0, 0, 0]]).T
-    
+
     # Get magnetic field vector at the point
     B = vlsvobj.read_interpolated_variable("vg_b_vol", [x, y, 0])
 
@@ -5000,30 +5001,77 @@ def jplots(
             data_arr,
         )
 
-def get_contour_cells(vlsvobj,boxre,threshold,var,op="pass",lt=True):
-    
-    restricted_cells = restrict_area(vlsvobj,boxre)
+
+def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
+
+    restricted_cells = restrict_area(vlsvobj, boxre)
     coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in restricted_cells])
-    vals = vlsvobj.read_variable(var,operator=op,cellids=restricted_cells)
-    
-    y_unique = np.unique(coords[:,1])
+    vals = vlsvobj.read_variable(var, operator=op, cellids=restricted_cells)
+
+    y_unique = np.unique(coords[:, 1])
     xlist = []
     cell_list = []
     for yun in y_unique:
-        x_at_y = coords[coords[:,1]==yun,0]
-        val_at_y = vals[coords[:,1]==yun]
+        x_at_y = coords[coords[:, 1] == yun, 0]
+        val_at_y = vals[coords[:, 1] == yun]
         if lt:
-            x_at_y_thresh = x_at_y[val_at_y<=threshold]
+            x_at_y_thresh = x_at_y[val_at_y <= threshold]
         else:
-            x_at_y_thresh = x_at_y[val_at_y>=threshold]
+            x_at_y_thresh = x_at_y[val_at_y >= threshold]
         xright = np.max(x_at_y_thresh)
         xlist.append(xright)
-        cell_list.append(restricted_cells[(coords[:,0]==xright) & (coords[:,1]==yun)])
+        cell_list.append(
+            restricted_cells[(coords[:, 0] == xright) & (coords[:, 1] == yun)]
+        )
 
     xlist = np.array(xlist)
     cell_list = np.array(cell_list).flatten()
 
-    return (cell_list,xlist,y_unique)    
+    return (cell_list, xlist, y_unique)
+
+
+def plot_vars_on_contour(runid, t0, boxre):
+
+    bulkpath = find_bulkpath(runid)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(t0 * 2)).zfill(7))
+    )
+    figdir = wrkdir_DNR + "Figs/plots_on_cont/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    cont_cells, cont_x, cont_y = get_contour_cells(
+        vlsvobj, boxre, 1, "proton/vg_mmsx", op="pass", lt=True
+    )
+    rho = (
+        vlsvobj.read_variable("proton/vg_rho", operator="pass", cellids=cont_cells)
+        / 1e6
+    )
+    vx = vlsvobj.read_variable("proton/vg_v", operator="x", cellids=cont_cells) / 1e3
+
+    fig, ax_list = plt.subplots(3, 1, figsize=(8, 9))
+
+    for ax in ax_list:
+        ax.set_xlim(cont_y[0], cont_y[-1])
+        ax.grid()
+
+    ax_list[0].plot(cont_y, cont_x)
+    ax_list[0].set_ylabel(r"$X~[R_\mathrm{E}]$")
+    ax_list[0].set_title("t0 = {}".format(t0))
+
+    ax_list[1].plot(cont_y, rho)
+    ax_list[1].set_ylabel(r"$\rho~[\mathrm{cm}^{-3}]$")
+
+    ax_list[2].plot(cont_y, vx)
+    ax_list[2].set_ylabel(r"$v_x~[\mathrm{km/s}]$")
+    ax_list[2].set_xlabel(r"$Y~[R_\mathrm{E}]$")
+
+    fig.savefig(figdir + "t0_{}_bs_contour.png".format(t0), dpi=300)
+    plt.close(fig)
+
 
 def make_vg_b_jacobian(vobj):
 
