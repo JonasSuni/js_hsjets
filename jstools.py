@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyLandau"
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pySlams")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyThesis")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyCarrington")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/" + "pyTurbulence")
 
 # Import modules
 
@@ -40,3 +41,8 @@ try:
     import carrington
 except ImportError as e:
     print("Note: Did not import carrington module: ", e)
+
+try:
+    import turbulence
+except ImportError as e:
+    print("Note: Did not import turbulence module: ", e)
