@@ -5030,12 +5030,16 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
     return (cell_list, xlist, y_unique)
 
 
-def plot_vars_on_contour(runid, t0, boxre):
+def plot_vars_on_contour(runid, t0, boxre,filt=None):
 
     bulkpath = find_bulkpath(runid)
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(int(t0 * 2)).zfill(7))
     )
+    if filt:
+        ylabels = [r"$\delta X~[R_\mathrm{E}]$", r"$\delta\rho~[\mathrm{cm}^{-3}]$", r"$\delta v_x~[\mathrm{km/s}]"]
+    else:
+        ylabels = [r"$X~[R_\mathrm{E}]$", r"$\rho~[\mathrm{cm}^{-3}]$", r"$v_x~[\mathrm{km/s}]"]
     figdir = wrkdir_DNR + "Figs/plots_on_cont/"
     if not os.path.exists(figdir):
         try:
@@ -5061,18 +5065,23 @@ def plot_vars_on_contour(runid, t0, boxre):
         ax.set_xlim(cont_y[0], cont_y[-1])
         ax.grid()
 
+    if filt:
+        cont_x = cont_x - uniform_filter1d(cont_x, size=filt)
+        rho = rho - uniform_filter1d(rho, size=filt)
+        vx = vx - uniform_filter1d(vx, size=filt)
+
     ax_list[0].plot(cont_y, cont_x)
-    ax_list[0].set_ylabel(r"$X~[R_\mathrm{E}]$")
+    ax_list[0].set_ylabel(ylabels[0])
     ax_list[0].set_title("t0 = {}".format(t0))
 
     ax_list[1].plot(cont_y, rho)
-    ax_list[1].set_ylabel(r"$\rho~[\mathrm{cm}^{-3}]$")
+    ax_list[1].set_ylabel(ylabels[1])
 
     ax_list[2].plot(cont_y, vx)
-    ax_list[2].set_ylabel(r"$v_x~[\mathrm{km/s}]$")
+    ax_list[2].set_ylabel(ylabels[2])
     ax_list[2].set_xlabel(r"$Y~[R_\mathrm{E}]$")
 
-    fig.savefig(figdir + "t0_{}_bs_contour.png".format(t0), dpi=300)
+    fig.savefig(figdir + "t0_{}_bs_contour_filt{}.png".format(t0,filt), dpi=300)
     plt.close(fig)
 
 
