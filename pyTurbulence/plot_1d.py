@@ -113,9 +113,7 @@ def plot_Byz(fnr0, fnr1, dirname):
         )
         cellids = vlsvobj.read_variable("cellID")
         ci_sorted = np.sort(cellids)
-        x = np.array(
-            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in ci_sorted]
-        )
+        x = np.array([vlsvobj.get_cell_coordinates(c)[0] / r_e for c in ci_sorted])
         By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()] / 1e-9
         Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()] / 1e-9
 
@@ -126,12 +124,14 @@ def plot_Byz(fnr0, fnr1, dirname):
         ax[0].set_title("t = {}".format(str(vlsvobj.read_parameter("time"))))
         ax[0].set_xlim([x[0], x[-1]])
         ax[0].set_ylim([-1, 1])
+        ax[0].grid()
 
         ax[1].plot(x, Bz)
         ax[1].set_ylabel(r"$B_z$ [nT]")
         ax[1].set_xlabel(r"$x~[R_\mathrm{E}]$")
         ax[1].set_xlim([x[0], x[-1]])
         ax[1].set_ylim([-1, 1])
+        ax[1].grid()
 
         fig.savefig(figdir + "{}.png".format(idx))
         plt.close(fig)
