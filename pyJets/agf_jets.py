@@ -5059,8 +5059,8 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10):
 
     title_list = [r"$\delta X$", r"$\delta\\rho$", r"$\delta v_x$"]
 
-    for ax in ax_list:
-        idx = ax_list.index(ax)
+    for idx in range(ax_list.size):
+        ax = ax_list[idx]
         ax.pcolormesh(lbd1, t_range, data_arr[idx], shading="nearest", cmap="viridis")
         ax.set_xscale("log")
         ax.set_xlabel(r"$\lambda$ [RE]")
