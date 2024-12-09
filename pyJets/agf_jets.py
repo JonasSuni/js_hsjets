@@ -5030,7 +5030,17 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
     return (cell_list, xlist, y_unique)
 
 
-def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10):
+def process_fourier_timestep(args):
+    """Helper function for parallel processing in contour_fourier_timeseries"""
+    t, runid, boxre, filt = args
+    try:
+        return t, plot_vars_on_contour(runid, t, boxre, filt=filt, draw=False)
+    except Exception as e:
+        print(f"Error processing timestep {t}: {str(e)}")
+        return t, None
+
+
+def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10, n_processes=None):
 
     figdir = wrkdir_DNR + "Figs/plots_on_cont/"
     if not os.path.exists(figdir):
@@ -5041,21 +5051,30 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10):
 
     t_range = np.arange(t0, t1 + 0.1, 0.5)
 
+    # Get sizes from first timestep
     lbd1, xfft, rhofft, vxfft = plot_vars_on_contour(
         runid, t0, boxre, filt=filt, draw=False
     )
 
     data_arr = np.zeros((3, lbd1.size, t_range.size), dtype=float)
 
-    for idx in range(t_range.size):
-        lbd1, xfft, rhofft, vxfft = plot_vars_on_contour(
-            runid, t_range[idx], boxre, filt=filt, draw=False
-        )
-        data_arr[0, :, idx] = xfft
-        data_arr[1, :, idx] = rhofft
-        data_arr[2, :, idx] = vxfft
+    # Prepare arguments for parallel processing
+    args_list = [(t, runid, boxre, filt) for t in t_range]
 
-    fig, ax_list = plt.subplots(1, 3, figsize=(9, 16))
+    # Use multiprocessing Pool
+    with Pool(processes=n_processes) as pool:
+        results = pool.map(process_fourier_timestep, args_list)
+
+        # Process results
+        for t, result in results:
+            if result is not None:
+                lbd1, xfft, rhofft, vxfft = result
+                idx = np.where(t_range == t)[0][0]
+                data_arr[0, :, idx] = xfft
+                data_arr[1, :, idx] = rhofft
+                data_arr[2, :, idx] = vxfft
+
+    fig, ax_list = plt.subplots(1, 3, figsize=(16, 9))
 
     title_list = [r"$\delta X$", r"$\delta\\rho$", r"$\delta v_x$"]
 
