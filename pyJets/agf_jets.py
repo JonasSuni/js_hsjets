@@ -6510,6 +6510,8 @@ def get_jet_category_properties(
             continue
         if maxsize < minsize:
             continue
+        if "splinter" in props.meta:
+            continue
 
         rmean = props.read("r_mean")
 
