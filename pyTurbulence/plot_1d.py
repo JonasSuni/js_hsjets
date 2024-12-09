@@ -117,7 +117,7 @@ def plot_Byz(fnr0, fnr1, dirname):
         By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()] / 1e-9
         Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()] / 1e-9
 
-        fig, ax = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
+        fig, ax = plt.subplots(3, 1, figsize=(8, 9), constrained_layout=True)
 
         ax[0].plot(x, By)
         ax[0].set_ylabel(r"$B_y$ [nT]")
@@ -128,10 +128,16 @@ def plot_Byz(fnr0, fnr1, dirname):
 
         ax[1].plot(x, Bz)
         ax[1].set_ylabel(r"$B_z$ [nT]")
-        ax[1].set_xlabel(r"$x~[R_\mathrm{E}]$")
         ax[1].set_xlim([x[0], x[-1]])
         ax[1].set_ylim([-1, 1])
         ax[1].grid()
+
+        ax[2].plot(x, np.arctan2(Bz / By) * 360 / (2 * np.pi))
+        ax[2].set_ylabel(r"$\theta$ [deg]")
+        ax[2].set_xlabel(r"$x~[R_\mathrm{E}]$")
+        ax[2].set_xlim([x[0], x[-1]])
+        ax[2].set_ylim([-180, 180])
+        ax[2].grid()
 
         fig.savefig(figdir + "{}.png".format(idx))
         plt.close(fig)
