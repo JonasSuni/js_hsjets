@@ -5046,6 +5046,9 @@ def plot_vars_on_contour(runid, t0, boxre):
     cont_cells, cont_x, cont_y = get_contour_cells(
         vlsvobj, boxre, 1, "proton/vg_mmsx", op="pass", lt=True
     )
+    cont_x /= r_e
+    cont_y /= r_e
+
     rho = (
         vlsvobj.read_variable("proton/vg_rho", operator="pass", cellids=cont_cells)
         / 1e6
