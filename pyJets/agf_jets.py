@@ -5030,7 +5030,51 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
     return (cell_list, xlist, y_unique)
 
 
-def plot_vars_on_contour(runid, t0, boxre, filt=None):
+def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10):
+
+    figdir = wrkdir_DNR + "Figs/plots_on_cont/"
+    if not os.path.exists(figdir):
+        try:
+            os.makedirs(figdir)
+        except OSError:
+            pass
+
+    t_range = np.arange(t0, t1 + 0.1, 0.5)
+
+    lbd1, xfft, rhofft, vxfft = plot_vars_on_contour(
+        runid, t0, boxre, filt=filt, draw=False
+    )
+
+    data_arr = np.zeros((3, lbd1.size, t_range.size), dtype=float)
+
+    for idx in range(t_range.size):
+        lbd1, xfft, rhofft, vxfft = plot_vars_on_contour(
+            runid, t_range[idx], boxre, filt=filt, draw=False
+        )
+        data_arr[0, :, idx] = xfft
+        data_arr[1, :, idx] = rhofft
+        data_arr[2, :, idx] = vxfft
+
+    fig, ax_list = plt.subplots(1, 3, figsize=(9, 16))
+
+    title_list = [r"$\delta X$", r"$\delta\\rho$", r"$\delta v_x$"]
+
+    for ax in ax_list:
+        idx = ax_list.index(ax)
+        ax.pcolormesh(lbd1, t_range, data_arr[idx], shading="nearest", cmap="viridis")
+        ax.set_xscale("log")
+        ax.set_xlabel(r"$\lambda$ [RE]")
+        ax.set_ylabel("Time [s]")
+        ax.set_title(title_list[idx])
+
+    fig.savefig(
+        figdir + "t0_{}_t1_{}_bs_contour_filt{}_fft_jplot.png".format(t0, t1, filt),
+        dpi=300,
+    )
+    plt.close(fig)
+
+
+def plot_vars_on_contour(runid, t0, boxre, filt=None, draw=True):
 
     bulkpath = find_bulkpath(runid)
     vlsvobj = pt.vlsvfile.VlsvReader(
@@ -5067,30 +5111,30 @@ def plot_vars_on_contour(runid, t0, boxre, filt=None):
     )
     vx = vlsvobj.read_variable("proton/vg_v", operator="x", cellids=cont_cells) / 1e3
 
-    fig, ax_list = plt.subplots(3, 1, figsize=(8, 9))
-
-    for ax in ax_list:
-        ax.set_xlim(cont_y[0], cont_y[-1])
-        ax.grid()
-
     if filt:
         cont_x = cont_x - uniform_filter1d(cont_x, size=filt)
         rho = rho - uniform_filter1d(rho, size=filt)
         vx = vx - uniform_filter1d(vx, size=filt)
+    if draw:
+        fig, ax_list = plt.subplots(3, 1, figsize=(8, 9))
 
-    ax_list[0].plot(cont_y, cont_x)
-    ax_list[0].set_ylabel(ylabels[0])
-    ax_list[0].set_title("t0 = {}".format(t0))
+        for ax in ax_list:
+            ax.set_xlim(cont_y[0], cont_y[-1])
+            ax.grid()
 
-    ax_list[1].plot(cont_y, rho)
-    ax_list[1].set_ylabel(ylabels[1])
+        ax_list[0].plot(cont_y, cont_x)
+        ax_list[0].set_ylabel(ylabels[0])
+        ax_list[0].set_title("t0 = {}".format(t0))
 
-    ax_list[2].plot(cont_y, vx)
-    ax_list[2].set_ylabel(ylabels[2])
-    ax_list[2].set_xlabel(r"$Y~[R_\mathrm{E}]$")
+        ax_list[1].plot(cont_y, rho)
+        ax_list[1].set_ylabel(ylabels[1])
 
-    fig.savefig(figdir + "t0_{}_bs_contour_filt{}.png".format(t0, filt), dpi=300)
-    plt.close(fig)
+        ax_list[2].plot(cont_y, vx)
+        ax_list[2].set_ylabel(ylabels[2])
+        ax_list[2].set_xlabel(r"$Y~[R_\mathrm{E}]$")
+
+        fig.savefig(figdir + "t0_{}_bs_contour_filt{}.png".format(t0, filt), dpi=300)
+        plt.close(fig)
 
     if filt:
         N = cont_y.size
@@ -5099,33 +5143,41 @@ def plot_vars_on_contour(runid, t0, boxre, filt=None):
         yf2 = fft(rho)
         yf3 = fft(vx)
         xf = fftfreq(N, T)[: N // 2]
-        fig, ax = plt.subplots(1, 3, figsize=(12, 4), constrained_layout=True)
-        ax[0].grid()
-        ax[0].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf1[1 : N // 2]))
-        ax[0].set_xlabel("$\\lambda$ [RE]")
-        xf1, yf1 = ax[0].get_lines()[0].get_data()
-        ax[0].set_title("X: $\\lambda$(max) = {}".format(xf1[yf1 == np.max(yf1)]))
+        if draw:
+            fig, ax = plt.subplots(1, 3, figsize=(12, 4), constrained_layout=True)
+            ax[0].grid()
+            ax[0].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf1[1 : N // 2]))
+            ax[0].set_xlabel("$\\lambda$ [RE]")
+            xf1, yf1 = ax[0].get_lines()[0].get_data()
+            ax[0].set_title("X: $\\lambda$(max) = {}".format(xf1[yf1 == np.max(yf1)]))
 
-        ax[1].grid()
-        ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf2[1 : N // 2]))
-        ax[1].set_xlabel("$\\lambda$ [RE]")
-        xf2, yf2 = ax[1].get_lines()[0].get_data()
-        ax[1].set_title("rho: $\\lambda$(max) = {}".format(xf2[yf2 == np.max(yf2)]))
+            ax[1].grid()
+            ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf2[1 : N // 2]))
+            ax[1].set_xlabel("$\\lambda$ [RE]")
+            xf2, yf2 = ax[1].get_lines()[0].get_data()
+            ax[1].set_title("rho: $\\lambda$(max) = {}".format(xf2[yf2 == np.max(yf2)]))
 
-        ax[2].grid()
-        ax[2].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf3[1 : N // 2]))
-        ax[2].set_xlabel("$\\lambda$ [RE]")
-        xf3, yf3 = ax[2].get_lines()[0].get_data()
-        ax[2].set_title("vx: $\\lambda$(max) = {}".format(xf3[yf3 == np.max(yf3)]))
+            ax[2].grid()
+            ax[2].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf3[1 : N // 2]))
+            ax[2].set_xlabel("$\\lambda$ [RE]")
+            xf3, yf3 = ax[2].get_lines()[0].get_data()
+            ax[2].set_title("vx: $\\lambda$(max) = {}".format(xf3[yf3 == np.max(yf3)]))
 
-        for a in ax:
-            a.set_xlim(600e3 / r_e, 2)
-            a.set_xscale("log")
+            for a in ax:
+                a.set_xlim(2 * T / r_e, 2)
+                a.set_xscale("log")
 
-        fig.savefig(
-            figdir + "t0_{}_bs_contour_filt{}_fft.png".format(t0, filt), dpi=300
+            fig.savefig(
+                figdir + "t0_{}_bs_contour_filt{}_fft.png".format(t0, filt), dpi=300
+            )
+            plt.close(fig)
+
+        return (
+            1 / (xf[1:]),
+            2.0 / N * np.abs(yf1[1 : N // 2]),
+            2.0 / N * np.abs(yf2[1 : N // 2]),
+            2.0 / N * np.abs(yf3[1 : N // 2]),
         )
-        plt.close(fig)
 
 
 def make_vg_b_jacobian(vobj):
