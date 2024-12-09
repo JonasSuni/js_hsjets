@@ -5076,7 +5076,7 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10, n_processes=None):
 
     fig, ax_list = plt.subplots(1, 3, figsize=(16, 9))
 
-    title_list = [r"$\delta X$", r"$\delta\\rho$", r"$\delta v_x$"]
+    title_list = [r"$\delta X$", r"$\delta\rho$", r"$\delta v_x$"]
 
     for idx in range(ax_list.size):
         ax = ax_list[idx]
