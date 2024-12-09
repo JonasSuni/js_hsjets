@@ -5118,6 +5118,9 @@ def plot_vars_on_contour(runid, t0, boxre, filt=None):
         xf3, yf3 = ax[2].get_lines()[0].get_data()
         ax[2].set_title("vx: $\\lambda$(max) = {}".format(xf3[yf3 == np.max(yf3)]))
 
+        for a in ax:
+            a.set_xlim(0, 2)
+
         fig.savefig(
             figdir + "t0_{}_bs_contour_filt{}_fft.png".format(t0, filt), dpi=300
         )
