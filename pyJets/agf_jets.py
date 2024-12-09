@@ -5061,7 +5061,7 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10):
 
     for idx in range(ax_list.size):
         ax = ax_list[idx]
-        ax.pcolormesh(lbd1, t_range, data_arr[idx], shading="nearest", cmap="viridis")
+        ax.pcolormesh(lbd1, t_range, data_arr[idx].T, shading="nearest", cmap="viridis")
         ax.set_xscale("log")
         ax.set_xlabel(r"$\lambda$ [RE]")
         ax.set_ylabel("Time [s]")
