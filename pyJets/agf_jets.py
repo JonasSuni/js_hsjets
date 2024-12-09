@@ -5092,6 +5092,37 @@ def plot_vars_on_contour(runid, t0, boxre, filt=None):
     fig.savefig(figdir + "t0_{}_bs_contour_filt{}.png".format(t0, filt), dpi=300)
     plt.close(fig)
 
+    if filt:
+        N = cont_y.size
+        T = cont_y[1] - cont_y[0]
+        yf1 = fft(cont_x)
+        yf2 = fft(rho)
+        yf3 = fft(vx)
+        xf = fftfreq(N, T)[: N // 2]
+        fig, ax = plt.subplots(1, 3, figsize=(12, 4), constrained_layout=True)
+        ax[0].grid()
+        ax[0].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf1[1 : N // 2]))
+        ax[0].set_xlabel("$\\lambda$ [RE]")
+        xf1, yf1 = ax[0].get_lines()[0].get_data()
+        ax[0].set_title("X: $\\lambda$(max) = {}".format(xf1[yf1 == np.max(yf1)]))
+
+        ax[1].grid()
+        ax[1].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf2[1 : N // 2]))
+        ax[1].set_xlabel("$\\lambda$ [RE]")
+        xf2, yf2 = ax[1].get_lines()[0].get_data()
+        ax[1].set_title("rho: $\\lambda$(max) = {}".format(xf2[yf2 == np.max(yf2)]))
+
+        ax[2].grid()
+        ax[2].plot(1 / (xf[1:]), 2.0 / N * np.abs(yf3[1 : N // 2]))
+        ax[2].set_xlabel("$\\lambda$ [RE]")
+        xf3, yf3 = ax[2].get_lines()[0].get_data()
+        ax[2].set_title("vx: $\\lambda$(max) = {}".format(xf3[yf3 == np.max(yf3)]))
+
+        fig.savefig(
+            figdir + "t0_{}_bs_contour_filt{}_fft.png".format(t0, filt), dpi=300
+        )
+        plt.close(fig)
+
 
 def make_vg_b_jacobian(vobj):
 
