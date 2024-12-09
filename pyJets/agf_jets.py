@@ -5002,7 +5002,9 @@ def jplots(
         )
 
 
-def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
+def get_contour_cells(
+    vlsvobj, boxre, thresh=1, var="proton/vg_mmsx", op="pass", lt=True
+):
 
     restricted_cells = restrict_area(vlsvobj, boxre)
     coords = np.array([vlsvobj.get_cell_coordinates(cell) for cell in restricted_cells])
@@ -5015,9 +5017,9 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
         x_at_y = coords[coords[:, 1] == yun, 0]
         val_at_y = vals[coords[:, 1] == yun]
         if lt:
-            x_at_y_thresh = x_at_y[val_at_y <= threshold]
+            x_at_y_thresh = x_at_y[val_at_y <= thresh]
         else:
-            x_at_y_thresh = x_at_y[val_at_y >= threshold]
+            x_at_y_thresh = x_at_y[val_at_y >= thresh]
         xright = np.max(x_at_y_thresh)
         xlist.append(xright)
         cell_list.append(
@@ -5032,15 +5034,28 @@ def get_contour_cells(vlsvobj, boxre, threshold, var, op="pass", lt=True):
 
 def process_fourier_timestep(args):
     """Helper function for parallel processing in contour_fourier_timeseries"""
-    t, runid, boxre, filt = args
+    t, runid, boxre, filt, var, op, lt, thresh = args
     try:
-        return t, plot_vars_on_contour(runid, t, boxre, filt=filt, draw=False)
+        return t, plot_vars_on_contour(
+            runid, t, boxre, filt=filt, draw=False, var=var, op=op, lt=lt, thresh=thresh
+        )
     except Exception as e:
         print(f"Error processing timestep {t}: {str(e)}")
         return t, None
 
 
-def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10, n_processes=None):
+def contour_fourier_timeseries(
+    runid,
+    t0,
+    t1,
+    boxre,
+    filt=10,
+    n_processes=None,
+    var="proton/vg_mmsx",
+    op="pass",
+    lt=True,
+    thresh=0.3,
+):
 
     figdir = wrkdir_DNR + "Figs/plots_on_cont/"
     if not os.path.exists(figdir):
@@ -5059,7 +5074,7 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10, n_processes=None):
     data_arr = np.zeros((3, lbd1.size, t_range.size), dtype=float)
 
     # Prepare arguments for parallel processing
-    args_list = [(t, runid, boxre, filt) for t in t_range]
+    args_list = [(t, runid, boxre, filt, var, op, lt, thresh) for t in t_range]
 
     # Use multiprocessing Pool
     with Pool(processes=n_processes) as pool:
@@ -5093,7 +5108,17 @@ def contour_fourier_timeseries(runid, t0, t1, boxre, filt=10, n_processes=None):
     plt.close(fig)
 
 
-def plot_vars_on_contour(runid, t0, boxre, filt=None, draw=True):
+def plot_vars_on_contour(
+    runid,
+    t0,
+    boxre,
+    filt=None,
+    draw=True,
+    var="proton/vg_mmsx",
+    op="pass",
+    lt=True,
+    thresh=1,
+):
 
     bulkpath = find_bulkpath(runid)
     vlsvobj = pt.vlsvfile.VlsvReader(
@@ -5119,7 +5144,7 @@ def plot_vars_on_contour(runid, t0, boxre, filt=None, draw=True):
             pass
 
     cont_cells, cont_x, cont_y = get_contour_cells(
-        vlsvobj, boxre, 1, "proton/vg_mmsx", op="pass", lt=True
+        vlsvobj, boxre, thresh=thresh, var=var, op=op, lt=lt
     )
     cont_x /= r_e
     cont_y /= r_e
