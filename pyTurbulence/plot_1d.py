@@ -132,7 +132,7 @@ def plot_Byz(fnr0, fnr1, dirname):
         ax[1].set_ylim([-1, 1])
         ax[1].grid()
 
-        ax[2].plot(x, np.arctan2(Bz / By) * 360 / (2 * np.pi))
+        ax[2].plot(x, np.arctan2(Bz, By) * 360 / (2 * np.pi))
         ax[2].set_ylabel(r"$\theta$ [deg]")
         ax[2].set_xlabel(r"$x~[R_\mathrm{E}]$")
         ax[2].set_xlim([x[0], x[-1]])
