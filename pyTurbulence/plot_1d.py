@@ -112,8 +112,9 @@ def plot_Byz(fnr0, fnr1, dirname):
             bulkpath + "bulk." + str(idx).zfill(7) + ".vlsv"
         )
         cellids = vlsvobj.read_variable("cellID")
+        ci_sorted = np.sort(cellids)
         x = np.array(
-            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in np.sort(cellids)]
+            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in ci_sorted]
         )
         By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()] / 1e-9
         Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()] / 1e-9
