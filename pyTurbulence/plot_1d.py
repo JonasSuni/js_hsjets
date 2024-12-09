@@ -113,7 +113,7 @@ def plot_Byz(fnr0, fnr1, dirname):
         )
         cellids = vlsvobj.read_variable("cellID")
         x = np.array(
-            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in np.sorted(cellids)]
+            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in np.sort(cellids)]
         )
         By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()] / 1e-9
         Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()] / 1e-9
