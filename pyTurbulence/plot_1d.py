@@ -93,7 +93,8 @@ except:
 wrkdir_DNR = wrkdir_DNR + "turbulence/"
 turbdir = "/wrk-vakka/group/spacephysics/turbulence/"
 
-def plot_Byz(fnr0,fnr1,dirname):
+
+def plot_Byz(fnr0, fnr1, dirname):
 
     figdir = wrkdir_DNR + "Figs/cuts/{}/".format(dirname)
     if not os.path.exists(figdir):
@@ -102,32 +103,34 @@ def plot_Byz(fnr0,fnr1,dirname):
         except OSError:
             pass
 
-    bulkpath = turbdir+"MultiCircularAlfven/bulk/4_attempt/"
+    bulkpath = turbdir + "MultiCircularAlfven/bulk/4_attempt/"
 
-    fnr = np.arange(fnr0,fnr1+1)
+    fnr = np.arange(fnr0, fnr1 + 1)
 
     for idx in fnr:
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath+"bulk."+str(idx).zfill(7)+".vlsv")
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk." + str(idx).zfill(7) + ".vlsv"
+        )
         cellids = vlsvobj.read_variable("cellID")
-        x = np.array([vlsvobj.get_cell_coordinates(c)[0]/r_e for c in cellids])
-        By = vlsvobj.read_variable("vg_b_vol",operator="y")[cellids.argsort()]/1e-9
-        Bz = vlsvobj.read_variable("vg_b_vol",operator="z")[cellids.argsort()]/1e-9
+        x = np.array(
+            [vlsvobj.get_cell_coordinates(c)[0] / r_e for c in cellids.sorted()]
+        )
+        By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()] / 1e-9
+        Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()] / 1e-9
 
-        fig,ax = plt.subplots(2,1,figsize=(8,6),constrained_layout=True)
+        fig, ax = plt.subplots(2, 1, figsize=(8, 6), constrained_layout=True)
 
-        ax[0].plot(x,By)
+        ax[0].plot(x, By)
         ax[0].set_ylabel(r"$B_y$ [nT]")
         ax[0].set_title("t = {}".format(str(vlsvobj.read_parameter("time"))))
-        ax[0].set_xlim([x[0],x[-1]])
-        ax[0].set_ylim([-1,1])
+        ax[0].set_xlim([x[0], x[-1]])
+        ax[0].set_ylim([-1, 1])
 
-        ax[1].plot(x,Bz)
+        ax[1].plot(x, Bz)
         ax[1].set_ylabel(r"$B_z$ [nT]")
         ax[1].set_xlabel(r"$x~[R_\mathrm{E}]$")
-        ax[1].set_xlim([x[0],x[-1]])
-        ax[1].set_ylim([-1,1])
+        ax[1].set_xlim([x[0], x[-1]])
+        ax[1].set_ylim([-1, 1])
 
-        fig.savefig(figdir+"{}.png".format(idx))
+        fig.savefig(figdir + "{}.png".format(idx))
         plt.close(fig)
-
-    
