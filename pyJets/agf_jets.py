@@ -6362,7 +6362,7 @@ def plot_jet_formation_postime(
     ax.scatter(
         t_values,
         y_values,
-        c=maxsize_values,
+        c=np.log(maxsize_values),
         cmap=cmap,
         zorder=4.5,
         marker="o",
