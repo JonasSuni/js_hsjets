@@ -6287,10 +6287,14 @@ def plot_jet_formation_postime(
     runid, ymin, ymax, tmin, tmax, minduration=0.0, minsize=0, cmap="lipari"
 ):
 
-    y_values = []
-    t_values = []
-    maxsize_values = []
-    duration_values = []
+    # y_values = []
+    # t_values = []
+    # maxsize_values = []
+    # duration_values = []
+
+    y_values = np.array([])
+    t_values = np.array([])
+    maxsize_values = np.array([])
 
     for n1 in range(6000):
         try:
@@ -6328,26 +6332,40 @@ def plot_jet_formation_postime(
         if y0 > ymax:
             continue
 
-        y_values.append(y0)
-        t_values.append(t0)
-        maxsize_values.append(maxsize)
-        duration_values.append(duration)
+        # y_values.append(y0)
+        # t_values.append(t0)
+        # maxsize_values.append(maxsize)
+        # duration_values.append(duration)
+
+        y_values = np.append(y_values, ymean)
+        t_values = np.append(t_values, t)
+        maxsize_values = np.append(maxsize_values, props.read("Nr_cells"))
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
     ax.grid(zorder=2.5)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
+    # ax.scatter(
+    #     t_values,
+    #     y_values,
+    #     s=maxsize_values,
+    #     c=duration_values,
+    #     cmap=cmap,
+    #     marker="o",
+    #     norm="log",
+    #     alpha=0.5,
+    #     edgecolors="k",
+    #     zorder=4.5,
+    # )
     ax.scatter(
         t_values,
         y_values,
-        s=maxsize_values,
-        c=duration_values,
+        c=maxsize_values,
         cmap=cmap,
-        marker="o",
-        norm="log",
-        alpha=0.5,
-        edgecolors="k",
         zorder=4.5,
+        marker="o",
+        edgecolors="k",
+        alpha=0.5,
     )
 
     ax.add_patch(
