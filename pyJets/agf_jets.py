@@ -6302,6 +6302,8 @@ def plot_jet_formation_postime(
         except:
             continue
 
+        print("Current jet ID = {}".format(n1))
+
         if props.read("at_bow_shock")[0] != 1:
             continue
 
