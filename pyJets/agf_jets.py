@@ -6366,8 +6366,8 @@ def plot_jet_formation_postime(
         cmap=cmap,
         zorder=4.5,
         marker="o",
-        edgecolors="k",
-        alpha=0.5,
+        edgecolors="none",
+        # alpha=0.5,
     )
 
     ax.add_patch(
