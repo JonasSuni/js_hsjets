@@ -6284,7 +6284,15 @@ def vdf_along_fieldline(
 
 
 def plot_jet_formation_postime(
-    runid, ymin, ymax, tmin, tmax, minduration=0.0, minsize=0, cmap="lipari"
+    runid,
+    ymin,
+    ymax,
+    tmin,
+    tmax,
+    minduration=0.0,
+    minsize=0,
+    cmap="lipari",
+    s=1,
 ):
 
     # y_values = []
@@ -6368,6 +6376,7 @@ def plot_jet_formation_postime(
         marker="o",
         edgecolors="none",
         # alpha=0.5,
+        s=s,
     )
 
     ax.add_patch(
