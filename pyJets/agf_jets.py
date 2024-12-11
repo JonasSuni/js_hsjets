@@ -3532,6 +3532,7 @@ def VSC_timeseries(
     fromtxt=False,
     jett0=0.0,
     n_processes=1,
+    draw=True,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3748,77 +3749,87 @@ def VSC_timeseries(
         #             * scales[idx2]
         #         )
 
-    fig, ax_list = plt.subplots(
-        len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
-    )
-    ax_list[0].set_title("Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}".format(runid, x0, y0))
-    for idx in range(len(var_list)):
-        ax = ax_list[plot_index[idx]]
-        for vline in vlines:
-            ax.axvline(vline, linestyle="dashed", linewidth=0.6)
-        if delta:
-            ax.plot(
-                t_arr,
-                data_arr[idx] - uniform_filter1d(data_arr[idx], size=delta),
-                fmt,
-                color=plot_colors[idx],
-                label=plot_labels[idx],
-            )
-        else:
-            ax.plot(
-                t_arr,
-                data_arr[idx],
-                fmt,
-                color=plot_colors[idx],
-                label=plot_labels[idx],
-            )
-        if idx == 5 and pdavg and not delta:
-            ax.plot(
-                t_arr,
-                2 * tavg_arr,
-                color=CB_color_cycle[1],
-                linestyle="dashed",
-                label="$2\\langle P_\\mathrm{dyn}\\rangle$",
-            )
-            ax.axhline(
-                0.5 * pdsw_npa,
-                color=CB_color_cycle[2],
-                linestyle="dotted",
-                label="$0.5P_\\mathrm{dyn,sw}$",
-            )
-            ax.axhline(
-                0.25 * pdsw_npa,
-                color=CB_color_cycle[3],
-                linestyle="dotted",
-                label="$0.25P_\\mathrm{dyn,sw}$",
-            )
-        if idx == 5 and pdx:
-            pdynx = (
-                m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
-            )
+    if draw:
+        fig, ax_list = plt.subplots(
+            len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
+        )
+        ax_list[0].set_title(
+            "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}".format(runid, x0, y0)
+        )
+        for idx in range(len(var_list)):
+            ax = ax_list[plot_index[idx]]
+            for vline in vlines:
+                ax.axvline(vline, linestyle="dashed", linewidth=0.6)
             if delta:
                 ax.plot(
                     t_arr,
-                    pdynx - uniform_filter1d(pdynx, size=delta),
+                    data_arr[idx] - uniform_filter1d(data_arr[idx], size=delta),
                     fmt,
-                    color=CB_color_cycle[0],
-                    label="$P_{\\mathrm{dyn},x}$",
+                    color=plot_colors[idx],
+                    label=plot_labels[idx],
                 )
             else:
                 ax.plot(
                     t_arr,
-                    pdynx,
+                    data_arr[idx],
                     fmt,
-                    color=CB_color_cycle[0],
-                    label="$P_{\\mathrm{dyn},x}$",
+                    color=plot_colors[idx],
+                    label=plot_labels[idx],
                 )
-        ax.set_xlim(t_arr[0], t_arr[-1])
-        if draw_legend[idx]:
-            ncols = 1
-            if idx == 5:
+            if idx == 5 and pdavg and not delta:
+                ax.plot(
+                    t_arr,
+                    2 * tavg_arr,
+                    color=CB_color_cycle[1],
+                    linestyle="dashed",
+                    label="$2\\langle P_\\mathrm{dyn}\\rangle$",
+                )
+                ax.axhline(
+                    0.5 * pdsw_npa,
+                    color=CB_color_cycle[2],
+                    linestyle="dotted",
+                    label="$0.5P_\\mathrm{dyn,sw}$",
+                )
+                ax.axhline(
+                    0.25 * pdsw_npa,
+                    color=CB_color_cycle[3],
+                    linestyle="dotted",
+                    label="$0.25P_\\mathrm{dyn,sw}$",
+                )
+            if idx == 5 and pdx:
+                pdynx = (
+                    m_p
+                    * data_arr[0]
+                    * 1e6
+                    * data_arr[1]
+                    * 1e3
+                    * data_arr[1]
+                    * 1e3
+                    * 1e9
+                )
+                if delta:
+                    ax.plot(
+                        t_arr,
+                        pdynx - uniform_filter1d(pdynx, size=delta),
+                        fmt,
+                        color=CB_color_cycle[0],
+                        label="$P_{\\mathrm{dyn},x}$",
+                    )
+                else:
+                    ax.plot(
+                        t_arr,
+                        pdynx,
+                        fmt,
+                        color=CB_color_cycle[0],
+                        label="$P_{\\mathrm{dyn},x}$",
+                    )
+            ax.set_xlim(t_arr[0], t_arr[-1])
+            if draw_legend[idx]:
                 ncols = 1
-            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
-    ylabels.append("$P_\\mathrm{dyn}$\ncontribution")
+                if idx == 5:
+                    ncols = 1
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
+        ylabels.append("$P_\\mathrm{dyn}$\ncontribution")
 
     rho_lp = m_p * data_arr[0, :] * 1e6
     vx_lp = data_arr[1, :] * 1e3
@@ -3840,39 +3851,41 @@ def VSC_timeseries(
     data_arr[-2, :] = t_arr
     data_arr[-1, :] = np.ones_like(t_arr) * jett0
 
-    ax_list[-1].plot(t_arr, rho_term, color="black", label="$\\rho$")
-    ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
-    ax_list[-1].plot(t_arr, vy_term, color=CB_color_cycle[1], label="$v_y^2$")
-    ax_list[-1].plot(t_arr, vz_term, color=CB_color_cycle[2], label="$v_z^2$")
+    if draw:
+        ax_list[-1].plot(t_arr, rho_term, color="black", label="$\\rho$")
+        ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
+        ax_list[-1].plot(t_arr, vy_term, color=CB_color_cycle[1], label="$v_y^2$")
+        ax_list[-1].plot(t_arr, vz_term, color=CB_color_cycle[2], label="$v_z^2$")
 
-    ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
-    for vline in vlines:
-        ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
-    ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
-    ax_list[-1].set_xlabel("Simulation time [s]")
-    for idx, ax in enumerate(ax_list):
-        ax.grid()
-        ax.set_ylabel(ylabels[idx])
-        ax.axvline(t0, linestyle="dashed")
-        if pdavg:
-            ax.fill_between(
-                t_arr,
-                0,
-                1,
-                where=data_arr[5, :] > 2 * tavg_arr,
-                color="red",
-                alpha=0.2,
-                transform=ax.get_xaxis_transform(),
-                linewidth=0,
-            )
+        ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
+        for vline in vlines:
+            ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
+        ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
+        ax_list[-1].set_xlabel("Simulation time [s]")
+        for idx, ax in enumerate(ax_list):
+            ax.grid()
+            ax.set_ylabel(ylabels[idx])
+            ax.axvline(t0, linestyle="dashed")
+            if pdavg:
+                ax.fill_between(
+                    t_arr,
+                    0,
+                    1,
+                    where=data_arr[5, :] > 2 * tavg_arr,
+                    color="red",
+                    alpha=0.2,
+                    transform=ax.get_xaxis_transform(),
+                    linewidth=0,
+                )
 
-    fig.savefig(
-        figdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
-            runid, x0, y0, t0, t1, delta
-        ),
-        dpi=300,
-    )
+        fig.savefig(
+            figdir
+            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
+                runid, x0, y0, t0, t1, delta
+            ),
+            dpi=300,
+        )
+        plt.close(fig)
     np.savetxt(
         txtdir
         + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.txt".format(
@@ -3880,7 +3893,6 @@ def VSC_timeseries(
         ),
         data_arr,
     )
-    plt.close(fig)
 
 
 def calc_cross_correlation(var1, var2):
@@ -6942,7 +6954,7 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     plt.close(fig)
 
 
-def all_cats_timeseries_script(n_processes=1):
+def all_cats_timeseries_script(n_processes=1, draw=True):
 
     boxres = [
         [8, 16, 3, 17],
@@ -6977,6 +6989,7 @@ def all_cats_timeseries_script(n_processes=1):
             minsize=4,
             pdavg=False,
             n_processes=n_processes,
+            draw=draw,
         )
 
     # plot_timeseries_at_jets(
@@ -7069,6 +7082,7 @@ def plot_timeseries_at_jets(
     minsize=0,
     pdavg=True,
     n_processes=1,
+    draw=True,
 ):
 
     for n1 in range(6000):
@@ -7143,6 +7157,7 @@ def plot_timeseries_at_jets(
             skip=skip,
             jett0=t0,
             n_processes=n_processes,
+            draw=draw,
         )
 
 
