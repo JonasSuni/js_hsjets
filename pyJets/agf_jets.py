@@ -6844,6 +6844,121 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     plt.close(fig)
 
 
+def all_cats_timeseries_script():
+
+    boxres = [
+        [8, 16, 3, 17],
+        [8, 20, 3, 17],
+        [8, 16, 3, 17],
+        [8, 16, -17, 0],
+        [8, 20, -17, 17],
+        [8, 20, -17, -3],
+        [8, 16, -17, -3],
+    ]
+    folder_suffixes = [
+        "jets_qpar_before",
+        "jets_qpar_after",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_all",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+    ]
+    tmins = [391, 470, 430, 430, 391, 600, 509]
+    tmaxs = [426, 800, 470, 470, 800, 800, 600]
+
+    for idx in range(len(folder_suffixes)):
+        plot_timeseries_at_jets(
+            "AIC",
+            boxre=boxres[idx],
+            tmin=tmins[idx],
+            tmax=tmaxs[idx],
+            folder_suffix=folder_suffixes[idx],
+            skip=False,
+            minduration=1,
+            minsize=4,
+            pdavg=False,
+        )
+
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 16, 3, 17],
+    #     tmin=391,
+    #     tmax=426,
+    #     folder_suffix="jets_qpar_before",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 20, 3, 17],
+    #     tmin=470,
+    #     tmax=800,
+    #     folder_suffix="jets_qpar_after",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 16, 3, 17],
+    #     tmin=430,
+    #     tmax=470,
+    #     folder_suffix="jets_qpar_fb",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 16, -17, 0],
+    #     tmin=430,
+    #     tmax=470,
+    #     folder_suffix="jets_qperp_rd",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 20, -17, 17],
+    #     tmin=391,
+    #     tmax=800,
+    #     folder_suffix="jets_all",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 20, -17, -3],
+    #     tmin=600,
+    #     tmax=800,
+    #     folder_suffix="jets_qperp_after",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+    # plot_timeseries_at_jets(
+    #     "AIC",
+    #     boxre=[8, 16, -17, -3],
+    #     tmin=509,
+    #     tmax=600,
+    #     folder_suffix="jets_qperp_inter",
+    #     skip=False,
+    #     minduration=1,
+    #     minsize=4,
+    #     pdavg=False,
+    # )
+
+
 def plot_timeseries_at_jets(
     runid,
     boxre=None,
@@ -6851,7 +6966,6 @@ def plot_timeseries_at_jets(
     tmax=None,
     folder_suffix="jets",
     skip=False,
-    corr_matrix=False,
     minduration=0,
     minsize=0,
     pdavg=True,
@@ -6927,7 +7041,6 @@ def plot_timeseries_at_jets(
             # prefix="{}".format(n1),
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
-            corr_matrix=corr_matrix,
             jett0=t0,
         )
 
