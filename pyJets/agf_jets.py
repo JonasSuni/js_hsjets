@@ -3490,7 +3490,7 @@ def process_timestep_VSC_timeseries(args):
         pdavg,
     ) = args
     try:
-        result = np.zeros(len(var_list), dtype=float)
+        result = np.zeros(len(var_list) + 7, dtype=float)
         pdavg_result = None
         if pdavg:
             try:
