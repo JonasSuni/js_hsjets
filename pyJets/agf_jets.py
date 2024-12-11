@@ -6711,7 +6711,8 @@ def plot_category_histograms(
             label="All",
             color="k",
             histtype="step",
-            alpha=0.5,
+            # alpha=0.5,
+            cumulative=-1,
         )
         if idx == 0:
             ax.set_ylabel("Fraction of jets")
