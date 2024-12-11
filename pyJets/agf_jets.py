@@ -6942,7 +6942,7 @@ def plot_category_correlation(runid, folder_suffix="jets"):
     plt.close(fig)
 
 
-def all_cats_timeseries_script():
+def all_cats_timeseries_script(n_processes=1):
 
     boxres = [
         [8, 16, 3, 17],
@@ -6976,6 +6976,7 @@ def all_cats_timeseries_script():
             minduration=1,
             minsize=4,
             pdavg=False,
+            n_processes=n_processes,
         )
 
     # plot_timeseries_at_jets(
@@ -7067,6 +7068,7 @@ def plot_timeseries_at_jets(
     minduration=0,
     minsize=0,
     pdavg=True,
+    n_processes=1,
 ):
 
     for n1 in range(6000):
@@ -7140,6 +7142,7 @@ def plot_timeseries_at_jets(
             dirprefix="{}/".format(folder_suffix),
             skip=skip,
             jett0=t0,
+            n_processes=n_processes,
         )
 
 
