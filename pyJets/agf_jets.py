@@ -6255,9 +6255,10 @@ def plot_jet_formation_postime(
             t_values[idx],
             ymin_values[idx],
             ymax_values[idx],
-            color=CB_color_cycle[0],
             alpha=0.5,
             zorder=5.5,
+            edgecolor="none",
+            facecolor=CB_color_cycle[0],
         )
     ax.add_patch(
         mpatches.Rectangle(
