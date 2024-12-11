@@ -3489,7 +3489,6 @@ def VSC_timeseries(
     shift=None,
     dirprefix="",
     skip=False,
-    corr_matrix=False,
     fromtxt=False,
     jett0=0.0,
 ):
@@ -3507,13 +3506,6 @@ def VSC_timeseries(
             os.makedirs(txtdir)
         except OSError:
             pass
-    # fig.savefig(
-    #     figdir
-    #     + "{}_{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_mva{}_integrate{}.png".format(
-    #         prefix, runid, x0, y0, t0, t1, delta, mva, integrate
-    #     ),
-    #     dpi=300,
-    # )
     if skip and os.path.isfile(
         figdir
         + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}.png".format(
@@ -3602,38 +3594,12 @@ def VSC_timeseries(
         "$B~[\\mathrm{nT}]$",
         "$E~[\\mathrm{mV/m}]$",
         "$T~[\\mathrm{MK}]$",
-        # "$\\rho~[\\rho_\\mathrm{sw}]$",
-        # "$v~[v_\\mathrm{sw}]$",
-        # "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
-        # "$B~[B_\\mathrm{IMF}]$",
-        # "$E~[E_\\mathrm{sw}]$",
-        # "$T~[T_\\mathrm{sw}]$",
     ]
     if delta:
         for idx in range(len(ylabels)):
             ylabels[idx] = "$\\delta " + ylabels[idx][1:]
     e_sw = 750e3 * 3e-9 * q_p / m_p * 1e3
     pdsw_npa = m_p * 1e6 * 750e3 * 750e3 / 1e-9
-    norm = [
-        [
-            1,
-            750,
-            750,
-            750,
-            750,
-            0.9408498320756251,
-            3,
-            3,
-            3,
-            3,
-            e_sw,
-            e_sw,
-            e_sw,
-            e_sw,
-            0.5,
-            0.5,
-        ],
-    ]
     ops = [
         "pass",
         "x",
@@ -3672,7 +3638,6 @@ def VSC_timeseries(
         CB_color_cycle[1],
     ]
 
-    run_norm = norm[0]
     if filt:
         sos = butter(10, filt, "lowpass", fs=2, output="sos")
 
@@ -3702,8 +3667,7 @@ def VSC_timeseries(
                     )[int(cellid) - 1]
                 except:
                     tavg_pdyn = np.nan
-                tavg_arr[idx] = tavg_pdyn * scales[5]  # / run_norm[5]
-            # try:
+                tavg_arr[idx] = tavg_pdyn * scales[5]
             vlsvobj = pt.vlsvfile.VlsvReader(
                 bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
             )
@@ -3713,17 +3677,7 @@ def VSC_timeseries(
                         var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
                     )
                     * scales[idx2]
-                    # / run_norm[idx2]
                 )
-            # data_arr[[idx2 + 1, idx2 + 2, idx2 + 3], idx] = 1e9 * (
-            #     # pos_pressure_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            #     # + pos_mag_gradient(vlsvobj, x0 * r_e, y0 * r_e)
-            #     # + pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-            #     pos_mag_tension(vlsvobj, x0 * r_e, y0 * r_e)
-            # )
-            # except:
-            #     print("Something went wrong!")
-            #     data_arr[:, idx] = np.nan
 
         if shift:
             if type(shift) == str:
@@ -3830,19 +3784,6 @@ def VSC_timeseries(
     vt_lp = data_arr[4, :] * 1e3
     pd_lp = data_arr[5, :] * 1e-9
 
-    # rho_per_norm = (rho_lp - np.nanmean(rho_lp)) / np.nanmean(rho_lp)
-    # vx2_per_norm = (vx_lp**2 - np.nanmean(vx_lp**2)) / np.nanmean(vt_lp**2)
-    # vy2_per_norm = (vy_lp**2 - np.nanmean(vy_lp**2)) / np.nanmean(vt_lp**2)
-    # vz2_per_norm = (vz_lp**2 - np.nanmean(vz_lp**2)) / np.nanmean(vt_lp**2)
-    # vt2_per_norm = (vt_lp**2 - np.nanmean(vt_lp**2)) / np.nanmean(vt_lp**2)
-    # pd_per_norm = (pd_lp - np.nanmean(pd_lp)) / np.nanmean(pd_lp)
-
-    # rho_term = rho_per_norm / (pd_per_norm + 1e-27)
-    # vx_term = vx2_per_norm / (pd_per_norm + 1e-27)
-    # vy_term = vy2_per_norm / (pd_per_norm + 1e-27)
-    # vz_term = vz2_per_norm / (pd_per_norm + 1e-27)
-    # corr_term = (rho_per_norm * vt2_per_norm) / (pd_per_norm + 1e-27)
-
     rho_term = rho_lp * np.nanmean(vt_lp**2) / np.nanmean(pd_lp)
     vx_term = np.nanmean(rho_lp) * vx_lp**2 / np.nanmean(pd_lp)
     vy_term = np.nanmean(rho_lp) * vy_lp**2 / np.nanmean(pd_lp)
@@ -3860,13 +3801,11 @@ def VSC_timeseries(
     ax_list[-1].plot(t_arr, vx_term, color=CB_color_cycle[0], label="$v_x^2$")
     ax_list[-1].plot(t_arr, vy_term, color=CB_color_cycle[1], label="$v_y^2$")
     ax_list[-1].plot(t_arr, vz_term, color=CB_color_cycle[2], label="$v_z^2$")
-    # ax_list[-1].plot(t_arr, corr_term, color=CB_color_cycle[3], label="Corr")
 
     ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
     for vline in vlines:
         ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
     ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
-    # ax_list[-1].set_ylim(-1, 5)
     ax_list[-1].set_xlabel("Simulation time [s]")
     for idx, ax in enumerate(ax_list):
         ax.grid()
@@ -3883,7 +3822,6 @@ def VSC_timeseries(
                 transform=ax.get_xaxis_transform(),
                 linewidth=0,
             )
-    # plt.tight_layout()
 
     fig.savefig(
         figdir
@@ -3900,70 +3838,6 @@ def VSC_timeseries(
         data_arr,
     )
     plt.close(fig)
-
-    if corr_matrix:
-
-        corr_labels = ["$P_\\mathrm{dyn}$", "$\\rho$", "$v_x^2$", "$v_y^2$", "$v_z^2$"]
-        corr_vars = [pd_lp, rho_lp, vx_lp**2, vy_lp**2, vz_lp**2]
-        corr_mat = np.zeros((len(corr_labels), len(corr_labels)), dtype=float)
-        for i in range(len(corr_labels)):
-            for j in range(len(corr_labels)):
-                corr_mat[i, j] = calc_cross_correlation(corr_vars[i], corr_vars[j])
-
-        fig, ax = plt.subplots()
-        im = ax.imshow(corr_mat, cmap="vik", vmin=-1, vmax=1)
-
-        # Show all ticks and label them with the respective list entries
-        ax.set_xticks(np.arange(len(corr_labels)), labels=corr_labels)
-        ax.set_yticks(np.arange(len(corr_labels)), labels=corr_labels)
-
-        # Rotate the tick labels and set their alignment.
-        # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-        #         rotation_mode="anchor")
-
-        # Loop over data dimensions and create text annotations.
-        for i in range(len(corr_labels)):
-            for j in range(len(corr_labels)):
-                # textstr = "{vala}_{{-{valm}}}^{{+{valp}}}".format(
-                #     vala=round(corr_mat[i, j], 2), valm=0, valp=0
-                # )
-                # text = ax.text(
-                #     j,
-                #     i,
-                #     "$" + textstr + "$",
-                #     ha="center",
-                #     va="center",
-                #     color="w",
-                # )
-                text = ax.text(
-                    j,
-                    i,
-                    round(corr_mat[i, j], 2),
-                    ha="center",
-                    va="center",
-                    color="w",
-                )
-
-        ax.set_title("Variable cross-correlation")
-        ax.spines[:].set_visible(False)
-        ax.tick_params(top=True, labeltop=True, bottom=False, labelbottom=False)
-        fig.tight_layout()
-        fig.savefig(
-            figdir
-            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.png".format(
-                runid, x0, y0, t0, t1, delta
-            ),
-            dpi=300,
-        )
-        plt.close(fig)
-
-        np.savetxt(
-            txtdir
-            + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}_delta{}_corr.txt".format(
-                runid, x0, y0, t0, t1, delta
-            ),
-            corr_mat,
-        )
 
 
 def calc_cross_correlation(var1, var2):
