@@ -6689,6 +6689,10 @@ def plot_category_histograms(
         ax = ax_list[idx]
         ax.set_xlabel(prop_labels[idx])
         ax.grid()
+        if idx == 2:
+            cumul = True
+        else:
+            cumul = -1
         for idx2 in range(len(folder_suffixes)):
             ax.hist(
                 categories_list[idx2][idx],
@@ -6703,7 +6707,7 @@ def plot_category_histograms(
                 color=CB_color_cycle[idx2],
                 histtype="step",
                 # alpha=0.5,
-                cumulative=-1,
+                cumulative=cumul,
             )
         ax.hist(
             all_arrs[idx],
@@ -6713,7 +6717,7 @@ def plot_category_histograms(
             color="k",
             histtype="step",
             # alpha=0.5,
-            cumulative=-1,
+            cumulative=cumul,
         )
         if idx == 0:
             ax.set_ylabel("Fraction of jets")
@@ -6721,7 +6725,7 @@ def plot_category_histograms(
             ax.set_xscale("log")
         if idx == 1:
             ax.set_xscale("log")
-        ax.set_yscale("log")
+        # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
 
     figdir = wrkdir_DNR + "Figs/"
