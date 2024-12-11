@@ -6743,7 +6743,7 @@ def plot_category_histograms(
                 label=sfx_labels[idx2],
                 color=CB_color_cycle[idx2],
                 histtype="step",
-                alpha=0.5,
+                alpha=0.7,
                 cumulative=cumul,
             )
             ax.set_xlim(bin_edges[idx][0], bin_edges[idx][-1])
@@ -6754,7 +6754,7 @@ def plot_category_histograms(
             label="All",
             color="k",
             histtype="step",
-            alpha=0.5,
+            alpha=0.7,
             cumulative=cumul,
         )
         if idx == 0:
