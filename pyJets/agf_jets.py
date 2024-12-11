@@ -3474,6 +3474,48 @@ def pos_mag_gradient(vlsvobj, x, y, dx=300e3):
     return np.array([gradx, grady, 0])
 
 
+def process_timestep_VSC_timeseries(args):
+    """Helper function for parallel processing in VSC_timeseries"""
+    (
+        fnr,
+        var_list,
+        scales,
+        bulkpath,
+        tavgdir,
+        cellid,
+        ops,
+        x0,
+        y0,
+        runid,
+        pdavg,
+    ) = args
+    try:
+        result = np.zeros(len(var_list), dtype=float)
+        pdavg_result = None
+        if pdavg:
+            try:
+                tavg_pdyn = np.loadtxt(
+                    tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+                )[int(cellid) - 1]
+            except:
+                tavg_pdyn = np.nan
+            pdavg_result = tavg_pdyn * scales[5]
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        for idx2, var in enumerate(var_list):
+            result[idx2] = (
+                vlsvobj.read_interpolated_variable(
+                    var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                )
+                * scales[idx2]
+            )
+        return fnr, result, pdavg_result
+    except Exception as e:
+        print(f"Error processing timestep {fnr}: {str(e)}")
+        return fnr, None, None
+
+
 def VSC_timeseries(
     runid,
     x0,
@@ -3481,16 +3523,15 @@ def VSC_timeseries(
     t0,
     t1,
     pdavg=False,
-    filt=None,
     pdx=False,
     delta=None,
     vlines=[],
     fmt="-",
-    shift=None,
     dirprefix="",
     skip=False,
     fromtxt=False,
     jett0=0.0,
+    n_processes=1,
 ):
     bulkpath = find_bulkpath(runid)
 
@@ -3656,25 +3697,56 @@ def VSC_timeseries(
         )
         tavg_arr = data_arr[-1, :]
     else:
-        for idx, fnr in enumerate(fnr_arr):
-            if pdavg:
-                try:
-                    tavg_pdyn = np.loadtxt(
-                        tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
-                    )[int(cellid) - 1]
-                except:
-                    tavg_pdyn = np.nan
-                tavg_arr[idx] = tavg_pdyn * scales[5]
-            vlsvobj = pt.vlsvfile.VlsvReader(
-                bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        # Prepare arguments for parallel processing
+        args_list = [
+            (
+                fnr,
+                var_list,
+                scales,
+                bulkpath,
+                tavgdir,
+                cellid,
+                ops,
+                x0,
+                y0,
+                runid,
+                pdavg,
             )
-            for idx2, var in enumerate(var_list):
-                data_arr[idx2, idx] = (
-                    vlsvobj.read_interpolated_variable(
-                        var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-                    )
-                    * scales[idx2]
-                )
+            for fnr in fnr_arr
+        ]
+
+        # Use multiprocessing Pool
+
+        with Pool(processes=n_processes) as pool:
+            results = pool.map(process_timestep_VSC_timeseries, args_list)
+
+            # Process results
+            for fnr, result, pdavg_result in results:
+                if result is not None:
+                    idx = np.where(fnr_arr == fnr)[0][0]
+                    data_arr[:, idx] = result
+                    if pdavg and pdavg_result is not None:
+                        tavg_arr[idx] = pdavg_result
+
+        # for idx, fnr in enumerate(fnr_arr):
+        #     if pdavg:
+        #         try:
+        #             tavg_pdyn = np.loadtxt(
+        #                 tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
+        #             )[int(cellid) - 1]
+        #         except:
+        #             tavg_pdyn = np.nan
+        #         tavg_arr[idx] = tavg_pdyn * scales[5]
+        #     vlsvobj = pt.vlsvfile.VlsvReader(
+        #         bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        #     )
+        #     for idx2, var in enumerate(var_list):
+        #         data_arr[idx2, idx] = (
+        #             vlsvobj.read_interpolated_variable(
+        #                 var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+        #             )
+        #             * scales[idx2]
+        #         )
 
     fig, ax_list = plt.subplots(
         len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
