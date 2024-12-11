@@ -6670,10 +6670,10 @@ def plot_category_histograms(
     all_arrs = [durs_all, maxs_all, rpen_all]
 
     bin_edges = [
-        # 10 ** np.histogram_bin_edges(np.log10(durs_all)),
-        # 10 ** np.histogram_bin_edges(np.log10(maxs_all)),
-        np.histogram_bin_edges(durs_all),
-        np.histogram_bin_edges(maxs_all),
+        10 ** np.histogram_bin_edges(np.log10(durs_all)),
+        10 ** np.histogram_bin_edges(np.log10(maxs_all)),
+        # np.histogram_bin_edges(durs_all),
+        # np.histogram_bin_edges(maxs_all),
         np.histogram_bin_edges(rpen_all),
     ]
 
@@ -6708,9 +6708,10 @@ def plot_category_histograms(
                 label=sfx_labels[idx2],
                 color=CB_color_cycle[idx2],
                 histtype="step",
-                # alpha=0.5,
+                alpha=0.5,
                 cumulative=cumul,
             )
+            ax.set_xlim(bin_edges[idx][0], bin_edges[idx][-1])
         ax.hist(
             all_arrs[idx],
             bins=bin_edges[idx],
@@ -6718,15 +6719,15 @@ def plot_category_histograms(
             label="All",
             color="k",
             histtype="step",
-            # alpha=0.5,
+            alpha=0.5,
             cumulative=cumul,
         )
         if idx == 0:
             ax.set_ylabel("Cumulative\nFraction of jets")
             ax.legend()
             # ax.set_xscale("log")
-        # if idx == 1:
-        #     ax.set_xscale("log")
+        if idx == 1:
+            ax.set_xscale("log")
         # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
 
