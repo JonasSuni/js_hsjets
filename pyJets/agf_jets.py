@@ -6347,9 +6347,9 @@ def plot_jet_formation_postime(
         # maxsize_values.append(maxsize)
         # duration_values.append(duration)
 
-        y_arr = np.append(y_values, ymean)
-        t_arr = np.append(t_values, t)
-        maxsize_arr = np.append(maxsize_values, props.read("Nr_cells"))
+        y_arr = np.append(y_arr, ymean)
+        t_arr = np.append(t_arr, t)
+        maxsize_arr = np.append(maxsize_arr, props.read("Nr_cells"))
         y_values.append(ymean)
         t_values.append(t)
         maxsize_values.append(props.read("Nr_cells"))
