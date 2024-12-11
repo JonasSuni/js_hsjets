@@ -3638,9 +3638,6 @@ def VSC_timeseries(
         CB_color_cycle[1],
     ]
 
-    if filt:
-        sos = butter(10, filt, "lowpass", fs=2, output="sos")
-
     t_arr = np.arange(t0, t1 + 0.1, 0.5)
     fnr0 = int(t0 * 2)
     fnr_arr = np.arange(fnr0, int(t1 * 2) + 1, dtype=int)
@@ -3678,32 +3675,6 @@ def VSC_timeseries(
                     )
                     * scales[idx2]
                 )
-
-        if shift:
-            if type(shift) == str:
-                shift = data_arr[[1, 2, 3], :].T[np.argsort(np.abs(data_arr[7, :]))][0]
-            elif type(shift) == list:
-                shift = np.array(shift)
-            data_arr[1, :] = data_arr[1, :] - shift[0]
-            data_arr[2, :] = data_arr[2, :] - shift[1]
-            data_arr[3, :] = data_arr[3, :] - shift[2]
-            data_arr[4, :] = np.sqrt(
-                data_arr[1, :] ** 2 + data_arr[2, :] ** 2 + data_arr[3, :] ** 2
-            )
-
-            Eshift = -1e3 * np.cross(1e3 * shift, 1e-9 * data_arr[[6, 7, 8], :].T).T
-
-            data_arr[10, :] = data_arr[10, :] - Eshift[0]
-            data_arr[11, :] = data_arr[11, :] - Eshift[1]
-            data_arr[12, :] = data_arr[12, :] - Eshift[2]
-
-            data_arr[13, :] = np.sqrt(
-                data_arr[10, :] ** 2 + data_arr[11, :] ** 2 + data_arr[12, :] ** 2
-            )
-
-        if filt:
-            for idx in range(len(var_list)):
-                data_arr[idx, :] = sosfilt(sos, data_arr[idx, :])
 
     fig, ax_list = plt.subplots(
         len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
