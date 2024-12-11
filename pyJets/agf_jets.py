@@ -6670,8 +6670,10 @@ def plot_category_histograms(
     all_arrs = [durs_all, maxs_all, rpen_all]
 
     bin_edges = [
-        10 ** np.histogram_bin_edges(np.log10(durs_all)),
-        10 ** np.histogram_bin_edges(np.log10(maxs_all)),
+        # 10 ** np.histogram_bin_edges(np.log10(durs_all)),
+        # 10 ** np.histogram_bin_edges(np.log10(maxs_all)),
+        np.histogram_bin_edges(durs_all),
+        np.histogram_bin_edges(maxs_all),
         np.histogram_bin_edges(rpen_all),
     ]
 
@@ -6720,11 +6722,11 @@ def plot_category_histograms(
             cumulative=cumul,
         )
         if idx == 0:
-            ax.set_ylabel("Fraction of jets")
+            ax.set_ylabel("Cumulative\nFraction of jets")
             ax.legend()
-            ax.set_xscale("log")
-        if idx == 1:
-            ax.set_xscale("log")
+            # ax.set_xscale("log")
+        # if idx == 1:
+        #     ax.set_xscale("log")
         # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
 
