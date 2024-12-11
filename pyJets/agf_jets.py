@@ -6442,6 +6442,41 @@ def plot_jet_formation_postime(
     plt.close(fig)
 
 
+def all_cats_properties_script():
+
+    boxres = [
+        [8, 16, 3, 17],
+        [8, 20, 3, 17],
+        [8, 16, 3, 17],
+        [8, 16, -17, 0],
+        [8, 20, -17, 17],
+        [8, 20, -17, -3],
+        [8, 16, -17, -3],
+    ]
+    folder_suffixes = [
+        "jets_qpar_before",
+        "jets_qpar_after",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_all",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+    ]
+    tmins = [391, 470, 430, 430, 391, 600, 509]
+    tmaxs = [426, 800, 470, 470, 800, 800, 600]
+
+    for idx in range(len(folder_suffixes)):
+        get_jet_category_properties(
+            "AIC",
+            boxre=boxres[idx],
+            tmin=tmins[idx],
+            tmax=tmaxs[idx],
+            folder_suffix=folder_suffixes[idx],
+            minduration=1,
+            minsize=4,
+        )
+
+
 def get_jet_category_properties(
     runid,
     boxre=None,
