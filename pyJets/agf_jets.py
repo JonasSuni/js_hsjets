@@ -6300,9 +6300,9 @@ def plot_jet_formation_postime(
     maxsize_values = []
     # duration_values = []
 
-    # y_values = np.array([])
-    # t_values = np.array([])
-    # maxsize_values = np.array([])
+    y_arr = np.array([])
+    t_arr = np.array([])
+    maxsize_arr = np.array([])
 
     for n1 in range(6000):
         try:
@@ -6347,9 +6347,9 @@ def plot_jet_formation_postime(
         # maxsize_values.append(maxsize)
         # duration_values.append(duration)
 
-        # y_values = np.append(y_values, ymean)
-        # t_values = np.append(t_values, t)
-        # maxsize_values = np.append(maxsize_values, props.read("Nr_cells"))
+        y_arr = np.append(y_values, ymean)
+        t_arr = np.append(t_values, t)
+        maxsize_arr = np.append(maxsize_values, props.read("Nr_cells"))
         y_values.append(ymean)
         t_values.append(t)
         maxsize_values.append(props.read("Nr_cells"))
@@ -6370,28 +6370,18 @@ def plot_jet_formation_postime(
     #     edgecolors="k",
     #     zorder=4.5,
     # )
-    # ax.scatter(
-    #     t_values,
-    #     y_values,
-    #     c=np.log(maxsize_values),
-    #     cmap=cmap,
-    #     zorder=4.5,
-    #     marker="o",
-    #     edgecolors="none",
-    #     # alpha=0.5,
-    #     s=s,
-    # )
+    ax.scatter(
+        t_arr,
+        y_arr,
+        c=np.log(maxsize_arr),
+        cmap=cmap,
+        zorder=5.5,
+        marker="o",
+        edgecolors="none",
+        # alpha=0.5,
+        s=s,
+    )
     for idx in range(len(y_values)):
-        ax.scatter(
-            t_values[idx],
-            y_values[idx],
-            c=np.log(maxsize_values[idx]),
-            cmap=cmap,
-            zorder=5.5,
-            marker="o",
-            edgecolors="none",
-            s=s,
-        )
         ax.plot(
             t_values[idx],
             y_values[idx],
