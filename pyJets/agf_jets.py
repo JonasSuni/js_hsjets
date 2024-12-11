@@ -6140,10 +6140,17 @@ def plot_jet_formation_postime(
     s=1,
 ):
 
+    bulkpath = find_bulkpath(runid)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(int(tmin * 2)).zfill(7))
+    )
+
     y_values = []
     t_values = []
     maxsize_values = []
     # duration_values = []
+    ymax_values = []
+    ymin_values = []
 
     y_arr = np.array([])
     t_arr = np.array([])
@@ -6187,6 +6194,14 @@ def plot_jet_formation_postime(
         if y0 > ymax:
             continue
 
+        cell_list = props.get_cells()
+        ymins = np.array(
+            [vlsvobj.get_cell_coordinates(min(cell))[1] / r_e for cell in cell_list]
+        )
+        ymaxs = np.array(
+            [vlsvobj.get_cell_coordinates(max(cell))[1] / r_e for cell in cell_list]
+        )
+
         # y_values.append(y0)
         # t_values.append(t0)
         # maxsize_values.append(maxsize)
@@ -6198,6 +6213,8 @@ def plot_jet_formation_postime(
         y_values.append(ymean)
         t_values.append(t)
         maxsize_values.append(props.read("Nr_cells"))
+        ymin_values.append(ymins)
+        ymax_values.append(ymaxs)
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
     ax.grid(zorder=2.5)
@@ -6215,25 +6232,33 @@ def plot_jet_formation_postime(
     #     edgecolors="k",
     #     zorder=4.5,
     # )
-    ax.scatter(
-        t_arr,
-        y_arr,
-        c=np.log(maxsize_arr),
-        cmap=cmap,
-        zorder=5.5,
-        marker="o",
-        edgecolors="none",
-        # alpha=0.5,
-        s=s,
-    )
+    # ax.scatter(
+    #     t_arr,
+    #     y_arr,
+    #     c=np.log(maxsize_arr),
+    #     cmap=cmap,
+    #     zorder=5.5,
+    #     marker="o",
+    #     edgecolors="none",
+    #     # alpha=0.5,
+    #     s=s,
+    # )
     for idx in range(len(y_values)):
         ax.plot(
             t_values[idx],
             y_values[idx],
             color="k",
             linewidth=0.1,
+            zorder=4.5,
         )
-
+        ax.fill_between(
+            t_values[idx],
+            ymin_values[idx],
+            ymax_values[idx],
+            color=CB_color_cycle[0],
+            alpha=0.5,
+            zorder=5.5,
+        )
     ax.add_patch(
         mpatches.Rectangle(
             (391, 3),
