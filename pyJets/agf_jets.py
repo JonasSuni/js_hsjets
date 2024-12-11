@@ -6716,7 +6716,7 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
             wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
         )
 
-    sea_t_arr = np.arange(-20, 20 + 0.1, 0.5)
+    sea_t_arr = np.arange(-10, 10 + 0.1, 0.5)
 
     ts_avgs = np.nanmean(data_arr, axis=2)
 
@@ -6903,8 +6903,8 @@ def plot_timeseries_at_jets(
             plott0 = max(391, t0 - 20)
             plott1 = min(1000, t0 + 20)
         else:
-            plott0 = t0 - 20
-            plott1 = t0 + 20
+            plott0 = t0 - 10
+            plott1 = t0 + 10
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
