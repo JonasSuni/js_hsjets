@@ -7128,8 +7128,8 @@ def plot_timeseries_at_jets(
             continue
 
         if pdavg:
-            plott0 = max(391, t0 - 20)
-            plott1 = min(1000, t0 + 20)
+            plott0 = max(391, t0 - 10)
+            plott1 = min(1000, t0 + 10)
         else:
             plott0 = t0 - 10
             plott1 = t0 + 10
