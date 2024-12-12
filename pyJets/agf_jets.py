@@ -6706,10 +6706,10 @@ def plot_category_histograms(
         "Duration [s]",
         "Max. area [$R_\\mathrm{E}^2$]",
         "Radial depth [$R_\\mathrm{E}$]",
-        "$\\delta n$",
-        "$\\delta P_\\mathrm{dyn}$",
-        "$\\delta T_\\parallel$",
-        "$\\delta T_\\perp$",
+        "$\\delta n~[\\mathrm{cm}^{-3}]$",
+        "$\\delta P_\\mathrm{dyn}$ [nPa]",
+        "$\\delta T_\\parallel$ [MK]",
+        "$\\delta T_\\perp$ [MK]",
     ]
 
     txtdir = wrkdir_DNR + "jet_categories/"
@@ -6749,10 +6749,16 @@ def plot_category_histograms(
         ax.grid()
         if idx == 2:
             cumul = True
+            stacked = True
+            histtype = "barstacked"
         elif idx in [0, 1]:
             cumul = -1
+            stacked = True
+            histtype = "barstacked"
         else:
             cumul = False
+            stacked = False
+            histtype = "step"
         # for idx2 in range(len(folder_suffixes)):
         #     ax.hist(
         #         categories_list[idx2][idx],
@@ -6783,10 +6789,10 @@ def plot_category_histograms(
             # ],
             label=[sfx_labels[idx2] for idx2 in idx2_range],
             color=[CB_color_cycle[idx2] for idx2 in idx2_range],
-            histtype="barstacked",
+            histtype=histtype,
             # alpha=0.7,
             cumulative=cumul,
-            stacked=True,
+            stacked=stacked,
         )
         ax.set_xlim(bin_edges[idx][0], bin_edges[idx][-1])
         # ax.hist(
