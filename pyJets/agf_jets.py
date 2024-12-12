@@ -6694,12 +6694,12 @@ def plot_category_histograms(
         "jets_qpar_after",
     ]
     sfx_labels = [
-        "$Q\\parallel$ steady",
-        "$Q\\parallel$ FB",
-        "$Q\\perp$ RD",
-        "$Q\\perp$ steady",
-        "$Q\\perp$ inter",
-        "$Q\\parallel$ after",
+        "Dusk $Q_\\parallel$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q_\\parallel$",
+        "Dawn young FS$",
+        "Dusk $Q_\\perp$",
     ]
 
     prop_labels = [
@@ -6745,8 +6745,10 @@ def plot_category_histograms(
         ax.grid()
         if idx == 2:
             cumul = True
-        else:
+        elif idx in [0,1]:
             cumul = -1
+        else:
+            cumul=False
         # for idx2 in range(len(folder_suffixes)):
         #     ax.hist(
         #         categories_list[idx2][idx],
