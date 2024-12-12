@@ -6499,6 +6499,10 @@ def get_jet_category_properties(
     durs = []
     maxs = []
     rpen = []
+    Dn = []
+    Dpd = []
+    DTPar = []
+    DTPerp = []
 
     for n1 in range(6000):
         try:
@@ -6549,8 +6553,12 @@ def get_jet_category_properties(
         durs.append(duration)
         maxs.append(maxsize)
         rpen.append(rmean[-1] - rmean[0])
+        Dn.append(props.read("Dn")[0])
+        Dpd.append(props.read("Dpd")[0])
+        DTPar.append(props.read("DTPar")[0])
+        DTPerp.append(props.read("DTPerp")[0])
 
-    outarr = np.array([jet_ids, durs, maxs, rpen], dtype=float)
+    outarr = np.array([jet_ids, durs, maxs, rpen, Dn, Dpd, DTPar, DTPerp], dtype=float)
 
     np.savetxt(txtdir + "{}.txt".format(folder_suffix), outarr)
 
@@ -6599,7 +6607,9 @@ def plot_category_props(
     categories_list = []
 
     for sfx in folder_suffixes:
-        jetids, durs, maxs, rpens = np.loadtxt(txtdir + "{}.txt".format(sfx))
+        jetids, durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp = np.loadtxt(
+            txtdir + "{}.txt".format(sfx)
+        )
         njets = np.ones_like(durs) * jetids.size
         categories_list.append([durs, maxs, rpens, njets])
 
@@ -6696,6 +6706,10 @@ def plot_category_histograms(
         "Duration [s]",
         "Max. area [$R_\\mathrm{E}^2$]",
         "Radial depth [$R_\\mathrm{E}$]",
+        "$\\delta n$",
+        "$\\delta P_\\mathrm{dyn}$",
+        "$\\delta T_\\parallel$",
+        "$\\delta T_\\perp$",
     ]
 
     txtdir = wrkdir_DNR + "jet_categories/"
@@ -6716,11 +6730,13 @@ def plot_category_histograms(
     categories_list = []
 
     for sfx in folder_suffixes:
-        jetids, durs, maxs, rpens = np.loadtxt(txtdir + "{}.txt".format(sfx))
-        categories_list.append([durs, maxs, rpens])
+        jetids, durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp = np.loadtxt(
+            txtdir + "{}.txt".format(sfx)
+        )
+        categories_list.append([durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp])
 
     fig, ax_list = plt.subplots(
-        1, len(prop_labels), figsize=(12, 5), constrained_layout=True
+        1, len(prop_labels), figsize=(20, 5), constrained_layout=True
     )
 
     for idx in range(len(prop_labels)):
