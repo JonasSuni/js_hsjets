@@ -6750,14 +6750,14 @@ def plot_category_histograms(
         ax.hist(
             [categories_list[idx2][idx] for idx2 in idx2_range],
             bins=bin_edges[idx],
-            weights=[
-                np.ones(len(categories_list[idx2][idx]), dtype=float)
-                / (
-                    np.ones(len(categories_list[idx2][idx]), dtype=float)
-                    * len(categories_list[idx2][idx])
-                )
-                for idx2 in idx2_range
-            ],
+            # weights=[
+            #     np.ones(len(categories_list[idx2][idx]), dtype=float)
+            #     / (
+            #         np.ones(len(categories_list[idx2][idx]), dtype=float)
+            #         * len(categories_list[idx2][idx])
+            #     )
+            #     for idx2 in idx2_range
+            # ],
             label=[sfx_labels[idx2] for idx2 in idx2_range],
             color=[CB_color_cycle[idx2] for idx2 in idx2_range],
             histtype="barstacked",
