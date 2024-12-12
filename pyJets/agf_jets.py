@@ -6714,10 +6714,10 @@ def plot_category_histograms(
 
     txtdir = wrkdir_DNR + "jet_categories/"
 
-    jetids_all, durs_all, maxs_all, rpen_all = np.loadtxt(
-        txtdir + "{}.txt".format("jets_all")
+    jetids_all, durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all = (
+        np.loadtxt(txtdir + "{}.txt".format("jets_all"))
     )
-    all_arrs = [durs_all, maxs_all, rpen_all]
+    all_arrs = [durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all]
 
     bin_edges = [
         10 ** np.histogram_bin_edges(np.log10(durs_all)),
@@ -6725,6 +6725,10 @@ def plot_category_histograms(
         # np.histogram_bin_edges(durs_all),
         # np.histogram_bin_edges(maxs_all),
         np.histogram_bin_edges(rpen_all),
+        np.histogram_bin_edges(Dn_all),
+        np.histogram_bin_edges(Dpd_all),
+        np.histogram_bin_edges(DTPar_all),
+        np.histogram_bin_edges(DTPerp_all),
     ]
 
     categories_list = []
@@ -6745,10 +6749,10 @@ def plot_category_histograms(
         ax.grid()
         if idx == 2:
             cumul = True
-        elif idx in [0,1]:
+        elif idx in [0, 1]:
             cumul = -1
         else:
-            cumul=False
+            cumul = False
         # for idx2 in range(len(folder_suffixes)):
         #     ax.hist(
         #         categories_list[idx2][idx],
