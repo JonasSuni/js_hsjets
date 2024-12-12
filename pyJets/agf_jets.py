@@ -6730,33 +6730,52 @@ def plot_category_histograms(
             cumul = True
         else:
             cumul = -1
-        for idx2 in range(len(folder_suffixes)):
-            ax.hist(
-                categories_list[idx2][idx],
-                bins=bin_edges[idx],
-                # density=True,
-                weights=1.0
+        # for idx2 in range(len(folder_suffixes)):
+        #     ax.hist(
+        #         categories_list[idx2][idx],
+        #         bins=bin_edges[idx],
+        #         # density=True,
+        #         weights=1.0
+        #         / (
+        #             np.ones(len(categories_list[idx2][idx]), dtype=float)
+        #             * len(categories_list[idx2][idx])
+        #         ),
+        #         label=sfx_labels[idx2],
+        #         color=CB_color_cycle[idx2],
+        #         histtype="step",
+        #         alpha=0.7,
+        #         cumulative=cumul,
+        #     )
+        idx2_range = range(len(folder_suffixes))
+        ax.hist(
+            [categories_list[idx2][idx] for idx2 in idx2_range],
+            bins=bin_edges[idx],
+            weights=[
+                np.ones(len(categories_list[idx2][idx]), dtype=float)
                 / (
                     np.ones(len(categories_list[idx2][idx]), dtype=float)
                     * len(categories_list[idx2][idx])
-                ),
-                label=sfx_labels[idx2],
-                color=CB_color_cycle[idx2],
-                histtype="step",
-                alpha=0.7,
-                cumulative=cumul,
-            )
-            ax.set_xlim(bin_edges[idx][0], bin_edges[idx][-1])
-        ax.hist(
-            all_arrs[idx],
-            bins=bin_edges[idx],
-            density=True,
-            label="All",
-            color="k",
-            histtype="step",
-            alpha=0.7,
+                )
+                for idx2 in idx2_range
+            ],
+            label=[sfx_labels[idx2] for idx2 in idx2_range],
+            color=[CB_color_cycle[idx2] for idx2 in idx2_range],
+            histtype="barstacked",
+            # alpha=0.7,
             cumulative=cumul,
+            stacked=True,
         )
+        ax.set_xlim(bin_edges[idx][0], bin_edges[idx][-1])
+        # ax.hist(
+        #     all_arrs[idx],
+        #     bins=bin_edges[idx],
+        #     density=True,
+        #     label="All",
+        #     color="k",
+        #     histtype="step",
+        #     alpha=0.7,
+        #     cumulative=cumul,
+        # )
         if idx == 0:
             ax.set_ylabel("Cumulative\nFraction of jets")
             ax.legend()
