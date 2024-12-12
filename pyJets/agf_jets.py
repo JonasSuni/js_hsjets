@@ -6706,10 +6706,10 @@ def plot_category_histograms(
         "Duration [s]",
         "Max. area [$R_\\mathrm{E}^2$]",
         "Radial depth [$R_\\mathrm{E}$]",
-        "$\\delta n~[\\mathrm{cm}^{-3}]$",
-        "$\\delta P_\\mathrm{dyn}$ [nPa]",
-        "$\\delta T_\\parallel$ [MK]",
-        "$\\delta T_\\perp$ [MK]",
+        # "$\\delta n~[\\mathrm{cm}^{-3}]$",
+        # "$\\delta P_\\mathrm{dyn}$ [nPa]",
+        # "$\\delta T_\\parallel$ [MK]",
+        # "$\\delta T_\\perp$ [MK]",
     ]
 
     txtdir = wrkdir_DNR + "jet_categories/"
@@ -6740,7 +6740,7 @@ def plot_category_histograms(
         categories_list.append([durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp])
 
     fig, ax_list = plt.subplots(
-        1, len(prop_labels), figsize=(20, 5), constrained_layout=True
+        1, len(prop_labels), figsize=(4 * len(prop_labels), 5), constrained_layout=True
     )
 
     for idx in range(len(prop_labels)):
