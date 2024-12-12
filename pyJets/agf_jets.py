@@ -6698,7 +6698,7 @@ def plot_category_histograms(
         "Dusk FB",
         "Dawn RD",
         "Dawn $Q_\\parallel$",
-        "Dawn young FS$",
+        "Dawn young FS",
         "Dusk $Q_\\perp$",
     ]
 
