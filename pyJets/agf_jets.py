@@ -6543,6 +6543,7 @@ def get_jet_category_properties(
             continue
 
         rmean = props.read("r_mean")
+        maxsize = max(props.read("A"))
 
         jet_ids.append(n1)
         durs.append(duration)
@@ -6588,7 +6589,7 @@ def plot_category_props(
 
     prop_labels = [
         "Duration [s]",
-        "Max. size\n[nr. cells]",
+        "Max. area\n[$R_\\mathrm{E}^2$]",
         "Radial depth\n[$R_\\mathrm{E}$]",
         "Number of\njets",
     ]
@@ -6693,7 +6694,7 @@ def plot_category_histograms(
 
     prop_labels = [
         "Duration [s]",
-        "Max. size [nr. cells]",
+        "Max. area [$R_\\mathrm{E}^2$]",
         "Radial depth [$R_\\mathrm{E}$]",
     ]
 
@@ -6777,7 +6778,7 @@ def plot_category_histograms(
         #     cumulative=cumul,
         # )
         if idx == 0:
-            ax.set_ylabel("Cumulative\nFraction of jets")
+            ax.set_ylabel("Cumulative\nnumber of jets")
             ax.legend()
             ax.set_xscale("log")
         if idx == 1:
