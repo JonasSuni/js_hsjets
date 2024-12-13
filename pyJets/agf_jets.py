@@ -6253,14 +6253,13 @@ def plot_jet_formation_postime(
 
         if "splinter" in props.meta:
             continue
-        if "merger" in props.meta:
-            continue
 
-        xmean = props.read("x_mean")
-        ymean = props.read("y_mean")
+        isnotmerger = ~props.read("is_merger").astype(bool)
+        xmean = props.read("x_mean")[isnotmerger]
+        ymean = props.read("y_mean")[isnotmerger]
 
         x0, y0 = (xmean[0], ymean[0])
-        t = props.get_times()
+        t = props.get_times()[isnotmerger]
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
         maxsize = max(props.read("Nr_cells"))
@@ -6280,7 +6279,7 @@ def plot_jet_formation_postime(
         if y0 > ymax:
             continue
 
-        cell_list = props.get_cells()
+        cell_list = props.get_cells()[isnotmerger]
         ymins = np.array(
             [vlsvobj.get_cell_coordinates(min(cell))[1] / r_e for cell in cell_list]
         )
@@ -6295,10 +6294,10 @@ def plot_jet_formation_postime(
 
         y_arr = np.append(y_arr, ymean)
         t_arr = np.append(t_arr, t)
-        maxsize_arr = np.append(maxsize_arr, props.read("Nr_cells"))
+        maxsize_arr = np.append(maxsize_arr, props.read("Nr_cells")[isnotmerger])
         y_values.append(ymean)
         t_values.append(t)
-        maxsize_values.append(props.read("Nr_cells"))
+        maxsize_values.append(props.read("Nr_cells")[isnotmerger])
         ymin_values.append(ymins)
         ymax_values.append(ymaxs)
 
