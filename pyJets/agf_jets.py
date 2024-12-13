@@ -6255,7 +6255,7 @@ def plot_jet_formation_postime(
         #     continue
 
         t = np.array(props.get_times())
-        isnotmerger = np.logical_and(
+        isnotmerger = np.logical_or(
             props.read("is_merger") == 0, props.read("is_splinter") == 1
         )
         xmean = props.read("x_mean")
