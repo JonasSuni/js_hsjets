@@ -6350,7 +6350,7 @@ def plot_jet_formation_postime(
             # alpha=0.5,
             zorder=5.5,
             edgecolor=CB_color_cycle[0],
-            ew=0.2,
+            linewidth=0.2,
             facecolor="none",
             # facecolor=CB_color_cycle[0],
         )
