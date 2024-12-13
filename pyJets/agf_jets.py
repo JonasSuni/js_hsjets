@@ -6255,7 +6255,8 @@ def plot_jet_formation_postime(
             continue
 
         t = np.array(props.get_times())
-        isnotmerger = (props.read("is_merger") == 0).astype(bool)
+        # isnotmerger = (props.read("is_merger") == 0).astype(bool)
+        isnotmerger = np.ones_like(t).astype(bool)
         xmean = props.read("x_mean")
         ymean = props.read("y_mean")
 
@@ -6348,8 +6349,9 @@ def plot_jet_formation_postime(
             ymax_values[idx],
             alpha=0.5,
             zorder=5.5,
-            edgecolor="none",
-            facecolor=CB_color_cycle[0],
+            edgecolor=CB_color_cycle[0],
+            facecolor="none",
+            # facecolor=CB_color_cycle[0],
         )
     ax.add_patch(
         mpatches.Rectangle(
