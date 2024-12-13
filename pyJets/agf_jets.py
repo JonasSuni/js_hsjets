@@ -6253,17 +6253,15 @@ def plot_jet_formation_postime(
 
         if "splinter" in props.meta:
             continue
-
-        isnotmerger = ~props.read("is_merger").astype(bool)
-        for idx in range(isnotmerger.size):
-            if isnotmerger[idx]:
-                isnotmerger[idx] = False
-                break
+        
+        t = np.array(props.get_times())
+        merge_time = t[props.read("is_merger").astype(bool)][0]
+        isnotmerger = (t <= merge_time).astype(bool)
         xmean = props.read("x_mean")[isnotmerger]
         ymean = props.read("y_mean")[isnotmerger]
 
         x0, y0 = (xmean[0], ymean[0])
-        t = props.get_times()
+        
         t = [tc for tc in t if isnotmerger[t.index(tc)]]
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
