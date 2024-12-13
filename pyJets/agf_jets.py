@@ -6255,17 +6255,14 @@ def plot_jet_formation_postime(
         #     continue
 
         t = np.array(props.get_times())
-        try:
-            merge_time = t[props.read("is_merger").astype(bool)][0]
-        except:
-            merge_time = 9999
-        isnotmerger = (t <= merge_time).astype(bool)
-        xmean = props.read("x_mean")[isnotmerger]
-        ymean = props.read("y_mean")[isnotmerger]
+        isnotmerger = np.logical_and(
+            props.read("is_merger") == 0, props.read("is_splinter") == 1
+        )
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
 
         x0, y0 = (xmean[0], ymean[0])
 
-        t = t[isnotmerger]
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
         maxsize = max(props.read("Nr_cells"))
@@ -6284,6 +6281,10 @@ def plot_jet_formation_postime(
             continue
         if y0 > ymax:
             continue
+
+        t = t[isnotmerger]
+        xmean = xmean[isnotmerger]
+        ymean = ymean[isnotmerger]
 
         cell_list = props.get_cells()
         cell_list = [cell for cell in cell_list if isnotmerger[cell_list.index(cell)]]
