@@ -6353,6 +6353,7 @@ def plot_jet_formation_postime(
             linewidth=0.2,
             facecolor="none",
             # facecolor=CB_color_cycle[0],
+            hatch="//",
         )
     ax.add_patch(
         mpatches.Rectangle(
