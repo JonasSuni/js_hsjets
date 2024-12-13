@@ -6255,6 +6255,10 @@ def plot_jet_formation_postime(
             continue
 
         isnotmerger = ~props.read("is_merger").astype(bool)
+        for idx in range(isnotmerger.size):
+            if isnotmerger[idx]:
+                isnotmerger[idx] = False
+                break
         xmean = props.read("x_mean")[isnotmerger]
         ymean = props.read("y_mean")[isnotmerger]
 
