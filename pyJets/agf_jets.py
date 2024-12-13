@@ -6251,8 +6251,8 @@ def plot_jet_formation_postime(
         if props.read("at_bow_shock")[0] != 1:
             continue
 
-        if "splinter" in props.meta:
-            continue
+        # if "splinter" in props.meta:
+        #     continue
 
         t = np.array(props.get_times())
         try:
