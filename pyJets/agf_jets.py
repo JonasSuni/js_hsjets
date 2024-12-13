@@ -6251,13 +6251,11 @@ def plot_jet_formation_postime(
         if props.read("at_bow_shock")[0] != 1:
             continue
 
-        # if "splinter" in props.meta:
-        #     continue
+        if "splinter" in props.meta:
+            continue
 
         t = np.array(props.get_times())
-        isnotmerger = np.logical_xor(
-            props.read("is_merger") == 0, props.read("is_splinter") == 1
-        )
+        isnotmerger = (props.read("is_merger") == 0).astype(bool)
         xmean = props.read("x_mean")
         ymean = props.read("y_mean")
 
