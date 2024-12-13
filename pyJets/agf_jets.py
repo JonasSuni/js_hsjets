@@ -6265,7 +6265,7 @@ def plot_jet_formation_postime(
 
         x0, y0 = (xmean[0], ymean[0])
 
-        t = [tc for tc in t if isnotmerger[t.index(tc)]]
+        t = t[isnotmerger]
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
         maxsize = max(props.read("Nr_cells"))
