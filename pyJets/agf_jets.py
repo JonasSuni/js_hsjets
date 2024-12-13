@@ -6259,7 +6259,8 @@ def plot_jet_formation_postime(
         ymean = props.read("y_mean")[isnotmerger]
 
         x0, y0 = (xmean[0], ymean[0])
-        t = props.get_times()[isnotmerger]
+        t = props.get_times()
+        t = [tc for tc in t if isnotmerger[t.index(tc)]]
         t0 = t[0]
         duration = t[-1] - t[0] + 0.5
         maxsize = max(props.read("Nr_cells"))
@@ -6279,7 +6280,8 @@ def plot_jet_formation_postime(
         if y0 > ymax:
             continue
 
-        cell_list = props.get_cells()[isnotmerger]
+        cell_list = props.get_cells()
+        cell_list = [cell for cell in cell_list if isnotmerger[cell_list.index(cell)]]
         ymins = np.array(
             [vlsvobj.get_cell_coordinates(min(cell))[1] / r_e for cell in cell_list]
         )
