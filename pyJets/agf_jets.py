@@ -6253,6 +6253,8 @@ def plot_jet_formation_postime(
 
         if "splinter" in props.meta:
             continue
+        if "merger" in props.meta:
+            continue
 
         xmean = props.read("x_mean")
         ymean = props.read("y_mean")
