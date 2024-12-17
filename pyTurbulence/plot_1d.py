@@ -123,7 +123,9 @@ def plot_elsasser(fnr0, fnr1, dirname):
         vz = vlsvobj.read_variable("proton/vg_v", operator="z")[cellids.argsort()]
         v = np.array([np.zeros_like(vy), vy, vz])
 
-        BvA = B / np.sqrt(mu0 * m_p * 1e6)
+        BvA = B / np.sqrt(
+            mu0 * m_p * vlsvobj.read_variable("proton/vg_rho")[cellids.argsort()]
+        )
 
         fig, ax = plt.subplots(1, 1, figsize=(8, 3), constrained_layout=True)
 
@@ -143,6 +145,7 @@ def plot_elsasser(fnr0, fnr1, dirname):
         ax.set_ylabel(r"$\delta z^{\pm}$")
         ax.set_xlabel(r"$x~[R_\mathrm{E}]$")
         ax.set_xlim([x[0], x[-1]])
+        ax.set_ylim(0, 25000)
         ax.grid()
         ax.legend()
 
