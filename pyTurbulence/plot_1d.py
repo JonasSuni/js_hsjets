@@ -94,7 +94,8 @@ except:
 wrkdir_DNR = wrkdir_DNR + "turbulence/"
 turbdir = "/wrk-vakka/group/spacephysics/turbulence/"
 
-def plot_elsasser(fnr0,fnr1,dirname):
+
+def plot_elsasser(fnr0, fnr1, dirname):
 
     figdir = wrkdir_DNR + "Figs/cuts/{}/".format(dirname)
     if not os.path.exists(figdir):
@@ -116,18 +117,28 @@ def plot_elsasser(fnr0,fnr1,dirname):
         x = np.array([vlsvobj.get_cell_coordinates(c)[0] / r_e for c in ci_sorted])
         By = vlsvobj.read_variable("vg_b_vol", operator="y")[cellids.argsort()]
         Bz = vlsvobj.read_variable("vg_b_vol", operator="z")[cellids.argsort()]
-        B = np.array([np.zeros_like(By),By, Bz])
+        B = np.array([np.zeros_like(By), By, Bz])
 
         vy = vlsvobj.read_variable("proton/vg_v", operator="y")[cellids.argsort()]
         vz = vlsvobj.read_variable("proton/vg_v", operator="z")[cellids.argsort()]
-        v = np.array([np.zeros_like(vy),vy, vz])
+        v = np.array([np.zeros_like(vy), vy, vz])
 
-        BvA = B / np.sqrt(mu0 * m_p*1e6)
+        BvA = B / np.sqrt(mu0 * m_p * 1e6)
 
-        fig,ax = plt.subplots(1,1,figsize=(8,3),constrained_layout=True)
+        fig, ax = plt.subplots(1, 1, figsize=(8, 3), constrained_layout=True)
 
-        ax.plot(x, v+BvA,label="$\\delta z^{+}$",color=CB_color_cycle[0])
-        ax.plot(x, v-BvA,label="$\\delta z^{-}$",color=CB_color_cycle[1])
+        ax.plot(
+            x,
+            np.linalg.norm(v + BvA, axis=0),
+            label="$\\delta z^{+}$",
+            color=CB_color_cycle[0],
+        )
+        ax.plot(
+            x,
+            np.linalg.norm(v - BvA, axis=0),
+            label="$\\delta z^{-}$",
+            color=CB_color_cycle[1],
+        )
 
         ax.set_ylabel(r"$\delta z^{\pm}$")
         ax.set_xlabel(r"$x~[R_\mathrm{E}]$")
@@ -137,6 +148,7 @@ def plot_elsasser(fnr0,fnr1,dirname):
 
         fig.savefig(figdir + "{}_elsasser.png".format(idx))
         plt.close(fig)
+
 
 def plot_Byz(fnr0, fnr1, dirname):
 
