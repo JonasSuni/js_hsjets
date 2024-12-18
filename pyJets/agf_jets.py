@@ -6445,7 +6445,7 @@ def plot_jet_formation_postime(
     ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
     ax.set_xlabel("$t_0~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
-    ax.legend(loc="upper right",zorder=10)
+    ax.legend(loc="upper right")
 
     figdir = wrkdir_DNR + "Figs/"
 
