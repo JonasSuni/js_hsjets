@@ -6834,6 +6834,25 @@ def plot_category_histograms(
 
 def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
+    valid_cats = [
+        "jets_all",
+        "jets_qpar_before",
+        "jets_qpar_after",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+    ]
+    cat_names = [
+        "All",
+        "Dusk $Q\\parallel$",
+        "Dusk $Q\\perp$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q\\parallel$",
+        "Dawn young FS",
+    ]
+
     plot_labels = [
         None,
         "$v_x$",
@@ -6983,7 +7002,9 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
         ax.set_ylabel(ylabels[idx])
     ax_list[-1].set_xlabel("Epoch time [s]")
     ax_list[0].set_title(
-        folder_suffix.replace("_", " ").title() + ", N = {}".format(len(filenames))
+        # folder_suffix.replace("_", " ").title() + ", N = {}".format(len(filenames))
+        cat_names[valid_cats.index(folder_suffix)]
+        + ", N = {}".format(len(filenames))
     )
 
     fig.savefig(wrkdir_DNR + "Figs/SEA_{}.png".format(folder_suffix), dpi=300)
