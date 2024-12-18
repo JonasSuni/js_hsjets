@@ -6442,8 +6442,8 @@ def plot_jet_formation_postime(
 
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
-    ax.set_ylabel("$Y_0~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
-    ax.set_xlabel("$t_0~[\\mathrm{s}]$", fontsize=20, labelpad=10)
+    ax.set_ylabel("$Y~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
+    ax.set_xlabel("$t~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
     ax.legend(loc="upper right")
 
