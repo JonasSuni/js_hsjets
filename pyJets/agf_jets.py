@@ -6324,37 +6324,37 @@ def plot_jet_formation_postime(
     #     edgecolors="k",
     #     zorder=4.5,
     # )
-    # ax.scatter(
-    #     t_arr,
-    #     y_arr,
-    #     c=np.log(maxsize_arr),
-    #     cmap=cmap,
-    #     zorder=5.5,
-    #     marker="o",
-    #     edgecolors="none",
-    #     # alpha=0.5,
-    #     s=s,
-    # )
+    ax.scatter(
+        t_arr,
+        y_arr,
+        c=np.log(maxsize_arr),
+        cmap=cmap,
+        zorder=5.5,
+        marker="o",
+        edgecolors="none",
+        # alpha=0.5,
+        s=s,
+    )
     for idx in range(len(y_values)):
         ax.plot(
             t_values[idx],
             y_values[idx],
             color="k",
             linewidth=0.2,
-            zorder=5.5,
-        )
-        ax.fill_between(
-            t_values[idx],
-            ymin_values[idx],
-            ymax_values[idx],
-            # alpha=0.5,
             zorder=4.5,
-            edgecolor=CB_color_cycle[0],
-            linewidth=0.2,
-            facecolor="none",
-            # facecolor=CB_color_cycle[0],
-            hatch="///",
         )
+        # ax.fill_between(
+        #     t_values[idx],
+        #     ymin_values[idx],
+        #     ymax_values[idx],
+        #     # alpha=0.5,
+        #     zorder=5.5,
+        #     edgecolor=CB_color_cycle[0],
+        #     linewidth=0.2,
+        #     facecolor="none",
+        #     # facecolor=CB_color_cycle[0],
+        #     hatch="///",
+        # )
     ax.add_patch(
         mpatches.Rectangle(
             (391, 3),
