@@ -6329,7 +6329,7 @@ def plot_jet_formation_postime(
         y_arr,
         c=np.log(maxsize_arr),
         cmap=cmap,
-        zorder=5.5,
+        zorder=4.5,
         marker="o",
         edgecolors="none",
         # alpha=0.5,
@@ -6341,7 +6341,7 @@ def plot_jet_formation_postime(
             y_values[idx],
             color="k",
             linewidth=0.2,
-            zorder=4.5,
+            zorder=4,
         )
         # ax.fill_between(
         #     t_values[idx],
