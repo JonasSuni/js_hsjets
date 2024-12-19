@@ -2336,7 +2336,6 @@ def fig1_new(
         pt.plot.plot_colormap(
             axes=ax_flat[idx],
             vlsvobj=vobj,
-            outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
             var=var,
             op=op,
             vmin=pdynmin,
