@@ -2309,8 +2309,9 @@ def fig1_new(
         streamlines = None
 
     annot_pan = ["a", "b", "c", "d"]
+    nodrawcb = [True, True, True, False]
 
-    fig, ax_list = plt.subplots(1, 4, figsize=(8, 4), constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 4, figsize=(20, 10), constrained_layout=True)
     ax_flat = ax_list.flatten()
 
     for idx, fnr in enumerate([781, 880, 900, 1256]):
@@ -2348,7 +2349,7 @@ def fig1_new(
             # scale=3,
             title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
             boxre=boxre,
-            internalcb=False,
+            internalcb=True,
             lin=lin,
             highres=highres,
             colormap=cmap,
@@ -2356,6 +2357,7 @@ def fig1_new(
             fsaved=fsaved,
             useimshow=True,
             external=ext_jet,
+            nocb=nodrawcb[idx],
             expression=expression,
             pass_vars=[
                 "proton/vg_rho_thermal",
