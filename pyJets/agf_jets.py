@@ -2186,6 +2186,220 @@ def fig1(runid, panel_nums=True, vmax=1.0):
     plt.close(fig)
 
 
+def fig1_new(
+    runid,
+    var="proton/vg_Pdyn",
+    op=None,
+    boxre=[-10, 20, -20, 20],
+    tickint=5.0,
+    blines=False,
+    vscale=1e9,
+    nstp=40,
+    pdynmax=1.5,
+    pdynmin=0.1,
+    outdir="cmaps",
+    cmap="batlow",
+    pointsx=[],
+    pointsy=[],
+    fsaved=None,
+    lin=1,
+    By0=True,
+    leg=True,
+    track_jets=True,
+    qperp=False,
+    linestartstop=[],
+    magten=False,
+    usesci=0,
+    magtenvec=False,
+    pt_blines=False,
+    min_duration=0,
+    minsize=0,
+    highres=None,
+    plot_fluxfunc=True,
+    draw_ch=True,
+    draw_bs=False,
+    draw_mms=True,
+):
+
+    if magten:
+        vscale = 1
+        expression = expr_magten
+        usesci = 1
+    else:
+        vscale = vscale
+        expression = None
+        usesci = 0
+
+    vmax = pdynmax
+    runids = ["AGF", "AIA", "AIC"]
+
+    if len(pointsx) != len(pointsy):
+        print("x and y must have same length!")
+        return 1
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg
+    umagten_g = magtenvec
+    runid_g = runid
+    Blines_g = blines
+    drawBy0 = By0
+    plaschke_g = False
+    leg_g = leg
+    draw_qperp = qperp
+    chg = draw_ch
+    highres_g = highres
+    bsg = draw_bs
+    mmsg = draw_mms
+
+    global xg, yg, linsg, lineg
+    xg = pointsx
+    yg = pointsy
+    linsg, lineg = None, None
+    if len(linestartstop) == 2:
+        linsg = linestartstop[0]
+        lineg = linestartstop[1]
+
+    # nstp = 40
+    start_points = np.array(
+        [
+            np.ones(nstp) * boxre[1] - 1,
+            np.linspace(boxre[2] + 0.1, boxre[3] - 0.1, nstp),
+        ]
+        # [
+        #     np.linspace(boxre[0] + 0.1, boxre[1] - 0.1, nstp),
+        #     np.ones(nstp) * (boxre[2] + 1),
+        # ]
+    ).T
+
+    bulkpath = find_bulkpath(runid)
+
+    if track_jets:
+        non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
+    else:
+        non_ids = []
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[runids.index(runid)]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    outputdir = wrkdir_DNR + "Figs/{}/".format(outdir)
+    if not os.path.exists(outputdir):
+        try:
+            os.makedirs(outputdir)
+        except OSError:
+            pass
+
+    # global x0, y0
+    # props = jio.PropReader(str(jetid).zfill(5), runid, transient="jet")
+    # t0 = props.read("time")[0]
+    # x0 = props.read("x_wmean")[0]
+    # y0 = props.read("y_wmean")[0]
+    # fnr0 = int(t0 * 2)
+
+    if pt_blines:
+        streamlines = "vg_b_vol"
+    else:
+        streamlines = None
+
+    annot_pan = ["a", "b", "c", "d"]
+
+    fig, ax_list = plt.subplots(1, 4, figsize=(8, 4), constrained_layout=True)
+    ax_flat = ax_list.flatten()
+
+    for idx, fnr in enumerate([781, 880, 900, 1256]):
+        filenr_g = fnr
+
+        fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
+
+        vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+
+        if plot_fluxfunc:
+            fluxfile = vlasdir + "/2D/AIC/fluxfunction/" + fname + ".bin"
+            fluxdir = None
+            flux_levels = None
+            fluxthick = 0.5
+            fluxlines = 5
+        else:
+            fluxfile = None
+            fluxdir = None
+            flux_levels = None
+            fluxthick = 1.0
+            fluxlines = 1
+
+        pt.plot.plot_colormap(
+            axes=ax_flat[idx],
+            vlsvobj=vobj,
+            outputfile=outputdir + "pdyn_{}.png".format(str(fnr).zfill(7)),
+            var=var,
+            op=op,
+            vmin=pdynmin,
+            # vmax=1,
+            vmax=vmax,
+            vscale=vscale,
+            # cbtitle="",
+            # cbtitle="",
+            usesci=usesci,
+            # scale=3,
+            title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+            boxre=boxre,
+            internalcb=False,
+            lin=lin,
+            highres=highres,
+            colormap=cmap,
+            tickinterval=tickint,
+            fsaved=fsaved,
+            useimshow=True,
+            external=ext_jet,
+            expression=expression,
+            pass_vars=[
+                "proton/vg_rho_thermal",
+                "proton/vg_rho_nonthermal",
+                "proton/vg_ptensor_thermal_diagonal",
+                "vg_b_vol",
+                "proton/vg_v",
+                "proton/vg_rho",
+                "proton/vg_core_heating",
+                "CellID",
+                "proton/vg_mmsx",
+                "proton/vg_Pdyn",
+                "proton/vg_Pdynx",
+                "proton/vg_beta_star",
+            ],
+            streamlines=streamlines,
+            streamlinedensity=0.3,
+            streamlinecolor="white",
+            streamlinethick=0.8,
+            fluxfile=fluxfile,
+            fluxdir=fluxdir,
+            flux_levels=flux_levels,
+            fluxthick=fluxthick,
+            fluxlines=fluxlines,
+        )
+
+        ax_flat[idx].annotate(
+            annot_pan[idx],
+            (0.05, 0.90),
+            xycoords="axes fraction",
+            fontsize=12,
+            bbox=dict(
+                boxstyle="square,pad=0.15",
+                fc="white",
+                ec="k",
+                lw=0.5,
+            ),
+        )
+
+    fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300)
+    plt.close(fig)
+
+
 def v5_plotter(
     runid,
     start,
