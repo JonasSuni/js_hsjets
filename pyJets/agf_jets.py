@@ -2336,7 +2336,6 @@ def fig1_new(
 
         pt.plot.plot_colormap(
             axes=ax_flat[idx],
-            cbaxes=ax_flat[idx],
             vlsvobj=vobj,
             var=var,
             op=op,
