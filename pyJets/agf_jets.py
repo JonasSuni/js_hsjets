@@ -6579,6 +6579,7 @@ def plot_jet_formation_postime(
             label="Dusk $Q\\parallel$",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6591,6 +6592,7 @@ def plot_jet_formation_postime(
             label="Dusk FB",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6603,6 +6605,7 @@ def plot_jet_formation_postime(
             label="Dawn RD",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6615,6 +6618,7 @@ def plot_jet_formation_postime(
             label="Dawn, young FS",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6627,6 +6631,7 @@ def plot_jet_formation_postime(
             label="Dawn $Q\\perp$",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6639,6 +6644,7 @@ def plot_jet_formation_postime(
             label="Dusk $Q\\perp$",
             fill=False,
             linestyle="dashed",
+            linewidth=1.5,
             zorder=3.5,
         )
     )
@@ -6651,6 +6657,7 @@ def plot_jet_formation_postime(
     #         label="All",
     #         fill=False,
     #         linestyle="dashed",
+    #         linewidth=1.5,
     #         zorder=3.5,
     #     )
     # )
