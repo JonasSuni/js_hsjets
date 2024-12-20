@@ -6642,18 +6642,18 @@ def plot_jet_formation_postime(
             zorder=3.5,
         )
     )
-    ax.add_patch(
-        mpatches.Rectangle(
-            (391, -17),
-            800 - 391,
-            17 - (-17),
-            color=CB_color_cycle[6],
-            label="All",
-            fill=False,
-            linestyle="dashed",
-            zorder=3.5,
-        )
-    )
+    # ax.add_patch(
+    #     mpatches.Rectangle(
+    #         (391, -17),
+    #         800 - 391,
+    #         17 - (-17),
+    #         color=CB_color_cycle[6],
+    #         label="All",
+    #         fill=False,
+    #         linestyle="dashed",
+    #         zorder=3.5,
+    #     )
+    # )
 
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(tmin, tmax)
