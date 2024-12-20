@@ -2311,7 +2311,7 @@ def fig1_new(
     annot_pan = ["a", "b", "c", "d"]
     nodrawcb = [True, True, True, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), constrained_layout=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
     ax_flat = ax_list.flatten()
 
     for idx, fnr in enumerate([781, 880, 900, 1256]):
