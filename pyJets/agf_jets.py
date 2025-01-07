@@ -2310,16 +2310,18 @@ def fig1_new(
 
     annot_pan = ["a", "b", "c", "d"]
     nodrawcb = [True, True, True, False]
+    drawleg = [True, False, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
     ax_flat = ax_list.flatten()
 
-    for idx, fnr in enumerate([781, 880, 900, 1256]):
+    for idx, fnr in enumerate([781, 880, 1060, 1392]):
         filenr_g = fnr
 
         fname = "bulk.{}.vlsv".format(str(int(fnr)).zfill(7))
 
         vobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+        leg_g = drawleg[idx]
 
         if plot_fluxfunc:
             fluxfile = vlasdir + "/2D/AIC/fluxfunction/" + fname + ".bin"
@@ -2386,7 +2388,7 @@ def fig1_new(
 
         ax_flat[idx].annotate(
             annot_pan[idx],
-            (0.05, 0.90),
+            (0.05, 0.95),
             xycoords="axes fraction",
             fontsize=12,
             bbox=dict(
