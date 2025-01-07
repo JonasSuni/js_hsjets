@@ -6630,7 +6630,7 @@ def plot_jet_formation_postime(
             800 - 600,
             -3 - (-17),
             color=CB_color_cycle[5],
-            label="Dawn $Q\\perp$",
+            label="Dawn $Q\\parallel$",
             fill=False,
             linestyle="dashed",
             linewidth=1.5,
