@@ -7123,12 +7123,18 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
         True,
     ]
     ylabels = [
-        "$\\rho~[\\mathrm{cm}^{-3}]$",
-        "$v~[\\mathrm{km/s}]$",
-        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
-        "$B~[\\mathrm{nT}]$",
-        "$E~[\\mathrm{mV/m}]$",
-        "$T~[\\mathrm{MK}]$",
+        # "$\\rho~[\\mathrm{cm}^{-3}]$",
+        # "$v~[\\mathrm{km/s}]$",
+        # "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        # "$B~[\\mathrm{nT}]$",
+        # "$E~[\\mathrm{mV/m}]$",
+        # "$T~[\\mathrm{MK}]$",
+        "$\\rho~[\\rho_\\mathrm{pre-jet}]$",
+        "$v~[v_\\mathrm{pre-jet}]$",
+        "$P_\\mathrm{dyn}~[P_{dyn,\\mathrm{pre-jet}}]$",
+        "$B~[B_\\mathrm{pre-jet}]$",
+        "$E~[E_\\mathrm{pre-jet}]$",
+        "$T~[T_\\mathrm{pre-jet}]$",
         "$P_\\mathrm{dyn}$\ncontribution",
     ]
     if delta:
