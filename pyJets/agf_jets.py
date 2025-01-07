@@ -7194,7 +7194,8 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
                     prejet_avg = 1
                 else:
                     prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
-                data_arr[idx, idx2, :] -= ts_avgs[idx, idx2]
+                # data_arr[idx, idx2, :] -= ts_avgs[idx, idx2]
+                data_arr[idx, idx2, :] -= np.nanmean(data_arr[idx, idx2, :20])
                 data_arr[idx, idx2, :] /= prejet_avg
 
     cat_avgs = np.nanmean(data_arr, axis=0)
