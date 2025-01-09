@@ -7254,7 +7254,9 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
         + ", N = {}".format(len(filenames))
     )
 
-    fig.savefig(wrkdir_DNR + "Figs/SEA_{}.png".format(folder_suffix), dpi=300)
+    fig.savefig(
+        wrkdir_DNR + "Figs/SEA_{}_delta{}.png".format(folder_suffix, delta), dpi=300
+    )
 
     plt.close(fig)
 
