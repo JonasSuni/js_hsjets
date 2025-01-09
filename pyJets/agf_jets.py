@@ -7140,6 +7140,9 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
     if delta:
         for idx in range(len(ylabels)):
             ylabels[idx] = "$\\delta " + ylabels[idx][1:]
+        for idx in range(len(plot_labels)):
+            if plot_labels[idx]:
+                plot_labels[idx] = "$\\delta " + plot_labels[idx][1:]
     plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 6]
     plot_colors = [
         "k",
