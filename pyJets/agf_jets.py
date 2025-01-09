@@ -7183,26 +7183,26 @@ def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
     ts_avgs = np.nanmean(data_arr, axis=2)
 
-    if delta:
-        for idx in range(len(filenames)):
-            for idx2 in range(len(plot_index)):
-                if idx2 in [1, 2, 3]:
-                    prejet_avg = np.nanmean(data_arr[idx, 4, :20])
-                elif idx2 in [6, 7, 8]:
-                    prejet_avg = np.nanmean(data_arr[idx, 9, :20])
-                elif idx2 in [10, 11, 12]:
-                    prejet_avg = np.nanmean(data_arr[idx, 13, :20])
-                elif idx2 in [14, 15]:
-                    prejet_avg = np.nanmean(
-                        data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
-                    )
-                elif idx2 in [16, 17, 18, 19]:
-                    prejet_avg = 1
-                else:
-                    prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
-                # data_arr[idx, idx2, :] -= ts_avgs[idx, idx2]
+    for idx in range(len(filenames)):
+        for idx2 in range(len(plot_index)):
+            if idx2 in [1, 2, 3]:
+                prejet_avg = np.nanmean(data_arr[idx, 4, :20])
+            elif idx2 in [6, 7, 8]:
+                prejet_avg = np.nanmean(data_arr[idx, 9, :20])
+            elif idx2 in [10, 11, 12]:
+                prejet_avg = np.nanmean(data_arr[idx, 13, :20])
+            elif idx2 in [14, 15]:
+                prejet_avg = np.nanmean(
+                    data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
+                )
+            elif idx2 in [16, 17, 18, 19]:
+                prejet_avg = 1
+            else:
+                prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
+            # data_arr[idx, idx2, :] -= ts_avgs[idx, idx2]
+            if delta:
                 data_arr[idx, idx2, :] -= np.nanmean(data_arr[idx, idx2, :20])
-                data_arr[idx, idx2, :] /= prejet_avg
+            data_arr[idx, idx2, :] /= prejet_avg
 
     cat_avgs = np.nanmean(data_arr, axis=0)
     cat_meds = np.nanmedian(data_arr, axis=0)
