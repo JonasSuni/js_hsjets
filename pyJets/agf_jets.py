@@ -7180,35 +7180,35 @@ def plot_category_SEA_new(folder_suffix="jets"):
             if idx2 in [1, 2, 3]:
                 prejet_avg = np.nanmean(
                     np.sqrt(
-                        data_arr[idx, 1, :20] ** 2
-                        + data_arr[idx, 2, :20] ** 2
-                        + data_arr[idx, 3, :20] ** 2
+                        data_arr2[idx, 1, :20] ** 2
+                        + data_arr2[idx, 2, :20] ** 2
+                        + data_arr2[idx, 3, :20] ** 2
                     )
                 )
             elif idx2 in [5, 6, 7]:
                 prejet_avg = np.nanmean(
                     np.sqrt(
-                        data_arr[idx, 5, :20] ** 2
-                        + data_arr[idx, 6, :20] ** 2
-                        + data_arr[idx, 7, :20] ** 2
+                        data_arr2[idx, 5, :20] ** 2
+                        + data_arr2[idx, 6, :20] ** 2
+                        + data_arr2[idx, 7, :20] ** 2
                     )
                 )
             elif idx2 in [8, 9, 10]:
                 prejet_avg = np.nanmean(
                     np.sqrt(
-                        data_arr[idx, 8, :20] ** 2
-                        + data_arr[idx, 9, :20] ** 2
-                        + data_arr[idx, 10, :20] ** 2
+                        data_arr2[idx, 8, :20] ** 2
+                        + data_arr2[idx, 9, :20] ** 2
+                        + data_arr2[idx, 10, :20] ** 2
                     )
                 )
             elif idx2 in [11, 12]:
                 prejet_avg = np.nanmean(
-                    data_arr[idx, 11, :20] + 2 * data_arr[idx, 12, :20]
+                    data_arr2[idx, 11, :20] + 2 * data_arr2[idx, 12, :20]
                 )
             elif idx2 in [16, 17, 18, 19]:
                 prejet_avg = 1
             else:
-                prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
+                prejet_avg = np.nanmean(data_arr2[idx, idx2, :20])
             data_arr2[idx, idx2, :] /= prejet_avg
 
     cat_avgs = np.nanmean(data_arr2, axis=0)
