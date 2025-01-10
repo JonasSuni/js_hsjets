@@ -7057,6 +7057,204 @@ def plot_category_histograms(
     plt.close(fig)
 
 
+def plot_category_SEA_new(folder_suffix="jets"):
+
+    valid_cats = [
+        "jets_all",
+        "jets_qpar_before",
+        "jets_qpar_after",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+    ]
+    cat_names = [
+        "All",
+        "Dusk $Q\\parallel$",
+        "Dusk $Q\\perp$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q\\parallel$",
+        "Dawn young FS",
+    ]
+
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$P_\\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+        "$\\rho$",
+        "$v_x^2$",
+        "$v_y^2$",
+        "$v_z^2$",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        True,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\\rho_\\mathrm{pre-jet}]$",
+        "$v~[|v|_\\mathrm{pre-jet}]$",
+        "$P_\\mathrm{dyn}~[P_{dyn,\\mathrm{pre-jet}}]$",
+        "$B~[|B|_\\mathrm{pre-jet}]$",
+        "$E~[|E|_\\mathrm{pre-jet}]$",
+        "$T~[T_\\mathrm{pre-jet}]$",
+        "$P_\\mathrm{dyn}$\ncontribution",
+    ]
+    plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 6]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+    ]
+
+    filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+    filenames = [fname for fname in filenames if "corr" not in fname]
+
+    test_data = np.loadtxt(
+        wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + filenames[0]
+    )
+
+    data_arr = np.zeros(
+        (len(filenames), test_data.shape[0], test_data.shape[1]), dtype=float
+    )
+    for idx, fn in enumerate(filenames):
+        data_arr[idx, :, :] = np.loadtxt(
+            wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+        )
+
+    data_arr2 = np.zeros((len(filenames), 17, test_data.shape[1]), dtype=float)
+    for idx, fn in enumerate(filenames):
+        data_arr2[idx, 0, :] = data_arr[idx, 0, :]  # Density
+        data_arr2[idx, [1, 2, 3], :] = data_arr[idx, [1, 2, 3], :]  # Velocity
+        data_arr2[idx, 4, :] = data_arr[idx, 5, :]  # Dynamic pressure
+        data_arr2[idx, [5, 6, 7], :] = data_arr[idx, [6, 7, 8], :]  # Magnetic field
+        data_arr2[idx, [8, 9, 10], :] = data_arr[idx, [10, 11, 12], :]  # Electric field
+        data_arr2[idx, [11, 12], :] = data_arr[idx, [14, 15], :]  # Temperature
+        data_arr2[idx, [13, 14, 15, 16], :] = data_arr[
+            idx, [16, 17, 18, 19], :
+        ]  # Pdyn contribution
+
+    sea_t_arr = np.arange(-10, 10 + 0.1, 0.5)
+
+    for idx in range(len(filenames)):
+        for idx2 in range(len(plot_index)):
+            if idx2 in [1, 2, 3]:
+                prejet_avg = np.nanmean(
+                    np.sqrt(
+                        data_arr[idx, 1, :20] ** 2
+                        + data_arr[idx, 2, :20] ** 2
+                        + data_arr[idx, 3, :20] ** 2
+                    )
+                )
+            elif idx2 in [5, 6, 7]:
+                prejet_avg = np.nanmean(
+                    np.sqrt(
+                        data_arr[idx, 5, :20] ** 2
+                        + data_arr[idx, 6, :20] ** 2
+                        + data_arr[idx, 7, :20] ** 2
+                    )
+                )
+            elif idx2 in [8, 9, 10]:
+                prejet_avg = np.nanmean(
+                    np.sqrt(
+                        data_arr[idx, 8, :20] ** 2
+                        + data_arr[idx, 9, :20] ** 2
+                        + data_arr[idx, 10, :20] ** 2
+                    )
+                )
+            elif idx2 in [11, 12]:
+                prejet_avg = np.nanmean(
+                    data_arr[idx, 11, :20] + 2 * data_arr[idx, 12, :20]
+                )
+            elif idx2 in [16, 17, 18, 19]:
+                prejet_avg = 1
+            else:
+                prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
+            data_arr[idx, idx2, :] /= prejet_avg
+
+    cat_avgs = np.nanmean(data_arr, axis=0)
+    cat_meds = np.nanmedian(data_arr, axis=0)
+    cat_25 = np.percentile(data_arr, 25, axis=0)
+    cat_75 = np.percentile(data_arr, 75, axis=0)
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 1, figsize=(7, 9), constrained_layout=True
+    )
+
+    for idx2 in range(len(plot_index)):
+        ax = ax_list[plot_index[idx2]]
+        ax.plot(
+            sea_t_arr,
+            cat_meds[idx2, :],
+            color=plot_colors[idx2],
+            label=plot_labels[idx2],
+            linewidth=1.2,
+            zorder=2,
+        )
+        ax.fill_between(
+            sea_t_arr,
+            cat_25[idx2],
+            cat_75[idx2],
+            facecolor=plot_colors[idx2],
+            alpha=0.2,
+            zorder=1,
+        )
+        if draw_legend[idx2]:
+            ax.legend(loc="upper right")
+
+    for idx, ax in enumerate(ax_list):
+        ax.grid(zorder=0)
+        ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
+        ax.set_ylabel(ylabels[idx])
+    ax_list[-1].set_xlabel("Epoch time [s]")
+    ax_list[0].set_title(
+        cat_names[valid_cats.index(folder_suffix)] + ", N = {}".format(len(filenames))
+    )
+
+    fig.savefig(wrkdir_DNR + "Figs/SEA_new_{}.png".format(folder_suffix), dpi=300)
+
+    plt.close(fig)
+
+
 def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
     valid_cats = [
