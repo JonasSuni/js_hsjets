@@ -7205,7 +7205,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
                 prejet_avg = np.nanmean(
                     data_arr2[idx, 11, :20] + 2 * data_arr2[idx, 12, :20]
                 )
-            elif idx2 in [16, 17, 18, 19]:
+            elif idx2 in [13, 14, 15, 16]:
                 prejet_avg = 1
             else:
                 prejet_avg = np.nanmean(data_arr2[idx, idx2, :20])
