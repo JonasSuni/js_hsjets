@@ -7209,7 +7209,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
                 prejet_avg = 1
             else:
                 prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
-            data_arr[idx, idx2, :] /= prejet_avg
+            data_arr2[idx, idx2, :] /= prejet_avg
 
     cat_avgs = np.nanmean(data_arr, axis=0)
     cat_meds = np.nanmedian(data_arr, axis=0)
