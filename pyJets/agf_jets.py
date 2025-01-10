@@ -7211,10 +7211,10 @@ def plot_category_SEA_new(folder_suffix="jets"):
                 prejet_avg = np.nanmean(data_arr[idx, idx2, :20])
             data_arr2[idx, idx2, :] /= prejet_avg
 
-    cat_avgs = np.nanmean(data_arr, axis=0)
-    cat_meds = np.nanmedian(data_arr, axis=0)
-    cat_25 = np.percentile(data_arr, 25, axis=0)
-    cat_75 = np.percentile(data_arr, 75, axis=0)
+    cat_avgs = np.nanmean(data_arr2, axis=0)
+    cat_meds = np.nanmedian(data_arr2, axis=0)
+    cat_25 = np.percentile(data_arr2, 25, axis=0)
+    cat_75 = np.percentile(data_arr2, 75, axis=0)
 
     fig, ax_list = plt.subplots(
         len(ylabels), 1, figsize=(7, 9), constrained_layout=True
