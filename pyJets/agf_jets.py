@@ -6846,7 +6846,7 @@ def plot_category_props(
             txtdir + "{}.txt".format(sfx)
         )
         njets = np.ones_like(durs) * jetids.size
-        categories_list.append([durs, maxs, rpens, njets])
+        categories_list.append([durs, maxs, -rpens, njets])
 
     carr = np.ones((len(folder_suffixes), len(prop_labels)), dtype=float) * np.nan
 
