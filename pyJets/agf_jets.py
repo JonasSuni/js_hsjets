@@ -6941,7 +6941,7 @@ def plot_category_histograms(
     prop_labels = [
         "Duration [s]",
         "Max. area [$R_\\mathrm{E}^2$]",
-        "Radial depth [$R_\\mathrm{E}$]",
+        "$r(t_0)-r(t_\\mathrm{last}$ [$R_\\mathrm{E}$]",
         # "$\\delta n~[\\mathrm{cm}^{-3}]$",
         # "$\\delta P_\\mathrm{dyn}$ [nPa]",
         # "$\\delta T_\\parallel$ [MK]",
@@ -6953,7 +6953,7 @@ def plot_category_histograms(
     jetids_all, durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all = (
         np.loadtxt(txtdir + "{}.txt".format("jets_all"))
     )
-    all_arrs = [durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all]
+    all_arrs = [durs_all, maxs_all, -rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all]
 
     bin_edges = [
         10 ** np.histogram_bin_edges(np.log10(durs_all)),
@@ -6973,7 +6973,7 @@ def plot_category_histograms(
         jetids, durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp = np.loadtxt(
             txtdir + "{}.txt".format(sfx)
         )
-        categories_list.append([durs, maxs, rpens, Dn, Dpd, DTPar, DTPerp])
+        categories_list.append([durs, maxs, -rpens, Dn, Dpd, DTPar, DTPerp])
 
     fig, ax_list = plt.subplots(
         1, len(prop_labels), figsize=(4 * len(prop_labels), 5), constrained_layout=True
@@ -6983,11 +6983,11 @@ def plot_category_histograms(
         ax = ax_list[idx]
         ax.set_xlabel(prop_labels[idx])
         ax.grid()
-        if idx == 2:
-            cumul = True
-            stacked = True
-            histtype = "barstacked"
-        elif idx in [0, 1]:
+        # if idx == 2:
+        #     cumul = True
+        #     stacked = True
+        #     histtype = "barstacked"
+        if idx in [0, 1, 2]:
             cumul = -1
             stacked = True
             histtype = "barstacked"
