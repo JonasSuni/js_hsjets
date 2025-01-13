@@ -6822,12 +6822,12 @@ def plot_category_props(
         "jets_all",
     ]
     sfx_labels = [
-        "$Q\\parallel$\nbefore",
-        "$Q\\parallel$ FB",
-        "$Q\\perp$ RD",
-        "$Q\\perp$\nafter",
-        "$Q\\perp$\ninter",
-        "$Q\\parallel$\nafter",
+        "Dusk $Q_\\parallel$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q_\\parallel$",
+        "Dawn young FS",
+        "Dusk $Q_\\perp$",
         "All",
     ]
 
@@ -6858,6 +6858,11 @@ def plot_category_props(
     ax.set_xticks(np.arange(len(prop_labels)), labels=prop_labels)
     ax.set_yticks(np.arange(len(sfx_labels)), labels=sfx_labels)
 
+    if avg:
+        reducer = lambda x: np.nanmean(x)
+    else:
+        reducer = lambda x: np.nanmedian(x)
+
     # Rotate the tick labels and set their alignment.
     # plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
     #         rotation_mode="anchor")
@@ -6865,11 +6870,11 @@ def plot_category_props(
     # Loop over data dimensions and create text annotations.
     for i in range(len(folder_suffixes)):
         for j in range(len(prop_labels)):
-            if avg:
+            if j == 3:
                 text = ax.text(
                     j,
                     i,
-                    "{:.3f}".format(np.nanmean(categories_list[i][j])),
+                    "{:d}".format(reducer(categories_list[i][j])),
                     ha="center",
                     va="center",
                     color="k",
@@ -6878,7 +6883,7 @@ def plot_category_props(
                 text = ax.text(
                     j,
                     i,
-                    "{:.3f}".format(np.nanmedian(categories_list[i][j])),
+                    "{:.3f}".format(reducer(categories_list[i][j])),
                     ha="center",
                     va="center",
                     color="k",
