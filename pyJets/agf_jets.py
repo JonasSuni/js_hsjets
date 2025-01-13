@@ -6952,6 +6952,8 @@ def plot_category_histograms(
         # "$\\delta T_\\perp$ [MK]",
     ]
 
+    panel_labs = ["a", "b", "c"]
+
     txtdir = wrkdir_DNR + "jet_categories/"
 
     jetids_all, durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all = (
@@ -7061,6 +7063,8 @@ def plot_category_histograms(
             ax.set_xscale("log")
         # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
+
+        ax.annotate(xy=(0.1, 0.9), s=panel_labs[idx], xycoords="axes fraction")
 
     figdir = wrkdir_DNR + "Figs/"
 
