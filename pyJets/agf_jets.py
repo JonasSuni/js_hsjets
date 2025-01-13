@@ -6873,7 +6873,7 @@ def plot_category_props(
                 text = ax.text(
                     j,
                     i,
-                    "{:01d}".format(reducer(categories_list[i][j])),
+                    "{:d}".format(int(reducer(categories_list[i][j]))),
                     ha="center",
                     va="center",
                     color="k",
