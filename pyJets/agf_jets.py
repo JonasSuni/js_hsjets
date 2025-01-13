@@ -7227,7 +7227,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         ax = ax_list[plot_index[idx2]]
         ax.plot(
             sea_t_arr,
-            cat_meds[idx2, :],
+            cat_avgs[idx2, :],
             color=plot_colors[idx2],
             label=plot_labels[idx2],
             linewidth=1.2,
