@@ -6941,7 +6941,7 @@ def plot_category_histograms(
     prop_labels = [
         "Duration [s]",
         "Max. area [$R_\\mathrm{E}^2$]",
-        "$r(t_0)-r(t_\\mathrm{last}$ [$R_\\mathrm{E}$]",
+        "$r(t_0)-r(t_\\mathrm{last})$ [$R_\\mathrm{E}$]",
         # "$\\delta n~[\\mathrm{cm}^{-3}]$",
         # "$\\delta P_\\mathrm{dyn}$ [nPa]",
         # "$\\delta T_\\parallel$ [MK]",
