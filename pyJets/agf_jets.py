@@ -6807,7 +6807,6 @@ def plot_category_props(
         "jets_qperp_after",
         "jets_qperp_inter",
         "jets_qpar_after",
-        "jets_all",
     ],
     aspect=0.5,
     avg=False,
@@ -6874,7 +6873,7 @@ def plot_category_props(
                 text = ax.text(
                     j,
                     i,
-                    "{:d}".format(reducer(categories_list[i][j])),
+                    "{:01d}".format(reducer(categories_list[i][j])),
                     ha="center",
                     va="center",
                     color="k",
