@@ -6953,7 +6953,15 @@ def plot_category_histograms(
     jetids_all, durs_all, maxs_all, rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all = (
         np.loadtxt(txtdir + "{}.txt".format("jets_all"))
     )
-    all_arrs = [durs_all, maxs_all, -rpen_all, Dn_all, Dpd_all, DTPar_all, DTPerp_all]
+    all_arrs = [
+        durs_all,
+        maxs_all,
+        -rpen_all[-rpen_all >= 0],
+        Dn_all,
+        Dpd_all,
+        DTPar_all,
+        DTPerp_all,
+    ]
 
     bin_edges = [
         10 ** np.histogram_bin_edges(np.log10(durs_all)),
