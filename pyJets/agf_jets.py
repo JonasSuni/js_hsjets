@@ -6968,7 +6968,7 @@ def plot_category_histograms(
         10 ** np.histogram_bin_edges(np.log10(maxs_all)),
         # np.histogram_bin_edges(durs_all),
         # np.histogram_bin_edges(maxs_all),
-        np.histogram_bin_edges(rpen_all),
+        np.histogram_bin_edges(-rpen_all[-rpen_all >= 0]),
         np.histogram_bin_edges(Dn_all),
         np.histogram_bin_edges(Dpd_all),
         np.histogram_bin_edges(DTPar_all),
