@@ -7138,7 +7138,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         "$\\rho~[\\rho_\\mathrm{pre-jet}]$",
         "$|v|~[|v|_\\mathrm{pre-jet}]$",
         "$v~[|v|_\\mathrm{pre-jet}]$",
-        "$P_\\mathrm{dyn}~[P_{dyn,\\mathrm{pre-jet}}]$",
+        "$P_\\mathrm{dyn}$\n$[P_\\mathrm{dyn,pre-jet}]$",
         "$B~[|B|_\\mathrm{pre-jet}]$",
         "$E~[|E|_\\mathrm{pre-jet}]$",
         "$T~[T_\\mathrm{pre-jet}]$",
