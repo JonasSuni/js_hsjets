@@ -1775,9 +1775,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             linestyles=["dashed"],
         )
 
-    print(globals())
     if archer_g in my_globals:
-        if globals()["archer_g"]:
+        if archer_g:
             jet_cont = ax.contour(
                 XmeshXY,
                 YmeshXY,
