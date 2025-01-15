@@ -1775,15 +1775,29 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             linestyles=["dashed"],
         )
 
-    jet_cont = ax.contour(
-        XmeshXY,
-        YmeshXY,
-        jet_mask,
-        [0.5],
-        linewidths=lws,
-        colors=CB_color_cycle[2],
-        linestyles=["solid"],
-    )
+    if archer_g in my_globals:
+        if ~globals()["archer_g"]:
+            pass
+        else:
+            jet_cont = ax.contour(
+                XmeshXY,
+                YmeshXY,
+                jet_mask,
+                [0.5],
+                linewidths=lws,
+                colors=CB_color_cycle[2],
+                linestyles=["solid"],
+            )
+    else:
+        jet_cont = ax.contour(
+            XmeshXY,
+            YmeshXY,
+            jet_mask,
+            [0.5],
+            linewidths=lws,
+            colors=CB_color_cycle[2],
+            linestyles=["solid"],
+        )
 
     if chg:
         ch_cont = ax.contour(
@@ -2438,6 +2452,7 @@ def v5_plotter(
     draw_ch=False,
     draw_bs=True,
     draw_mms=False,
+    draw_archer=True,
 ):
 
     if magten:
@@ -2456,7 +2471,7 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg, archer_g
     umagten_g = magtenvec
     runid_g = runid
     Blines_g = blines
@@ -2468,6 +2483,7 @@ def v5_plotter(
     highres_g = highres
     bsg = draw_bs
     mmsg = draw_mms
+    archer_g = draw_archer
 
     global xg, yg, linsg, lineg
     xg = pointsx
