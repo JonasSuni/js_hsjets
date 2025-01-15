@@ -2409,7 +2409,7 @@ def v5_plotter(
     stop,
     var="proton/vg_Pdyn",
     op=None,
-    boxre=[-10, 20, -20, 20],
+    boxre=None,
     tickint=5.0,
     blines=False,
     vscale=1e9,
