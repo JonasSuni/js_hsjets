@@ -7271,6 +7271,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         ax.grid(zorder=0)
         ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
         ax.set_ylabel(ylabels[idx])
+        ax.label_outer()
     ax_list[-1].set_xlabel("Epoch time [s]")
     ax_list[0].set_title(
         cat_names[valid_cats.index(folder_suffix)] + ", N = {}".format(len(filenames))
