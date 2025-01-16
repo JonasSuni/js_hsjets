@@ -7111,8 +7111,8 @@ def plot_category_SEA_new(folder_suffix="jets"):
     ]
 
     plot_labels = [
-        None,
-        None,
+        "$\\rho$",
+        "$|v|$",
         "$v_x$",
         "$v_y$",
         "$v_z$",
@@ -7262,8 +7262,13 @@ def plot_category_SEA_new(folder_suffix="jets"):
         len(ylabels), 1, figsize=(8, 10), constrained_layout=True
     )
 
+    print(cat_names[valid_cats.index(folder_suffix)])
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
+        print("\n{}".format(plot_labels[idx2]))
+        print("Begin: {}".format(cat_avgs[idx2, 0]))
+        print("Form: {}".format(cat_avgs[idx2, 20]))
+        print("End: {}".format(cat_avgs[idx2, -1]))
         ax.plot(
             sea_t_arr,
             cat_avgs[idx2, :],
