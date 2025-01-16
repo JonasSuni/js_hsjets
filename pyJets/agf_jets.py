@@ -7262,7 +7262,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         len(ylabels), 1, figsize=(8, 10), constrained_layout=True
     )
 
-    print(cat_names[valid_cats.index(folder_suffix)])
+    print("\n" + cat_names[valid_cats.index(folder_suffix)])
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
         print("\n{}".format(plot_labels[idx2]))
