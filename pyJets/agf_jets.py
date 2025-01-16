@@ -7266,9 +7266,9 @@ def plot_category_SEA_new(folder_suffix="jets"):
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
         print("\n{}".format(plot_labels[idx2]))
-        print("Begin: {}".format(cat_avgs[idx2, 0]))
-        print("Form: {}".format(cat_avgs[idx2, 20]))
-        print("End: {}".format(cat_avgs[idx2, -1]))
+        print("Begin: {}".format(cat_avgs[idx2, 0] / np.nanmean(cat_avgs[idx2, :20])))
+        print("Form: {}".format(cat_avgs[idx2, 20] / np.nanmean(cat_avgs[idx2, :20])))
+        print("End: {}".format(cat_avgs[idx2, -1] / np.nanmean(cat_avgs[idx2, :20])))
         ax.plot(
             sea_t_arr,
             cat_avgs[idx2, :],
