@@ -7117,6 +7117,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         "$v_y$",
         "$v_z$",
         "$P_\\mathrm{dyn}$",
+        "$|B|$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
@@ -7139,6 +7140,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         False,
         False,
         False,
+        False,
         True,
         False,
         False,
@@ -7155,18 +7157,20 @@ def plot_category_SEA_new(folder_suffix="jets"):
         "$|v|~[|v|_\\mathrm{pre-jet}]$",
         "$v~[|v|_\\mathrm{pre-jet}]$",
         "$P_\\mathrm{dyn}$\n$[P_\\mathrm{dyn,pre-jet}]$",
+        "$|B|~[|B|_\\mathrm{pre-jet}]$",
         "$B~[|B|_\\mathrm{pre-jet}]$",
         "$E~[|E|_\\mathrm{pre-jet}]$",
         "$T~[T_\\mathrm{pre-jet}]$",
         "$P_\\mathrm{dyn}$\ncontribution",
     ]
-    plot_index = [0, 1, 2, 2, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 7, 7]
+    plot_index = [0, 1, 2, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 8, 8]
     plot_colors = [
         "k",
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
         CB_color_cycle[2],
+        "k",
         "k",
         CB_color_cycle[0],
         CB_color_cycle[1],
@@ -7197,18 +7201,19 @@ def plot_category_SEA_new(folder_suffix="jets"):
             wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
         )
 
-    data_arr2 = np.zeros((len(filenames), 18, test_data.shape[1]), dtype=float)
+    data_arr2 = np.zeros((len(filenames), 19, test_data.shape[1]), dtype=float)
     for idx, fn in enumerate(filenames):
         data_arr2[idx, 0, :] = data_arr[idx, 0, :]  # Density
         data_arr2[idx, 1, :] = data_arr[idx, 4, :]  # Velocity magnitude
         data_arr2[idx, [2, 3, 4], :] = data_arr[idx, [1, 2, 3], :]  # Velocity
         data_arr2[idx, 5, :] = data_arr[idx, 5, :]  # Dynamic pressure
-        data_arr2[idx, [6, 7, 8], :] = data_arr[idx, [6, 7, 8], :]  # Magnetic field
-        data_arr2[idx, [9, 10, 11], :] = data_arr[
+        data_arr2[idx, 6, :] = data_arr[idx, 9, :]  # Magnetic field magnitude
+        data_arr2[idx, [7, 8, 9], :] = data_arr[idx, [6, 7, 8], :]  # Magnetic field
+        data_arr2[idx, [10, 11, 12], :] = data_arr[
             idx, [10, 11, 12], :
         ]  # Electric field
-        data_arr2[idx, [12, 13], :] = data_arr[idx, [14, 15], :]  # Temperature
-        data_arr2[idx, [14, 15, 16, 17], :] = data_arr[
+        data_arr2[idx, [13, 14], :] = data_arr[idx, [14, 15], :]  # Temperature
+        data_arr2[idx, [15, 16, 17, 18], :] = data_arr[
             idx, [16, 17, 18, 19], :
         ]  # Pdyn contribution
 
@@ -7225,7 +7230,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
                     # )
                     data_arr[idx, 4, :20]
                 )
-            elif idx2 in [6, 7, 8]:
+            elif idx2 in [7, 8, 9]:
                 prejet_avg = np.nanmean(
                     # np.sqrt(
                     # data_arr2[idx, 5, :20] ** 2
@@ -7234,7 +7239,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
                     # )
                     data_arr[idx, 9, :20]
                 )
-            elif idx2 in [9, 10, 11]:
+            elif idx2 in [10, 11, 12]:
                 prejet_avg = np.nanmean(
                     # np.sqrt(
                     #     data_arr2[idx, 8, :20] ** 2
@@ -7243,11 +7248,11 @@ def plot_category_SEA_new(folder_suffix="jets"):
                     # )
                     data_arr[idx, 13, :20]
                 )
-            elif idx2 in [12, 13]:
+            elif idx2 in [13, 14]:
                 prejet_avg = np.nanmean(
                     data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
                 )
-            elif idx2 in [14, 15, 16, 17]:
+            elif idx2 in [16, 16, 17, 18]:
                 prejet_avg = 1
             else:
                 prejet_avg = np.nanmean(data_arr2[idx, idx2, :20])
