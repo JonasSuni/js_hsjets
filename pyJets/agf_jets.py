@@ -7155,7 +7155,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
     ylabels = [
         "$\\rho~[\\rho_\\mathrm{pre-jet}]$",
         "$|v|~[|v|_\\mathrm{pre-jet}]$",
-        "$v~[|v|_\\mathrm{pre-jet}]$",
+        "$v~[v_\\mathrm{pre-jet}]$",
         "$P_\\mathrm{dyn}$\n$[P_\\mathrm{dyn,pre-jet}]$",
         "$|B|~[|B|_\\mathrm{pre-jet}]$",
         "$B~[|B|_\\mathrm{pre-jet}]$",
@@ -7226,16 +7226,16 @@ def plot_category_SEA_new(folder_suffix="jets"):
 
     for idx in range(len(filenames)):
         for idx2 in range(len(plot_index)):
-            if idx2 in [2, 3]:
-                prejet_avg = np.nanmean(
-                    # np.sqrt(
-                    #     data_arr2[idx, 1, :20] ** 2
-                    #     + data_arr2[idx, 2, :20] ** 2
-                    #     + data_arr2[idx, 3, :20] ** 2
-                    # )
-                    data_arr[idx, 4, :20]
-                )
-            elif idx2 in [6, 7, 8]:
+            # if idx2 in [2, 3]:
+            #     prejet_avg = np.nanmean(
+            #         # np.sqrt(
+            #         #     data_arr2[idx, 1, :20] ** 2
+            #         #     + data_arr2[idx, 2, :20] ** 2
+            #         #     + data_arr2[idx, 3, :20] ** 2
+            #         # )
+            #         data_arr[idx, 4, :20]
+            #     )
+            if idx2 in [6, 7, 8]:
                 prejet_avg = np.nanmean(
                     # np.sqrt(
                     # data_arr2[idx, 5, :20] ** 2
