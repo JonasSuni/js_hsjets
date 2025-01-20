@@ -7160,7 +7160,8 @@ def plot_category_SEA_new(folder_suffix="jets"):
         "$|B|~[|B|_\\mathrm{pre-jet}]$",
         "$B~[|B|_\\mathrm{pre-jet}]$",
         "$E~[|E|_\\mathrm{pre-jet}]$",
-        "$T~[T_\\mathrm{pre-jet}]$",
+        # "$T~[T_\\mathrm{pre-jet}]$",
+        "$T~[MK]$",
         "$P_\\mathrm{dyn}$\ncontribution",
     ]
     plot_index = [0, 1, 2, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 8, 8]
@@ -7248,11 +7249,11 @@ def plot_category_SEA_new(folder_suffix="jets"):
                     # )
                     data_arr[idx, 13, :20]
                 )
-            elif idx2 in [13, 14]:
-                prejet_avg = np.nanmean(
-                    data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
-                )
-            elif idx2 in [16, 16, 17, 18]:
+            # elif idx2 in [13, 14]:
+            #     prejet_avg = np.nanmean(
+            #         data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
+            #     )
+            elif idx2 in [13, 14, 15, 16, 17, 18]:
                 prejet_avg = 1
             else:
                 prejet_avg = np.nanmean(data_arr2[idx, idx2, :20])
