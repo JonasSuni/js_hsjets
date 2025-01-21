@@ -7204,6 +7204,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         )
 
     data_arr2 = np.zeros((len(filenames), 15, test_data.shape[1]), dtype=float)
+    prejet_avg_arr = np.zeros((len(filenames), 15), dtype=float)
     for idx, fn in enumerate(filenames):
         data_arr2[idx, 0, :] = data_arr[idx, 0, :]  # Density
         data_arr2[idx, 1, :] = data_arr[idx, 4, :]  # Velocity magnitude
@@ -7221,47 +7222,27 @@ def plot_category_SEA_new(folder_suffix="jets"):
         # data_arr2[idx, [15, 16, 17, 18], :] = data_arr[
         #     idx, [16, 17, 18, 19], :
         # ]  # Pdyn contribution
+        prejet_avg_arr[idx, 0] = np.nanmean(data_arr[idx, 0, :20])
+        prejet_avg_arr[idx, 1] = np.nanmean(data_arr[idx, 4, :20])
+        prejet_avg_arr[idx, 2] = np.nanmean(data_arr[idx, 4, :20])
+        prejet_avg_arr[idx, 3] = np.nanmean(data_arr[idx, 4, :20])
+        prejet_avg_arr[idx, 4] = np.nanmean(data_arr[idx, 5, :20])
+        prejet_avg_arr[idx, 5] = np.nanmean(data_arr[idx, 9, :20])
+        prejet_avg_arr[idx, 6] = np.nanmean(data_arr[idx, 9, :20])
+        prejet_avg_arr[idx, 7] = np.nanmean(data_arr[idx, 9, :20])
+        prejet_avg_arr[idx, 8] = np.nanmean(data_arr[idx, 9, :20])
+        prejet_avg_arr[idx, 9] = np.nanmean(data_arr[idx, 13, :20])
+        prejet_avg_arr[idx, 10] = np.nanmean(data_arr[idx, 13, :20])
+        prejet_avg_arr[idx, 11] = np.nanmean(data_arr[idx, 13, :20])
+        prejet_avg_arr[idx, 12] = 1
+        prejet_avg_arr[idx, 13] = 1
+        prejet_avg_arr[idx, 14] = 1
 
     sea_t_arr = np.arange(-10, 10 + 0.1, 0.5)
 
     for idx in range(len(filenames)):
         for idx2 in range(len(plot_index)):
-            if idx2 in [2, 3]:
-                prejet_avg = np.nanmean(
-                    # np.sqrt(
-                    #     data_arr2[idx, 1, :20] ** 2
-                    #     + data_arr2[idx, 2, :20] ** 2
-                    #     + data_arr2[idx, 3, :20] ** 2
-                    # )
-                    data_arr[idx, 4, :20]
-                )
-            elif idx2 in [6, 7, 8]:
-                prejet_avg = np.nanmean(
-                    # np.sqrt(
-                    # data_arr2[idx, 5, :20] ** 2
-                    # + data_arr2[idx, 6, :20] ** 2
-                    # + data_arr2[idx, 7, :20] ** 2
-                    # )
-                    data_arr[idx, 9, :20]
-                )
-            elif idx2 in [9, 10, 11]:
-                prejet_avg = np.nanmean(
-                    # np.sqrt(
-                    #     data_arr2[idx, 8, :20] ** 2
-                    #     + data_arr2[idx, 9, :20] ** 2
-                    #     + data_arr2[idx, 10, :20] ** 2
-                    # )
-                    data_arr[idx, 13, :20]
-                )
-            # elif idx2 in [13, 14]:
-            #     prejet_avg = np.nanmean(
-            #         data_arr[idx, 14, :20] + 2 * data_arr[idx, 15, :20]
-            #     )
-            elif idx2 in [12, 13, 14]:
-                prejet_avg = 1
-            else:
-                prejet_avg = np.nanmean(data_arr2[idx, idx2, :20])
-            data_arr2[idx, idx2, :] /= prejet_avg
+            data_arr2[idx, idx2, :] /= prejet_avg_arr[idx, idx2]
 
     cat_avgs = np.nanmean(data_arr2, axis=0)
     cat_meds = np.nanmedian(data_arr2, axis=0)
@@ -7276,6 +7257,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
     for idx2 in range(len(plot_index)):
         ax = ax_list[plot_index[idx2]]
         print("\n{}".format(plot_labels[idx2]))
+        print("Prejet avg: {}".format(np.nanmean(prejet_avg_arr[:, idx2])))
         print("Begin: {}".format(cat_avgs[idx2, 0] / np.nanmean(cat_avgs[idx2, :20])))
         print("Form: {}".format(cat_avgs[idx2, 20] / np.nanmean(cat_avgs[idx2, :20])))
         print("End: {}".format(cat_avgs[idx2, -1] / np.nanmean(cat_avgs[idx2, :20])))
