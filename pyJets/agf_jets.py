@@ -7163,7 +7163,7 @@ def plot_category_SEA_new(folder_suffix="jets"):
         # "$T~[T_\\mathrm{pre-jet}]$",
         "$T~[MK]$",
         # "$P_\\mathrm{dyn}$\ncontribution",
-        "$T_\perp/T_\parallel$",
+        "$T_\\perp/T_\\parallel$",
     ]
     plot_index = [0, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8]
     plot_colors = [
