@@ -7116,6 +7116,7 @@ def archerplot():
         filenames = [fname for fname in filenames if "corr" not in fname]
 
         for idx2, fn in enumerate(filenames):
+            print(fn)
             data_arr = np.loadtxt(
                 wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
             )
@@ -7144,7 +7145,7 @@ def archerplot():
     ax.set_xlabel(
         "$(\\Delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
     )
-    ax.set_xlabel(
+    ax.set_ylabel(
         "$(\\Delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
     )
     ax.legend()
