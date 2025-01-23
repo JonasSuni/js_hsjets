@@ -7170,10 +7170,10 @@ def archerplot():
         meds.append([np.nanmedian(xvals), np.nanmedian(yvals)])
 
     ax.set_xlabel(
-        "$(\\delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+        "$(\\delta\\rho(P_\\mathrm{dyn,max})/\\langle \\rho \\rangle)/(\\delta P_\\mathrm{dyn,max} /\\langle P_\\mathrm{dyn} \\rangle)$"
     )
     ax.set_ylabel(
-        "$(\\delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+        "$(\\delta v^2 (P_\\mathrm{dyn,max})/\\langle v^2 \\rangle)/(\\delta P_\\mathrm{dyn,max} /\\langle P_\\mathrm{dyn}  \\rangle)$"
     )
     ax.legend()
     ax.axvline(0, linestyle="dashed")
@@ -7182,9 +7182,11 @@ def archerplot():
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
 
-    handles,labels = ax.get_legend_handles_labels()
+    handles, labels = ax.get_legend_handles_labels()
     for idx in range(len(labels)):
-        labels[idx] = labels[idx] + ", avg: ({:.2f}, {:.2f}), med: ({:.2f}, {:.2f})".format(avgs[idx][0], avgs[idx][1],meds[idx][0], meds[idx][1])
+        labels[idx] = labels[idx] + "med: ({:.2f}, {:.2f})".format(
+            meds[idx][0], meds[idx][1]
+        )
     ax.legend(handles, labels)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
