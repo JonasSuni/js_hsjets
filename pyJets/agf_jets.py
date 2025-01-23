@@ -7184,7 +7184,7 @@ def archerplot():
 
     handles, labels = ax.get_legend_handles_labels()
     for idx in range(len(labels)):
-        labels[idx] = labels[idx] + "med: ({:.2f}, {:.2f})".format(
+        labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
             meds[idx][0], meds[idx][1]
         )
     ax.legend(handles, labels)
