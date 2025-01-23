@@ -7170,10 +7170,10 @@ def archerplot():
         meds.append([np.nanmedian(xvals), np.nanmedian(yvals)])
 
     ax.set_xlabel(
-        "$(\\delta\\rho(P_\\mathrm{dyn,max})/\\langle \\rho \\rangle)/(\\delta P_\\mathrm{dyn,max} /\\langle P_\\mathrm{dyn} \\rangle)$"
+        "$\\dfrac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle} \\middle/ \\dfrac{\\delta P_\\mathrm{dyn,max}}{\\langle P_\\mathrm{dyn} \\rangle}$"
     )
     ax.set_ylabel(
-        "$(\\delta v^2 (P_\\mathrm{dyn,max})/\\langle v^2 \\rangle)/(\\delta P_\\mathrm{dyn,max} /\\langle P_\\mathrm{dyn}  \\rangle)$"
+        "$\\dfrac{\\delta v^2 (P_\\mathrm{dyn,max}}{\\langle v^2 \\rangle} \\middle/ \\dfrac{\\delta P_\\mathrm{dyn,max}}{\\langle P_\\mathrm{dyn}  \\rangle}$"
     )
     ax.legend()
     ax.axvline(0, linestyle="dashed")
