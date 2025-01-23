@@ -7236,6 +7236,212 @@ def archerplot():
     plt.close(fig)
 
 
+def plot_SEA_three():
+
+    valid_cats = [
+        "jets_qperp_after",
+        "jets_qpar_after",
+        "jets_qperp_rd",
+    ]
+    cat_names = [
+        "Dawn $Q\\parallel$",
+        "Dusk $Q\\perp$",
+        "Dawn RD",
+    ]
+
+    plot_labels = [
+        "$\\rho$",
+        "$|v|$",
+        "$|v_x|$",
+        "$|v_y|$",
+        # "$v_z$",
+        "$P_\\mathrm{dyn}$",
+        "$|B|$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+        "$T_\\perp/T_\\parallel$",
+        # "$\\rho$",
+        # "$v_x^2$",
+        # "$v_y^2$",
+        # "$v_z^2$",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        True,
+        False,
+        True,
+        False,
+        # False,
+        # False,
+        # True,
+    ]
+    ylabels = [
+        "$\\rho~[\\rho_\\mathrm{pre-jet}]$",
+        "$|v|~[|v|_\\mathrm{pre-jet}]$",
+        "$v~[|v|_\\mathrm{pre-jet}]$",
+        "$P_\\mathrm{dyn}$\n$[P_\\mathrm{dyn,pre-jet}]$",
+        "$|B|~[|B|_\\mathrm{pre-jet}]$",
+        "$B~[|B|_\\mathrm{pre-jet}]$",
+        "$E~[|E|_\\mathrm{pre-jet}]$",
+        # "$T~[T_\\mathrm{pre-jet}]$",
+        "$T~[MK]$",
+        # "$P_\\mathrm{dyn}$\ncontribution",
+        "$T_\\perp/T_\\parallel$",
+    ]
+    plot_index = [0, 1, 2, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8]
+    plot_colors = [
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        # CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        "k",
+        # CB_color_cycle[0],
+        # CB_color_cycle[1],
+        # CB_color_cycle[2],
+    ]
+
+    fig, ax_list_list = plt.subplots(
+        len(ylabels),
+        3,
+        figsize=(20, 10),
+        constrained_layout=True,
+        sharex=True,
+        sharey="row",
+    )
+    sea_t_arr = np.arange(-10, 10 + 0.1, 0.5)
+
+    for idx3, folder_suffix in enumerate(valid_cats):
+        filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+        filenames = [fname for fname in filenames if "corr" not in fname]
+
+        test_data = np.loadtxt(
+            wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + filenames[0]
+        )
+
+        data_arr = np.zeros(
+            (len(filenames), test_data.shape[0], test_data.shape[1]), dtype=float
+        )
+        for idx, fn in enumerate(filenames):
+            data_arr[idx, :, :] = np.loadtxt(
+                wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+            )
+
+        data_arr2 = np.zeros((len(filenames), 15, test_data.shape[1]), dtype=float)
+        prejet_avg_arr = np.zeros((len(filenames), 15), dtype=float)
+        for idx, fn in enumerate(filenames):
+            data_arr2[idx, 0, :] = data_arr[idx, 0, :]  # Density
+            data_arr2[idx, 1, :] = data_arr[idx, 4, :]  # Velocity magnitude
+            data_arr2[idx, [2, 3], :] = np.abs(data_arr[idx, [1, 2], :])  # Velocity
+            data_arr2[idx, 4, :] = data_arr[idx, 5, :]  # Dynamic pressure
+            data_arr2[idx, 5, :] = data_arr[idx, 9, :]  # Magnetic field magnitude
+            data_arr2[idx, [6, 7, 8], :] = data_arr[idx, [6, 7, 8], :]  # Magnetic field
+            data_arr2[idx, [9, 10, 11], :] = data_arr[
+                idx, [10, 11, 12], :
+            ]  # Electric field
+            data_arr2[idx, [12, 13], :] = data_arr[idx, [14, 15], :]  # Temperature
+            data_arr2[idx, 14, :] = (
+                data_arr[idx, 15, :] / data_arr[idx, 14, :]
+            )  # Temperature aniostropy
+            # data_arr2[idx, [15, 16, 17, 18], :] = data_arr[
+            #     idx, [16, 17, 18, 19], :
+            # ]  # Pdyn contribution
+            prejet_avg_arr[idx, 0] = np.nanmean(data_arr[idx, 0, :20])
+            prejet_avg_arr[idx, 1] = np.nanmean(data_arr[idx, 4, :20])
+            prejet_avg_arr[idx, 2] = np.nanmean(data_arr[idx, 4, :20])
+            prejet_avg_arr[idx, 3] = np.nanmean(data_arr[idx, 4, :20])
+            prejet_avg_arr[idx, 4] = np.nanmean(data_arr[idx, 5, :20])
+            prejet_avg_arr[idx, 5] = np.nanmean(data_arr[idx, 9, :20])
+            prejet_avg_arr[idx, 6] = np.nanmean(data_arr[idx, 9, :20])
+            prejet_avg_arr[idx, 7] = np.nanmean(data_arr[idx, 9, :20])
+            prejet_avg_arr[idx, 8] = np.nanmean(data_arr[idx, 9, :20])
+            prejet_avg_arr[idx, 9] = np.nanmean(data_arr[idx, 13, :20])
+            prejet_avg_arr[idx, 10] = np.nanmean(data_arr[idx, 13, :20])
+            prejet_avg_arr[idx, 11] = np.nanmean(data_arr[idx, 13, :20])
+            prejet_avg_arr[idx, 12] = 1
+            prejet_avg_arr[idx, 13] = 1
+            prejet_avg_arr[idx, 14] = 1
+
+        for idx in range(len(filenames)):
+            for idx2 in range(len(plot_index)):
+                data_arr2[idx, idx2, :] /= prejet_avg_arr[idx, idx2]
+
+        cat_avgs = np.nanmean(data_arr2, axis=0)
+        cat_meds = np.nanmedian(data_arr2, axis=0)
+        cat_25 = np.percentile(data_arr2, 25, axis=0)
+        cat_75 = np.percentile(data_arr2, 75, axis=0)
+
+        # print("\n" + cat_names[valid_cats.index(folder_suffix)])
+        ax_list = ax_list_list[:, idx3]
+        for idx2 in range(len(plot_index)):
+            ax = ax_list[plot_index[idx2]]
+            # print("\n{}".format(plot_labels[idx2]))
+            # print("Prejet avg: {}".format(np.nanmean(prejet_avg_arr[:, idx2])))
+            # print("Begin: {}".format(cat_avgs[idx2, 0] / np.nanmean(cat_avgs[idx2, :20])))
+            # print("Form: {}".format(cat_avgs[idx2, 20] / np.nanmean(cat_avgs[idx2, :20])))
+            # print("End: {}".format(cat_avgs[idx2, -1] / np.nanmean(cat_avgs[idx2, :20])))
+            ax.plot(
+                sea_t_arr,
+                cat_avgs[idx2, :],
+                color=plot_colors[idx2],
+                label=plot_labels[idx2],
+                linewidth=1.2,
+                zorder=2,
+            )
+            ax.fill_between(
+                sea_t_arr,
+                cat_25[idx2],
+                cat_75[idx2],
+                facecolor=plot_colors[idx2],
+                alpha=0.2,
+                zorder=1,
+            )
+            if draw_legend[idx2] and idx3 == 0:
+                ax.legend(loc="upper right")
+
+        for idx, ax in enumerate(ax_list):
+            ax.grid(zorder=0)
+            ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
+            ax.set_ylabel(ylabels[idx])
+            ax.label_outer()
+        ax_list[-1].set_xlabel("Epoch time [s]")
+        ax_list[0].set_title(
+            cat_names[valid_cats.index(folder_suffix)]
+            + ", N = {}".format(len(filenames))
+        )
+
+    fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.png", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.pdf", dpi=300)
+
+    plt.close(fig)
+
+
 def plot_category_SEA_new(folder_suffix="jets"):
 
     valid_cats = [
