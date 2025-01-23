@@ -7116,7 +7116,6 @@ def archerplot():
         filenames = [fname for fname in filenames if "corr" not in fname]
 
         for idx2, fn in enumerate(filenames):
-            print(fn)
             data_arr = np.loadtxt(
                 wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
             )
@@ -7127,6 +7126,10 @@ def archerplot():
             rhocontrib = (rho[pdyn == max(pdyn)] - np.nanmean(rho)) / np.nanmean(rho)
             vcontrib = ((v**2)[pdyn == max(pdyn)] - np.nanmean(v**2)) / np.nanmean(v**2)
             pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
+
+            print(rhocontrib)
+            print(vcontrib)
+            print(pdyncontrib)
 
             if idx2 == 0:
                 ax.plot(
