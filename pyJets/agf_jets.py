@@ -7123,21 +7123,23 @@ def archerplot():
             v = data_arr[4, :]
             rho = data_arr[0, :]
 
-            # rhocontrib = (rho[pdyn == max(pdyn)][0] - np.nanmean(rho)) / np.nanmean(rho)
-            # vcontrib = (
-            #     (v**2)[pdyn == max(pdyn)][0] - np.nanmean(v**2)
-            # ) / np.nanmean(v**2)
-            # pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
+            rhocontrib = (
+                rho[pdyn == max(pdyn)][0] - np.nanmean(rho[:20])
+            ) / np.nanmean(rho[:20])
+            vcontrib = (
+                (v**2)[pdyn == max(pdyn)][0] - np.nanmean((v**2)[:20])
+            ) / np.nanmean((v**2)[:20])
+            pdyncontrib = (max(pdyn) - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
 
-            rhocontrib = (rho[20] - np.nanmean(rho[:20])) / np.nanmean(rho[:20])
-            vcontrib = ((v**2)[20] - np.nanmean((v**2)[:20])) / np.nanmean((v**2)[:20])
-            pdyncontrib = (pdyn[20] - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
+            # rhocontrib = (rho[20] - np.nanmean(rho[:20])) / np.nanmean(rho[:20])
+            # vcontrib = ((v**2)[20] - np.nanmean((v**2)[:20])) / np.nanmean((v**2)[:20])
+            # pdyncontrib = (pdyn[20] - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
 
             if idx2 == 0:
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    "o",
+                    ".",
                     color=CB_color_cycle[idx],
                     label=cat_names[idx],
                     alpha=0.5,
@@ -7146,7 +7148,7 @@ def archerplot():
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    "o",
+                    ".",
                     color=CB_color_cycle[idx],
                     alpha=0.5,
                 )
