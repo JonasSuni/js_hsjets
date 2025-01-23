@@ -7107,7 +7107,7 @@ def archerplot():
         "Dawn young FS",
         "Dusk $Q_\\perp$",
     ]
-    markers = ["o", "o", "x", "o", "o", "^"]
+    markers = ["o", "o", "v", "o", "o", "^"]
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
 
