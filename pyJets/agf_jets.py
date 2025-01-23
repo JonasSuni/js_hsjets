@@ -7342,7 +7342,7 @@ def plot_SEA_three(paper=True):
     fig, ax_list_list = plt.subplots(
         len(ylabels),
         3,
-        figsize=(20, 10),
+        figsize=(16, 10),
         constrained_layout=True,
         sharex=True,
         sharey="row",
