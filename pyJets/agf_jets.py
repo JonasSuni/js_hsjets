@@ -7165,11 +7165,11 @@ def archerplot():
         "$(\\delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
     )
     ax.legend()
-    ax.axvline(0, linestyle="dashed", linewidth=0.5)
-    ax.axhline(0, linestyle="dashed", linewidth=0.5)
+    ax.axvline(0, linestyle="dashed")
+    ax.axhline(0, linestyle="dashed")
     ax.grid()
-    ax.set_xlim(-1.5, 2.5)
-    ax.set_ylim(-1.5, 2.5)
+    ax.set_xlim(-1, 2.5)
+    ax.set_ylim(-1, 2.5)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300)
     plt.close(fig)
