@@ -7236,18 +7236,30 @@ def archerplot():
     plt.close(fig)
 
 
-def plot_SEA_three():
+def plot_SEA_three(paper=True):
 
-    valid_cats = [
-        "jets_qpar_before",
-        "jets_qpar_after",
-        "jets_qperp_rd",
-    ]
-    cat_names = [
-        "Dusk $Q\\parallel$",
-        "Dusk $Q\\perp$",
-        "Dawn RD",
-    ]
+    if paper:
+        valid_cats = [
+            "jets_qperp_after",
+            "jets_qpar_after",
+            "jets_qperp_rd",
+        ]
+        cat_names = [
+            "Dawn $Q\\parallel$",
+            "Dusk $Q\\perp$",
+            "Dawn RD",
+        ]
+    else:
+        valid_cats = [
+            "jets_qpar_before",
+            "jets_qpar_fb",
+            "jets_qperp_inter",
+        ]
+        cat_names = [
+            "Dusk $Q\\parallel$",
+            "Dusk FB",
+            "Dawn young FS",
+        ]
 
     plot_labels = [
         "$\\rho$",
@@ -7436,8 +7448,12 @@ def plot_SEA_three():
             + ", N = {}".format(len(filenames))
         )
 
-    fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.png", dpi=300)
-    fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.pdf", dpi=300)
+    if paper:
+        fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.png", dpi=300)
+        fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.pdf", dpi=300)
+    else:
+        fig.savefig(wrkdir_DNR + "Figs/SEA_new_three_supp.png", dpi=300)
+        fig.savefig(wrkdir_DNR + "Figs/SEA_new_three_supp.pdf", dpi=300)
 
     plt.close(fig)
 
