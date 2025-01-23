@@ -7093,20 +7093,21 @@ def archerplot():
 
     valid_cats = [
         "jets_qpar_before",
-        "jets_qpar_after",
         "jets_qpar_fb",
         "jets_qperp_rd",
         "jets_qperp_after",
         "jets_qperp_inter",
+        "jets_qpar_after",
     ]
     cat_names = [
-        "Dusk $Q\\parallel$",
-        "Dusk $Q\\perp$",
+        "Dusk $Q_\\parallel$",
         "Dusk FB",
         "Dawn RD",
-        "Dawn $Q\\parallel$",
+        "Dawn $Q_\\parallel$",
         "Dawn young FS",
+        "Dusk $Q_\\perp$",
     ]
+    markers = ["o", "o", "x", "o", "o", "^"]
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
 
@@ -7139,20 +7140,22 @@ def archerplot():
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    "o",
+                    markers[idx],
                     color=CB_color_cycle[idx],
                     label=cat_names[idx],
                     alpha=0.5,
                     markeredgecolor="none",
+                    markersize=10,
                 )
             else:
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    "o",
+                    markers[idx],
                     color=CB_color_cycle[idx],
                     alpha=0.5,
                     markeredgecolor="none",
+                    markersize=10,
                 )
 
     ax.set_xlabel(
