@@ -7199,7 +7199,13 @@ def archerplot():
     plt.close(fig)
 
     fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
-    im = ax.hist2d(xall, yall, bins=[35, 35], cmap="batlow")
+    im = ax.hist2d(
+        xall,
+        yall,
+        bins=[np.arange(-1, 2.55, 0.1), np.arange(-1, 2.55, 0.1)],
+        cmap="batlow",
+    )
+    fig.colorbar(im[3], ax=ax)
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=20,
@@ -7212,8 +7218,7 @@ def archerplot():
     ax.axhline(0, linestyle="dashed", linewidth=0.6)
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
-    fig.colorbar(im[3], ax=ax)
-    fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.png", dpi=300)
     plt.close(fig)
 
 
