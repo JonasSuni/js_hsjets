@@ -7109,7 +7109,7 @@ def archerplot():
     ]
     markers = ["o", "o", "v", "o", "o", "^"]
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10), constrained_layout=True)
 
     for idx in range(len(valid_cats)):
         folder_suffix = valid_cats[idx]
