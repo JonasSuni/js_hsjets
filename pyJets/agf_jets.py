@@ -7108,7 +7108,7 @@ def archerplot():
         "Dawn young FS",
     ]
 
-    fig, ax = plt.subplots(1, 1, constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 12), constrained_layout=True)
 
     for idx in range(len(valid_cats)):
         folder_suffix = valid_cats[idx]
@@ -7139,18 +7139,20 @@ def archerplot():
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    ".",
+                    "o",
                     color=CB_color_cycle[idx],
                     label=cat_names[idx],
                     alpha=0.5,
+                    markeredgecolor="none",
                 )
             else:
                 ax.plot(
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
-                    ".",
+                    "o",
                     color=CB_color_cycle[idx],
                     alpha=0.5,
+                    markeredgecolor="none",
                 )
 
     ax.set_xlabel(
