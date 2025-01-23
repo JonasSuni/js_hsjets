@@ -7112,6 +7112,8 @@ def archerplot():
     fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
     avgs = []
     meds = []
+    xall = []
+    yall = []
 
     for idx in range(len(valid_cats)):
         folder_suffix = valid_cats[idx]
@@ -7143,6 +7145,8 @@ def archerplot():
 
             xvals.append(rhocontrib / pdyncontrib)
             yvals.append(vcontrib / pdyncontrib)
+            xall.append(rhocontrib / pdyncontrib)
+            yall.append(vcontrib / pdyncontrib)
 
             if idx2 == 0:
                 ax.plot(
@@ -7192,6 +7196,24 @@ def archerplot():
     ax.legend(handles, labels)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
+    plt.close(fig)
+
+    fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
+    im = ax.hist2d(xall, yall, bins=[35, 35], cmap="batlow")
+    ax.set_xlabel(
+        "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+        fontsize=20,
+    )
+    ax.set_ylabel(
+        "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+        fontsize=20,
+    )
+    ax.axvline(0, linestyle="dashed", linewidth=0.6)
+    ax.axhline(0, linestyle="dashed", linewidth=0.6)
+    ax.set_xlim(-1, 2.5)
+    ax.set_ylim(-1, 2.5)
+    fig.colorbar(im[3], ax=ax)
+    fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.pdf", dpi=300)
     plt.close(fig)
 
 
