@@ -7089,6 +7089,73 @@ def plot_category_histograms(
     plt.close(fig)
 
 
+def archerplot():
+
+    valid_cats = [
+        "jets_qpar_before",
+        "jets_qpar_after",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+    ]
+    cat_names = [
+        "Dusk $Q\\parallel$",
+        "Dusk $Q\\perp$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q\\parallel$",
+        "Dawn young FS",
+    ]
+
+    fig, ax = plt.subplots(1, 1, constrained_layout=True)
+
+    for idx in range(len(valid_cats)):
+        folder_suffix = valid_cats[idx]
+        filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+        filenames = [fname for fname in filenames if "corr" not in fname]
+
+        for idx2, fn in enumerate(filenames):
+            data_arr = np.loadtxt(
+                wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+            )
+            pdyn = data_arr[5, :]
+            v = data_arr[4, :]
+            rho = data_arr[0, :]
+
+            rhocontrib = (rho[pdyn == max(pdyn)] - np.nanmean(rho)) / np.nanmean(rho)
+            vcontrib = (v**2[pdyn == max(pdyn)] - np.nanmean(v**2)) / np.nanmean(v**2)
+            pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
+
+            if idx2 == 0:
+                ax.plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    color=CB_color_cycle[idx],
+                    label=cat_names[idx],
+                )
+            else:
+                ax.plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    color=CB_color_cycle[idx],
+                )
+
+    ax.set_xlabel(
+        "$(\\Delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+    )
+    ax.set_xlabel(
+        "$(\\Delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+    )
+    ax.legend()
+    ax.axvline(0, linestyle="dashed")
+    ax.axhline(0, linestyle="dashed")
+    ax.grid()
+
+    fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300)
+    plt.close(fig)
+
+
 def plot_category_SEA_new(folder_suffix="jets"):
 
     valid_cats = [
