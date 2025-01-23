@@ -7204,6 +7204,7 @@ def archerplot():
         yall,
         bins=[np.arange(-1, 2.55, 0.1), np.arange(-1, 2.55, 0.1)],
         cmap="batlow",
+        cmin=1,
     )
     fig.colorbar(im[3], ax=ax)
     ax.set_xlabel(
