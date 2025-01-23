@@ -7148,6 +7148,16 @@ def archerplot():
             xall.append(rhocontrib / pdyncontrib)
             yall.append(vcontrib / pdyncontrib)
 
+            if (
+                rhocontrib / pdyncontrib > 2.5
+                or vcontrib / pdyncontrib > 2.5
+                or rhocontrib / pdyncontrib < -1
+                or vcontrib / pdyncontrib < -1
+            ):
+                print(
+                    "Jet of type {} has values outside of limits".format(cat_names[idx])
+                )
+
             if idx2 == 0:
                 ax.plot(
                     rhocontrib / pdyncontrib,
