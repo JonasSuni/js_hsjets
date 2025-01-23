@@ -7219,6 +7219,7 @@ def archerplot():
     ax.axhline(0, linestyle="dashed", linewidth=0.6)
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
+    ax.grid()
     fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.png", dpi=300)
     plt.close(fig)
 
