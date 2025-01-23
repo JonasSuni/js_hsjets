@@ -7123,11 +7123,15 @@ def archerplot():
             v = data_arr[4, :]
             rho = data_arr[0, :]
 
-            rhocontrib = (rho[pdyn == max(pdyn)][0] - np.nanmean(rho)) / np.nanmean(rho)
-            vcontrib = (
-                (v**2)[pdyn == max(pdyn)][0] - np.nanmean(v**2)
-            ) / np.nanmean(v**2)
-            pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
+            # rhocontrib = (rho[pdyn == max(pdyn)][0] - np.nanmean(rho)) / np.nanmean(rho)
+            # vcontrib = (
+            #     (v**2)[pdyn == max(pdyn)][0] - np.nanmean(v**2)
+            # ) / np.nanmean(v**2)
+            # pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
+
+            rhocontrib = (rho[20] - np.nanmean(rho)) / np.nanmean(rho)
+            vcontrib = ((v**2)[20] - np.nanmean(v**2)) / np.nanmean(v**2)
+            pdyncontrib = (pdyn[20] - np.nanmean(pdyn)) / np.nanmean(pdyn)
 
             if idx2 == 0:
                 ax.plot(
@@ -7136,6 +7140,7 @@ def archerplot():
                     "o",
                     color=CB_color_cycle[idx],
                     label=cat_names[idx],
+                    alpha=0.5,
                 )
             else:
                 ax.plot(
@@ -7143,17 +7148,18 @@ def archerplot():
                     vcontrib / pdyncontrib,
                     "o",
                     color=CB_color_cycle[idx],
+                    alpha=0.5,
                 )
 
     ax.set_xlabel(
-        "$(\\Delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+        "$(\\delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
     )
     ax.set_ylabel(
-        "$(\\Delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\Delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
+        "$(\\delta v^2_\\mathrm{max(Pd)}/\\langle v^2 \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
     )
     ax.legend()
-    ax.axvline(0, linestyle="dashed")
-    ax.axhline(0, linestyle="dashed")
+    ax.axvline(0, linestyle="dashed", linewidth=0.5)
+    ax.axhline(0, linestyle="dashed", linewidth=0.5)
     ax.grid()
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300)
