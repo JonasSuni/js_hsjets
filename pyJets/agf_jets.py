@@ -7110,11 +7110,16 @@ def archerplot():
     markers = ["o", "o", "v", "o", "o", "^"]
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10), constrained_layout=True)
+    avgs = []
+    meds = []
 
     for idx in range(len(valid_cats)):
         folder_suffix = valid_cats[idx]
         filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
         filenames = [fname for fname in filenames if "corr" not in fname]
+
+        xvals = []
+        yvals = []
 
         for idx2, fn in enumerate(filenames):
             data_arr = np.loadtxt(
@@ -7136,6 +7141,9 @@ def archerplot():
             # vcontrib = ((v**2)[20] - np.nanmean((v**2)[:20])) / np.nanmean((v**2)[:20])
             # pdyncontrib = (pdyn[20] - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
 
+            xvals.append(rhocontrib / pdyncontrib)
+            yvals.append(vcontrib / pdyncontrib)
+
             if idx2 == 0:
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7145,7 +7153,7 @@ def archerplot():
                     label=cat_names[idx],
                     alpha=0.5,
                     markeredgecolor="none",
-                    markersize=10,
+                    markersize=8,
                 )
             else:
                 ax.plot(
@@ -7155,8 +7163,11 @@ def archerplot():
                     color=CB_color_cycle[idx],
                     alpha=0.5,
                     markeredgecolor="none",
-                    markersize=10,
+                    markersize=8,
                 )
+
+        avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
+        meds.append([np.nanmedian(xvals), np.nanmedian(yvals)])
 
     ax.set_xlabel(
         "$(\\delta\\rho_\\mathrm{max(Pd)}/\\langle \\rho \\rangle)/(\\delta Pd_\\mathrm{max(Pd)}/\\langle Pd \\rangle)$"
@@ -7171,7 +7182,12 @@ def archerplot():
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
 
-    fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300)
+    handles,labels = ax.get_legend_handles_labels()
+    for idx in range(len(labels)):
+        labels[idx] = labels[idx] + ", avg: ({:.2f}, {:.2f}), med: ({:.2f}, {:.2f})".format(avgs[idx][0], avgs[idx][1],meds[idx][0], meds[idx][1])
+    ax.legend(handles, labels)
+
+    fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
     plt.close(fig)
 
 
