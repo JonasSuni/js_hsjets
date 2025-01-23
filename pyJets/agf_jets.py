@@ -7239,12 +7239,12 @@ def archerplot():
 def plot_SEA_three():
 
     valid_cats = [
-        "jets_qperp_after",
+        "jets_qpar_before",
         "jets_qpar_after",
         "jets_qperp_rd",
     ]
     cat_names = [
-        "Dawn $Q\\parallel$",
+        "Dusk $Q\\parallel$",
         "Dusk $Q\\perp$",
         "Dawn RD",
     ]
