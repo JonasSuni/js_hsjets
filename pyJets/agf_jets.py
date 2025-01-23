@@ -7129,9 +7129,9 @@ def archerplot():
             # ) / np.nanmean(v**2)
             # pdyncontrib = (max(pdyn) - np.nanmean(pdyn)) / np.nanmean(pdyn)
 
-            rhocontrib = (rho[20] - np.nanmean(rho)) / np.nanmean(rho)
-            vcontrib = ((v**2)[20] - np.nanmean(v**2)) / np.nanmean(v**2)
-            pdyncontrib = (pdyn[20] - np.nanmean(pdyn)) / np.nanmean(pdyn)
+            rhocontrib = (rho[20] - np.nanmean(rho[:20])) / np.nanmean(rho[:20])
+            vcontrib = ((v**2)[20] - np.nanmean((v**2)[:20])) / np.nanmean((v**2)[:20])
+            pdyncontrib = (pdyn[20] - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
 
             if idx2 == 0:
                 ax.plot(
