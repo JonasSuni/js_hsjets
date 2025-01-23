@@ -7155,7 +7155,9 @@ def archerplot():
                 or vcontrib / pdyncontrib < -1
             ):
                 print(
-                    "Jet of type {} has values outside of limits".format(cat_names[idx])
+                    "Jet of type {} has values outside of limits: ({:.2f},{:.2f})".format(
+                        cat_names[idx], rhocontrib / pdyncontrib, vcontrib / pdyncontrib
+                    )
                 )
 
             if idx2 == 0:
