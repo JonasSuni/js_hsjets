@@ -7109,7 +7109,7 @@ def archerplot():
     ]
     markers = ["o", "o", "v", "o", "o", "^"]
 
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
     avgs = []
     meds = []
 
@@ -7153,7 +7153,7 @@ def archerplot():
                     label=cat_names[idx],
                     alpha=0.5,
                     markeredgecolor="none",
-                    markersize=8,
+                    markersize=6,
                 )
             else:
                 ax.plot(
@@ -7163,7 +7163,7 @@ def archerplot():
                     color=CB_color_cycle[idx],
                     alpha=0.5,
                     markeredgecolor="none",
-                    markersize=8,
+                    markersize=6,
                 )
 
         avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
@@ -7176,8 +7176,8 @@ def archerplot():
         "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle} / \\frac{\\delta P_\\mathrm{dyn,max}}{\\langle P_\\mathrm{dyn} \\rangle}$"
     )
     ax.legend()
-    ax.axvline(0, linestyle="dashed")
-    ax.axhline(0, linestyle="dashed")
+    ax.axvline(0, linestyle="dashed", linewidth=0.6)
+    ax.axhline(0, linestyle="dashed", linewidth=0.6)
     ax.grid()
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
