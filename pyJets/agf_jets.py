@@ -7440,14 +7440,14 @@ def plot_SEA_three(paper=True):
         for idx, ax in enumerate(ax_list):
             ax.grid(zorder=0)
             ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
-            ax.set_ylabel(ylabels[idx])
+            ax.set_ylabel(ylabels[idx], fontsize=12, labelpad=10)
             ax.label_outer()
-        ax_list[-1].set_xlabel("Epoch time [s]", fontsize=16, labelpad=5)
+        ax_list[-1].set_xlabel("Epoch time [s]", fontsize=16, labelpad=10)
         ax_list[0].set_title(
             cat_names[valid_cats.index(folder_suffix)]
             + ", N = {}".format(len(filenames)),
             fontsize=16,
-            pad=5,
+            pad=10,
         )
 
     if paper:
