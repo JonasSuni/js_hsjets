@@ -7312,7 +7312,7 @@ def plot_SEA_three(paper=True):
         "$B$\n$[|B|_\\mathrm{pre-jet}]$",
         "$E$\n$[|E|_\\mathrm{pre-jet}]$",
         # "$T~[T_\\mathrm{pre-jet}]$",
-        "$T~[MK]$",
+        "$T$\n$[MK]$",
         # "$P_\\mathrm{dyn}$\ncontribution",
         "$T_\\perp/T_\\parallel$",
     ]
