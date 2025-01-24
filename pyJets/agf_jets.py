@@ -40,7 +40,8 @@ from multiprocessing import Pool
 
 mpl.rcParams["hatch.linewidth"] = 0.1
 
-# from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator
+
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 # from matplotlib.lines import Line2D
 from matplotlib.animation import FuncAnimation
@@ -7223,6 +7224,7 @@ def archerplot():
     )
     cb = fig.colorbar(im[3], ax=ax)
     cb.set_label("Number of jets", fontsize=16, labelpad=10)
+    cb.ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=20,
