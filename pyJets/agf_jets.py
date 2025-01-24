@@ -7442,10 +7442,12 @@ def plot_SEA_three(paper=True):
             ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
             ax.set_ylabel(ylabels[idx])
             ax.label_outer()
-        ax_list[-1].set_xlabel("Epoch time [s]")
+        ax_list[-1].set_xlabel("Epoch time [s]", fontsize=16, labelpad=5)
         ax_list[0].set_title(
             cat_names[valid_cats.index(folder_suffix)]
-            + ", N = {}".format(len(filenames))
+            + ", N = {}".format(len(filenames)),
+            fontsize=16,
+            pad=5,
         )
 
     if paper:
