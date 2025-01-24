@@ -7221,7 +7221,8 @@ def archerplot():
         cmap="batlow",
         cmin=1,
     )
-    fig.colorbar(im[3], ax=ax, label="Number of jets")
+    cb = fig.colorbar(im[3], ax=ax)
+    cb.set_label("Number of jets", fontsize=16, labelpad=10)
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=20,
