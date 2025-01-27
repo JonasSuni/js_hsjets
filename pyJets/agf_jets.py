@@ -7077,7 +7077,7 @@ def plot_category_histograms(
         # )
         if idx == 0:
             ax.set_ylabel("Cumulative\nnumber of jets", fontsize=16, labelpad=10)
-            ax.legend()
+            ax.legend(fontsize=12)
             ax.set_xscale("log")
         if idx == 1:
             ax.set_xscale("log")
