@@ -7012,8 +7012,8 @@ def plot_category_histograms(
 
     for idx in range(len(prop_labels)):
         ax = ax_list[idx]
-        ax.tick_params(labelsize=16)
-        ax.set_xlabel(prop_labels[idx], fontsize=20, labelpad=10)
+        ax.tick_params(labelsize=12)
+        ax.set_xlabel(prop_labels[idx], fontsize=16, labelpad=10)
         ax.grid()
         # if idx == 2:
         #     cumul = True
@@ -7074,7 +7074,7 @@ def plot_category_histograms(
         #     cumulative=cumul,
         # )
         if idx == 0:
-            ax.set_ylabel("Cumulative\nnumber of jets", fontsize=20, labelpad=10)
+            ax.set_ylabel("Cumulative\nnumber of jets", fontsize=16, labelpad=10)
             ax.legend()
             ax.set_xscale("log")
         if idx == 1:
@@ -7082,7 +7082,9 @@ def plot_category_histograms(
         # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
 
-        ax.annotate(panel_labs[idx], xy=(0.15, 0.9), xycoords="axes fraction")
+        ax.annotate(
+            panel_labs[idx], xy=(0.15, 0.9), xycoords="axes fraction", fontsize=16
+        )
 
     figdir = wrkdir_DNR + "Figs/"
 
