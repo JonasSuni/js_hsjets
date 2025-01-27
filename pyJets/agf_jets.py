@@ -6568,6 +6568,7 @@ def plot_jet_formation_postime(
         edgecolors="none",
         # alpha=0.5,
         s=s,
+        rasterized=True,
     )
     for idx in range(len(y_values)):
         ax.plot(
@@ -6691,7 +6692,7 @@ def plot_jet_formation_postime(
     figdir = wrkdir_DNR + "Figs/"
 
     fig.savefig(figdir + "formation_postime.png", dpi=300)
-    fig.savefig(figdir + "formation_postime.pdf")
+    fig.savefig(figdir + "formation_postime.pdf", dpi=300)
     plt.close(fig)
 
 
