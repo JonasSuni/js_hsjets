@@ -7087,6 +7087,7 @@ def plot_category_histograms(
     figdir = wrkdir_DNR + "Figs/"
 
     fig.savefig(figdir + "jet_comp_hist.png", dpi=300)
+    fig.savefig(figdir + "jet_comp_hist.pdf", dpi=300)
 
     plt.close(fig)
 
