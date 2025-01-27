@@ -7012,7 +7012,8 @@ def plot_category_histograms(
 
     for idx in range(len(prop_labels)):
         ax = ax_list[idx]
-        ax.set_xlabel(prop_labels[idx])
+        ax.tick_params(labelsize=16)
+        ax.set_xlabel(prop_labels[idx], fontsize=20, labelpad=10)
         ax.grid()
         # if idx == 2:
         #     cumul = True
@@ -7073,7 +7074,7 @@ def plot_category_histograms(
         #     cumulative=cumul,
         # )
         if idx == 0:
-            ax.set_ylabel("Cumulative\nnumber of jets")
+            ax.set_ylabel("Cumulative\nnumber of jets", fontsize=20, labelpad=10)
             ax.legend()
             ax.set_xscale("log")
         if idx == 1:
