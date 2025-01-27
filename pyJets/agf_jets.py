@@ -7212,7 +7212,7 @@ def archerplot():
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
     ax.label_outer()
-    ax.tick_params(labelsize=16)
+    ax.tick_params(labelsize=12)
     ax.annotate("(b)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
 
     handles, labels = ax.get_legend_handles_labels()
@@ -7235,7 +7235,7 @@ def archerplot():
         cmin=1,
     )
     cb = fig.colorbar(im[3], ax=ax)
-    cb.set_label("Number of jets", fontsize=16, labelpad=10)
+    cb.set_label("Number of jets", fontsize=16, labelpad=10, loc="left")
     cb.ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     cb.ax.tick_params(labelsize=12)
     ax.set_xlabel(
@@ -7250,7 +7250,7 @@ def archerplot():
     ax.axhline(0, linestyle="dashed", linewidth=0.6)
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
-    ax.tick_params(labelsize=16)
+    ax.tick_params(labelsize=12)
     ax.label_outer()
     ax.grid()
     ax.annotate("(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
