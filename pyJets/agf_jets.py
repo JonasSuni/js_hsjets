@@ -7116,7 +7116,7 @@ def archerplot():
     ]
     markers = ["o", "o", "v", "o", "o", "^"]
 
-    fig, ax_list = plt.subplots(1, 2, figsize=(14, 7), constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 2, figsize=(14, 7), constrained_layout=True, wspace=0.3)
     avgs = []
     meds = []
     xall = []
