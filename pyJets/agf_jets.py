@@ -7116,11 +7116,13 @@ def archerplot():
     ]
     markers = ["o", "o", "v", "o", "o", "^"]
 
-    fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
+    fig, ax_list = plt.subplots(1, 2, figsize=(14, 7), constrained_layout=True)
     avgs = []
     meds = []
     xall = []
     yall = []
+
+    ax = ax_list[0]
 
     for idx in range(len(valid_cats)):
         folder_suffix = valid_cats[idx]
@@ -7208,7 +7210,9 @@ def archerplot():
     ax.grid()
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
+    ax.label_outer()
     ax.tick_params(labelsize=16)
+    ax.annotate(label="(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
 
     handles, labels = ax.get_legend_handles_labels()
     for idx in range(len(labels)):
@@ -7217,10 +7221,11 @@ def archerplot():
         )
     ax.legend(handles, labels)
 
-    fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
-    plt.close(fig)
+    # fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
+    # plt.close(fig)
 
-    fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
+    # fig, ax = plt.subplots(1, 1, figsize=(7, 7), constrained_layout=True)
+    ax = ax_list[1]
     im = ax.hist2d(
         xall,
         yall,
@@ -7245,8 +7250,11 @@ def archerplot():
     ax.set_xlim(-1, 2.5)
     ax.set_ylim(-1, 2.5)
     ax.tick_params(labelsize=16)
+    ax.label_outer()
     ax.grid()
-    fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.pdf", dpi=300)
+    ax.annotate(label="(b)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
+    # fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/archerplot_full.pdf", dpi=300)
     plt.close(fig)
 
 
