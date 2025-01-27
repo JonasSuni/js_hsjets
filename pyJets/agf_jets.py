@@ -7233,8 +7233,8 @@ def archerplot():
         cmap="batlow",
         cmin=1,
     )
-    cb = fig.colorbar(im[3], ax=ax)
-    cb.set_label("Number of jets", fontsize=16, labelpad=10, pad=0.025)
+    cb = fig.colorbar(im[3], ax=ax, pad=0.025)
+    cb.set_label("Number of jets", fontsize=16, labelpad=10)
     cb.ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     cb.ax.tick_params(labelsize=12)
     ax.set_xlabel(
