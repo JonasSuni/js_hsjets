@@ -40,7 +40,7 @@ from multiprocessing import Pool
 
 mpl.rcParams["hatch.linewidth"] = 0.1
 
-from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator, ScalarFormatter
 
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 # from matplotlib.lines import Line2D
@@ -7079,10 +7079,10 @@ def plot_category_histograms(
             ax.set_ylabel("Cumulative\nnumber of jets", fontsize=16, labelpad=10)
             ax.legend(fontsize=12)
             ax.set_xscale("log")
-            ax.xaxis.get_major_formatter().set_scientific(False)
+            ax.xaxis.set_major_formatter(ScalarFormatter())
         if idx == 1:
             ax.set_xscale("log")
-            ax.xaxis.get_major_formatter().set_scientific(False)
+            ax.xaxis.set_major_formatter(ScalarFormatter())
         # ax.set_yscale("log")
         ax.set_ylim(0.01, None)
 
