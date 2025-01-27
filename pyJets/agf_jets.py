@@ -6577,6 +6577,7 @@ def plot_jet_formation_postime(
             color="k",
             linewidth=0.2,
             zorder=4,
+            rasterized=True,
         )
         # ax.fill_between(
         #     t_values[idx],
