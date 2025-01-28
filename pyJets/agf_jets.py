@@ -3750,6 +3750,50 @@ def process_timestep_VSC_timeseries(args):
         return fnr, None, None
 
 
+def mini_VSC(x0, y0, t0, t1):
+
+    bulkpath = find_bulkpath("AIC")
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_pdyn",
+        "proton/vg_v",
+        "proton/vg_v",
+        "vg_vs",
+        "vg_va",
+        "vg_vms",
+    ]
+    scales = [1e-6, 1e9, 1e3, 1e3, 1e3, 1e3, 1e3]
+    ops = ["pass", "pass", "magnitude", "y", "pass", "pass", "pass"]
+    labs = ["$\\rho$", "$P_{dyn}$", "$v$", "$v_y$", "$v_s$", "$v_A$", "$v_{MS}$"]
+
+    fig, ax = plt.subplots(len(var_list), 1, figsize=(12, 12), constrained_layout=True)
+    fnr_arr = np.arange(t0 * 2, t1 * 2 + 1, dtype=int)
+    t_arr = np.arange(t0, t1 + 0.1, 0.5)
+    data_arr = np.zeros((len(var_list), fnr_arr.size), dtype=float)
+    for idx in range(fnr_arr.size):
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr_arr[idx]).zfill(7))
+        )
+        for idx2, var in enumerate(var_list):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
+                )
+                * scales[idx2]
+            )
+
+    for idx in range(len(var_list)):
+        ax[idx].plot(t_arr, data_arr[idx])
+        ax[idx].set_ylabel(labs[idx])
+        ax[idx].grid()
+        ax[idx].set_xlim(t_arr[0], t_arr[-1])
+    ax[-1].set_xlabel("Time [s]")
+
+    fig.savefig(wrkdir_DNR + "Figs/mini_VSC_diag.png", dpi=300)
+    plt.close(fig)
+
+
 def VSC_timeseries(
     runid,
     x0,
