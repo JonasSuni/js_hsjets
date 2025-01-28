@@ -3763,7 +3763,7 @@ def mini_VSC(x0, y0, t0, t1):
         "vg_va",
         "vg_vms",
     ]
-    scales = [1e-6, 1e9, 1e3, 1e3, 1e3, 1e3, 1e3]
+    scales = [1e-6, 1e9, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3]
     ops = ["pass", "pass", "magnitude", "y", "pass", "pass", "pass"]
     labs = ["$\\rho$", "$P_{dyn}$", "$v$", "$v_y$", "$v_s$", "$v_A$", "$v_{MS}$"]
 
