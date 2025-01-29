@@ -7873,7 +7873,7 @@ def plot_colormap_cut(x0, y0, t0):
         cbaxes=ax2,
         vlsvobj=vlsvobj,
         var="proton/vg_pdyn",
-        op="pass",
+        op=None,
         vmin=0.01,
         vmax=vmax,
         vscale=vscale,
