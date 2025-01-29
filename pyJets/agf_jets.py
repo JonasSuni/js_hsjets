@@ -7937,7 +7937,9 @@ def plot_colormap_cut(x0, y0, t0):
         ax.grid()
         ax.label_outer()
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10)
-    rax_list[0].set_title("t = {} s, y = {} $R_\\mathrm{E}$".format(t0, y0), pad=10)
+    rax_list[0].set_title(
+        "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10
+    )
 
     for idx, fig in enumerate([fig1, fig2]):
         fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1), dpi=300)
