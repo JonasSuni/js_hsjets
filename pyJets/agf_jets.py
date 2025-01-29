@@ -7867,6 +7867,7 @@ def plot_colormap_cut(x0, y0, t0):
     flux_levels = None
     fluxthick = 0.5
     fluxlines = 5
+    filenr_g = fnr0
 
     pt.plot.plot_colormap(
         axes=ax1,
