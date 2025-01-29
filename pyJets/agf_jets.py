@@ -7878,7 +7878,7 @@ def plot_colormap_cut(x0, y0, t0):
         var="proton/vg_pdyn",
         op=None,
         vmin=0.01,
-        vmax=vmax,
+        vmax=1.2,
         vscale=vscale,
         # cbtitle="",
         # cbtitle="",
@@ -7886,7 +7886,6 @@ def plot_colormap_cut(x0, y0, t0):
         # scale=3,
         title="Run: {}$~$t = {}s".format("AIC", float(fnr0) / 2.0),
         boxre=[0, 20, -10, 10],
-        internalcb=True,
         lin=False,
         highres=highres_g,
         colormap="grayC",
@@ -7930,7 +7929,7 @@ def plot_colormap_cut(x0, y0, t0):
             label=var_pars[idx][0],
         )
         if var_pars[idx][5]:
-            ax.legend()
+            ax.legend(loc="upper right")
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
@@ -7941,7 +7940,7 @@ def plot_colormap_cut(x0, y0, t0):
 
     for idx, fig in enumerate([fig1, fig2]):
         fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1), dpi=300)
-        fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
+        # fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
         plt.close(fig)
 
 
