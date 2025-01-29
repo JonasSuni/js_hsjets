@@ -7834,7 +7834,7 @@ def plot_colormap_cut(x0, y0, t0):
     leg_g = True
     draw_qperp = False
     chg = True
-    highres_g = 3
+    highres_g = 2.5
     bsg = False
     mmsg = True
 
@@ -7884,7 +7884,7 @@ def plot_colormap_cut(x0, y0, t0):
         # cbtitle="",
         usesci=usesci,
         # scale=3,
-        title="Run: {}$~$t = {}s".format("AIC", float(fnr0) / 2.0),
+        title="t = {} s".format(t0),
         boxre=[0, 20, -10, 10],
         highres=highres_g,
         colormap="grayC",
