@@ -7792,13 +7792,15 @@ def plot_colormap_cut(x0, y0, t0):
         ["$T_\\perp/T_\\parallel$", "proton/vg_t_anisotropy", "pass", 1, 6, False, "k"],
     ]
 
-    fig = plt.figure(figsize=(16, 8), layout="constrained")
+    fig1, ax1 = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
+    # fig = plt.figure(figsize=(16, 8), layout="constrained")
 
-    gs = fig.add_gridspec(7, 20)
+    # gs = fig.add_gridspec(7, 20)
 
-    ax1 = fig.add_subplot(gs[0:7, 0:9])
-    ax2 = fig.add_subplot(gs[0:7, 9:10])
-    rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
+    # ax1 = fig.add_subplot(gs[0:7, 0:9])
+    # ax2 = fig.add_subplot(gs[0:7, 9:10])
+    # rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
+    fig2, rax_list = plt.subplots(7, 1, figsize=(8, 10), constrained_layout=True)
 
     fnr0 = int(t0 * 2)
     vlsvobj = pt.vlsvfile.VlsvReader(
@@ -7871,7 +7873,7 @@ def plot_colormap_cut(x0, y0, t0):
 
     pt.plot.plot_colormap(
         axes=ax1,
-        cbaxes=ax2,
+        cbaxes=ax1,
         vlsvobj=vlsvobj,
         var="proton/vg_pdyn",
         op=None,
@@ -7937,9 +7939,10 @@ def plot_colormap_cut(x0, y0, t0):
         ax.label_outer()
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]")
 
-    fig.savefig(wrkdir_DNR + "Figs/colormap_cut.pdf", dpi=300)
-    fig.savefig(wrkdir_DNR + "Figs/colormap_cut.png", dpi=300)
-    plt.close(fig)
+    for idx, fig in enumerate([fig1, fig2]):
+        fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1), dpi=300)
+        fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
+        plt.close(fig)
 
 
 def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
