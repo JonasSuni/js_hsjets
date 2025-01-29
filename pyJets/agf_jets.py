@@ -7804,13 +7804,15 @@ def plot_colormap_cut(x0, y0, t0):
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
-    x_arr = np.arange(x0 - 20 * 300e3, x0 + 20 * 300e3 + 1, 300e3)
+    x_arr = np.arange(x0 * r_e - 20 * 300e3, x0 * r_e + 20 * 300e3 + 1, 300e3)
     data_arr = np.zeros((len(var_pars), x_arr.size), dtype=float)
     for idx in range(x_arr.size):
         for idx2 in range(len(var_pars)):
             data_arr[idx2, idx] = (
                 vlsvobj.read_interpolated_variable(
-                    var_pars[idx2][1], [x_arr[idx], y0, 0], operator=var_pars[idx2][2]
+                    var_pars[idx2][1],
+                    [x_arr[idx], y0 * r_e, 0],
+                    operator=var_pars[idx2][2],
                 )
                 * var_pars[idx2][3]
             )
