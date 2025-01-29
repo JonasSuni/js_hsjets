@@ -7734,6 +7734,207 @@ def plot_category_SEA_new(folder_suffix="jets"):
     plt.close(fig)
 
 
+def plot_colormap_cut(x0, y0, t0):
+
+    bulkpath = find_bulkpath("AIC")
+
+    rax_labs = [
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+        "$T_\\perp/T_\\parallel$",
+    ]
+    var_pars = [
+        ["$\\rho$", "proton/vg_rho", "pass", 1e-6, 0, False, "k"],
+        ["$v_x$", "proton/vg_v", "x", 1e-3, 1, False, CB_color_cycle[0]],
+        ["$v_y$", "proton/vg_v", "y", 1e-3, 1, False, CB_color_cycle[1]],
+        ["$v_z$", "proton/vg_v", "z", 1e-3, 1, False, CB_color_cycle[2]],
+        ["$|v|$", "proton/vg_v", "magnitude", 1e-3, 1, True, "k"],
+        ["$P_\\mathrm{dyn}$", "proton/vg_pdyn", "pass", 1e9, 2, False, "k"],
+        [
+            "$P_{\\mathrm{dyn},x}$",
+            "proton/vg_pdynx",
+            "pass",
+            1e9,
+            2,
+            True,
+            CB_color_cycle[0],
+        ],
+        ["$B_x$", "vg_b_vol", "x", 1e9, 3, False, CB_color_cycle[0]],
+        ["$B_y$", "vg_b_vol", "y", 1e9, 3, False, CB_color_cycle[1]],
+        ["$B_z$", "vg_b_vol", "z", 1e9, 3, False, CB_color_cycle[2]],
+        ["$|B|$", "vg_b_vol", "magnitude", 1e9, 3, True, "k"],
+        ["$E_x$", "vg_e_vol", "x", 1e3, 4, False, CB_color_cycle[0]],
+        ["$E_y$", "vg_e_vol", "y", 1e3, 4, False, CB_color_cycle[1]],
+        ["$E_z$", "vg_e_vol", "z", 1e3, 4, False, CB_color_cycle[2]],
+        ["$|E|$", "vg_e_vol", "magnitude", 1e3, 4, True, "k"],
+        [
+            "$T_\\parallel$",
+            "proton/vg_t_parallel",
+            "pass",
+            1e-6,
+            5,
+            False,
+            CB_color_cycle[0],
+        ],
+        [
+            "$T_\\perp$",
+            "proton/vg_t_perpendicular",
+            "pass",
+            1e-6,
+            5,
+            True,
+            CB_color_cycle[1],
+        ],
+        ["$T_\\perp/T_\\parallel$", "proton/vg_t_anisotropy", "pass", 1, 6, False, "k"],
+    ]
+
+    fig = plt.figure(figsize=(16, 8), layout="constrained")
+
+    gs = fig.add_gridspec(7, 20)
+
+    ax1 = fig.add_subplot(gs[0:7, 0:9])
+    ax2 = fig.add_subplot(gs[0:7, 9:10])
+    rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
+
+    fnr0 = int(t0 * 2)
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+    )
+    x_arr = np.arange(x0 - 20 * 300e3, x0 + 20 * 300e3 + 1, 300e3)
+    data_arr = np.zeros((len(var_pars), x_arr.size), dtype=float)
+    for idx in range(x_arr.size):
+        for idx2 in range(len(var_pars)):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var_pars[idx2][1], [x_arr[idx], y0, 0], operator=var_pars[idx2][2]
+                )
+                * var_pars[idx2][3]
+            )
+
+    vscale = vscale
+    expression = None
+    usesci = 0
+
+    vmax = 1.1
+
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg
+    umagten_g = False
+    runid_g = "AIC"
+    Blines_g = False
+    drawBy0 = False
+    plaschke_g = False
+    leg_g = True
+    draw_qperp = False
+    chg = True
+    highres_g = True
+    bsg = False
+    mmsg = True
+
+    global xg, yg, linsg, lineg
+    xg = []
+    yg = []
+    linsg, lineg = None, None
+
+    non_ids = get_jets("AIC", min_duration=1, minsize=4)
+
+    sj_ids_g = []
+    non_ids_g = non_ids
+
+    sw_pars = [
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+        [1e6, 750e3, 3e-9, 0.5e6],
+    ]
+    global rho_sw, v_sw, B_sw, T_sw, Pdyn_sw
+    rho_sw, v_sw, B_sw, T_sw = sw_pars[2]
+    Pdyn_sw = m_p * rho_sw * v_sw * v_sw
+
+    streamlines = None
+
+    fluxfile = (
+        vlasdir
+        + "/2D/AIC/fluxfunction/"
+        + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
+        + ".bin"
+    )
+    fluxdir = None
+    flux_levels = None
+    fluxthick = 0.5
+    fluxlines = 5
+
+    pt.plot.plot_colormap(
+        axes=ax1,
+        cbaxes=ax2,
+        vlsvobj=vobj,
+        var="proton/vg_pdyn",
+        op="pass",
+        vmin=0.01,
+        vmax=vmax,
+        vscale=vscale,
+        # cbtitle="",
+        # cbtitle="",
+        usesci=usesci,
+        # scale=3,
+        title="Run: {}$~$t = {}s".format("AIC", float(fnr0) / 2.0),
+        boxre=[0, 20, -10, 10],
+        internalcb=True,
+        lin=False,
+        highres=highres_g,
+        colormap="grayC",
+        tickinterval=4,
+        fsaved=False,
+        useimshow=True,
+        external=ext_jet,
+        expression=expression,
+        pass_vars=[
+            "proton/vg_rho_thermal",
+            "proton/vg_rho_nonthermal",
+            "proton/vg_ptensor_thermal_diagonal",
+            "vg_b_vol",
+            "proton/vg_v",
+            "proton/vg_rho",
+            "proton/vg_core_heating",
+            "CellID",
+            "proton/vg_mmsx",
+            "proton/vg_Pdyn",
+            "proton/vg_Pdynx",
+            "proton/vg_beta_star",
+        ],
+        streamlines=streamlines,
+        streamlinedensity=0.3,
+        streamlinecolor="white",
+        streamlinethick=0.8,
+        fluxfile=fluxfile,
+        fluxdir=fluxdir,
+        flux_levels=flux_levels,
+        fluxthick=fluxthick,
+        fluxlines=fluxlines,
+    )
+
+    for idx, ax in enumerate(var_pars):
+        ax = rax_list[var_pars[idx][4]]
+        ax.plot(
+            x_arr / r_e,
+            data_arr[idx, :],
+            color=var_pars[idx][6],
+            linewidth=1.2,
+            label=var_pars[idx][0],
+        )
+        if var_pars[idx][5]:
+            ax.legend()
+
+    for idx, ax in enumerate(rax_list):
+        ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
+        ax.set_ylabel(rax_labs[idx])
+        ax.grid()
+        ax.label_outer()
+    rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]")
+
+
 def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
     valid_cats = [
