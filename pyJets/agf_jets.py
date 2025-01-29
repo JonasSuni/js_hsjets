@@ -7886,7 +7886,6 @@ def plot_colormap_cut(x0, y0, t0):
         # scale=3,
         title="Run: {}$~$t = {}s".format("AIC", float(fnr0) / 2.0),
         boxre=[0, 20, -10, 10],
-        lin=False,
         highres=highres_g,
         colormap="grayC",
         tickinterval=4,
