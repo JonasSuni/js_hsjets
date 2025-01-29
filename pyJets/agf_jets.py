@@ -7834,7 +7834,7 @@ def plot_colormap_cut(x0, y0, t0):
     leg_g = True
     draw_qperp = False
     chg = True
-    highres_g = 0.5
+    highres_g = 2
     bsg = False
     mmsg = True
 
@@ -7873,7 +7873,7 @@ def plot_colormap_cut(x0, y0, t0):
 
     pt.plot.plot_colormap(
         axes=ax1,
-        cbaxes=ax1,
+        # cbaxes=ax1,
         vlsvobj=vlsvobj,
         var="proton/vg_pdyn",
         op=None,
