@@ -7934,6 +7934,10 @@ def plot_colormap_cut(x0, y0, t0):
         ax.label_outer()
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]")
 
+    fig.savefig(wrkdir_DNR + "Figs/colormap_cut.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/colormap_cut.png", dpi=300)
+    plt.close(fig)
+
 
 def plot_category_SEA(runid="AIC", folder_suffix="jets", delta=False):
 
