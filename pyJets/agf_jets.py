@@ -7871,7 +7871,7 @@ def plot_colormap_cut(x0, y0, t0):
     pt.plot.plot_colormap(
         axes=ax1,
         cbaxes=ax2,
-        vlsvobj=vobj,
+        vlsvobj=vlsvobj,
         var="proton/vg_pdyn",
         op="pass",
         vmin=0.01,
