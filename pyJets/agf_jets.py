@@ -7832,7 +7832,7 @@ def plot_colormap_cut(x0, y0, t0):
     leg_g = True
     draw_qperp = False
     chg = True
-    highres_g = False
+    highres_g = 1
     bsg = False
     mmsg = True
 
