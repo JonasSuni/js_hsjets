@@ -7817,7 +7817,7 @@ def plot_colormap_cut(x0, y0, t0):
                 * var_pars[idx2][3]
             )
 
-    vscale = vscale
+    vscale = 1e9
     expression = None
     usesci = 0
 
