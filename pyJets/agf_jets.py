@@ -7836,7 +7836,7 @@ def plot_colormap_cut(x0, y0, t0):
     leg_g = True
     draw_qperp = False
     chg = True
-    highres_g = 2.5
+    highres_g = 3
     bsg = False
     mmsg = True
 
@@ -7921,7 +7921,12 @@ def plot_colormap_cut(x0, y0, t0):
         fluxlines=fluxlines,
     )
     ax1.plot(
-        [x_arr[0] / r_e, x_arr[-1] / r_e], [y0, y0], color=CB_color_cycle[0], alpha=0.7
+        [x_arr[0] / r_e, x_arr[-1] / r_e],
+        [y0, y0],
+        color="red",
+        alpha=0.7,
+        linestyle="dashed",
+        linewidth=1.2,
     )
 
     for idx, ax in enumerate(var_pars):
