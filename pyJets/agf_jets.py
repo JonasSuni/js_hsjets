@@ -7924,9 +7924,8 @@ def plot_colormap_cut(x0, y0, t0):
         [x_arr[0] / r_e, x_arr[-1] / r_e],
         [y0, y0],
         color="red",
-        alpha=0.7,
         linestyle="dashed",
-        linewidth=1.2,
+        linewidth=1.5,
     )
 
     for idx, ax in enumerate(var_pars):
