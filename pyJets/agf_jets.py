@@ -7242,12 +7242,12 @@ def archerplot():
 
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
-        fontsize=20,
+        fontsize=24,
         labelpad=10,
     )
     ax.set_ylabel(
         "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
-        fontsize=20,
+        fontsize=24,
         labelpad=10,
     )
     ax.legend()
@@ -7258,7 +7258,7 @@ def archerplot():
     ax.set_ylim(-1, 2.5)
     ax.label_outer()
     ax.tick_params(labelsize=12)
-    ax.annotate("(b)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
+    ax.annotate("(b)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20)
 
     handles, labels = ax.get_legend_handles_labels()
     for idx in range(len(labels)):
@@ -7285,12 +7285,12 @@ def archerplot():
     cb.ax.tick_params(labelsize=12)
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
-        fontsize=20,
+        fontsize=24,
         labelpad=10,
     )
     ax.set_ylabel(
         "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
-        fontsize=20,
+        fontsize=24,
         labelpad=10,
     )
     ax.axvline(0, linestyle="dashed", linewidth=0.6)
@@ -7300,7 +7300,7 @@ def archerplot():
     ax.tick_params(labelsize=12)
     ax.label_outer()
     ax.grid()
-    ax.annotate("(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
+    ax.annotate("(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20)
     # fig.savefig(wrkdir_DNR + "Figs/archerplot_hist2d.pdf", dpi=300)
     fig.savefig(wrkdir_DNR + "Figs/archerplot_full.pdf", dpi=300)
     plt.close(fig)
