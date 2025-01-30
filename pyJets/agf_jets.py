@@ -7739,12 +7739,12 @@ def plot_colormap_cut(x0, y0, t0):
     bulkpath = find_bulkpath("AIC")
 
     rax_labs = [
-        "$\\rho~[\\mathrm{cm}^{-3}]$",
-        "$v~[\\mathrm{km/s}]$",
-        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
-        "$B~[\\mathrm{nT}]$",
-        "$E~[\\mathrm{mV/m}]$",
-        "$T~[\\mathrm{MK}]$",
+        "$\\rho$\n$[\\mathrm{cm}^{-3}]$",
+        "$v$\n$[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}$\n$[\\mathrm{nPa}]$",
+        "$B$\n$[\\mathrm{nT}]$",
+        "$E$\n$[\\mathrm{mV/m}]$",
+        "$T$\n$[\\mathrm{MK}]$",
         "$T_\\perp/T_\\parallel$",
     ]
     var_pars = [
@@ -7932,17 +7932,17 @@ def plot_colormap_cut(x0, y0, t0):
             label=var_pars[idx][0],
         )
         if var_pars[idx][5]:
-            ax.legend(loc="upper right", fontsize=12)
+            ax.legend(loc="upper right", fontsize=16, ncols=2)
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
-        ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=16)
+        ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=20)
         ax.grid()
-        ax.tick_params(labelsize=12)
+        ax.tick_params(labelsize=16)
         ax.label_outer()
-    rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=16)
+    rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
     rax_list[0].set_title(
-        "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=16
+        "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=20
     )
 
     for idx, fig in enumerate([fig1, fig2]):
