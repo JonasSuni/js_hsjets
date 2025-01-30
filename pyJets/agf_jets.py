@@ -7286,10 +7286,12 @@ def archerplot():
     ax.set_xlabel(
         "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=20,
+        labelpad=10,
     )
     ax.set_ylabel(
         "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=20,
+        labelpad=10,
     )
     ax.axvline(0, linestyle="dashed", linewidth=0.6)
     ax.axhline(0, linestyle="dashed", linewidth=0.6)
