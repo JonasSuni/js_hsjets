@@ -7932,13 +7932,13 @@ def plot_colormap_cut(x0, y0, t0):
             label=var_pars[idx][0],
         )
         if var_pars[idx][5]:
-            ax.legend(loc="upper right", fontsize=14)
+            ax.legend(loc="upper right", fontsize=12)
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
         ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=20)
         ax.grid()
-        ax.tick_params(labelsize=14)
+        ax.tick_params(labelsize=12)
         ax.label_outer()
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
     rax_list[0].set_title(
