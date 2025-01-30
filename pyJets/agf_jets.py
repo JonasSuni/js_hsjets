@@ -7265,7 +7265,7 @@ def archerplot():
         labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
             meds[idx][0], meds[idx][1]
         )
-    ax.legend(handles, labels)
+    ax.legend(handles, labels, fontsize=16)
 
     # fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300)
     # plt.close(fig)
