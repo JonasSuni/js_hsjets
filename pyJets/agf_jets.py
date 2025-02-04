@@ -7220,9 +7220,9 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    color=CB_color_cycle[idx],
+                    # color=CB_color_cycle[idx],
                     label=cat_names[idx],
-                    markersize=6,
+                    markersize=10,
                     fillstyle="none",
                 )
                 ax.plot(
@@ -7231,7 +7231,7 @@ def archerplot_4():
                     pair_markers[idx],
                     color=pair_colors[idx],
                     label=cat_names[idx],
-                    markersize=6,
+                    markersize=10,
                     fillstyle="none",
                 )
 
@@ -7240,8 +7240,8 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    color=CB_color_cycle[idx],
-                    markersize=6,
+                    # color=CB_color_cycle[idx],
+                    markersize=10,
                     fillstyle="none",
                 )
                 ax.plot(
@@ -7249,7 +7249,7 @@ def archerplot_4():
                     vcontrib / pdyncontrib,
                     pair_markers[idx],
                     color=pair_colors[idx],
-                    markersize=6,
+                    markersize=10,
                     fillstyle="none",
                 )
 
