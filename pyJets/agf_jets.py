@@ -7271,6 +7271,7 @@ def archerplot_4():
         ax.axvline(0, linestyle="dashed", linewidth=0.6)
         ax.axhline(0, linestyle="dashed", linewidth=0.6)
         ax.grid()
+        ax.legend(fontsize=14)
         ax.set_xlim(-1, 2.5)
         ax.set_ylim(-1, 2.5)
         ax.label_outer()
@@ -7279,15 +7280,21 @@ def archerplot_4():
             panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
         )
 
-    for ax in ax_flat:
-        ax.legend()
-    handles, labels = ax.get_legend_handles_labels()
+    # for ax in ax_flat:
+    #     ax.legend()
+    #     handles, labels = ax.get_legend_handles_labels()
+    #     for idx in range(len(labels)):
+    #         labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
+    #             meds[idx][0], meds[idx][1]
+    #         )
+    #     ax.legend(handles, labels, fontsize=14)
+
+    handles, labels = ax_flat[0].get_legend_handles_labels()
     for idx in range(len(labels)):
         labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
             meds[idx][0], meds[idx][1]
         )
-    for ax in ax_flat:
-        ax.legend(handles, labels, fontsize=14)
+    ax_flat[0].legend(handles, labels, fontsize=14)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot_4.pdf", dpi=300)
     plt.close(fig)
