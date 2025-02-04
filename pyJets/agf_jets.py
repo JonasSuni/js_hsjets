@@ -7165,7 +7165,7 @@ def archerplot_4():
     # pair_colors = ["k", "red", "k", "k", "red", "red"]
     # pair_ax_idx = [1, 1, 3, 2, 2, 3]
     pair_markers = ["x", "x", "o", "x", "o", "^"]
-    pair_colors = ["k", "k", "red", "k", "red", "blue"]
+    pair_colors = ["k", "k", CB_color_cycle[3], "k", CB_color_cycle[3], CB_color_cycle[0]]
     pair_ax_idx = [1, 2, 2, 3, 3, 3]
     panel_labs = ["(a)", "(b)", "(c)", "(d)"]
 
