@@ -7220,7 +7220,7 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    # color=CB_color_cycle[idx],
+                    color="C" + str(idx),
                     label=cat_names[idx],
                     markersize=10,
                     fillstyle="none",
@@ -7240,7 +7240,7 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    # color=CB_color_cycle[idx],
+                    color="C" + str(idx),
                     markersize=10,
                     fillstyle="none",
                 )
