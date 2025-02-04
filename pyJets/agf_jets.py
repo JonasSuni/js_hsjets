@@ -7164,8 +7164,23 @@ def archerplot_4():
     # pair_markers = ["x", "o", "x", "x", "o", "o"]
     # pair_colors = ["k", "red", "k", "k", "red", "red"]
     # pair_ax_idx = [1, 1, 3, 2, 2, 3]
+    colors = [
+        "k",
+        CB_color_cycle[3],
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        CB_color_cycle[4],
+    ]
     pair_markers = ["x", "x", "o", "x", "o", "^"]
-    pair_colors = ["k", "k", CB_color_cycle[3], "k", CB_color_cycle[3], CB_color_cycle[0]]
+    pair_colors = [
+        "k",
+        "k",
+        CB_color_cycle[3],
+        "k",
+        CB_color_cycle[3],
+        CB_color_cycle[0],
+    ]
     pair_ax_idx = [1, 2, 2, 3, 3, 3]
     panel_labs = ["(a)", "(b)", "(c)", "(d)"]
 
@@ -7223,9 +7238,9 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    color="C" + str(idx),
+                    color=colors[idx],
                     label=cat_names[idx],
-                    markersize=10,
+                    markersize=8,
                     fillstyle="none",
                 )
                 ax.plot(
@@ -7234,7 +7249,7 @@ def archerplot_4():
                     pair_markers[idx],
                     color=pair_colors[idx],
                     label=cat_names[idx],
-                    markersize=10,
+                    markersize=8,
                     fillstyle="none",
                 )
 
@@ -7243,8 +7258,8 @@ def archerplot_4():
                     rhocontrib / pdyncontrib,
                     vcontrib / pdyncontrib,
                     markers[idx],
-                    color="C" + str(idx),
-                    markersize=10,
+                    color=colors[idx],
+                    markersize=8,
                     fillstyle="none",
                 )
                 ax.plot(
@@ -7252,7 +7267,7 @@ def archerplot_4():
                     vcontrib / pdyncontrib,
                     pair_markers[idx],
                     color=pair_colors[idx],
-                    markersize=10,
+                    markersize=8,
                     fillstyle="none",
                 )
 
