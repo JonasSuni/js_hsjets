@@ -7142,6 +7142,157 @@ def plot_category_histograms(
     plt.close(fig)
 
 
+def archerplot_4():
+
+    valid_cats = [
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
+    ]
+    cat_names = [
+        "Dusk $Q_\\parallel$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q_\\parallel$",
+        "Dawn young FS",
+        "Dusk $Q_\\perp$",
+    ]
+    markers = ["x", "x", "o", "x", "x", "o"]
+    pair_markers = ["x", "o", "x", "x", "o", "o"]
+    pair_colors = ["k", "red", "k", "k", "red", "red"]
+    pair_ax_idx = [1, 1, 3, 2, 2, 3]
+    panel_labs = ["(a)", "(b)", "(c)", "(d)"]
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(14, 14), constrained_layout=True)
+    ax_flat = ax_list.flatten()
+    avgs = []
+    meds = []
+    xall = []
+    yall = []
+
+    for idx in range(len(valid_cats)):
+        ax = ax_flat[pair_ax_idx[idx]]
+        folder_suffix = valid_cats[idx]
+        filenames = os.listdir(wrkdir_DNR + "txts/timeseries/" + folder_suffix)
+        filenames = [fname for fname in filenames if "corr" not in fname]
+
+        xvals = []
+        yvals = []
+
+        for idx2, fn in enumerate(filenames):
+            data_arr = np.loadtxt(
+                wrkdir_DNR + "txts/timeseries/" + folder_suffix + "/" + fn
+            )
+            pdyn = data_arr[5, :]
+            v = data_arr[4, :]
+            rho = data_arr[0, :]
+
+            rhocontrib = (
+                rho[pdyn == max(pdyn)][0] - np.nanmean(rho[:20])
+            ) / np.nanmean(rho[:20])
+            vcontrib = (
+                (v**2)[pdyn == max(pdyn)][0] - np.nanmean((v**2)[:20])
+            ) / np.nanmean((v**2)[:20])
+            pdyncontrib = (max(pdyn) - np.nanmean(pdyn[:20])) / np.nanmean(pdyn[:20])
+
+            xvals.append(rhocontrib / pdyncontrib)
+            yvals.append(vcontrib / pdyncontrib)
+            xall.append(rhocontrib / pdyncontrib)
+            yall.append(vcontrib / pdyncontrib)
+
+            if (
+                rhocontrib / pdyncontrib > 2.5
+                or vcontrib / pdyncontrib > 2.5
+                or rhocontrib / pdyncontrib < -1
+                or vcontrib / pdyncontrib < -1
+            ):
+                print(
+                    "Jet of type {} has values outside of limits: ({:.2f},{:.2f})".format(
+                        cat_names[idx], rhocontrib / pdyncontrib, vcontrib / pdyncontrib
+                    )
+                )
+
+            if idx2 == 0:
+                ax_flat[0].plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    markers[idx],
+                    color=CB_color_cycle[idx],
+                    label=cat_names[idx],
+                    markersize=6,
+                    fill="none",
+                )
+                ax.plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    pair_markers[idx],
+                    color=pair_colors[idx],
+                    label=cat_names[idx],
+                    markersize=6,
+                    fill="none",
+                )
+
+            else:
+                ax_flat[0].plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    markers[idx],
+                    color=CB_color_cycle[idx],
+                    markersize=6,
+                    fill="none",
+                )
+                ax.plot(
+                    rhocontrib / pdyncontrib,
+                    vcontrib / pdyncontrib,
+                    pair_markers[idx],
+                    color=pair_colors[idx],
+                    label=cat_names[idx],
+                    markersize=6,
+                    fill="none",
+                )
+
+        avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
+        meds.append([np.nanmedian(xvals), np.nanmedian(yvals)])
+
+    for idx, ax in enumerate(ax_flat):
+        ax.set_xlabel(
+            "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.set_ylabel(
+            "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.axvline(0, linestyle="dashed", linewidth=0.6)
+        ax.axhline(0, linestyle="dashed", linewidth=0.6)
+        ax.grid()
+        ax.set_xlim(-1, 2.5)
+        ax.set_ylim(-1, 2.5)
+        ax.label_outer()
+        ax.tick_params(labelsize=12)
+        ax.annotate(
+            panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
+        )
+
+    for ax in ax_flat:
+        ax.legend()
+    handles, labels = ax.get_legend_handles_labels()
+    for idx in range(len(labels)):
+        labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
+            meds[idx][0], meds[idx][1]
+        )
+    for ax in ax_flat:
+        ax.legend(handles, labels, fontsize=14)
+
+    fig.savefig(wrkdir_DNR + "Figs/archerplot_4.pdf", dpi=300)
+    plt.close(fig)
+
+
 def archerplot():
 
     valid_cats = [
