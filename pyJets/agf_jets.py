@@ -7223,7 +7223,7 @@ def archerplot_4():
                     color=CB_color_cycle[idx],
                     label=cat_names[idx],
                     markersize=6,
-                    facecolor="none",
+                    fillstyle="none",
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7232,7 +7232,7 @@ def archerplot_4():
                     color=pair_colors[idx],
                     label=cat_names[idx],
                     markersize=6,
-                    facecolor="none",
+                    fillstyle="none",
                 )
 
             else:
@@ -7242,7 +7242,7 @@ def archerplot_4():
                     markers[idx],
                     color=CB_color_cycle[idx],
                     markersize=6,
-                    facecolor="none",
+                    fillstyle="none",
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7251,7 +7251,7 @@ def archerplot_4():
                     color=pair_colors[idx],
                     label=cat_names[idx],
                     markersize=6,
-                    facecolor="none",
+                    fillstyle="none",
                 )
 
         avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
