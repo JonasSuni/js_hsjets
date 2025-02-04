@@ -7249,7 +7249,6 @@ def archerplot_4():
                     vcontrib / pdyncontrib,
                     pair_markers[idx],
                     color=pair_colors[idx],
-                    label=cat_names[idx],
                     markersize=6,
                     fillstyle="none",
                 )
