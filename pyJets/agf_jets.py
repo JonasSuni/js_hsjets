@@ -1731,7 +1731,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 if len(x_points.shape) == 1:
                     ax.plot(
                         x_points[0] / r_e,
-                        x_points[2] / r_e,
+                        x_points[1] / r_e,
                         "x",
                         color="red",
                         fillstyle="none",
@@ -1741,7 +1741,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                     for xp in x_points:
                         ax.plot(
                             xp[0] / r_e,
-                            xp[2] / r_e,
+                            xp[1] / r_e,
                             "x",
                             color="red",
                             fillstyle="none",
