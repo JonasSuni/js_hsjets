@@ -2512,6 +2512,7 @@ def v5_plotter(
     draw_mms=False,
     draw_archer=True,
     draw_xo=False,
+    fluxlines=5,
 ):
 
     if magten:
@@ -2616,7 +2617,7 @@ def v5_plotter(
             fluxdir = None
             flux_levels = None
             fluxthick = 0.5
-            fluxlines = 5
+            fluxlines = fluxlines
         else:
             fluxfile = None
             fluxdir = None
