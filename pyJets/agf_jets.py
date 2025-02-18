@@ -1720,6 +1720,63 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 norm="log",
             )
 
+    if "xo_g" in my_globals:
+        if globals()["xo_g"]:
+            try:
+                x_points = np.loadtxt(
+                    "/wrk-vakka/group/spacephysics/vlasiator/2D/AIC/visualization/x_and_o_points/x_point_location_{}.txt".format(
+                        filenr_g
+                    )
+                )
+                if len(x_points.shape) == 1:
+                    ax.plot(
+                        x_points[0] / r_e,
+                        x_points[2] / r_e,
+                        "x",
+                        color="red",
+                        fillstyle="none",
+                        markersize=2 * highres_g,
+                    )
+                else:
+                    for xp in x_points:
+                        ax.plot(
+                            xp[0] / r_e,
+                            xp[2] / r_e,
+                            "x",
+                            color="red",
+                            fillstyle="none",
+                            markersize=2 * highres_g,
+                        )
+            except:
+                pass
+            try:
+                o_points = np.loadtxt(
+                    "/wrk-vakka/group/spacephysics/vlasiator/2D/AIC/visualization/x_and_o_points/o_point_location_{}.txt".format(
+                        filenr_g
+                    )
+                )
+                if len(o_points.shape) == 1:
+                    ax.plot(
+                        o_points[0] / r_e,
+                        o_points[2] / r_e,
+                        "o",
+                        color="red",
+                        fillstyle="none",
+                        markersize=2 * highres_g,
+                    )
+                else:
+                    for op in o_points:
+                        ax.plot(
+                            op[0] / r_e,
+                            op[2] / r_e,
+                            "o",
+                            color="red",
+                            fillstyle="none",
+                            markersize=2 * highres_g,
+                        )
+            except:
+                pass
+
     if Blines_g:
         blines_bx = np.copy(B[:, :, 0])
         blines_by = np.copy(B[:, :, 1])
@@ -2454,6 +2511,7 @@ def v5_plotter(
     draw_bs=True,
     draw_mms=False,
     draw_archer=True,
+    draw_xo=False,
 ):
 
     if magten:
@@ -2472,7 +2530,8 @@ def v5_plotter(
         print("x and y must have same length!")
         return 1
 
-    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg, archer_g
+    global runid_g, sj_ids_g, non_ids_g, filenr_g, Blines_g, start_points, drawBy0, plaschke_g, leg_g, draw_qperp, vobj, umagten_g, chg, highres_g, bsg, mmsg, archer_g, xo_g
+    xo_g = draw_xo
     umagten_g = magtenvec
     runid_g = runid
     Blines_g = blines
