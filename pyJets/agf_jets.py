@@ -1762,7 +1762,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                         "o",
                         color="red",
                         fillstyle="none",
-                        markersize=2 * highres_g,
+                        markersize=3 * highres_g,
+                        zorder=10,
                     )
                 else:
                     for op in o_points:
@@ -1772,7 +1773,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                             "o",
                             color="red",
                             fillstyle="none",
-                            markersize=2 * highres_g,
+                            markersize=3 * highres_g,
+                            zorder=10,
                         )
             except:
                 pass
