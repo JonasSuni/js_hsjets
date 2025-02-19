@@ -1741,7 +1741,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                         "x",
                         color="yellow",
                         fillstyle="none",
-                        markersize=2 * highres_g * np.abs(ez),
+                        markersize=4 * highres_g * np.abs(ez),
                         zorder=10,
                     )
                 else:
@@ -1758,7 +1758,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                             "x",
                             color="yellow",
                             fillstyle="none",
-                            markersize=2 * highres_g * np.abs(ez),
+                            markersize=4 * highres_g * np.abs(ez),
                             zorder=10,
                         )
             except:
