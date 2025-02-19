@@ -1752,9 +1752,15 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                     )
                 else:
                     for xp in x_points:
+                        # ez = (
+                        #     vobj.read_interpolated_variable(
+                        #         "vg_e_vol", xp, operator="z"
+                        #     )
+                        #     / 1e-3
+                        # )
                         ez = (
-                            vobj.read_interpolated_variable(
-                                "vg_e_vol", xp, operator="z"
+                            vobj.read_variable(
+                                "vg_e_vol", operator="z", cellids=vobj.get_cellid(xp)
                             )
                             / 1e-3
                         )
