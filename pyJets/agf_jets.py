@@ -1741,7 +1741,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                         "x",
                         color="red",
                         fillstyle="none",
-                        markersize=2 * highres_g * ez,
+                        markersize=2 * highres_g * np.abs(ez),
                         zorder=10,
                     )
                 else:
@@ -1758,39 +1758,39 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                             "x",
                             color="red",
                             fillstyle="none",
-                            markersize=2 * highres_g * ez,
+                            markersize=2 * highres_g * np.abs(ez),
                             zorder=10,
                         )
             except:
                 pass
             try:
                 pass
-                o_points = np.loadtxt(
-                    "/wrk-vakka/group/spacephysics/vlasiator/2D/AIC/visualization/x_and_o_points/o_point_location_{}.txt".format(
-                        filenr_g
-                    )
-                )
-                if len(o_points.shape) == 1:
-                    ax.plot(
-                        o_points[0] / r_e,
-                        o_points[1] / r_e,
-                        "o",
-                        color="red",
-                        fillstyle="none",
-                        markersize=3 * highres_g,
-                        zorder=10,
-                    )
-                else:
-                    for op in o_points:
-                        ax.plot(
-                            op[0] / r_e,
-                            op[1] / r_e,
-                            "o",
-                            color="red",
-                            fillstyle="none",
-                            markersize=3 * highres_g,
-                            zorder=10,
-                        )
+                # o_points = np.loadtxt(
+                #     "/wrk-vakka/group/spacephysics/vlasiator/2D/AIC/visualization/x_and_o_points/o_point_location_{}.txt".format(
+                #         filenr_g
+                #     )
+                # )
+                # if len(o_points.shape) == 1:
+                #     ax.plot(
+                #         o_points[0] / r_e,
+                #         o_points[1] / r_e,
+                #         "o",
+                #         color="red",
+                #         fillstyle="none",
+                #         markersize=3 * highres_g,
+                #         zorder=10,
+                #     )
+                # else:
+                #     for op in o_points:
+                #         ax.plot(
+                #             op[0] / r_e,
+                #             op[1] / r_e,
+                #             "o",
+                #             color="red",
+                #             fillstyle="none",
+                #             markersize=3 * highres_g,
+                #             zorder=10,
+                #         )
             except:
                 pass
 
