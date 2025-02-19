@@ -1729,27 +1729,42 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                     )
                 )
                 if len(x_points.shape) == 1:
+                    ez = (
+                        vobj.read_interpolated_variable(
+                            "vg_e_vol", x_points, operator="z"
+                        )
+                        / 1e-3
+                    )
                     ax.plot(
                         x_points[0] / r_e,
                         x_points[1] / r_e,
                         "x",
                         color="red",
                         fillstyle="none",
-                        markersize=2 * highres_g,
+                        markersize=2 * highres_g * ez,
+                        zorder=10,
                     )
                 else:
                     for xp in x_points:
+                        ez = (
+                            vobj.read_interpolated_variable(
+                                "vg_e_vol", xp, operator="z"
+                            )
+                            / 1e-3
+                        )
                         ax.plot(
                             xp[0] / r_e,
                             xp[1] / r_e,
                             "x",
                             color="red",
                             fillstyle="none",
-                            markersize=2 * highres_g,
+                            markersize=2 * highres_g * ez,
+                            zorder=10,
                         )
             except:
                 pass
             try:
+                pass
                 o_points = np.loadtxt(
                     "/wrk-vakka/group/spacephysics/vlasiator/2D/AIC/visualization/x_and_o_points/o_point_location_{}.txt".format(
                         filenr_g
