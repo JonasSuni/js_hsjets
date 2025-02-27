@@ -545,13 +545,16 @@ def ipshock_1d_dht_non_comp():
             ax_list[idx2, 1].plot(x_arr, val1)
             ax_list[idx2, 0].set_title("t = 0 s")
             ax_list[idx2, 1].set_title("t = 450 s")
-            ax.set_ylabel(testlabs[idx2])
+            ax_list[idx2, 0].set_ylabel(testlabs[idx2])
+            ax_list[idx2, 1].set_ylabel(testlabs[idx2])
 
         for ax in ax_flat:
             ax.grid()
             ax.set_xlim(x_arr[0], x_arr[-1])
             ax.set_xlabel("X [RE]")
             ax.label_outer()
+
+        fig.suptitle(ylabels[idx])
 
         fig.savefig(
             wrkdir_DNR + "Figs/ipshock_non_dht_comp/{}.png".format(ylabels[idx])
