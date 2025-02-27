@@ -573,7 +573,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
     )
 
     ax_flat = ax_list.flatten()
-    vdf_cis = [76, 376, 676]
+    vdf_cis = [76, 301, 676]
 
     for idx in range(len(testlabs)):
         for idx2 in range(len(vdf_cis)):
