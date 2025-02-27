@@ -488,10 +488,10 @@ def ipshock_1d_dht_non_comp():
         "vg_b_vol",
         "vg_b_vol",
         "vg_b_vol",
-        # "fg_e",
-        # "fg_e",
-        # "fg_e",
-        # "fg_e",
+        "vg_e_gradpe",
+        "vg_e_gradpe",
+        "vg_e_gradpe",
+        "vg_e_gradpe",
     ]
     ops = [
         "pass",
@@ -505,10 +505,10 @@ def ipshock_1d_dht_non_comp():
         "y",
         "z",
         "magnitude",
-        # "x",
-        # "y",
-        # "z",
-        # "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
     ]
     ylabels = [
         "density",
@@ -522,10 +522,10 @@ def ipshock_1d_dht_non_comp():
         "by",
         "bz",
         "btot",
-        # "ex",
-        # "ey",
-        # "ez",
-        # "etot",
+        "egradpex",
+        "egradpey",
+        "egradpez",
+        "egradpetot",
     ]
     for idx in range(len(ylabels)):
 
