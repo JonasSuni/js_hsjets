@@ -595,7 +595,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
             ax.set_xlabel("{}\n{}".format(testlabs[idx], xlab))
     fig.suptitle("t = {}".format(t0))
 
-    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp_{}.png".format(t0))
+    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp/vdf_{}.png".format(t0))
     plt.close(fig)
 
     fig, ax_list = plt.subplots(
@@ -628,7 +628,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
             ax.grid()
     fig.suptitle("t = {}".format(t0))
 
-    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp_{}.png".format(t1))
+    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp/vdf_{}.png".format(t1))
     plt.close(fig)
 
 
