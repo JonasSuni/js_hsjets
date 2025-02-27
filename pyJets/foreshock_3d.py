@@ -588,7 +588,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 box=[-3e6, 3e6, -3e6, 3e6],
                 # fmax=1e-5,
                 slicethick=1,
-                reducer="average",
+                reducer="integrate",
             )
             ax.set_title("C = {}".format(vdf_cis[idx2]))
             xlab = ax.get_xlabel()
@@ -620,7 +620,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 box=[-3e6, 3e6, -3e6, 3e6],
                 # fmax=1e-5,
                 slicethick=1,
-                reducer="average",
+                reducer="integrate",
             )
             ax.set_title("C = {}".format(vdf_cis[idx2]))
             xlab = ax.get_xlabel()
