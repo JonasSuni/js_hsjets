@@ -457,7 +457,7 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
     plt.close(fig)
 
 
-def ipshock_1d_dht_non_comp():
+def ipshock_1d_dht_non_comp(t0=0, t1=450):
 
     bulkpaths = [
         "/wrk-vakka/users/jesuni/matti_ipshock/testing/dht/bulk/",
@@ -466,11 +466,15 @@ def ipshock_1d_dht_non_comp():
     ]
     testlabs = ["DHT", "NON", "NOVEL"]
     vlsvobjs0 = [
-        pt.vlsvfile.VlsvReader(bulkpaths[idx] + "bulk.0000000.vlsv")
+        pt.vlsvfile.VlsvReader(
+            bulkpaths[idx] + "bulk.{}.vlsv".format(str(int(t0 / 5)).zfill(7))
+        )
         for idx in range(len(bulkpaths))
     ]
     vlsvobjs1 = [
-        pt.vlsvfile.VlsvReader(bulkpaths[idx] + "bulk.0000095.vlsv")
+        pt.vlsvfile.VlsvReader(
+            bulkpaths[idx] + "bulk.{}.vlsv".format(str(int(t1 / 5)).zfill(7))
+        )
         for idx in range(len(bulkpaths))
     ]
     ciall = np.sort(vlsvobjs0[0].read_variable("CellID"))
@@ -543,8 +547,8 @@ def ipshock_1d_dht_non_comp():
 
             ax_list[idx2, 0].plot(x_arr, val0)
             ax_list[idx2, 1].plot(x_arr, val1)
-            ax_list[idx2, 0].set_title("t = 0 s")
-            ax_list[idx2, 1].set_title("t = 450 s")
+            ax_list[idx2, 0].set_title("t = {} s".format(t0))
+            ax_list[idx2, 1].set_title("t = {} s".format(t1))
             ax_list[idx2, 0].set_ylabel(testlabs[idx2])
             ax_list[idx2, 1].set_ylabel(testlabs[idx2])
 
