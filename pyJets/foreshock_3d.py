@@ -457,6 +457,106 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
     plt.close(fig)
 
 
+def ipshock_1d_dht_non_comp():
+
+    bulkpaths = [
+        "/wrk-vakka/users/jesuni/matti_ipshock/testing/dht/bulk/",
+        "/wrk-vakka/users/jesuni/matti_ipshock/testing/non/bulk/",
+        "/wrk-vakka/users/jesuni/matti_ipshock/testing/novel/bulk/",
+    ]
+    vlsvobjs0 = [
+        pt.vlsvfile.VlsvReader(bulkpaths[idx] + "bulk.0000000.vlsv")
+        for idx in range(len(bulkpaths))
+    ]
+    vlsvobjs1 = [
+        pt.vlsvfile.VlsvReader(bulkpaths[idx] + "bulk.0000095.vlsv")
+        for idx in range(len(bulkpaths))
+    ]
+    ciall = np.sort(vlsvobjs0[0].read_variable("CellID"))
+    x_arr = [vlsvobjs0[0].get_cell_coordinates(ci)[0] / r_e for ci in ciall]
+
+    vars = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+    ]
+    ylabels = [
+        "density",
+        "vx",
+        "vy",
+        "vz",
+        "vtot",
+        "tpar",
+        "tperp",
+        "bx",
+        "by",
+        "bz",
+        "btot",
+        "ex",
+        "ey",
+        "ez",
+        "etot",
+    ]
+    for idx in range(len(ylabels)):
+
+        fig, ax_list = plt.subplots(
+            len(bulkpaths), 2, figsize=(10, 10), constrained_layout=True, sharey="row"
+        )
+        ax_flat = ax_list.flatten()
+
+        for idx2 in range(len(bulkpaths)):
+            cias0 = np.argsort(vlsvobjs0[idx2].read_variable("CellID"))
+            cias1 = np.argsort(vlsvobjs1[idx2].read_variable("CellID"))
+
+            val0 = vlsvobjs0[idx2].read_variable(vars[idx], operator=ops[idx])[cias0]
+            val1 = vlsvobjs1[idx2].read_variable(vars[idx], operator=ops[idx])[cias1]
+
+            ax_list[idx2, 0].plot(x_arr, val0)
+            ax_list[idx2, 1].plot(x_arr, val1)
+            ax_list[idx2, 0].set_title("t = 0 s")
+            ax_list[idx2, 1].set_title("t = 450 s")
+
+        for ax in ax_flat:
+            ax.grid()
+            ax.set_xlim(x_arr[0], x_arr[-1])
+            ax.set_xlabel("X [RE]")
+            ax.set_ylabel(ylabels[idx])
+
+        fig.savefig(
+            wrkdir_DNR + "Figs/ipshock_non_dht_comp/{}.png".format(ylabels[idx])
+        )
+        plt.close(fig)
+
+
 def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
     ipshock_path = os.environ["WRK"] + "/ipshock_FIE/"
