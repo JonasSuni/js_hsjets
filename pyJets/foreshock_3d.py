@@ -565,6 +565,72 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
         )
         plt.close(fig)
 
+    fig, ax_list = plt.subplots(
+        3,
+        3,
+        figsize=(12, 12),
+        constrained_layout=True,
+    )
+
+    ax_flat = ax_list.flatten()
+    vdf_cis = [76, 376, 676]
+
+    for idx in range(len(testlabs)):
+        for idx2 in range(len(vdf_cis)):
+            ax = ax_list[idx, idx2]
+            pt.plot.plot_vdf(
+                vlsvobj=vlsvobjs0[idx],
+                cellid=vdf_cis[idx2],
+                axes=ax,
+                fmin=1e-18,
+                xz=True,
+                setThreshold=1e-16,
+                box=[-3e6, 3e6, -3e6, 3e6],
+                # fmax=1e-5,
+                slicethick=1,
+                reducer="average",
+            )
+            ax.set_title("C = {}".format(vdf_cis[idx2]))
+            xlab = ax.get_xlabel()
+            ax.set_xlabel("{}\n{}".format(testlabs[idx], xlab))
+    fig.suptitle("t = {}".format(t0))
+
+    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp_{}.png".format(t0))
+    plt.close(fig)
+
+    fig, ax_list = plt.subplots(
+        3,
+        3,
+        figsize=(12, 12),
+        constrained_layout=True,
+    )
+
+    ax_flat = ax_list.flatten()
+
+    for idx in range(len(testlabs)):
+        for idx2 in range(len(vdf_cis)):
+            ax = ax_list[idx, idx2]
+            pt.plot.plot_vdf(
+                vlsvobj=vlsvobjs1[idx],
+                cellid=vdf_cis[idx2],
+                axes=ax,
+                fmin=1e-18,
+                xz=True,
+                setThreshold=1e-16,
+                box=[-3e6, 3e6, -3e6, 3e6],
+                # fmax=1e-5,
+                slicethick=1,
+                reducer="average",
+            )
+            ax.set_title("C = {}".format(vdf_cis[idx2]))
+            xlab = ax.get_xlabel()
+            ax.set_xlabel("{}\n{}".format(testlabs[idx], xlab))
+            ax.grid()
+    fig.suptitle("t = {}".format(t0))
+
+    fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp_{}.png".format(t1))
+    plt.close(fig)
+
 
 def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
 
