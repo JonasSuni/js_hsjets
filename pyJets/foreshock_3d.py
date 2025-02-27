@@ -591,8 +591,9 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 reducer="integrate",
             )
             ax.set_title("C = {}".format(vdf_cis[idx2]))
-            xlab = ax.get_xlabel()
-            ax.set_xlabel("{}\n{}".format(testlabs[idx], xlab))
+            ylab = ax.get_ylabel()
+            ax.set_ylabel("{}\n{}".format(testlabs[idx], ylab))
+            ax.label_outer()
     fig.suptitle("t = {}".format(t0))
 
     fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp/vdf_{}.png".format(t0))
@@ -623,9 +624,9 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 reducer="integrate",
             )
             ax.set_title("C = {}".format(vdf_cis[idx2]))
-            xlab = ax.get_xlabel()
-            ax.set_xlabel("{}\n{}".format(testlabs[idx], xlab))
-            ax.grid()
+            ylab = ax.get_ylabel()
+            ax.set_ylabel("{}\n{}".format(testlabs[idx], ylab))
+            ax.label_outer()
     fig.suptitle("t = {}".format(t0))
 
     fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp/vdf_{}.png".format(t1))
