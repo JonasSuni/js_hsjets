@@ -569,7 +569,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
         3,
         3,
         figsize=(12, 12),
-        # constrained_layout=True,
+        constrained_layout=True,
     )
 
     ax_flat = ax_list.flatten()
@@ -586,7 +586,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 xz=True,
                 setThreshold=1e-16,
                 box=[-1e6, 1e6, -1e6, 1e6],
-                # fmax=1e-5,
+                fmax=1e-5,
                 slicethick=1,
                 reducer="integrate",
             )
@@ -603,7 +603,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
         3,
         3,
         figsize=(12, 12),
-        # constrained_layout=True,
+        constrained_layout=True,
     )
 
     ax_flat = ax_list.flatten()
@@ -619,7 +619,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
                 xz=True,
                 setThreshold=1e-16,
                 box=[-1e6, 1e6, -1e6, 1e6],
-                # fmax=1e-5,
+                fmax=1e-5,
                 slicethick=1,
                 reducer="integrate",
             )
@@ -627,7 +627,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
             ylab = ax.get_ylabel()
             ax.set_ylabel("{}\n{}".format(testlabs[idx], ylab))
             ax.label_outer()
-    fig.suptitle("t = {}".format(t0))
+    fig.suptitle("t = {}".format(t1))
 
     fig.savefig(wrkdir_DNR + "Figs/ipshock_non_dht_comp/vdf_{}.png".format(t1))
     plt.close(fig)
