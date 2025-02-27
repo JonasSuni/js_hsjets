@@ -464,6 +464,7 @@ def ipshock_1d_dht_non_comp():
         "/wrk-vakka/users/jesuni/matti_ipshock/testing/non/bulk/",
         "/wrk-vakka/users/jesuni/matti_ipshock/testing/novel/bulk/",
     ]
+    testlabs = ["DHT", "NON", "NOVEL"]
     vlsvobjs0 = [
         pt.vlsvfile.VlsvReader(bulkpaths[idx] + "bulk.0000000.vlsv")
         for idx in range(len(bulkpaths))
@@ -483,14 +484,14 @@ def ipshock_1d_dht_non_comp():
         "proton/vg_v",
         "proton/vg_t_parallel",
         "proton/vg_t_perpendicular",
-        "fg_b",
-        "fg_b",
-        "fg_b",
-        "fg_b",
-        "fg_e",
-        "fg_e",
-        "fg_e",
-        "fg_e",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        # "fg_e",
+        # "fg_e",
+        # "fg_e",
+        # "fg_e",
     ]
     ops = [
         "pass",
@@ -504,10 +505,10 @@ def ipshock_1d_dht_non_comp():
         "y",
         "z",
         "magnitude",
-        "x",
-        "y",
-        "z",
-        "magnitude",
+        # "x",
+        # "y",
+        # "z",
+        # "magnitude",
     ]
     ylabels = [
         "density",
@@ -521,10 +522,10 @@ def ipshock_1d_dht_non_comp():
         "by",
         "bz",
         "btot",
-        "ex",
-        "ey",
-        "ez",
-        "etot",
+        # "ex",
+        # "ey",
+        # "ez",
+        # "etot",
     ]
     for idx in range(len(ylabels)):
 
@@ -544,12 +545,13 @@ def ipshock_1d_dht_non_comp():
             ax_list[idx2, 1].plot(x_arr, val1)
             ax_list[idx2, 0].set_title("t = 0 s")
             ax_list[idx2, 1].set_title("t = 450 s")
+            ax.set_ylabel(testlabs[idx2])
 
         for ax in ax_flat:
             ax.grid()
             ax.set_xlim(x_arr[0], x_arr[-1])
             ax.set_xlabel("X [RE]")
-            ax.set_ylabel(ylabels[idx])
+            ax.label_outer()
 
         fig.savefig(
             wrkdir_DNR + "Figs/ipshock_non_dht_comp/{}.png".format(ylabels[idx])
@@ -569,11 +571,11 @@ def ipshock_1d_compare(fnr=36, resols=[250, 300, 500, 1000, 2000, 4000, 8000]):
         "vg_b_vol",
     ]
     ylabels = [
-        "$\\rho~[\mathrm{cm}^{-3}]$",
-        "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
-        "$v_x~[\mathrm{km/s}]$",
-        "$v_{\mathrm{non-th},x}~[\mathrm{km/s}]$",
-        "$B_y~[\mathrm{nT}]$",
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$\\rho_\\mathrm{non-th}~[\\mathrm{cm}^{-3}]$",
+        "$v_x~[\\mathrm{km/s}]$",
+        "$v_{\\mathrm{non-th},x}~[\\mathrm{km/s}]$",
+        "$B_y~[\\mathrm{nT}]$",
     ]
     scales = [1e-6, 1e-6, 1e-3, 1e-3, 1e9]
     miny = [None, 10**-4, -1000, -500, -5]
