@@ -569,7 +569,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
         3,
         3,
         figsize=(12, 12),
-        constrained_layout=True,
+        # constrained_layout=True,
     )
 
     ax_flat = ax_list.flatten()
@@ -603,7 +603,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
         3,
         3,
         figsize=(12, 12),
-        constrained_layout=True,
+        # constrained_layout=True,
     )
 
     ax_flat = ax_list.flatten()
