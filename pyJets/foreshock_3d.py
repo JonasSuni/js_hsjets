@@ -580,7 +580,7 @@ def ipshock_1d_dht_non_comp(t0=0, t1=450):
             ax = ax_list[idx, idx2]
             pt.plot.plot_vdf(
                 vlsvobj=vlsvobjs0[idx],
-                cellid=vdf_cis[idx2],
+                cellids=vdf_cis[idx2],
                 axes=ax,
                 fmin=1e-18,
                 xz=True,
