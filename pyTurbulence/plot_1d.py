@@ -201,6 +201,7 @@ def plot_Byz(fnr0, fnr1, dirname):
         fig.savefig(figdir + "{}.png".format(idx))
         plt.close(fig)
 
+
 def plot_march_vdf():
 
     figdir = wrkdir_DNR + "Figs/cuts/march_vdfs/"
@@ -212,20 +213,20 @@ def plot_march_vdf():
 
     bulkpath = "/wrk-vakka/users/jesuni/turbulence/alfvencascade_test/vlasiator/bulk/"
 
-    for idx in np.arange(0,101,5):
+    for idx in np.arange(0, 101, 5):
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk." + str(idx).zfill(7) + ".vlsv"
         )
 
         pt.plot.plot_vdf(
-                vlsvobj=vlsvobj,
-                outputfile=figdir+"{}.png".format(str(idx)),
-                cellids=1501,
-                fmin=1e-15,
-                xy=True,
-                setThreshold=1e-15,
-                box=[-1e6, 1e6, -1e6, 1e6],
-                slicethick=1,
-                fmax=1e-5,
-                reducer="integrate",
-            )
+            vlsvobj=vlsvobj,
+            outputfile=figdir + "{}.png".format(str(idx)),
+            cellids=501,
+            fmin=1e-15,
+            xy=True,
+            setThreshold=1e-15,
+            box=[-1e6, 1e6, -1e6, 1e6],
+            slicethick=1,
+            fmax=1e-5,
+            reducer="integrate",
+        )
