@@ -213,7 +213,7 @@ def plot_march_vdf():
 
     bulkpath = "/wrk-vakka/users/jesuni/turbulence/alfvencascade_test/vlasiator/bulk/"
 
-    for idx in np.arange(0, 101, 5):
+    for idx in np.arange(0, 101, 1):
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk." + str(idx).zfill(7) + ".vlsv"
         )
