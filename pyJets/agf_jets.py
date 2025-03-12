@@ -301,6 +301,29 @@ class PropReader:
 
     def get_cells(self):
         return jetfile_read(self.runid, self.start, self.ID, transient=self.transient)
+    
+    def at_ch_shock(self):
+        t_list = self.get_times()
+        cell_list = self.get_cells()
+        fnr_list = [int(t*2) for t in t_list]
+        truth_arr = []
+        for idx,file_nr in enumerate(fnr_list):
+            up_cells = np.loadtxt(
+                wrkdir_DNR + "up_down_stream/" + self.runid + "/" + str(file_nr) + ".up"
+            ).astype(int)
+            down_cells = np.loadtxt(
+                wrkdir_DNR + "up_down_stream/" + self.runid + "/" + str(file_nr) + ".down"
+            ).astype(int)
+            upstream_slice = get_neighs_asym(
+                runid_g, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+            )
+            downstream_slice = get_neighs_asym(
+                runid_g, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+            )
+            bs_slice = np.intersect1d(upstream_slice, downstream_slice)
+            truth_arr.append(np.in1d(cell_list[idx],bs_slice).any())
+
+        return np.array(truth_arr)
 
     def read(self, name):
         # Read data of specified variable
