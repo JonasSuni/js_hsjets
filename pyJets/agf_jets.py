@@ -6868,7 +6868,7 @@ def plot_jet_formation_postime(
     ax.legend(loc="lower center", fontsize=16, ncols=3, bbox_to_anchor=(0.5, 1.01))
     # handles,labels = ax.get_legend_handles_labels()
 
-    cb = plt.colorbar(sc, ax=ax)
+    cb = plt.colorbar(sc, ax=ax, pad=0.01)
     cb.ax.set_ylabel("log10(N cells)", fontsize=16, labelpad=5)
     cb.ax.tick_params(labelsize=16)
 
