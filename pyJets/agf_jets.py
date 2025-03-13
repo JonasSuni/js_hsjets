@@ -6736,7 +6736,7 @@ def plot_jet_formation_postime(
     sc = ax.scatter(
         t_arr,
         y_arr,
-        c=np.log(maxsize_arr),
+        c=np.log10(maxsize_arr),
         cmap=cmap,
         zorder=4.5,
         marker="o",
@@ -6745,7 +6745,9 @@ def plot_jet_formation_postime(
         s=s,
         rasterized=True,
     )
-    plt.colorbar(sc, ax=ax)
+    cb = plt.colorbar(sc, ax=ax)
+    cb.ax.set_title("log10(N cells)")
+    cb.ax.tick_params(labelsize=16)
     for idx in range(len(y_values)):
         ax.plot(
             t_values[idx],
