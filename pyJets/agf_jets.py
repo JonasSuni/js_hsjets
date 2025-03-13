@@ -8234,6 +8234,13 @@ def plot_colormap_cut(x0, y0, t0):
         linestyle="dashed",
         linewidth=1.5,
     )
+    ax1.plot(
+        [x0, x0],
+        [y_arr[0] / r_e, y_arr[-1] / r_e],
+        color="red",
+        linestyle="dashed",
+        linewidth=1.5,
+    )
 
     for idx in range(len(var_pars)):
         ax = rax_list[var_pars[idx][4]]
