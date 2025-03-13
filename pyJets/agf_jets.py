@@ -6824,7 +6824,7 @@ def plot_jet_formation_postime(
             (470, 3),
             800 - 470,
             17 - (3),
-            color=CB_color_cycle[4],
+            color=CB_color_cycle[5],
             label="Dusk $Q\\perp$",
             fill=False,
             linestyle="dashed",
@@ -6837,7 +6837,7 @@ def plot_jet_formation_postime(
             (600, -17),
             800 - 600,
             -3 - (-17),
-            color=CB_color_cycle[5],
+            color=CB_color_cycle[4],
             label="Dawn $Q\\parallel$",
             fill=False,
             linestyle="dashed",
@@ -7145,10 +7145,10 @@ def plot_category_histograms(
     colors = [
         CB_color_cycle[0],
         CB_color_cycle[1],
-        CB_color_cycle[4],
+        CB_color_cycle[5],
         CB_color_cycle[2],
         CB_color_cycle[3],
-        CB_color_cycle[5],
+        CB_color_cycle[4],
     ]
     tracking_times = [
         426 - 391,
