@@ -6717,7 +6717,7 @@ def plot_jet_formation_postime(
         ymin_values.append(ymins)
         ymax_values.append(ymaxs)
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8), constrained_layout=True)
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8), layout="compressed")
     ax.grid(zorder=2.5)
 
     # ax.plot(t_values, y_values, "o", color=CB_color_cycle[0])
@@ -6782,32 +6782,6 @@ def plot_jet_formation_postime(
     )
     ax.add_patch(
         mpatches.Rectangle(
-            (430, 3),
-            470 - 430,
-            17 - (3),
-            color=CB_color_cycle[1],
-            label="Dusk FB",
-            fill=False,
-            linestyle="dashed",
-            linewidth=1.5,
-            zorder=3.5,
-        )
-    )
-    ax.add_patch(
-        mpatches.Rectangle(
-            (470, 3),
-            800 - 470,
-            17 - (3),
-            color=CB_color_cycle[4],
-            label="Dusk $Q\\perp$",
-            fill=False,
-            linestyle="dashed",
-            linewidth=1.5,
-            zorder=3.5,
-        )
-    )
-    ax.add_patch(
-        mpatches.Rectangle(
             (430, -17),
             470 - 430,
             0 - (-17),
@@ -6821,11 +6795,37 @@ def plot_jet_formation_postime(
     )
     ax.add_patch(
         mpatches.Rectangle(
+            (430, 3),
+            470 - 430,
+            17 - (3),
+            color=CB_color_cycle[1],
+            label="Dusk FB",
+            fill=False,
+            linestyle="dashed",
+            linewidth=1.5,
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
             (509, -17),
             600 - 509,
             -3 - (-17),
             color=CB_color_cycle[3],
             label="Dawn, young FS",
+            fill=False,
+            linestyle="dashed",
+            linewidth=1.5,
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
+            (470, 3),
+            800 - 470,
+            17 - (3),
+            color=CB_color_cycle[4],
+            label="Dusk $Q\\perp$",
             fill=False,
             linestyle="dashed",
             linewidth=1.5,
@@ -6865,13 +6865,13 @@ def plot_jet_formation_postime(
     ax.set_ylabel("$Y~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
     ax.set_xlabel("$t~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
-    ax.legend(loc="upper right", fontsize=16, ncols=2)
+    ax.legend(loc="upper right", fontsize=16, ncols=3)
     # handles,labels = ax.get_legend_handles_labels()
 
     figdir = wrkdir_DNR + "Figs/"
 
-    fig.savefig(figdir + "formation_postime.png", dpi=300)
-    fig.savefig(figdir + "formation_postime.pdf", dpi=300)
+    fig.savefig(figdir + "formation_postime.png", dpi=300, bbox_inches="tight")
+    fig.savefig(figdir + "formation_postime.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
