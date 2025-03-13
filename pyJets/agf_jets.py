@@ -7150,6 +7150,14 @@ def plot_category_histograms(
         CB_color_cycle[3],
         CB_color_cycle[5],
     ]
+    tracking_times = [
+        426 - 391,
+        470 - 430,
+        800 - 470,
+        470 - 430,
+        600 - 509,
+        800 - 600,
+    ]
     folder_suffixes = folder_suffixes[::-1]
     sfx_labels = sfx_labels[::-1]
     colors = colors[::-1]
@@ -7242,14 +7250,11 @@ def plot_category_histograms(
         ax.hist(
             [categories_list[idx2][idx] for idx2 in idx2_range],
             bins=bin_edges[idx],
-            # weights=[
-            #     np.ones(len(categories_list[idx2][idx]), dtype=float)
-            #     / (
-            #         np.ones(len(categories_list[idx2][idx]), dtype=float)
-            #         * len(categories_list[idx2][idx])
-            #     )
-            #     for idx2 in idx2_range
-            # ],
+            weights=[
+                np.ones(len(categories_list[idx2][idx]), dtype=float)
+                / tracking_times[idx2]
+                for idx2 in idx2_range
+            ],
             label=[sfx_labels[idx2] for idx2 in idx2_range],
             color=[colors[idx2] for idx2 in idx2_range],
             histtype=histtype,
