@@ -2539,7 +2539,7 @@ def fig1_new(
         markerscale=1 * highres_g,
         loc="center left",
         bbox_to_anchor=(1.01, 0.75),
-        fontsize=5 * highres_g,
+        fontsize=5.5 * highres_g,
     )
 
     fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300, bbox_inches="tight")
