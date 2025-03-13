@@ -6733,7 +6733,7 @@ def plot_jet_formation_postime(
     #     edgecolors="k",
     #     zorder=4.5,
     # )
-    ax.scatter(
+    sc = ax.scatter(
         t_arr,
         y_arr,
         c=np.log(maxsize_arr),
@@ -6745,6 +6745,7 @@ def plot_jet_formation_postime(
         s=s,
         rasterized=True,
     )
+    plt.colorbar(sc, ax=ax)
     for idx in range(len(y_values)):
         ax.plot(
             t_values[idx],
@@ -6794,6 +6795,19 @@ def plot_jet_formation_postime(
     )
     ax.add_patch(
         mpatches.Rectangle(
+            (470, 3),
+            800 - 470,
+            17 - (3),
+            color=CB_color_cycle[4],
+            label="Dusk $Q\\perp$",
+            fill=False,
+            linestyle="dashed",
+            linewidth=1.5,
+            zorder=3.5,
+        )
+    )
+    ax.add_patch(
+        mpatches.Rectangle(
             (430, -17),
             470 - 430,
             0 - (-17),
@@ -6831,19 +6845,7 @@ def plot_jet_formation_postime(
             zorder=3.5,
         )
     )
-    ax.add_patch(
-        mpatches.Rectangle(
-            (470, 3),
-            800 - 470,
-            17 - (3),
-            color=CB_color_cycle[4],
-            label="Dusk $Q\\perp$",
-            fill=False,
-            linestyle="dashed",
-            linewidth=1.5,
-            zorder=3.5,
-        )
-    )
+
     # ax.add_patch(
     #     mpatches.Rectangle(
     #         (391, -17),
@@ -6863,7 +6865,8 @@ def plot_jet_formation_postime(
     ax.set_ylabel("$Y~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
     ax.set_xlabel("$t~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
-    ax.legend(loc="upper right", fontsize=16)
+    ax.legend(loc="upper right", fontsize=16, nrows=2)
+    # handles,labels = ax.get_legend_handles_labels()
 
     figdir = wrkdir_DNR + "Figs/"
 
