@@ -2476,7 +2476,7 @@ def fig1_new(
             vmax=vmax,
             vscale=vscale,
             # cbtitle="",
-            cbtitle="$P_{dyn}$\n[nPa]",
+            cbtitle="Pd\n[nPa]",
             usesci=usesci,
             # scale=3,
             title="t = {}s".format(float(fnr) / 2.0),
