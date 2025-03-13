@@ -301,18 +301,23 @@ class PropReader:
 
     def get_cells(self):
         return jetfile_read(self.runid, self.start, self.ID, transient=self.transient)
-    
+
     def at_ch_shock(self):
         t_list = self.get_times()
         cell_list = self.get_cells()
-        fnr_list = [int(t*2) for t in t_list]
+        fnr_list = [int(t * 2) for t in t_list]
         truth_arr = []
-        for idx,file_nr in enumerate(fnr_list):
+        for idx, file_nr in enumerate(fnr_list):
             up_cells = np.loadtxt(
                 wrkdir_DNR + "up_down_stream/" + self.runid + "/" + str(file_nr) + ".up"
             ).astype(int)
             down_cells = np.loadtxt(
-                wrkdir_DNR + "up_down_stream/" + self.runid + "/" + str(file_nr) + ".down"
+                wrkdir_DNR
+                + "up_down_stream/"
+                + self.runid
+                + "/"
+                + str(file_nr)
+                + ".down"
             ).astype(int)
             upstream_slice = get_neighs_asym(
                 runid_g, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
@@ -321,7 +326,7 @@ class PropReader:
                 runid_g, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
             )
             bs_slice = np.intersect1d(upstream_slice, downstream_slice)
-            truth_arr.append(np.in1d(cell_list[idx],bs_slice).any())
+            truth_arr.append(np.in1d(cell_list[idx], bs_slice).any())
 
         return np.array(truth_arr)
 
@@ -8091,6 +8096,8 @@ def plot_colormap_cut(x0, y0, t0):
     # rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
     fig2, rax_list = plt.subplots(7, 1, figsize=(8, 10), constrained_layout=True)
 
+    fig3, rax2_list = plt.subplots(7, 1, figsize=(8, 10), constrained_layout=True)
+
     fnr0 = int(t0 * 2)
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
@@ -8103,6 +8110,19 @@ def plot_colormap_cut(x0, y0, t0):
                 vlsvobj.read_interpolated_variable(
                     var_pars[idx2][1],
                     [x_arr[idx], y0 * r_e, 0],
+                    operator=var_pars[idx2][2],
+                )
+                * var_pars[idx2][3]
+            )
+
+    y_arr = np.arange(y0 * r_e - 30 * 300e3, y0 * r_e + 30 * 300e3 + 1, 300e3)
+    datay_arr = np.zeros((len(var_pars), y_arr.size), dtype=float)
+    for idx in range(y_arr.size):
+        for idx2 in range(len(var_pars)):
+            data_arr[idx2, idx] = (
+                vlsvobj.read_interpolated_variable(
+                    var_pars[idx2][1],
+                    [x0 * r_e, y_arr[idx], 0],
                     operator=var_pars[idx2][2],
                 )
                 * var_pars[idx2][3]
@@ -8215,8 +8235,9 @@ def plot_colormap_cut(x0, y0, t0):
         linewidth=1.5,
     )
 
-    for idx, ax in enumerate(var_pars):
+    for idx in range(len(var_pars)):
         ax = rax_list[var_pars[idx][4]]
+        yax = rax2_list[var_pars[idx][4]]
         ax.plot(
             x_arr / r_e,
             data_arr[idx, :],
@@ -8224,8 +8245,16 @@ def plot_colormap_cut(x0, y0, t0):
             linewidth=1.2,
             label=var_pars[idx][0],
         )
+        yax.plot(
+            y_arr / r_e,
+            datay_arr[idx, :],
+            color=var_pars[idx][6],
+            linewidth=1.2,
+            label=var_pars[idx][0],
+        )
         if var_pars[idx][5]:
             ax.legend(loc="upper right", fontsize=12)
+            yax.legend(loc="upper right", fontsize=12)
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
@@ -8233,12 +8262,22 @@ def plot_colormap_cut(x0, y0, t0):
         ax.grid()
         ax.tick_params(labelsize=12)
         ax.label_outer()
+    for idx, yax in enumerate(rax2_list):
+        yax.set_xlim(y_arr[0] / r_e, y_arr[-1] / r_e)
+        yax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=20)
+        yax.grid()
+        yax.tick_params(labelsize=12)
+        yax.label_outer()
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
     rax_list[0].set_title(
         "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=20
     )
+    rax2_list[-1].set_xlabel("y~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
+    rax2_list[0].set_title(
+        "t = {} s, x = {}".format(t0, x0) + " $R_\\mathrm{E}$", pad=10, fontsize=20
+    )
 
-    for idx, fig in enumerate([fig1, fig2]):
+    for idx, fig in enumerate([fig1, fig2, fig3]):
         fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1), dpi=300)
         # fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
         plt.close(fig)
