@@ -7161,6 +7161,7 @@ def plot_category_histograms(
     folder_suffixes = folder_suffixes[::-1]
     sfx_labels = sfx_labels[::-1]
     colors = colors[::-1]
+    tracking_times = tracking_times[::-1]
 
     prop_labels = [
         "Duration [s]",
