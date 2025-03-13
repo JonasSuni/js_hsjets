@@ -2537,7 +2537,7 @@ def fig1_new(
         frameon=True,
         numpoints=1,
         markerscale=1 * highres_g,
-        loc="center right",
+        loc="center left",
         bbox_to_anchor=(1.01, 0.5),
         fontsize=5 * highres_g,
     )
