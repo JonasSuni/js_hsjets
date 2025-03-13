@@ -7275,7 +7275,7 @@ def plot_category_histograms(
         #     cumulative=cumul,
         # )
         if idx == 0:
-            ax.set_ylabel("Cumulative\nnumber of jets", fontsize=16, labelpad=10)
+            ax.set_ylabel("Cumulative\njets/s", fontsize=16, labelpad=10)
             ax.legend(fontsize=12)
             ax.set_xscale("log")
             ax.xaxis.set_major_formatter(ScalarFormatter())
