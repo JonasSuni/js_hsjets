@@ -2441,7 +2441,7 @@ def fig1_new(
     nodrawcb = [True, True, True, False]
     drawleg = [True, False, False, False]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(9, 10), constrained_layout=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(10, 11), layout="compressed")
     ax_flat = ax_list.flatten()
     cbax = fig.add_axes((0.9, 0.25, 0.1, 0.5))
 
@@ -2531,7 +2531,7 @@ def fig1_new(
         )
         ax_flat[idx].label_outer()
 
-    fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
