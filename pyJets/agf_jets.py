@@ -8119,7 +8119,7 @@ def plot_colormap_cut(x0, y0, t0):
     datay_arr = np.zeros((len(var_pars), y_arr.size), dtype=float)
     for idx in range(y_arr.size):
         for idx2 in range(len(var_pars)):
-            data_arr[idx2, idx] = (
+            datay_arr[idx2, idx] = (
                 vlsvobj.read_interpolated_variable(
                     var_pars[idx2][1],
                     [x0 * r_e, y_arr[idx], 0],
