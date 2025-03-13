@@ -2319,7 +2319,7 @@ def fig1_new(
     runid,
     var="proton/vg_Pdyn",
     op=None,
-    boxre=[-10, 20, -20, 20],
+    boxre=[-10, 30, -20, 20],
     tickint=5.0,
     blines=False,
     vscale=1e9,
@@ -2443,6 +2443,7 @@ def fig1_new(
 
     fig, ax_list = plt.subplots(2, 2, figsize=(9, 10), constrained_layout=True)
     ax_flat = ax_list.flatten()
+    cbax = fig.add_axes((0.9, 0.25, 0.1, 0.5))
 
     for idx, fnr in enumerate([781, 880, 1060, 1392]):
         filenr_g = fnr
@@ -2478,9 +2479,10 @@ def fig1_new(
             # cbtitle="",
             usesci=usesci,
             # scale=3,
-            title="Run: {}$~$t = {}s".format(runid, float(fnr) / 2.0),
+            title="t = {}s".format(float(fnr) / 2.0),
             boxre=boxre,
-            internalcb=True,
+            internalcb=False,
+            cbaxes=cbax,
             lin=lin,
             highres=highres,
             colormap=cmap,
@@ -2527,6 +2529,7 @@ def fig1_new(
                 lw=0.5,
             ),
         )
+        ax_flat[idx].label_outer()
 
     fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300)
     plt.close(fig)
