@@ -7119,10 +7119,10 @@ def plot_category_histograms(
     folder_suffixes=[
         "jets_qpar_before",
         "jets_qpar_fb",
-        "jets_qperp_rd",
-        "jets_qperp_after",
-        "jets_qperp_inter",
         "jets_qpar_after",
+        "jets_qperp_rd",
+        "jets_qperp_inter",
+        "jets_qperp_after",
     ]
 ):
 
@@ -7137,11 +7137,22 @@ def plot_category_histograms(
     sfx_labels = [
         "Dusk $Q_\\parallel$",
         "Dusk FB",
-        "Dawn RD",
-        "Dawn $Q_\\parallel$",
-        "Dawn young FS",
         "Dusk $Q_\\perp$",
+        "Dawn RD",
+        "Dawn young FS",
+        "Dawn $Q_\\parallel$",
     ]
+    colors = [
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[4],
+        CB_color_cycle[2],
+        CB_color_cycle[3],
+        CB_color_cycle[5],
+    ]
+    folder_suffixes = folder_suffixes[::-1]
+    sfx_labels = sfx_labels[::-1]
+    colors = colors[::-1]
 
     prop_labels = [
         "Duration [s]",
@@ -7240,7 +7251,7 @@ def plot_category_histograms(
             #     for idx2 in idx2_range
             # ],
             label=[sfx_labels[idx2] for idx2 in idx2_range],
-            color=[CB_color_cycle[idx2] for idx2 in idx2_range],
+            color=[colors[idx2] for idx2 in idx2_range],
             histtype=histtype,
             # alpha=0.7,
             cumulative=cumul,
@@ -7271,6 +7282,9 @@ def plot_category_histograms(
         ax.annotate(
             panel_labs[idx], xy=(0.15, 0.9), xycoords="axes fraction", fontsize=16
         )
+
+    handles, labels = ax_list[0].get_legend_handles_labels()
+    ax_list[0].legend(handles[::-1], labels[::-1], fontsize=12)
 
     figdir = wrkdir_DNR + "Figs/"
 
