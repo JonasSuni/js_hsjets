@@ -2439,11 +2439,11 @@ def fig1_new(
 
     annot_pan = ["a", "b", "c", "d"]
     nodrawcb = [True, True, True, False]
-    drawleg = [True, False, False, False]
+    drawleg = [False, True, False, False]
 
     fig, ax_list = plt.subplots(2, 2, figsize=(10, 11), layout="compressed")
     ax_flat = ax_list.flatten()
-    cbax = fig.add_axes((1, 0.25, 0.03, 0.5))
+    cbax = fig.add_axes((1, 0, 0.03, 0.5))
 
     for idx, fnr in enumerate([781, 880, 1060, 1392]):
         filenr_g = fnr
@@ -2530,6 +2530,17 @@ def fig1_new(
             ),
         )
         ax_flat[idx].label_outer()
+
+    ax_flat[1].legend(
+        gprox,
+        gprox_labs,
+        frameon=True,
+        numpoints=1,
+        markerscale=1 * highres_g,
+        loc="center right",
+        bbox_to_anchor=(1.01, 0.5),
+        fontsize=5 * highres_g,
+    )
 
     fig.savefig(wrkdir_DNR + "Figs/fig1_new.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
