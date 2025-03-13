@@ -6745,15 +6745,13 @@ def plot_jet_formation_postime(
         s=s,
         rasterized=True,
     )
-    cb = plt.colorbar(sc, ax=ax)
-    cb.ax.set_title("log10(N cells)")
-    cb.ax.tick_params(labelsize=16)
+
     for idx in range(len(y_values)):
         ax.plot(
             t_values[idx],
             y_values[idx],
             color="k",
-            linewidth=0.2,
+            linewidth=0.4,
             zorder=4,
             rasterized=True,
         )
@@ -6867,8 +6865,12 @@ def plot_jet_formation_postime(
     ax.set_ylabel("$Y~[R_\\mathrm{E}]$", fontsize=20, labelpad=10)
     ax.set_xlabel("$t~[\\mathrm{s}]$", fontsize=20, labelpad=10)
     ax.tick_params(labelsize=16)
-    ax.legend(loc="upper right", fontsize=16, ncols=3)
+    ax.legend(loc="lower center", fontsize=16, ncols=3, bbox_to_anchor=(0.5, 1.01))
     # handles,labels = ax.get_legend_handles_labels()
+
+    cb = plt.colorbar(sc, ax=ax)
+    cb.ax.set_title("log10(N cells)", loc="right", fontsize=16, pad=5)
+    cb.ax.tick_params(labelsize=16)
 
     figdir = wrkdir_DNR + "Figs/"
 
