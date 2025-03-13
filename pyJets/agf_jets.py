@@ -2443,7 +2443,7 @@ def fig1_new(
 
     fig, ax_list = plt.subplots(2, 2, figsize=(10, 11), layout="compressed")
     ax_flat = ax_list.flatten()
-    cbax = fig.add_axes((1, 0, 0.03, 0.5))
+    cbax = fig.add_axes((0.8, 0, 0.03, 0.5))
 
     for idx, fnr in enumerate([781, 880, 1060, 1392]):
         filenr_g = fnr
