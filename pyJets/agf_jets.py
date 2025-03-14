@@ -308,24 +308,14 @@ class PropReader:
         fnr_list = [int(t * 2) for t in t_list]
         truth_arr = []
         for idx, file_nr in enumerate(fnr_list):
-            up_cells = np.loadtxt(
-                wrkdir_DNR + "up_down_stream/" + self.runid + "/" + str(file_nr) + ".up"
-            ).astype(int)
-            down_cells = np.loadtxt(
+            bs_slice = np.loadtxt(
                 wrkdir_DNR
                 + "up_down_stream/"
                 + self.runid
                 + "/"
                 + str(file_nr)
-                + ".down"
+                + ".slice"
             ).astype(int)
-            upstream_slice = get_neighs_asym(
-                self.runid, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
-            )
-            downstream_slice = get_neighs_asym(
-                self.runid, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
-            )
-            bs_slice = np.intersect1d(upstream_slice, downstream_slice)
             truth_arr.append(np.in1d(cell_list[idx], bs_slice).any())
 
         return np.array(truth_arr)
@@ -8902,6 +8892,29 @@ def plot_vdf_at_jets(runid, boxre=None, skip=False, pdmin=0.01):
             )
 
         # non_ids.append(n1)
+
+
+def calc_ch_bs_slice():
+    fnr_list = np.arange(781, 2000)
+    for idx, file_nr in enumerate(fnr_list):
+        print(file_nr)
+        up_cells = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(file_nr) + ".up"
+        ).astype(int)
+        down_cells = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(file_nr) + ".down"
+        ).astype(int)
+        upstream_slice = get_neighs_asym(
+            "AIC", down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+        )
+        downstream_slice = get_neighs_asym(
+            "AIC", up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+        )
+        bs_slice = np.intersect1d(upstream_slice, downstream_slice)
+        np.savetxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(file_nr) + ".slice",
+            bs_slice,
+        )
 
 
 def pos_vdf_plotter(
