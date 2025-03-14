@@ -1897,7 +1897,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 YmeshXY,
                 jet_mask,
                 [0.5],
-                linewidths=1.5 * lws,
+                linewidths=2 * lws,
                 colors=CB_color_cycle[2],
                 linestyles=["solid"],
             )
@@ -1909,7 +1909,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
             YmeshXY,
             jet_mask,
             [0.5],
-            linewidths=1.5 * lws,
+            linewidths=2 * lws,
             colors=CB_color_cycle[2],
             linestyles=["solid"],
         )
@@ -8275,13 +8275,13 @@ def plot_colormap_cut(x0, y0, t0):
         linestyle="dashed",
         linewidth=1.5,
     )
-    ax1.plot(
-        [x0, x0],
-        [y_arr[0] / r_e, y_arr[-1] / r_e],
-        color="red",
-        linestyle="dashed",
-        linewidth=1.5,
-    )
+    # ax1.plot(
+    #     [x0, x0],
+    #     [y_arr[0] / r_e, y_arr[-1] / r_e],
+    #     color="red",
+    #     linestyle="dashed",
+    #     linewidth=1.5,
+    # )
 
     for idx in range(len(var_pars)):
         ax = rax_list[var_pars[idx][4]]
@@ -8301,8 +8301,8 @@ def plot_colormap_cut(x0, y0, t0):
             label=var_pars[idx][0],
         )
         if var_pars[idx][5]:
-            ax.legend(loc="upper right", fontsize=12)
-            yax.legend(loc="upper right", fontsize=12)
+            ax.legend(loc="center left", fontsize=16, bbox_to_anchor=(1.01, 0.5))
+            yax.legend(loc="center left", fontsize=16, bbox_to_anchor=(1.01, 0.5))
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
