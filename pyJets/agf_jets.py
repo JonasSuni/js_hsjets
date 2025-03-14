@@ -7450,7 +7450,7 @@ def archerplot_4():
             fontsize=24,
             labelpad=10,
         )
-        ax.set_title(titles[idx], fontsize=24, pad=5)
+        ax.set_title(titles[idx], fontsize=24, pad=10)
         ax.axvline(0, linestyle="dashed", linewidth=0.6)
         ax.axhline(0, linestyle="dashed", linewidth=0.6)
         ax.grid()
