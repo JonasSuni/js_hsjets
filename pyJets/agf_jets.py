@@ -7331,6 +7331,7 @@ def archerplot_4():
         CB_color_cycle[4],
     ]
     pair_markers = ["x", "x", "o", "x", "o", "^"]
+    zorders = [7, 7, 7, 7, 7, 6]
     titles = ["All", "Before RD", "During RD", "After RD"]
     markers = pair_markers
     # pair_colors = [
@@ -7404,6 +7405,7 @@ def archerplot_4():
                     markersize=8,
                     fillstyle="none",
                     markeredgewidth=2,
+                    zorder=zorders[idx],
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7414,6 +7416,7 @@ def archerplot_4():
                     markersize=8,
                     fillstyle="none",
                     markeredgewidth=2,
+                    zorder=zorders[idx],
                 )
 
             else:
@@ -7425,6 +7428,7 @@ def archerplot_4():
                     markersize=8,
                     fillstyle="none",
                     markeredgewidth=2,
+                    zorder=zorders[idx],
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7434,6 +7438,7 @@ def archerplot_4():
                     markersize=8,
                     fillstyle="none",
                     markeredgewidth=2,
+                    zorder=zorders[idx],
                 )
 
         avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
