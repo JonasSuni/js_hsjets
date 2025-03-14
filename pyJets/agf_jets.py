@@ -7331,6 +7331,8 @@ def archerplot_4():
         CB_color_cycle[4],
     ]
     pair_markers = ["x", "x", "o", "x", "o", "^"]
+    titles = ["All", "Before RD", "During RD", "After RD"]
+    markers = pair_markers
     # pair_colors = [
     #     "k",
     #     "k",
@@ -7343,7 +7345,7 @@ def archerplot_4():
     pair_ax_idx = [1, 2, 2, 3, 3, 3]
     panel_labs = ["(a)", "(b)", "(c)", "(d)"]
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(14, 14), constrained_layout=True)
+    fig, ax_list = plt.subplots(2, 2, figsize=(14, 14), layout="compressed")
     ax_flat = ax_list.flatten()
     avgs = []
     meds = []
@@ -7448,14 +7450,15 @@ def archerplot_4():
             fontsize=24,
             labelpad=10,
         )
+        ax.set_title(titles[idx], fontsize=24, pad=5)
         ax.axvline(0, linestyle="dashed", linewidth=0.6)
         ax.axhline(0, linestyle="dashed", linewidth=0.6)
         ax.grid()
-        ax.legend(fontsize=14)
+        ax.legend(fontsize=16)
         ax.set_xlim(-1, 2.5)
         ax.set_ylim(-1, 2.5)
         ax.label_outer()
-        ax.tick_params(labelsize=12)
+        ax.tick_params(labelsize=16)
         ax.annotate(
             panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
         )
@@ -7476,7 +7479,7 @@ def archerplot_4():
         )
     ax_flat[0].legend(handles, labels, fontsize=14)
 
-    fig.savefig(wrkdir_DNR + "Figs/archerplot_4.pdf", dpi=300)
+    fig.savefig(wrkdir_DNR + "Figs/archerplot_4.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
