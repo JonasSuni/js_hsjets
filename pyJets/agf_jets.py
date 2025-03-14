@@ -7331,14 +7331,15 @@ def archerplot_4():
         CB_color_cycle[4],
     ]
     pair_markers = ["x", "x", "o", "x", "o", "^"]
-    pair_colors = [
-        "k",
-        "k",
-        CB_color_cycle[3],
-        "k",
-        CB_color_cycle[3],
-        CB_color_cycle[0],
-    ]
+    # pair_colors = [
+    #     "k",
+    #     "k",
+    #     CB_color_cycle[3],
+    #     "k",
+    #     CB_color_cycle[3],
+    #     CB_color_cycle[0],
+    # ]
+    pair_colors = colors
     pair_ax_idx = [1, 2, 2, 3, 3, 3]
     panel_labs = ["(a)", "(b)", "(c)", "(d)"]
 
@@ -7400,7 +7401,7 @@ def archerplot_4():
                     label=cat_names[idx],
                     markersize=8,
                     fillstyle="none",
-                    linewidth=1.2,
+                    linewidth=1.5,
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7410,7 +7411,7 @@ def archerplot_4():
                     label=cat_names[idx],
                     markersize=8,
                     fillstyle="none",
-                    linewidth=1.2,
+                    linewidth=1.5,
                 )
 
             else:
@@ -7421,7 +7422,7 @@ def archerplot_4():
                     color=colors[idx],
                     markersize=8,
                     fillstyle="none",
-                    linewidth=1.2,
+                    linewidth=1.5,
                 )
                 ax.plot(
                     rhocontrib / pdyncontrib,
@@ -7430,7 +7431,7 @@ def archerplot_4():
                     color=pair_colors[idx],
                     markersize=8,
                     fillstyle="none",
-                    linewidth=1.2,
+                    linewidth=1.5,
                 )
 
         avgs.append([np.nanmean(xvals), np.nanmean(yvals)])
