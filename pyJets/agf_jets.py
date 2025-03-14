@@ -7745,7 +7745,7 @@ def plot_SEA_three(paper=True):
     fig, ax_list_list = plt.subplots(
         len(ylabels),
         3,
-        figsize=(16, 10),
+        figsize=(17, 12),
         layout="compressed",
         sharex=True,
         sharey="row",
