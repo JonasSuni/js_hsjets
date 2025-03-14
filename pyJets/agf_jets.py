@@ -8306,23 +8306,23 @@ def plot_colormap_cut(x0, y0, t0):
 
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
-        ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=20)
+        ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=22)
         ax.grid()
-        ax.tick_params(labelsize=12)
+        ax.tick_params(labelsize=14)
         ax.label_outer()
     for idx, yax in enumerate(rax2_list):
         yax.set_xlim(y_arr[0] / r_e, y_arr[-1] / r_e)
-        yax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=20)
+        yax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=22)
         yax.grid()
-        yax.tick_params(labelsize=12)
+        yax.tick_params(labelsize=14)
         yax.label_outer()
-    rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
+    rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=22)
     rax_list[0].set_title(
-        "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=20
+        "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=22
     )
-    rax2_list[-1].set_xlabel("y~[$R_\\mathrm{E}$]", labelpad=10, fontsize=20)
+    rax2_list[-1].set_xlabel("y~[$R_\\mathrm{E}$]", labelpad=10, fontsize=22)
     rax2_list[0].set_title(
-        "t = {} s, x = {}".format(t0, x0) + " $R_\\mathrm{E}$", pad=10, fontsize=20
+        "t = {} s, x = {}".format(t0, x0) + " $R_\\mathrm{E}$", pad=10, fontsize=22
     )
 
     for idx, fig in enumerate([fig1, fig2, fig3]):
