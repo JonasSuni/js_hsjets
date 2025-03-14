@@ -6974,7 +6974,7 @@ def get_jet_category_properties(
         if "splinter" in props.meta:
             continue
 
-        if props.at_ch_shock()[0] != 1:
+        if props.at_ch_shock().any() != True:
             continue
 
         rmean = props.read("r_mean")
