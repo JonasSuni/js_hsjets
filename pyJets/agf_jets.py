@@ -7838,13 +7838,13 @@ def plot_SEA_three(paper=True):
                 zorder=1,
             )
             if draw_legend[idx2] and idx3 == 2:
-                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), fontsize=14)
 
         for idx, ax in enumerate(ax_list):
             ax.grid(zorder=0)
             ax.set_xlim(sea_t_arr[0], sea_t_arr[-1])
-            ax.set_ylabel(ylabels[idx], fontsize=16, labelpad=5)
-            ax.tick_params(labelsize=16)
+            ax.set_ylabel(ylabels[idx], fontsize=14, labelpad=5)
+            ax.tick_params(labelsize=14)
             ax.label_outer()
         ax_list[-1].set_xlabel("Epoch time [s]", fontsize=20, labelpad=5)
         ax_list[0].set_title(
