@@ -1897,7 +1897,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
                 YmeshXY,
                 jet_mask,
                 [0.5],
-                linewidths=1.2*lws,
+                linewidths=1.5 * lws,
                 colors=CB_color_cycle[2],
                 linestyles=["solid"],
             )
@@ -8127,7 +8127,7 @@ def plot_colormap_cut(x0, y0, t0):
         ["$T_\\perp/T_\\parallel$", "proton/vg_t_anisotropy", "pass", 1, 6, False, "k"],
     ]
 
-    fig1, ax1 = plt.subplots(1, 1, figsize=(8, 8), constrained_layout=True)
+    fig1, ax1 = plt.subplots(1, 1, figsize=(8, 8), layout="compressed")
     # fig = plt.figure(figsize=(16, 8), layout="constrained")
 
     # gs = fig.add_gridspec(7, 20)
@@ -8135,9 +8135,9 @@ def plot_colormap_cut(x0, y0, t0):
     # ax1 = fig.add_subplot(gs[0:7, 0:9])
     # ax2 = fig.add_subplot(gs[0:7, 9:10])
     # rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
-    fig2, rax_list = plt.subplots(7, 1, figsize=(8, 10), constrained_layout=True)
+    fig2, rax_list = plt.subplots(7, 1, figsize=(8, 10), layout="compressed")
 
-    fig3, rax2_list = plt.subplots(7, 1, figsize=(8, 10), constrained_layout=True)
+    fig3, rax2_list = plt.subplots(7, 1, figsize=(8, 10), layout="compressed")
 
     fnr0 = int(t0 * 2)
     vlsvobj = pt.vlsvfile.VlsvReader(
@@ -8241,7 +8241,7 @@ def plot_colormap_cut(x0, y0, t0):
         tickinterval=4,
         fsaved=False,
         useimshow=True,
-        internalcb=True,
+        internalcb=False,
         external=ext_jet,
         expression=expression,
         pass_vars=[
@@ -8326,7 +8326,11 @@ def plot_colormap_cut(x0, y0, t0):
     )
 
     for idx, fig in enumerate([fig1, fig2, fig3]):
-        fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1), dpi=300)
+        fig.savefig(
+            wrkdir_DNR + "Figs/colormap_cut_{}.pdf".format(idx + 1),
+            dpi=300,
+            bbox_inches="tight",
+        )
         # fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
         plt.close(fig)
 
