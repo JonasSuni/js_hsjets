@@ -7325,8 +7325,8 @@ def archerplot_4():
     colors = [
         "k",
         CB_color_cycle[3],
-        CB_color_cycle[0],
         CB_color_cycle[1],
+        CB_color_cycle[0],
         CB_color_cycle[2],
         CB_color_cycle[4],
     ]
