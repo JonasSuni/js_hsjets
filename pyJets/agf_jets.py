@@ -8135,9 +8135,9 @@ def plot_colormap_cut(x0, y0, t0):
     # ax1 = fig.add_subplot(gs[0:7, 0:9])
     # ax2 = fig.add_subplot(gs[0:7, 9:10])
     # rax_list = [fig.add_subplot(gs[idx : idx + 1, 11:20]) for idx in range(7)]
-    fig2, rax_list = plt.subplots(7, 1, figsize=(8, 10), layout="compressed")
+    fig2, rax_list = plt.subplots(7, 1, figsize=(9, 10), layout="compressed")
 
-    fig3, rax2_list = plt.subplots(7, 1, figsize=(8, 10), layout="compressed")
+    fig3, rax2_list = plt.subplots(7, 1, figsize=(9, 10), layout="compressed")
 
     fnr0 = int(t0 * 2)
     vlsvobj = pt.vlsvfile.VlsvReader(
