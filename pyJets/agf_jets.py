@@ -8235,7 +8235,7 @@ def plot_colormap_cut(x0, y0, t0):
         usesci=usesci,
         # scale=3,
         title="t = {} s".format(t0),
-        boxre=[0, 20, -10, 10],
+        boxre=[2, 18, -8, 8],
         highres=highres_g,
         colormap="grayC",
         tickinterval=4,
