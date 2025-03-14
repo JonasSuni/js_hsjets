@@ -6941,9 +6941,6 @@ def get_jet_category_properties(
         if props.read("at_bow_shock")[0] != 1:
             continue
 
-        if props.at_ch_shock()[0] != 1:
-            continue
-
         xmean = props.read("x_mean")
         ymean = props.read("y_mean")
 
@@ -6975,6 +6972,9 @@ def get_jet_category_properties(
         if maxsize < minsize:
             continue
         if "splinter" in props.meta:
+            continue
+
+        if props.at_ch_shock()[0] != 1:
             continue
 
         rmean = props.read("r_mean")
