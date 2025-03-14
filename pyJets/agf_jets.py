@@ -6932,6 +6932,7 @@ def get_jet_category_properties(
     DTPerp = []
 
     for n1 in range(6000):
+        print(n1)
         try:
             props = PropReader(str(n1).zfill(5), runid, transient="jet")
         except:
