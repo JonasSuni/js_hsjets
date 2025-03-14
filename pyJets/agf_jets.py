@@ -320,10 +320,10 @@ class PropReader:
                 + ".down"
             ).astype(int)
             upstream_slice = get_neighs_asym(
-                runid_g, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+                self.runid, down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
             )
             downstream_slice = get_neighs_asym(
-                runid_g, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+                self.runid, up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
             )
             bs_slice = np.intersect1d(upstream_slice, downstream_slice)
             truth_arr.append(np.in1d(cell_list[idx], bs_slice).any())
