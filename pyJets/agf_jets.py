@@ -8942,7 +8942,7 @@ def plot_rho_up():
         spatmesh_size = vlsvobj.get_spatial_mesh_size()
         cellids = vlsvobj.read_variable("CellID")
         core_heating = vlsvobj.read_variable("proton/vg_core_heating")
-        up_cells = cellids[core_heating < 1.5e6]
+        up_cells = cellids[core_heating > 1.5e6]
         ci_sorted_reshaped = np.reshape(
             np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
         )
