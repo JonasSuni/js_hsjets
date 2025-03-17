@@ -8968,7 +8968,7 @@ def plot_rho_up():
         point_list = []
         for py in np.sort(np.unique(y_vals)):
             px = max(x_vals[y_vals == py])
-            point_list.append((py, px))
+            point_list.append((py / r_e, px / r_e))
         coeff_list.append(
             np.polyfit(np.array(point_list)[:, 0], np.array(point_list)[:, 1], deg=4)
         )
