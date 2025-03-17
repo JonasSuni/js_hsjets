@@ -8927,6 +8927,7 @@ def plot_rho_up():
     )
     cellids = vlsvobj.read_variable("CellID")
     cellids = np.sort(cellids)
+    cellids_orig = np.copy(cellids)
     x, y, z = xyz_reconstruct(vlsvobj, cellids=cellids)
     # forbidden_cells = cellids[
     #     np.logical_or(np.sqrt(x**2 + y**2) / r_e < 10, x / r_e < 5)
@@ -8962,8 +8963,8 @@ def plot_rho_up():
         )
         fig.savefig(wrkdir_DNR + "diag/rhoup/{}.png".format(fnr))
         plt.close(fig)
-        x_vals = x[np.isin(cellids, ci_sorted_reshaped[bool_arr])]
-        y_vals = y[np.isin(cellids, ci_sorted_reshaped[bool_arr])]
+        x_vals = x[np.isin(cellids_orig, ci_sorted_reshaped[bool_arr])]
+        y_vals = y[np.isin(cellids_orig, ci_sorted_reshaped[bool_arr])]
         point_list = []
         for y in np.sort(np.unique(y)):
             x = max(x_vals[y_vals == y])
