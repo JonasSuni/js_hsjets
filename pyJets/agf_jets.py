@@ -9046,15 +9046,25 @@ def calc_mmsn_cells():
         ci_sorted_reshaped = np.reshape(
             np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
         )
+        up_cells_ch = np.loadtxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(fnr) + ".up"
+        ).astype(int)
         bool_arr = np.isin(ci_sorted_reshaped, mmsn_up_cells)
+        bool_arr2 = np.isin(ci_sorted_reshaped, up_cells_ch)
         fig, ax = plt.subplots(1, 1)
-        ax.pcolormesh(
+        ax.contour(
             np.sort(np.unique(xarr)),
             np.sort(np.unique(yarr)),
             bool_arr.astype(int),
-            cmap="batlow",
-            vmin=0,
-            vmax=1,
+            [0.5],
+            colors=["black"],
+        )
+        ax.contour(
+            np.sort(np.unique(xarr)),
+            np.sort(np.unique(yarr)),
+            bool_arr2.astype(int),
+            [0.5],
+            colors=["red"],
         )
         fig.savefig(wrkdir_DNR + "diag/mmsup/{}.png".format(fnr))
         plt.close(fig)
