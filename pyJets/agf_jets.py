@@ -8970,7 +8970,7 @@ def plot_rho_up():
             px = max(x_vals[y_vals == py])
             point_list.append((py, px))
         coeff_list.append(
-            np.polyfit(np.array(point_list)[:, 1], np.array(point_list)[:, 0], deg=4)
+            np.polyfit(np.array(point_list)[:, 0], np.array(point_list)[:, 1], deg=4)
         )
 
     print(coeff_list)
