@@ -9037,7 +9037,7 @@ def calc_mmsn_cells():
             mmsn = np.array(
                 [
                     np.abs(np.dot(v_restr[idx2], nvec)) / vms_restr[idx2]
-                    for idx2 in range(v_restr.size)
+                    for idx2 in range(vms_restr.size)
                 ]
             )
             ci_restr_up = ci_restr[mmsn > 1]
