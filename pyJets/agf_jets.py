@@ -8926,7 +8926,7 @@ def plot_rho_up():
         bulkpath + "bulk.{}.vlsv".format(str(781).zfill(7))
     )
     cellids = vlsvobj.read_variable("CellID")
-    cellids = np.sorted(cellids)
+    cellids = np.sort(cellids)
     x, y, z = xyz_reconstruct(vlsvobj, cellids=cellids)
     forbidden_cells = cellids[(x**2 + y**2) / r_e < 10]
 
@@ -8939,7 +8939,7 @@ def plot_rho_up():
         cellids = vlsvobj.read_variable("CellID")
         rho = vlsvobj.read_variable("proton/vg_rho")
         up_cells = cellids[rho > 2e6]
-        ci_sorted_reshaped = np.sorted(cellids).reshape(
+        ci_sorted_reshaped = np.sort(cellids).reshape(
             (spatmesh_size[0], spatmesh_size[1])
         )
         bool_arr = np.isin(ci_sorted_reshaped, up_cells)
