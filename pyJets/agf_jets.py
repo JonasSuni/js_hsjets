@@ -8928,9 +8928,10 @@ def plot_rho_up():
     cellids = vlsvobj.read_variable("CellID")
     cellids = np.sort(cellids)
     x, y, z = xyz_reconstruct(vlsvobj, cellids=cellids)
-    forbidden_cells = cellids[
-        np.logical_or(np.sqrt(x**2 + y**2) / r_e < 10, x / r_e < 5)
-    ]
+    # forbidden_cells = cellids[
+    #     np.logical_or(np.sqrt(x**2 + y**2) / r_e < 10, x / r_e < 5)
+    # ]
+    forbidden_cells = cellids[x / r_e > 17]
     print(forbidden_cells)
 
     for idx, fnr in enumerate(fnr_list):
@@ -8946,9 +8947,9 @@ def plot_rho_up():
             np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
         )
         bool_arr = np.isin(ci_sorted_reshaped, up_cells)
-        # bool_arr = np.logical_and(
-        #     bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
-        # )
+        bool_arr = np.logical_and(
+            bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
+        )
         fig, ax = plt.subplots(1, 1)
         ax.pcolormesh(
             np.sort(np.unique(x)) / r_e,
