@@ -8983,6 +8983,82 @@ def plot_rho_up():
     fig.savefig(wrkdir_DNR + "diag/rhoup/fits.png")
     plt.close(fig)
 
+    multi_arr = np.arange(5)[::-1]
+
+    outlist = [
+        coeff_list[0],
+        coeff_list[-1],
+        np.roll(coeff_list[0] * multi_arr, 1),
+        np.roll(coeff_list[-1] * multi_arr, 1),
+    ]
+
+    np.savetxt(wrkdir_DNR + "shock_fit_781_1981.txt", np.array(outlist))
+
+
+def calc_mmsn_cells():
+
+    fnr_list = np.arange(781, 2000)
+    bulkpath = find_bulkpath("AIC")
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(781).zfill(7))
+    )
+    cellids = vlsvobj.read_variable("CellID")
+    cellids = np.sort(cellids)
+    cellids_orig = np.copy(cellids)
+    xarr, yarr, zarr = xyz_reconstruct(vlsvobj, cellids=cellids) / r_e
+
+    yunique = np.sort(np.unique(yarr))
+    zvec = np.array([0, 0, 1])
+    p0, p1, derp0, derp1 = np.loadtxt(wrkdir_DNR + "shock_fit_781_1981.txt")
+    t0 = 781 / 2
+    t1 = 1981 / 2
+    derp = lambda t: derp0 * (1 - (t - t0) / (t1 - t0)) + derp1 * (t - t0) / (t1 - t0)
+    bsderx = lambda y, t: np.polyval(derp(t), y)
+
+    for idx, fnr in enumerate(fnr_list):
+        print(fnr)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        tcurr = fnr / 2
+        spatmesh_size = vlsvobj.get_spatial_mesh_size()
+        cellids = vlsvobj.read_variable("CellID")
+        vms = vlsvobj.read_variable("vg_vms")[np.argsort(cellids)]
+        v = vlsvobj.read_variable("proton/vg_v")[np.argsort(cellids)]
+        mmsn_up_cells = np.array([])
+        for yun in yunique:
+            tvec = np.array([bsderx(yun, tcurr), 1, 0])
+            tvec = tvec / np.linalg.norm(tvec)
+            nvec = np.cross(tvec, zvec)
+            ci_restr = cellids_orig[yarr == yun]
+            v_restr = v[yarr == yun]
+            vms_restr = vms[yarr == yun]
+            mmsn = np.array(
+                [
+                    np.abs(np.dot(v_restr[idx2], nvec)) / vms_restr[idx2]
+                    for idx2 in range(v_restr.size)
+                ]
+            )
+            ci_restr_up = ci_restr[mmsn > 1]
+            mmsn_up_cells = np.append(mmsn_up_cells, ci_restr_up)
+
+        ci_sorted_reshaped = np.reshape(
+            np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
+        )
+        bool_arr = np.isin(ci_sorted_reshaped, mmsn_up_cells)
+        fig, ax = plt.subplots(1, 1)
+        ax.pcolormesh(
+            np.sort(np.unique(xarr)),
+            np.sort(np.unique(yarr)),
+            bool_arr.astype(int),
+            cmap="batlow",
+            vmin=0,
+            vmax=1,
+        )
+        fig.savefig(wrkdir_DNR + "diag/mmsup/{}.png".format(fnr))
+        plt.close(fig)
+
 
 def pos_vdf_plotter(
     runid,
