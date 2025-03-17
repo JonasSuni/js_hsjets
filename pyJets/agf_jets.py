@@ -8928,7 +8928,9 @@ def plot_rho_up():
     cellids = vlsvobj.read_variable("CellID")
     cellids = np.sort(cellids)
     x, y, z = xyz_reconstruct(vlsvobj, cellids=cellids)
-    forbidden_cells = cellids[np.sqrt(x**2 + y**2) / r_e < 10 and x / r_e > -10]
+    forbidden_cells = cellids[np.sqrt(x**2 + y**2) / r_e < 10]
+    forbidden_cells_2 = cellids[x / r_e < -10]
+    forbidden_cells = np.logical_and(forbidden_cells, forbidden_cells_2)
     print(forbidden_cells)
 
     for idx, fnr in enumerate(fnr_list):
