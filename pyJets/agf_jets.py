@@ -8918,6 +8918,39 @@ def calc_ch_bs_slice():
         )
 
 
+def plot_rho_up():
+    fnr_list = np.arange(781, 2000)
+    bulkpath = find_bulkpath("AIC")
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk.{}.vlsv".format(str(781).zfill(7))
+    )
+    cellids = vlsvobj.read_variable("CellID")
+    cellids = np.sorted(cellids)
+    x, y, z = xyz_reconstruct(vlsvobj, cellids=cellids)
+    forbidden_cells = cellids[(x**2 + y**2) / r_e < 10]
+
+    for idx, fnr in enumerate(fnr_list):
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        spatmesh_size = vlsvobj.get_spatial_mesh_size()
+        cellids = vlsvobj.read_variable("CellID")
+        rho = vlsvobj.read_variable("proton/vg_rho")
+        up_cells = cellids[rho > 2e6]
+        ci_sorted_reshaped = np.sorted(cellids).reshape(
+            (spatmesh_size[0], spatmesh_size[1])
+        )
+        bool_arr = np.isin(ci_sorted_reshaped, up_cells)
+        bool_arr = np.logical_and(
+            bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
+        )
+        fig, ax = plt.subplots(1, 1)
+        ax.pcolormesh(bool_arr.astype(int), cmap="batlow", vmin=0, vmax=1)
+        fig.savefig(wrkdir_DNR + "diag/rhoup/{}.png".format(fnr))
+        plt.close(fig)
+
+
 def pos_vdf_plotter(
     runid,
     x,
