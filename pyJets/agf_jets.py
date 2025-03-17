@@ -8933,6 +8933,7 @@ def plot_rho_up():
     # ]
     forbidden_cells = cellids[x / r_e > 17]
     print(forbidden_cells)
+    coeff_list = []
 
     for idx, fnr in enumerate(fnr_list):
         print(fnr)
@@ -8961,6 +8962,15 @@ def plot_rho_up():
         )
         fig.savefig(wrkdir_DNR + "diag/rhoup/{}.png".format(fnr))
         plt.close(fig)
+        x_vals = x[np.isin(cellids, ci_sorted_reshaped[bool_arr])]
+        y_vals = y[np.isin(cellids, ci_sorted_reshaped[bool_arr])]
+        point_list = []
+        for y in np.sort(np.unique(y)):
+            x = max(x_vals[y_vals == y])
+            point_list.append((y, x))
+        coeff_list.append(np.polyfit(y, x, deg=4))
+
+    print(coeff_list)
 
 
 def pos_vdf_plotter(
