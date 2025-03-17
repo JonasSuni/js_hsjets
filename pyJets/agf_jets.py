@@ -8931,6 +8931,7 @@ def plot_rho_up():
     forbidden_cells = cellids[(x**2 + y**2) / r_e < 10]
 
     for idx, fnr in enumerate(fnr_list):
+        print(fnr)
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
         )
