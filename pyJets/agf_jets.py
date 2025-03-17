@@ -8950,7 +8950,14 @@ def plot_rho_up():
             bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
         )
         fig, ax = plt.subplots(1, 1)
-        ax.pcolormesh(bool_arr.astype(int), cmap="batlow", vmin=0, vmax=1)
+        ax.pcolormesh(
+            np.sort(np.unique(x)) / r_e,
+            np.sort(np.unique(y)) / r_e,
+            bool_arr.astype(int),
+            cmap="batlow",
+            vmin=0,
+            vmax=1,
+        )
         fig.savefig(wrkdir_DNR + "diag/rhoup/{}.png".format(fnr))
         plt.close(fig)
 
