@@ -8966,10 +8966,10 @@ def plot_rho_up():
         x_vals = x[np.isin(cellids_orig, ci_sorted_reshaped[bool_arr])]
         y_vals = y[np.isin(cellids_orig, ci_sorted_reshaped[bool_arr])]
         point_list = []
-        for y in np.sort(np.unique(y)):
-            x = max(x_vals[y_vals == y])
-            point_list.append((y, x))
-        coeff_list.append(np.polyfit(y, x, deg=4))
+        for py in np.sort(np.unique(y)):
+            px = max(x_vals[y_vals == py])
+            point_list.append((py, px))
+        coeff_list.append(np.polyfit(np.array(point_list)[:,1], np.array(point_list)[:,0], deg=4))
 
     print(coeff_list)
 
