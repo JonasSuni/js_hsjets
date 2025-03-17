@@ -8974,6 +8974,14 @@ def plot_rho_up():
         )
 
     print(coeff_list)
+    yin = np.arange(-20, 20, 300e3 / r_e)
+    fig, ax = plt.subplots(1, 1)
+    for idx in len(coeff_list):
+        xin = np.polyval(coeff_list[idx], yin)
+        ax.plot(xin, yin)
+
+    fig.savefig(wrkdir_DNR + "diag/rhoup/fits.png")
+    plt.close(fig)
 
 
 def pos_vdf_plotter(
