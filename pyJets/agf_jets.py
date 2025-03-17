@@ -8919,7 +8919,7 @@ def calc_ch_bs_slice():
 
 
 def plot_rho_up():
-    fnr_list = np.arange(781, 2000)
+    fnr_list = np.arange(781, 2000, 100)
     bulkpath = find_bulkpath("AIC")
 
     vlsvobj = pt.vlsvfile.VlsvReader(
@@ -8946,9 +8946,9 @@ def plot_rho_up():
             np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
         )
         bool_arr = np.isin(ci_sorted_reshaped, up_cells)
-        bool_arr = np.logical_and(
-            bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
-        )
+        # bool_arr = np.logical_and(
+        #     bool_arr, ~np.isin(ci_sorted_reshaped, forbidden_cells)
+        # )
         fig, ax = plt.subplots(1, 1)
         ax.pcolormesh(
             np.sort(np.unique(x)) / r_e,
