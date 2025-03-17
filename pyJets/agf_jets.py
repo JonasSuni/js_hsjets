@@ -8939,8 +8939,8 @@ def plot_rho_up():
         cellids = vlsvobj.read_variable("CellID")
         rho = vlsvobj.read_variable("proton/vg_rho")
         up_cells = cellids[rho > 2e6]
-        ci_sorted_reshaped = np.sort(cellids).reshape(
-            (spatmesh_size[0], spatmesh_size[1])
+        ci_sorted_reshaped = np.reshape(
+            np.sort(cellids), (spatmesh_size[1], spatmesh_size[0])
         )
         bool_arr = np.isin(ci_sorted_reshaped, up_cells)
         bool_arr = np.logical_and(
