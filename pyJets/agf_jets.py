@@ -2129,6 +2129,9 @@ def get_jets(runid, min_duration=0, minsize=0):
         if np.sqrt(props.read("x_mean") ** 2 + props.read("y_mean") ** 2)[0] < 8:
             continue
 
+        if props.at_ch_shock()[0] != True:
+            continue
+
         # if props.read("time")[0] == 290.0:
         #     continue
 
@@ -6679,6 +6682,8 @@ def plot_jet_formation_postime(
             continue
         if y0 > ymax:
             continue
+        if props.at_ch_shock()[0] != True:
+            continue
 
         t = t[isnotmerger]
         xmean = xmean[isnotmerger]
@@ -8791,6 +8796,8 @@ def plot_timeseries_at_jets(
         if maxsize < minsize:
             continue
         if "splinter" in props.meta:
+            continue
+        if props.at_ch_shock()[0] != True:
             continue
 
         if pdavg:
