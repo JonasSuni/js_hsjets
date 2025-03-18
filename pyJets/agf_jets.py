@@ -8292,6 +8292,7 @@ def plot_colormap_cut(x0, y0, t0):
         linestyle="dashed",
         linewidth=1.5,
     )
+    ax1.annotate("(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
     # ax1.plot(
     #     [x0, x0],
     #     [y_arr[0] / r_e, y_arr[-1] / r_e],
@@ -8321,18 +8322,26 @@ def plot_colormap_cut(x0, y0, t0):
             ax.legend(loc="center left", fontsize=16, bbox_to_anchor=(1.01, 0.5))
             yax.legend(loc="center left", fontsize=16, bbox_to_anchor=(1.01, 0.5))
 
+    ax_labs = ["(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)"]
+
     for idx, ax in enumerate(rax_list):
         ax.set_xlim(x_arr[0] / r_e, x_arr[-1] / r_e)
         ax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=22)
         ax.grid()
         ax.tick_params(labelsize=14)
         ax.label_outer()
+        ax.annotate(
+            ax_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16
+        )
     for idx, yax in enumerate(rax2_list):
         yax.set_xlim(y_arr[0] / r_e, y_arr[-1] / r_e)
         yax.set_ylabel(rax_labs[idx], labelpad=10, fontsize=22)
         yax.grid()
         yax.tick_params(labelsize=14)
         yax.label_outer()
+        yax.annotate(
+            ax_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16
+        )
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=22)
     rax_list[0].set_title(
         "t = {} s, y = {}".format(t0, y0) + " $R_\\mathrm{E}$", pad=10, fontsize=22
