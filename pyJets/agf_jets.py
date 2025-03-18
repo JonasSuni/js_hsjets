@@ -9518,7 +9518,7 @@ def pos_vdf_plotter(
                 os.makedirs(outdir)
             except OSError:
                 pass
-        fig.savefig(outdir + "/{}.png".format(fnr))
+        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300)
         plt.close(fig)
 
     return None
