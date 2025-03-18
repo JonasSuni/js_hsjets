@@ -9128,7 +9128,7 @@ def supp_vdf_figure():
 
     bulkpath = find_bulkpath("AIC")
     titles_list = ["Before RD", "During RD", "After RD"]
-    fmin = 1e-15
+    fmin = 1e-10
     fmax = 1.1 * 1e-5
     slicethick = 10
     scale = 1.3
