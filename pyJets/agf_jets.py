@@ -9135,8 +9135,8 @@ def supp_vdf_figure():
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
         )
-        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
-        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+        cellid = vlsvobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vlsvobj, cellid)
         pt.plot.plot_vdf(
             axes=ax_list[idx][0],
             vlsvobj=vlsvobj,
