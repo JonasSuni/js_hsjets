@@ -9129,7 +9129,7 @@ def supp_vdf_figure():
     bulkpath = find_bulkpath("AIC")
     titles_list = ["Before RD", "During RD", "After RD"]
 
-    for idx, t in times:
+    for idx, t in enumerate(times):
         print("t = {}s".format(t))
         fnr = int(t * 2)
         vlsvobj = pt.vlsvfile.VlsvReader(
