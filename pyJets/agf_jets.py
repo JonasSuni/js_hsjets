@@ -9129,7 +9129,7 @@ def supp_vdf_figure():
     bulkpath = find_bulkpath("AIC")
     titles_list = ["Before RD", "During RD", "After RD"]
     fmin = 1e-8
-    fmax = 1e-4
+    fmax = 1.1 * 1e-4
 
     for idx, t in enumerate(times):
         print("t = {}s".format(t))
