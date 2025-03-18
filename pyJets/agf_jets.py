@@ -8995,13 +8995,13 @@ def plot_rho_up():
     np.savetxt(wrkdir_DNR + "shock_fit_781_1981.txt", np.array(outlist))
 
 
-def calc_mmsn_cells():
+def calc_mmsn_cells(fnr0, fnr1):
 
-    fnr_list = np.arange(781, 2000)
+    fnr_list = np.arange(fnr0, fnr1 + 1)
     bulkpath = find_bulkpath("AIC")
 
     vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk.{}.vlsv".format(str(781).zfill(7))
+        bulkpath + "bulk.{}.vlsv".format(str(fnr0).zfill(7))
     )
     cellids = vlsvobj.read_variable("CellID")
     cellids = np.sort(cellids)
@@ -9068,6 +9068,26 @@ def calc_mmsn_cells():
         )
         fig.savefig(wrkdir_DNR + "diag/mmsup/{}.png".format(fnr))
         plt.close(fig)
+        np.savetxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(fnr) + ".up.normal",
+            mmsn_up_cells,
+        )
+        mmsn_down_cells = cellids_orig[~np.isin(cellids_orig, mmsn_up_cells)]
+        np.savetxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(fnr) + ".down.normal",
+            mmsn_up_cells,
+        )
+        upstream_slice = get_neighs_asym(
+            "AIC", mmsn_down_cells, neighborhood_reach=[0, 2, 0, 0, 0, 0]
+        )
+        downstream_slice = get_neighs_asym(
+            "AIC", mmsn_up_cells, neighborhood_reach=[-2, 0, 0, 0, 0, 0]
+        )
+        mmsn_bs_slice = np.intersect1d(upstream_slice, downstream_slice)
+        np.savetxt(
+            wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(fnr) + ".slice.normal",
+            mmsn_bs_slice,
+        )
 
 
 def pos_vdf_plotter(
