@@ -9452,8 +9452,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
             pt.plot.plot_vdf(
@@ -9469,8 +9469,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
             pt.plot.plot_vdf(
@@ -9486,8 +9486,8 @@ def pos_vdf_plotter(
                 # internalcb=True,
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-10,
-                fmax=1e-4,
+                fmin=fmin,
+                fmax=fmax,
                 contours=ncont,
             )
 
