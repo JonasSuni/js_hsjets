@@ -9120,7 +9120,7 @@ def calc_mmsn_cells(fnr0, fnr1):
 def supp_vdf_figure():
 
     fig, ax_list = plt.subplots(3, 3, figsize=(10, 10), layout="compressed")
-    cbax = fig.add_axes((1, 0, 0.1, 1))
+    cbax = fig.add_axes((1, 0, 0.05, 1))
     x = 12.380
     y = -2.331
 
@@ -9146,6 +9146,7 @@ def supp_vdf_figure():
             slicethick=0,
             box=[-2000e3, 2000e3, -2000e3, 2000e3],
             nocb=True,
+            title="",
             setThreshold=1e-15,
             scale=1.3,
             fmin=1e-15,
@@ -9162,6 +9163,7 @@ def supp_vdf_figure():
             slicethick=0,
             box=[-2000e3, 2000e3, -2000e3, 2000e3],
             nocb=True,
+            title="",
             setThreshold=1e-15,
             scale=1.3,
             fmin=1e-15,
@@ -9179,6 +9181,7 @@ def supp_vdf_figure():
                 slicethick=0,
                 box=[-2000e3, 2000e3, -2000e3, 2000e3],
                 cbaxes=cbax,
+                title="",
                 setThreshold=1e-15,
                 scale=1.3,
                 fmin=1e-15,
@@ -9196,6 +9199,7 @@ def supp_vdf_figure():
                 slicethick=0,
                 box=[-2000e3, 2000e3, -2000e3, 2000e3],
                 nocb=True,
+                title="",
                 setThreshold=1e-15,
                 scale=1.3,
                 fmin=1e-15,
