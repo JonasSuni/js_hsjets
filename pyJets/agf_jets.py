@@ -9120,7 +9120,7 @@ def calc_mmsn_cells(fnr0, fnr1):
 def supp_vdf_figure():
 
     fig, ax_list = plt.subplots(3, 3, figsize=(10, 10), layout="compressed")
-    cbax = fig.add_axes((1, 0, 0.05, 1))
+    cbax = fig.add_axes((1, 0, 0.025, 1))
     x = 12.380
     y = -2.331
 
@@ -9128,6 +9128,8 @@ def supp_vdf_figure():
 
     bulkpath = find_bulkpath("AIC")
     titles_list = ["Before RD", "During RD", "After RD"]
+    fmin = 1e-8
+    fmax = 1e-4
 
     for idx, t in enumerate(times):
         print("t = {}s".format(t))
@@ -9149,8 +9151,8 @@ def supp_vdf_figure():
             title="",
             setThreshold=1e-15,
             scale=1.3,
-            fmin=1e-15,
-            fmax=1e-5,
+            fmin=fmin,
+            fmax=fmax,
             contours=7,
             cbulk=1,
         )
@@ -9166,8 +9168,8 @@ def supp_vdf_figure():
             title="",
             setThreshold=1e-15,
             scale=1.3,
-            fmin=1e-15,
-            fmax=1e-5,
+            fmin=fmin,
+            fmax=fmax,
             contours=7,
             cbulk=1,
         )
@@ -9184,8 +9186,8 @@ def supp_vdf_figure():
                 title="",
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-15,
-                fmax=1e-5,
+                fmin=fmin,
+                fmax=fmax,
                 contours=7,
                 cbulk=1,
             )
@@ -9202,8 +9204,8 @@ def supp_vdf_figure():
                 title="",
                 setThreshold=1e-15,
                 scale=1.3,
-                fmin=1e-15,
-                fmax=1e-5,
+                fmin=fmin,
+                fmax=fmax,
                 contours=7,
                 cbulk=1,
             )
