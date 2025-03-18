@@ -9130,9 +9130,10 @@ def supp_vdf_figure():
     titles_list = ["Before RD", "During RD", "After RD"]
     fmin = 1e-10
     fmax = 1.1 * 1e-5
-    slicethick = 10
+    slicethick = 5
     scale = 1.3
     box = [-2100e3, 2100e3, -2100e3, 2100e3]
+    colormap = "plasma"
 
     for idx, t in enumerate(times):
         print("t = {}s".format(t))
@@ -9146,7 +9147,7 @@ def supp_vdf_figure():
             axes=ax_list[idx][0],
             vlsvobj=vlsvobj,
             cellids=[vdf_cellid],
-            colormap="batlow",
+            colormap=colormap,
             bpara=1,
             slicethick=slicethick,
             box=box,
@@ -9163,7 +9164,7 @@ def supp_vdf_figure():
             axes=ax_list[idx][1],
             vlsvobj=vlsvobj,
             cellids=[vdf_cellid],
-            colormap="batlow",
+            colormap=colormap,
             bpara1=1,
             slicethick=slicethick,
             box=box,
@@ -9181,7 +9182,7 @@ def supp_vdf_figure():
                 axes=ax_list[idx][2],
                 vlsvobj=vlsvobj,
                 cellids=[vdf_cellid],
-                colormap="batlow",
+                colormap=colormap,
                 bperp=1,
                 slicethick=slicethick,
                 box=box,
@@ -9199,7 +9200,7 @@ def supp_vdf_figure():
                 axes=ax_list[idx][2],
                 vlsvobj=vlsvobj,
                 cellids=[vdf_cellid],
-                colormap="batlow",
+                colormap=colormap,
                 bperp=1,
                 slicethick=slicethick,
                 box=box,
