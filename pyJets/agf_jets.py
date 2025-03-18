@@ -9257,7 +9257,7 @@ def pos_vdf_plotter(
     runid_g = runid
     highres_g = 1
     chg = False
-    bsg = (False,)
+    bsg = False
 
     linsg = False
     leg_g = False
