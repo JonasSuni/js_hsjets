@@ -8294,7 +8294,7 @@ def plot_colormap_cut(x0, y0, t0):
     )
     ax1.annotate(
         "(a)",
-        xy=(0.05, 0.9),
+        xy=(0.05, 0.925),
         xycoords="axes fraction",
         fontsize=16,
         bbox=dict(
@@ -8342,7 +8342,16 @@ def plot_colormap_cut(x0, y0, t0):
         ax.tick_params(labelsize=14)
         ax.label_outer()
         ax.annotate(
-            ax_labs[idx], xy=(0.05, 0.85), xycoords="axes fraction", fontsize=16
+            ax_labs[idx],
+            xy=(0.05, 0.8),
+            xycoords="axes fraction",
+            fontsize=16,
+            bbox=dict(
+                boxstyle="square,pad=0.15",
+                fc="white",
+                ec="k",
+                lw=0.5,
+            ),
         )
     for idx, yax in enumerate(rax2_list):
         yax.set_xlim(y_arr[0] / r_e, y_arr[-1] / r_e)
@@ -8351,7 +8360,16 @@ def plot_colormap_cut(x0, y0, t0):
         yax.tick_params(labelsize=14)
         yax.label_outer()
         yax.annotate(
-            ax_labs[idx], xy=(0.05, 0.85), xycoords="axes fraction", fontsize=16
+            ax_labs[idx],
+            xy=(0.05, 0.8),
+            xycoords="axes fraction",
+            fontsize=16,
+            bbox=dict(
+                boxstyle="square,pad=0.15",
+                fc="white",
+                ec="k",
+                lw=0.5,
+            ),
         )
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=22)
     rax_list[0].set_title(
