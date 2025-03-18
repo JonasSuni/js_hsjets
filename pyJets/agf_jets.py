@@ -9130,9 +9130,9 @@ def supp_vdf_figure():
     titles_list = ["Before RD", "During RD", "After RD"]
     fmin = 1e-8
     fmax = 1.1 * 1e-4
-    slicethick=10
-    scale=1.3
-    box=[-2100e3, 2100e3, -2100e3, 2100e3],
+    slicethick = 10
+    scale = 1.3
+    box = [-2100e3, 2100e3, -2100e3, 2100e3]
 
     for idx, t in enumerate(times):
         print("t = {}s".format(t))
