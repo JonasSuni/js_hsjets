@@ -8292,7 +8292,18 @@ def plot_colormap_cut(x0, y0, t0):
         linestyle="dashed",
         linewidth=1.5,
     )
-    ax1.annotate("(a)", xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16)
+    ax1.annotate(
+        "(a)",
+        xy=(0.05, 0.9),
+        xycoords="axes fraction",
+        fontsize=16,
+        bbox=dict(
+            boxstyle="square,pad=0.15",
+            fc="white",
+            ec="k",
+            lw=0.5,
+        ),
+    )
     # ax1.plot(
     #     [x0, x0],
     #     [y_arr[0] / r_e, y_arr[-1] / r_e],
@@ -8331,7 +8342,7 @@ def plot_colormap_cut(x0, y0, t0):
         ax.tick_params(labelsize=14)
         ax.label_outer()
         ax.annotate(
-            ax_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16
+            ax_labs[idx], xy=(0.05, 0.85), xycoords="axes fraction", fontsize=16
         )
     for idx, yax in enumerate(rax2_list):
         yax.set_xlim(y_arr[0] / r_e, y_arr[-1] / r_e)
@@ -8340,7 +8351,7 @@ def plot_colormap_cut(x0, y0, t0):
         yax.tick_params(labelsize=14)
         yax.label_outer()
         yax.annotate(
-            ax_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=16
+            ax_labs[idx], xy=(0.05, 0.85), xycoords="axes fraction", fontsize=16
         )
     rax_list[-1].set_xlabel("x~[$R_\\mathrm{E}$]", labelpad=10, fontsize=22)
     rax_list[0].set_title(
@@ -9104,6 +9115,98 @@ def calc_mmsn_cells(fnr0, fnr1):
             wrkdir_DNR + "up_down_stream/" + "AIC" + "/" + str(fnr) + ".slice.normal",
             mmsn_bs_slice,
         )
+
+
+def supp_vdf_figure():
+
+    fig, ax_list = plt.subplots(3, 3, figsize=(10, 10), layout="compressed")
+    cbax = fig.add_axes((1, 0, 0.1, 1))
+    x = 12.380
+    y = -2.331
+
+    times = [500, 530, 560]
+
+    bulkpath = find_bulkpath("AIC")
+    titles_list = ["Before RD", "During RD", "After RD"]
+
+    for idx, t in times:
+        print("t = {}s".format(t))
+        fnr = int(t * 2)
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+        )
+        cellid = vobj.get_cellid([x * r_e, y * r_e, 0 * r_e])
+        vdf_cellid = getNearestCellWithVspace(vobj, cellid)
+        pt.plot.plot_vdf(
+            axes=ax_list[idx][0],
+            vlsvobj=vlsvobj,
+            cellids=[vdf_cellid],
+            colormap="batlow",
+            bpara=1,
+            slicethick=0,
+            box=[-2000e3, 2000e3, -2000e3, 2000e3],
+            nocb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+            fmin=1e-15,
+            fmax=1e-5,
+            contours=7,
+            cbulk=1,
+        )
+        pt.plot.plot_vdf(
+            axes=ax_list[idx][1],
+            vlsvobj=vlsvobj,
+            cellids=[vdf_cellid],
+            colormap="batlow",
+            bpara1=1,
+            slicethick=0,
+            box=[-2000e3, 2000e3, -2000e3, 2000e3],
+            nocb=True,
+            setThreshold=1e-15,
+            scale=1.3,
+            fmin=1e-15,
+            fmax=1e-5,
+            contours=7,
+            cbulk=1,
+        )
+        if idx == 2:
+            pt.plot.plot_vdf(
+                axes=ax_list[idx][2],
+                vlsvobj=vlsvobj,
+                cellids=[vdf_cellid],
+                colormap="batlow",
+                bperp=1,
+                slicethick=0,
+                box=[-2000e3, 2000e3, -2000e3, 2000e3],
+                cbaxes=cbax,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-15,
+                fmax=1e-5,
+                contours=7,
+                cbulk=1,
+            )
+        else:
+            pt.plot.plot_vdf(
+                axes=ax_list[idx][2],
+                vlsvobj=vlsvobj,
+                cellids=[vdf_cellid],
+                colormap="batlow",
+                bperp=1,
+                slicethick=0,
+                box=[-2000e3, 2000e3, -2000e3, 2000e3],
+                nocb=True,
+                setThreshold=1e-15,
+                scale=1.3,
+                fmin=1e-15,
+                fmax=1e-5,
+                contours=7,
+                cbulk=1,
+            )
+        ax_list[idx][1].set_title(titles_list[idx] + ", t = {}s", format(t))
+
+    fig.savefig(wrkdir_DNR + "Figs/S3.pdf", dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 
 def pos_vdf_plotter(
