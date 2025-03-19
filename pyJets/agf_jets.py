@@ -2150,7 +2150,10 @@ def get_jets(runid, min_duration=0, minsize=0):
 
     # print("Run {} singular non jets: {}".format(runid, singular_counter))
 
-    np.savetxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize),np.unique(non_ids))
+    np.savetxt(
+        wrkdir_DNR + "get_jets_{}_{}_{}.txt".format(runid, min_duration, minsize),
+        np.unique(non_ids),
+    )
     return np.unique(non_ids)
 
 
@@ -2397,7 +2400,10 @@ def fig1_new(
 
     if track_jets:
         try:
-            non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+            non_ids = np.loadtxt(
+                wrkdir_DNR
+                + "get_jets_{}_{}_{}.txt".format(runid, min_duration, minsize)
+            )
         except:
             non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
     else:
@@ -2638,7 +2644,10 @@ def v5_plotter(
 
     if track_jets:
         try:
-            non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+            non_ids = np.loadtxt(
+                wrkdir_DNR
+                + "get_jets_{}_{}_{}.txt".format(runid, min_duration, minsize)
+            )
         except:
             non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
     else:
@@ -8218,10 +8227,12 @@ def plot_colormap_cut(x0, y0, t0):
     linsg, lineg = None, None
 
     runid = "AIC"
-    min_duration=1
-    minsize=4
+    min_duration = 1
+    minsize = 4
     try:
-        non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+        non_ids = np.loadtxt(
+            wrkdir_DNR + "get_jets_{}_{}_{}.txt".format(runid, min_duration, minsize)
+        )
     except:
         non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
 
@@ -9246,6 +9257,7 @@ def supp_vdf_figure():
             )
         ax_list[idx][1].set_title(titles_list[idx] + ", t = {}s".format(t), fontsize=20)
 
+    fig.suptitle("X = {}, Y = {} ".format(x, y) + "$R_\\mathrm{E}$")
     fig.savefig(wrkdir_DNR + "Figs/S3.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/S3.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
