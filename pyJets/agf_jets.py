@@ -9257,7 +9257,7 @@ def supp_vdf_figure():
             )
         ax_list[idx][1].set_title(titles_list[idx] + ", t = {}s".format(t), fontsize=20)
 
-    fig.suptitle("X = {}, Y = {} ".format(x, y) + "$R_\\mathrm{E}$")
+    fig.suptitle("X = {}, Y = {} ".format(x, y) + "$R_\\mathrm{E}$",fontsize=20)
     fig.savefig(wrkdir_DNR + "Figs/S3.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/S3.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
