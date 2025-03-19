@@ -2344,7 +2344,7 @@ def fig1_new(
     plot_fluxfunc=True,
     draw_ch=True,
     draw_bs=False,
-    draw_mms=True,
+    draw_mms=False,
 ):
 
     if magten:
