@@ -2150,6 +2150,7 @@ def get_jets(runid, min_duration=0, minsize=0):
 
     # print("Run {} singular non jets: {}".format(runid, singular_counter))
 
+    np.savetxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize),np.unique(non_ids))
     return np.unique(non_ids)
 
 
@@ -2395,7 +2396,10 @@ def fig1_new(
     bulkpath = find_bulkpath(runid)
 
     if track_jets:
-        non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
+        try:
+            non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+        except:
+            non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
     else:
         non_ids = []
 
@@ -2633,7 +2637,10 @@ def v5_plotter(
     bulkpath = find_bulkpath(runid)
 
     if track_jets:
-        non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
+        try:
+            non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+        except:
+            non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
     else:
         non_ids = []
 
@@ -8210,7 +8217,13 @@ def plot_colormap_cut(x0, y0, t0):
     yg = []
     linsg, lineg = None, None
 
-    non_ids = get_jets("AIC", min_duration=1, minsize=4)
+    runid = "AIC"
+    min_duration=1
+    minsize=4
+    try:
+        non_ids = np.loadtxt(wrkdir_DNR+"get_jets_{}_{}_{}.txt".format(runid,min_duration,minsize))
+    except:
+        non_ids = get_jets(runid, min_duration=min_duration, minsize=minsize)
 
     sj_ids_g = []
     non_ids_g = non_ids
