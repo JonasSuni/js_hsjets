@@ -6778,6 +6778,7 @@ def plot_jet_formation_postime(
         #     # facecolor=CB_color_cycle[0],
         #     hatch="///",
         # )
+    boxlw = 2
     ax.add_patch(
         mpatches.Rectangle(
             (391, 3),
@@ -6787,7 +6788,7 @@ def plot_jet_formation_postime(
             label="Dusk $Q\\parallel$",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
@@ -6800,7 +6801,7 @@ def plot_jet_formation_postime(
             label="Dawn RD",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
@@ -6813,7 +6814,7 @@ def plot_jet_formation_postime(
             label="Dusk FB",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
@@ -6826,7 +6827,7 @@ def plot_jet_formation_postime(
             label="Dawn, young FS",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
@@ -6839,7 +6840,7 @@ def plot_jet_formation_postime(
             label="Dusk $Q\\perp$",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
@@ -6852,7 +6853,7 @@ def plot_jet_formation_postime(
             label="Dawn $Q\\parallel$",
             fill=False,
             linestyle="dashed",
-            linewidth=1.5,
+            linewidth=boxlw,
             zorder=3.5,
         )
     )
