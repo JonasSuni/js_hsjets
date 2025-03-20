@@ -8220,7 +8220,7 @@ def plot_colormap_cut(x0, y0, t0):
     chg = True
     highres_g = 3
     bsg = False
-    mmsg = True
+    mmsg = False
 
     global xg, yg, linsg, lineg
     xg = []
