@@ -7311,7 +7311,7 @@ def plot_category_histograms(
     figdir = wrkdir_DNR + "Figs/"
 
     fig.savefig(figdir + "jet_comp_hist.png", dpi=300)
-    fig.savefig(figdir + "jet_comp_hist.pdf", dpi=300)
+    fig.savefig(figdir + "fig3.pdf", dpi=300)
 
     plt.close(fig)
 
@@ -7500,7 +7500,7 @@ def archerplot_4():
         )
     ax_flat[0].legend(handles, labels, fontsize=14)
 
-    fig.savefig(wrkdir_DNR + "Figs/archerplot_4.pdf", dpi=300, bbox_inches="tight")
+    fig.savefig(wrkdir_DNR + "Figs/fig4.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -7885,14 +7885,12 @@ def plot_SEA_three(paper=True):
 
     if paper:
         fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.png", dpi=300, bbox_inches="tight")
-        fig.savefig(wrkdir_DNR + "Figs/SEA_new_three.pdf", dpi=300, bbox_inches="tight")
+        fig.savefig(wrkdir_DNR + "Figs/fig5.pdf", dpi=300, bbox_inches="tight")
     else:
         fig.savefig(
             wrkdir_DNR + "Figs/SEA_new_three_supp.png", dpi=300, bbox_inches="tight"
         )
-        fig.savefig(
-            wrkdir_DNR + "Figs/SEA_new_three_supp.pdf", dpi=300, bbox_inches="tight"
-        )
+        fig.savefig(wrkdir_DNR + "Figs/S2.pdf", dpi=300, bbox_inches="tight")
 
     plt.close(fig)
 
