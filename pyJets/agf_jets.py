@@ -6887,7 +6887,7 @@ def plot_jet_formation_postime(
     figdir = wrkdir_DNR + "Figs/"
 
     fig.savefig(figdir + "formation_postime.png", dpi=300, bbox_inches="tight")
-    fig.savefig(figdir + "formation_postime.pdf", dpi=300, bbox_inches="tight")
+    fig.savefig(figdir + "fig2.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
