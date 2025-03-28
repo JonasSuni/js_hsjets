@@ -7227,7 +7227,7 @@ def plot_category_histograms(
         categories_list.append([durs, maxs, -rpens, Dn, Dpd, DTPar, DTPerp])
 
     fig, ax_list = plt.subplots(
-        1, len(prop_labels), figsize=(4 * len(prop_labels), 5), constrained_layout=True
+        1, len(prop_labels), figsize=(4 * len(prop_labels), 5), layout="compressed"
     )
 
     for idx in range(len(prop_labels)):
@@ -7310,8 +7310,8 @@ def plot_category_histograms(
 
     figdir = wrkdir_DNR + "Figs/"
 
-    fig.savefig(figdir + "jet_comp_hist.png", dpi=300)
-    fig.savefig(figdir + "fig3.pdf", dpi=300)
+    fig.savefig(figdir + "jet_comp_hist.png", dpi=300, bbox_inches="tight")
+    fig.savefig(figdir + "fig3.pdf", dpi=300, bbox_inches="tight")
 
     plt.close(fig)
 
@@ -7501,6 +7501,7 @@ def archerplot_4():
     ax_flat[0].legend(handles, labels, fontsize=14)
 
     fig.savefig(wrkdir_DNR + "Figs/fig4.pdf", dpi=300, bbox_inches="tight")
+    fig.savefig(wrkdir_DNR + "Figs/fig4.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -8409,7 +8410,11 @@ def plot_colormap_cut(x0, y0, t0):
             dpi=300,
             bbox_inches="tight",
         )
-        # fig.savefig(wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1), dpi=300)
+        fig.savefig(
+            wrkdir_DNR + "Figs/colormap_cut_{}.png".format(idx + 1),
+            dpi=300,
+            bbox_inches="tight",
+        )
         plt.close(fig)
 
 
