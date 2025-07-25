@@ -245,12 +245,10 @@ def VSC_timeseries(
             var_list,
             scales,
             bulkpath,
-            tavgdir,
             cellid,
             ops,
             x0,
             y0,
-            runid,
         )
         for fnr in fnr_arr
     ]
