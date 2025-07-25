@@ -95,7 +95,7 @@ except:
     tavgdir = wrkdir_DNR + "tavg/"
 
 wrkdir_DNR = wrkdir_DNR + "jets_all_2D/"
-
+wrkdir_other = os.environ["WRK"] + "/"
 
 def process_timestep_VSC_timeseries(args):
     """Helper function for parallel processing in VSC_timeseries"""
@@ -308,7 +308,7 @@ def plot_timeseries_at_jets_OLD(
     else:
         kind = ["foreshock", "beam"][["antisunward", "flankward"].index(folder_suffix)]
         jet_ids = np.loadtxt(
-            wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+            wrkdir_other + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
