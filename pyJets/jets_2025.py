@@ -285,6 +285,7 @@ def VSC_timeseries(
         data_arr,
     )
 
+
 def plot_timeseries_at_jets_OLD(
     runid,
     boxre=None,
@@ -305,8 +306,12 @@ def plot_timeseries_at_jets_OLD(
     if folder_suffix == "fcs":
         jet_ids = get_fcs_jets(runid)
     else:
-        kind = ["foreshock","beam"][["antisunward","flankward"].index(folder_suffix)]
-        jet_ids = np.loadtxt(wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),dtype=int,ndmin=1)
+        kind = ["foreshock", "beam"][["antisunward", "flankward"].index(folder_suffix)]
+        jet_ids = np.loadtxt(
+            wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
+            dtype=int,
+            ndmin=1,
+        )
 
     for n1 in jet_ids:
         # try:
@@ -373,6 +378,7 @@ def plot_timeseries_at_jets_OLD(
             jett0=t0,
             n_processes=n_processes,
         )
+
 
 def plot_timeseries_at_jets_AIC(
     runid,
@@ -461,7 +467,7 @@ def plot_timeseries_at_jets_AIC(
         )
 
 
-def all_cats_timeseries_script(n_processes=1, skip=True):
+def all_cats_timeseries_script(n_processes=1, skip=True, skip_AIC=False):
 
     boxres = [
         [8, 16, 3, 17],
@@ -484,21 +490,22 @@ def all_cats_timeseries_script(n_processes=1, skip=True):
     tmins = [391, 470, 430, 430, 391, 600, 509]
     tmaxs = [426, 800, 470, 470, 800, 800, 600]
 
-    for idx in range(len(folder_suffixes)):
-        plot_timeseries_at_jets_AIC(
-            "AIC",
-            boxre=boxres[idx],
-            tmin=tmins[idx],
-            tmax=tmaxs[idx],
-            folder_suffix=folder_suffixes[idx],
-            skip=skip,
-            minduration=1,
-            minsize=4,
-            n_processes=n_processes,
-        )
+    if not skip_AIC:
+        for idx in range(len(folder_suffixes)):
+            plot_timeseries_at_jets_AIC(
+                "AIC",
+                boxre=boxres[idx],
+                tmin=tmins[idx],
+                tmax=tmaxs[idx],
+                folder_suffix=folder_suffixes[idx],
+                skip=skip,
+                minduration=1,
+                minsize=4,
+                n_processes=n_processes,
+            )
 
-    for sfx in ["fcs","antisunward","flankward"]:
-        for runid in ["ABA","ABC","AEA","AEC"]:
+    for sfx in ["fcs", "antisunward", "flankward"]:
+        for runid in ["ABA", "ABC", "AEA", "AEC"]:
             plot_timeseries_at_jets_OLD(
                 runid,
                 folder_suffix=sfx,
