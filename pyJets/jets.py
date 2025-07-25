@@ -174,6 +174,8 @@ from jet_23_scripts import (
 
 import agf_jets
 
+import jets_2025
+
 import foreshock_3d
 
 try:
