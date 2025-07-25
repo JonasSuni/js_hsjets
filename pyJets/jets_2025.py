@@ -17,6 +17,7 @@ from pyJets.jet_aux import (
 )
 from pyJets.agf_jets import PropReader as AIC_PropReader
 from pyJets.jet_io import PropReader as OLD_PropReader
+from pyJets.papu_2 import get_fcs_jets
 from pyJets.jet_analyser import get_cell_volume, sw_par_dict
 import pytools as pt
 import os
@@ -284,6 +285,94 @@ def VSC_timeseries(
         data_arr,
     )
 
+def plot_timeseries_at_jets_OLD(
+    runid,
+    boxre=None,
+    tmin=None,
+    tmax=None,
+    folder_suffix="jets",
+    skip=False,
+    minduration=0,
+    minsize=0,
+    n_processes=1,
+):
+
+    if runid == "AIC":
+        PropReader = AIC_PropReader
+    else:
+        PropReader = OLD_PropReader
+
+    if folder_suffix == "fcs":
+        jet_ids = get_fcs_jets(runid)
+    else:
+        kind = ["foreshock","beam"][["antisunward","flankward"].index(folder_suffix)]
+        jet_ids = np.loadtxt(wrkdir_DNR + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),dtype=int,ndmin=1)
+
+    for n1 in jet_ids:
+        # try:
+        #     props = PropReader(str(n1).zfill(5), runid, transient="jet")
+        # except:
+        #     continue
+        props = PropReader(str(n1).zfill(5), runid, transient="jet")
+
+        if props.read("at_bow_shock")[0] != 1:
+            continue
+
+        xmean = props.read("x_mean")
+        ymean = props.read("y_mean")
+
+        x0, y0 = (xmean[0], ymean[0])
+        t0 = props.get_times()[0]
+        tarr = props.read("time")
+        duration = tarr[-1] - tarr[0] + 0.5
+        maxsize = max(props.read("Nr_cells"))
+
+        if tmin:
+            if t0 < tmin:
+                continue
+        if tmax:
+            if t0 > tmax:
+                continue
+
+        if boxre:
+            if not (
+                x0 >= boxre[0] and x0 <= boxre[1] and y0 >= boxre[2] and y0 <= boxre[3]
+            ):
+                continue
+
+        if np.sqrt(x0**2 + y0**2) < 8:
+            continue
+        if duration < minduration:
+            continue
+        if maxsize < minsize:
+            continue
+        if "splinter" in props.meta:
+            continue
+
+        plott0 = t0 - 10
+        plott1 = t0 + 10
+
+        print(
+            "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
+                x0,
+                y0,
+                plott0,
+                plott1,
+                n1,
+            )
+        )
+
+        VSC_timeseries(
+            runid,
+            x0,
+            y0,
+            plott0,
+            plott1,
+            dirprefix="{}/".format(folder_suffix),
+            skip=skip,
+            jett0=t0,
+            n_processes=n_processes,
+        )
 
 def plot_timeseries_at_jets_AIC(
     runid,
@@ -294,7 +383,6 @@ def plot_timeseries_at_jets_AIC(
     skip=False,
     minduration=0,
     minsize=0,
-    pdavg=True,
     n_processes=1,
 ):
 
@@ -347,12 +435,8 @@ def plot_timeseries_at_jets_AIC(
         if props.at_ch_shock()[0] != True:
             continue
 
-        if pdavg:
-            plott0 = max(391, t0 - 10)
-            plott1 = min(1000, t0 + 10)
-        else:
-            plott0 = t0 - 10
-            plott1 = t0 + 10
+        plott0 = t0 - 10
+        plott1 = t0 + 10
 
         print(
             "Plotting timeseries at ({:.3f},{:.3f}) from t = {} to {} s, jet ID = {}".format(
@@ -389,13 +473,13 @@ def all_cats_timeseries_script(n_processes=1, skip=True):
         [8, 16, -17, -3],
     ]
     folder_suffixes = [
-        "jets_qpar_before",
-        "jets_qpar_after",
-        "jets_qpar_fb",
-        "jets_qperp_rd",
-        "jets_all",
-        "jets_qperp_after",
-        "jets_qperp_inter",
+        "qpar_before",
+        "qpar_after",
+        "qpar_fb",
+        "qperp_rd",
+        "all",
+        "qperp_after",
+        "qperp_inter",
     ]
     tmins = [391, 470, 430, 430, 391, 600, 509]
     tmaxs = [426, 800, 470, 470, 800, 800, 600]
@@ -413,3 +497,15 @@ def all_cats_timeseries_script(n_processes=1, skip=True):
             pdavg=False,
             n_processes=n_processes,
         )
+
+    for sfx in ["fcs","antisunward","flankward"]:
+        for runid in ["ABA","ABC","AEA","AEC"]:
+            plot_timeseries_at_jets_OLD(
+                runid,
+                folder_suffix=sfx,
+                skip=skip,
+                minduration=1,
+                minsize=4,
+                pdavg=False,
+                n_processes=n_processes,
+            )
