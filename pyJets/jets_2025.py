@@ -494,7 +494,6 @@ def all_cats_timeseries_script(n_processes=1, skip=True):
             skip=skip,
             minduration=1,
             minsize=4,
-            pdavg=False,
             n_processes=n_processes,
         )
 
