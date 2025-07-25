@@ -138,22 +138,19 @@ def VSC_timeseries(
 ):
     bulkpath = find_bulkpath(runid)
 
-    txtdir = wrkdir_DNR + "txts/timeseries/{}/{}".format(runid,dirprefix)
+    txtdir = wrkdir_DNR + "txts/timeseries/{}/{}".format(runid, dirprefix)
     if not os.path.exists(txtdir):
         try:
             os.makedirs(txtdir)
         except OSError:
             pass
     if skip and os.path.isfile(
-        txtdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}.txt".format(
-            runid, x0, y0, t0, t1
-        )
+        txtdir + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}.txt".format(runid, x0, y0, t0, t1)
     ):
         print("Skip is True and file already exists, exiting.")
         return None
 
-    if runid in ["AEA","AEC","AIC"]:
+    if runid in ["AEA", "AEC", "AIC"]:
         var_list = [
             "proton/vg_rho",
             "proton/vg_v",
@@ -237,7 +234,6 @@ def VSC_timeseries(
     data_arr = np.zeros((len(var_list) + 7, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
-    
     # Prepare arguments for parallel processing
     args_list = [
         (
@@ -284,10 +280,7 @@ def VSC_timeseries(
     data_arr[-1, :] = np.ones_like(t_arr) * jett0
 
     np.savetxt(
-        txtdir
-        + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}.txt".format(
-            runid, x0, y0, t0, t1
-        ),
+        txtdir + "{}_x{:.3f}_y{:.3f}_t0{}_t1{}.txt".format(runid, x0, y0, t0, t1),
         data_arr,
     )
 
@@ -384,7 +377,7 @@ def plot_timeseries_at_jets_AIC(
         )
 
 
-def all_cats_timeseries_script(n_processes=1):
+def all_cats_timeseries_script(n_processes=1, skip=True):
 
     boxres = [
         [8, 16, 3, 17],
@@ -414,7 +407,7 @@ def all_cats_timeseries_script(n_processes=1):
             tmin=tmins[idx],
             tmax=tmaxs[idx],
             folder_suffix=folder_suffixes[idx],
-            skip=True,
+            skip=skip,
             minduration=1,
             minsize=4,
             pdavg=False,
