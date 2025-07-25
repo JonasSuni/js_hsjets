@@ -245,7 +245,6 @@ def VSC_timeseries(
             var_list,
             scales,
             bulkpath,
-            cellid,
             ops,
             x0,
             y0,
