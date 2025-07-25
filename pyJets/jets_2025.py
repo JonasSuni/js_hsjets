@@ -170,25 +170,6 @@ def VSC_timeseries(
             "proton/vg_t_parallel",
             "proton/vg_t_perpendicular",
         ]
-    # elif runid in ["AEA", "AEC"]:
-    #     var_list = [
-    #         "proton/rho",
-    #         "proton/v",
-    #         "proton/v",
-    #         "proton/v",
-    #         "proton/v",
-    #         "proton/Pdyn",
-    #         "B",
-    #         "B",
-    #         "B",
-    #         "B",
-    #         "E",
-    #         "E",
-    #         "E",
-    #         "E",
-    #         "proton/TParallel",
-    #         "proton/TPerpendicular",
-    #     ]
     else:
         var_list = [
             "rho",
