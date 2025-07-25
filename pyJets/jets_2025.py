@@ -151,7 +151,7 @@ def VSC_timeseries(
         print("Skip is True and file already exists, exiting.")
         return None
 
-    if runid in ["AEA", "AEC", "AIC"]:
+    if runid == "AIC":
         var_list = [
             "proton/vg_rho",
             "proton/vg_v",
@@ -169,6 +169,25 @@ def VSC_timeseries(
             "vg_e_vol",
             "proton/vg_t_parallel",
             "proton/vg_t_perpendicular",
+        ]
+    elif runid in ["AEA", "AEC"]:
+        var_list = [
+            "proton/rho",
+            "proton/v",
+            "proton/v",
+            "proton/v",
+            "proton/v",
+            "proton/Pdyn",
+            "B",
+            "B",
+            "B",
+            "B",
+            "E",
+            "E",
+            "E",
+            "E",
+            "proton/TParallel",
+            "proton/TPerpendicular",
         ]
     else:
         var_list = [
