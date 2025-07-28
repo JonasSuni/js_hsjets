@@ -540,7 +540,7 @@ def archerplot():
     old_valid_cats = [
         "FCS",
         "Antisunward",
-        "Alankward",
+        "Flankward",
     ]
     markers = ["x", "x", "o", "x", "x", "o"]
     colors = [
