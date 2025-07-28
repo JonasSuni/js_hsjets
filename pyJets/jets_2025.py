@@ -559,6 +559,7 @@ def archerplot():
     meds = []
     xall = []
     yall = []
+    nrun = []
 
     for idx in range(len(runids)):
         if runids[idx] == "AIC":
@@ -646,6 +647,7 @@ def archerplot():
 
             avgs[idx].append([np.nanmean(xvals), np.nanmean(yvals)])
             meds[idx].append([np.nanmedian(xvals), np.nanmedian(yvals)])
+            nrun.append(len(xvals))
 
     for idx, ax in enumerate(ax_flat[:-1]):
         ax.set_xlabel(
@@ -683,8 +685,8 @@ def archerplot():
     for idx2 in range(len(runids)):
         handles, labels = ax_flat[idx2].get_legend_handles_labels()
         for idx in range(len(labels)):
-            labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
-                meds[idx2][idx][0], meds[idx2][idx][1]
+            labels[idx] = labels[idx] + ", N = {}, med: ({:.2f}, {:.2f})".format(
+                nrun[idx2], meds[idx2][idx][0], meds[idx2][idx][1]
             )
         ax_flat[idx2].legend(handles, labels, fontsize=14)
 
