@@ -702,9 +702,10 @@ def archerplot():
     ax.tick_params(labelsize=16)
     ax.annotate(panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20)
     hist, xedges, yedges, img = ax.hist2d(
-        xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(15, 15)
+        xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(60, 60)
     )
-    fig.colorbar(img, ax=ax)
+    cb = fig.colorbar(img, ax=ax)
+    cb.ax.set_ylabel("Count")
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
