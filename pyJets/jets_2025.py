@@ -704,7 +704,7 @@ def archerplot():
     hist, xedges, yedges, img = ax.hist2d(
         xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(15, 15)
     )
-    ax.colorbar(hist)
+    fig.colorbar(hist, ax=ax)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
