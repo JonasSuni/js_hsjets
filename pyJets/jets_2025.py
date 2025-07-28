@@ -522,12 +522,12 @@ def archerplot():
     runids = ["ABA", "ABC", "AEA", "AEC", "AIC"]
 
     AIC_valid_cats = [
-        "jets_qpar_before",
-        "jets_qpar_fb",
-        "jets_qperp_rd",
-        "jets_qperp_after",
-        "jets_qperp_inter",
-        "jets_qpar_after",
+        "qpar_before",
+        "qpar_fb",
+        "qperp_rd",
+        "qperp_after",
+        "qperp_inter",
+        "qpar_after",
     ]
     AIC_cat_names = [
         "Dusk $Q_\\parallel$",
