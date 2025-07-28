@@ -573,7 +573,6 @@ def archerplot():
         meds.append([])
         nrun.append([])
         for idx3, folder_suffix in enumerate(valid_cats):
-            print(folder_suffix.lower())
             filenames = os.listdir(
                 wrkdir_DNR
                 + "txts/timeseries/"
@@ -591,7 +590,7 @@ def archerplot():
                     + "txts/timeseries/"
                     + runids[idx]
                     + "/"
-                    + folder_suffix
+                    + folder_suffix.lower()
                     + "/"
                     + fn
                 )
