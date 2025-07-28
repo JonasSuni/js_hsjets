@@ -538,9 +538,9 @@ def archerplot():
         "Dusk $Q_\\perp$",
     ]
     old_valid_cats = [
-        "fcs",
-        "antisunward",
-        "flankward",
+        "FCS",
+        "Antisunward",
+        "Alankward",
     ]
     markers = ["x", "x", "o", "x", "x", "o"]
     colors = [
@@ -574,7 +574,11 @@ def archerplot():
         nrun.append([])
         for idx3, folder_suffix in enumerate(valid_cats):
             filenames = os.listdir(
-                wrkdir_DNR + "txts/timeseries/" + runids[idx] + "/" + folder_suffix
+                wrkdir_DNR
+                + "txts/timeseries/"
+                + runids[idx]
+                + "/"
+                + folder_suffix.lower()
             )
 
             xvals = []
@@ -630,7 +634,7 @@ def archerplot():
                         vcontrib / pdyncontrib,
                         markers[idx3],
                         color=colors[idx3],
-                        label=cat_names[idx3].capitalize(),
+                        label=cat_names[idx3],
                         markersize=8,
                         fillstyle="none",
                         markeredgewidth=2,
