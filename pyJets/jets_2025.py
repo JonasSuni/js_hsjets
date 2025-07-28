@@ -700,10 +700,10 @@ def archerplot():
     ax.set_ylim(-1, 2.5)
     ax.label_outer()
     ax.tick_params(labelsize=16)
-    ax.annotate(
-        panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
+    ax.annotate(panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20)
+    hist, xedges, yedges, img = ax.hist2d(
+        xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(15, 15)
     )
-    hist, = ax.hist2d(xall,yall,cmin=1,range=[[-1,2.5],[-1,2.5]],bins=(15,15))
     ax.colorbar(hist)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
