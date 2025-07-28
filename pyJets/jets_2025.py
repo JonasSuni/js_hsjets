@@ -700,7 +700,7 @@ def archerplot():
     #         )
     #     ax.legend(handles, labels, fontsize=14)
 
-    for idx2 in range(runids):
+    for idx2 in range(len(runids)):
         handles, labels = ax_flat[idx2].get_legend_handles_labels()
         for idx in range(len(labels)):
             labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
