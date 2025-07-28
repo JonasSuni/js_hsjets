@@ -97,6 +97,7 @@ except:
 wrkdir_DNR = wrkdir_DNR + "jets_all_2D/"
 wrkdir_other = os.environ["WRK"] + "/"
 
+
 def process_timestep_VSC_timeseries(args):
     """Helper function for parallel processing in VSC_timeseries"""
     (
@@ -514,3 +515,199 @@ def all_cats_timeseries_script(n_processes=1, skip=True, skip_AIC=False):
                 minsize=4,
                 n_processes=n_processes,
             )
+
+
+def archerplot():
+
+    runids = ["ABA", "ABC", "AEA", "AEC", "AIC"]
+
+    AIC_valid_cats = [
+        "jets_qpar_before",
+        "jets_qpar_fb",
+        "jets_qperp_rd",
+        "jets_qperp_after",
+        "jets_qperp_inter",
+        "jets_qpar_after",
+    ]
+    AIC_cat_names = [
+        "Dusk $Q_\\parallel$",
+        "Dusk FB",
+        "Dawn RD",
+        "Dawn $Q_\\parallel$",
+        "Dawn young FS",
+        "Dusk $Q_\\perp$",
+    ]
+    old_valid_cats = [
+        "fcs",
+        "antisunward",
+        "flankward",
+    ]
+    markers = ["x", "x", "o", "x", "x", "o"]
+    colors = [
+        "k",
+        CB_color_cycle[3],
+        CB_color_cycle[1],
+        CB_color_cycle[0],
+        CB_color_cycle[2],
+        CB_color_cycle[4],
+    ]
+    panel_labs = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"]
+
+    fig, ax_list = plt.subplots(3, 2, figsize=(14, 21), layout="compressed")
+    ax_flat = ax_list.flatten()
+    avgs = []
+    meds = []
+    xall = []
+    yall = []
+
+    for idx in range(len(runids)):
+        if runids[idx] == "AIC":
+            valid_cats = AIC_valid_cats
+            cat_names = AIC_cat_names
+        else:
+            valid_cats = old_valid_cats
+            cat_names = old_valid_cats
+        ax = ax_flat[idx]
+        avgs.append([])
+        meds.append([])
+        for idx3, folder_suffix in enumerate(valid_cats):
+            filenames = os.listdir(
+                wrkdir_DNR + "txts/timeseries/" + runids[idx] + "/" + folder_suffix
+            )
+
+            xvals = []
+            yvals = []
+
+            for idx2, fn in enumerate(filenames):
+                data_arr = np.loadtxt(
+                    wrkdir_DNR
+                    + "txts/timeseries/"
+                    + runids[idx]
+                    + "/"
+                    + folder_suffix
+                    + "/"
+                    + fn
+                )
+                pdyn = data_arr[5, :]
+                v = data_arr[4, :]
+                rho = data_arr[0, :]
+
+                rhocontrib = (
+                    rho[pdyn == max(pdyn)][0] - np.nanmean(rho[:20])
+                ) / np.nanmean(rho[:20])
+                vcontrib = (
+                    (v**2)[pdyn == max(pdyn)][0] - np.nanmean((v**2)[:20])
+                ) / np.nanmean((v**2)[:20])
+                pdyncontrib = (max(pdyn) - np.nanmean(pdyn[:20])) / np.nanmean(
+                    pdyn[:20]
+                )
+
+                xvals.append(rhocontrib / pdyncontrib)
+                yvals.append(vcontrib / pdyncontrib)
+                xall.append(rhocontrib / pdyncontrib)
+                yall.append(vcontrib / pdyncontrib)
+
+                if (
+                    rhocontrib / pdyncontrib > 2.5
+                    or vcontrib / pdyncontrib > 2.5
+                    or rhocontrib / pdyncontrib < -1
+                    or vcontrib / pdyncontrib < -1
+                ):
+                    print(
+                        "Jet of type {} in runid {} has values outside of limits: ({:.2f},{:.2f})".format(
+                            cat_names[idx3],
+                            runids[idx],
+                            rhocontrib / pdyncontrib,
+                            vcontrib / pdyncontrib,
+                        )
+                    )
+
+                if idx2 == 0:
+                    ax_flat[0].plot(
+                        rhocontrib / pdyncontrib,
+                        vcontrib / pdyncontrib,
+                        markers[idx3],
+                        color=colors[idx3],
+                        label=cat_names[idx3],
+                        markersize=8,
+                        fillstyle="none",
+                        markeredgewidth=2,
+                    )
+                    ax.plot(
+                        rhocontrib / pdyncontrib,
+                        vcontrib / pdyncontrib,
+                        markers[idx3],
+                        color=colors[idx3],
+                        label=cat_names[idx3],
+                        markersize=8,
+                        fillstyle="none",
+                        markeredgewidth=2,
+                    )
+
+                else:
+                    ax_flat[0].plot(
+                        rhocontrib / pdyncontrib,
+                        vcontrib / pdyncontrib,
+                        markers[idx3],
+                        color=colors[idx3],
+                        markersize=8,
+                        fillstyle="none",
+                        markeredgewidth=2,
+                    )
+                    ax.plot(
+                        rhocontrib / pdyncontrib,
+                        vcontrib / pdyncontrib,
+                        markers[idx3],
+                        color=colors[idx3],
+                        markersize=8,
+                        fillstyle="none",
+                        markeredgewidth=2,
+                    )
+
+            avgs[idx].append([np.nanmean(xvals), np.nanmean(yvals)])
+            meds[idx].append([np.nanmedian(xvals), np.nanmedian(yvals)])
+
+    for idx, ax in enumerate(ax_flat[:-1]):
+        ax.set_xlabel(
+            "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.set_ylabel(
+            "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.set_title(runids[idx], fontsize=24, pad=10)
+        ax.axvline(0, linestyle="dashed", linewidth=0.6)
+        ax.axhline(0, linestyle="dashed", linewidth=0.6)
+        ax.grid()
+        ax.legend(fontsize=16)
+        ax.set_xlim(-1, 2.5)
+        ax.set_ylim(-1, 2.5)
+        ax.label_outer()
+        ax.tick_params(labelsize=16)
+        ax.annotate(
+            panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
+        )
+
+    # for ax in ax_flat:
+    #     ax.legend()
+    #     handles, labels = ax.get_legend_handles_labels()
+    #     for idx in range(len(labels)):
+    #         labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
+    #             meds[idx][0], meds[idx][1]
+    #         )
+    #     ax.legend(handles, labels, fontsize=14)
+
+    for idx2 in range(runids):
+        handles, labels = ax_flat[idx2].get_legend_handles_labels()
+        for idx in range(len(labels)):
+            labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
+                meds[idx2][idx][0], meds[idx2][idx][1]
+            )
+        ax_flat[idx2].legend(handles, labels, fontsize=14)
+
+    fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
+    fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
