@@ -630,7 +630,7 @@ def archerplot():
                         vcontrib / pdyncontrib,
                         markers[idx3],
                         color=colors[idx3],
-                        label=cat_names[idx3],
+                        label=cat_names[idx3].capitalize(),
                         markersize=8,
                         fillstyle="none",
                         markeredgewidth=2,
@@ -674,15 +674,6 @@ def archerplot():
             panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
         )
 
-    # for ax in ax_flat:
-    #     ax.legend()
-    #     handles, labels = ax.get_legend_handles_labels()
-    #     for idx in range(len(labels)):
-    #         labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
-    #             meds[idx][0], meds[idx][1]
-    #         )
-    #     ax.legend(handles, labels, fontsize=14)
-
     for idx2 in range(len(runids)):
         handles, labels = ax_flat[idx2].get_legend_handles_labels()
         for idx in range(len(labels)):
@@ -690,6 +681,30 @@ def archerplot():
                 nrun[idx2][idx], meds[idx2][idx][0], meds[idx2][idx][1]
             )
         ax_flat[idx2].legend(handles, labels, fontsize=14)
+
+    ax = ax_flat[-1]
+    ax.set_xlabel(
+        "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+        fontsize=24,
+        labelpad=10,
+    )
+    ax.set_ylabel(
+        "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+        fontsize=24,
+    )
+    ax.set_title("All", fontsize=24, pad=10)
+    ax.axvline(0, linestyle="dashed", linewidth=0.6)
+    ax.axhline(0, linestyle="dashed", linewidth=0.6)
+    ax.grid()
+    ax.set_xlim(-1, 2.5)
+    ax.set_ylim(-1, 2.5)
+    ax.label_outer()
+    ax.tick_params(labelsize=16)
+    ax.annotate(
+        panel_labs[idx], xy=(0.05, 0.95), xycoords="axes fraction", fontsize=20
+    )
+    hist, = ax.hist2d(xall,yall,cmin=1,range=[[-1,2.5],[-1,2.5]],bins=(15,15))
+    ax.colorbar(hist)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
