@@ -623,16 +623,6 @@ def archerplot():
                     )
 
                 if idx2 == 0:
-                    ax_flat[0].plot(
-                        rhocontrib / pdyncontrib,
-                        vcontrib / pdyncontrib,
-                        markers[idx3],
-                        color=colors[idx3],
-                        label=cat_names[idx3],
-                        markersize=8,
-                        fillstyle="none",
-                        markeredgewidth=2,
-                    )
                     ax.plot(
                         rhocontrib / pdyncontrib,
                         vcontrib / pdyncontrib,
@@ -643,17 +633,7 @@ def archerplot():
                         fillstyle="none",
                         markeredgewidth=2,
                     )
-
                 else:
-                    ax_flat[0].plot(
-                        rhocontrib / pdyncontrib,
-                        vcontrib / pdyncontrib,
-                        markers[idx3],
-                        color=colors[idx3],
-                        markersize=8,
-                        fillstyle="none",
-                        markeredgewidth=2,
-                    )
                     ax.plot(
                         rhocontrib / pdyncontrib,
                         vcontrib / pdyncontrib,
@@ -702,6 +682,7 @@ def archerplot():
 
     for idx2 in range(len(runids)):
         handles, labels = ax_flat[idx2].get_legend_handles_labels()
+        print("Runid {} len(labels) {}".format(runids[idx2], len(labels)))
         for idx in range(len(labels)):
             labels[idx] = labels[idx] + ", med: ({:.2f}, {:.2f})".format(
                 meds[idx2][idx][0], meds[idx2][idx][1]
