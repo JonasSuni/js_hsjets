@@ -571,6 +571,7 @@ def archerplot():
         ax = ax_flat[idx]
         avgs.append([])
         meds.append([])
+        nrun.append([])
         for idx3, folder_suffix in enumerate(valid_cats):
             filenames = os.listdir(
                 wrkdir_DNR + "txts/timeseries/" + runids[idx] + "/" + folder_suffix
@@ -647,7 +648,7 @@ def archerplot():
 
             avgs[idx].append([np.nanmean(xvals), np.nanmean(yvals)])
             meds[idx].append([np.nanmedian(xvals), np.nanmedian(yvals)])
-            nrun.append(len(xvals))
+            nrun[idx].append(len(xvals))
 
     for idx, ax in enumerate(ax_flat[:-1]):
         ax.set_xlabel(
@@ -686,7 +687,7 @@ def archerplot():
         handles, labels = ax_flat[idx2].get_legend_handles_labels()
         for idx in range(len(labels)):
             labels[idx] = labels[idx] + ", N = {}, med: ({:.2f}, {:.2f})".format(
-                nrun[idx2], meds[idx2][idx][0], meds[idx2][idx][1]
+                nrun[idx2][idx], meds[idx2][idx][0], meds[idx2][idx][1]
             )
         ax_flat[idx2].legend(handles, labels, fontsize=14)
 
