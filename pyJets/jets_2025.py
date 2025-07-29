@@ -306,6 +306,7 @@ def plot_timeseries_at_jets_OLD(
 
     if folder_suffix == "fcs":
         jet_ids = get_fcs_jets(runid)
+
     else:
         kind = ["foreshock", "beam"][["antisunward", "flankward"].index(folder_suffix)]
         jet_ids = np.loadtxt(
@@ -313,6 +314,8 @@ def plot_timeseries_at_jets_OLD(
             dtype=int,
             ndmin=1,
         )
+
+    save_ids = []
 
     for n1 in jet_ids:
         # try:
@@ -368,6 +371,8 @@ def plot_timeseries_at_jets_OLD(
             )
         )
 
+        save_ids.append(n1)
+
         VSC_timeseries(
             runid,
             x0,
@@ -379,6 +384,10 @@ def plot_timeseries_at_jets_OLD(
             jett0=t0,
             n_processes=n_processes,
         )
+
+    np.savetxt(
+        wrkdir_DNR + "txts/id_txts/{}_{}.txt".format(runid, folder_suffix), save_ids
+    )
 
 
 def plot_timeseries_at_jets_AIC(
