@@ -723,3 +723,18 @@ def archerplot():
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+
+def check_duplicates():
+
+    for runid in ["ABA", "ABC", "AEA", "AEC"]:
+        fcs_ids = np.loadtxt(
+            wrkdir_DNR + "txts/id_txts/{}_fcs.txt".format(runid), ndmin=1, dtype=int
+        )
+        flankward_ids = np.loadtxt(
+            wrkdir_DNR + "txts/id_txts/{}_flankward.txt".format(runid),
+            ndmin=1,
+            dtype=int,
+        )
+        print("\nABA FCS and flankward overlap:")
+        print(np.intersect1d(fcs_ids, flankward_ids))
