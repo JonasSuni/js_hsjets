@@ -309,11 +309,13 @@ def plot_timeseries_at_jets_OLD(
 
     else:
         kind = ["foreshock", "beam"][["antisunward", "flankward"].index(folder_suffix)]
+        fcs_ids = get_fcs_jets(runid)
         jet_ids = np.loadtxt(
             wrkdir_other + "papu22/id_txts/auto/{}_{}.txt".format(runid, kind),
             dtype=int,
             ndmin=1,
         )
+        jet_ids = jet_ids[~np.isin(jet_ids, fcs_ids)]
 
     save_ids = []
 
