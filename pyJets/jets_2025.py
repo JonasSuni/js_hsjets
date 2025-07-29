@@ -736,5 +736,12 @@ def check_duplicates():
             ndmin=1,
             dtype=int,
         )
+        antisunward_ids = np.loadtxt(
+            wrkdir_DNR + "txts/id_txts/{}_antisunward.txt".format(runid),
+            ndmin=1,
+            dtype=int,
+        )
         print("\n{} FCS and flankward overlap:".format(runid))
         print(np.intersect1d(fcs_ids, flankward_ids))
+        print("\n{} FCS and antisunward overlap:".format(runid))
+        print(np.intersect1d(fcs_ids, antisunward_ids))
