@@ -736,5 +736,5 @@ def check_duplicates():
             ndmin=1,
             dtype=int,
         )
-        print("\nABA FCS and flankward overlap:")
+        print("\n{} FCS and flankward overlap:".format(runid))
         print(np.intersect1d(fcs_ids, flankward_ids))
