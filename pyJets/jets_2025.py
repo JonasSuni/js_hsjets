@@ -721,8 +721,8 @@ def archerplot():
     hist, xedges, yedges, img = ax.hist2d(
         xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(60, 60)
     )
-    cb = fig.colorbar(img, ax=ax)
-    cb.ax.set_ylabel("Count", fontsize=14, labelpad=5)
+    cb = fig.colorbar(img, ax=ax, ticks=[5, 10, 15, 20])
+    cb.ax.set_ylabel("Count", fontsize=20, labelpad=5)
     cb.ax.tick_params(labelsize=14)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
