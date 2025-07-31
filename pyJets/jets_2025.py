@@ -531,6 +531,7 @@ def all_cats_timeseries_script(n_processes=1, skip=True, skip_AIC=False):
 def archerplot():
 
     runids = ["ABA", "ABC", "AEA", "AEC", "AIC"]
+    runids_fancy = ["HM30","HM05","LM30","LM05","RD"]
 
     AIC_valid_cats = [
         "qpar_before",
@@ -676,7 +677,7 @@ def archerplot():
             fontsize=24,
             labelpad=10,
         )
-        ax.set_title(runids[idx], fontsize=24, pad=10)
+        ax.set_title(runids_fancy[idx], fontsize=24, pad=10)
         ax.axvline(0, linestyle="dashed", linewidth=0.6)
         ax.axhline(0, linestyle="dashed", linewidth=0.6)
         ax.grid()
@@ -720,7 +721,8 @@ def archerplot():
         xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(60, 60)
     )
     cb = fig.colorbar(img, ax=ax)
-    cb.ax.set_ylabel("Count")
+    cb.ax.set_ylabel("Count",fontsize=14)
+    cb.ax.tick_params(labelsize=14)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
