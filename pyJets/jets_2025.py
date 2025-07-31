@@ -531,7 +531,7 @@ def all_cats_timeseries_script(n_processes=1, skip=True, skip_AIC=False):
 def archerplot():
 
     runids = ["ABA", "ABC", "AEA", "AEC", "AIC"]
-    runids_fancy = ["HM30","HM05","LM30","LM05","RD"]
+    runids_fancy = ["HM30", "HM05", "LM30", "LM05", "RD"]
 
     AIC_valid_cats = [
         "qpar_before",
@@ -707,6 +707,7 @@ def archerplot():
     ax.set_ylabel(
         "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
         fontsize=24,
+        labelpad=10,
     )
     ax.set_title("All", fontsize=24, pad=10)
     ax.axvline(0, linestyle="dashed", linewidth=0.6)
@@ -721,7 +722,7 @@ def archerplot():
         xall, yall, cmin=1, range=[[-1, 2.5], [-1, 2.5]], bins=(60, 60)
     )
     cb = fig.colorbar(img, ax=ax)
-    cb.ax.set_ylabel("Count",fontsize=14)
+    cb.ax.set_ylabel("Count", fontsize=14, labelpad=5)
     cb.ax.tick_params(labelsize=14)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.pdf", dpi=300, bbox_inches="tight")
