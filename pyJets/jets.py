@@ -176,6 +176,8 @@ import agf_jets
 
 import jets_2025
 
+import jets_3d
+
 import foreshock_3d
 
 try:
