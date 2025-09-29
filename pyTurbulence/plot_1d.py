@@ -27,7 +27,7 @@ from copy import deepcopy
 # import scipy.linalg
 from scipy.linalg import eig
 from scipy.fft import rfft2
-from scipy.signal import butter, sosfilt, cwt, morlet2
+from scipy.signal import butter, sosfilt
 from scipy.ndimage import uniform_filter1d
 from scipy.fft import fft, fftfreq
 import numpy as np
