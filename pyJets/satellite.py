@@ -16,7 +16,7 @@ from Merka_BS_model import BS_distance_Merka2005
 # import scipy.linalg
 from scipy.linalg import eig
 from scipy.fft import rfft2
-from scipy.signal import butter, sosfilt, cwt, morlet2
+from scipy.signal import butter, sosfilt
 from scipy.ndimage import uniform_filter1d, gaussian_filter1d
 import numpy as np
 import matplotlib as mpl
