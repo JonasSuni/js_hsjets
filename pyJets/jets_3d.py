@@ -78,7 +78,7 @@ bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
 def get_msh_VDF_coordinates():
 
-    outdir = wrkdir_DNR+"msh_vdf_locs/"
+    outdir = wrkdir_DNR+"FIF/msh_vdf_locs/"
 
     fnr0 = 600
     fnr1 = 991
