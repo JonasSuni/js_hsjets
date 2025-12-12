@@ -129,7 +129,7 @@ def process_timestep_VSC_timeseries(args):
                 tavg_pdyn = np.nan
             pdavg_result = tavg_pdyn * scales[5]
         vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
+            bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7))
         )
         for idx2, var in enumerate(var_list):
             result[idx2] = (
