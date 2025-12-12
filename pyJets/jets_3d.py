@@ -78,28 +78,32 @@ wrkdir_other = os.environ["WRK"] + "/"
 
 bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
+
 def get_msh_VDF_coordinates():
 
-    outdir = wrkdir_DNR+"FIF/msh_vdf_locs/"
+    outdir = wrkdir_DNR + "FIF/msh_vdf_locs/"
 
     fnr0 = 600
     fnr1 = 991
-    boxre = [8,15,-10,0,-10,10]
+    boxre = [8, 15, -10, 0, -10, 10]
 
-    for fnr in range(fnr0,fnr1):
+    for fnr in range(fnr0, fnr1):
         fname = "bulk1.{}.vlsv".format(str(fnr).zfill(7))
-        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath_FIF+fname)
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath_FIF + fname)
         cellids = vlsvobj.read_variable("CellID")
         fsaved = vlsvobj.read_variable("vg_f_saved")
-        vdf_cellids = cellids[fsaved==1]
-        x,y,z = np.array([vlsvobj.get_cell_coordinates(ci)/r_e for ci in vdf_cellids]).T
-        maskx = np.logical_and(x>=boxre[0],x<=boxre[1])
-        masky = np.logical_and(y>=boxre[2],y<=boxre[3])
-        maskz = np.logical_and(z>=boxre[4],z<=boxre[5])
-        mask = np.logical_and(maskx,np.logical_and(masky,maskz))
+        vdf_cellids = cellids[fsaved == 1]
+        x, y, z = np.array(
+            [vlsvobj.get_cell_coordinates(ci) / r_e for ci in vdf_cellids]
+        ).T
+        maskx = np.logical_and(x >= boxre[0], x <= boxre[1])
+        masky = np.logical_and(y >= boxre[2], y <= boxre[3])
+        maskz = np.logical_and(z >= boxre[4], z <= boxre[5])
+        mask = np.logical_and(maskx, np.logical_and(masky, maskz))
 
-        outarr = np.array([vdf_cellids[mask],x[mask],y[mask],z[mask]])
-        np.savetxt(outdir+"{}.txt".format(fnr),outarr.T)
+        outarr = np.array([vdf_cellids[mask], x[mask], y[mask], z[mask]])
+        np.savetxt(outdir + "{}.txt".format(fnr), outarr.T)
+
 
 def process_timestep_VSC_timeseries(args):
     """Helper function for parallel processing in VSC_timeseries"""
@@ -143,6 +147,7 @@ def process_timestep_VSC_timeseries(args):
         print(f"Error processing timestep {fnr}: {str(e)}")
         return fnr, None, None
 
+
 def VSC_timeseries(
     runid,
     coords,
@@ -161,7 +166,7 @@ def VSC_timeseries(
     draw=True,
 ):
     bulkpath = bulkpath_FIF
-    x0,y0,z0 = coords
+    x0, y0, z0 = coords
 
     figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
     txtdir = wrkdir_DNR + "txts/timeseries/{}".format(dirprefix)
@@ -382,7 +387,9 @@ def VSC_timeseries(
             len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
         )
         ax_list[0].set_title(
-            "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}".format(runid, x0, y0, z0)
+            "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}".format(
+                runid, x0, y0, z0
+            )
         )
         for idx in range(len(var_list)):
             ax = ax_list[plot_index[idx]]
@@ -522,22 +529,23 @@ def VSC_timeseries(
         data_arr,
     )
 
-def L3_vdf_timeseries(n_processes):
+
+def L3_vdf_timeseries(n_processes=16, skip=False):
 
     fnr0 = 600
     fnr1 = 991
 
-    data_600 = np.loadtxt(wrkdir_DNR+"FIF/msh_vdf_locs/600.txt")
+    data_600 = np.loadtxt(wrkdir_DNR + "FIF/msh_vdf_locs/600.txt")
     cellids = data_600.T[0]
-    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF+"bulk1.0000600.vlsv")
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
     for ci in cellids:
-        refl = vobj_600.read_variable("vg_reflevel",cellids=int(ci))
+        refl = vobj_600.read_variable("vg_reflevel", cellids=int(ci))
         print(refl)
         if refl != 3:
             continue
 
-        coords = vobj_600.get_cell_coordinates(ci)/r_e
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
         VSC_timeseries(
             "FIF",
             coords,
@@ -549,10 +557,9 @@ def L3_vdf_timeseries(n_processes):
             vlines=[],
             fmt="-",
             dirprefix="",
-            skip=False,
+            skip=skip,
             fromtxt=False,
             jett0=0.0,
             n_processes=n_processes,
             draw=True,
         )
-
