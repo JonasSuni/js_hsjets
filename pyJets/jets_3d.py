@@ -546,20 +546,23 @@ def L3_vdf_timeseries(n_processes=16, skip=False):
             continue
 
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        VSC_timeseries(
-            "FIF",
-            coords,
-            fnr0,
-            fnr1,
-            pdavg=False,
-            pdx=False,
-            delta=None,
-            vlines=[],
-            fmt="-",
-            dirprefix="",
-            skip=skip,
-            fromtxt=False,
-            jett0=0.0,
-            n_processes=n_processes,
-            draw=True,
-        )
+        try:
+            VSC_timeseries(
+                "FIF",
+                coords,
+                fnr0,
+                fnr1,
+                pdavg=False,
+                pdx=False,
+                delta=None,
+                vlines=[],
+                fmt="-",
+                dirprefix="",
+                skip=skip,
+                fromtxt=False,
+                jett0=0.0,
+                n_processes=n_processes,
+                draw=True,
+            )
+        except:
+            pass
