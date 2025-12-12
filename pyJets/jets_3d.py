@@ -522,7 +522,7 @@ def VSC_timeseries(
         data_arr,
     )
 
-def L3_vdf_timeseries():
+def L3_vdf_timeseries(n_processes):
 
     fnr0 = 600
     fnr1 = 991
@@ -552,7 +552,7 @@ def L3_vdf_timeseries():
             skip=False,
             fromtxt=False,
             jett0=0.0,
-            n_processes=1,
+            n_processes=n_processes,
             draw=True,
         )
 
