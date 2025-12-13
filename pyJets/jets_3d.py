@@ -553,7 +553,7 @@ def L3_vdf_timeseries(n_processes=16, skip=False):
                 fnr0,
                 fnr1,
                 pdavg=False,
-                pdx=False,
+                pdx=True,
                 delta=None,
                 vlines=[],
                 fmt="-",
