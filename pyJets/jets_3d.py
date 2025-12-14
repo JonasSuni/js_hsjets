@@ -112,26 +112,13 @@ def process_timestep_VSC_timeseries(args):
         var_list,
         scales,
         bulkpath,
-        tavgdir,
-        cellid,
         ops,
         x0,
         y0,
         z0,
-        runid,
-        pdavg,
     ) = args
     try:
         result = np.zeros(len(var_list) + 7, dtype=float)
-        pdavg_result = None
-        if pdavg:
-            try:
-                tavg_pdyn = np.loadtxt(
-                    tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
-                )[int(cellid) - 1]
-            except:
-                tavg_pdyn = np.nan
-            pdavg_result = tavg_pdyn * scales[5]
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7))
         )
@@ -142,10 +129,10 @@ def process_timestep_VSC_timeseries(args):
                 )
                 * scales[idx2]
             )
-        return fnr, result, pdavg_result
+        return fnr, result
     except Exception as e:
         print(f"Error processing timestep {fnr}: {str(e)}")
-        return fnr, None, None
+        return fnr, None
 
 
 def VSC_timeseries(
@@ -153,7 +140,6 @@ def VSC_timeseries(
     coords,
     t0,
     t1,
-    pdavg=False,
     pdx=False,
     delta=None,
     vlines=[],
@@ -315,9 +301,6 @@ def VSC_timeseries(
     t_arr = np.arange(t0, t1 + 0.1, 1)
     fnr0 = int(t0)
     fnr_arr = np.arange(fnr0, int(t1) + 1, dtype=int)
-    cellid = pt.vlsvfile.VlsvReader(
-        bulkpath + "bulk1.{}.vlsv".format(str(fnr0).zfill(7))
-    ).get_cellid([x0 * r_e, y0 * r_e, z0 * r_e])
     data_arr = np.zeros((len(var_list) + 7, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
 
@@ -337,14 +320,10 @@ def VSC_timeseries(
                 var_list,
                 scales,
                 bulkpath,
-                tavgdir,
-                cellid,
                 ops,
                 x0,
                 y0,
                 z0,
-                runid,
-                pdavg,
             )
             for fnr in fnr_arr
         ]
@@ -355,32 +334,10 @@ def VSC_timeseries(
             results = pool.map(process_timestep_VSC_timeseries, args_list)
 
             # Process results
-            for fnr, result, pdavg_result in results:
+            for fnr, result in results:
                 if result is not None:
                     idx = np.where(fnr_arr == fnr)[0][0]
                     data_arr[:, idx] = result
-                    if pdavg and pdavg_result is not None:
-                        tavg_arr[idx] = pdavg_result
-
-        # for idx, fnr in enumerate(fnr_arr):
-        #     if pdavg:
-        #         try:
-        #             tavg_pdyn = np.loadtxt(
-        #                 tavgdir + "/" + runid + "/" + str(fnr) + "_pdyn.tavg"
-        #             )[int(cellid) - 1]
-        #         except:
-        #             tavg_pdyn = np.nan
-        #         tavg_arr[idx] = tavg_pdyn * scales[5]
-        #     vlsvobj = pt.vlsvfile.VlsvReader(
-        #         bulkpath + "bulk.{}.vlsv".format(str(fnr).zfill(7))
-        #     )
-        #     for idx2, var in enumerate(var_list):
-        #         data_arr[idx2, idx] = (
-        #             vlsvobj.read_interpolated_variable(
-        #                 var, [x0 * r_e, y0 * r_e, 0], operator=ops[idx2]
-        #             )
-        #             * scales[idx2]
-        #         )
 
     if draw:
         fig, ax_list = plt.subplots(
@@ -411,7 +368,7 @@ def VSC_timeseries(
                     color=plot_colors[idx],
                     label=plot_labels[idx],
                 )
-            if idx == 5 and pdavg and not delta:
+            if idx == 5 and False and not delta:
                 ax.plot(
                     t_arr,
                     2 * tavg_arr,
@@ -501,7 +458,7 @@ def VSC_timeseries(
             ax.grid()
             ax.set_ylabel(ylabels[idx])
             ax.axvline(t0, linestyle="dashed")
-            if pdavg:
+            if False:
                 ax.fill_between(
                     t_arr,
                     0,
@@ -552,7 +509,6 @@ def L3_vdf_timeseries(n_processes=16, skip=False):
                 coords,
                 fnr0,
                 fnr1,
-                pdavg=False,
                 pdx=True,
                 delta=None,
                 vlines=[],
