@@ -340,18 +340,11 @@ def VSC_timeseries(
                     idx = np.where(fnr_arr == fnr)[0][0]
                     data_arr[:, idx] = result
 
-    tavg_arr = uniform_filter1d(data_arr[5,:],180,mode="constant",cval=np.nanmean(data_arr[5,:]))
-    pdynx = (
-                m_p
-                * data_arr[0]
-                * 1e6
-                * data_arr[1]
-                * 1e3
-                * data_arr[1]
-                * 1e3
-                * 1e9
-            )
-    tavg_x_arr = uniform_filter1d(pdynx,180,mode="constant",cval = np.nanmean(pdynx))
+    tavg_arr = uniform_filter1d(
+        data_arr[5, :], 180, mode="constant", cval=np.nanmean(data_arr[5, :])
+    )
+    pdynx = m_p * data_arr[0] * 1e6 * data_arr[1] * 1e3 * data_arr[1] * 1e3 * 1e9
+    tavg_x_arr = uniform_filter1d(pdynx, 180, mode="constant", cval=np.nanmean(pdynx))
 
     if draw:
         fig, ax_list = plt.subplots(
@@ -509,7 +502,7 @@ def VSC_timeseries(
     )
 
 
-def L3_vdf_timeseries(n_processes=16, skip=False):
+def L3_vdf_timeseries(n_processes=16, skip=False, fromtxt=False):
 
     fnr0 = 600
     fnr1 = 991
@@ -537,7 +530,7 @@ def L3_vdf_timeseries(n_processes=16, skip=False):
                 fmt="-",
                 dirprefix="",
                 skip=skip,
-                fromtxt=False,
+                fromtxt=fromtxt,
                 jett0=0.0,
                 n_processes=n_processes,
                 draw=True,
