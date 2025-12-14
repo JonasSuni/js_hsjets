@@ -339,6 +339,8 @@ def VSC_timeseries(
                     idx = np.where(fnr_arr == fnr)[0][0]
                     data_arr[:, idx] = result
 
+    tavg_arr = uniform_filter1d(data_arr[5,:],180,mode="nearest")
+
     if draw:
         fig, ax_list = plt.subplots(
             len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
@@ -368,7 +370,7 @@ def VSC_timeseries(
                     color=plot_colors[idx],
                     label=plot_labels[idx],
                 )
-            if idx == 5 and False and not delta:
+            if idx == 5 and True and not delta:
                 ax.plot(
                     t_arr,
                     2 * tavg_arr,
@@ -458,7 +460,7 @@ def VSC_timeseries(
             ax.grid()
             ax.set_ylabel(ylabels[idx])
             ax.axvline(t0, linestyle="dashed")
-            if False:
+            if True:
                 ax.fill_between(
                     t_arr,
                     0,
