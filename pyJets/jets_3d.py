@@ -303,6 +303,7 @@ def VSC_timeseries(
     fnr_arr = np.arange(fnr0, int(t1) + 1, dtype=int)
     data_arr = np.zeros((len(var_list) + 7, fnr_arr.size), dtype=float)
     tavg_arr = np.zeros(fnr_arr.size, dtype=float)
+    tavg_x_arr = np.zeros(fnr_arr.size, dtype=float)
 
     if fromtxt:
         data_arr = np.loadtxt(
@@ -339,7 +340,18 @@ def VSC_timeseries(
                     idx = np.where(fnr_arr == fnr)[0][0]
                     data_arr[:, idx] = result
 
-    tavg_arr = uniform_filter1d(data_arr[5,:],180,mode="nearest")
+    tavg_arr = uniform_filter1d(data_arr[5,:],180,mode="constant",cval=np.nanmean(data_arr[5,:]))
+    pdynx = (
+                m_p
+                * data_arr[0]
+                * 1e6
+                * data_arr[1]
+                * 1e3
+                * data_arr[1]
+                * 1e3
+                * 1e9
+            )
+    tavg_x_arr = uniform_filter1d(pdynx,180,mode="constant",cval = np.nanmean(pdynx))
 
     if draw:
         fig, ax_list = plt.subplots(
@@ -378,29 +390,19 @@ def VSC_timeseries(
                     linestyle="dashed",
                     label="$2\\langle P_\\mathrm{dyn}\\rangle$",
                 )
-                ax.axhline(
-                    0.5 * pdsw_npa,
-                    color=CB_color_cycle[2],
-                    linestyle="dotted",
-                    label="$0.5P_\\mathrm{dyn,sw}$",
-                )
-                ax.axhline(
-                    0.25 * pdsw_npa,
-                    color=CB_color_cycle[3],
-                    linestyle="dotted",
-                    label="$0.25P_\\mathrm{dyn,sw}$",
-                )
+                # ax.axhline(
+                #     0.5 * pdsw_npa,
+                #     color=CB_color_cycle[2],
+                #     linestyle="dotted",
+                #     label="$0.5P_\\mathrm{dyn,sw}$",
+                # )
+                # ax.axhline(
+                #     0.25 * pdsw_npa,
+                #     color=CB_color_cycle[3],
+                #     linestyle="dotted",
+                #     label="$0.25P_\\mathrm{dyn,sw}$",
+                # )
             if idx == 5 and pdx:
-                pdynx = (
-                    m_p
-                    * data_arr[0]
-                    * 1e6
-                    * data_arr[1]
-                    * 1e3
-                    * data_arr[1]
-                    * 1e3
-                    * 1e9
-                )
                 if delta:
                     ax.plot(
                         t_arr,
@@ -417,6 +419,14 @@ def VSC_timeseries(
                         color=CB_color_cycle[0],
                         label="$P_{\\mathrm{dyn},x}$",
                     )
+                    ax.plot(
+                        t_arr,
+                        3 * tavg_x_arr,
+                        color=CB_color_cycle[2],
+                        linestyle="dashed",
+                        label="$3\\langle P_{\\mathrm{dyn},x}\\rangle$",
+                    )
+
             ax.set_xlim(t_arr[0], t_arr[-1])
             if draw_legend[idx]:
                 ncols = 1
@@ -467,6 +477,16 @@ def VSC_timeseries(
                     1,
                     where=data_arr[5, :] > 2 * tavg_arr,
                     color="red",
+                    alpha=0.2,
+                    transform=ax.get_xaxis_transform(),
+                    linewidth=0,
+                )
+                ax.fill_between(
+                    t_arr,
+                    0,
+                    1,
+                    where=pdynx > 3 * tavg_x_arr,
+                    color="green",
                     alpha=0.2,
                     transform=ax.get_xaxis_transform(),
                     linewidth=0,
