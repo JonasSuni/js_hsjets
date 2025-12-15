@@ -137,6 +137,7 @@ def process_timestep_VSC_timeseries(args):
 
 def VSC_timeseries(
     runid,
+    cellid,
     coords,
     t0,
     t1,
@@ -351,8 +352,8 @@ def VSC_timeseries(
             len(ylabels) + 1, 1, sharex=True, figsize=(7, 9), constrained_layout=True
         )
         ax_list[0].set_title(
-            "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}".format(
-                runid, x0, y0, z0
+            "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}, cell: {}".format(
+                runid, x0, y0, z0, int(cellid)
             )
         )
         for idx in range(len(var_list)):
@@ -521,6 +522,7 @@ def L3_vdf_timeseries(n_processes=16, skip=False, fromtxt=False):
         try:
             VSC_timeseries(
                 "FIF",
+                ci,
                 coords,
                 fnr0,
                 fnr1,
