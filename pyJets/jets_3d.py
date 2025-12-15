@@ -539,3 +539,121 @@ def L3_vdf_timeseries(n_processes=16, skip=False, fromtxt=False):
             )
         except:
             pass
+
+
+def L3_good_timeseries_global_vdfs():
+
+    cellids, t0, t1 = np.loadtxt(
+        wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
+    ).T
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    for idx in range(len(cellids)):
+        coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+
+        make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx])
+
+
+def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
+
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], t0, t1, None
+        )
+    )
+    fig = plt.figure(figsize=(8*2,6*2),layout="compressed")
+    axes = generate_axes(fig)
+    ts_axes = []
+    for axname in axes.keys[6:]:
+        ts_axes.append(axes[axname])
+
+    
+
+
+def ts_glob_vdf_update(fnr):
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+def generate_axes(fig):
+    gridspec = fig.add_gridspec(nrows=6, ncols=8)
+    axes = {}
+    axes['vdf_xy'] = fig.add_subplot(gridspec[0:2, 0:2])
+    axes['vdf_xz'] = fig.add_subplot(gridspec[2:4, 0:2])
+    axes['vdf_yz'] = fig.add_subplot(gridspec[4:6, 0:2])
+    axes['cmap_xy'] = fig.add_subplot(gridspec[0:2, 2:4])
+    axes['cmap_xz'] = fig.add_subplot(gridspec[2:4, 2:4])
+    axes['cmap_yz'] = fig.add_subplot(gridspec[4:6, 2:4])
+    axes['rho'] = fig.add_subplot(gridspec[0:1, 4:8])
+    axes['v'] = fig.add_subplot(gridspec[1:2, 4:8])
+    axes['pdyn'] = fig.add_subplot(gridspec[2:3, 4:8])
+    axes['b'] = fig.add_subplot(gridspec[3:4, 4:8])
+    axes['e'] = fig.add_subplot(gridspec[4:5, 4:8])
+    axes['t'] = fig.add_subplot(gridspec[5:6, 4:8])
+    return axes
