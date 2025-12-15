@@ -421,7 +421,7 @@ def VSC_timeseries(
                         label="$3\\langle P_{\\mathrm{dyn},x}\\rangle$",
                     )
 
-            ax.set_xlim(t_arr[0]+90, t_arr[-1]-90)
+            ax.set_xlim(t_arr[0] + 90, t_arr[-1] - 90)
             if draw_legend[idx]:
                 ncols = 1
                 if idx == 5:
@@ -458,7 +458,7 @@ def VSC_timeseries(
         ax_list[-1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
         for vline in vlines:
             ax_list[-1].axvline(vline, linestyle="dashed", linewidth=0.6)
-        ax_list[-1].set_xlim(t_arr[0], t_arr[-1])
+        ax_list[-1].set_xlim(t_arr[0] + 90, t_arr[-1] - 90)
         ax_list[-1].set_xlabel("Simulation time [s]")
         for idx, ax in enumerate(ax_list):
             ax.grid()
