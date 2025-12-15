@@ -421,7 +421,7 @@ def VSC_timeseries(
                         label="$3\\langle P_{\\mathrm{dyn},x}\\rangle$",
                     )
 
-            ax.set_xlim(t_arr[0], t_arr[-1])
+            ax.set_xlim(t_arr[0]+90, t_arr[-1]-90)
             if draw_legend[idx]:
                 ncols = 1
                 if idx == 5:
