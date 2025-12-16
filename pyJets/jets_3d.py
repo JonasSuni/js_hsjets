@@ -572,7 +572,7 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
     fig = plt.figure(figsize=(8 * 2, 6 * 2), layout="compressed")
     axes = generate_axes(fig)
     ts_axes = []
-    for axname in axes.keys[6:]:
+    for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
         ts_axes.append(axes[axname])
     vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
     cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
@@ -683,7 +683,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        boxre=[x_g - boxwidth, x_g + boxwidth, y_g - boxwidth, y_g + boxwidth],
         internalcb=True,
         colormap="batlow",
         scale=1.3,
@@ -704,7 +704,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        boxre=[x_g - boxwidth, x_g + boxwidth, z_g - boxwidth, z_g + boxwidth],
         nocb=True,
         colormap="batlow",
         scale=1.3,
@@ -725,7 +725,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        boxre=[y_g - boxwidth, y_g + boxwidth, z_g - boxwidth, z_g + boxwidth],
         nocb=True,
         colormap="batlow",
         scale=1.3,
