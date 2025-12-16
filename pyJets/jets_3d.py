@@ -556,6 +556,190 @@ def L3_good_timeseries_global_vdfs():
 
 def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
 
+    global vdf_axes, cmap_axes, ci_g, x_g, y_g, z_g, axvlines
+
+    x_g, y_g, z_g = coords
+
+    ci_g = ci
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    fig = plt.figure(figsize=(8 * 2, 6 * 2), layout="compressed")
+    axes = generate_axes(fig)
+    ts_axes = []
+    for axname in axes.keys[6:]:
+        ts_axes.append(axes[axname])
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
+
+    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
+    axvlines = []
+    for ax in ts_axes:
+        axvlines.append(ax.axvline(t0))
+
+    ani = FuncAnimation(
+        fig,
+        ts_glob_vdf_update,
+        frames=np.arange(t0, t1 + 0.1, 1),
+        blit=False,
+    )
+    ani.save(
+        wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
+        fps=5,
+        dpi=150,
+        bitrate=1000,
+    )
+    # print("Saved animation of jet {} in run {}".format(jetid, runid))
+    plt.close(fig)
+
+
+def ts_glob_vdf_update(fnr):
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    for ax in vdf_axes:
+        ax.clear()
+    for ax in cmap_axes:
+        ax.clear()
+    try:
+        generate_vdf_plots(vdf_axes, vlsvobj)
+    except:
+        pass
+    generate_cmap_plots(cmap_axes, vlsvobj)
+
+
+def generate_vdf_plots(vdf_axes, vobj):
+
+    boxwidth = 2000e3
+
+    pt.plot.plot_vdf(
+        axes=vdf_axes[0],
+        vlsvobj=vobj,
+        cellids=[ci_g],
+        colormap="batlow",
+        bvector=1,
+        xy=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        internalcb=True,
+        title="",
+    )
+    pt.plot.plot_vdf(
+        axes=vdf_axes[1],
+        vlsvobj=vobj,
+        cellids=[ci_g],
+        colormap="batlow",
+        bvector=1,
+        xz=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        nocb=True,
+        title="",
+    )
+    pt.plot.plot_vdf(
+        axes=vdf_axes[2],
+        vlsvobj=vobj,
+        cellids=[ci_g],
+        colormap="batlow",
+        bvector=1,
+        yz=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        nocb=True,
+        title="",
+    )
+
+
+def generate_cmap_plots(cmap_axes, vobj):
+
+    boxwidth = 1
+
+    pt.plot.plot_colormap3dslice(
+        axes=cmap_axes[0],
+        vlsvobj=vobj,
+        var="proton/vg_Pdyn",
+        vmin=0.01,
+        vmax=1.2,
+        vscale=1e9,
+        cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+        usesci=0,
+        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        internalcb=True,
+        colormap="batlow",
+        scale=1.3,
+        tickinterval=1.0,
+        normal="z",
+        cutpointre=z_g,
+        title="",
+    )
+    cmap_axes[0].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[0].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
+
+    pt.plot.plot_colormap3dslice(
+        axes=cmap_axes[1],
+        vlsvobj=vobj,
+        var="proton/vg_Pdyn",
+        vmin=0.01,
+        vmax=1.2,
+        vscale=1e9,
+        cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+        usesci=0,
+        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        internalcb=True,
+        colormap="batlow",
+        scale=1.3,
+        tickinterval=1.0,
+        normal="y",
+        cutpointre=y_g,
+        title="",
+    )
+    cmap_axes[1].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[1].axhline(z_g, linestyle="dashed", linewidth=0.6, color="k")
+
+    pt.plot.plot_colormap3dslice(
+        axes=cmap_axes[2],
+        vlsvobj=vobj,
+        var="proton/vg_Pdyn",
+        vmin=0.01,
+        vmax=1.2,
+        vscale=1e9,
+        cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+        usesci=0,
+        boxre=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        internalcb=True,
+        colormap="batlow",
+        scale=1.3,
+        tickinterval=1.0,
+        normal="x",
+        cutpointre=x_g,
+        title="",
+    )
+    cmap_axes[2].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[2].axvline(z_g, linestyle="dashed", linewidth=0.6, color="k")
+
+
+def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
+
     plot_labels = [
         None,
         "$v_x$",
@@ -620,40 +804,95 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
         CB_color_cycle[1],
     ]
 
-    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
-    ts_data = np.loadtxt(
-        txtdir
-        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
-            "FIF", coords[0], coords[1], coords[2], t0, t1, None
+    t_arr = np.arange(600, 991 + 0.1, 1)
+    tavg_arr = uniform_filter1d(
+        ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
+    )
+    pdynx = m_p * ts_data[0] * 1e6 * ts_data[1] * 1e3 * ts_data[1] * 1e3 * 1e9
+    tavg_x_arr = uniform_filter1d(pdynx, 180, mode="constant", cval=np.nanmean(pdynx))
+
+    ts_axes[0].set_title(
+        "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}, cell: {}".format(
+            "FIF", coords[0], coords[1], coords[2], int(ci)
         )
     )
-    fig = plt.figure(figsize=(8*2,6*2),layout="compressed")
-    axes = generate_axes(fig)
-    ts_axes = []
-    for axname in axes.keys[6:]:
-        ts_axes.append(axes[axname])
+    for idx in range(len(plot_labels)):
+        ax = ts_axes[plot_index[idx]]
+        ax.plot(
+            t_arr,
+            ts_data[idx],
+            "-",
+            color=plot_colors[idx],
+            label=plot_labels[idx],
+        )
+        if idx == 5:
+            ax.plot(
+                t_arr,
+                2 * tavg_arr,
+                color=CB_color_cycle[1],
+                linestyle="dashed",
+                label="$2\\langle P_\\mathrm{dyn}\\rangle$",
+            )
+            ax.plot(
+                t_arr,
+                pdynx,
+                "-",
+                color=CB_color_cycle[0],
+                label="$P_{\\mathrm{dyn},x}$",
+            )
+            ax.plot(
+                t_arr,
+                3 * tavg_x_arr,
+                color=CB_color_cycle[2],
+                linestyle="dashed",
+                label="$3\\langle P_{\\mathrm{dyn},x}\\rangle$",
+            )
 
-    
+        ax.set_xlim(min(t0, 690), max(t1, 900))
+        if draw_legend[idx]:
+            ncols = 1
+            if idx == 5:
+                ncols = 1
+            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
 
+    for idx, ax in enumerate(ts_axes):
+        ax.grid()
+        ax.set_ylabel(ylabels[idx])
+        ax.fill_between(
+            t_arr,
+            0,
+            1,
+            where=ts_data[5, :] > 2 * tavg_arr,
+            color="red",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
+        ax.fill_between(
+            t_arr,
+            0,
+            1,
+            where=pdynx > 3 * tavg_x_arr,
+            color="green",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
 
-def ts_glob_vdf_update(fnr):
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
-    )
 
 def generate_axes(fig):
     gridspec = fig.add_gridspec(nrows=6, ncols=8)
     axes = {}
-    axes['vdf_xy'] = fig.add_subplot(gridspec[0:2, 0:2])
-    axes['vdf_xz'] = fig.add_subplot(gridspec[2:4, 0:2])
-    axes['vdf_yz'] = fig.add_subplot(gridspec[4:6, 0:2])
-    axes['cmap_xy'] = fig.add_subplot(gridspec[0:2, 2:4])
-    axes['cmap_xz'] = fig.add_subplot(gridspec[2:4, 2:4])
-    axes['cmap_yz'] = fig.add_subplot(gridspec[4:6, 2:4])
-    axes['rho'] = fig.add_subplot(gridspec[0:1, 4:8])
-    axes['v'] = fig.add_subplot(gridspec[1:2, 4:8])
-    axes['pdyn'] = fig.add_subplot(gridspec[2:3, 4:8])
-    axes['b'] = fig.add_subplot(gridspec[3:4, 4:8])
-    axes['e'] = fig.add_subplot(gridspec[4:5, 4:8])
-    axes['t'] = fig.add_subplot(gridspec[5:6, 4:8])
+    axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 0:2])
+    axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 0:2])
+    axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 0:2])
+    axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 2:4])
+    axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 2:4])
+    axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 2:4])
+    axes["rho"] = fig.add_subplot(gridspec[0:1, 4:8])
+    axes["v"] = fig.add_subplot(gridspec[1:2, 4:8])
+    axes["pdyn"] = fig.add_subplot(gridspec[2:3, 4:8])
+    axes["b"] = fig.add_subplot(gridspec[3:4, 4:8])
+    axes["e"] = fig.add_subplot(gridspec[4:5, 4:8])
+    axes["t"] = fig.add_subplot(gridspec[5:6, 4:8])
     return axes
