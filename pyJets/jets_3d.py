@@ -827,6 +827,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             "FIF", coords[0], coords[1], coords[2], int(ci)
         )
     )
+    ts_axes[-1].set_xlabel("t [s]")
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
         ax.plot(
