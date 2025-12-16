@@ -582,7 +582,7 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
     generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
     axvlines = []
     for ax in ts_axes:
-        axvlines.append(ax.axvline(t0))
+        axvlines.append(ax.axvline(t0,linestyle="dashed"))
 
     ani = FuncAnimation(
         fig,
