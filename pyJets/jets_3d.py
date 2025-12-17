@@ -583,7 +583,6 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
     axvlines = []
     for ax in ts_axes:
         axvlines.append(ax.axvline(t0, linestyle="dashed"))
-        ax.label_outer()
 
     ts_glob_vdf_update(t0)
 
@@ -929,21 +928,22 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 #     axes["t"] = fig.add_subplot(gridspec[10:12, 8:16])
 #     return axes
 
+
 def generate_axes(fig):
     gridspec = fig.add_gridspec(nrows=6, ncols=12)
     axes = {}
-    axes['cmap_cb'] = fig.add_subplot(gridspec[0:6, 0:1])
-    axes['cmap_xy'] = fig.add_subplot(gridspec[0:2, 1:3])
-    axes['cmap_xz'] = fig.add_subplot(gridspec[2:4, 1:3])
-    axes['cmap_yz'] = fig.add_subplot(gridspec[4:6, 1:3])
-    axes['vdf_cb'] = fig.add_subplot(gridspec[0:6, 3:4])
-    axes['vdf_xy'] = fig.add_subplot(gridspec[0:2, 4:6])
-    axes['vdf_xz'] = fig.add_subplot(gridspec[2:4, 4:6])
-    axes['vdf_yz'] = fig.add_subplot(gridspec[4:6, 4:6])
-    axes['rho'] = fig.add_subplot(gridspec[0:1, 6:11])
-    axes['v'] = fig.add_subplot(gridspec[1:2, 6:11])
-    axes['pdyn'] = fig.add_subplot(gridspec[2:3, 6:11])
-    axes['b'] = fig.add_subplot(gridspec[3:4, 6:11])
-    axes['e'] = fig.add_subplot(gridspec[4:5, 6:11])
-    axes['t'] = fig.add_subplot(gridspec[5:6, 6:11])
+    axes["cmap_cb"] = fig.add_subplot(gridspec[0:6, 0:1])
+    axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 1:3])
+    axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 1:3])
+    axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 1:3])
+    axes["vdf_cb"] = fig.add_subplot(gridspec[0:6, 3:4])
+    axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 4:6])
+    axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 4:6])
+    axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 4:6])
+    axes["rho"] = fig.add_subplot(gridspec[0:1, 6:11])
+    axes["v"] = fig.add_subplot(gridspec[1:2, 6:11])
+    axes["pdyn"] = fig.add_subplot(gridspec[2:3, 6:11])
+    axes["b"] = fig.add_subplot(gridspec[3:4, 6:11])
+    axes["e"] = fig.add_subplot(gridspec[4:5, 6:11])
+    axes["t"] = fig.add_subplot(gridspec[5:6, 6:11])
     return axes
