@@ -26,7 +26,7 @@ from matplotlib.ticker import MaxNLocator, ScalarFormatter
 
 # from mpl_toolkits.axes_grid1 import make_axes_locatable
 # from matplotlib.lines import Line2D
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, FFMpegFileWriter
 
 # import plot_contours as pc
 # import jet_analyser as ja
@@ -584,24 +584,34 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
     for ax in ts_axes:
         axvlines.append(ax.axvline(t0, linestyle="dashed"))
 
-    ts_glob_vdf_update(t0)
+    # ts_glob_vdf_update(t0)
 
-    ani = FuncAnimation(
-        fig,
-        ts_glob_vdf_update,
-        frames=np.arange(t0, t1 + 0.1, 1),
-        blit=False,
-    )
-    ani.save(
-        wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
-        fps=5,
-        dpi=150,
-        bitrate=1000,
-        savefig_kwargs={"bbox_inches": "tight"},
-    )
+    # ani = FuncAnimation(
+    #     fig,
+    #     ts_glob_vdf_update,
+    #     frames=np.arange(t0, t1 + 0.1, 1),
+    #     blit=False,
+    # )
+    # ani.save(
+    #     wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
+    #     fps=5,
+    #     dpi=150,
+    #     bitrate=1000,
+    #     savefig_kwargs={"bbox_inches": "tight"},
+    # )
+    
+    moviewriter = FFMpegFileWriter(fps=5)
+
+    moviewriter.setup(fig, wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1), dpi=150)
+
+    for fnr in np.arange(t0,t1+0.1,1):
+        ts_glob_vdf_update(fnr)
+        moviewriter.grab_frame(bbox_inches='tight')
+        
+    moviewriter.finish()
+
     print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
     plt.close(fig)
-
 
 def ts_glob_vdf_update(fnr):
     print("Current time: {}".format(fnr))
