@@ -569,7 +569,7 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
             "FIF", coords[0], coords[1], coords[2], 600, 991, None
         )
     )
-    fig = plt.figure(figsize=(18, 12), layout="compressed")
+    fig = plt.figure(figsize=(24, 24), layout="compressed")
     axes = generate_axes(fig)
     ts_axes = []
     for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
