@@ -599,9 +599,10 @@ def L3_good_timeseries_global_vdfs_one(idx):
     subprocess.run(
         "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(
             outdir, outfilename
-        )
+        ),
+        shell=True,
     )
-    subprocess.run("rm {} -rf".format(outdir))
+    subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
 def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
