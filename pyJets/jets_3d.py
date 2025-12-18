@@ -616,7 +616,7 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     subprocess.run(
-        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -crf 18 -vf scale=1920:-2 -y {}".format(
+        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 1500k -vf scale=1920:-2 -y {}".format(
             outdir, outfilename
         ),
         shell=True,
