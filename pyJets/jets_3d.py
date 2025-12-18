@@ -599,8 +599,8 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
 
     args_list = []
 
-    for idx,fnr in enumerate(np.arange(t0,t1+0.1,1).astype(int)):
-        args_list.append((cellids[idx],coords,t0,t1,fnr,limitedsize,outdir))
+    for idx, fnr in enumerate(np.arange(t0, t1 + 0.1, 1, dtype=int)):
+        args_list.append((cellids[idx], coords, t0, t1, fnr, limitedsize, outdir))
 
     # Use multiprocessing Pool
 
@@ -620,9 +620,10 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
+
 def make_timeseries_global_vdf_one(args):
 
-    ci,coords,t0,t1,fnr,limitedsize,outdir=args
+    ci, coords, t0, t1, fnr, limitedsize, outdir = args
 
     txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
     ts_data = np.loadtxt(
@@ -648,10 +649,12 @@ def make_timeseries_global_vdf_one(args):
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
     try:
-        generate_vdf_plots(vdf_axes, vlsvobj,ci)
+        generate_vdf_plots(vdf_axes, vlsvobj, ci)
     except:
         pass
-    generate_cmap_plots(cmap_axes, vlsvobj, coords[0],coords[1],coords[2],limitedsize)
+    generate_cmap_plots(
+        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
+    )
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
@@ -659,6 +662,7 @@ def make_timeseries_global_vdf_one(args):
 
     print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
     plt.close(fig)
+
 
 def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
 
