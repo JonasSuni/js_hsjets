@@ -585,11 +585,13 @@ def L3_good_timeseries_global_vdfs_one(idx):
             pass
 
     # DEBUG ONLY
-    make_timeseries_global_vdf_anim(
-        cellids[idx], coords, t0[idx], t0[idx] + 5, outdir=outdir
-    )
+    # make_timeseries_global_vdf_anim(
+    #     cellids[idx], coords, t0[idx], t0[idx] + 5, outdir=outdir
+    # )
 
-    # make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
+    make_timeseries_global_vdf_anim(
+        cellids[idx], coords, t0[idx], t1[idx], outdir=outdir
+    )
 
     outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4".format(
         cellids[idx], t0[idx], t1[idx]
