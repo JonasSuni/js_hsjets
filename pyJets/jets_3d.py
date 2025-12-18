@@ -1,5 +1,5 @@
 import analysator as pt
-import os
+import os,subprocess
 import sys
 from random import choice
 from copy import deepcopy
@@ -541,7 +541,7 @@ def L3_vdf_timeseries(n_processes=16, skip=False, fromtxt=False):
             pass
 
 
-def L3_good_timeseries_global_vdfs():
+def L3_good_timeseries_global_vdfs_all():
 
     cellids, t0, t1 = np.loadtxt(
         wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
@@ -551,10 +551,42 @@ def L3_good_timeseries_global_vdfs():
     for idx in range(len(cellids)):
         coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
 
-        make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx])
+        outdir = "/tmp/FIF/{}".format(idx)
 
+        if not os.path.exists(outdir):
+            try:
+                os.makedirs(outdir)
+            except OSError:
+                pass
 
-def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
+        make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
+
+def L3_good_timeseries_global_vdfs_one(idx):
+
+    cellids, t0, t1 = np.loadtxt(
+        wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
+    ).T
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+
+    outdir = "/tmp/FIF/{}".format(idx)
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
+
+    outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
+
+    # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
+    subprocess.run("cat $(find {} -maxdepth 1 -name *.png | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(outdir,outfilename))
+    subprocess.run("rm {} -rf".format(outdir))
+
+def make_timeseries_global_vdf_anim(ci, coords, t0, t1,outdir=""):
 
     global vdf_axes, cmap_axes, ci_g, x_g, y_g, z_g, axvlines, cmap_cb_ax, vdf_cb_ax
 
@@ -584,34 +616,27 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1):
     for ax in ts_axes:
         axvlines.append(ax.axvline(t0, linestyle="dashed"))
 
-    ts_glob_vdf_update(t0)
+    for fnr in np.arange(t0, t1 + 0.1, 1):
+        ts_glob_vdf_update(fnr)
+        fig.savefig(outdir+"{}.png".format(fnr),dpi=300,bbox_inches="tight")
 
-    ani = FuncAnimation(
-        fig,
-        ts_glob_vdf_update,
-        frames=np.arange(t0, t1 + 0.1, 1),
-        blit=False,
-    )
-    ani.save(
-        wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
-        fps=5,
-        dpi=150,
-        bitrate=1000,
-        writer="ffmpeg",
-        savefig_kwargs={"bbox_inches": "tight"},
-    )
+    #ts_glob_vdf_update(t0)
 
-    # moviewriter = FFMpegFileWriter(fps=5)
 
-    # moviewriter.setup(
-    #     fig, wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1), dpi=150
+    # ani = FuncAnimation(
+    #     fig,
+    #     ts_glob_vdf_update,
+    #     frames=np.arange(t0, t1 + 0.1, 1),
+    #     blit=False,
     # )
-
-    # for fnr in np.arange(t0, t1 + 0.1, 1):
-    #     ts_glob_vdf_update(fnr)
-    #     moviewriter.grab_frame(savefig_kwargs={"bbox_inches": "tight"})
-
-    # moviewriter.finish()
+    # ani.save(
+    #     wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
+    #     fps=5,
+    #     dpi=150,
+    #     bitrate=1000,
+    #     writer="ffmpeg",
+    #     savefig_kwargs={"bbox_inches": "tight"},
+    # )
 
     print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
     plt.close(fig)
@@ -903,65 +928,6 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             transform=ax.get_xaxis_transform(),
             linewidth=0,
         )
-
-
-# def generate_axes(fig):
-#     gridspec = fig.add_gridspec(nrows=6, ncols=8)
-#     axes = {}
-#     axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 0:2])
-#     axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 0:2])
-#     axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 0:2])
-#     axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 2:4])
-#     axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 2:4])
-#     axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 2:4])
-#     axes["rho"] = fig.add_subplot(gridspec[0:1, 4:8])
-#     axes["v"] = fig.add_subplot(gridspec[1:2, 4:8])
-#     axes["pdyn"] = fig.add_subplot(gridspec[2:3, 4:8])
-#     axes["b"] = fig.add_subplot(gridspec[3:4, 4:8])
-#     axes["e"] = fig.add_subplot(gridspec[4:5, 4:8])
-#     axes["t"] = fig.add_subplot(gridspec[5:6, 4:8])
-#     return axes
-
-
-# def generate_axes(fig):
-#     gridspec = fig.add_gridspec(nrows=12, ncols=16)
-#     axes = {}
-#     axes["vdf_cb"] = fig.add_subplot(gridspec[0:1, 0:4])
-#     axes["vdf_xy"] = fig.add_subplot(gridspec[1:5, 0:4])
-#     axes["vdf_xz"] = fig.add_subplot(gridspec[5:9, 0:4])
-#     axes["vdf_yz"] = fig.add_subplot(gridspec[9:13, 0:4])
-#     axes["cmap_cb"] = fig.add_subplot(gridspec[0:1, 4:8])
-#     axes["cmap_xy"] = fig.add_subplot(gridspec[1:5, 4:8])
-#     axes["cmap_xz"] = fig.add_subplot(gridspec[5:9, 4:8])
-#     axes["cmap_yz"] = fig.add_subplot(gridspec[9:13, 4:8])
-#     axes["rho"] = fig.add_subplot(gridspec[0:2, 8:16])
-#     axes["v"] = fig.add_subplot(gridspec[2:4, 8:16])
-#     axes["pdyn"] = fig.add_subplot(gridspec[4:6, 8:16])
-#     axes["b"] = fig.add_subplot(gridspec[6:8, 8:16])
-#     axes["e"] = fig.add_subplot(gridspec[8:10, 8:16])
-#     axes["t"] = fig.add_subplot(gridspec[10:12, 8:16])
-#     return axes
-
-
-# def generate_axes(fig):
-#     gridspec = fig.add_gridspec(nrows=6, ncols=12)
-#     axes = {}
-#     axes["cmap_cb"] = fig.add_subplot(gridspec[0:6, 0:1])
-#     axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 1:3])
-#     axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 1:3])
-#     axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 1:3])
-#     axes["vdf_cb"] = fig.add_subplot(gridspec[0:6, 3:4])
-#     axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 4:6])
-#     axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 4:6])
-#     axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 4:6])
-#     axes["rho"] = fig.add_subplot(gridspec[0:1, 6:11])
-#     axes["v"] = fig.add_subplot(gridspec[1:2, 6:11])
-#     axes["pdyn"] = fig.add_subplot(gridspec[2:3, 6:11])
-#     axes["b"] = fig.add_subplot(gridspec[3:4, 6:11])
-#     axes["e"] = fig.add_subplot(gridspec[4:5, 6:11])
-#     axes["t"] = fig.add_subplot(gridspec[5:6, 6:11])
-#     return axes
-
 
 def generate_axes(fig):
     gridspec = fig.add_gridspec(nrows=6, ncols=12)
