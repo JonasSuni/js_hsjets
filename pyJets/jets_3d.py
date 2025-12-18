@@ -598,7 +598,7 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
     # )
 
     args_list = []
-    fnr_range = np.arange(t0, t1 + 0.1, 1, dtype=int)
+    fnr_range = np.arange(t0[idx], t1[idx] + 0.1, 1, dtype=int)
 
     for idx, fnr in enumerate(fnr_range):
         args_list.append((cellids[idx], coords, t0, t1, fnr, limitedsize, outdir))
