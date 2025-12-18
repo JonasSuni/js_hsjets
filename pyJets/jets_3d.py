@@ -564,7 +564,11 @@ def L3_good_timeseries_global_vdfs_all():
         )
 
 
-def L3_good_timeseries_global_vdfs_one(idx):
+def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True):
+
+    global limitedsize_g
+
+    limitedsize_g = limitedsize
 
     cellids, t0, t1 = np.loadtxt(
         wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
@@ -760,7 +764,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         normal="z",
         cutpointre=z_g,
         title="",
-        limitedsize=True,
+        limitedsize=limitedsize_g,
     )
     cmap_axes[0].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
@@ -782,7 +786,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         normal="y",
         cutpointre=y_g,
         title="",
-        limitedsize=True,
+        limitedsize=limitedsize_g,
     )
     cmap_axes[1].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z_g, linestyle="dashed", linewidth=0.6, color="k")
@@ -804,7 +808,7 @@ def generate_cmap_plots(cmap_axes, vobj):
         normal="x",
         cutpointre=x_g,
         title="",
-        limitedsize=True,
+        limitedsize=limitedsize_g,
     )
     cmap_axes[2].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axvline(z_g, linestyle="dashed", linewidth=0.6, color="k")
