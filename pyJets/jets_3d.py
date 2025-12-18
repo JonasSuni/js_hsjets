@@ -616,7 +616,7 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     subprocess.run(
-        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 1500k -vf scale=1920:-2 -y {}".format(
+        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 2000k -vf scale=1600:-2 -y {}".format(
             outdir, outfilename
         ),
         shell=True,
@@ -723,7 +723,7 @@ def ts_glob_vdf_update(fnr):
 
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
-    boxwidth = 2000e3
+    boxwidth = 2500e3
 
     pt.plot.plot_vdf(
         axes=vdf_axes[0],
@@ -781,7 +781,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
 
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
-    boxwidth = 2
+    boxwidth = 4
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[0],
@@ -847,8 +847,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
     )
-    cmap_axes[2].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
-    cmap_axes[2].axvline(z0, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
 
 
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
