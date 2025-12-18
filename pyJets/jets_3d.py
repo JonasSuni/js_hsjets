@@ -663,7 +663,7 @@ def make_timeseries_global_vdf_one(args):
 
     fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
-    print("Saved animation of cellid {} at time".format(ci, fnr))
+    print("Saved animation of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
 
