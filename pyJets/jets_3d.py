@@ -597,7 +597,7 @@ def L3_good_timeseries_global_vdfs_one(idx):
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     subprocess.run(
-        "cat $(find {} -maxdepth 1 -name *.png | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(
+        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(
             outdir, outfilename
         )
     )
@@ -636,7 +636,7 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
 
     for fnr in np.arange(t0, t1 + 0.1, 1):
         ts_glob_vdf_update(fnr)
-        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
     # ts_glob_vdf_update(t0)
 
