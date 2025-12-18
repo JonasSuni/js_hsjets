@@ -564,7 +564,7 @@ def L3_good_timeseries_global_vdfs_all():
         )
 
 
-def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True):
+def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
 
     global limitedsize_g
 
@@ -593,9 +593,19 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True):
     #     cellids[idx], coords, t0[idx], t0[idx] + 5, outdir=outdir
     # )
 
-    make_timeseries_global_vdf_anim(
-        cellids[idx], coords, t0[idx], t1[idx], outdir=outdir
-    )
+    # make_timeseries_global_vdf_anim(
+    #     cellids[idx], coords, t0[idx], t1[idx], outdir=outdir
+    # )
+
+    args_list = []
+
+    for idx,fnr in enumerate(np.arange(t0,t1+0.1,1).astype(int)):
+        args_list.append((cellids[idx],coords,t0,t1,fnr,limitedsize,outdir))
+
+    # Use multiprocessing Pool
+
+    with Pool(processes=n_processes) as pool:
+        pool.map(make_timeseries_global_vdf_one, args_list)
 
     outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4".format(
         cellids[idx], t0[idx], t1[idx]
@@ -610,10 +620,49 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True):
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
+def make_timeseries_global_vdf_one(args):
+
+    ci,coords,t0,t1,fnr,limitedsize,outdir=args
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    fig = plt.figure(figsize=(24, 16), layout="compressed")
+    axes = generate_axes(fig)
+    ts_axes = []
+    for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
+        ts_axes.append(axes[axname])
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
+
+    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
+    axvlines = []
+    for ax in ts_axes:
+        axvlines.append(ax.axvline(t0, linestyle="dashed"))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    try:
+        generate_vdf_plots(vdf_axes, vlsvobj,ci)
+    except:
+        pass
+    generate_cmap_plots(cmap_axes, vlsvobj, coords[0],coords[1],coords[2],limitedsize)
+    for linepl in axvlines:
+        linepl.set_xdata([fnr, fnr])
+
+    fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
+    plt.close(fig)
 
 def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
 
-    global vdf_axes, cmap_axes, ci_g, x_g, y_g, z_g, axvlines, cmap_cb_ax, vdf_cb_ax
+    global vdf_axes, cmap_axes, ci_g, x_g, y_g, z_g, axvlines
 
     x_g, y_g, z_g = coords
 
@@ -633,8 +682,6 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
         ts_axes.append(axes[axname])
     vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
     cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
-    # cmap_cb_ax = axes["cmap_cb"]
-    # vdf_cb_ax = axes["vdf_cb"]
 
     generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
     axvlines = []
@@ -644,23 +691,6 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
     for fnr in np.arange(t0, t1 + 0.1, 1):
         ts_glob_vdf_update(fnr)
         fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
-
-    # ts_glob_vdf_update(t0)
-
-    # ani = FuncAnimation(
-    #     fig,
-    #     ts_glob_vdf_update,
-    #     frames=np.arange(t0, t1 + 0.1, 1),
-    #     blit=False,
-    # )
-    # ani.save(
-    #     wrkdir_DNR + "ani/FIF/c{}_t{}_{}.mp4".format(ci, t0, t1),
-    #     fps=5,
-    #     dpi=150,
-    #     bitrate=1000,
-    #     writer="ffmpeg",
-    #     savefig_kwargs={"bbox_inches": "tight"},
-    # )
 
     print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
     plt.close(fig)
@@ -676,22 +706,22 @@ def ts_glob_vdf_update(fnr):
     for ax in cmap_axes:
         ax.clear()
     try:
-        generate_vdf_plots(vdf_axes, vlsvobj)
+        generate_vdf_plots(vdf_axes, vlsvobj, ci_g)
     except:
         pass
-    generate_cmap_plots(cmap_axes, vlsvobj)
+    generate_cmap_plots(cmap_axes, vlsvobj, x_g, y_g, z_g, limitedsize_g)
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
 
-def generate_vdf_plots(vdf_axes, vobj):
+def generate_vdf_plots(vdf_axes, vobj, ci):
 
     boxwidth = 2000e3
 
     pt.plot.plot_vdf(
         axes=vdf_axes[0],
         vlsvobj=vobj,
-        cellids=[ci_g],
+        cellids=[ci],
         colormap="batlow",
         bvector=1,
         xy=1,
@@ -709,7 +739,7 @@ def generate_vdf_plots(vdf_axes, vobj):
     pt.plot.plot_vdf(
         axes=vdf_axes[1],
         vlsvobj=vobj,
-        cellids=[ci_g],
+        cellids=[ci],
         colormap="batlow",
         bvector=1,
         xz=1,
@@ -726,7 +756,7 @@ def generate_vdf_plots(vdf_axes, vobj):
     pt.plot.plot_vdf(
         axes=vdf_axes[2],
         vlsvobj=vobj,
-        cellids=[ci_g],
+        cellids=[ci],
         colormap="batlow",
         bvector=1,
         yz=1,
@@ -742,7 +772,7 @@ def generate_vdf_plots(vdf_axes, vobj):
     )
 
 
-def generate_cmap_plots(cmap_axes, vobj):
+def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
     boxwidth = 2
 
@@ -755,19 +785,19 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[x_g - boxwidth, x_g + boxwidth, y_g - boxwidth, y_g + boxwidth],
+        boxre=[x0 - boxwidth, x0 + boxwidth, y0 - boxwidth, y0 + boxwidth],
         # cbaxes=cmap_cb_ax,
         # cb_horizontal=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
         normal="z",
-        cutpointre=z_g,
+        cutpointre=z0,
         title="",
-        limitedsize=limitedsize_g,
+        limitedsize=limitedsize,
     )
-    cmap_axes[0].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
-    cmap_axes[0].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[1],
@@ -778,18 +808,18 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[x_g - boxwidth, x_g + boxwidth, z_g - boxwidth, z_g + boxwidth],
+        boxre=[x0 - boxwidth, x0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
         # nocb=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
         normal="y",
-        cutpointre=y_g,
+        cutpointre=y0,
         title="",
-        limitedsize=limitedsize_g,
+        limitedsize=limitedsize,
     )
-    cmap_axes[1].axvline(x_g, linestyle="dashed", linewidth=0.6, color="k")
-    cmap_axes[1].axhline(z_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[2],
@@ -800,18 +830,18 @@ def generate_cmap_plots(cmap_axes, vobj):
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
-        boxre=[y_g - boxwidth, y_g + boxwidth, z_g - boxwidth, z_g + boxwidth],
+        boxre=[y0 - boxwidth, y0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
         # nocb=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
         normal="x",
-        cutpointre=x_g,
+        cutpointre=x0,
         title="",
-        limitedsize=limitedsize_g,
+        limitedsize=limitedsize,
     )
-    cmap_axes[2].axhline(y_g, linestyle="dashed", linewidth=0.6, color="k")
-    cmap_axes[2].axvline(z_g, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[2].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
+    cmap_axes[2].axvline(z0, linestyle="dashed", linewidth=0.6, color="k")
 
 
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
