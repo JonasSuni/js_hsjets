@@ -1,5 +1,5 @@
 import analysator as pt
-import os,subprocess
+import os, subprocess
 import sys
 from random import choice
 from copy import deepcopy
@@ -559,7 +559,10 @@ def L3_good_timeseries_global_vdfs_all():
             except OSError:
                 pass
 
-        make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
+        make_timeseries_global_vdf_anim(
+            cellids[idx], coords, t0[idx], t1[idx], outdir=outdir
+        )
+
 
 def L3_good_timeseries_global_vdfs_one(idx):
 
@@ -568,7 +571,10 @@ def L3_good_timeseries_global_vdfs_one(idx):
     ).T
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
-    coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+    try:
+        coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+    except:
+        print("Index out of range, exiting gracefully!")
 
     outdir = "/tmp/FIF/{}".format(idx)
 
@@ -578,15 +584,25 @@ def L3_good_timeseries_global_vdfs_one(idx):
         except OSError:
             pass
 
-    make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
+    # DEBUG ONLY
+    make_timeseries_global_vdf_anim(
+        cellids[idx], coords, t0[idx], t0[idx] + 5, outdir=outdir
+    )
+
+    # make_timeseries_global_vdf_anim(cellids[idx], coords, t0[idx], t1[idx], outdir=outdir)
 
     outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
-    subprocess.run("cat $(find {} -maxdepth 1 -name *.png | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(outdir,outfilename))
+    subprocess.run(
+        "cat $(find {} -maxdepth 1 -name *.png | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -vf scale=1280:-2 -y {}".format(
+            outdir, outfilename
+        )
+    )
     subprocess.run("rm {} -rf".format(outdir))
 
-def make_timeseries_global_vdf_anim(ci, coords, t0, t1,outdir=""):
+
+def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
 
     global vdf_axes, cmap_axes, ci_g, x_g, y_g, z_g, axvlines, cmap_cb_ax, vdf_cb_ax
 
@@ -618,10 +634,9 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1,outdir=""):
 
     for fnr in np.arange(t0, t1 + 0.1, 1):
         ts_glob_vdf_update(fnr)
-        fig.savefig(outdir+"{}.png".format(fnr),dpi=300,bbox_inches="tight")
+        fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
 
-    #ts_glob_vdf_update(t0)
-
+    # ts_glob_vdf_update(t0)
 
     # ani = FuncAnimation(
     #     fig,
@@ -928,6 +943,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             transform=ax.get_xaxis_transform(),
             linewidth=0,
         )
+
 
 def generate_axes(fig):
     gridspec = fig.add_gridspec(nrows=6, ncols=12)
