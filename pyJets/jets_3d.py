@@ -576,6 +576,7 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
     try:
+        print(t0[idx])
         coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
     except:
         print("Index out of range, exiting gracefully!")
