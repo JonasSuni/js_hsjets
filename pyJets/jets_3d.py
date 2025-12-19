@@ -564,7 +564,7 @@ def L3_good_timeseries_global_vdfs_all():
         )
 
 
-def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
+def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16,oned=False):
 
     global limitedsize_g
 
@@ -608,12 +608,19 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
 
     # Use multiprocessing Pool
 
-    with Pool(processes=n_processes) as pool:
-        pool.map(make_timeseries_global_vdf_one, args_list)
+    if oned:
+        outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/c{}_t{}_{}.mp4".format(
+            cellids[idx], t0[idx], t1[idx]
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_timeseries_1d_vdf_one, args_list)
+    else:
+        outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4".format(
+            cellids[idx], t0[idx], t1[idx]
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_timeseries_global_vdf_one, args_list)
 
-    outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4".format(
-        cellids[idx], t0[idx], t1[idx]
-    )
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     subprocess.run(
@@ -624,6 +631,40 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16):
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
+def make_timeseries_1d_vdf_one(args):
+
+    ci, coords, t0, t1, fnr, limitedsize, outdir = args
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    fig,axes = plt.subplots(8,1,figsize=(16, 24), layout="compressed")
+    ts_axes = axes[2:]
+    vdf_axes = axes[:2]
+
+    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
+    axvlines = []
+    for ax in ts_axes:
+        axvlines.append(ax.axvline(t0, linestyle="dashed"))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    try:
+        generate_1d_vdf_plots(vdf_axes, vlsvobj, ci)
+    except:
+        pass
+    for linepl in axvlines:
+        linepl.set_xdata([fnr, fnr])
+
+    fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved animation of cellid {} at time {}".format(ci, fnr))
+    plt.close(fig)
 
 def make_timeseries_global_vdf_one(args):
 
@@ -721,10 +762,118 @@ def ts_glob_vdf_update(fnr):
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
+def vspace_reducer(
+    vlsvobj,
+    cellid,
+    operator,
+    dv=40e3,
+    vmin=None,
+    vmax=None,
+    b=None,
+    v=None,
+    binw=40e3,
+    fmin=1e-16,
+):
+    """
+    Function for reducing a 3D VDF to 1D
+    (object) vlsvobj = Analysator VLSV file object
+    (int) cellid = ID of cell whose VDF you want
+    (str) operator = "x", "y", or "z", which velocity component to retain after reduction, or "magnitude" to get the distribution of speeds (untested)
+    (float) dv = Velocity space resolution in m/s
+    """
+
+    # List of valid operators from which to get an index
+    op_list = ["x", "y", "z"]
+
+    # Read velocity cell keys and values from vlsv file
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    # Select coordinates of chosen velocity component
+    if operator in op_list:
+        vc_coord_arr = vc_coords[:, op_list.index(operator)]
+    elif operator == "magnitude":
+        vc_coord_arr = np.sqrt(
+            vc_coords[:, 0] ** 2 + vc_coords[:, 1] ** 2 + vc_coords[:, 2] ** 2
+        )
+    elif operator == "par":
+        # print("par")
+        vc_coord_arr = np.dot(vc_coords, b)
+    elif operator == "perp1":
+        # print("perp")
+        bxv = np.cross(b, v)
+        vc_coord_arr = np.dot(vc_coords, bxv)
+    elif operator == "perp2":
+        bxv = np.cross(b, v)
+        bxbxv = np.cross(b, bxv)
+        vc_coord_arr = np.dot(vc_coords, bxbxv)
+
+    # Create histogram bins, one for each unique coordinate of the chosen velocity component
+    vbins = np.sort(np.unique(vc_coord_arr))
+    vbins = np.arange(
+        np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
+    )
+
+    # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
+    vweights = vc_vals * dv * dv
+
+    # Integrate over the perpendicular directions
+    hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
+
+    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
+    return (hist, bin_edges/1e3)
+
+def generate_1d_vdf_plots(vdf_axes,vobj,ci):
+
+    B = vobj.read_variable("vg_b_vol",cellids=ci)
+    V = vobj.read_variable("proton/vg_v",cellids=ci)
+    b = B/np.linalg.norm(B)
+    v = V/np.linalg.norm(V)
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"x")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[0],label="x")
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"y")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[1],label="y")
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"z")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[2],label="z")
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"par")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[0],label="par")
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"perp1")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[1],label="perp1")
+
+    hist,bin_edges = vspace_reducer(vobj,ci,"perp2")
+    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
+    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[2],label="perp2")
+
+    vdf_axes[0].set_title("t = {}s".format(int(vobj.read_parameter("time"))))
+    vdf_axes[1].set_xlabel("v [km/s]")
+
+    vdf_axes[0].grid()
+    vdf_axes[1].grid()
+
+    vdf_axes[0].set_ylabel("$f_v$ [$s/m^4$]")
+    vdf_axes[1].set_ylabel("$f_v$ [$s/m^4$]")
+
+    vdf_axes[0].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
+    vdf_axes[1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
 
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
-    boxwidth = 2500e3
+    boxwidth = 3000e3
 
     pt.plot.plot_vdf(
         axes=vdf_axes[0],
@@ -788,7 +937,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[0],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.01,
+        vmin=0.1,
         vmax=2,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
@@ -811,7 +960,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[1],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.01,
+        vmin=0.1,
         vmax=2,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
@@ -833,7 +982,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[2],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.01,
+        vmin=0.1,
         vmax=2,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
