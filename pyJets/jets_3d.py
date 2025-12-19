@@ -564,7 +564,9 @@ def L3_good_timeseries_global_vdfs_all():
         )
 
 
-def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16,oned=False):
+def L3_good_timeseries_global_vdfs_one(
+    idx, limitedsize=True, n_processes=16, oned=False
+):
 
     global limitedsize_g
 
@@ -609,8 +611,10 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16,one
     # Use multiprocessing Pool
 
     if oned:
-        outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/c{}_t{}_{}.mp4".format(
-            cellids[idx], t0[idx], t1[idx]
+        outfilename = (
+            "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/c{}_t{}_{}.mp4".format(
+                cellids[idx], t0[idx], t1[idx]
+            )
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_1d_vdf_one, args_list)
@@ -621,7 +625,6 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16,one
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_global_vdf_one, args_list)
 
-
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     subprocess.run(
         "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 2000k -vf scale=1600:-2 -y {}".format(
@@ -630,6 +633,7 @@ def L3_good_timeseries_global_vdfs_one(idx, limitedsize=True, n_processes=16,one
         shell=True,
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
+
 
 def make_timeseries_1d_vdf_one(args):
 
@@ -642,7 +646,7 @@ def make_timeseries_1d_vdf_one(args):
             "FIF", coords[0], coords[1], coords[2], 600, 991, None
         )
     )
-    fig,axes = plt.subplots(8,1,figsize=(16, 24), layout="compressed")
+    fig, axes = plt.subplots(8, 1, figsize=(16, 24), layout="compressed")
     ts_axes = axes[2:]
     vdf_axes = axes[:2]
 
@@ -665,6 +669,7 @@ def make_timeseries_1d_vdf_one(args):
 
     print("Saved animation of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
+
 
 def make_timeseries_global_vdf_one(args):
 
@@ -762,6 +767,7 @@ def ts_glob_vdf_update(fnr):
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
+
 def vspace_reducer(
     vlsvobj,
     cellid,
@@ -826,38 +832,39 @@ def vspace_reducer(
     hist, bin_edges = np.histogram(vc_coord_arr, bins=vbins, weights=vweights)
 
     # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
-    return (hist, bin_edges/1e3)
+    return (hist, bin_edges / 1e3)
 
-def generate_1d_vdf_plots(vdf_axes,vobj,ci):
 
-    B = vobj.read_variable("vg_b_vol",cellids=ci)
-    V = vobj.read_variable("proton/vg_v",cellids=ci)
-    b = B/np.linalg.norm(B)
-    v = V/np.linalg.norm(V)
+def generate_1d_vdf_plots(vdf_axes, vobj, ci):
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"x")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[0],label="x")
+    B = vobj.read_variable("vg_b_vol", cellids=ci)
+    V = vobj.read_variable("proton/vg_v", cellids=ci)
+    b = B / np.linalg.norm(B)
+    v = V / np.linalg.norm(V)
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"y")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[1],label="y")
+    hist, bin_edges = vspace_reducer(vobj, ci, "x", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[0], label="x")
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"z")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[0].plot(bin_centers,hist,"-",color=CB_color_cycle[2],label="z")
+    hist, bin_edges = vspace_reducer(vobj, ci, "y", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[1], label="y")
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"par")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[0],label="par")
+    hist, bin_edges = vspace_reducer(vobj, ci, "z", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[2], label="z")
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"perp1")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[1],label="perp1")
+    hist, bin_edges = vspace_reducer(vobj, ci, "par", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[0], label="par")
 
-    hist,bin_edges = vspace_reducer(vobj,ci,"perp2")
-    bin_centers = bin_edges[:-1]+0.5*(bin_edges[1]-bin_edges[0])
-    vdf_axes[1].plot(bin_centers,hist,"-",color=CB_color_cycle[2],label="perp2")
+    hist, bin_edges = vspace_reducer(vobj, ci, "perp1", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[1], label="perp1")
+
+    hist, bin_edges = vspace_reducer(vobj, ci, "perp2", b=b, v=v)
+    bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
+    vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[2], label="perp2")
 
     vdf_axes[0].set_title("t = {}s".format(int(vobj.read_parameter("time"))))
     vdf_axes[1].set_xlabel("v [km/s]")
@@ -870,6 +877,7 @@ def generate_1d_vdf_plots(vdf_axes,vobj,ci):
 
     vdf_axes[0].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
     vdf_axes[1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
+
 
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
