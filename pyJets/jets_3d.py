@@ -658,6 +658,14 @@ def make_timeseries_1d_vdf_one(args):
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
+    vdf_axes[0].set_title("t = {}s".format(int(vlsvobj.read_parameter("time"))))
+    vdf_axes[1].set_xlabel("v [km/s]")
+
+    for ax in vdf_axes:
+        ax.grid()
+        ax.set_ylabel("$f_v$ [$s/m^4$]")
+        ax.set_xlim(-2000, 2000)
+        ax.set_ylim(0, 10)
     try:
         generate_1d_vdf_plots(vdf_axes, vlsvobj, ci)
     except:
@@ -865,15 +873,6 @@ def generate_1d_vdf_plots(vdf_axes, vobj, ci):
     hist, bin_edges = vspace_reducer(vobj, ci, "perp2", b=b, v=v)
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[2], label="perp2")
-
-    vdf_axes[0].set_title("t = {}s".format(int(vobj.read_parameter("time"))))
-    vdf_axes[1].set_xlabel("v [km/s]")
-
-    vdf_axes[0].grid()
-    vdf_axes[1].grid()
-
-    vdf_axes[0].set_ylabel("$f_v$ [$s/m^4$]")
-    vdf_axes[1].set_ylabel("$f_v$ [$s/m^4$]")
 
     vdf_axes[0].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
     vdf_axes[1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
