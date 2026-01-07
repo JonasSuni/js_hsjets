@@ -626,8 +626,14 @@ def L3_good_timeseries_global_vdfs_one(
             pool.map(make_timeseries_global_vdf_one, args_list)
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
+    # subprocess.run(
+    #     "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 2000k -vf scale=1600:-2 -y {}".format(
+    #         outdir, outfilename
+    #     ),
+    #     shell=True,
+    # )
     subprocess.run(
-        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -pix_fmt yuv420p -b:v 2000k -vf scale=1600:-2 -y {}".format(
+        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
             outdir, outfilename
         ),
         shell=True,
