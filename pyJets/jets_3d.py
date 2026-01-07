@@ -706,13 +706,13 @@ def make_timeseries_global_vdf_one(args):
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
+    generate_cmap_plots(
+        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
+    )
     try:
         generate_vdf_plots(vdf_axes, vlsvobj, ci)
     except:
         pass
-    generate_cmap_plots(
-        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
-    )
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
