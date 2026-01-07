@@ -829,9 +829,12 @@ def vspace_reducer(
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
     vbins = np.sort(np.unique(vc_coord_arr))
-    vbins = np.arange(
-        np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
-    )
+    if vmin or vmax:
+        vbins = np.arange(vmin - binw / 2, vmax + binw / 2 + binw / 4, binw)
+    else:
+        vbins = np.arange(
+            np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
+        )
 
     # Create weights, <3D VDF value>*<vspace cell side area>, so that the histogram binning essentially performs an integration
     vweights = vc_vals * dv * dv
@@ -850,27 +853,33 @@ def generate_1d_vdf_plots(vdf_axes, vobj, ci):
     b = B / np.linalg.norm(B)
     v = V / np.linalg.norm(V)
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "x", b=b, v=v)
+    hist, bin_edges = vspace_reducer(vobj, ci, "x", b=b, v=v, vmin=-2000e3, vmax=2000e3)
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[0], label="x")
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "y", b=b, v=v)
+    hist, bin_edges = vspace_reducer(vobj, ci, "y", b=b, v=v, vmin=-2000e3, vmax=2000e3)
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[1], label="y")
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "z", b=b, v=v)
+    hist, bin_edges = vspace_reducer(vobj, ci, "z", b=b, v=v, vmin=-2000e3, vmax=2000e3)
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[0].plot(bin_centers, hist, "-", color=CB_color_cycle[2], label="z")
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "par", b=b, v=v)
+    hist, bin_edges = vspace_reducer(
+        vobj, ci, "par", b=b, v=v, vmin=-2000e3, vmax=2000e3
+    )
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[0], label="par")
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "perp1", b=b, v=v)
+    hist, bin_edges = vspace_reducer(
+        vobj, ci, "perp1", b=b, v=v, vmin=-2000e3, vmax=2000e3
+    )
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[1], label="perp1")
 
-    hist, bin_edges = vspace_reducer(vobj, ci, "perp2", b=b, v=v)
+    hist, bin_edges = vspace_reducer(
+        vobj, ci, "perp2", b=b, v=v, vmin=-2000e3, vmax=2000e3
+    )
     bin_centers = bin_edges[:-1] + 0.5 * (bin_edges[1] - bin_edges[0])
     vdf_axes[1].plot(bin_centers, hist, "-", color=CB_color_cycle[2], label="perp2")
 
@@ -944,8 +953,9 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[0],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.1,
-        vmax=2,
+        vmin=0.05,
+        vmax=3,
+        lin=5,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
@@ -967,8 +977,9 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[1],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.1,
-        vmax=2,
+        vmin=0.05,
+        vmax=3,
+        lin=5,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
@@ -989,8 +1000,9 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         axes=cmap_axes[2],
         vlsvobj=vobj,
         var="proton/vg_Pdyn",
-        vmin=0.1,
-        vmax=2,
+        vmin=0.05,
+        vmax=3,
+        lin=5,
         vscale=1e9,
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
