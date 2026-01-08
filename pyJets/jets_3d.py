@@ -1229,7 +1229,7 @@ def make_yz_slice_one(fnr):
             vlsvobj=vlsvobj,
             cbaxes=cbax,
             var="proton/vg_Pdyn",
-            vmin=0.05 * pdynsw,
+            vmin=0.0 * pdynsw,
             vmax=2 * pdynsw,
             lin=5,
             vscale=1e9,
