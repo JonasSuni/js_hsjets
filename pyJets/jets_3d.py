@@ -1256,8 +1256,8 @@ def make_yz_slice_one(fnr):
 
 def make_yz_anim(n_processes=16):
 
-    # fnr_range = np.arange(690, 901, 1)
-    fnr_range = np.arange(690, 701, 1)
+    fnr_range = np.arange(690, 901, 1)
+    # fnr_range = np.arange(690, 701, 1)
 
     outfilename = "/wrk-vakka/users/jesuni/jets_3D/yz_cuts.mp4"
     with Pool(processes=n_processes) as pool:
