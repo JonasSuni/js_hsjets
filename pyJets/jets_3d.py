@@ -956,11 +956,11 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     rho = pass_maps["proton/vg_rho"]
     Tcore = pass_maps["proton/vg_t_thermal"]
 
-    # ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
-    try:
-        ax.contour(XmeshXY, YmeshXY, Tcore, [1.5e6], colors=["red"])
-    except:
-        pass
+    ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
+    # try:
+    #     ax.contour(XmeshXY, YmeshXY, Tcore, [1.5e6], colors=["red"])
+    # except:
+    #     pass
     ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
 
 
@@ -989,7 +989,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1014,7 +1014,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1039,7 +1039,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1204,3 +1204,59 @@ def generate_axes(fig):
     axes["e"] = fig.add_subplot(gridspec[4:5, 4:9])
     axes["t"] = fig.add_subplot(gridspec[5:6, 4:9])
     return axes
+
+
+def make_yz_slice_one(fnr):
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), layout="compressed")
+    ax_flat = ax_list.flatten()
+
+    xcuts = [11, 12, 13, 14]
+
+    for idx in range(4):
+        pt.plot.plot_colormap3dslice(
+            axes=ax_flat[idx],
+            vlsvobj=vlsvobj,
+            var="proton/vg_Pdyn",
+            vmin=0.05,
+            vmax=2,
+            lin=5,
+            vscale=1e9,
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=[-10, 10, -10, 10],
+            # nocb=True,
+            colormap="batlow",
+            scale=1.3,
+            tickinterval=1.0,
+            normal="x",
+            cutpointre=xcuts[idx],
+            limitedsize=True,
+            external=ext_bs_mp,
+            pass_vars=["vg_beta_star", "proton/vg_rho"],
+        )
+
+    fig.savefig(
+        wrkdir_DNR + "xcuts/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight"
+    )
+    plt.close(fig)
+
+
+def make_yz_anim(n_processes=16):
+
+    fnr_range = np.arange(690, 901, 1)
+
+    outfilename = "/wrk-vakka/users/jesuni/jets_3D/yz_cuts.mp4"
+    with Pool(processes=n_processes) as pool:
+        pool.map(make_yz_slice_one, fnr_range)
+
+    subprocess.run(
+        "cat $(find /wrk-vakka/users/jesuni/jets_3D/xcuts -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
+            outfilename
+        ),
+        shell=True,
+    )
