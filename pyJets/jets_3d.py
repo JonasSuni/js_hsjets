@@ -951,6 +951,14 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     )
 
 
+def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
+    beta_star = pass_maps["vg_beta_star"]
+    rho = pass_maps["proton/vg_rho"]
+
+    ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
+    ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
+
+
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
     boxwidth = 4
@@ -975,6 +983,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=z0,
         # title="",
         limitedsize=limitedsize,
+        external=ext_bs_mp,
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -998,6 +1008,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=y0,
         title="",
         limitedsize=limitedsize,
+        external=ext_bs_mp,
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1021,6 +1033,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=x0,
         title="",
         limitedsize=limitedsize,
+        external=ext_bs_mp,
+        pass_vars=["vg_beta_star", "proton/vg_rho"],
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1170,7 +1184,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 
 
 def generate_axes(fig):
-    gridspec = fig.add_gridspec(nrows=6, ncols=12)
+    gridspec = fig.add_gridspec(nrows=6, ncols=9)
     axes = {}
     axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 0:2])
     axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 0:2])
