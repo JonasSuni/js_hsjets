@@ -1254,19 +1254,113 @@ def make_yz_slice_one(fnr):
     plt.close(fig)
 
 
-def make_yz_anim(n_processes=16):
+def save_yz_slice_one(fnr):
+
+    # normal = "x"
+    normal = [0.8660254037844387, -0.5, 0]
+
+    global fnr_g
+    fnr_g = fnr
+    global xcut_g
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), layout="compressed")
+    ax_flat = ax_list.flatten()
+    cbax = fig.add_axes((1.01, 0, 0.05, 1))
+
+    xcuts = [11, 11.5, 12, 12.5]
+
+    pdynsw = m_p * 1e6 * 750e3 * 750e3 * 1e9
+
+    for idx in range(4):
+        xcut_g = xcuts[idx]
+        pt.plot.plot_colormap3dslice(
+            axes=ax_flat[idx],
+            vlsvobj=vlsvobj,
+            cbaxes=cbax,
+            var="proton/vg_Pdyn",
+            vmin=0.0 * pdynsw,
+            vmax=2 * pdynsw,
+            lin=5,
+            vscale=1e9,
+            cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+            usesci=0,
+            boxre=[-15, 15, -15, 15],
+            # nocb=True,
+            colormap="roma_r",
+            scale=1.3,
+            tickinterval=3.0,
+            normal="x",
+            cutpointre=xcuts[idx],
+            limitedsize=True,
+            external=ext_save,
+            pass_vars=["proton/vg_pdynx", "proton/vg_pdyn"],
+        )
+
+    plt.close(fig)
+
+
+def ext_save(ax, XmeshXY, YmeshXY, pass_maps):
+    pdyn = pass_maps["proton/vg_pdyn"]
+    pdynx = pass_maps["proton/vg_pdynx"]
+
+    np.savetxt(
+        "/wrk-vakka/users/jesuni/jets_3D/txts/xcuts/{}_{}.pdyn".format(fnr_g, xcut_g),
+        pdyn,
+    )
+    np.savetxt(
+        "/wrk-vakka/users/jesuni/jets_3D/txts/xcuts/{}_{}.pdynx".format(fnr_g, xcut_g),
+        pdynx,
+    )
+
+
+def calc_xcut_avgs(xcut):
+
+    fnr_range_full = np.arange(600, 991, 1)
+    fnr_range = np.arange(690, 901, 1)
+    template_arr_shape = np.loadtxt(
+        "/wrk-vakka/users/jesuni/jets_3D/txts/xcuts/600_11.pdyn"
+    ).shape
+    full_arr = np.zeros(
+        (template_arr_shape[0], template_arr_shape[1], fnr_range_full.size), dtype=float
+    )
+    full_arr_x = np.zeros(
+        (template_arr_shape[0], template_arr_shape[1], fnr_range_full.size), dtype=float
+    )
+    for idx in range(fnr_range_full.size):
+        full_arr[:, :, idx] = np.loadtxt(
+            "/wrk-vakka/users/jesuni/jets_3D/txts/xcuts/{}_{}.pdyn".format(
+                fnr_range_full[idx], xcut
+            )
+        )
+        full_arr_x[:, :, idx] = np.loadtxt(
+            "/wrk-vakka/users/jesuni/jets_3D/txts/xcuts/{}_{}.pdynx".format(
+                fnr_range_full[idx], xcut
+            )
+        )
+
+
+def make_yz_anim(n_processes=16, sav=False):
 
     fnr_range = np.arange(690, 901, 1)
     # fnr_range = np.arange(690, 701, 1)
 
-    outfilename = "/wrk-vakka/users/jesuni/jets_3D/yz_cuts.mp4"
-    with Pool(processes=n_processes) as pool:
-        pool.map(make_yz_slice_one, fnr_range)
+    if sav:
+        fnr_range = np.arange(600, 991, 1)
+        with Pool(processes=n_processes) as pool:
+            pool.map(save_yz_slice_one, fnr_range)
+    else:
+        outfilename = "/wrk-vakka/users/jesuni/jets_3D/yz_cuts.mp4"
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_yz_slice_one, fnr_range)
 
-    subprocess.run(
-        "cat $(find /wrk-vakka/users/jesuni/jets_3D/xcuts -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
-            outfilename
-        ),
-        shell=True,
-    )
-    subprocess.run("rm /wrk-vakka/users/jesuni/jets_3D/xcuts/* -f", shell=True)
+        subprocess.run(
+            "cat $(find /wrk-vakka/users/jesuni/jets_3D/xcuts -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
+                outfilename
+            ),
+            shell=True,
+        )
+        subprocess.run("rm /wrk-vakka/users/jesuni/jets_3D/xcuts/* -f", shell=True)
