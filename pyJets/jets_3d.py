@@ -962,7 +962,10 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # except:
     #     pass
     ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
-    ax.contour(XmeshXY, YmeshXY, pdynx, [0.5*m_p*1e6*750e3*750e3], colors=["black"])
+    ax.contour(
+        XmeshXY, YmeshXY, pdynx, [0.5 * m_p * 1e6 * 750e3 * 750e3], colors=["black"]
+    )
+
 
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
@@ -989,7 +992,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1014,7 +1017,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1039,7 +1042,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1214,9 +1217,11 @@ def make_yz_slice_one(fnr):
 
     fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), layout="compressed")
     ax_flat = ax_list.flatten()
-    cbax = fig.add_axes((1.01,0,0.05,1))
+    cbax = fig.add_axes((1.01, 0, 0.05, 1))
 
     xcuts = [11, 12, 13, 14]
+
+    pdynsw = m_p * 1e6 * 750e3 * 750e3
 
     for idx in range(4):
         pt.plot.plot_colormap3dslice(
@@ -1224,22 +1229,22 @@ def make_yz_slice_one(fnr):
             vlsvobj=vlsvobj,
             cbaxes=cbax,
             var="proton/vg_Pdyn",
-            vmin=0.05,
-            vmax=2,
+            vmin=0.05 * pdynsw,
+            vmax=3 * pdynsw,
             lin=5,
             vscale=1e9,
             cbtitle="$P_\\mathrm{dyn}$ [nPa]",
             usesci=0,
             boxre=[-15, 15, -15, 15],
             # nocb=True,
-            colormap="batlow",
+            colormap="roma_r",
             scale=1.3,
             tickinterval=3.0,
             normal="x",
             cutpointre=xcuts[idx],
             limitedsize=True,
             external=ext_bs_mp,
-            pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
+            pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         )
         ax_flat[idx].label_outer()
 
