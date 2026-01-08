@@ -1345,8 +1345,8 @@ def calc_xcut_avgs(xcut):
 
 def make_yz_anim(n_processes=16, sav=False):
 
-    fnr_range = np.arange(690, 901, 1)
-    # fnr_range = np.arange(690, 701, 1)
+    # fnr_range = np.arange(690, 901, 1)
+    fnr_range = np.arange(690, 701, 1)
 
     if sav:
         fnr_range = np.arange(600, 991, 1)
