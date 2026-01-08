@@ -1230,7 +1230,7 @@ def make_yz_slice_one(fnr):
             cbaxes=cbax,
             var="proton/vg_Pdyn",
             vmin=0.05 * pdynsw,
-            vmax=3 * pdynsw,
+            vmax=2 * pdynsw,
             lin=5,
             vscale=1e9,
             cbtitle="$P_\\mathrm{dyn}$ [nPa]",
