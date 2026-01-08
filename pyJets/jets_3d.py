@@ -1214,6 +1214,7 @@ def make_yz_slice_one(fnr):
 
     fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), layout="compressed")
     ax_flat = ax_list.flatten()
+    cbax = fig.add_axes((1.01,0,0.05,1))
 
     xcuts = [11, 12, 13, 14]
 
@@ -1221,6 +1222,7 @@ def make_yz_slice_one(fnr):
         pt.plot.plot_colormap3dslice(
             axes=ax_flat[idx],
             vlsvobj=vlsvobj,
+            cbaxes=cbax,
             var="proton/vg_Pdyn",
             vmin=0.05,
             vmax=2,
@@ -1239,6 +1241,7 @@ def make_yz_slice_one(fnr):
             external=ext_bs_mp,
             pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
         )
+        ax_flat[idx].label_outer()
 
     fig.savefig(
         wrkdir_DNR + "xcuts/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight"
@@ -1248,7 +1251,8 @@ def make_yz_slice_one(fnr):
 
 def make_yz_anim(n_processes=16):
 
-    fnr_range = np.arange(690, 901, 1)
+    # fnr_range = np.arange(690, 901, 1)
+    fnr_range = np.arange(690, 701, 1)
 
     outfilename = "/wrk-vakka/users/jesuni/jets_3D/yz_cuts.mp4"
     with Pool(processes=n_processes) as pool:
