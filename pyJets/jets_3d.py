@@ -1293,7 +1293,7 @@ def save_yz_slice_one(fnr):
             colormap="roma_r",
             scale=1.3,
             tickinterval=3.0,
-            normal="x",
+            normal=normal,
             cutpointre=xcuts[idx],
             limitedsize=True,
             external=ext_save,
