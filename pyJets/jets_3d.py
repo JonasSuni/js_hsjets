@@ -1219,9 +1219,9 @@ def make_yz_slice_one(fnr):
     ax_flat = ax_list.flatten()
     cbax = fig.add_axes((1.01, 0, 0.05, 1))
 
-    xcuts = [11, 12, 13, 14]
+    xcuts = [12, 11.75, 11.5, 11.25]
 
-    pdynsw = m_p * 1e6 * 750e3 * 750e3
+    pdynsw = m_p * 1e6 * 750e3 * 750e3 / 1e9
 
     for idx in range(4):
         pt.plot.plot_colormap3dslice(
