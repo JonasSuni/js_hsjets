@@ -1341,7 +1341,7 @@ def calc_xcut_avgs(xcut):
                 fnr_range_full[idx], xcut
             )
         )
-    for idx in range(fnr_range):
+    for idx in range(fnr_range.size):
         avg = np.nanmean(full_arr[:, :, idx : idx + 180], axis=-1)
         avgx = np.nanmean(full_arr_x[:, :, idx : idx + 180], axis=-1)
         np.savetxt(
