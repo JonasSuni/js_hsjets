@@ -954,7 +954,6 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     beta_star = pass_maps["vg_beta_star"]
     rho = pass_maps["proton/vg_rho"]
-    Tcore = pass_maps["proton/vg_t_thermal"]
 
     ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
     # try:
