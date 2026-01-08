@@ -1264,3 +1264,4 @@ def make_yz_anim(n_processes=16):
         ),
         shell=True,
     )
+    subprocess.run("rm /wrk-vakka/users/jesuni/jets_3D/xcuts/* -f", shell=True)
