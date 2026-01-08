@@ -1256,8 +1256,8 @@ def make_yz_slice_one(fnr):
 
 def save_yz_slice_one(fnr):
 
-    # normal = "x"
-    normal = [0.8660254037844387, -0.5, 0]
+    normal = "x"
+    # normal = [0.8660254037844387, -0.5, 0]
 
     global fnr_g
     fnr_g = fnr
@@ -1341,12 +1341,27 @@ def calc_xcut_avgs(xcut):
                 fnr_range_full[idx], xcut
             )
         )
+    for idx in range(fnr_range):
+        avg = np.nanmean(full_arr[:, :, idx : idx + 180], axis=-1)
+        avgx = np.nanmean(full_arr_x[:, :, idx : idx + 180], axis=-1)
+        np.savetxt(
+            "/wrk-vakka/users/jesuni/jets_3D/txts/xcut_avgs/{}_{}.pdyn".format(
+                fnr_range[idx], xcut
+            ),
+            avg,
+        )
+        np.savetxt(
+            "/wrk-vakka/users/jesuni/jets_3D/txts/xcut_avgs/{}_{}.pdynx".format(
+                fnr_range[idx], xcut
+            ),
+            avgx,
+        )
 
 
 def make_yz_anim(n_processes=16, sav=False):
 
-    # fnr_range = np.arange(690, 901, 1)
-    fnr_range = np.arange(690, 701, 1)
+    fnr_range = np.arange(690, 901, 1)
+    # fnr_range = np.arange(690, 701, 1)
 
     if sav:
         fnr_range = np.arange(600, 991, 1)
