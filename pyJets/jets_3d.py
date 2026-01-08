@@ -954,8 +954,13 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     beta_star = pass_maps["vg_beta_star"]
     rho = pass_maps["proton/vg_rho"]
+    Tcore = pass_maps["proton/vg_t_thermal"]
 
-    ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
+    # ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
+    try:
+        ax.contour(XmeshXY, YmeshXY, Tcore, [1.5e6], colors=["red"])
+    except:
+        pass
     ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
 
 
@@ -984,7 +989,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1009,7 +1014,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1034,7 +1039,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_t_thermal"],
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
