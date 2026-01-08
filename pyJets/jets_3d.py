@@ -954,6 +954,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
 def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     beta_star = pass_maps["vg_beta_star"]
     rho = pass_maps["proton/vg_rho"]
+    pdynx = pass_maps["proton/vg_pdynx"]
 
     ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["red"])
     # try:
@@ -961,7 +962,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
     # except:
     #     pass
     ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
-
+    ax.contour(XmeshXY, YmeshXY, pdynx, [0.5*m_p*1e6*750e3*750e3], colors=["black"])
 
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
@@ -988,7 +989,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1013,7 +1014,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1038,7 +1039,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
-        pass_vars=["vg_beta_star", "proton/vg_rho"],
+        pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1236,7 +1237,7 @@ def make_yz_slice_one(fnr):
             cutpointre=xcuts[idx],
             limitedsize=True,
             external=ext_bs_mp,
-            pass_vars=["vg_beta_star", "proton/vg_rho"],
+            pass_vars=["vg_beta_star", "proton/vg_rho","proton/vg_pdynx"],
         )
 
     fig.savefig(
