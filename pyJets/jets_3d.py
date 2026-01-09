@@ -1223,6 +1223,7 @@ def make_yz_slice_one(fnr):
     ax_flat = ax_list.flatten()
     cbax = fig.add_axes((1.01, 0, 0.05, 1))
 
+    # xcuts = [11, 11.5, 12, 12.5]
     xcuts = [11, 12, 13, 14]
 
     pdynsw = m_p * 1e6 * 750e3 * 750e3 * 1e9
