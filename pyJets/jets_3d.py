@@ -1211,11 +1211,15 @@ def generate_axes(fig):
 
 def make_yz_slice_one(fnr):
 
+    global fnr_g
+    fnr_g = fnr
+    global xcut_g
+
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(15, 15), layout="compressed")
+    fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
     ax_flat = ax_list.flatten()
     cbax = fig.add_axes((1.01, 0, 0.05, 1))
 
@@ -1224,6 +1228,7 @@ def make_yz_slice_one(fnr):
     pdynsw = m_p * 1e6 * 750e3 * 750e3 * 1e9
 
     for idx in range(4):
+        xcut_g = xcuts[idx]
         pt.plot.plot_colormap3dslice(
             axes=ax_flat[idx],
             vlsvobj=vlsvobj,
@@ -1243,8 +1248,13 @@ def make_yz_slice_one(fnr):
             normal="x",
             cutpointre=xcuts[idx],
             limitedsize=True,
-            external=ext_bs_mp,
-            pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
+            external=ext_jet,
+            pass_vars=[
+                "vg_beta_star",
+                "proton/vg_rho",
+                "proton/vg_pdynx",
+                "proton/vg_pdyn",
+            ],
         )
         ax_flat[idx].label_outer()
 
@@ -1317,6 +1327,33 @@ def ext_save(ax, XmeshXY, YmeshXY, pass_maps):
     )
 
 
+def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
+
+    beta_star = pass_maps["vg_beta_star"]
+    rho = pass_maps["proton/vg_rho"]
+    pdynx = pass_maps["proton/vg_pdynx"]
+    pdyn = pass_maps["proton/vg_pdyn"]
+
+    pdynx_avg = np.loadtxt(
+        "/wrk-vakka/users/jesuni/jets_3D/txts/xcut_avgs/{}_{}.pdynx".format(
+            fnr_g, xcut_g
+        )
+    )
+    pdyn_avg = np.loadtxt(
+        "/wrk-vakka/users/jesuni/jets_3D/txts/xcut_avgs/{}_{}.pdyn".format(
+            fnr_g, xcut_g
+        )
+    )
+
+    ax.contour(XmeshXY, YmeshXY, rho, [2e6], colors=["orange"])
+    ax.contour(XmeshXY, YmeshXY, beta_star, [0.3], colors=["white"])
+    ax.contour(
+        XmeshXY, YmeshXY, pdynx, [0.5 * m_p * 1e6 * 750e3 * 750e3], colors=["black"]
+    )
+    ax.contour(XmeshXY, YmeshXY, pdynx / pdynx_avg, [3.0], colors=["green"])
+    ax.contour(XmeshXY, YmeshXY, pdyn / pdyn_avg, [2.0], colors=["red"])
+
+
 def calc_xcut_avgs(xcut):
 
     fnr_range_full = np.arange(600, 991, 1)
@@ -1360,8 +1397,8 @@ def calc_xcut_avgs(xcut):
 
 def make_yz_anim(n_processes=16, sav=False):
 
-    fnr_range = np.arange(690, 901, 1)
-    # fnr_range = np.arange(690, 701, 1)
+    # fnr_range = np.arange(690, 901, 1)
+    fnr_range = np.arange(690, 701, 1)
 
     if sav:
         fnr_range = np.arange(600, 991, 1)
