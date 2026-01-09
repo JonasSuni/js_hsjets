@@ -1418,3 +1418,45 @@ def make_yz_anim(n_processes=16, sav=False):
             shell=True,
         )
         subprocess.run("rm /wrk-vakka/users/jesuni/jets_3D/xcuts/* -f", shell=True)
+
+
+def make_shell_map_one(args):
+
+    fnr, shellre = args
+
+    outdir = wrkdir_DNR + "shells/{}".format(shellre)
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
+            pass
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+    yrange = np.arange(-15 * r_e, 15 * r_e + 1, 1000e3)
+    zrange = np.arange(-15 * r_e, 15 * r_e + 1, 1000e3)
+
+    ymesh,zmesh = np.meshgrid(yrange,zrange)
+
+    pdyn_arr = np.array(ymesh.shape,dtype=float)
+    pdyn_arr.fill(np.nan)
+
+    for idy in range(yrange.size):
+        for idz in range(zrange.size):
+            y = ymesh[idy,idz]
+            z = zmesh[idy,idz]
+            xsq = shellre**2 - y**2 - z**2
+            if xsq < 0:
+                continue
+            x = np.sqrt(xsq)
+            pdyn_arr[idy,idz] = vlsvobj.read_interpolated_variable("proton/vg_pdyn",[x,y,z],periodic=[False,False,False])
+
+    fig,ax = plt.subplots(1,1,figsize=(10,10),layout="compressed")
+    im = ax.pcolormesh(ymesh,zmesh,pdyn_arr,cmap="roma_r",vmin=0,vmax=2e-9,shading="nearest")
+    fig.colorbar(im,ax=ax)
+
+    fig.savefig(outdir+"/{}.png".format(fnr),dpi=300,bbox_inches="tight")
+    plt.close(fig)
