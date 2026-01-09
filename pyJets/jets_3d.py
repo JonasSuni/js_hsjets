@@ -1421,6 +1421,26 @@ def make_yz_anim(n_processes=16, sav=False):
         subprocess.run("rm /wrk-vakka/users/jesuni/jets_3D/xcuts/* -f", shell=True)
 
 
+def make_shell_anim(n_processes=16, shellre=13.5):
+
+    fnr_range = np.arange(690, 901, 1)
+
+    outfilename = "/wrk-vakka/users/jesuni/jets_3D/shell_{}.mp4".format(shellre)
+    args = [[fnr, shellre] for fnr in fnr_range]
+    with Pool(processes=n_processes) as pool:
+        pool.map(make_shell_map_one, args)
+
+    subprocess.run(
+        "cat $(find /wrk-vakka/users/jesuni/jets_3D/shells/{} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
+            shellre, outfilename
+        ),
+        shell=True,
+    )
+    subprocess.run(
+        "rm /wrk-vakka/users/jesuni/jets_3D/shells/{}/* -f".format(shellre), shell=True
+    )
+
+
 def make_shell_map_one(args):
 
     fnr, shellre = args
@@ -1457,11 +1477,17 @@ def make_shell_map_one(args):
                 "proton/vg_pdyn", [x, y, z]
             )
 
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+    fig, ax = plt.subplots(1, 1, figsize=(8, 8), layout="compressed")
     ax.set_aspect(1)
     cax = fig.add_axes((1.01, 0, 0.02, 1))
     im = ax.pcolormesh(
-        ymesh, zmesh, pdyn_arr, cmap="roma_r", vmin=0, vmax=2e-9, shading="nearest"
+        ymesh / r_e,
+        zmesh / r_e,
+        pdyn_arr / 1e-9,
+        cmap="roma_r",
+        vmin=0,
+        vmax=2,
+        shading="nearest",
     )
     fig.colorbar(im, cax=cax)
 
