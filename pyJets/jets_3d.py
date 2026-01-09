@@ -1458,10 +1458,12 @@ def make_shell_map_one(args):
             )
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+    ax.set_aspect(1)
+    cax = fig.add_axes((1.01, 0, 0.02, 1))
     im = ax.pcolormesh(
         ymesh, zmesh, pdyn_arr, cmap="roma_r", vmin=0, vmax=2e-9, shading="nearest"
     )
-    fig.colorbar(im, ax=ax)
+    fig.colorbar(im, cax=cax)
 
     fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
     plt.close(fig)
