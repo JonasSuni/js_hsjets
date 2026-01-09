@@ -1441,7 +1441,7 @@ def make_shell_map_one(args):
 
     ymesh, zmesh = np.meshgrid(yrange, zrange)
 
-    pdyn_arr = np.array(ymesh.shape, dtype=float)
+    pdyn_arr = np.empty_like(ymesh, dtype=float)
     pdyn_arr.fill(np.nan)
 
     for idy in range(yrange.size):
