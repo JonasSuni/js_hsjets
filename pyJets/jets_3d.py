@@ -1453,7 +1453,7 @@ def make_shell_map_one(args):
                 continue
             x = np.sqrt(xsq)
             pdyn_arr[idy, idz] = vlsvobj.read_interpolated_variable(
-                "proton/vg_pdyn", [x, y, z], periodic=[False, False, False]
+                "proton/vg_pdyn", [x, y, z]
             )
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
