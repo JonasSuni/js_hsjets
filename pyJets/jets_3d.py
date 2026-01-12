@@ -1460,10 +1460,15 @@ def make_shell_map_one(args):
     yrange = np.arange(-15 * r_e, 15 * r_e + 1, 1000e3)
     zrange = np.arange(-15 * r_e, 15 * r_e + 1, 1000e3)
 
+    pdyn_sw = m_p * 1e6 * 750e3 * 750e3
+
     ymesh, zmesh = np.meshgrid(yrange, zrange)
 
     pdyn_arr = np.empty_like(ymesh, dtype=float)
     pdyn_arr.fill(np.nan)
+
+    pdynx_arr = np.empty_like(ymesh, dtype=float)
+    pdynx_arr.fill(np.nan)
 
     for idy in range(yrange.size):
         for idz in range(zrange.size):
@@ -1475,6 +1480,9 @@ def make_shell_map_one(args):
             x = np.sqrt(xsq)
             pdyn_arr[idy, idz] = vlsvobj.read_interpolated_variable(
                 "proton/vg_pdyn", [x, y, z]
+            )
+            pdynx_arr[idy, idz] = vlsvobj.read_interpolated_variable(
+                "proton/vg_pdynx", [x, y, z]
             )
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 8), layout="compressed")
@@ -1489,6 +1497,7 @@ def make_shell_map_one(args):
         vmax=2,
         shading="nearest",
     )
+    ax.contour(ymesh / r_e, zmesh / r_e, pdynx_arr, [0.5 * pdyn_sw], colors=["black"])
     fig.colorbar(im, cax=cax)
 
     fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
