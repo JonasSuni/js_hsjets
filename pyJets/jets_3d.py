@@ -702,8 +702,8 @@ def make_timeseries_global_vdf_one(args):
     ts_axes = []
     for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
         ts_axes.append(axes[axname])
-    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
-    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"], axes["vdf_cb"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"], axes["cmap_cb"]]
 
     generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
     axvlines = []
