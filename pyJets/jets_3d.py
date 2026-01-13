@@ -749,8 +749,8 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
     ts_axes = []
     for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
         ts_axes.append(axes[axname])
-    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"]]
-    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"]]
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"], axes["vdf_cb"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"], axes["cmap_cb"]]
 
     generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
     axvlines = []
@@ -912,8 +912,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
-        # cbaxes=vdf_cb_ax,
-        # cb_horizontal=True,
+        nocb=True,
         title="",
     )
     pt.plot.plot_vdf(
@@ -930,7 +929,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
-        # nocb=True,
+        nocb=True,
         title="",
     )
     pt.plot.plot_vdf(
@@ -947,7 +946,8 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
-        # nocb=True,
+        cbaxes=vdf_axes[3],
+        cb_horizontal=True,
         title="",
     )
 
@@ -983,8 +983,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
         boxre=[x0 - boxwidth, x0 + boxwidth, y0 - boxwidth, y0 + boxwidth],
-        # cbaxes=cmap_cb_ax,
-        # cb_horizontal=True,
+        nocb=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
@@ -1009,7 +1008,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
         boxre=[x0 - boxwidth, x0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
-        # nocb=True,
+        nocb=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
@@ -1034,7 +1033,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
         boxre=[y0 - boxwidth, y0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
-        # nocb=True,
+        cbaxes=cmap_axes[3],
+        cb_horizontal=True,
         colormap="batlow",
         scale=1.3,
         tickinterval=1.0,
@@ -1207,6 +1207,8 @@ def generate_axes(fig):
     axes["b"] = fig.add_subplot(gridspec[3:4, 4:9])
     axes["e"] = fig.add_subplot(gridspec[4:5, 4:9])
     axes["t"] = fig.add_subplot(gridspec[5:6, 4:9])
+    axes["cmap_cb"] = fig.add_axes((0, -0.03, 0.2, 0.01))
+    axes["vdf_cb"] = fig.add_axes((0.25, -0.03, 0.2, 0.01))
     return axes
 
 
