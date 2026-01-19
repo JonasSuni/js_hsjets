@@ -673,8 +673,8 @@ def make_global_vdf_one(args):
         cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
     )
     try:
-        generate_vdf_plots(vdf_axes, vlsvobj, ci)
-        generate_vdf_B_plots(vdf_axes, vlsvobj, ci)
+        generate_vdf_plots(vdf_xyz_axes, vlsvobj, ci)
+        generate_vdf_B_plots(vdf_b_axes, vlsvobj, ci)
     except:
         pass
 
