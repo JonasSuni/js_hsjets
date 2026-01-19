@@ -576,9 +576,7 @@ def L3_good_timeseries_global_vdfs_one(
     # cellids, t0, t1 = np.loadtxt(
     #     wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
     # ).T
-    cellids, t0, t1 = np.loadtxt(
-        wrkdir_DNR + "good.txt", dtype=int
-    ).T
+    cellids, t0, t1 = np.loadtxt(wrkdir_DNR + "good.txt", dtype=float).astype(int).T
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
     try:
@@ -629,8 +627,10 @@ def L3_good_timeseries_global_vdfs_one(
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_global_vdf_one, args_list)
     elif plot_type == 3:
-        outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/c{}_t{}_{}.mp4".format(
-            cellids[idx], t0[idx], t1[idx]
+        outfilename = (
+            "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/c{}_t{}_{}.mp4".format(
+                cellids[idx], t0[idx], t1[idx]
+            )
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_global_vdf_one, args_list)
@@ -650,20 +650,21 @@ def L3_good_timeseries_global_vdfs_one(
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
+
 def make_global_vdf_one(args):
     ci, coords, t0, t1, fnr, limitedsize, outdir = args
 
-    fig,axes = plt.subplots(3,3,figsize=(16,16),layout="compressed")
-    cmap_axes = axes[0,:]
-    vdf_xyz_axes = axes[1,:]
-    vdf_b_axes = axes[2,:]
+    fig, axes = plt.subplots(3, 3, figsize=(16, 16), layout="compressed")
+    cmap_axes = axes[0, :]
+    vdf_xyz_axes = axes[1, :]
+    vdf_b_axes = axes[2, :]
 
-    cmap_cb_ax = fig.add_axes((0,1.01,1,0.01))
-    vdf_cb_ax = fig.add_axes((0,-0.03,1,0.01))
+    cmap_cb_ax = fig.add_axes((0, 1.01, 1, 0.01))
+    vdf_cb_ax = fig.add_axes((0, -0.03, 1, 0.01))
 
-    cmap_axes = np.append(cmap_axes,cmap_cb_ax)
-    vdf_xyz_axes = np.append(vdf_xyz_axes,vdf_cb_ax)
-    vdf_b_axes = np.append(vdf_b_axes,vdf_cb_ax)
+    cmap_axes = np.append(cmap_axes, cmap_cb_ax)
+    vdf_xyz_axes = np.append(vdf_xyz_axes, vdf_cb_ax)
+    vdf_b_axes = np.append(vdf_b_axes, vdf_cb_ax)
 
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
@@ -681,6 +682,7 @@ def make_global_vdf_one(args):
 
     print("Saved animation of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
+
 
 def make_timeseries_1d_vdf_one(args):
 
@@ -991,7 +993,8 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         title="",
     )
 
-def generate_vdf_B_plots(vdf_axes,vobj,ci):
+
+def generate_vdf_B_plots(vdf_axes, vobj, ci):
 
     boxwidth = 3000e3
 
