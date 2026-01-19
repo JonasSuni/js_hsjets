@@ -566,15 +566,18 @@ def L3_good_timeseries_global_vdfs_all():
 
 
 def L3_good_timeseries_global_vdfs_one(
-    idx, limitedsize=True, n_processes=16, oned=False
+    idx, limitedsize=True, n_processes=16, plot_type=1
 ):
 
     global limitedsize_g
 
     limitedsize_g = limitedsize
 
+    # cellids, t0, t1 = np.loadtxt(
+    #     wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
+    # ).T
     cellids, t0, t1 = np.loadtxt(
-        wrkdir_DNR + "FIF/good_jet_intervals_1.txt", dtype=int
+        wrkdir_DNR + "good.txt", dtype=int
     ).T
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
@@ -611,7 +614,7 @@ def L3_good_timeseries_global_vdfs_one(
 
     # Use multiprocessing Pool
 
-    if oned:
+    if plot_type == 2:
         outfilename = (
             "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/c{}_t{}_{}.mp4".format(
                 cellids[idx], t0[idx], t1[idx]
@@ -619,12 +622,18 @@ def L3_good_timeseries_global_vdfs_one(
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_1d_vdf_one, args_list)
-    else:
+    elif plot_type == 1:
         outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4".format(
             cellids[idx], t0[idx], t1[idx]
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_global_vdf_one, args_list)
+    elif plot_type == 3:
+        outfilename = "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/c{}_t{}_{}.mp4".format(
+            cellids[idx], t0[idx], t1[idx]
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_global_vdf_one, args_list)
 
     # os.environ["FIF_ANIM_FILENAME"] = "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/c{}_t{}_{}.mp4"
     # subprocess.run(
@@ -641,6 +650,37 @@ def L3_good_timeseries_global_vdfs_one(
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
+def make_global_vdf_one(args):
+    ci, coords, t0, t1, fnr, limitedsize, outdir = args
+
+    fig,axes = plt.subplots(3,3,figsize=(16,16),layout="compressed")
+    cmap_axes = axes[0,:]
+    vdf_xyz_axes = axes[1,:]
+    vdf_b_axes = axes[2,:]
+
+    cmap_cb_ax = fig.add_axes((0,1.01,1,0.01))
+    vdf_cb_ax = fig.add_axes((0,-0.03,1,0.01))
+
+    cmap_axes = np.append(cmap_axes,cmap_cb_ax)
+    vdf_xyz_axes = np.append(vdf_xyz_axes,vdf_cb_ax)
+    vdf_b_axes = np.append(vdf_b_axes,vdf_cb_ax)
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    generate_cmap_plots(
+        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
+    )
+    try:
+        generate_vdf_plots(vdf_axes, vlsvobj, ci)
+        generate_vdf_B_plots(vdf_axes, vlsvobj, ci)
+    except:
+        pass
+
+    fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved animation of cellid {} at time {}".format(ci, fnr))
+    plt.close(fig)
 
 def make_timeseries_1d_vdf_one(args):
 
@@ -939,6 +979,63 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         colormap="batlow",
         bvector=1,
         yz=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        cbaxes=vdf_axes[3],
+        cb_horizontal=True,
+        title="",
+    )
+
+def generate_vdf_B_plots(vdf_axes,vobj,ci):
+
+    boxwidth = 3000e3
+
+    pt.plot.plot_vdf(
+        axes=vdf_axes[0],
+        vlsvobj=vobj,
+        cellids=[ci],
+        colormap="batlow",
+        # bvector=1,
+        bpara=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        nocb=True,
+        title="",
+    )
+    pt.plot.plot_vdf(
+        axes=vdf_axes[1],
+        vlsvobj=vobj,
+        cellids=[ci],
+        colormap="batlow",
+        # bvector=1,
+        bpara1=1,
+        slicethick=1,
+        box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+        setThreshold=1e-16,
+        scale=1.3,
+        fmin=1e-10,
+        fmax=1e-4,
+        contours=7,
+        nocb=True,
+        title="",
+    )
+    pt.plot.plot_vdf(
+        axes=vdf_axes[2],
+        vlsvobj=vobj,
+        cellids=[ci],
+        colormap="batlow",
+        # bvector=1,
+        bperp=1,
         slicethick=1,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
