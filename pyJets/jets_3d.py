@@ -1267,8 +1267,8 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
                 ncols = 1
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
 
-    pdynx_peaks = argrelextrema(pdynx, np.greater)
-    pdyn_peaks = argrelextrema(ts_data[5, :], np.greater)
+    pdynx_peaks = argrelextrema(pdynx, np.greater)[0]
+    pdyn_peaks = argrelextrema(ts_data[5, :], np.greater)[0]
 
     if pdynx_peaks.size > 0:
         pdynx_peak_times = t_arr[
