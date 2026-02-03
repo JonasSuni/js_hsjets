@@ -1272,11 +1272,11 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 
     if pdynx_peaks.size > 0:
         pdynx_peak_times = t_arr[
-            pdynx_peaks[pdynx[pdynx_peaks] >= tavg_x_arr[pdynx_peaks]]
+            pdynx_peaks[pdynx[pdynx_peaks] >= 3 * tavg_x_arr[pdynx_peaks]]
         ]
     if pdyn_peaks.size > 0:
         pdyn_peak_times = t_arr[
-            pdyn_peaks[ts_data[5, :][pdyn_peaks] >= tavg_arr[pdyn_peaks]]
+            pdyn_peaks[ts_data[5, :][pdyn_peaks] >= 2 * tavg_arr[pdyn_peaks]]
         ]
 
     for idx, ax in enumerate(ts_axes):
