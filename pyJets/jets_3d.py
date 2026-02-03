@@ -8,7 +8,7 @@ from pyJets.jet_aux import CB_color_cycle
 
 from scipy.linalg import eig
 from scipy.fft import rfft2
-from scipy.signal import butter, sosfilt
+from scipy.signal import butter, sosfilt, argrelextrema
 from scipy.ndimage import uniform_filter1d
 from scipy.fft import fft, fftfreq
 import numpy as np
@@ -1267,6 +1267,18 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
                 ncols = 1
             ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
 
+    pdynx_peaks = argrelextrema(pdynx, np.greater)
+    pdyn_peaks = argrelextrema(ts_data[5, :], np.greater)
+
+    if pdynx_peaks.size > 0:
+        pdynx_peak_times = t_arr[
+            pdynx_peaks[pdynx[pdynx_peaks] >= tavg_x_arr[pdynx_peaks]]
+        ]
+    if pdyn_peaks.size > 0:
+        pdyn_peak_times = t_arr[
+            pdyn_peaks[ts_data[5, :][pdyn_peaks] >= tavg_arr[pdyn_peaks]]
+        ]
+
     for idx, ax in enumerate(ts_axes):
         ax.grid()
         ax.set_ylabel(ylabels[idx])
@@ -1290,6 +1302,8 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             transform=ax.get_xaxis_transform(),
             linewidth=0,
         )
+        [ax.axvline(x, color="red", linestyle="dotted") for x in pdyn_peak_times]
+        [ax.axvline(x, color="green", linestyle="dotted") for x in pdynx_peak_times]
 
 
 def generate_axes(fig):
