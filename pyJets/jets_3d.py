@@ -80,6 +80,25 @@ wrkdir_other = os.environ["WRK"] + "/"
 bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
 
+def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
+
+    out_arr = []
+    sub_arr = []
+    for idx in range(data_arr.size):
+        if bool_arr[idx]:
+            sub_arr.append(data_arr[idx])
+        else:
+            if len(sub_arr) >= len_thresh:
+                out_arr.append(sub_arr)
+                sub_arr = []
+            else:
+                pass
+    if len(sub_arr) >= len_thresh:
+        out_arr.append(sub_arr)
+
+    return out_arr
+
+
 def get_msh_VDF_coordinates():
 
     outdir = wrkdir_DNR + "FIF/msh_vdf_locs/"
