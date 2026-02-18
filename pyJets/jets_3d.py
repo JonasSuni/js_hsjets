@@ -79,6 +79,7 @@ wrkdir_other = os.environ["WRK"] + "/"
 
 bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
+
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
 
     out_arr = []
@@ -96,6 +97,7 @@ def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
         out_arr.append(sub_arr)
 
     return out_arr
+
 
 def get_msh_VDF_coordinates():
 
@@ -666,6 +668,63 @@ def L3_good_timeseries_global_vdfs_one(
         shell=True,
     )
     subprocess.run("rm {} -rf".format(outdir), shell=True)
+
+
+def jet_interval_sorter(len_thresh=1):
+
+    cellids, t0_arr, t1_arr = (
+        np.loadtxt(wrkdir_DNR + "good.txt", dtype=float).astype(int).T
+    )
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    pd_intervals_all = []
+    pdx_intervals_all = []
+
+    for idx in range(100):
+        try:
+            print(t0_arr[idx])
+            coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+        except:
+            print("Index out of range, exiting gracefully!")
+
+        ci = cellids[idx]
+        t0 = t0_arr[idx]
+        t1 = t1_arr[idx]
+
+        txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+        ts_data = np.loadtxt(
+            txtdir
+            + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+                "FIF", coords[0], coords[1], coords[2], 600, 991, None
+            )
+        )
+
+        t_arr = np.arange(600, 991 + 0.1, 1)
+        tavg_arr = uniform_filter1d(
+            ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
+        )
+        pdynx = m_p * ts_data[0] * 1e6 * ts_data[1] * 1e3 * ts_data[1] * 1e3 * 1e9
+        tavg_x_arr = uniform_filter1d(
+            pdynx, 180, mode="constant", cval=np.nanmean(pdynx)
+        )
+
+        bool_arr = ts_data[5, :] >= 2 * tavg_arr
+        bool_x_arr = pdynx >= 3 * tavg_x_arr
+
+        pd_intervals = array_to_disjoint_naive(t_arr, bool_arr, len_thresh)
+        pdx_intervals = array_to_disjoint_naive(t_arr, bool_x_arr, len_thresh)
+
+        for intval in pd_intervals:
+            outstr = "{} {} {}".format(ci, intval[0], intval[-1])
+            pd_intervals_all.append(outstr)
+
+        for intval in pdx_intervals:
+            outstr = "{} {} {}".format(ci, intval[0], intval[-1])
+            pdx_intervals_all.append(outstr)
+
+    outdir = wrkdir_DNR + "txts/jet_intervals/"
+    np.savetxt(outdir + "archer_intervals.txt", pd_intervals_all)
+    np.savetxt(outdir + "koller_intervals.txt", pdx_intervals_all)
 
 
 def make_global_vdf_one(args):
