@@ -722,8 +722,8 @@ def jet_interval_sorter(len_thresh=1):
             pdx_intervals_all.append([ci, intval[0], intval[-1]])
 
     outdir = wrkdir_DNR + "txts/jet_intervals/"
-    np.savetxt(outdir + "archer_intervals.txt", pd_intervals_all)
-    np.savetxt(outdir + "koller_intervals.txt", pdx_intervals_all)
+    np.savetxt(outdir + "archer_intervals.txt", pd_intervals_all, format="%d")
+    np.savetxt(outdir + "koller_intervals.txt", pdx_intervals_all, format="%d")
 
 
 def make_global_vdf_one(args):
