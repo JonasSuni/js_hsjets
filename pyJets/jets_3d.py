@@ -686,6 +686,7 @@ def jet_interval_sorter(len_thresh=1):
             coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
         except:
             print("Index out of range, exiting gracefully!")
+            break
 
         ci = cellids[idx]
         t0 = t0_arr[idx]
