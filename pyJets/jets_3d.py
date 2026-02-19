@@ -716,14 +716,28 @@ def jet_interval_sorter(len_thresh=1):
         pdx_intervals = array_to_disjoint_naive(t_arr, bool_x_arr, len_thresh)
 
         for intval in pd_intervals:
-            pd_intervals_all.append([ci, intval[0], intval[-1]])
+            t_masked = t_arr[np.isin(t_arr, intval)]
+            pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
+            t_pdmax = t_masked[np.argmax(pd_masked)[0]]
+            pd_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
         for intval in pdx_intervals:
-            pdx_intervals_all.append([ci, intval[0], intval[-1]])
+            t_masked = t_arr[np.isin(t_arr, intval)]
+            pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
+            t_pdmax = t_masked[np.argmax(pd_masked)[0]]
+            pdx_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
     outdir = wrkdir_DNR + "txts/jet_intervals/"
-    np.savetxt(outdir + "archer_intervals.txt", pd_intervals_all, fmt="%d")
-    np.savetxt(outdir + "koller_intervals.txt", pdx_intervals_all, fmt="%d")
+    np.savetxt(
+        outdir + "archer_intervals.txt",
+        pd_intervals_all,
+        fmt=["%d", "%d", "%d", "%.10e"],
+    )
+    np.savetxt(
+        outdir + "koller_intervals.txt",
+        pdx_intervals_all,
+        fmt=["%d", "%d", "%d", "%.10e"],
+    )
 
 
 def make_global_vdf_one(args):
