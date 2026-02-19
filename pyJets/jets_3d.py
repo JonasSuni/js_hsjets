@@ -719,13 +719,15 @@ def jet_interval_sorter(len_thresh=1):
             t_masked = t_arr[np.isin(t_arr, intval)]
             pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
             t_pdmax = t_masked[np.argmax(pd_masked)]
-            pd_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
+            if intval[-1] > 690 and intval[0] < 900:
+                pd_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
         for intval in pdx_intervals:
             t_masked = t_arr[np.isin(t_arr, intval)]
             pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
             t_pdmax = t_masked[np.argmax(pd_masked)]
-            pdx_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
+            if intval[-1] > 690 and intval[0] < 900:
+                pdx_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
     outdir = wrkdir_DNR + "txts/jet_intervals/"
     np.savetxt(
