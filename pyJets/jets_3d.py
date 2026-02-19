@@ -701,6 +701,7 @@ def jet_interval_sorter(len_thresh=1):
         )
 
         t_arr = np.arange(600, 991 + 0.1, 1)
+        t_restr = np.arange(690, 900 + 0.1, 1)
         tavg_arr = uniform_filter1d(
             ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
         )
@@ -719,14 +720,14 @@ def jet_interval_sorter(len_thresh=1):
             t_masked = t_arr[np.isin(t_arr, intval)]
             pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
             t_pdmax = t_masked[np.argmax(pd_masked)]
-            if intval[-1] > 690 or intval[0] < 900:
+            if np.isin(t_restr, intval).any():
                 pd_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
         for intval in pdx_intervals:
             t_masked = t_arr[np.isin(t_arr, intval)]
             pd_masked = ts_data[5, :][np.isin(t_arr, intval)]
             t_pdmax = t_masked[np.argmax(pd_masked)]
-            if intval[-1] > 690 or intval[0] < 900:
+            if np.isin(t_restr, intval).any():
                 pdx_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
     outdir = wrkdir_DNR + "txts/jet_intervals/"
