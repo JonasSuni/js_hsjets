@@ -716,12 +716,10 @@ def jet_interval_sorter(len_thresh=1):
         pdx_intervals = array_to_disjoint_naive(t_arr, bool_x_arr, len_thresh)
 
         for intval in pd_intervals:
-            outstr = "{} {} {}".format(ci, intval[0], intval[-1])
-            pd_intervals_all.append(outstr)
+            pd_intervals_all.append([ci, intval[0], intval[-1]])
 
         for intval in pdx_intervals:
-            outstr = "{} {} {}".format(ci, intval[0], intval[-1])
-            pdx_intervals_all.append(outstr)
+            pdx_intervals_all.append([ci, intval[0], intval[-1]])
 
     outdir = wrkdir_DNR + "txts/jet_intervals/"
     np.savetxt(outdir + "archer_intervals.txt", pd_intervals_all)
