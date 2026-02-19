@@ -731,12 +731,12 @@ def jet_interval_sorter(len_thresh=1):
     np.savetxt(
         outdir + "archer_intervals.txt",
         pd_intervals_all,
-        fmt=["%d", "%d", "%d", "%.10e"],
+        fmt="%d",
     )
     np.savetxt(
         outdir + "koller_intervals.txt",
         pdx_intervals_all,
-        fmt=["%d", "%d", "%d", "%.10e"],
+        fmt="%d",
     )
 
 
