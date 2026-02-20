@@ -826,7 +826,7 @@ def archerplot():
         ax = ax_flat[idx]
         xvals, yvals = np.array(cat_contribs[idx]).T
         ax.plot(xvals, yvals, "o")
-        ax.set_title(titles[idx])
+        ax.set_title(titles[idx], fontsize=24, pad=10)
 
     ax = ax_flat[3]
     xvals, yvals = np.array(all_contribs).T
@@ -843,7 +843,8 @@ def archerplot():
     # )
     h[h == 0] = np.nan
     im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
-    fig.colorbar(im, ax=ax)
+    cb = fig.colorbar(im, ax=ax)
+    cb.ax.set_title("Count", fontsize=24, pad=10)
     ax.set_title("All")
 
     for ax in ax_flat:
