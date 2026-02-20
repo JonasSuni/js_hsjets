@@ -743,6 +743,88 @@ def jet_interval_sorter(len_thresh=1):
     )
 
 
+def archerplot():
+
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
+
+    archer_ci_peak = archer_data[:, [0, 3]].tolist()
+    koller_ci_peak = koller_data[:, [0, 3]].tolist()
+
+    a_toplot = []
+    k_toplot = []
+    ak_toplot = []
+    all_toplot = []
+
+    for p in archer_ci_peak:
+        if p in koller_ci_peak:
+            ak_toplot.append(p)
+            all_toplot.append(p)
+        else:
+            a_toplot.append(p)
+            all_toplot.append(p)
+
+    for p in koller_ci_peak:
+        if p in archer_ci_peak:
+            pass
+        else:
+            k_toplot.append(p)
+            all_toplot.append(p)
+
+    a_contribs = []
+    k_contribs = []
+    ak_contribs = []
+    all_contribs = []
+
+    cat_contribs = [a_contribs, k_contribs, ak_contribs]
+    cat_toplot = [a_toplot, k_toplot, ak_toplot]
+
+    for idx in range(len(cat_toplot)):
+        for p in cat_toplot[idx]:
+            ci, t0 = p
+            t0_idx = t0 - 600
+            coords = vobj_600.get_cell_coordinates(ci) / r_e
+            data_arr = np.loadtxt(
+                wrkdir_DNR
+                + "txts/timeseries/{}".format("")
+                + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+                    "FIF", coords[0], coords[1], coords[2], 600, 991, None
+                )
+            )
+            pdyn = data_arr[5, :]
+            v = data_arr[4, :]
+            v2 = v**2
+            rho = data_arr[0, :]
+
+            rhocontrib = (
+                rho[t0_idx] - np.nanmean(rho[t0_idx - 10 : t0_idx])
+            ) / np.nanmean(rho[t0_idx - 10 : t0_idx])
+            vcontrib = (v2[t0_idx] - np.nanmean(v2[t0_idx - 10 : t0_idx])) / np.nanmean(
+                v2[t0_idx - 10 : t0_idx]
+            )
+            pdyncontrib = (
+                pdyn[t0_idx] - np.nanmean(pdyn[t0_idx - 10 : t0_idx])
+            ) / np.nanmean(pdyn[t0_idx - 10 : t0_idx])
+
+            cat_contribs[idx].append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
+            all_contribs.append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
+
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+
+    xvals, yvals = np.array(all_contribs).T
+    ax.plot(xvals, yvals, "o")
+    ax.grid()
+
+    fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
 def make_global_vdf_one(args):
     ci, coords, t0, t1, fnr, limitedsize, outdir = args
 
