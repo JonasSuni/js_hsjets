@@ -833,7 +833,7 @@ def archerplot():
     h, xedges, yedges = np.histogram2d(
         xvals,
         yvals,
-        bins=[np.arange(-1, 2.5 + 0.0001, 0.25), np.arange(-1, 2.5 + 0.0001, 0.25)],
+        bins=[np.arange(-1, 2.5 + 0.0001, 0.1), np.arange(-1, 2.5 + 0.0001, 0.1)],
     )
     # h, xedges, yedges, im = ax.hist2d(
     #     xvals,
