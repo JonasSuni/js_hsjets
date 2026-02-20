@@ -834,10 +834,10 @@ def archerplot(prejet_window_size=10):
     h, xedges, yedges = np.histogram2d(
         xvals,
         yvals,
-        bins=[np.arange(-1, 2 + 0.0001, 0.1), np.arange(-1, 2.5 + 0.0001, 0.1)],
+        bins=[np.arange(-1, 2.5 + 0.0001, 0.1), np.arange(-1, 2.5 + 0.0001, 0.1)],
     )
     h[h == 0] = np.nan
-    im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
+    im = ax.pcolormesh(xedges, yedges, h.T, cmap="batlow")
     cb = fig.colorbar(im, ax=ax)
     cb.set_label("Count", fontsize=24, labelpad=20, rotation=270)
     # ax.plot(xvals, yvals, "o")
