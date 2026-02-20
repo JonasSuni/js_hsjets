@@ -1287,6 +1287,7 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
     boxwidth = 4
+    fsaved = "yellow"
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[0],
@@ -1309,7 +1310,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         limitedsize=limitedsize,
         external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
-        fsaved=1,
+        fsaved=fsaved,
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1335,7 +1336,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         limitedsize=limitedsize,
         external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
-        fsaved=1,
+        fsaved=fsaved,
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -1362,7 +1363,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         limitedsize=limitedsize,
         external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
-        fsaved=1,
+        fsaved=fsaved,
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
