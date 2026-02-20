@@ -743,7 +743,7 @@ def jet_interval_sorter(len_thresh=1):
     )
 
 
-def archerplot():
+def archerplot(prejet_window_size=10):
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
@@ -803,14 +803,14 @@ def archerplot():
             rho = data_arr[0, :]
 
             rhocontrib = (
-                rho[t0_idx] - np.nanmean(rho[t0_idx - 10 : t0_idx])
-            ) / np.nanmean(rho[t0_idx - 10 : t0_idx])
-            vcontrib = (v2[t0_idx] - np.nanmean(v2[t0_idx - 10 : t0_idx])) / np.nanmean(
-                v2[t0_idx - 10 : t0_idx]
-            )
+                rho[t0_idx] - np.nanmean(rho[t0_idx - prejet_window_size : t0_idx])
+            ) / np.nanmean(rho[t0_idx - prejet_window_size : t0_idx])
+            vcontrib = (
+                v2[t0_idx] - np.nanmean(v2[t0_idx - prejet_window_size : t0_idx])
+            ) / np.nanmean(v2[t0_idx - prejet_window_size : t0_idx])
             pdyncontrib = (
-                pdyn[t0_idx] - np.nanmean(pdyn[t0_idx - 10 : t0_idx])
-            ) / np.nanmean(pdyn[t0_idx - 10 : t0_idx])
+                pdyn[t0_idx] - np.nanmean(pdyn[t0_idx - prejet_window_size : t0_idx])
+            ) / np.nanmean(pdyn[t0_idx - prejet_window_size : t0_idx])
 
             cat_contribs[idx].append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
             all_contribs.append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
