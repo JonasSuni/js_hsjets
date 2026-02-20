@@ -850,7 +850,7 @@ def archerplot():
             fontsize=24,
             labelpad=10,
         )
-        ax.legend()
+        # ax.legend()
         ax.axvline(0, linestyle="dashed", linewidth=0.6)
         ax.axhline(0, linestyle="dashed", linewidth=0.6)
         ax.grid()
