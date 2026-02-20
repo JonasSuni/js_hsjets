@@ -815,11 +815,40 @@ def archerplot():
             cat_contribs[idx].append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
             all_contribs.append([rhocontrib / pdyncontrib, vcontrib / pdyncontrib])
 
-    fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+    fig, ax_list = plt.subplots(
+        2, 2, figsize=(16, 16), layout="compressed", sharex=True, sharey=True
+    )
+    ax_flat = ax_list.flatten()
 
-    xvals, yvals = np.array(all_contribs).T
-    ax.plot(xvals, yvals, "o")
-    ax.grid()
+    titles = ["Archer", "Koller", "Archer-Koller", ""]
+
+    for idx in range(len(cat_contribs)):
+        ax = ax_flat[idx]
+        xvals, yvals = np.array(cat_contribs[idx]).T
+        ax.plot(xvals, yvals, "o")
+        ax.set_title(titles[idx])
+
+    ax = ax_flat[3]
+
+    for ax in ax_flat:
+        ax.set_xlabel(
+            "$\\frac{\\delta\\rho(P_\\mathrm{dyn,max})}{\\langle \\rho \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.set_ylabel(
+            "$\\frac{\\delta v^2 (P_\\mathrm{dyn,max})}{\\langle v^2 \\rangle_\\mathrm{pre-jet}} / \\frac{\\delta P_\\mathrm{dyn} (P_\\mathrm{dyn,max})}{\\langle P_\\mathrm{dyn} \\rangle_\\mathrm{pre-jet}}$",
+            fontsize=24,
+            labelpad=10,
+        )
+        ax.legend()
+        ax.axvline(0, linestyle="dashed", linewidth=0.6)
+        ax.axhline(0, linestyle="dashed", linewidth=0.6)
+        ax.grid()
+        ax.set_xlim(-1, 2.5)
+        ax.set_ylim(-1, 2.5)
+        ax.label_outer()
+        ax.tick_params(labelsize=12)
 
     fig.savefig(wrkdir_DNR + "Figs/archerplot.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
