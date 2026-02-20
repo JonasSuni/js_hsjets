@@ -844,7 +844,7 @@ def archerplot():
     h[h == 0] = np.nan
     im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
     cb = fig.colorbar(im, ax=ax)
-    cb.set_label("Count", fontsize=24, labelpad=10)
+    cb.set_label("Count", fontsize=24, labelpad=-10, rotation=270)
     ax.set_title("All", fontsize=24, pad=10)
 
     for ax in ax_flat:
