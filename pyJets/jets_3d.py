@@ -829,6 +829,15 @@ def archerplot():
         ax.set_title(titles[idx])
 
     ax = ax_flat[3]
+    xvals, yvals = np.array(all_contribs).T
+    h, xedges, yedges, im = ax.hist2d(
+        xvals,
+        yvals,
+        bins=[np.arange(-1, 2.5 + 0.0001, 0.25), np.arange(-1, 2.5 + 0.0001, 0.25)],
+        cmap="batlow",
+    )
+    fig.colorbar(im, ax=ax)
+    ax.set_title("All")
 
     for ax in ax_flat:
         ax.set_xlabel(
