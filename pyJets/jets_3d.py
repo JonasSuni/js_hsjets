@@ -789,7 +789,7 @@ def archerplot(prejet_window_size=10):
         for p in cat_toplot[idx]:
             ci, t0 = p
             t0_idx = t0 - 600
-            print(t0_idx)
+            # print(t0_idx)
             coords = vobj_600.get_cell_coordinates(ci) / r_e
             data_arr = np.loadtxt(
                 wrkdir_DNR
