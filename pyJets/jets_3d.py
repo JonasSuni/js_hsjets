@@ -831,21 +831,16 @@ def archerplot(prejet_window_size=10):
 
     ax = ax_flat[3]
     xvals, yvals = np.array(all_contribs).T
-    h, xedges, yedges = np.histogram2d(
-        xvals,
-        yvals,
-        bins=[np.arange(-1, 2.5 + 0.0001, 0.1), np.arange(-1, 2.5 + 0.0001, 0.1)],
-    )
-    # h, xedges, yedges, im = ax.hist2d(
+    # h, xedges, yedges = np.histogram2d(
     #     xvals,
     #     yvals,
-    #     bins=[np.arange(-1, 2.5 + 0.0001, 0.25), np.arange(-1, 2.5 + 0.0001, 0.25)],
-    #     cmap="batlow",
+    #     bins=[np.arange(-1, 2.5 + 0.0001, 0.1), np.arange(-1, 2.5 + 0.0001, 0.1)],
     # )
-    h[h == 0] = np.nan
-    im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
-    cb = fig.colorbar(im, ax=ax)
-    cb.set_label("Count", fontsize=24, labelpad=20, rotation=270)
+    # h[h == 0] = np.nan
+    # im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
+    # cb = fig.colorbar(im, ax=ax)
+    # cb.set_label("Count", fontsize=24, labelpad=20, rotation=270)
+    ax.plot(xvals, yvals, "o")
     ax.set_title("All", fontsize=24, pad=10)
 
     for ax in ax_flat:
