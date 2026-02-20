@@ -830,12 +830,19 @@ def archerplot():
 
     ax = ax_flat[3]
     xvals, yvals = np.array(all_contribs).T
-    h, xedges, yedges, im = ax.hist2d(
+    h, xedges, yedges = np.histogram2d(
         xvals,
         yvals,
         bins=[np.arange(-1, 2.5 + 0.0001, 0.25), np.arange(-1, 2.5 + 0.0001, 0.25)],
-        cmap="batlow",
     )
+    # h, xedges, yedges, im = ax.hist2d(
+    #     xvals,
+    #     yvals,
+    #     bins=[np.arange(-1, 2.5 + 0.0001, 0.25), np.arange(-1, 2.5 + 0.0001, 0.25)],
+    #     cmap="batlow",
+    # )
+    h[h == 0] = np.nan
+    im = ax.pcolormesh(xedges, yedges, h, cmap="batlow")
     fig.colorbar(im, ax=ax)
     ax.set_title("All")
 
