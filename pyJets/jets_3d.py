@@ -770,7 +770,6 @@ def jet_interval_sorter(len_thresh=1):
     pdx_intervals_all_short = np.array(pdx_intervals_all)[:, [0, 3]].tolist()
 
     for intval in pd_intervals_all:
-        print(intval)
         if [intval[0], intval[3]] in pdx_intervals_all_short:
             pdx_intval = pdx_intervals_all[
                 pdx_intervals_all_short.index([intval[0], intval[3]])
