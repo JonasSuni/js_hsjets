@@ -769,11 +769,16 @@ def jet_interval_sorter(len_thresh=1):
     pd_intervals_all = np.array(pd_intervals_all)
     pdx_intervals_all = np.array(pdx_intervals_all)
 
+    print(pd_intervals_all)
+    print(pdx_intervals_all)
+
     for intval in pd_intervals_all:
+        print(intval)
         if intval[[0, 3]] in pdx_intervals_all[:, [0, 3]]:
             pdx_intval = pdx_intervals_all[
                 np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]])
             ]
+            print(np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]]))
             print(pdx_intval)
             intval[1] = min(intval[1], pdx_intval[1])
             intval[2] = max(intval[2], pdx_intval[2])
