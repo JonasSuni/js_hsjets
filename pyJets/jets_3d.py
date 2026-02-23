@@ -679,7 +679,7 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
         wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
     )
     archerkoller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
     )
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
