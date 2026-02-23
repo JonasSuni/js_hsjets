@@ -684,37 +684,37 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
-    for p in archer_data:
-        ci, t0, t1, tjet = p
-        coords = vobj_600.get_cell_coordinates(ci) / r_e
-        t0 = t0 - 10
-        t1 = t1 + 10
-        jet_intervals_anim_one(
-            ci,
-            coords,
-            t0,
-            t1,
-            limitedsize=limitedsize,
-            n_processes=n_processes,
-            plot_type=plot_type,
-            jet_type="archer",
-        )
+    # for p in archer_data:
+    #     ci, t0, t1, tjet = p
+    #     coords = vobj_600.get_cell_coordinates(ci) / r_e
+    #     t0 = t0 - 10
+    #     t1 = t1 + 10
+    #     jet_intervals_anim_one(
+    #         ci,
+    #         coords,
+    #         t0,
+    #         t1,
+    #         limitedsize=limitedsize,
+    #         n_processes=n_processes,
+    #         plot_type=plot_type,
+    #         jet_type="archer",
+    #     )
 
-    for p in koller_data:
-        ci, t0, t1, tjet = p
-        coords = vobj_600.get_cell_coordinates(ci) / r_e
-        t0 = t0 - 10
-        t1 = t1 + 10
-        jet_intervals_anim_one(
-            ci,
-            coords,
-            t0,
-            t1,
-            limitedsize=limitedsize,
-            n_processes=n_processes,
-            plot_type=plot_type,
-            jet_type="koller",
-        )
+    # for p in koller_data:
+    #     ci, t0, t1, tjet = p
+    #     coords = vobj_600.get_cell_coordinates(ci) / r_e
+    #     t0 = t0 - 10
+    #     t1 = t1 + 10
+    #     jet_intervals_anim_one(
+    #         ci,
+    #         coords,
+    #         t0,
+    #         t1,
+    #         limitedsize=limitedsize,
+    #         n_processes=n_processes,
+    #         plot_type=plot_type,
+    #         jet_type="koller",
+    #     )
 
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
