@@ -766,6 +766,9 @@ def jet_interval_sorter(len_thresh=1):
     k_intervals = []
     ak_intervals = []
 
+    pd_intervals_all = np.array(pd_intervals_all)
+    pdx_intervals_all = np.array(pdx_intervals_all)
+
     for intval in pd_intervals_all:
         if intval[[0, 3]] in pdx_intervals_all[:, [0, 3]]:
             pdx_intval = pdx_intervals_all[
