@@ -766,20 +766,15 @@ def jet_interval_sorter(len_thresh=1):
     k_intervals = []
     ak_intervals = []
 
-    pd_intervals_all = np.array(pd_intervals_all)
-    pdx_intervals_all = np.array(pdx_intervals_all)
-
-    print(pd_intervals_all)
-    print(pdx_intervals_all)
+    pd_intervals_all_short = np.array(pd_intervals_all)[:, [0, 3]].tolist()
+    pdx_intervals_all_short = np.array(pdx_intervals_all)[:, [0, 3]].tolist()
 
     for intval in pd_intervals_all:
         print(intval)
-        if intval[[0, 3]] in pdx_intervals_all[:, [0, 3]]:
+        if [intval[0], intval[3]] in pdx_intervals_all_short:
             pdx_intval = pdx_intervals_all[
-                np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]])
+                pdx_intervals_all_short.index([intval[0], intval[3]])
             ]
-            print(np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]]))
-            print(pdx_intval)
             intval[1] = min(intval[1], pdx_intval[1])
             intval[2] = max(intval[2], pdx_intval[2])
             ak_intervals.append(intval)
@@ -787,7 +782,7 @@ def jet_interval_sorter(len_thresh=1):
             a_intervals.append(intval)
 
     for intval in pdx_intervals_all:
-        if intval[[0, 3]] in pd_intervals_all[:, [0, 3]]:
+        if [intval[0], intval[3]] in pd_intervals_all_short:
             pass
         else:
             k_intervals.append(intval)
