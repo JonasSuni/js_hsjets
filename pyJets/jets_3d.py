@@ -670,6 +670,38 @@ def L3_good_timeseries_global_vdfs_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
+def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
+
+    archer_ci_peak = archer_data
+    koller_ci_peak = koller_data
+
+    a_toplot = []
+    k_toplot = []
+    ak_toplot = []
+
+    for p in archer_ci_peak:
+        if p[[0, 3]] in koller_ci_peak[:, [0, 3]]:
+            koller_p = koller_ci_peak[np.where(koller_ci_peak[:, [0, 3]] == p[[0, 3]])]
+            p[1] = min(p[1], koller_p[1])
+            p[2] = max(p[2], koller_p[2])
+            ak_toplot.append(p)
+        else:
+            a_toplot.append(p)
+
+    for p in koller_ci_peak:
+        if p[[0, 3]] in archer_ci_peak[:, [0, 3]]:
+            pass
+        else:
+            k_toplot.append(p)
+
+
 def jet_interval_sorter(len_thresh=1):
 
     cellids, t0_arr, t1_arr = (
@@ -730,15 +762,41 @@ def jet_interval_sorter(len_thresh=1):
             if np.isin(t_restr, [t_pdmax]).any():
                 pdx_intervals_all.append([ci, intval[0], intval[-1], t_pdmax])
 
+    a_intervals = []
+    k_intervals = []
+    ak_intervals = []
+
+    for intval in pd_intervals_all:
+        if intval[[0, 3]] in pdx_intervals_all[:, [0, 3]]:
+            pdx_intval = pdx_intervals_all[
+                np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]])
+            ]
+            intval[1] = min(intval[1], pdx_intval[1])
+            intval[2] = max(intval[2], pdx_intval[2])
+            ak_intervals.append(intval)
+        else:
+            a_intervals.append(intval)
+
+    for intval in pdx_intervals_all:
+        if intval[[0, 3]] in pd_intervals_all[:, [0, 3]]:
+            pass
+        else:
+            k_intervals.append(intval)
+
     outdir = wrkdir_DNR + "txts/jet_intervals/"
     np.savetxt(
         outdir + "archer_intervals.txt",
-        pd_intervals_all,
+        a_intervals,
         fmt="%d",
     )
     np.savetxt(
         outdir + "koller_intervals.txt",
-        pdx_intervals_all,
+        k_intervals,
+        fmt="%d",
+    )
+    np.savetxt(
+        outdir + "archerkoller_intervals.txt",
+        ak_intervals,
         fmt="%d",
     )
 
@@ -753,29 +811,35 @@ def archerplot(prejet_window_size=10):
     koller_data = np.loadtxt(
         wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
     )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+    )
 
-    archer_ci_peak = archer_data[:, [0, 3]].tolist()
-    koller_ci_peak = koller_data[:, [0, 3]].tolist()
+    # archer_ci_peak = archer_data[:, [0, 3]].tolist()
+    # koller_ci_peak = koller_data[:, [0, 3]].tolist()
 
-    a_toplot = []
-    k_toplot = []
-    ak_toplot = []
-    all_toplot = []
+    # a_toplot = []
+    # k_toplot = []
+    # ak_toplot = []
+    # all_toplot = []
 
-    for p in archer_ci_peak:
-        if p in koller_ci_peak:
-            ak_toplot.append(p)
-            all_toplot.append(p)
-        else:
-            a_toplot.append(p)
-            all_toplot.append(p)
+    # for p in archer_ci_peak:
+    #     if p in koller_ci_peak:
+    #         ak_toplot.append(p)
+    #         all_toplot.append(p)
+    #     else:
+    #         a_toplot.append(p)
+    #         all_toplot.append(p)
 
-    for p in koller_ci_peak:
-        if p in archer_ci_peak:
-            pass
-        else:
-            k_toplot.append(p)
-            all_toplot.append(p)
+    # for p in koller_ci_peak:
+    #     if p in archer_ci_peak:
+    #         pass
+    #     else:
+    #         k_toplot.append(p)
+    #         all_toplot.append(p)
+    a_toplot = archer_data[:, [0, 3]].tolist()
+    k_toplot = koller_data[:, [0, 3]].tolist()
+    ak_toplot = archerkoller_data[:, [0, 3]].tolist()
 
     a_contribs = []
     k_contribs = []
