@@ -773,7 +773,8 @@ def jet_interval_sorter(len_thresh=1):
         if intval[[0, 3]] in pdx_intervals_all[:, [0, 3]]:
             pdx_intval = pdx_intervals_all[
                 np.where(pdx_intervals_all[:, [0, 3]] == intval[[0, 3]])
-            ][0]
+            ]
+            print(pdx_intval)
             intval[1] = min(intval[1], pdx_intval[1])
             intval[2] = max(intval[2], pdx_intval[2])
             ak_intervals.append(intval)
