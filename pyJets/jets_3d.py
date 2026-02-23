@@ -705,6 +705,7 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
             plot_type=plot_type,
             jet_type="archer",
         )
+        rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer")
 
     for p in koller_data:
         ci, t0, t1, tjet = p
@@ -721,6 +722,7 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
             plot_type=plot_type,
             jet_type="koller",
         )
+        rel_dens_plotter(ci, t0, t1, tjet, jet_type="koller")
 
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
@@ -737,6 +739,41 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
             plot_type=plot_type,
             jet_type="archerkoller",
         )
+        rel_dens_plotter(ci, t0, t1, tjet, jet_type="archerkoller")
+
+
+def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer"):
+
+    data = np.loadtxt(wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.mp4".format(ci, t0, t1))
+
+    fig, ax = plt.subplots(1, 1, figsize=(10, 6), layout="compressed")
+
+    t_arr = np.arange(t0, t1 + 0.001, 1)
+    ax.plot(t_arr, data / 1e6)
+    ax.set_xlim(t0, t1)
+    ax.grid()
+    ax.axvline(tjet, linestyle="dashed", color="red")
+    ax.fill_between(
+        t_arr,
+        0,
+        1,
+        where=np.logical_and(t_arr >= t0 + 10, t_arr <= t1 - 10),
+        color="green",
+        alpha=0.2,
+        transform=ax.get_xaxis_transform(),
+        linewidth=0,
+    )
+    ax.label_outer()
+    ax.tick_params(labelsize=12)
+    ax.set_xlabel("t [s]", fontsize=24, labelpad=10)
+    ax.set_ylabel("$r_\\mathrm{sw}~[\\mathrm{cm}^{-3}]$", fontsize=24, labelpad=10)
+
+    fig.savefig(
+        wrkdir_DNR + "Figs/rel_dens/{}/c{}_t{}_{}.png".format(jet_type, ci, t0, t1),
+        dpi=300,
+        bbox_inches="tight",
+    )
+    plt.close(fig)
 
 
 def jet_intervals_anim_one(
