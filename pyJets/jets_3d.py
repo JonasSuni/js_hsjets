@@ -648,7 +648,7 @@ def L3_good_timeseries_global_vdfs_one(
 
         np.savetxt(
             wrkdir_DNR
-            + "txts/rel_dens/c{}_t{}_{}.mp4".format(cellids[idx], t0[idx], t1[idx]),
+            + "txts/rel_dens/c{}_t{}_{}.txt".format(cellids[idx], t0[idx], t1[idx]),
             result,
         )
     elif plot_type == 3:
@@ -744,7 +744,7 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
 
 def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer"):
 
-    data = np.loadtxt(wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.mp4".format(ci, t0, t1))
+    data = np.loadtxt(wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1))
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 6), layout="compressed")
 
@@ -818,7 +818,7 @@ def jet_intervals_anim_one(
             result = pool.map(make_timeseries_global_vdf_one, args_list)
 
         np.savetxt(
-            wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.mp4".format(ci, t0, t1), result
+            wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
         )
     elif plot_type == 3:
         outfilename = (
