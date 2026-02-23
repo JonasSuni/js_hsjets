@@ -678,28 +678,117 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
     koller_data = np.loadtxt(
         wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
     )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
 
-    archer_ci_peak = archer_data
-    koller_ci_peak = koller_data
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
-    a_toplot = []
-    k_toplot = []
-    ak_toplot = []
+    for p in archer_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        t0 = t0 - 10
+        t1 = t1 + 10
+        jet_intervals_anim_one(
+            ci,
+            coords,
+            t0,
+            t1,
+            limitedsize=limitedsize,
+            n_processes=n_processes,
+            plot_type=plot_type,
+            jet_type="archer",
+        )
 
-    for p in archer_ci_peak:
-        if p[[0, 3]] in koller_ci_peak[:, [0, 3]]:
-            koller_p = koller_ci_peak[np.where(koller_ci_peak[:, [0, 3]] == p[[0, 3]])]
-            p[1] = min(p[1], koller_p[1])
-            p[2] = max(p[2], koller_p[2])
-            ak_toplot.append(p)
-        else:
-            a_toplot.append(p)
+    for p in koller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        t0 = t0 - 10
+        t1 = t1 + 10
+        jet_intervals_anim_one(
+            ci,
+            coords,
+            t0,
+            t1,
+            limitedsize=limitedsize,
+            n_processes=n_processes,
+            plot_type=plot_type,
+            jet_type="koller",
+        )
 
-    for p in koller_ci_peak:
-        if p[[0, 3]] in archer_ci_peak[:, [0, 3]]:
+    for p in archerkoller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        t0 = t0 - 10
+        t1 = t1 + 10
+        jet_intervals_anim_one(
+            ci,
+            coords,
+            t0,
+            t1,
+            limitedsize=limitedsize,
+            n_processes=n_processes,
+            plot_type=plot_type,
+            jet_type="archerkoller",
+        )
+
+
+def jet_intervals_anim_one(
+    ci, coords, t0, t1, limitedsize=True, n_processes=16, plot_type=1, jet_type="archer"
+):
+
+    global limitedsize_g
+
+    limitedsize_g = limitedsize
+
+    outdir = "/tmp/FIF/{}".format(ci)
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+        except OSError:
             pass
-        else:
-            k_toplot.append(p)
+
+    args_list = []
+    fnr_range = np.arange(t0, t1 + 0.1, 1, dtype=int)
+
+    for fnr in fnr_range:
+        args_list.append((ci, coords, t0, t1, fnr, limitedsize, outdir))
+
+    # Use multiprocessing Pool
+
+    if plot_type == 2:
+        outfilename = (
+            "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/{}/c{}_t{}_{}.mp4".format(
+                jet_type, ci, t0, t1
+            )
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_timeseries_1d_vdf_one, args_list)
+    elif plot_type == 1:
+        outfilename = (
+            "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/{}/c{}_t{}_{}.mp4".format(
+                jet_type, ci, t0, t1
+            )
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_timeseries_global_vdf_one, args_list)
+    elif plot_type == 3:
+        outfilename = (
+            "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
+                jet_type, ci, t0, t1
+            )
+        )
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_global_vdf_one, args_list)
+
+    subprocess.run(
+        "cat $(find {} -maxdepth 1 -name '*.png' | sort -V) | ffmpeg -framerate 5 -i - -b:v 2500k -vf scale=1600:-2 -y {}".format(
+            outdir, outfilename
+        ),
+        shell=True,
+    )
+    subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
 def jet_interval_sorter(len_thresh=1):
@@ -818,28 +907,6 @@ def archerplot(prejet_window_size=10):
         wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
     )
 
-    # archer_ci_peak = archer_data[:, [0, 3]].tolist()
-    # koller_ci_peak = koller_data[:, [0, 3]].tolist()
-
-    # a_toplot = []
-    # k_toplot = []
-    # ak_toplot = []
-    # all_toplot = []
-
-    # for p in archer_ci_peak:
-    #     if p in koller_ci_peak:
-    #         ak_toplot.append(p)
-    #         all_toplot.append(p)
-    #     else:
-    #         a_toplot.append(p)
-    #         all_toplot.append(p)
-
-    # for p in koller_ci_peak:
-    #     if p in archer_ci_peak:
-    #         pass
-    #     else:
-    #         k_toplot.append(p)
-    #         all_toplot.append(p)
     a_toplot = archer_data[:, [0, 3]].tolist()
     k_toplot = koller_data[:, [0, 3]].tolist()
     ak_toplot = archerkoller_data[:, [0, 3]].tolist()
