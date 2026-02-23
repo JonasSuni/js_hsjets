@@ -644,7 +644,13 @@ def L3_good_timeseries_global_vdfs_one(
             cellids[idx], t0[idx], t1[idx]
         )
         with Pool(processes=n_processes) as pool:
-            pool.map(make_timeseries_global_vdf_one, args_list)
+            result = pool.map(make_timeseries_global_vdf_one, args_list)
+
+        np.savetxt(
+            wrkdir_DNR
+            + "txts/rel_dens/c{}_t{}_{}.mp4".format(cellids[idx], t0[idx], t1[idx]),
+            result,
+        )
     elif plot_type == 3:
         outfilename = (
             "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/c{}_t{}_{}.mp4".format(
@@ -772,7 +778,11 @@ def jet_intervals_anim_one(
             )
         )
         with Pool(processes=n_processes) as pool:
-            pool.map(make_timeseries_global_vdf_one, args_list)
+            result = pool.map(make_timeseries_global_vdf_one, args_list)
+
+        np.savetxt(
+            wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.mp4".format(ci, t0, t1), result
+        )
     elif plot_type == 3:
         outfilename = (
             "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
@@ -1108,8 +1118,10 @@ def make_timeseries_global_vdf_one(args):
     generate_cmap_plots(
         cmap_axes, vlsvobj, coords[0], coords[1], coords[2], limitedsize
     )
+    res = None
     try:
         generate_vdf_plots(vdf_axes, vlsvobj, ci)
+        res = density_rel_to_mb(vlsvobj, ci)
     except:
         pass
     for linepl in axvlines:
@@ -1119,6 +1131,11 @@ def make_timeseries_global_vdf_one(args):
 
     print("Saved animation of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
+
+    if res is not None:
+        return res
+    else:
+        return np.nan
 
 
 def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
@@ -1175,6 +1192,34 @@ def ts_glob_vdf_update(fnr):
         linepl.set_xdata([fnr, fnr])
 
 
+def density_rel_to_mb(
+    vlsvobj, cellid, nsw=1e6, vsw=(-750e3, 0, 0), Tsw=500e3, fmin=8e-16, dv=40e3
+):
+
+    # Read velocity cell keys and values from vlsv file
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    vc_coords_sw_frame = np.subtract(vc_coords, vsw)
+    vc_coords_mag_sw_frame = np.linalg.norm(vc_coords_sw_frame, axis=-1)
+
+    mb_vals = (
+        nsw
+        * (m_p / 2.0 / np.pi / kb / Tsw) ** (3.0 / 2)
+        * np.exp(-m_p * vc_coords_mag_sw_frame**2 / 2.0 / kb / Tsw)
+    )
+    vc_vals_weighted = np.sqrt(mb_vals * vc_vals)
+
+    res = np.sum(dv * dv * dv * vc_vals_weighted) / nsw
+
+    return res
+
+
 def vspace_reducer(
     vlsvobj,
     cellid,
@@ -1185,7 +1230,7 @@ def vspace_reducer(
     b=None,
     v=None,
     binw=40e3,
-    fmin=1e-16,
+    fmin=8e-16,
 ):
     """
     Function for reducing a 3D VDF to 1D
