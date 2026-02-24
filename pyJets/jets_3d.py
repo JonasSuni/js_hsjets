@@ -751,6 +751,7 @@ def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer"):
     t_arr = np.arange(t0, t1 + 0.001, 1)
     ax.plot(t_arr, data)
     ax.set_xlim(t0, t1)
+    ax.set_ylim(0, 1.1)
     ax.grid()
     ax.axvline(tjet, linestyle="dashed", color="red")
     ax.fill_between(
