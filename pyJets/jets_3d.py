@@ -676,7 +676,9 @@ def L3_good_timeseries_global_vdfs_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
-def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
+def jet_interval_anim_all(
+    limitedsize=False, n_processes=16, plot_type=1, only_rel_dens=False
+):
 
     archer_data = np.loadtxt(
         wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
@@ -695,16 +697,17 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
         coords = vobj_600.get_cell_coordinates(ci) / r_e
         t0 = t0 - 10
         t1 = t1 + 10
-        jet_intervals_anim_one(
-            ci,
-            coords,
-            t0,
-            t1,
-            limitedsize=limitedsize,
-            n_processes=n_processes,
-            plot_type=plot_type,
-            jet_type="archer",
-        )
+        if not only_rel_dens:
+            jet_intervals_anim_one(
+                ci,
+                coords,
+                t0,
+                t1,
+                limitedsize=limitedsize,
+                n_processes=n_processes,
+                plot_type=plot_type,
+                jet_type="archer",
+            )
         rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer")
 
     for p in koller_data:
@@ -712,16 +715,17 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
         coords = vobj_600.get_cell_coordinates(ci) / r_e
         t0 = t0 - 10
         t1 = t1 + 10
-        jet_intervals_anim_one(
-            ci,
-            coords,
-            t0,
-            t1,
-            limitedsize=limitedsize,
-            n_processes=n_processes,
-            plot_type=plot_type,
-            jet_type="koller",
-        )
+        if not only_rel_dens:
+            jet_intervals_anim_one(
+                ci,
+                coords,
+                t0,
+                t1,
+                limitedsize=limitedsize,
+                n_processes=n_processes,
+                plot_type=plot_type,
+                jet_type="koller",
+            )
         rel_dens_plotter(ci, t0, t1, tjet, jet_type="koller")
 
     for p in archerkoller_data:
@@ -729,16 +733,17 @@ def jet_interval_anim_all(limitedsize=False, n_processes=16, plot_type=1):
         coords = vobj_600.get_cell_coordinates(ci) / r_e
         t0 = t0 - 10
         t1 = t1 + 10
-        jet_intervals_anim_one(
-            ci,
-            coords,
-            t0,
-            t1,
-            limitedsize=limitedsize,
-            n_processes=n_processes,
-            plot_type=plot_type,
-            jet_type="archerkoller",
-        )
+        if not only_rel_dens:
+            jet_intervals_anim_one(
+                ci,
+                coords,
+                t0,
+                t1,
+                limitedsize=limitedsize,
+                n_processes=n_processes,
+                plot_type=plot_type,
+                jet_type="archerkoller",
+            )
         rel_dens_plotter(ci, t0, t1, tjet, jet_type="archerkoller")
 
 
