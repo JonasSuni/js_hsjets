@@ -1236,7 +1236,7 @@ def ts_glob_vdf_update(fnr):
 
 
 def density_rel_to_mb(
-    vlsvobj, cellid, nsw=1e6, vsw=(-750e3, 0, 0), Tsw=500e3, fmin=8e-16, dv=40e3
+    vlsvobj, cellid, nsw=1e6, vsw=(-750e3, 0, 0), Tsw=500e3, fmin=1e-16, dv=40e3
 ):
 
     # Read velocity cell keys and values from vlsv file
@@ -1273,7 +1273,7 @@ def vspace_reducer(
     b=None,
     v=None,
     binw=40e3,
-    fmin=8e-16,
+    fmin=1e-16,
 ):
     """
     Function for reducing a 3D VDF to 1D
