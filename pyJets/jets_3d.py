@@ -1117,7 +1117,7 @@ def make_timeseries_1d_vdf_one(args):
         ax.grid()
         ax.set_ylabel("$f_v$ [$s/m^4$]")
         ax.set_xlim(-2000, 2000)
-        ax.set_ylim(0, 10)
+        ax.set_ylim(0, 15)
     try:
         generate_1d_vdf_plots(vdf_axes, vlsvobj, ci)
     except:
