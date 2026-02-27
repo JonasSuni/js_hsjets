@@ -1029,7 +1029,7 @@ def location_plot():
             nocb=True,
             normal="y",
             title="",
-            external="ext_rho",
+            external=ext_rho,
             pass_vars=["proton/vg_rho"],
         )
         hxz[hxz == 0] = np.nan
