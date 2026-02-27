@@ -970,15 +970,18 @@ def location_plot():
             coords = vobj_600.get_cell_coordinates(ci) / r_e
             cat_coords[idx].append(coords)
 
-    fig, ax_list = plt.subplots(3, 3, figsize=(15, 15), layout="compressed")
+    fig, ax_list = plt.subplots(3, 3, figsize=(20, 20), layout="compressed")
 
     titles = ["Archer", "Koller", "Archerkoller"]
 
     # boxre = [8, 15, -10, 0, -10, 10]
     dr = 1000e3 / r_e
-    xbins = np.arange(8, 15 + dr / 2.0, dr)
-    ybins = np.arange(-10, 0 + dr / 2.0, dr)
-    zbins = np.arange(-10, 10 + dr / 2.0, dr)
+    # xbins = np.arange(8, 15 + dr / 2.0, dr)
+    # ybins = np.arange(-10, 0 + dr / 2.0, dr)
+    # zbins = np.arange(-10, 10 + dr / 2.0, dr)
+    xbins = np.linspace(8, 15, 20)
+    ybins = np.linspace(-10, 0, 20)
+    zbins = np.linspace(-10, 10, 20)
 
     for idx in range(len(cat_list)):
         ax_col = ax_list[:, idx]
@@ -999,6 +1002,13 @@ def location_plot():
             zarr,
             bins=[ybins, zbins],
         )
+
+        hxy[hxy == 0] = np.nan
+        im_xy = ax_col[0].pcolormesh(xedges, yedges, hxy.T, cmap="batlow", zorder=6)
+        cb_xy = fig.colorbar(im_xy, ax=ax_col[0])
+        cb_xy.set_label("Count", fontsize=12, labelpad=10, rotation=270)
+        ax_col[0].set(xlim=(8, 15), ylim=(-10, 0))
+        ax_col[0].set_title(titles[idx], fontsize=24, pad=10)
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
             axes=ax_col[0],
@@ -1012,13 +1022,12 @@ def location_plot():
             external=ext_rho,
             pass_vars=["proton/vg_rho"],
         )
-        hxy[hxy == 0] = np.nan
-        im_xy = ax_col[0].pcolormesh(xedges, yedges, hxy.T, cmap="batlow", zorder=6)
-        cb_xy = fig.colorbar(im_xy, ax=ax_col[0])
-        cb_xy.set_label("Count", fontsize=24, labelpad=20, rotation=270)
-        ax_col[0].set(xlim=(8, 15), ylim=(-10, 0))
-        ax_col[0].set_title(titles[idx], fontsize=24, pad=10)
 
+        hxz[hxz == 0] = np.nan
+        im_xz = ax_col[1].pcolormesh(xedges, zedges, hxz.T, cmap="batlow", zorder=6)
+        cb_xz = fig.colorbar(im_xz, ax=ax_col[1])
+        cb_xz.set_label("Count", fontsize=12, labelpad=10, rotation=270)
+        ax_col[1].set(xlim=(8, 15), ylim=(-10, 10))
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
             axes=ax_col[1],
@@ -1032,12 +1041,12 @@ def location_plot():
             external=ext_rho,
             pass_vars=["proton/vg_rho"],
         )
-        hxz[hxz == 0] = np.nan
-        im_xz = ax_col[1].pcolormesh(xedges, zedges, hxz.T, cmap="batlow", zorder=6)
-        cb_xz = fig.colorbar(im_xz, ax=ax_col[1])
-        cb_xz.set_label("Count", fontsize=24, labelpad=20, rotation=270)
-        ax_col[1].set(xlim=(8, 15), ylim=(-10, 10))
 
+        hyz[hyz == 0] = np.nan
+        im_yz = ax_col[2].pcolormesh(yedges, zedges, hyz.T, cmap="batlow", zorder=6)
+        cb_yz = fig.colorbar(im_yz, ax=ax_col[2])
+        cb_yz.set_label("Count", fontsize=12, labelpad=10, rotation=270)
+        ax_col[2].set(xlim=(-10, 0), ylim=(-10, 10))
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
             axes=ax_col[2],
@@ -1051,11 +1060,6 @@ def location_plot():
             external=ext_rho,
             pass_vars=["proton/vg_rho"],
         )
-        hyz[hyz == 0] = np.nan
-        im_yz = ax_col[2].pcolormesh(yedges, zedges, hyz.T, cmap="batlow", zorder=6)
-        cb_yz = fig.colorbar(im_yz, ax=ax_col[2])
-        cb_yz.set_label("Count", fontsize=24, labelpad=20, rotation=270)
-        ax_col[2].set(xlim=(-10, 0), ylim=(-10, 10))
 
     for ax in ax_list.flatten():
         ax.grid()
