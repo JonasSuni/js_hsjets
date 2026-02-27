@@ -1001,7 +1001,7 @@ def location_plot():
         )
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
-            ax=ax_col[0],
+            axes=ax_col[0],
             var="vg_connection",
             vmin=42,
             vmax=43,
@@ -1021,7 +1021,7 @@ def location_plot():
 
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
-            ax=ax_col[1],
+            axes=ax_col[1],
             var="vg_connection",
             vmin=42,
             vmax=43,
@@ -1040,7 +1040,7 @@ def location_plot():
 
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
-            ax=ax_col[2],
+            axes=ax_col[2],
             var="vg_connection",
             vmin=42,
             vmax=43,
