@@ -1017,7 +1017,7 @@ def location_plot():
         cb_xy = fig.colorbar(im_xy, ax=ax_col[0])
         cb_xy.set_label("Count", fontsize=24, labelpad=20, rotation=270)
         ax_col[0].set(xlim=(8, 15), ylim=(-10, 0))
-        ax_col[0].set_title(titles[idx], fontsize=24, labelpad=10)
+        ax_col[0].set_title(titles[idx], fontsize=24, pad=10)
 
         pt.plot.plot_colormap3dslice(
             vlsvobj=vobj_600,
