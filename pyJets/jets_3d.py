@@ -697,8 +697,8 @@ def jet_interval_anim_all(
     for p in archer_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        t0 = t0 - prepost_time
-        t1 = t1 + prepost_time
+        # t0 = t0 - prepost_time
+        # t1 = t1 + prepost_time
         if not only_rel_dens:
             jet_intervals_anim_one(
                 ci,
@@ -709,6 +709,7 @@ def jet_interval_anim_all(
                 n_processes=n_processes,
                 plot_type=plot_type,
                 jet_type="archer",
+                prepost_time=prepost_time,
             )
         if only_rel_dens:
             rel_dens_plotter(
@@ -718,8 +719,8 @@ def jet_interval_anim_all(
     for p in koller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        t0 = t0 - prepost_time
-        t1 = t1 + prepost_time
+        # t0 = t0 - prepost_time
+        # t1 = t1 + prepost_time
         if not only_rel_dens:
             jet_intervals_anim_one(
                 ci,
@@ -730,6 +731,7 @@ def jet_interval_anim_all(
                 n_processes=n_processes,
                 plot_type=plot_type,
                 jet_type="koller",
+                prepost_time=prepost_time,
             )
         if only_rel_dens:
             rel_dens_plotter(
@@ -739,8 +741,8 @@ def jet_interval_anim_all(
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        t0 = t0 - prepost_time
-        t1 = t1 + prepost_time
+        # t0 = t0 - prepost_time
+        # t1 = t1 + prepost_time
         if not only_rel_dens:
             jet_intervals_anim_one(
                 ci,
@@ -751,6 +753,7 @@ def jet_interval_anim_all(
                 n_processes=n_processes,
                 plot_type=plot_type,
                 jet_type="archerkoller",
+                prepost_time=prepost_time,
             )
         if only_rel_dens:
             rel_dens_plotter(
