@@ -74,7 +74,9 @@ try:
 except:
     tavgdir = wrkdir_DNR + "tavg/"
 
-wrkdir_DNR = wrkdir_DNR + "jets_3D/"
+# wrkdir_DNR = wrkdir_DNR + "jets_3D/"
+wrkdir_NEW = "/turso/home/jesuni/work/jets_3D/"
+wrkdir_DNR = wrkdir_NEW
 wrkdir_other = os.environ["WRK"] + "/"
 
 bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
@@ -762,9 +764,9 @@ def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer", prepost_time=10):
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 6), layout="compressed")
 
-    t_arr = np.arange(t0, t1 + 0.001, 1)
+    t_arr = np.arange(t0 - prepost_time, t1 + prepost_time + 0.001, 1)
     ax.plot(t_arr, data)
-    ax.set_xlim(t0, t1)
+    ax.set_xlim(t0 - prepost_time, t1 + prepost_time)
     ax.set_ylim(0, 1.1)
     ax.grid()
     ax.axvline(tjet, linestyle="dashed", color="red")
@@ -772,7 +774,7 @@ def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer", prepost_time=10):
         t_arr,
         0,
         1,
-        where=np.logical_and(t_arr >= t0 + prepost_time, t_arr <= t1 - prepost_time),
+        where=np.logical_and(t_arr >= t0, t_arr <= t1),
         color="green",
         alpha=0.2,
         transform=ax.get_xaxis_transform(),
@@ -792,7 +794,15 @@ def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer", prepost_time=10):
 
 
 def jet_intervals_anim_one(
-    ci, coords, t0, t1, limitedsize=True, n_processes=16, plot_type=1, jet_type="archer"
+    ci,
+    coords,
+    t0,
+    t1,
+    limitedsize=True,
+    n_processes=16,
+    plot_type=1,
+    jet_type="archer",
+    prepost_time=10,
 ):
 
     global limitedsize_g
@@ -808,10 +818,12 @@ def jet_intervals_anim_one(
             pass
 
     args_list = []
-    fnr_range = np.arange(t0, t1 + 0.1, 1, dtype=int)
+    fnr_range = np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int)
 
     for fnr in fnr_range:
-        args_list.append((ci, coords, t0, t1, fnr, limitedsize, outdir))
+        args_list.append(
+            (ci, coords, t0 - prepost_time, t1 + prepost_time, fnr, limitedsize, outdir)
+        )
 
     # Use multiprocessing Pool
 
