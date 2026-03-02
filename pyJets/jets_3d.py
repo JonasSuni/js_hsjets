@@ -708,7 +708,10 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="archer",
             )
-        rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer", prepost_time=prepost_time)
+        if only_rel_dens:
+            rel_dens_plotter(
+                ci, t0, t1, tjet, jet_type="archer", prepost_time=prepost_time
+            )
 
     for p in koller_data:
         ci, t0, t1, tjet = p
@@ -726,7 +729,10 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="koller",
             )
-        rel_dens_plotter(ci, t0, t1, tjet, jet_type="koller", prepost_time=prepost_time)
+        if only_rel_dens:
+            rel_dens_plotter(
+                ci, t0, t1, tjet, jet_type="koller", prepost_time=prepost_time
+            )
 
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
@@ -744,9 +750,10 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="archerkoller",
             )
-        rel_dens_plotter(
-            ci, t0, t1, tjet, jet_type="archerkoller", prepost_time=prepost_time
-        )
+        if only_rel_dens:
+            rel_dens_plotter(
+                ci, t0, t1, tjet, jet_type="archerkoller", prepost_time=prepost_time
+            )
 
 
 def rel_dens_plotter(ci, t0, t1, tjet, jet_type="archer", prepost_time=10):
