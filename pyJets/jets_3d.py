@@ -828,18 +828,14 @@ def jet_intervals_anim_one(
     # Use multiprocessing Pool
 
     if plot_type == 2:
-        outfilename = (
-            "/wrk-vakka/users/jesuni/jets_3D/ani_1d/FIF/{}/c{}_t{}_{}.mp4".format(
-                jet_type, ci, t0, t1
-            )
+        outfilename = wrkdir_DNR + "ani_1d/FIF/{}/c{}_t{}_{}.mp4".format(
+            jet_type, ci, t0, t1
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_timeseries_1d_vdf_one, args_list)
     elif plot_type == 1:
-        outfilename = (
-            "/wrk-vakka/users/jesuni/jets_3D/ani/FIF/{}/c{}_t{}_{}.mp4".format(
-                jet_type, ci, t0, t1
-            )
+        outfilename = wrkdir_DNR + "ani/FIF/{}/c{}_t{}_{}.mp4".format(
+            jet_type, ci, t0, t1
         )
         with Pool(processes=n_processes) as pool:
             result = pool.map(make_timeseries_global_vdf_one, args_list)
@@ -848,10 +844,8 @@ def jet_intervals_anim_one(
             wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
         )
     elif plot_type == 3:
-        outfilename = (
-            "/wrk-vakka/users/jesuni/jets_3D/ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
-                jet_type, ci, t0, t1
-            )
+        outfilename = wrkdir_DNR + "ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
+            jet_type, ci, t0, t1
         )
         with Pool(processes=n_processes) as pool:
             pool.map(make_global_vdf_one, args_list)
