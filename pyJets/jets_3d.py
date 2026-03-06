@@ -36,7 +36,7 @@ from matplotlib.animation import FuncAnimation, FFMpegFileWriter
 # mpl.rc("text", usetex=True)
 # params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
 # plt.rcParams.update(params)
-import plot
+import analysator.plot
 
 plt.rcParams.update(
     {
