@@ -81,6 +81,9 @@ wrkdir_other = os.environ["WRK"] + "/"
 
 bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
+plot_B_vdfs = False
+slicethick_g = 1
+
 
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
 
@@ -679,7 +682,13 @@ def L3_good_timeseries_global_vdfs_one(
 
 
 def jet_interval_anim_all(
-    limitedsize=False, n_processes=16, plot_type=1, only_rel_dens=False, prepost_time=10
+    limitedsize=False,
+    n_processes=16,
+    plot_type=1,
+    only_rel_dens=False,
+    prepost_time=10,
+    B_vdfs=False,
+    slicethick=1,
 ):
 
     archer_data = np.loadtxt(
@@ -693,6 +702,10 @@ def jet_interval_anim_all(
     )
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    global plot_B_vdfs, slicethick_g
+    plot_B_vdfs = B_vdfs
+    slicethick_g = slicethick
 
     for p in archer_data:
         ci, t0, t1, tjet = p
@@ -1311,7 +1324,10 @@ def make_timeseries_global_vdf_one(args):
     )
     res = None
     try:
-        generate_vdf_plots(vdf_axes, vlsvobj, ci)
+        if plot_B_vdfs:
+            generate_vdf_B_plots(vdf_axes, vlsvobj, ci)
+        else:
+            generate_vdf_plots(vdf_axes, vlsvobj, ci)
         res = density_rel_to_mb(vlsvobj, ci)
     except:
         pass
