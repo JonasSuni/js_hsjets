@@ -83,6 +83,7 @@ bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 
 plot_B_vdfs = False
 slicethick_g = 1
+calc_rel_dens_g = True
 
 
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
@@ -689,6 +690,7 @@ def jet_interval_anim_all(
     prepost_time=10,
     B_vdfs=False,
     slicethick=1,
+    calc_rel_dens=True,
 ):
 
     archer_data = np.loadtxt(
@@ -703,9 +705,10 @@ def jet_interval_anim_all(
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
-    global plot_B_vdfs, slicethick_g
+    global plot_B_vdfs, slicethick_g, calc_rel_dens_g
     plot_B_vdfs = B_vdfs
     slicethick_g = slicethick
+    calc_rel_dens_g = calc_rel_dens
 
     for p in archer_data:
         ci, t0, t1, tjet = p
@@ -1328,7 +1331,8 @@ def make_timeseries_global_vdf_one(args):
             generate_vdf_B_plots(vdf_axes, vlsvobj, ci)
         else:
             generate_vdf_plots(vdf_axes, vlsvobj, ci)
-        res = density_rel_to_mb(vlsvobj, ci)
+        if calc_rel_dens_g:
+            res = density_rel_to_mb(vlsvobj, ci)
     except:
         pass
     for linepl in axvlines:
