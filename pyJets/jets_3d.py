@@ -1244,7 +1244,7 @@ def make_global_vdf_one(args):
 
     fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
-    print("Saved animation of cellid {} at time {}".format(ci, fnr))
+    print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
 
@@ -1288,7 +1288,7 @@ def make_timeseries_1d_vdf_one(args):
 
     fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
-    print("Saved animation of cellid {} at time {}".format(ci, fnr))
+    print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
 
@@ -1336,7 +1336,7 @@ def make_timeseries_global_vdf_one(args):
 
     fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
-    print("Saved animation of cellid {} at time {}".format(ci, fnr))
+    print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
     if res is not None:
