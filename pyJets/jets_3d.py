@@ -1427,7 +1427,9 @@ def density_rel_to_mb(
     )
     vc_vals_weighted = np.sqrt(mb_vals * vc_vals)
 
-    res = np.sum(dv * dv * dv * vc_vals_weighted) / nsw
+    res = np.sum(dv * dv * dv * vc_vals_weighted) / vlsvobj.read_variable(
+        "proton/vg_rho", cellids=cellid
+    )
 
     return res
 
