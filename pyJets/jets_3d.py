@@ -859,9 +859,10 @@ def jet_intervals_anim_one(
         with Pool(processes=n_processes) as pool:
             result = pool.map(make_timeseries_global_vdf_one, args_list)
 
-        np.savetxt(
-            wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
-        )
+        if calc_rel_dens_g:
+            np.savetxt(
+                wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
+            )
     elif plot_type == 3:
         outfilename = wrkdir_DNR + "ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
             jet_type, ci, t0, t1
