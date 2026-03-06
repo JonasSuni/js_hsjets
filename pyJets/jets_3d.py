@@ -1344,6 +1344,8 @@ def make_timeseries_global_vdf_one(args):
     print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
+    vlsvobj.optimize_clear_fileindex_for_cellid()
+
     if res is not None:
         return res
     else:
