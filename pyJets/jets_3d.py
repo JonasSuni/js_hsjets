@@ -1458,6 +1458,9 @@ def vspace_smasher(
 
     # List of valid operators from which to get an index
     op_list = ["x", "y", "z"]
+    op_pairs = [[1, 2], [0, 2], [0, 1]]
+
+    bop_list = ["par", "perp1", "perp2"]
 
     # Read velocity cell keys and values from vlsv file
     velcels = vlsvobj.read_velocity_cells(cellid)
@@ -1467,6 +1470,36 @@ def vspace_smasher(
     ii_fm = np.where(vc_vals >= fmin)
     vc_vals = vc_vals[ii_fm]
     vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    if operator in op_list:
+        vc_coord_arr = vc_coords[:, op_pairs[op_list.index(operator)]]
+    elif operator in bop_list:
+        bxv = np.cross(b, v)
+        bxbxv = np.cross(b, bxv)
+        bxbxv = bxbxv / np.linalg.norm(bxbxv)
+        bxv = bxv / np.linalg.norm(bxv)
+        vc_coord_arr = np.array(
+            [np.dot(vc_coords, b), np.dot(vc_coords, bxv), np.dot(vc_coords, bxbxv)]
+        ).T
+        vc_coord_arr = vc_coord_arr[:, op_pairs[bop_list.index(operator)]]
+
+    vbins = np.sort(np.unique(vc_coords.flatten()))
+    if vmin or vmax:
+        vbins = np.arange(vmin - binw / 2, vmax + binw / 2 + binw / 4, binw)
+    else:
+        vbins = np.arange(
+            np.min(vbins) - binw / 2, np.max(vbins) + binw / 2 + binw / 4, binw
+        )
+
+    vweights = vc_vals * dv
+
+    # Integrate over the perpendicular directions
+    hist, xedges, yedges = np.histogram2d(
+        vc_coord_arr[:, 0], vc_coord_arr[:, 1], bins=[vbins, vbins], weights=vweights
+    )
+
+    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
+    return (hist, xedges / 1e3, yedges / 1e3)
 
 
 def vspace_reducer(
@@ -1523,7 +1556,7 @@ def vspace_reducer(
         vc_coord_arr = np.dot(vc_coords, bxbxv)
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
-    vbins = np.sort(np.unique(vc_coord_arr))
+    vbins = np.sort(np.unique(vc_coords.flatten()))
     if vmin or vmax:
         vbins = np.arange(vmin - binw / 2, vmax + binw / 2 + binw / 4, binw)
     else:
