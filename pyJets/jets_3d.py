@@ -1436,6 +1436,39 @@ def density_rel_to_mb(
     return res
 
 
+def vspace_smasher(
+    vlsvobj,
+    cellid,
+    operator,
+    dv=40e3,
+    vmin=None,
+    vmax=None,
+    b=None,
+    v=None,
+    binw=40e3,
+    fmin=1e-16,
+):
+    """
+    Function for reducing a 3D VDF to 2D
+    (object) vlsvobj = Analysator VLSV file object
+    (int) cellid = ID of cell whose VDF you want
+    (str) operator = "x", "y", or "z", which velocity component to retain after reduction, or "magnitude" to get the distribution of speeds (untested)
+    (float) dv = Velocity space resolution in m/s
+    """
+
+    # List of valid operators from which to get an index
+    op_list = ["x", "y", "z"]
+
+    # Read velocity cell keys and values from vlsv file
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+
 def vspace_reducer(
     vlsvobj,
     cellid,
@@ -1481,10 +1514,12 @@ def vspace_reducer(
     elif operator == "perp1":
         # print("perp")
         bxv = np.cross(b, v)
+        bxv = bxv / np.linalg.norm(bxv)
         vc_coord_arr = np.dot(vc_coords, bxv)
     elif operator == "perp2":
         bxv = np.cross(b, v)
         bxbxv = np.cross(b, bxv)
+        bxbxv = bxbxv / np.linalg.norm(bxbxv)
         vc_coord_arr = np.dot(vc_coords, bxbxv)
 
     # Create histogram bins, one for each unique coordinate of the chosen velocity component
