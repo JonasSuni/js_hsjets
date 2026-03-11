@@ -697,7 +697,7 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
     for p in archer_data:
         ci, t0, t1, tjet = p
         args_list = []
-        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
             args_list.append([ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
@@ -705,7 +705,7 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
     for p in koller_data:
         ci, t0, t1, tjet = p
         args_list = []
-        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
             args_list.append([ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
@@ -713,7 +713,7 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
         args_list = []
-        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
             args_list.append([ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
