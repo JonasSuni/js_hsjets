@@ -682,6 +682,43 @@ def L3_good_timeseries_global_vdfs_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
+def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+    )
+
+    for p in archer_data:
+        ci, t0, t1, tjet = p
+        args_list = []
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+            args_list.append([ci, fnr, fmin])
+        with Pool(processes=n_processes) as pool:
+            pool.map(vspace_extracter, args_list)
+
+    for p in koller_data:
+        ci, t0, t1, tjet = p
+        args_list = []
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+            args_list.append([ci, fnr, fmin])
+        with Pool(processes=n_processes) as pool:
+            pool.map(vspace_extracter, args_list)
+
+    for p in archerkoller_data:
+        ci, t0, t1, tjet = p
+        args_list = []
+        for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1):
+            args_list.append([ci, fnr, fmin])
+        with Pool(processes=n_processes) as pool:
+            pool.map(vspace_extracter, args_list)
+
+
 def jet_interval_anim_all(
     limitedsize=False,
     n_processes=16,
@@ -1493,13 +1530,49 @@ def vspace_smasher(
 
     vweights = vc_vals * dv
 
-    # Integrate over the perpendicular directions
+    # Integrate over the perpendicular direction
     hist, xedges, yedges = np.histogram2d(
         vc_coord_arr[:, 0], vc_coord_arr[:, 1], bins=[vbins, vbins], weights=vweights
     )
 
-    # Return the 1D VDF values in units of s/m^4 as well as the bin edges to assist in plotting
+    # Return the 2D VDF values in units of s^2/m^5 as well as the bin edges to assist in plotting
     return (hist, xedges / 1e3, yedges / 1e3)
+
+
+def vspace_extracter(args):
+
+    cellid, fnr, fmin = args
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+    outdir = wrkdir_DNR + "vdf_txts/"
+
+    try:
+        velcels = vlsvobj.read_velocity_cells(cellid)
+    except:
+        return None
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    vc_x, vc_y, vc_z = vc_coords.T
+
+    out_arr = np.array([vc_x, vc_y, vc_z, vc_vals]).T
+
+    if not os.path.exists(outdir + "c{}".format(cellid)):
+        try:
+            os.makedirs(outdir + "c{}".format(cellid))
+        except OSError:
+            pass
+
+    np.savetxt(outdir + "c{}/f{}.txt".format(cellid, fnr), out_arr)
+
+    vlsvobj.optimize_clear_fileindex_for_cellid()
 
 
 def vspace_reducer(
