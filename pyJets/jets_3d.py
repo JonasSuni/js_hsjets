@@ -1539,6 +1539,54 @@ def vspace_smasher(
     return (hist, xedges / 1e3, yedges / 1e3)
 
 
+def vspace_rotator(
+    vlsvobj,
+    cellid,
+    b=None,
+    v=None,
+    vlim=8e6,
+    dv=40e3,
+    fmin=1e-16,
+):
+    
+    binw = dv
+
+    # Read velocity cell keys and values from vlsv file
+    velcels = vlsvobj.read_velocity_cells(cellid)
+    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+    vc_vals = np.array(list(velcels.values()))
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    bxv = np.cross(b, v)
+    bxbxv = np.cross(b, bxv)
+    bxbxv = bxbxv / np.linalg.norm(bxbxv)
+    bxv = bxv / np.linalg.norm(bxv)
+    vc_coord_arr = np.array(
+        [np.dot(vc_coords, b), np.dot(vc_coords, bxv), np.dot(vc_coords, bxbxv)]
+    ).T
+
+    vbins = np.arange(-vlim - binw / 2, vlim + binw / 2 + binw / 4, binw)
+
+    hist, xedges, yedges, zedges = np.histogramdd(
+        vc_coord_arr, bins=[vbins, vbins, vbins], weights=vc_vals
+    )
+
+    xmesh, ymesh, zmesh = np.meshgrid(
+        xedges[:-1] + binw / 2, yedges[:-1] + binw / 2, zedges[:-1] + binw / 2
+    )
+
+    vc_vals = hist.flatten()
+    vc_coords = np.array([xmesh.flatten(),ymesh.flatten(),zmesh.flatten()]).T
+
+    ii_fm = np.where(vc_vals >= fmin)
+    vc_vals = vc_vals[ii_fm]
+    vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+    return (vc_coords,vc_vals)
+
 def vspace_extracter(args):
 
     cellid, fnr, fmin = args
