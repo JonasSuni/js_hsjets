@@ -84,6 +84,7 @@ bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
 plot_B_vdfs = False
 slicethick_g = 1
 calc_rel_dens_g = True
+plot_gmm = None
 
 
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
@@ -728,6 +729,7 @@ def jet_interval_anim_all(
     B_vdfs=False,
     slicethick=1,
     calc_rel_dens=True,
+    gmm=None,
 ):
 
     archer_data = np.loadtxt(
@@ -742,10 +744,11 @@ def jet_interval_anim_all(
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
-    global plot_B_vdfs, slicethick_g, calc_rel_dens_g
+    global plot_B_vdfs, slicethick_g, calc_rel_dens_g, plot_gmm
     plot_B_vdfs = B_vdfs
     slicethick_g = slicethick
     calc_rel_dens_g = calc_rel_dens
+    plot_gmm = gmm
 
     for p in archer_data:
         ci, t0, t1, tjet = p
@@ -1548,7 +1551,7 @@ def vspace_rotator(
     dv=40e3,
     fmin=1e-16,
 ):
-    
+
     binw = dv
 
     # Read velocity cell keys and values from vlsv file
@@ -1579,13 +1582,14 @@ def vspace_rotator(
     )
 
     vc_vals = hist.flatten()
-    vc_coords = np.array([xmesh.flatten(),ymesh.flatten(),zmesh.flatten()]).T
+    vc_coords = np.array([xmesh.flatten(), ymesh.flatten(), zmesh.flatten()]).T
 
     ii_fm = np.where(vc_vals >= fmin)
     vc_vals = vc_vals[ii_fm]
     vc_coords = vc_coords[ii_fm, :][0, :, :]
 
-    return (vc_coords,vc_vals)
+    return (vc_coords, vc_vals)
+
 
 def vspace_extracter(args):
 
@@ -1736,9 +1740,69 @@ def generate_1d_vdf_plots(vdf_axes, vobj, ci):
     vdf_axes[1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
 
 
+def ellipse_params(mean, cov, normal):
+    normals = ["x", "y", "z"]
+    idx = normals.index(normal)
+
+    pairs = [[1, 2], [0, 2], [0, 1]]
+
+    mean_proj = mean[pairs[idx]]
+    cov_proj = cov[pairs[idx], :][:, pairs[idx]]
+
+    vals, vecs = np.linalg.eigh(cov_proj)
+    order = np.argsort(vals)[::-1]
+    major_val, minor_val = vals[order]
+    major_vec = vecs[:, order[0]]
+
+    width, height = 2 * np.sqrt(major_val), 2 * np.sqrt(minor_val)
+    angle = np.degrees(np.arctan2(major_vec[1], major_vec[0]))
+
+    return (mean_proj, width, height, angle)
+
+    # ellipse = Ellipse( mean, width, height, angle=angle,
+    #                 edgecolor='black', facecolor='none', lw=2)
+
+    # ax.add_patch(ellipse)
+    # ax.plot(mean[0], mean[1], 'bo')
+
+
+def plot_ellipses(means, covs, weights, ax, normal):
+
+    edgecolors = CB_color_cycle
+
+    niter = plot_gmm
+
+    for idx in range(niter):
+        mean, width, height, angle = ellipse_params(means[idx], covs[idx], normal)
+        ellipse = mpatches.Ellipse(
+            mean,
+            width,
+            height,
+            angle=angle,
+            edgecolor=edgecolors[idx],
+            facecolor="none",
+            lw=2,
+            alpha=weights[idx],
+        )
+        ax.add_patch(ellipse)
+        ax.plot(mean[0], mean[1], "o", color=edgecolors[idx])
+
+
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
     boxwidth = 3000e3
+    fnr = int(vobj.read_parameter("time"))
+    if plot_gmm:
+        gmm_fit = np.loadtxt(
+            wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(plot_gmm, int(ci), fnr)
+        )
+        weights = []
+        means = []
+        covs = []
+        for idx in range(plot_gmm):
+            weights.append(gmm_fit[idx, 0])
+            means.append(gmm_fit[idx, 1:4])
+            covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)))
 
     pt.plot.plot_vdf(
         axes=vdf_axes[0],
@@ -1792,6 +1856,10 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         cb_horizontal=True,
         title="",
     )
+    if plot_gmm:
+        plot_ellipses(means, covs, weights, vdf_axes[0], "z")
+        plot_ellipses(means, covs, weights, vdf_axes[1], "y")
+        plot_ellipses(means, covs, weights, vdf_axes[2], "x")
 
 
 def generate_vdf_B_plots(vdf_axes, vobj, ci):
