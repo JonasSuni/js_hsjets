@@ -1808,8 +1808,8 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
             covs = []
             for idx in range(plot_gmm):
                 weights.append(gmm_fit[idx, 0])
-                means.append(gmm_fit[idx, 1:4])
-                covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)))
+                means.append(gmm_fit[idx, 1:4]/1e3)
+                covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3))/1e3)
         except:
             gmm_success = False
 
