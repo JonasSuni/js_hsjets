@@ -1809,6 +1809,10 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
                 weights.append(gmm_fit[idx, 0])
                 means.append(gmm_fit[idx, 1:4] / 1e3)
                 covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)) / 1e6)
+            sorter_func = lambda x: np.trace(covs[weights.index(x)])
+            weights_sorted = sorted(weights, key=sorter_func)
+            means_sorted = sorted(means, key=sorter_func)
+            covs_sorted = sorted(covs, key=sorter_func)
         except:
             gmm_success = False
 
@@ -1865,9 +1869,9 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         title="",
     )
     if plot_gmm and gmm_success:
-        plot_ellipses(means, covs, weights, vdf_axes[0], "z")
-        plot_ellipses(means, covs, weights, vdf_axes[1], "y")
-        plot_ellipses(means, covs, weights, vdf_axes[2], "x")
+        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[0], "z")
+        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[1], "y")
+        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[2], "x")
 
 
 def generate_vdf_B_plots(vdf_axes, vobj, ci):
