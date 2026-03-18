@@ -750,6 +750,8 @@ def jet_interval_anim_all(
     calc_rel_dens_g = calc_rel_dens
     plot_gmm = gmm
 
+    print("Plot GMM is {}".format(plot_gmm))
+
     for p in archer_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
@@ -1791,6 +1793,8 @@ def plot_ellipses(means, covs, weights, ax, normal):
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
     gmm_success = True
+
+    print("Plot GMM is {}".format(plot_gmm))
 
     boxwidth = 3000e3
     fnr = int(vobj.read_parameter("time"))
