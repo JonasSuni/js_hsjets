@@ -1790,19 +1790,24 @@ def plot_ellipses(means, covs, weights, ax, normal):
 
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
+    gmm_success = True
+
     boxwidth = 3000e3
     fnr = int(vobj.read_parameter("time"))
     if plot_gmm:
-        gmm_fit = np.loadtxt(
-            wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(plot_gmm, int(ci), fnr)
-        )
-        weights = []
-        means = []
-        covs = []
-        for idx in range(plot_gmm):
-            weights.append(gmm_fit[idx, 0])
-            means.append(gmm_fit[idx, 1:4])
-            covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)))
+        try:
+            gmm_fit = np.loadtxt(
+                wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(plot_gmm, int(ci), fnr)
+            )
+            weights = []
+            means = []
+            covs = []
+            for idx in range(plot_gmm):
+                weights.append(gmm_fit[idx, 0])
+                means.append(gmm_fit[idx, 1:4])
+                covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)))
+        except:
+            gmm_success = False
 
     pt.plot.plot_vdf(
         axes=vdf_axes[0],
@@ -1856,7 +1861,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         cb_horizontal=True,
         title="",
     )
-    if plot_gmm:
+    if plot_gmm and gmm_success:
         plot_ellipses(means, covs, weights, vdf_axes[0], "z")
         plot_ellipses(means, covs, weights, vdf_axes[1], "y")
         plot_ellipses(means, covs, weights, vdf_axes[2], "x")
