@@ -1805,14 +1805,15 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
             weights = []
             means = []
             covs = []
+            traces = []
             for idx in range(plot_gmm):
                 weights.append(gmm_fit[idx, 0])
                 means.append(gmm_fit[idx, 1:4] / 1e3)
                 covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)) / 1e6)
-            sorter_func = lambda x: np.trace(covs[weights.index(x)])
-            weights_sorted = sorted(weights, key=sorter_func)
-            means_sorted = sorted(means, key=sorter_func)
-            covs_sorted = sorted(covs, key=sorter_func)
+                traces.append(np.trace(gmm_fit[idx, 4:], (3, 3)))
+            weights_sorted = np.array(weights)[np.argsort(traces)]
+            means_sorted = np.array(means)[np.argsort(traces), :]
+            covs_sorted = np.array(covs)[np.argsort(traces), :, :]
         except:
             gmm_success = False
 
