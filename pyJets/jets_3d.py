@@ -1784,7 +1784,6 @@ def plot_ellipses(means, covs, weights, ax, normal):
             edgecolor=edgecolors[idx],
             facecolor="none",
             lw=2,
-            alpha=weights[idx],
         )
         ax.add_patch(ellipse)
         ax.plot(mean[0], mean[1], "o", color=edgecolors[idx])
