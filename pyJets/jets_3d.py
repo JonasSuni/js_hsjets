@@ -1782,7 +1782,7 @@ def plot_ellipses(means, covs, weights, ax, normal):
         "#984ea3",
         "#dede00",
     ]
-    linestyles = ["solid","dashed","dotted","dashdot"]
+    linestyles = ["solid", "dashed", "dotted", "dashdot"]
 
     niter = plot_gmm
 
@@ -1821,7 +1821,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
             for idx in range(plot_gmm):
                 weights.append(gmm_fit[idx, 0])
                 means.append(gmm_fit[idx, 1:4] / 1e3)
-                covs.append(np.reshape(gmm_fit[idx, 4:], (3, 3)) / 1e6)
+                covs.append(np.reshape(gmm_fit[idx, 4:13], (3, 3)) / 1e6)
                 traces.append(np.trace(np.reshape(gmm_fit[idx, 4:13], (3, 3))))
             weights_sorted = np.array(weights)[np.argsort(traces)]
             means_sorted = np.array(means)[np.argsort(traces), :]
