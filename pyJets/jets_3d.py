@@ -79,7 +79,7 @@ wrkdir_NEW = "/turso/home/jesuni/wrk/jets_3D/"
 wrkdir_DNR = wrkdir_NEW
 wrkdir_other = os.environ["WRK"] + "/"
 
-bulkpath_FIF = "/wrk-vakka/group/spacephysics/vlasiator/3D/FIF/bulk1/"
+bulkpath_FIF = "/turso/group/spacephysics/vlasiator/data/L0/3D/FIF/bulk1/"
 
 plot_B_vdfs = False
 slicethick_g = 1
