@@ -1823,9 +1823,12 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
                 means.append(gmm_fit[idx, 1:4] / 1e3)
                 covs.append(np.reshape(gmm_fit[idx, 4:13], (3, 3)) / 1e6)
                 traces.append(np.trace(np.reshape(gmm_fit[idx, 4:13], (3, 3))))
-            weights_sorted = np.array(weights)[np.argsort(traces)]
-            means_sorted = np.array(means)[np.argsort(traces), :]
-            covs_sorted = np.array(covs)[np.argsort(traces), :, :]
+            # weights_sorted = np.array(weights)[np.argsort(traces)]
+            # means_sorted = np.array(means)[np.argsort(traces), :]
+            # covs_sorted = np.array(covs)[np.argsort(traces), :, :]
+            weights_sorted = weights
+            means_sorted = means
+            covs_sorted = covs
         except:
             gmm_success = False
 
