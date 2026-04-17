@@ -611,7 +611,7 @@ def L3_good_timeseries_global_vdfs_one(
     except:
         print("Index out of range, exiting gracefully!")
 
-    outdir = "/tmp/FIF/{}".format(idx)
+    outdir = "/tmp/FIF/{}/".format(idx)
 
     if not os.path.exists(outdir):
         try:
@@ -718,6 +718,74 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
             args_list.append([ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
+
+
+def create_dir_if_not_exist(outdir):
+
+    if not os.path.exists(outdir):
+        try:
+            os.makedirs(outdir)
+            print("Created directory {}".format(outdir))
+        except OSError:
+            print("Directory {} already exists".format(outdir))
+            pass
+
+
+def jet_interval_snap_all(
+    limitedsize=False,
+    B_vdfs=False,
+    slicethick=1,
+    calc_rel_dens=True,
+    gmm=None,
+):
+
+    global limitedsize_g
+
+    limitedsize_g = limitedsize
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+    )
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/archer/")
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/koller/")
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/archerkoller/")
+
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    global plot_B_vdfs, slicethick_g, calc_rel_dens_g, plot_gmm
+    plot_B_vdfs = B_vdfs
+    slicethick_g = slicethick
+    calc_rel_dens_g = calc_rel_dens
+    plot_gmm = gmm
+
+    print("Plot GMM is {}".format(plot_gmm))
+
+    for p in archer_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/jet_gmm/archer/{}_{}_{}_".format(ci, t0, t1)
+        args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
+        make_timeseries_global_vdf_one(args)
+
+    for p in koller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/jet_gmm/koller/{}_{}_{}_".format(ci, t0, t1)
+        args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
+        make_timeseries_global_vdf_one(args)
+
+    for p in archerkoller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/jet_gmm/archerkoller/{}_{}_{}_".format(ci, t0, t1)
+        args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
+        make_timeseries_global_vdf_one(args)
 
 
 def jet_interval_anim_all(
@@ -874,7 +942,7 @@ def jet_intervals_anim_one(
 
     limitedsize_g = limitedsize
 
-    outdir = "/tmp/FIF/{}".format(ci)
+    outdir = "/tmp/FIF/{}/".format(ci)
 
     if not os.path.exists(outdir):
         try:
@@ -1343,7 +1411,7 @@ def make_timeseries_1d_vdf_one(args):
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
-    fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
     print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
@@ -1392,7 +1460,7 @@ def make_timeseries_global_vdf_one(args):
     for linepl in axvlines:
         linepl.set_xdata([fnr, fnr])
 
-    fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
     print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
@@ -1435,7 +1503,7 @@ def make_timeseries_global_vdf_anim(ci, coords, t0, t1, outdir=""):
 
     for fnr in np.arange(t0, t1 + 0.1, 1):
         ts_glob_vdf_update(fnr)
-        fig.savefig(outdir + "/{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+        fig.savefig(outdir + "{}.png".format(int(fnr)), dpi=300, bbox_inches="tight")
 
     print("Saved animation of cellid {} from t {} to {}".format(ci, t0, t1))
     plt.close(fig)
