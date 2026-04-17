@@ -768,6 +768,7 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="archer",
                 prepost_time=prepost_time,
+                tjet=int(tjet),
             )
         if only_rel_dens:
             rel_dens_plotter(
@@ -790,6 +791,7 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="koller",
                 prepost_time=prepost_time,
+                tjet=int(tjet),
             )
         if only_rel_dens:
             rel_dens_plotter(
@@ -812,6 +814,7 @@ def jet_interval_anim_all(
                 plot_type=plot_type,
                 jet_type="archerkoller",
                 prepost_time=prepost_time,
+                tjet=int(tjet),
             )
         if only_rel_dens:
             rel_dens_plotter(
@@ -864,6 +867,7 @@ def jet_intervals_anim_one(
     plot_type=1,
     jet_type="archer",
     prepost_time=10,
+    tjet=None,
 ):
 
     global limitedsize_g
@@ -904,6 +908,13 @@ def jet_intervals_anim_one(
         if calc_rel_dens_g:
             np.savetxt(
                 wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
+            )
+        if tjet:
+            subprocess.run(
+                "cp {}/{}.png /turso/home/jesuni/wrk/jets_3D/Figs/jet_gmm/{}/".format(
+                    outdir, tjet, jet_type
+                ),
+                shell=True,
             )
     elif plot_type == 3:
         outfilename = wrkdir_DNR + "ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
