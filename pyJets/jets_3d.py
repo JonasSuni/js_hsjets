@@ -977,13 +977,6 @@ def jet_intervals_anim_one(
             np.savetxt(
                 wrkdir_DNR + "txts/rel_dens/c{}_t{}_{}.txt".format(ci, t0, t1), result
             )
-        if tjet:
-            subprocess.run(
-                "cp {}/{}.png /turso/home/jesuni/wrk/jets_3D/Figs/jet_gmm/{}/".format(
-                    outdir, tjet, jet_type
-                ),
-                shell=True,
-            )
     elif plot_type == 3:
         outfilename = wrkdir_DNR + "ani_vdf/FIF/{}/c{}_t{}_{}.mp4".format(
             jet_type, ci, t0, t1
