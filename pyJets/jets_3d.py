@@ -2536,10 +2536,39 @@ def make_shell_anim(n_processes=16, shellre=13.5):
         "rm /wrk-vakka/users/jesuni/jets_3D/shells/{}/* -f".format(shellre), shell=True
     )
 
+def spherical_to_cartesian(r,theta,phi):
+
+    x = r*np.cos(theta)*np.cos(phi)
+    y = r*np.cos(theta)*np.sin(phi)
+    z = r*np.sin(theta)
+
+    return (x,y,z)
+
+def find_bs_mp(r0,theta,phi,dr):
+
+    r = r0
 
 def make_bs_mp_map_one(args):
 
     fnr = args
+
+    outdir = wrkdir_DNR + "bs_mp"
+    create_dir_if_not_exist(outdir)
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+
+    phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+    theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+    thetamesh,phimesh = np.meshgrid(theta_range,phi_range)
+    thetaflat = thetamesh.flatten()
+    phiflat = phimesh.flatten()
+    r0 = 6 * r_e
+    tol = 1e-3
+    dr = 1000e3
+
+    
 
 
 def make_shell_map_one(args):
