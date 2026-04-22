@@ -2546,12 +2546,13 @@ def spherical_to_cartesian(r, theta, phi):
     return (x, y, z)
 
 
-def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
+def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
 
     coord = np.array(spherical_to_cartesian(r0, theta, phi))
     u = coord / np.linalg.norm(coord)
 
     rho_thresh = 2e6
+    iter = 0
 
     rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
     diff = np.abs(rho - rho_thresh)
@@ -2564,15 +2565,20 @@ def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
         if diff > old_diff:
             dr = -dr / 2.0
 
+        iter += 1
+        if iter > maxiter:
+            break
+
     return coord
 
 
-def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
+def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
 
     coord = np.array(spherical_to_cartesian(r0, theta, phi))
     u = coord / np.linalg.norm(coord)
 
     bstar_thresh = 0.3
+    iter = 0
 
     bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
     diff = np.abs(bstar - bstar_thresh)
@@ -2584,6 +2590,10 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
         diff = np.abs(bstar - bstar_thresh)
         if diff > old_diff:
             dr = -dr / 2.0
+
+        iter += 1
+        if iter > maxiter:
+            break
 
     return coord
 
