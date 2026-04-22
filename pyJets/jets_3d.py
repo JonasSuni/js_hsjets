@@ -85,6 +85,7 @@ plot_B_vdfs = False
 slicethick_g = 1
 calc_rel_dens_g = True
 plot_gmm = None
+scale_g = 1.3
 
 
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
@@ -737,11 +738,13 @@ def jet_interval_snap_all(
     slicethick=1,
     calc_rel_dens=True,
     gmm=None,
+    scale=1.3,
 ):
 
-    global limitedsize_g
+    global limitedsize_g, scale_g
 
     limitedsize_g = limitedsize
+    scale_g = scale
 
     archer_data = np.loadtxt(
         wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
@@ -1914,7 +1917,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -1931,7 +1934,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -1948,7 +1951,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -1976,7 +1979,7 @@ def generate_vdf_B_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -1993,7 +1996,7 @@ def generate_vdf_B_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -2010,7 +2013,7 @@ def generate_vdf_B_plots(vdf_axes, vobj, ci):
         slicethick=slicethick_g,
         box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
         setThreshold=1e-16,
-        scale=1.3,
+        scale=scale_g,
         fmin=1e-10,
         fmax=1e-4,
         contours=7,
@@ -2054,7 +2057,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         boxre=[x0 - boxwidth, x0 + boxwidth, y0 - boxwidth, y0 + boxwidth],
         nocb=True,
         colormap="batlow",
-        scale=1.3,
+        scale=scale_g,
         tickinterval=1.0,
         normal="z",
         cutpointre=z0,
@@ -2080,7 +2083,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         boxre=[x0 - boxwidth, x0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
         nocb=True,
         colormap="batlow",
-        scale=1.3,
+        scale=scale_g,
         tickinterval=1.0,
         normal="y",
         cutpointre=y0,
@@ -2107,7 +2110,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cbaxes=cmap_axes[3],
         cb_horizontal=True,
         colormap="batlow",
-        scale=1.3,
+        scale=scale_g,
         tickinterval=1.0,
         normal="x",
         cutpointre=x0,
@@ -2197,7 +2200,9 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
     ts_axes[0].set_title(
         "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}, cell: {}".format(
             "FIF", coords[0], coords[1], coords[2], int(ci)
-        )
+        ),
+        fontsize=20,
+        pad=10,
     )
     ts_axes[-1].set_xlabel("t [s]")
     for idx in range(len(plot_labels)):
@@ -2237,7 +2242,9 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             ncols = 1
             if idx == 5:
                 ncols = 1
-            ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
+            ax.legend(
+                loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols, fontsize=16
+            )
 
     pdynx_peaks = argrelextrema(pdynx, np.greater)[0]
     pdyn_peaks = argrelextrema(ts_data[5, :], np.greater)[0]
@@ -2274,6 +2281,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             transform=ax.get_xaxis_transform(),
             linewidth=0,
         )
+        ax.tick_params(labelsize=16)
         [ax.axvline(x, color="red", linestyle="dotted") for x in pdyn_peak_times]
         [ax.axvline(x, color="green", linestyle="dotted") for x in pdynx_peak_times]
 
@@ -2527,6 +2535,11 @@ def make_shell_anim(n_processes=16, shellre=13.5):
     subprocess.run(
         "rm /wrk-vakka/users/jesuni/jets_3D/shells/{}/* -f".format(shellre), shell=True
     )
+
+
+def make_bs_mp_map_one(args):
+
+    fnr = args
 
 
 def make_shell_map_one(args):
