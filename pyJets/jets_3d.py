@@ -2204,7 +2204,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         fontsize=20,
         pad=10,
     )
-    ts_axes[-1].set_xlabel("t [s]")
+    ts_axes[-1].set_xlabel("t [s]", fontsize=16, labelpad=10)
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
         ax.plot(
@@ -2260,7 +2260,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 
     for idx, ax in enumerate(ts_axes):
         ax.grid()
-        ax.set_ylabel(ylabels[idx])
+        ax.set_ylabel(ylabels[idx], fontsize=16, labelpad=10)
         ax.fill_between(
             t_arr,
             0,
