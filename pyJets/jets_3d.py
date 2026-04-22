@@ -2664,7 +2664,7 @@ def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
 
     with Pool(processes=n_processes) as pool:
-        pool.map(make_shell_map_one, fnr_arr)
+        pool.map(make_shell_map_one, fnr_arr.tolist())
 
 
 def make_shell_map_one(args):
