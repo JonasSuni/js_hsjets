@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from pyJets.jet_aux import CB_color_cycle
 
-from scipy.linalg import eig
+from scipy.linalg import eig, lstsq
 from scipy.fft import rfft2
 from scipy.signal import butter, sosfilt, argrelextrema
 from scipy.ndimage import uniform_filter1d
@@ -2536,17 +2536,95 @@ def make_shell_anim(n_processes=16, shellre=13.5):
         "rm /wrk-vakka/users/jesuni/jets_3D/shells/{}/* -f".format(shellre), shell=True
     )
 
-def spherical_to_cartesian(r,theta,phi):
 
-    x = r*np.cos(theta)*np.cos(phi)
-    y = r*np.cos(theta)*np.sin(phi)
-    z = r*np.sin(theta)
+def spherical_to_cartesian(r, theta, phi):
 
-    return (x,y,z)
+    x = r * np.cos(theta) * np.cos(phi)
+    y = r * np.cos(theta) * np.sin(phi)
+    z = r * np.sin(theta)
 
-def find_bs_mp(r0,theta,phi,dr):
+    return (x, y, z)
 
-    r = r0
+
+def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
+
+    coord = np.array(spherical_to_cartesian(r0, theta, phi))
+    u = coord / np.linalg.norm(coord)
+
+    rho_thresh = 2e6
+
+    rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
+    diff = np.abs(rho - rho_thresh)
+    old_diff = np.abs(rho - rho_thresh)
+
+    while np.abs(diff) / rho_thresh >= tol:
+        coord = coord + u * dr
+        rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
+        diff = np.abs(rho - rho_thresh)
+        if diff > old_diff:
+            dr = -dr / 2.0
+
+    return coord
+
+
+def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3):
+
+    coord = np.array(spherical_to_cartesian(r0, theta, phi))
+    u = coord / np.linalg.norm(coord)
+
+    bstar_thresh = 0.3
+
+    bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
+    diff = np.abs(bstar - bstar_thresh)
+    old_diff = np.abs(bstar - bstar_thresh)
+
+    while np.abs(diff) / bstar_thresh >= tol:
+        coord = coord + u * dr
+        bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
+        diff = np.abs(bstar - bstar_thresh)
+        if diff > old_diff:
+            dr = -dr / 2.0
+
+    return coord
+
+
+def polyfit_2d(coord_arr):
+
+    x, y, z = coord_arr.T
+
+    mix_arr = np.array(
+        [
+            1.0 + 0 * y,
+            y,
+            z,
+            y**2,
+            z * y**2,
+            z**2 * y**2,
+            z**2 * y,
+            z**2,
+            z * y,
+        ]
+    ).T
+
+    coeff, r, rank, s = lstsq(mix_arr, x)
+
+    return coeff
+
+
+def polyval_2d(coeff, y, z):
+
+    return (
+        coeff[0]
+        + coeff[1] * y
+        + coeff[2] * z
+        + coeff[3] * y**2
+        + coeff[4] * z * y**2
+        + coeff[5] * z**2 * y**2
+        + coeff[6] * z**2 * y
+        + coeff[7] * z**2
+        + coeff[8] * z * y
+    )
+
 
 def make_bs_mp_map_one(args):
 
@@ -2561,14 +2639,32 @@ def make_bs_mp_map_one(args):
 
     phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
     theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-    thetamesh,phimesh = np.meshgrid(theta_range,phi_range)
+    thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
     thetaflat = thetamesh.flatten()
     phiflat = phimesh.flatten()
-    r0 = 6 * r_e
-    tol = 1e-3
-    dr = 1000e3
 
-    
+    bs_xyz = np.zeros((thetaflat.size, 3), dtype=float)
+    mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
+
+    for idx in range(thetaflat.size):
+        theta = thetaflat[idx]
+        phi = phiflat[idx]
+        bs_xyz[idx] = find_bs(vlsvobj, 12 * r_e, theta, phi) / r_e
+        mp_xyz[idx] = find_mp(vlsvobj, 6 * r_e, theta, phi) / r_e
+
+    bs_coeff = polyfit_2d(bs_xyz)
+    mp_coeff = polyfit_2d(mp_xyz)
+
+    np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
+    np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
+
+
+def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
+
+    fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
+
+    with Pool(processes=n_processes) as pool:
+        pool.map(make_shell_map_one, fnr_arr)
 
 
 def make_shell_map_one(args):
