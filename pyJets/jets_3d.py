@@ -2660,7 +2660,7 @@ def make_bs_mp_map_one(args):
         theta = thetaflat[idx]
         phi = phiflat[idx]
         bs_xyz[idx] = find_bs(vlsvobj, 12 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
-        mp_xyz[idx] = find_mp(vlsvobj, 6 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
+        mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
     mp_coeff = polyfit_2d(mp_xyz)
