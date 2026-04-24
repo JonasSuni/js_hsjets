@@ -2562,7 +2562,7 @@ def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
         coord = coord + u * dr
         rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
         diff = np.abs(rho - rho_thresh)
-        print(diff, old_diff)
+        print("BS", diff, old_diff)
         if diff > old_diff:
             dr = -dr / 2.0
 
@@ -2589,7 +2589,7 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
         coord = coord + u * dr
         bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
         diff = np.abs(bstar - bstar_thresh)
-        print(diff, old_diff)
+        print("MP", diff, old_diff)
         if diff > old_diff:
             dr = -dr / 2.0
 
