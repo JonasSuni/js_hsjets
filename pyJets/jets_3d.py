@@ -2648,7 +2648,7 @@ def make_bs_mp_map_one(args):
     )
 
     phi_range = np.linspace(-np.deg2rad(20), np.deg2rad(20), 10)
-    theta_range = np.linspace(-np.deg2rad(20), np.deg2rad(20), 10)
+    theta_range = np.linspace(-np.deg2rad(10), np.deg2rad(10), 10)
     thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
     thetaflat = thetamesh.flatten()
     phiflat = phimesh.flatten()
