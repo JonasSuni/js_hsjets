@@ -2584,7 +2584,7 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
     diff = np.abs(bstar - bstar_thresh)
     old_diff = np.abs(bstar - bstar_thresh)
 
-    while np.abs(diff) / bstar_thresh >= tol:
+    while np.abs(diff) >= tol:
         coord = coord + u * dr
         bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
         diff = np.abs(bstar - bstar_thresh)
@@ -2647,8 +2647,8 @@ def make_bs_mp_map_one(args):
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
 
-    phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-    theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+    phi_range = np.linspace(-np.deg2rad(20), np.deg2rad(20), 10)
+    theta_range = np.linspace(-np.deg2rad(20), np.deg2rad(20), 10)
     thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
     thetaflat = thetamesh.flatten()
     phiflat = phimesh.flatten()
@@ -2659,8 +2659,8 @@ def make_bs_mp_map_one(args):
     for idx in range(thetaflat.size):
         theta = thetaflat[idx]
         phi = phiflat[idx]
-        bs_xyz[idx] = find_bs(vlsvobj, 12 * r_e, theta, phi) / r_e
-        mp_xyz[idx] = find_mp(vlsvobj, 6 * r_e, theta, phi) / r_e
+        bs_xyz[idx] = find_bs(vlsvobj, 12 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
+        mp_xyz[idx] = find_mp(vlsvobj, 6 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
     mp_coeff = polyfit_2d(mp_xyz)
