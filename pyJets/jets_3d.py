@@ -2562,7 +2562,7 @@ def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
         coord = coord + u * dr
         rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
         diff = np.abs(rho - rho_thresh)
-        print("BS", diff, old_diff)
+        # print("BS", diff, old_diff)
         if diff > old_diff:
             dr = -dr / 2.0
 
@@ -2589,7 +2589,7 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
         coord = coord + u * dr
         bstar = vlsvobj.read_interpolated_variable("proton/vg_beta_star", coord)
         diff = np.abs(bstar - bstar_thresh)
-        print("MP", diff, old_diff)
+        # print("MP", diff, old_diff)
         if diff > old_diff:
             dr = -dr / 2.0
 
@@ -2661,8 +2661,8 @@ def make_bs_mp_map_one(args):
     for idx in range(thetaflat.size):
         theta = thetaflat[idx]
         phi = phiflat[idx]
-        bs_xyz[idx] = find_bs(vlsvobj, 12 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
-        mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=500e3, tol=0.01) / r_e
+        bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+        # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
     mp_coeff = polyfit_2d(mp_xyz)
