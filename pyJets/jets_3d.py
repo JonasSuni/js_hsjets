@@ -2649,14 +2649,14 @@ def make_bs_mp_map_one(args):
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
 
-    phi_range = np.linspace(-np.deg2rad(20), np.deg2rad(20), 10)
-    theta_range = np.linspace(-np.deg2rad(10), np.deg2rad(10), 10)
+    phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+    theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
     thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
     thetaflat = thetamesh.flatten()
     phiflat = phimesh.flatten()
 
     bs_xyz = np.zeros((thetaflat.size, 3), dtype=float)
-    mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
+    # mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
 
     for idx in range(thetaflat.size):
         theta = thetaflat[idx]
@@ -2665,10 +2665,10 @@ def make_bs_mp_map_one(args):
         # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
-    mp_coeff = polyfit_2d(mp_xyz)
+    # mp_coeff = polyfit_2d(mp_xyz)
 
     np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
-    np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
+    # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
 def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
