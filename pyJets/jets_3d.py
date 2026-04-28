@@ -2671,6 +2671,7 @@ def make_bs_mp_map_one(args):
 
     outdir = wrkdir_DNR + "bs_mp"
     create_dir_if_not_exist(outdir)
+    create_dir_if_not_exist(wrkdir_DNR + "raw_bs_coords")
 
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
@@ -2707,6 +2708,7 @@ def make_bs_mp_map_one(args):
     # mp_coeff = polyfit_2d(mp_xyz)
 
     np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
+    np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
     # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
