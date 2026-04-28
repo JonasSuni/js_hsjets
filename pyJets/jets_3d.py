@@ -2682,6 +2682,33 @@ def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
         pool.map(make_bs_mp_map_one, args_list)
 
 
+def plot_bs_map_all():
+
+    fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+    y_arr = np.linspace(-20, 20, 100)
+    z_arr = np.linspace(-20, 20, 100)
+
+    outdir = wrkdir_DNR + "Figs/bs_mp"
+    create_dir_if_not_exist(outdir)
+
+    for fnr in fnr_arr:
+        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
+        x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
+        fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
+        ax_list[0].plot(x_of_y, y_arr)
+        ax_list[1].plot(x_of_z, z_arr)
+        for ax in ax_list:
+            ax.grid()
+            ax.set_xlabel("X")
+            ax.set_xlim(0, 20)
+        ax_list[0].set_ylabel("Y")
+        ax_list[1].set_ylabel("Z")
+
+        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        plt.close(fig)
+
+
 def make_shell_map_one(args):
 
     fnr, shellre = args
