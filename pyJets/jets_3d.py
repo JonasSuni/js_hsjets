@@ -2573,6 +2573,33 @@ def find_bs(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
     return coord
 
 
+def find_bs_cart(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
+
+    coord = np.array([x0, y, z])
+
+    rho_thresh = 2e6
+    iter = 0
+
+    rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
+
+    v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
+    dt = dr / np.linalg.norm(v)
+
+    while rho < rho_thresh:
+        coord = coord + v * dt
+        rho = vlsvobj.read_interpolated_variable("proton/vg_rho", coord)
+
+        v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
+        dt = dr / np.linalg.norm(v)
+
+        iter += 1
+        if iter > maxiter:
+            print("Flowtracing reached maximum iterations, returning nan")
+            return np.array([np.nan, np.nan, np.nan])
+
+    return coord
+
+
 def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
 
     coord = np.array(spherical_to_cartesian(r0, theta, phi))
@@ -2655,13 +2682,25 @@ def make_bs_mp_map_one(args):
     thetaflat = thetamesh.flatten()
     phiflat = phimesh.flatten()
 
-    bs_xyz = np.zeros((thetaflat.size, 3), dtype=float)
+    yarr = np.linspace(-10 * r_e, 10 * r_e, 11)
+    zarr = np.linspace(-10 * r_e, 10 * r_e, 11)
+
+    ymesh, zmesh = np.meshgrid(yarr, zarr)
+    yflat = ymesh.flatten()
+    zflat = zmesh.flatten()
+
+    bs_xyz = np.zeros((yflat.size, 3), dtype=float)
     # mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
 
-    for idx in range(thetaflat.size):
-        theta = thetaflat[idx]
-        phi = phiflat[idx]
-        bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+    for idx in range(yflat.size):
+        # theta = thetaflat[idx]
+        # phi = phiflat[idx]
+        y = yflat[idx]
+        z = zflat[idx]
+        # bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+        bs_xyz[idx] = (
+            find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
+        )
         # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
