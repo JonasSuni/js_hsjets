@@ -2667,57 +2667,61 @@ def polyval_2d(coeff, y, z):
 
 def make_bs_mp_map_one(args):
 
-    fnr, idx = args
+    fnr, coords_exist = args
 
     outdir = wrkdir_DNR + "bs_mp"
     create_dir_if_not_exist(outdir)
     create_dir_if_not_exist(wrkdir_DNR + "raw_bs_coords")
 
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
-    )
-
-    phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-    theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-    thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
-    thetaflat = thetamesh.flatten()
-    phiflat = phimesh.flatten()
-
-    yarr = np.linspace(-10 * r_e, 10 * r_e, 11)
-    zarr = np.linspace(-10 * r_e, 10 * r_e, 11)
-
-    ymesh, zmesh = np.meshgrid(yarr, zarr)
-    yflat = ymesh.flatten()
-    zflat = zmesh.flatten()
-
-    bs_xyz = np.zeros((yflat.size, 3), dtype=float)
-    # mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
-
-    for idx in range(yflat.size):
-        # theta = thetaflat[idx]
-        # phi = phiflat[idx]
-        y = yflat[idx]
-        z = zflat[idx]
-        # bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
-        bs_xyz[idx] = (
-            find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
+    if coords_exist:
+        bs_xyz = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)))
+    else:
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
         )
-        # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+
+        phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+        theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
+        thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
+        thetaflat = thetamesh.flatten()
+        phiflat = phimesh.flatten()
+
+        yarr = np.linspace(-10 * r_e, 10 * r_e, 11)
+        zarr = np.linspace(-10 * r_e, 10 * r_e, 11)
+
+        ymesh, zmesh = np.meshgrid(yarr, zarr)
+        yflat = ymesh.flatten()
+        zflat = zmesh.flatten()
+
+        bs_xyz = np.zeros((yflat.size, 3), dtype=float)
+        # mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
+
+        for idx in range(yflat.size):
+            # theta = thetaflat[idx]
+            # phi = phiflat[idx]
+            y = yflat[idx]
+            z = zflat[idx]
+            # bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+            bs_xyz[idx] = (
+                find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
+            )
+            # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
     # mp_coeff = polyfit_2d(mp_xyz)
 
     np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
-    np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
+    if not coords_exist:
+        np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
     # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
-def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
+def make_bs_mp_map_all(fnr0, fnr1, n_processes=16, coords_exist=False):
 
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
     args_list = []
     for idx in range(fnr_arr.size):
-        args_list.append([fnr_arr[idx], idx])
+        args_list.append([fnr_arr[idx], coords_exist])
 
     with Pool(processes=n_processes) as pool:
         pool.map(make_bs_mp_map_one, args_list)
