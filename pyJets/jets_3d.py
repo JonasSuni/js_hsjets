@@ -2726,8 +2726,8 @@ def make_bs_mp_map_all(fnr0, fnr1, n_processes=16):
 def plot_bs_map_all():
 
     fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
-    y_arr = np.linspace(-20, 20, 100)
-    z_arr = np.linspace(-20, 20, 100)
+    y_arr = np.linspace(-20, 20, 101)
+    z_arr = np.linspace(-20, 20, 101)
 
     outdir = wrkdir_DNR + "Figs/bs_mp"
     create_dir_if_not_exist(outdir)
