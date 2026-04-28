@@ -2742,7 +2742,7 @@ def plot_bs_map_all():
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
-            ax.set_xlim(0, 20)
+            ax.set_xlim(-10, 30)
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
