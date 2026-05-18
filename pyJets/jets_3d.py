@@ -2044,6 +2044,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     boxwidth = 4
     fsaved = "yellow"
 
+    fnr = int(vobj.read_parameter("time"))
+
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[0],
         vlsvobj=vobj,
@@ -2069,6 +2071,10 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
+    y_arr = np.linspace(y0 - boxwidth, y0 + boxwidth, 100)
+    z_arr = np.ones_like(y_arr) * z0
+    x_arr = polyval_bs_at_time(fnr, y_arr, z_arr)
+    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.6, color="k")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[1],
@@ -2095,6 +2101,10 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
+    z_arr = np.linspace(z0 - boxwidth, z0 + boxwidth, 100)
+    y_arr = np.ones_like(z_arr) * y0
+    x_arr = polyval_bs_at_time(fnr, y_arr, z_arr)
+    cmap_axes[0].plot(x_arr, z_arr, linewidth=0.6, color="k")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[2],
@@ -2663,6 +2673,16 @@ def polyval_2d(coeff, y, z):
         + coeff[7] * z**2
         + coeff[8] * z * y
     )
+
+
+def polyval_bs_at_time(fnr, y, z):
+
+    fit = np.loadtxt(
+        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    )
+    coeff = fit[int(fnr) - 600, 1:]
+
+    return polyval_2d(coeff, y, z)
 
 
 def make_bs_mp_map_one(args):
