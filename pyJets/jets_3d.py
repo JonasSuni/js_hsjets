@@ -2769,9 +2769,9 @@ def make_single_bs_file(ms=False):
         arr[idx, 1:] = data
 
     if ms:
-        fname = "turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
     else:
-        fname = "turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
 
     np.savetxt(
         fname,
