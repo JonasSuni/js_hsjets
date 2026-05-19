@@ -2800,6 +2800,9 @@ def make_bs_mp_map_one(args):
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
         )
+        vlsvobj.read_variable_to_cache("proton/vg_rho")
+        vlsvobj.read_variable_to_cache("proton/vg_v")
+        vlsvobj.read_variable_to_cache("vg_vms")
 
         phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
         theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
