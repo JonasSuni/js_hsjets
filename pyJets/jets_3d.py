@@ -2615,6 +2615,42 @@ def find_bs_cart(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     return coord
 
 
+def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
+
+    coord = np.array([x0, y, z])
+    fnr = int(vlsvobj.read_parameter("time"))
+    coeff = np.loadtxt(
+        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    )[fnr - 600, 1:]
+    n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+
+    iter = 0
+
+    vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+
+    v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
+    dt = dr / np.linalg.norm(v)
+
+    Mms = np.abs(np.dot(v, n)) / vms
+
+    while Mms > 1:
+        coord = coord + v * dt
+        n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+        vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+
+        v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
+        dt = dr / np.linalg.norm(v)
+
+        Mms = np.abs(np.dot(v, n)) / vms
+
+        iter += 1
+        if iter > maxiter:
+            print("Flowtracing reached maximum iterations, returning nan")
+            return np.array([np.nan, np.nan, np.nan])
+
+    return coord
+
+
 def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
 
     coord = np.array(spherical_to_cartesian(r0, theta, phi))
@@ -2640,6 +2676,32 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
             break
 
     return coord
+
+
+def bs_normal(coeff, y, z):
+
+    x = polyval_2d(coeff, y, z)
+    nx = 1
+    ny = -(
+        coeff[1]
+        + 2 * coeff[3] * y
+        + 2 * coeff[4] * y * z
+        + 2 * coeff[5] * y * z**2
+        + coeff[6] * z**2
+        + coeff[8] * z
+    )
+    nz = -(
+        coeff[2]
+        + coeff[4] * y**2
+        + 2 * coeff[5] * y**2 * z
+        + 2 * coeff[6] * y * z
+        + 2 * coeff[7] * z
+        + coeff[8] * y
+    )
+
+    n = np.array([nx, ny, nz]) / np.linalg.norm([nx, ny, nz])
+
+    return n
 
 
 def polyfit_2d(coord_arr):
@@ -2680,26 +2742,60 @@ def polyval_2d(coeff, y, z):
     )
 
 
-def polyval_bs_at_time(fnr, y, z):
+def polyval_bs_at_time(fnr, y, z, ms=False):
 
-    fit = np.loadtxt(
-        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
-    )
+    if ms:
+        fit = np.loadtxt(
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
+        )
+    else:
+        fit = np.loadtxt(
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+        )
     coeff = fit[int(fnr) - 600, 1:]
 
     return polyval_2d(coeff, y, z)
 
 
+def make_single_bs_file(ms=False):
+
+    arr = np.zeros((392, 10), dtype=float)
+    for idx, fnr in enumerate(np.arange(600, 991 + 0.1, 1, dtype=int)):
+        if ms:
+            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
+        else:
+            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        arr[idx, 0] = fnr
+        arr[idx, 1:] = data
+
+    if ms:
+        fname = "turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
+    else:
+        fname = "turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+
+    np.savetxt(
+        fname,
+        arr,
+        header="2D 2nd-degree polynomial fit coefficients of the bow shock at different times (column 1)\n"
+        + "columns 2-10 = c0-c8 s.t. X = c0 + c1*Y + c2*Z + c3*Y^2 + c4*Z*Y^2 + c5*Z^2*Y^2 + c6*Z^2*Y + c7*Z^2 + c8*Z*Y",
+    )
+
+
 def make_bs_mp_map_one(args):
 
-    fnr, coords_exist = args
+    fnr, coords_exist, ms = args
 
     outdir = wrkdir_DNR + "bs_mp"
     create_dir_if_not_exist(outdir)
     create_dir_if_not_exist(wrkdir_DNR + "raw_bs_coords")
 
     if coords_exist:
-        bs_xyz = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)))
+        if ms:
+            bs_xyz = np.loadtxt(
+                wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(int(fnr))
+            )
+        else:
+            bs_xyz = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)))
     else:
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
@@ -2727,32 +2823,46 @@ def make_bs_mp_map_one(args):
             y = yflat[idx]
             z = zflat[idx]
             # bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
-            bs_xyz[idx] = (
-                find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
-            )
+            if ms:
+                bs_xyz[idx] = (
+                    find_bs_cart_ms(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000)
+                    / r_e
+                )
+            else:
+                bs_xyz[idx] = (
+                    find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
+                )
             # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
     bs_coeff = polyfit_2d(bs_xyz)
     # mp_coeff = polyfit_2d(mp_xyz)
 
-    np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
+    if ms:
+        np.savetxt(outdir + "/{}.bs.ms".format(int(fnr)), bs_coeff)
+    else:
+        np.savetxt(outdir + "/{}.bs".format(int(fnr)), bs_coeff)
     if not coords_exist:
-        np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
+        if ms:
+            np.savetxt(
+                wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(int(fnr)), bs_xyz
+            )
+        else:
+            np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
     # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
-def make_bs_mp_map_all(fnr0, fnr1, n_processes=16, coords_exist=False):
+def make_bs_mp_map_all(fnr0, fnr1, n_processes=16, coords_exist=False, ms=False):
 
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
     args_list = []
     for idx in range(fnr_arr.size):
-        args_list.append([fnr_arr[idx], coords_exist])
+        args_list.append([fnr_arr[idx], coords_exist, ms])
 
     with Pool(processes=n_processes) as pool:
         pool.map(make_bs_mp_map_one, args_list)
 
 
-def plot_bs_map_all():
+def plot_bs_map_all(ms=False):
 
     fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
     y_arr = np.linspace(-20, 20, 101)
@@ -2762,7 +2872,10 @@ def plot_bs_map_all():
     create_dir_if_not_exist(outdir)
 
     for fnr in fnr_arr:
-        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        if ms:
+            coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
+        else:
+            coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
         x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
         x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
@@ -2775,7 +2888,10 @@ def plot_bs_map_all():
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
-        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        if ms:
+            fig.savefig(outdir + "/{}_ms.png".format(fnr), dpi=300, bbox_inches="tight")
+        else:
+            fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
 
 
