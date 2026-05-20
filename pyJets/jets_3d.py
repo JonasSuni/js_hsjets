@@ -2787,7 +2787,7 @@ def make_single_bs_file(ms=False):
 
 def make_bs_mp_map_one(args):
 
-    fnr, coords_exist, ms = args
+    fnr, coords_exist, ms, vcache = args
 
     outdir = wrkdir_DNR + "bs_mp"
     create_dir_if_not_exist(outdir)
@@ -2805,9 +2805,10 @@ def make_bs_mp_map_one(args):
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
         )
         print("Reading variables to cache for fnr {}".format(fnr))
-        vlsvobj.read_variable_to_cache("proton/vg_rho", "pass")
-        vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
-        vlsvobj.read_variable_to_cache("vg_vms", "pass")
+        if vcache:
+            vlsvobj.read_variable_to_cache("proton/vg_rho", "pass")
+            vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
+            vlsvobj.read_variable_to_cache("vg_vms", "pass")
         print("Done reading variables to cache for fnr {}".format(fnr))
 
         phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
@@ -2861,12 +2862,14 @@ def make_bs_mp_map_one(args):
     # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
-def make_bs_mp_map_all(fnr0, fnr1, n_processes=16, coords_exist=False, ms=False):
+def make_bs_mp_map_all(
+    fnr0, fnr1, n_processes=16, coords_exist=False, ms=False, vcache=False
+):
 
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
     args_list = []
     for idx in range(fnr_arr.size):
-        args_list.append([fnr_arr[idx], coords_exist, ms])
+        args_list.append([fnr_arr[idx], coords_exist, ms, vcache])
 
     if n_processes > 1:
         with Pool(processes=n_processes) as pool:
