@@ -2802,7 +2802,8 @@ def make_bs_mp_map_one(args):
             bs_xyz = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)))
     else:
         vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+            indexer="dict",
         )
         print("Reading variables to cache for fnr {}".format(fnr))
         if vcache:
