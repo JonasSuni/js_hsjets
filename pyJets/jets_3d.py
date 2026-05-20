@@ -2868,8 +2868,12 @@ def make_bs_mp_map_all(fnr0, fnr1, n_processes=16, coords_exist=False, ms=False)
     for idx in range(fnr_arr.size):
         args_list.append([fnr_arr[idx], coords_exist, ms])
 
-    with Pool(processes=n_processes) as pool:
-        pool.map(make_bs_mp_map_one, args_list)
+    if n_processes > 1:
+        with Pool(processes=n_processes) as pool:
+            pool.map(make_bs_mp_map_one, args_list)
+    else:
+        for args in args_list:
+            make_bs_mp_map_one(args)
 
 
 def plot_bs_map_all(ms=False):
