@@ -2879,7 +2879,7 @@ def make_bs_mp_map_all(
             make_bs_mp_map_one(args)
 
 
-def plot_bs_map_all(ms=False):
+def plot_bs_map_all():
 
     fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
     y_arr = np.linspace(-20, 20, 101)
@@ -2889,15 +2889,17 @@ def plot_bs_map_all(ms=False):
     create_dir_if_not_exist(outdir)
 
     for fnr in fnr_arr:
-        if ms:
-            coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
-        else:
-            coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
+        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
         x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
         x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
+        x_of_y_ms = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
+        x_of_z_ms = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
-        ax_list[0].plot(x_of_y, y_arr)
-        ax_list[1].plot(x_of_z, z_arr)
+        ax_list[0].plot(x_of_y, y_arr, color="k")
+        ax_list[1].plot(x_of_z, z_arr, color="k")
+        ax_list[0].plot(x_of_y_ms, y_arr, color="red")
+        ax_list[1].plot(x_of_z_ms, z_arr, color="red")
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
@@ -2905,10 +2907,7 @@ def plot_bs_map_all(ms=False):
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
-        if ms:
-            fig.savefig(outdir + "/{}_ms.png".format(fnr), dpi=300, bbox_inches="tight")
-        else:
-            fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
 
 
