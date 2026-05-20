@@ -2626,24 +2626,24 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
     iter = 0
 
-    print("Reading variables from cache for fnr {}".format(fnr))
+    # print("Reading variables from cache for fnr {}".format(fnr))
     vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
     v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
     dt = dr / np.linalg.norm(v)
-    print("Done reading variables from cache for fnr {}".format(fnr))
+    # print("Done reading variables from cache for fnr {}".format(fnr))
 
     Mms = np.abs(np.dot(v, n)) / vms
 
     while Mms > 1:
         coord = coord + v * dt
         n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
-        print("Reading variables from cache for fnr {}".format(fnr))
+        # print("Reading variables from cache for fnr {}".format(fnr))
         vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
         v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
         dt = dr / np.linalg.norm(v)
-        print("Done reading variables from cache for fnr {}".format(fnr))
+        # print("Done reading variables from cache for fnr {}".format(fnr))
 
         Mms = np.abs(np.dot(v, n)) / vms
 
@@ -2805,12 +2805,12 @@ def make_bs_mp_map_one(args):
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             indexer="dict",
         )
-        print("Reading variables to cache for fnr {}".format(fnr))
+        # print("Reading variables to cache for fnr {}".format(fnr))
         if vcache:
             vlsvobj.read_variable_to_cache("proton/vg_rho", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
             vlsvobj.read_variable_to_cache("vg_vms", "pass")
-        print("Done reading variables to cache for fnr {}".format(fnr))
+        # print("Done reading variables to cache for fnr {}".format(fnr))
 
         phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
         theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
@@ -2864,7 +2864,7 @@ def make_bs_mp_map_one(args):
 
 
 def make_bs_mp_map_all(
-    fnr0, fnr1, n_processes=16, coords_exist=False, ms=False, vcache=False
+    fnr0, fnr1, n_processes=16, coords_exist=False, ms=False, vcache=True
 ):
 
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
