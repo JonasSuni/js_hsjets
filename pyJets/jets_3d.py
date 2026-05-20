@@ -2638,10 +2638,12 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     while Mms > 1:
         coord = coord + v * dt
         n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+        print("Reading variables from cache for fnr {}".format(fnr))
         vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
         v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
         dt = dr / np.linalg.norm(v)
+        print("Done reading variables from cache for fnr {}".format(fnr))
 
         Mms = np.abs(np.dot(v, n)) / vms
 
@@ -2841,6 +2843,7 @@ def make_bs_mp_map_one(args):
                 )
             # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
 
+    print("Flowline tracing done for fnr {}".format(fnr))
     bs_coeff = polyfit_2d(bs_xyz)
     # mp_coeff = polyfit_2d(mp_xyz)
 
