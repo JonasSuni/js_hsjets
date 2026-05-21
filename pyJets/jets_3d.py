@@ -2648,7 +2648,7 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     # Mms = np.abs(np.dot(v, n)) / vms
     Mms = vmag / vf
 
-    print(coord / r_e, Mms, vmag / va, vmag / vs)
+    print(coord / r_e, Mms, vmag / va, vmag / vs, costheta)
 
     while Mms > 1:
         coord = coord + v * dt
@@ -2672,7 +2672,7 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
         # Mms = np.abs(np.dot(v, n)) / vms
         Mms = vmag / vf
-        print(coord / r_e, Mms, vmag / va, vmag / vs)
+        print(coord / r_e, Mms, vmag / va, vmag / vs, costheta)
 
         iter += 1
         if iter > maxiter:
