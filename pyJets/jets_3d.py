@@ -2617,62 +2617,38 @@ def find_bs_cart(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
 
 def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
+    # NOTE: Calculating the local fast mode speed in the direction of bulk velocity and comparing that to the bulk speed does not result in a shock at M = 1, you still need to know the shock normal
 
     coord = np.array([x0, y, z])
     fnr = int(vlsvobj.read_parameter("time"))
-    # coeff = np.loadtxt(
-    #     "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
-    # )[fnr - 600, 1:]
-    # n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+    coeff = np.loadtxt(
+        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    )[fnr - 600, 1:]
+    n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
 
     iter = 0
 
     # print("Reading variables from cache for fnr {}".format(fnr))
-    # vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+    vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
     v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
-    vmag = np.linalg.norm(v)
-    B = vlsvobj.read_interpolated_variable("vg_b_vol", coord)
-    bmag = np.linalg.norm(B)
-    vs = vlsvobj.read_interpolated_variable("vg_vs", coord)
-    va = vlsvobj.read_interpolated_variable("vg_va", coord)
-    vms2 = vs**2 + va**2
 
-    costheta = np.dot(B, v) / (bmag * vmag)
-    vf = np.sqrt((vms2 + np.sqrt(vms2**2 - 4 * va**2 * vs**2 * costheta**2)) / 2.0)
-
-    # dt = dr / np.linalg.norm(v)
-    dt = dr / vmag
+    dt = dr / np.linalg.norm(v)
     # print("Done reading variables from cache for fnr {}".format(fnr))
 
-    # Mms = np.abs(np.dot(v, n)) / vms
-    Mms = vmag / vf
-
-    print(coord / r_e, Mms, vmag / va, vmag / vs, costheta)
+    Mms = np.abs(np.dot(v, n)) / vms
 
     while Mms > 1:
         coord = coord + v * dt
-        # n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+        n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
         # print("Reading variables from cache for fnr {}".format(fnr))
-        # vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+        vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
         v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
-        vmag = np.linalg.norm(v)
-        B = vlsvobj.read_interpolated_variable("vg_b_vol", coord)
-        bmag = np.linalg.norm(B)
-        vs = vlsvobj.read_interpolated_variable("vg_vs", coord)
-        va = vlsvobj.read_interpolated_variable("vg_va", coord)
-        vms2 = vs**2 + va**2
-
-        costheta = np.dot(B, v) / (bmag * vmag)
-        vf = np.sqrt((vms2 + np.sqrt(vms2**2 - 4 * va**2 * vs**2 * costheta**2)) / 2.0)
-        # dt = dr / np.linalg.norm(v)
-        dt = dr / vmag
+        dt = dr / np.linalg.norm(v)
         # print("Done reading variables from cache for fnr {}".format(fnr))
 
-        # Mms = np.abs(np.dot(v, n)) / vms
-        Mms = vmag / vf
-        print(coord / r_e, Mms, vmag / va, vmag / vs, costheta)
+        Mms = np.abs(np.dot(v, n)) / vms
 
         iter += 1
         if iter > maxiter:
