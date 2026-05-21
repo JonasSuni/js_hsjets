@@ -11,6 +11,7 @@ from scipy.fft import rfft2
 from scipy.signal import butter, sosfilt, argrelextrema
 from scipy.ndimage import uniform_filter1d
 from scipy.fft import fft, fftfreq
+from scipy.interpolate import LinearNDInterpolator
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -2891,20 +2892,25 @@ def plot_bs_map_all():
 
     for fnr in fnr_arr:
         coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
-        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
-        x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
-        x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
-        x_of_y_ms = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
-        x_of_z_ms = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
+        # coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        rawpoints = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(fnr))
+        interpolator = LinearNDInterpolator(rawpoints[:, 1:], rawpoints[:, 0])
+        # x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
+        # x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
+        x_of_y = interpolator(y_arr, np.zeros_like(z_arr))
+        x_of_z = interpolator(np.zeros_like(y_arr), z_arr)
+        x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
+        x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
         ax_list[0].plot(x_of_y, y_arr, color="k")
         ax_list[1].plot(x_of_z, z_arr, color="k")
-        ax_list[0].plot(x_of_y_ms, y_arr, color="red")
-        ax_list[1].plot(x_of_z_ms, z_arr, color="red")
+        ax_list[0].plot(x_of_y_fit, y_arr, color="red")
+        ax_list[1].plot(x_of_z_fit, z_arr, color="red")
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
             ax.set_xlim(-10, 30)
+            ax.set_ylim(-20, 20)
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
