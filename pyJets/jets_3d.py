@@ -2648,6 +2648,8 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     # Mms = np.abs(np.dot(v, n)) / vms
     Mms = vmag / vf
 
+    print(Mms, v, vmag, B, bmag, vs, va, vms2, costheta, vf)
+
     while Mms > 1:
         coord = coord + v * dt
         # n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
