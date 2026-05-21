@@ -2916,6 +2916,7 @@ def plot_bs_map_all():
 
         fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
+        print("Plotted bow shock and fit for fnr {}".format(fnr))
 
 
 def make_shell_map_one(args):
