@@ -2620,33 +2620,56 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
     coord = np.array([x0, y, z])
     fnr = int(vlsvobj.read_parameter("time"))
-    coeff = np.loadtxt(
-        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
-    )[fnr - 600, 1:]
-    n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+    # coeff = np.loadtxt(
+    #     "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    # )[fnr - 600, 1:]
+    # n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
 
     iter = 0
 
     # print("Reading variables from cache for fnr {}".format(fnr))
-    vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+    # vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
     v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
-    dt = dr / np.linalg.norm(v)
+    vmag = np.linalg.norm(v)
+    B = vlsvobj.read_interpolated_variable("vg_b_vol", coord)
+    bmag = np.linalg.norm(B)
+    vs = vlsvobj.read_interpolated_variable("vg_vs", coord)
+    va = vlsvobj.read_interpolated_variable("vg_va", coord)
+    vms2 = vs**2 + va**2
+
+    costheta = np.dot(B, v) / (bmag * vmag)
+    vf = np.sqrt((vms2 + np.sqrt(vms2**2 - 4 * va**2 * vs**2 * costheta**2)) / 2.0)
+
+    # dt = dr / np.linalg.norm(v)
+    dt = dr / vmag
     # print("Done reading variables from cache for fnr {}".format(fnr))
 
-    Mms = np.abs(np.dot(v, n)) / vms
+    # Mms = np.abs(np.dot(v, n)) / vms
+    Mms = vmag / vf
 
     while Mms > 1:
         coord = coord + v * dt
-        n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+        # n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
         # print("Reading variables from cache for fnr {}".format(fnr))
-        vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
+        # vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
         v = vlsvobj.read_interpolated_variable("proton/vg_v", coord)
-        dt = dr / np.linalg.norm(v)
+        vmag = np.linalg.norm(v)
+        B = vlsvobj.read_interpolated_variable("vg_b_vol", coord)
+        bmag = np.linalg.norm(B)
+        vs = vlsvobj.read_interpolated_variable("vg_vs", coord)
+        va = vlsvobj.read_interpolated_variable("vg_va", coord)
+        vms2 = vs**2 + va**2
+
+        costheta = np.dot(B, v) / (bmag * vmag)
+        vf = np.sqrt((vms2 + np.sqrt(vms2**2 - 4 * va**2 * vs**2 * costheta**2)) / 2.0)
+        # dt = dr / np.linalg.norm(v)
+        dt = dr / vmag
         # print("Done reading variables from cache for fnr {}".format(fnr))
 
-        Mms = np.abs(np.dot(v, n)) / vms
+        # Mms = np.abs(np.dot(v, n)) / vms
+        Mms = vmag / vf
 
         iter += 1
         if iter > maxiter:
@@ -2810,7 +2833,9 @@ def make_bs_mp_map_one(args):
         if vcache:
             vlsvobj.read_variable_to_cache("proton/vg_rho", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
-            vlsvobj.read_variable_to_cache("vg_vms", "pass")
+            vlsvobj.read_variable_to_cache("vg_vs", "pass")
+            vlsvobj.read_variable_to_cache("vg_va", "pass")
+            vlsvobj.read_variable_to_cache("vg_b_vol", "pass")
         # print("Done reading variables to cache for fnr {}".format(fnr))
 
         phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
@@ -2892,11 +2917,11 @@ def plot_bs_map_all():
 
     for fnr in fnr_arr:
         coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
-        # coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
         rawpoints = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(fnr))
         interpolator = LinearNDInterpolator(rawpoints[:, 1:], rawpoints[:, 0])
-        # x_of_y = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
-        # x_of_z = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
+        x_of_y_rho = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
+        x_of_z_rho = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
         x_of_y = interpolator(y_arr, np.zeros_like(z_arr))
         x_of_z = interpolator(np.zeros_like(y_arr), z_arr)
         x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
@@ -2906,6 +2931,8 @@ def plot_bs_map_all():
         ax_list[1].plot(x_of_z, z_arr, color="k")
         ax_list[0].plot(x_of_y_fit, y_arr, color="red")
         ax_list[1].plot(x_of_z_fit, z_arr, color="red")
+        ax_list[0].plot(x_of_y_rho, y_arr, color="red", linestyle="dashed")
+        ax_list[1].plot(x_of_z_rho, z_arr, color="red", linestyle="dashed")
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
