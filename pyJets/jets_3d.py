@@ -2889,9 +2889,9 @@ def make_bs_mp_map_one(args):
 
         seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
         if ms:
-            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_ms)
+            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_ms) / r_e
         else:
-            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_rho)
+            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_rho) / r_e
 
     print("Flowline tracing done for fnr {}".format(fnr))
     bs_coeff = polyfit_2d(bs_xyz)
