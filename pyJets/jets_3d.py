@@ -2788,6 +2788,56 @@ def make_single_bs_file(ms=False):
     )
 
 
+def stopcond_rho(vlsvReader, points, vars):
+
+    rho = vlsvReader.read_interpolated_variable("proton/vg_rho", points)
+
+    return rho > 2.0e6
+
+
+def stopcond_ms(vlsvReader, points, vars):
+
+    fnr = int(vlsvReader.read_parameter("time"))
+    coeff = np.loadtxt(
+        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    )[fnr - 600, 1:]
+    n = np.array(
+        [
+            bs_normal(coeff, points[idx, 1], points[idx, 2])
+            for idx in range(points.shape[0])
+        ]
+    )
+
+    vms = vlsvReader.read_interpolated_variable("vg_vms", points)
+    v = vars
+    vn = np.array([np.dot(n[idx], v[idx]) for idx in range(points.shape[0])])
+
+    return vn < vms
+
+
+def bs_trace(vlsvobj, seedpoints, stopcond):
+
+    outarr = pt.calculations.static_field_tracer_3d(
+        vlsvobj,
+        seedpoints,
+        1000,
+        100e3,
+        direction="+",
+        grid_var="proton/vg_v",
+        stop_condition=stopcond,
+    )
+
+    respoints = []
+    for idx in range(outarr.shape[0]):
+        currarr = outarr[idx]
+        if ~(np.isnan(currarr).any()):
+            respoints.append([np.nan, np.nan, np.nan])
+        else:
+            respoints.append(currarr[~np.isnan(currarr).any(axis=1), :][-1])
+
+    return respoints
+
+
 def make_bs_mp_map_one(args):
 
     fnr, coords_exist, ms, vcache = args
@@ -2812,16 +2862,8 @@ def make_bs_mp_map_one(args):
         if vcache:
             vlsvobj.read_variable_to_cache("proton/vg_rho", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
-            vlsvobj.read_variable_to_cache("vg_vs", "pass")
-            vlsvobj.read_variable_to_cache("vg_va", "pass")
-            vlsvobj.read_variable_to_cache("vg_b_vol", "pass")
+            vlsvobj.read_variable_to_cache("vg_vms", "pass")
         # print("Done reading variables to cache for fnr {}".format(fnr))
-
-        phi_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-        theta_range = np.linspace(-np.deg2rad(30), np.deg2rad(30), 10)
-        thetamesh, phimesh = np.meshgrid(theta_range, phi_range)
-        thetaflat = thetamesh.flatten()
-        phiflat = phimesh.flatten()
 
         yarr = np.linspace(-10 * r_e, 10 * r_e, 11)
         zarr = np.linspace(-10 * r_e, 10 * r_e, 11)
@@ -2831,28 +2873,28 @@ def make_bs_mp_map_one(args):
         zflat = zmesh.flatten()
 
         bs_xyz = np.zeros((yflat.size, 3), dtype=float)
-        # mp_xyz = np.zeros((thetaflat.size, 3), dtype=float)
 
-        for idx in range(yflat.size):
-            # theta = thetaflat[idx]
-            # phi = phiflat[idx]
-            y = yflat[idx]
-            z = zflat[idx]
-            # bs_xyz[idx] = find_bs(vlsvobj, 14 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
-            if ms:
-                bs_xyz[idx] = (
-                    find_bs_cart_ms(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000)
-                    / r_e
-                )
-            else:
-                bs_xyz[idx] = (
-                    find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
-                )
-            # mp_xyz[idx] = find_mp(vlsvobj, 10 * r_e, theta, phi, dr=100e3, tol=0.01) / r_e
+        # for idx in range(yflat.size):
+        #     y = yflat[idx]
+        #     z = zflat[idx]
+        #     if ms:
+        #         bs_xyz[idx] = (
+        #             find_bs_cart_ms(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000)
+        #             / r_e
+        #         )
+        #     else:
+        #         bs_xyz[idx] = (
+        #             find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
+        #         )
+
+        seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
+        if ms:
+            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_ms)
+        else:
+            bs_xyz = bs_trace(vlsvobj, seedpoints, stopcond_rho)
 
     print("Flowline tracing done for fnr {}".format(fnr))
     bs_coeff = polyfit_2d(bs_xyz)
-    # mp_coeff = polyfit_2d(mp_xyz)
 
     if ms:
         np.savetxt(outdir + "/{}.bs.ms".format(int(fnr)), bs_coeff)
@@ -2865,7 +2907,6 @@ def make_bs_mp_map_one(args):
             )
         else:
             np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
-    # np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
 
 
 def make_bs_mp_map_all(
