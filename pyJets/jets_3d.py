@@ -2803,7 +2803,7 @@ def stopcond_ms(vlsvReader, points, vars):
     )[fnr - 600, 1:]
     n = np.array(
         [
-            bs_normal(coeff, points[idx, 1], points[idx, 2])
+            bs_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
             for idx in range(points.shape[0])
         ]
     )
@@ -2811,7 +2811,7 @@ def stopcond_ms(vlsvReader, points, vars):
     vms = vlsvReader.read_interpolated_variable("vg_vms", points)
     v = vlsvReader.read_interpolated_variable("proton/vg_v", points)
     vn = np.array([np.dot(n[idx], v[idx]) for idx in range(points.shape[0])])
-    print(n, v, np.abs(vn), vms)
+    # print(n, v, np.abs(vn), vms)
 
     return np.abs(vn) < vms
 
