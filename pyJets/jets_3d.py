@@ -2926,6 +2926,8 @@ def make_bs_mp_map_all(
         for args in args_list:
             make_bs_mp_map_one(args)
 
+    make_single_bs_file(ms=ms)
+
 
 def plot_bs_map_all():
 
