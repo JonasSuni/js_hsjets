@@ -2811,6 +2811,7 @@ def stopcond_ms(vlsvReader, points, vars):
     vms = vlsvReader.read_interpolated_variable("vg_vms", points)
     v = vlsvReader.read_interpolated_variable("proton/vg_v", points)
     vn = np.array([np.dot(n[idx], v[idx]) for idx in range(points.shape[0])])
+    print(vn)
 
     return np.abs(vn) < vms
 
