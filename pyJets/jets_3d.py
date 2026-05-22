@@ -2875,38 +2875,17 @@ def make_bs_mp_map_one(args):
 
         bs_xyz = np.zeros((yflat.size, 3), dtype=float)
 
-        # for idx in range(yflat.size):
-        #     y = yflat[idx]
-        #     z = zflat[idx]
-        #     if ms:
-        #         bs_xyz[idx] = (
-        #             find_bs_cart_ms(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000)
-        #             / r_e
-        #         )
-        #     else:
-        #         bs_xyz[idx] = (
-        #             find_bs_cart(vlsvobj, 20 * r_e, y, z, dr=100e3, maxiter=1000) / r_e
-        #         )
-
         seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
         nchunks = int(np.ceil(yflat.size / 100))
+        if ms:
+            stopcond = stopcond_ms
+        else:
+            stopcond = stopcond_rho
         for idx in range(nchunks):
-            if ms:
-                bs_xyz[idx * 100 : (idx + 1) * 100, :] = (
-                    bs_trace(
-                        vlsvobj, seedpoints[idx * 100 : (idx + 1) * 100, :], stopcond_ms
-                    )
-                    / r_e
-                )
-            else:
-                bs_xyz[idx * 100 : (idx + 1) * 100, :] = (
-                    bs_trace(
-                        vlsvobj,
-                        seedpoints[idx * 100 : (idx + 1) * 100, :],
-                        stopcond_rho,
-                    )
-                    / r_e
-                )
+            bs_xyz[idx * 100 : (idx + 1) * 100, :] = (
+                bs_trace(vlsvobj, seedpoints[idx * 100 : (idx + 1) * 100, :], stopcond)
+                / r_e
+            )
 
     print("Flowline tracing done for fnr {}".format(fnr))
     bs_coeff = polyfit_2d(bs_xyz)
