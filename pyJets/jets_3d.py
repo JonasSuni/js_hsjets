@@ -2835,7 +2835,7 @@ def bs_trace(vlsvobj, seedpoints, stopcond):
         else:
             respoints.append(currarr[~np.isnan(currarr).any(axis=1), :][-1])
 
-    return respoints
+    return np.array(respoints)
 
 
 def make_bs_mp_map_one(args):
