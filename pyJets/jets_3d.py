@@ -2812,7 +2812,7 @@ def stopcond_ms(vlsvReader, points, vars):
     v = vars
     vn = np.array([np.dot(n[idx], v[idx]) for idx in range(points.shape[0])])
 
-    return vn < vms
+    return np.abs(vn) < vms
 
 
 def bs_trace(vlsvobj, seedpoints, stopcond):
