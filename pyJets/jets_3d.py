@@ -2887,6 +2887,7 @@ def make_bs_mp_map_one(args):
                 / r_e
             )
 
+    bs_xyz = bs_xyz[~np.isnan(bs_xyz).any(axis=1), :]
     print("Flowline tracing done for fnr {}".format(fnr))
     bs_coeff = polyfit_2d(bs_xyz)
 
