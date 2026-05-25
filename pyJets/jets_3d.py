@@ -1844,7 +1844,7 @@ def ellipse_params(mean, cov, normal):
     # ax.plot(mean[0], mean[1], 'bo')
 
 
-def plot_ellipses(means, covs, weights, ax, normal):
+def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
 
     edgecolors = [
         "#000000",
@@ -1864,6 +1864,11 @@ def plot_ellipses(means, covs, weights, ax, normal):
 
     for idx in range(niter):
         mean, width, height, angle = ellipse_params(means[idx], covs[idx], normal)
+        Ttensor = covs[idx] * m_p / kb
+        TtensorRot = pt.vlsvfile.reduction.rotateTensorToVector(Ttensor, B)
+        Tpar = TtensorRot[2, 2]
+        Tperp = 0.5 * (TtensorRot[0, 0] + TtensorRot[1, 1])
+        dens = rho * weights[idx] / 1e6
         ellipse = mpatches.Ellipse(
             mean,
             width,
@@ -1874,7 +1879,17 @@ def plot_ellipses(means, covs, weights, ax, normal):
             lw=2,
         )
         ax.add_patch(ellipse)
-        ax.plot(mean[0], mean[1], "o", color=edgecolors[idx])
+        ax.plot(
+            mean[0],
+            mean[1],
+            "o",
+            color=edgecolors[idx],
+            label="$\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),\\,T_\\parallel={:.1f},\\,T_\perp={:.1f}$".format(
+                dens, means[idx][0], means[idx][1], means[idx][2], Tpar, Tperp
+            ),
+        )
+    if leg:
+        ax.legend()
 
 
 def generate_vdf_plots(vdf_axes, vobj, ci):
@@ -1882,6 +1897,8 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     gmm_success = True
 
     print("Plot GMM is {}".format(plot_gmm))
+    B = vobj.read_variable("vg_b_vol", cellids=ci)
+    rho = vobj.read_variable("proton/vg_rho", cellids=ci)
 
     boxwidth = 3000e3
     fnr = int(vobj.read_parameter("time"))
@@ -1961,9 +1978,22 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         title="",
     )
     if plot_gmm and gmm_success:
-        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[0], "z")
-        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[1], "y")
-        plot_ellipses(means_sorted, covs_sorted, weights_sorted, vdf_axes[2], "x")
+        plot_ellipses(
+            means_sorted, covs_sorted, weights_sorted, vdf_axes[0], "z", B, rho
+        )
+        plot_ellipses(
+            means_sorted, covs_sorted, weights_sorted, vdf_axes[1], "y", B, rho
+        )
+        plot_ellipses(
+            means_sorted,
+            covs_sorted,
+            weights_sorted,
+            vdf_axes[2],
+            "x",
+            B,
+            rho,
+            leg=True,
+        )
 
 
 def generate_vdf_B_plots(vdf_axes, vobj, ci):
