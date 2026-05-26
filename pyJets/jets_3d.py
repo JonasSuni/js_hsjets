@@ -2652,8 +2652,8 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     coord = np.array([x0, y, z])
     fnr = int(vlsvobj.read_parameter("time"))
     coeff = np.loadtxt(
-        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
-    )[fnr - 600, 1:]
+        wrkdir_DNR+"bs_mp/{}.bs".format(fnr)
+    )
     n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
 
     iter = 0
@@ -2829,8 +2829,8 @@ def stopcond_ms(vlsvReader, points, vars):
 
     fnr = int(vlsvReader.read_parameter("time"))
     coeff = np.loadtxt(
-        "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
-    )[fnr - 600, 1:]
+        wrkdir_DNR+"bs_mp/{}.bs".format(fnr)
+    )
     n = np.array(
         [
             bs_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
