@@ -2173,7 +2173,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 
     plot_labels = [
-        None,
+        "$\\rho$",
         "$v_x$",
         "$v_y$",
         "$v_z$",
@@ -2191,7 +2191,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         "$T_\\perp$",
     ]
     draw_legend = [
-        False,
+        True,
         False,
         False,
         False,
@@ -2235,6 +2235,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         CB_color_cycle[0],
         CB_color_cycle[1],
     ]
+    ts_avgs = np.nanmean(ts_data, axis=1)
 
     t_arr = np.arange(600, 991 + 0.1, 1)
     tavg_arr = uniform_filter1d(
@@ -2253,12 +2254,15 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
     ts_axes[-1].set_xlabel("t [s]", fontsize=16, labelpad=10)
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
+        curr_lab = plot_labels[idx]
+        if idx in [0, 1, 2, 3, 14, 15]:
+            curr_lab = curr_lab + ", avg={:0f}".format(ts_avgs[idx])
         ax.plot(
             t_arr,
             ts_data[idx],
             "-",
             color=plot_colors[idx],
-            label=plot_labels[idx],
+            label=curr_lab,
         )
         if idx == 5:
             ax.plot(
@@ -2651,9 +2655,7 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
     coord = np.array([x0, y, z])
     fnr = int(vlsvobj.read_parameter("time"))
-    coeff = np.loadtxt(
-        wrkdir_DNR+"bs_mp/{}.bs".format(fnr)
-    )
+    coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
     n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
 
     iter = 0
@@ -2828,9 +2830,7 @@ def stopcond_rho(vlsvReader, points, vars):
 def stopcond_ms(vlsvReader, points, vars):
 
     fnr = int(vlsvReader.read_parameter("time"))
-    coeff = np.loadtxt(
-        wrkdir_DNR+"bs_mp/{}.bs".format(fnr)
-    )
+    coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
     n = np.array(
         [
             bs_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
