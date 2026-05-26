@@ -1884,7 +1884,7 @@ def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
             mean[1],
             "o",
             color=edgecolors[idx],
-            label="$\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),\\,T_\\parallel={:.1f},\\,T_\perp={:.1f}$".format(
+            label="$\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),\\,T_\\parallel={:.1f},\\,T_\\perp={:.1f}$".format(
                 dens, means[idx][0], means[idx][1], means[idx][2], Tpar, Tperp
             ),
         )
