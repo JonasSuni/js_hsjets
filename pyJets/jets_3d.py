@@ -792,6 +792,57 @@ def jet_interval_snap_all(
         make_timeseries_global_vdf_one(args)
 
 
+def jet_interval_gmm_timeseries(nMaxwellians):
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+    )
+    create_dir_if_not_exist(
+        wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}/".format(nMaxwellians)
+    )
+    create_dir_if_not_exist(
+        wrkdir_DNR + "Figs/gmm_timeseries/koller/n{}".format(nMaxwellians)
+    )
+    create_dir_if_not_exist(
+        wrkdir_DNR + "Figs/gmm_timeseries/archerkoller/n{}".format(nMaxwellians)
+    )
+
+    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+
+    for p in archer_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}/{}_{}_{}_".format(
+            nMaxwellians, ci, t0, t1
+        )
+        args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
+        make_gmm_timeseries(args)
+
+    for p in koller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/gmm_timeseries/koller/n{}/{}_{}_{}_".format(
+            nMaxwellians, ci, t0, t1
+        )
+        args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
+        make_gmm_timeseries(args)
+
+    for p in archerkoller_data:
+        ci, t0, t1, tjet = p
+        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        outdir = wrkdir_DNR + "Figs/gmm_timeseries/archerkoller/n{}/{}_{}_{}_".format(
+            nMaxwellians, ci, t0, t1
+        )
+        args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
+        make_gmm_timeseries(args)
+
+
 def jet_interval_anim_all(
     limitedsize=False,
     n_processes=16,
@@ -1413,9 +1464,35 @@ def make_timeseries_1d_vdf_one(args):
     print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
+
 def make_gmm_timeseries(args):
 
-    ci, coords, t0, t1, fnr, limitedsize, outdir = args
+    ci, coords, t0, t1, fnr, nMaxwellians, outdir = args
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+
+    weights_arr = np.zeros((t1 - t0 + 1, nMaxwellians), dtype=float)
+    means_arr = np.zeros((t1 - t0 + 1, nMaxwellians, 3), dtype=float)
+    covs_arr = np.zeros((t1 - t0 + 1, nMaxwellians, 3, 3), dtype=float)
+    for idx, gmm_fnr in enumerate(range(t0, t1 + 1)):
+        try:
+            res = get_gmm_params(nMaxwellians, ci, gmm_fnr)
+            for idx2 in range(nMaxwellians):
+                weights_arr[idx, idx2] = res[0][idx2]
+                means_arr[idx, idx2, :] = res[1][idx2]
+                covs_arr[idx, idx2, :, :] = res[2][idx2]
+        except:
+            for idx2 in range(nMaxwellians):
+                weights_arr[idx, idx2] = np.nan
+                means_arr[idx, idx2, :] = np.nan
+                covs_arr[idx, idx2, :, :] = np.nan
+
 
 def make_timeseries_global_vdf_one(args):
 
@@ -1845,6 +1922,7 @@ def ellipse_params(weight, mean, cov, normal, rho, B):
     dens = rho * weight / 1e6
 
     return (mean_proj, width, height, angle, dens, Tpar, Tperp)
+
 
 def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
 
