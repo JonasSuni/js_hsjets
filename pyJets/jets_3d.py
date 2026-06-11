@@ -1413,6 +1413,9 @@ def make_timeseries_1d_vdf_one(args):
     print("Saved frame of cellid {} at time {}".format(ci, fnr))
     plt.close(fig)
 
+def make_gmm_timeseries(args):
+
+    ci, coords, t0, t1, fnr, limitedsize, outdir = args
 
 def make_timeseries_global_vdf_one(args):
 
@@ -1818,7 +1821,7 @@ def generate_1d_vdf_plots(vdf_axes, vobj, ci):
     vdf_axes[1].legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=1)
 
 
-def ellipse_params(mean, cov, normal):
+def ellipse_params(weight, mean, cov, normal, rho, B):
     normals = ["x", "y", "z"]
     idx = normals.index(normal)
 
@@ -1835,14 +1838,13 @@ def ellipse_params(mean, cov, normal):
     width, height = 2 * np.sqrt(major_val), 2 * np.sqrt(minor_val)
     angle = np.degrees(np.arctan2(major_vec[1], major_vec[0]))
 
-    return (mean_proj, width, height, angle)
+    Ttensor = cov * m_p / kb
+    TtensorRot = pt.vlsvfile.reduction.rotateTensorToVector(Ttensor, B)
+    Tpar = TtensorRot[2, 2]
+    Tperp = 0.5 * (TtensorRot[0, 0] + TtensorRot[1, 1])
+    dens = rho * weight / 1e6
 
-    # ellipse = Ellipse( mean, width, height, angle=angle,
-    #                 edgecolor='black', facecolor='none', lw=2)
-
-    # ax.add_patch(ellipse)
-    # ax.plot(mean[0], mean[1], 'bo')
-
+    return (mean_proj, width, height, angle, dens, Tpar, Tperp)
 
 def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
 
@@ -1863,12 +1865,9 @@ def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
     niter = plot_gmm
 
     for idx in range(niter):
-        mean, width, height, angle = ellipse_params(means[idx], covs[idx], normal)
-        Ttensor = covs[idx] * m_p / kb
-        TtensorRot = pt.vlsvfile.reduction.rotateTensorToVector(Ttensor, B)
-        Tpar = TtensorRot[2, 2]
-        Tperp = 0.5 * (TtensorRot[0, 0] + TtensorRot[1, 1])
-        dens = rho * weights[idx] / 1e6
+        mean, width, height, angle, dens, Tpar, Tperp = ellipse_params(
+            weights[idx], means[idx], covs[idx], normal, rho, B
+        )
         ellipse = mpatches.Ellipse(
             mean,
             width,
@@ -1892,6 +1891,34 @@ def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
         ax.legend()
 
 
+def get_gmm_params(nMaxwellians, ci, fnr):
+
+    try:
+        gmm_fit = np.loadtxt(
+            wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(nMaxwellians, int(ci), fnr)
+        )
+    except:
+        raise Exception("Could not read GMM file")
+
+    weights = []
+    means = []
+    covs = []
+    traces = []
+    for idx in range(plot_gmm):
+        weights.append(gmm_fit[idx, 0])
+        means.append(gmm_fit[idx, 1:4] / 1e3)
+        covs.append(np.reshape(gmm_fit[idx, 4:13], (3, 3)) / 1e6)
+        traces.append(np.trace(np.reshape(gmm_fit[idx, 4:13], (3, 3))))
+    # weights_sorted = np.array(weights)[np.argsort(traces)]
+    # means_sorted = np.array(means)[np.argsort(traces), :]
+    # covs_sorted = np.array(covs)[np.argsort(traces), :, :]
+    weights_sorted = weights
+    means_sorted = means
+    covs_sorted = covs
+
+    return (weights_sorted, means_sorted, covs_sorted)
+
+
 def generate_vdf_plots(vdf_axes, vobj, ci):
 
     gmm_success = True
@@ -1904,24 +1931,9 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     fnr = int(vobj.read_parameter("time"))
     if plot_gmm:
         try:
-            gmm_fit = np.loadtxt(
-                wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(plot_gmm, int(ci), fnr)
+            weights_sorted, means_sorted, covs_sorted = get_gmm_params(
+                plot_gmm, ci, fnr
             )
-            weights = []
-            means = []
-            covs = []
-            traces = []
-            for idx in range(plot_gmm):
-                weights.append(gmm_fit[idx, 0])
-                means.append(gmm_fit[idx, 1:4] / 1e3)
-                covs.append(np.reshape(gmm_fit[idx, 4:13], (3, 3)) / 1e6)
-                traces.append(np.trace(np.reshape(gmm_fit[idx, 4:13], (3, 3))))
-            # weights_sorted = np.array(weights)[np.argsort(traces)]
-            # means_sorted = np.array(means)[np.argsort(traces), :]
-            # covs_sorted = np.array(covs)[np.argsort(traces), :, :]
-            weights_sorted = weights
-            means_sorted = means
-            covs_sorted = covs
         except:
             gmm_success = False
 
