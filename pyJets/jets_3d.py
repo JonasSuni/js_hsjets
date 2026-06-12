@@ -2090,7 +2090,7 @@ def get_gmm_params(nMaxwellians, ci, fnr):
     means = []
     covs = []
     traces = []
-    for idx in range(plot_gmm):
+    for idx in range(nMaxwellians):
         weights.append(gmm_fit[idx, 0])
         means.append(gmm_fit[idx, 1:4] / 1e3)
         covs.append(np.reshape(gmm_fit[idx, 4:13], (3, 3)) / 1e6)
