@@ -1497,29 +1497,27 @@ def make_gmm_timeseries(args):
             )
             * 1e-9
         )
-        # try:
-        print(nMaxwellians, ci, int(gmm_fnr))
-        res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
-        print(res)
-        for idx2 in range(nMaxwellians):
-            elpars = ellipse_params(
-                res[0][idx2], res[1][idx2], res[2][idx2], "z", rho, B
-            )  # (mean_proj, width, height, angle, dens, Tpar, Tperp)
-            print(elpars)
-            weights_arr[idx, idx2] = res[0][idx2]
-            means_arr[idx, idx2, :] = res[1][idx2] * 1e3
-            covs_arr[idx, idx2, :, :] = res[2][idx2] * 1e6
-            dens_arr[idx, idx2] = elpars[4] * 1e6
-            tpar_arr[idx, idx2] = elpars[5] * 1e6
-            tperp_arr[idx, idx2] = elpars[6] * 1e6
-        # except:
-        #     for idx2 in range(nMaxwellians):
-        #         weights_arr[idx, idx2] = np.nan
-        #         means_arr[idx, idx2, :] = np.nan
-        #         covs_arr[idx, idx2, :, :] = np.nan
-        #         dens_arr[idx, idx2] = np.nan
-        #         tpar_arr[idx, idx2] = np.nan
-        #         tperp_arr[idx, idx2] = np.nan
+        try:
+            print(nMaxwellians, ci, int(gmm_fnr))
+            res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
+            for idx2 in range(nMaxwellians):
+                elpars = ellipse_params(
+                    res[0][idx2], res[1][idx2], res[2][idx2], "z", rho, B
+                )  # (mean_proj, width, height, angle, dens, Tpar, Tperp)
+                weights_arr[idx, idx2] = res[0][idx2]
+                means_arr[idx, idx2, :] = res[1][idx2] * 1e3
+                covs_arr[idx, idx2, :, :] = res[2][idx2] * 1e6
+                dens_arr[idx, idx2] = elpars[4] * 1e6
+                tpar_arr[idx, idx2] = elpars[5] * 1e6
+                tperp_arr[idx, idx2] = elpars[6] * 1e6
+        except:
+            for idx2 in range(nMaxwellians):
+                weights_arr[idx, idx2] = np.nan
+                means_arr[idx, idx2, :] = np.nan
+                covs_arr[idx, idx2, :, :] = np.nan
+                dens_arr[idx, idx2] = np.nan
+                tpar_arr[idx, idx2] = np.nan
+                tperp_arr[idx, idx2] = np.nan
 
     tavg_arr = uniform_filter1d(
         ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
