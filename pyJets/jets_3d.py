@@ -1503,7 +1503,7 @@ def make_gmm_timeseries(args):
         print(res)
         for idx2 in range(nMaxwellians):
             elpars = ellipse_params(
-                res[0][idx2], res[1][idx2], res[2][idx2], 2, rho, B
+                res[0][idx2], res[1][idx2], res[2][idx2], "z", rho, B
             )  # (mean_proj, width, height, angle, dens, Tpar, Tperp)
             print(elpars)
             weights_arr[idx, idx2] = res[0][idx2]
