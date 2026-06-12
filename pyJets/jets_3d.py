@@ -804,7 +804,7 @@ def jet_interval_gmm_timeseries(nMaxwellians):
         wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
     )
     create_dir_if_not_exist(
-        wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}/".format(nMaxwellians)
+        wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}".format(nMaxwellians)
     )
     create_dir_if_not_exist(
         wrkdir_DNR + "Figs/gmm_timeseries/koller/n{}".format(nMaxwellians)
