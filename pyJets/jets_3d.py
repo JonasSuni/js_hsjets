@@ -1561,7 +1561,7 @@ def make_gmm_timeseries(args):
         for idx2 in range(nMaxwellians):
             ax.plot(
                 gmm_tarr,
-                gmm_vars[idx2, idx],
+                gmm_vars[idx2][idx],
                 color=CB_color_cycle[idx2],
                 label="GMM {}".format(idx2),
             )
