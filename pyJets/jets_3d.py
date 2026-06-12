@@ -1555,6 +1555,7 @@ def make_gmm_timeseries(args):
         ]
         for idx in range(nMaxwellians)
     ]
+    print(gmm_vars)
     for idx, ax in enumerate(ax_list):
         ax.plot(full_tarr, full_vars[idx], linestyle="dashed", color="k", label="Bulk")
         for idx2 in range(nMaxwellians):
