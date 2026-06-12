@@ -1529,8 +1529,8 @@ def make_gmm_timeseries(args):
         "$j_{\\mathrm{m},x}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
         "$j_{\\mathrm{m},y}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
         "$j_{\\mathrm{m},z}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
-        "P_\\parallel\\,[\\mathrm{nPa}]",
-        "P_\\perp\\,[\\mathrm{nPa}]",
+        "$P_\\parallel\\,[\\mathrm{nPa}]$",
+        "$P_\\perp\\,[\\mathrm{nPa}]$",
     ]
 
     fig, ax_list = plt.subplots(
