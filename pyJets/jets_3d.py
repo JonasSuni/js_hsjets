@@ -1498,7 +1498,7 @@ def make_gmm_timeseries(args):
             * 1e-9
         )
         try:
-            res = get_gmm_params(nMaxwellians, ci, gmm_fnr)
+            res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
             for idx2 in range(nMaxwellians):
                 elpars = ellipse_params(
                     res[0][idx2], res[1][idx2], res[2][idx2], 2, rho, B
@@ -1555,7 +1555,6 @@ def make_gmm_timeseries(args):
         ]
         for idx in range(nMaxwellians)
     ]
-    print(gmm_vars)
     for idx, ax in enumerate(ax_list):
         ax.plot(full_tarr, full_vars[idx], linestyle="dashed", color="k", label="Bulk")
         for idx2 in range(nMaxwellians):
