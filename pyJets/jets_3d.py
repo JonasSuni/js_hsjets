@@ -1468,6 +1468,7 @@ def make_timeseries_1d_vdf_one(args):
 def make_gmm_timeseries(args):
 
     ci, coords, t0, t1, fnr, nMaxwellians, outdir = args
+    print("Plotting CI {} t0 {} t1 {} with nMax {}".format(ci, t0, t1, nMaxwellians))
 
     txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
     ts_data = np.loadtxt(
@@ -1498,7 +1499,6 @@ def make_gmm_timeseries(args):
             * 1e-9
         )
         try:
-            print(nMaxwellians, ci, int(gmm_fnr))
             res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
             for idx2 in range(nMaxwellians):
                 elpars = ellipse_params(
