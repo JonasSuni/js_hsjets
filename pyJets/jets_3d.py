@@ -1498,6 +1498,7 @@ def make_gmm_timeseries(args):
             * 1e-9
         )
         try:
+            print(nMaxwellians, ci, int(gmm_fnr))
             res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
             print(res)
             for idx2 in range(nMaxwellians):
