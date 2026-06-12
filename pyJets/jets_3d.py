@@ -1499,10 +1499,12 @@ def make_gmm_timeseries(args):
         )
         try:
             res = get_gmm_params(nMaxwellians, ci, int(gmm_fnr))
+            print(res)
             for idx2 in range(nMaxwellians):
                 elpars = ellipse_params(
                     res[0][idx2], res[1][idx2], res[2][idx2], 2, rho, B
                 )  # (mean_proj, width, height, angle, dens, Tpar, Tperp)
+                print(elpars)
                 weights_arr[idx, idx2] = res[0][idx2]
                 means_arr[idx, idx2, :] = res[1][idx2] * 1e3
                 covs_arr[idx, idx2, :, :] = res[2][idx2] * 1e6
@@ -1593,9 +1595,7 @@ def make_gmm_timeseries(args):
             ax.legend()
 
     ax_list[0].set_title(
-        "X,Y,Z = ({:.3f}, {:.3f}, {:.3f})".format(
-            coords[0] / r_e, coords[1] / r_e, coords[2] / r_e
-        )
+        "X,Y,Z = ({:.3f}, {:.3f}, {:.3f})".format(coords[0], coords[1], coords[2])
     )
     fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
     plt.close(fig)
