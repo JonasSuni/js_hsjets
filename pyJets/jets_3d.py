@@ -1593,7 +1593,7 @@ def make_gmm_timeseries(args):
             ax.legend()
 
     ax_list[0].set_title(
-        "X,Y,Z = ({:.3f}, {:.3f}, {:.3f}) $R_\\mathrm{E}$".format(
+        "X,Y,Z = ({:.3f}, {:.3f}, {:.3f})".format(
             coords[0] / r_e, coords[1] / r_e, coords[2] / r_e
         )
     )
