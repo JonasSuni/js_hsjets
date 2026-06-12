@@ -1480,18 +1480,125 @@ def make_gmm_timeseries(args):
     weights_arr = np.zeros((t1 - t0 + 1, nMaxwellians), dtype=float)
     means_arr = np.zeros((t1 - t0 + 1, nMaxwellians, 3), dtype=float)
     covs_arr = np.zeros((t1 - t0 + 1, nMaxwellians, 3, 3), dtype=float)
+    dens_arr = np.zeros((t1 - t0 + 1, nMaxwellians), dtype=float)
+    tpar_arr = np.zeros((t1 - t0 + 1, nMaxwellians), dtype=float)
+    tperp_arr = np.zeros((t1 - t0 + 1, nMaxwellians), dtype=float)
+    gmm_tarr = np.arange(t0, t1 + 1)
+    full_tarr = np.arange(600, 991 + 1)
     for idx, gmm_fnr in enumerate(range(t0, t1 + 1)):
+        rho = ts_data[0, gmm_fnr - 600] * 1e6
+        B = (
+            np.array(
+                [
+                    ts_data[6, gmm_fnr - 600],
+                    ts_data[7, gmm_fnr - 600],
+                    ts_data[8, gmm_fnr - 600],
+                ]
+            )
+            * 1e-9
+        )
         try:
             res = get_gmm_params(nMaxwellians, ci, gmm_fnr)
             for idx2 in range(nMaxwellians):
+                elpars = ellipse_params(
+                    res[0][idx2], res[1][idx2], res[2][idx2], 2, rho, B
+                )  # (mean_proj, width, height, angle, dens, Tpar, Tperp)
                 weights_arr[idx, idx2] = res[0][idx2]
-                means_arr[idx, idx2, :] = res[1][idx2]
-                covs_arr[idx, idx2, :, :] = res[2][idx2]
+                means_arr[idx, idx2, :] = res[1][idx2] * 1e3
+                covs_arr[idx, idx2, :, :] = res[2][idx2] * 1e6
+                dens_arr[idx, idx2] = elpars[4] * 1e6
+                tpar_arr[idx, idx2] = elpars[5] * 1e6
+                tperp_arr[idx, idx2] = elpars[6] * 1e6
         except:
             for idx2 in range(nMaxwellians):
                 weights_arr[idx, idx2] = np.nan
                 means_arr[idx, idx2, :] = np.nan
                 covs_arr[idx, idx2, :, :] = np.nan
+                dens_arr[idx, idx2] = np.nan
+                tpar_arr[idx, idx2] = np.nan
+                tperp_arr[idx, idx2] = np.nan
+
+    tavg_arr = uniform_filter1d(
+        ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
+    )
+    pdynx = m_p * ts_data[0] * 1e6 * ts_data[1] * 1e3 * ts_data[1] * 1e3 * 1e9
+    tavg_x_arr = uniform_filter1d(pdynx, 180, mode="constant", cval=np.nanmean(pdynx))
+
+    plot_labels = [
+        "$\\rho\\,[\\mathrm{cm^{-3}}]$",
+        "$j_{\\mathrm{m},x}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        "$j_{\\mathrm{m},y}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        "$j_{\\mathrm{m},z}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        "P_\\parallel\\,[\\mathrm{nPa}]",
+        "P_\\perp\\,[\\mathrm{nPa}]",
+    ]
+
+    fig, ax_list = plt.subplots(
+        len(plot_labels), 1, figsize=(10, 16), layout="compressed"
+    )
+    full_vars = [
+        ts_data[0, :],
+        m_p * ts_data[0, :] * 1e6 * ts_data[1, :] * 1e3,
+        m_p * ts_data[0, :] * 1e6 * ts_data[2, :] * 1e3,
+        m_p * ts_data[0, :] * 1e6 * ts_data[3, :] * 1e3,
+        kb * ts_data[0, :] * 1e6 * ts_data[14, :] * 1e6 / 1e-9,
+        kb * ts_data[0, :] * 1e6 * ts_data[15, :] * 1e6 / 1e-9,
+    ]
+    gmm_vars = [
+        [
+            dens_arr[:, idx] / 1e6,
+            m_p * dens_arr[:, idx] * means_arr[:, idx, 0],
+            m_p * dens_arr[:, idx] * means_arr[:, idx, 1],
+            m_p * dens_arr[:, idx] * means_arr[:, idx, 2],
+            kb * dens_arr[:, idx] * tpar_arr[:, idx] / 1e-9,
+            kb * dens_arr[:, idx] * tperp_arr[:, idx] / 1e-9,
+        ]
+        for idx in range(nMaxwellians)
+    ]
+    for idx, ax in enumerate(ax_list):
+        ax.plot(full_tarr, full_vars[idx], linestyle="dashed", color="k", label="Bulk")
+        for idx2 in range(nMaxwellians):
+            ax.plot(
+                gmm_tarr,
+                gmm_vars[idx2, idx],
+                color=CB_color_cycle[idx2],
+                label="GMM {}".format(idx2),
+            )
+        ax.set_xlim(t0, t1)
+        ax.set_ylabel(plot_labels[idx])
+        ax.set_xlabel("$t\\,[\\mathrm{s}]$")
+        ax.label_outer()
+        ax.axvline(fnr, linestyle="dashed")
+        ax.fill_between(
+            full_tarr,
+            0,
+            1,
+            where=ts_data[5, :] > 2 * tavg_arr,
+            color="red",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
+        ax.fill_between(
+            full_tarr,
+            0,
+            1,
+            where=pdynx > 3 * tavg_x_arr,
+            color="green",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
+        if idx == 0:
+            ax.legend()
+
+    ax_list[0].set_title(
+        "X,Y,Z = ({:.3f}, {:.3f}, {:.3f}) $R_\\mathrm{E}$".format(
+            coords[0] / r_e, coords[1] / r_e, coords[2] / r_e
+        )
+    )
+    fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
+    plt.close(fig)
 
 
 def make_timeseries_global_vdf_one(args):
