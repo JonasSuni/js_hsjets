@@ -3093,7 +3093,7 @@ def make_mp_map_one(args):
         seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
 
         vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
-            vlsvobj,
+            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             streamline_seeds=seedpoints,
             dl=100e3,
             iterations=1000,
@@ -3101,7 +3101,7 @@ def make_mp_map_one(args):
             x_point_n=50,
             sector_n=50,
         )
-        mp_xyz = vertices/r_e
+        mp_xyz = vertices / r_e
 
     mp_xyz = mp_xyz[~np.isnan(mp_xyz).any(axis=1), :]
     print("Flowline tracing done for fnr {}".format(fnr))
@@ -3110,6 +3110,7 @@ def make_mp_map_one(args):
     np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
     if not coords_exist:
         np.savetxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz)
+
 
 def make_bs_map_one(args):
 
