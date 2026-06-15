@@ -3065,7 +3065,53 @@ def bs_trace(vlsvobj, seedpoints, stopcond):
     return np.array(respoints)
 
 
-def make_bs_mp_map_one(args):
+def make_mp_map_one(args):
+
+    fnr, coords_exist, vcache = args
+
+    outdir = wrkdir_DNR + "bs_mp"
+    create_dir_if_not_exist(outdir)
+    create_dir_if_not_exist(wrkdir_DNR + "raw_mp_coords")
+
+    if coords_exist:
+        mp_xyz = np.loadtxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(int(fnr)))
+    else:
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+            indexer="dict",
+        )
+        if vcache:
+            vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
+
+        yarr = np.linspace(-10 * r_e, 10 * r_e, 21)
+        zarr = np.linspace(-10 * r_e, 10 * r_e, 21)
+
+        ymesh, zmesh = np.meshgrid(yarr, zarr)
+        yflat = ymesh.flatten()
+        zflat = zmesh.flatten()
+
+        seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
+
+        vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
+            vlsvobj,
+            streamline_seeds=seedpoints,
+            dl=100e3,
+            iterations=1000,
+            end_x=-10 * r_e,
+            x_point_n=50,
+            sector_n=50,
+        )
+        mp_xyz = vertices/r_e
+
+    mp_xyz = mp_xyz[~np.isnan(mp_xyz).any(axis=1), :]
+    print("Flowline tracing done for fnr {}".format(fnr))
+    mp_coeff = polyfit_2d(mp_xyz)
+
+    np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
+    if not coords_exist:
+        np.savetxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz)
+
+def make_bs_map_one(args):
 
     fnr, coords_exist, ms, vcache = args
 
@@ -3141,10 +3187,10 @@ def make_bs_mp_map_all(
 
     if n_processes > 1:
         with Pool(processes=n_processes) as pool:
-            pool.map(make_bs_mp_map_one, args_list)
+            pool.map(make_bs_map_one, args_list)
     else:
         for args in args_list:
-            make_bs_mp_map_one(args)
+            make_bs_map_one(args)
 
     make_single_bs_file(ms=ms)
 
