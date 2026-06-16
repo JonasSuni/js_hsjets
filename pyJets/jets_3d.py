@@ -3101,7 +3101,7 @@ def make_mp_map_one(args):
             streamline_seeds=seedpoints,
             # dl=100e3,
             # iterations=1000,
-            # end_x=-10 * r_e,
+            end_x=0 * r_e,
             # x_point_n=50,
             # sector_n=50,
         )
