@@ -3099,6 +3099,7 @@ def make_mp_map_one(args):
             print("Processing chunk {:d} of {:d}".format(idx, nchunks - 1))
             vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
                 bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+                vlsvreader=vlsvobj,
                 streamline_seeds=seedpoints[idx * 100 : (idx + 1) * 100, :],
                 dl=100e3,
                 iterations=1000,
