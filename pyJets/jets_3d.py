@@ -3082,6 +3082,7 @@ def make_mp_map_one(args):
         )
         if vcache:
             vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
+            vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
 
         yarr = np.linspace(-10 * r_e, 10 * r_e, 21)
         zarr = np.linspace(-10 * r_e, 10 * r_e, 21)
