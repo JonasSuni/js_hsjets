@@ -3090,18 +3090,23 @@ def make_mp_map_one(args):
         yflat = ymesh.flatten()
         zflat = zmesh.flatten()
 
-        seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
+        mp_xyz = np.zeros((yflat.size, 3), dtype=float)
 
-        vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
-            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
-            streamline_seeds=seedpoints,
-            dl=100e3,
-            iterations=1000,
-            end_x=-10 * r_e,
-            x_point_n=50,
-            sector_n=50,
-        )
-        mp_xyz = vertices / r_e
+        seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
+        nchunks = int(np.ceil(yflat.size / 100))
+
+        for idx in range(nchunks):
+            print("Processing chunk {:d} of {:d}".format(idx, nchunks - 1))
+            vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
+                bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+                streamline_seeds=seedpoints[idx * 100 : (idx + 1) * 100, :],
+                dl=100e3,
+                iterations=1000,
+                end_x=-10 * r_e,
+                x_point_n=50,
+                sector_n=50,
+            )
+            mp_xyz[idx * 100 : (idx + 1) * 100, :] = vertices / r_e
 
     mp_xyz = mp_xyz[~np.isnan(mp_xyz).any(axis=1), :]
     print("Flowline tracing done for fnr {}".format(fnr))
@@ -3155,6 +3160,7 @@ def make_bs_map_one(args):
         else:
             stopcond = stopcond_rho
         for idx in range(nchunks):
+            print("Processing chunk {:d} of {:d}".format(idx, nchunks - 1))
             bs_xyz[idx * 100 : (idx + 1) * 100, :] = (
                 bs_trace(vlsvobj, seedpoints[idx * 100 : (idx + 1) * 100, :], stopcond)
                 / r_e
