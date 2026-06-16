@@ -3099,11 +3099,11 @@ def make_mp_map_one(args):
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             vlsvreader=vlsvobj,
             streamline_seeds=seedpoints,
-            dl=100e3,
-            iterations=1000,
-            end_x=-10 * r_e,
-            x_point_n=50,
-            sector_n=50,
+            # dl=100e3,
+            # iterations=1000,
+            # end_x=-10 * r_e,
+            # x_point_n=50,
+            # sector_n=50,
         )
         mp_xyz = vertices / r_e
 
