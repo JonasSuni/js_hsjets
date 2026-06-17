@@ -3102,7 +3102,7 @@ def make_mp_map_one(args):
             # seeds_n=50,
             # seeds_x0=20 * r_e,
             dl=500e3,
-            iterations=1500,
+            iterations=500,
             end_x=0 * r_e,
             x_point_n=20,
             sector_n=18,
