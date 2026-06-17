@@ -3103,9 +3103,9 @@ def make_mp_map_one(args):
             # seeds_x0=20 * r_e,
             dl=500e3,
             iterations=1500,
-            end_x=-10 * r_e,
-            x_point_n=100,
-            sector_n=36 * 2,
+            end_x=0 * r_e,
+            x_point_n=20,
+            sector_n=18,
         )
         mp_xyz = vertices / r_e
 
