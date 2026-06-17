@@ -2915,7 +2915,6 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
 
 def bs_normal(coeff, y, z):
 
-    x = polyval_2d(coeff, y, z)
     nx = 1
     ny = -(
         coeff[1]
