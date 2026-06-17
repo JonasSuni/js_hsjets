@@ -3099,7 +3099,7 @@ def make_mp_map_one(args):
             vlsvreader=vlsvobj,
             # streamline_seeds=seedpoints,
             seeds_range=[-10 * r_e, 10 * r_e],
-            seeds_n=2500,
+            seeds_n=50,
             seeds_x0=20 * r_e,
             # dl=100e3,
             # iterations=1000,
