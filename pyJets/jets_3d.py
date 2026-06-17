@@ -3083,7 +3083,7 @@ def make_mp_map_one(args):
             vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
 
-        yarr = np.linspace(-5 * r_e, 5 * r_e, 50)
+        yarr = np.linspace(-8 * r_e, 2 * r_e, 50)
         zarr = np.linspace(-5 * r_e, 5 * r_e, 50)
 
         ymesh, zmesh = np.meshgrid(yarr, zarr)
