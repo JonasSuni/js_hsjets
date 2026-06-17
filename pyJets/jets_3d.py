@@ -3097,7 +3097,10 @@ def make_mp_map_one(args):
         vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             vlsvreader=vlsvobj,
-            streamline_seeds=seedpoints,
+            # streamline_seeds=seedpoints,
+            seeds_range=[-10 * r_e, 10 * r_e],
+            seeds_n=2500,
+            seeds_x0=20 * r_e,
             # dl=100e3,
             # iterations=1000,
             end_x=1 * r_e,
