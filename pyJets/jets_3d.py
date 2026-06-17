@@ -3083,8 +3083,8 @@ def make_mp_map_one(args):
             vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
 
-        yarr = np.linspace(-10 * r_e, 5 * r_e, 75)
-        zarr = np.linspace(-5 * r_e, 5 * r_e, 50)
+        yarr = np.linspace(-10 * r_e, 5 * r_e, 60)
+        zarr = np.linspace(-5 * r_e, 5 * r_e, 30)
 
         ymesh, zmesh = np.meshgrid(yarr, zarr)
         yflat = ymesh.flatten()
@@ -3103,7 +3103,7 @@ def make_mp_map_one(args):
             # seeds_x0=20 * r_e,
             dl=500e3,
             iterations=1500,
-            end_x=-10 * r_e,
+            end_x=0 * r_e,
             x_point_n=20,
             sector_n=18,
         )
