@@ -3083,8 +3083,8 @@ def make_mp_map_one(args):
             vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
 
-        yarr = np.linspace(-10 * r_e, 10 * r_e, 50)
-        zarr = np.linspace(-10 * r_e, 10 * r_e, 50)
+        yarr = np.linspace(-5 * r_e, 5 * r_e, 50)
+        zarr = np.linspace(-5 * r_e, 5 * r_e, 50)
 
         ymesh, zmesh = np.meshgrid(yarr, zarr)
         yflat = ymesh.flatten()
@@ -3097,10 +3097,10 @@ def make_mp_map_one(args):
         vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
             bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             vlsvreader=vlsvobj,
-            # streamline_seeds=seedpoints,
-            seeds_range=[-10 * r_e, 10 * r_e],
-            seeds_n=50,
-            seeds_x0=20 * r_e,
+            streamline_seeds=seedpoints,
+            # seeds_range=[-10 * r_e, 10 * r_e],
+            # seeds_n=50,
+            # seeds_x0=20 * r_e,
             # dl=100e3,
             # iterations=1000,
             end_x=1 * r_e,
