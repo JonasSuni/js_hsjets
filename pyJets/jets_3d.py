@@ -3234,7 +3234,7 @@ def make_bs_mp_map_all(
         make_single_bs_mp_file(kind="rho")
 
 
-def plot_bs_map_all():
+def plot_bs_mp_map_all():
 
     fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
     y_arr = np.linspace(-20, 20, 101)
