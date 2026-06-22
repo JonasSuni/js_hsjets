@@ -2852,7 +2852,7 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
     coord = np.array([x0, y, z])
     fnr = int(vlsvobj.read_parameter("time"))
     coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
-    n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+    n = bs_mp_normal(coeff, coord[1] / r_e, coord[2] / r_e)
 
     iter = 0
 
@@ -2868,7 +2868,7 @@ def find_bs_cart_ms(vlsvobj, x0, y, z, dr=1000e3, maxiter=1000):
 
     while Mms > 1:
         coord = coord + v * dt
-        n = bs_normal(coeff, coord[1] / r_e, coord[2] / r_e)
+        n = bs_mp_normal(coeff, coord[1] / r_e, coord[2] / r_e)
         # print("Reading variables from cache for fnr {}".format(fnr))
         vms = vlsvobj.read_interpolated_variable("vg_vms", coord)
 
@@ -2913,7 +2913,7 @@ def find_mp(vlsvobj, r0, theta, phi, dr=1000e3, tol=1e-3, maxiter=1000):
     return coord
 
 
-def bs_normal(coeff, y, z):
+def bs_mp_normal(coeff, y, z):
 
     nx = 1
     ny = -(
@@ -2991,28 +2991,40 @@ def polyval_bs_at_time(fnr, y, z, ms=False):
     return polyval_2d(coeff, y, z)
 
 
-def make_single_bs_file(ms=False):
+def make_single_bs_mp_file(kind):
 
     arr = np.zeros((392, 10), dtype=float)
     for idx, fnr in enumerate(np.arange(600, 991 + 0.1, 1, dtype=int)):
-        if ms:
+        if kind == "ms":
             data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
-        else:
+        elif kind == "rho":
             data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+        elif kind == "mp":
+            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.mp".format(fnr))
         arr[idx, 0] = fnr
         arr[idx, 1:] = data
 
-    if ms:
+    if kind == "ms":
         fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
-    else:
+    elif kind == "rho":
         fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+    elif kind == "mp":
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/mp_600_991.dat"
 
-    np.savetxt(
-        fname,
-        arr,
-        header="2D 2nd-degree polynomial fit coefficients of the bow shock at different times (column 1)\n"
-        + "columns 2-10 = c0-c8 s.t. X = c0 + c1*Y + c2*Z + c3*Y^2 + c4*Z*Y^2 + c5*Z^2*Y^2 + c6*Z^2*Y + c7*Z^2 + c8*Z*Y",
-    )
+    if kind != "mp":
+        np.savetxt(
+            fname,
+            arr,
+            header="2D 2nd-degree polynomial fit coefficients of the bow shock at different times (column 1)\n"
+            + "columns 2-10 = c0-c8 s.t. X = c0 + c1*Y + c2*Z + c3*Y^2 + c4*Z*Y^2 + c5*Z^2*Y^2 + c6*Z^2*Y + c7*Z^2 + c8*Z*Y",
+        )
+    else:
+        np.savetxt(
+            fname,
+            arr,
+            header="2D 2nd-degree polynomial fit coefficients of the magnetopause at different times (column 1)\n"
+            + "columns 2-10 = c0-c8 s.t. X = c0 + c1*Y + c2*Z + c3*Y^2 + c4*Z*Y^2 + c5*Z^2*Y^2 + c6*Z^2*Y + c7*Z^2 + c8*Z*Y",
+        )
 
 
 def stopcond_rho(vlsvReader, points, vars):
@@ -3028,7 +3040,7 @@ def stopcond_ms(vlsvReader, points, vars):
     coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
     n = np.array(
         [
-            bs_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
+            bs_mp_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
             for idx in range(points.shape[0])
         ]
     )
@@ -3216,7 +3228,10 @@ def make_bs_mp_map_all(
         for args in args_list:
             make_bs_map_one(args)
 
-    make_single_bs_file(ms=ms)
+    if ms:
+        make_single_bs_mp_file(kind="ms")
+    else:
+        make_single_bs_mp_file(kind="rho")
 
 
 def plot_bs_map_all():
@@ -3229,23 +3244,52 @@ def plot_bs_map_all():
     create_dir_if_not_exist(outdir)
 
     for fnr in fnr_arr:
-        coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
         coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
-        rawpoints = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(fnr))
-        interpolator = LinearNDInterpolator(rawpoints[:, 1:], rawpoints[:, 0])
-        x_of_y_rho = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
-        x_of_z_rho = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
-        x_of_y = interpolator(y_arr, np.zeros_like(z_arr))
-        x_of_z = interpolator(np.zeros_like(y_arr), z_arr)
-        x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
-        x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
+        rawpoints_rho = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(fnr))
+        interpolator_rho = LinearNDInterpolator(
+            rawpoints_rho[:, 1:], rawpoints_rho[:, 0]
+        )
+        rho_x_of_y = interpolator_rho(y_arr, np.zeros_like(z_arr))
+        rho_x_of_z = interpolator_rho(np.zeros_like(y_arr), z_arr)
+        rho_x_of_y_fit = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
+        rho_x_of_z_fit = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
+
+        coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(fnr))
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+        ms_x_of_y = interpolator_ms(y_arr, np.zeros_like(z_arr))
+        ms_x_of_z = interpolator_ms(np.zeros_like(y_arr), z_arr)
+        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
+        ms_x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
+
+        coeff_mp = np.loadtxt(wrkdir_DNR + "bs_mp/{}.mp".format(fnr))
+        rawpoints_mp = np.loadtxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(fnr))
+        interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
+        mp_x_of_y = interpolator_mp(y_arr, np.zeros_like(z_arr))
+        mp_x_of_z = interpolator_mp(np.zeros_like(y_arr), z_arr)
+        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.zeros_like(z_arr))
+        mp_x_of_z_fit = polyval_2d(coeff_mp, np.zeros_like(y_arr), z_arr)
+
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
-        ax_list[0].plot(x_of_y, y_arr, color="k")
-        ax_list[1].plot(x_of_z, z_arr, color="k")
-        ax_list[0].plot(x_of_y_fit, y_arr, color="red")
-        ax_list[1].plot(x_of_z_fit, z_arr, color="red")
-        ax_list[0].plot(x_of_y_rho, y_arr, color="red", linestyle="dashed")
-        ax_list[1].plot(x_of_z_rho, z_arr, color="red", linestyle="dashed")
+
+        ax_list[0].plot(ms_x_of_y, y_arr, "o", color="k")
+        ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k")
+
+        ax_list[0].plot(rho_x_of_y, y_arr, "o", color="red")
+        ax_list[0].plot(rho_x_of_y_fit, y_arr, color="red")
+
+        ax_list[0].plot(mp_x_of_y, y_arr, "o", color="k")
+        ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k")
+
+        ax_list[1].plot(ms_x_of_z, z_arr, "o", color="k")
+        ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k")
+
+        ax_list[1].plot(rho_x_of_z, z_arr, "o", color="red")
+        ax_list[1].plot(rho_x_of_z_fit, z_arr, color="red")
+
+        ax_list[1].plot(mp_x_of_z, z_arr, "o", color="k")
+        ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k")
+
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
@@ -3256,7 +3300,7 @@ def plot_bs_map_all():
 
         fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
-        print("Plotted bow shock and fit for fnr {}".format(fnr))
+        print("Plotted bow shock, magnetopause and fits for fnr {}".format(fnr))
 
 
 def make_shell_map_one(args):
