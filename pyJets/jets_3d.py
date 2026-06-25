@@ -3173,8 +3173,8 @@ def make_bs_map_one(args):
             vlsvobj.read_variable_to_cache("vg_vms", "pass")
         # print("Done reading variables to cache for fnr {}".format(fnr))
 
-        yarr = np.linspace(-15 * r_e, 15 * r_e, 100)
-        zarr = np.linspace(-15 * r_e, 15 * r_e, 100)
+        yarr = np.linspace(-15 * r_e, 15 * r_e, 200)
+        zarr = np.linspace(-15 * r_e, 15 * r_e, 200)
 
         ymesh, zmesh = np.meshgrid(yarr, zarr)
         yflat = ymesh.flatten()
