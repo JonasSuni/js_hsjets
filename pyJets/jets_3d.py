@@ -81,6 +81,7 @@ wrkdir_DNR = wrkdir_NEW
 wrkdir_other = os.environ["WRK"] + "/"
 
 bulkpath_FIF = "/turso/group/spacephysics/vlasiator/data/L0/3D/FIF/bulk1/"
+bulkpath_FIL = "/turso/group/spacephysics/vlasiator/data/L0/3D/FIL/bulk1/"
 
 plot_B_vdfs = False
 slicethick_g = 1
@@ -2976,40 +2977,44 @@ def polyval_2d(coeff, y, z):
     )
 
 
-def polyval_bs_at_time(fnr, y, z, ms=False):
+def polyval_bs_at_time(fnr, y, z, ms=False, runid="FIF"):
 
     if ms:
         fit = np.loadtxt(
-            "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(runid)
         )
     else:
         fit = np.loadtxt(
-            "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(runid)
         )
     coeff = fit[int(fnr) - 600, 1:]
 
     return polyval_2d(coeff, y, z)
 
 
-def make_single_bs_mp_file(kind):
+def make_single_bs_mp_file(kind,runid="FIF"):
+
+    extrafix = ""
+    if runid == "FIL":
+        extrafix = "/FIL/"
 
     arr = np.zeros((392, 10), dtype=float)
     for idx, fnr in enumerate(np.arange(600, 991 + 0.1, 1, dtype=int)):
         if kind == "ms":
-            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
+            data = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
         elif kind == "rho":
-            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+            data = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs".format(fnr))
         elif kind == "mp":
-            data = np.loadtxt(wrkdir_DNR + "bs_mp/{}.mp".format(fnr))
+            data = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
         arr[idx, 0] = fnr
         arr[idx, 1:] = data
 
     if kind == "ms":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat.ms"
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(runid)
     elif kind == "rho":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/bs_600_991.dat"
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(runid)
     elif kind == "mp":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/FIF/mp_600_991.dat"
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/mp_600_991.dat".format(runid)
 
     if kind != "mp":
         np.savetxt(
@@ -3037,7 +3042,7 @@ def stopcond_rho(vlsvReader, points, vars):
 def stopcond_ms(vlsvReader, points, vars):
 
     fnr = int(vlsvReader.read_parameter("time"))
-    coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
+    coeff = np.loadtxt(wrkdir_DNR + extrafix_g + "bs_mp/{}.bs".format(fnr))
     n = np.array(
         [
             bs_mp_normal(coeff, points[idx, 1] / r_e, points[idx, 2] / r_e)
@@ -3078,17 +3083,24 @@ def bs_trace(vlsvobj, seedpoints, stopcond):
 
 def make_mp_map_one(args):
 
-    fnr, coords_exist, vcache = args
+    fnr, coords_exist, vcache, runid = args
 
-    outdir = wrkdir_DNR + "bs_mp"
+    if runid == "FIF":
+        bulkpath = bulkpath_FIF
+        extrafix = ""
+    elif runid == "FIL":
+        bulkpath = bulkpath_FIL
+        extrafix = "/FIL/"
+
+    outdir = wrkdir_DNR + extrafix + "bs_mp"
     create_dir_if_not_exist(outdir)
-    create_dir_if_not_exist(wrkdir_DNR + "raw_mp_coords")
+    create_dir_if_not_exist(wrkdir_DNR + extrafix + "raw_mp_coords")
 
     if coords_exist:
         mp_xyz = np.loadtxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(int(fnr)))
     else:
         vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+            bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             indexer="dict",
         )
         if vcache:
@@ -3107,7 +3119,7 @@ def make_mp_map_one(args):
         seedpoints = np.array([20 * r_e * np.ones_like(yflat), yflat, zflat]).T
 
         vertices, surface = pt.calculations.find_magnetopause_sw_streamline_3d(
-            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+            bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             vlsvreader=vlsvobj,
             streamline_seeds=seedpoints,
             # seeds_range=[-10 * r_e, 10 * r_e],
@@ -3143,27 +3155,37 @@ def make_mp_map_one(args):
 
     np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
     if not coords_exist:
-        np.savetxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz)
+        np.savetxt(wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz)
 
 
 def make_bs_map_one(args):
 
-    fnr, coords_exist, ms, vcache = args
+    fnr, coords_exist, ms, vcache, runid = args
 
-    outdir = wrkdir_DNR + "bs_mp"
+    if runid == "FIF":
+        bulkpath = bulkpath_FIF
+        extrafix = ""
+    elif runid == "FIL":
+        bulkpath = bulkpath_FIL
+        extrafix = "/FIL/"
+
+    global extrafix_g
+    extrafix_g = extrafix
+
+    outdir = wrkdir_DNR + extrafix + "bs_mp"
     create_dir_if_not_exist(outdir)
-    create_dir_if_not_exist(wrkdir_DNR + "raw_bs_coords")
+    create_dir_if_not_exist(wrkdir_DNR + extrafix + "raw_bs_coords")
 
     if coords_exist:
         if ms:
             bs_xyz = np.loadtxt(
-                wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(int(fnr))
+                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(int(fnr))
             )
         else:
-            bs_xyz = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)))
+            bs_xyz = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr)))
     else:
         vlsvobj = pt.vlsvfile.VlsvReader(
-            bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
+            bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
             indexer="dict",
         )
         # print("Reading variables to cache for fnr {}".format(fnr))
@@ -3206,20 +3228,20 @@ def make_bs_map_one(args):
     if not coords_exist:
         if ms:
             np.savetxt(
-                wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(int(fnr)), bs_xyz
+                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(int(fnr)), bs_xyz
             )
         else:
-            np.savetxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
+            np.savetxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
 
 
 def make_bs_mp_map_all(
-    fnr0, fnr1, n_processes=16, coords_exist=False, ms=False, vcache=True
+    fnr0, fnr1, n_processes=16, coords_exist=False, ms=False, vcache=True, runid="FIF"
 ):
 
     fnr_arr = np.arange(fnr0, fnr1 + 0.1, 1, dtype=int)
     args_list = []
     for idx in range(fnr_arr.size):
-        args_list.append([fnr_arr[idx], coords_exist, ms, vcache])
+        args_list.append([fnr_arr[idx], coords_exist, ms, vcache, runid])
 
     if n_processes > 1:
         with Pool(processes=n_processes) as pool:
@@ -3234,18 +3256,23 @@ def make_bs_mp_map_all(
         make_single_bs_mp_file(kind="rho")
 
 
-def plot_bs_mp_map_all():
+def plot_bs_mp_map_all(runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
 
     fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
     y_arr = np.linspace(-20, 20, 101)
     z_arr = np.linspace(-20, 20, 101)
 
-    outdir = wrkdir_DNR + "Figs/bs_mp"
+    outdir = wrkdir_DNR + extrafix + "Figs/bs_mp"
     create_dir_if_not_exist(outdir)
 
     for fnr in fnr_arr:
-        coeff = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs".format(fnr))
-        rawpoints_rho = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords".format(fnr))
+        coeff = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs".format(fnr))
+        rawpoints_rho = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(fnr))
         interpolator_rho = LinearNDInterpolator(
             rawpoints_rho[:, 1:], rawpoints_rho[:, 0]
         )
@@ -3254,16 +3281,16 @@ def plot_bs_mp_map_all():
         rho_x_of_y_fit = polyval_2d(coeff, y_arr, np.zeros_like(z_arr))
         rho_x_of_z_fit = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
 
-        coeff_ms = np.loadtxt(wrkdir_DNR + "bs_mp/{}.bs.ms".format(fnr))
-        rawpoints_ms = np.loadtxt(wrkdir_DNR + "raw_bs_coords/{}.coords.ms".format(fnr))
+        coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr))
         interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
         ms_x_of_y = interpolator_ms(y_arr, np.zeros_like(z_arr))
         ms_x_of_z = interpolator_ms(np.zeros_like(y_arr), z_arr)
         ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
         ms_x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
 
-        coeff_mp = np.loadtxt(wrkdir_DNR + "bs_mp/{}.mp".format(fnr))
-        rawpoints_mp = np.loadtxt(wrkdir_DNR + "raw_mp_coords/{}.coords".format(fnr))
+        coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
+        rawpoints_mp = np.loadtxt(wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr))
         interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
         mp_x_of_y = interpolator_mp(y_arr, np.zeros_like(z_arr))
         mp_x_of_z = interpolator_mp(np.zeros_like(y_arr), z_arr)
