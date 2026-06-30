@@ -3278,6 +3278,65 @@ def make_bs_mp_map_all(
         make_single_bs_mp_file(kind="rho")
 
 
+def plot_raw_bs(runid="FIF", interpolate=True):
+
+    if runid == "FIF":
+        extrafix = ""
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+    y_arr = np.linspace(-15, 15, 201)
+    z_arr = np.linspace(-15, 15, 201)
+
+    outdir = wrkdir_DNR + extrafix + "Figs/raw_bs"
+    create_dir_if_not_exist(outdir)
+
+    ymesh, zmesh = np.meshgrid(y_arr, z_arr)
+
+    yflat = ymesh.flatten()
+    zflat = zmesh.flatten()
+
+    for fnr in fnr_arr:
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+        )
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+        ms_x_of_yz = interpolator_ms(yflat, zflat)
+
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+        if interpolate:
+            im = ax.pcolormesh(
+                ymesh,
+                zmesh,
+                ms_x_of_yz,
+                shading="nearest",
+                cmap="batlow",
+                vmin=6,
+                vmax=20,
+            )
+        else:
+            im = ax.scatter(
+                rawpoints_ms[:, 1],
+                rawpoints_ms[:, 2],
+                c=rawpoints_ms[:, 0],
+                cmap="batlow",
+                vmin=6,
+                vmax=20,
+                marker="o",
+            )
+        plt.colorbar(im, ax=ax, label="BS x coordinate [RE]")
+        ax.set_xlim(-15, 15)
+        ax.set_ylim(-15, 15)
+        ax.set_xlabel("Y [RE]")
+        ax.set_ylabel("Z [RE]")
+        ax.set_title("t = {}s".format(fnr))
+
+        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        print("Plotted raw bow shock for fnr {}".format(fnr))
+
+
 def plot_bs_deflection(runid="FIF", interpolate=True):
 
     if runid == "FIF":
@@ -3327,13 +3386,15 @@ def plot_bs_deflection(runid="FIF", interpolate=True):
             # print(rawpoints_ms[:, 1].shape)
             # print(rawpoints_ms[:, 2].shape)
             # print(var_alt.shape)
-            im = ax.scatter(rawpoints_ms[:, 1],
+            im = ax.scatter(
+                rawpoints_ms[:, 1],
                 rawpoints_ms[:, 2],
                 c=var_alt,
                 cmap="vik",
                 vmin=-1,
                 vmax=1,
-                marker="o")
+                marker="o",
+            )
         plt.colorbar(im, ax=ax, label="BS deflection [RE]")
         ax.set_xlim(-15, 15)
         ax.set_ylim(-15, 15)
