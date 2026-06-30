@@ -3278,6 +3278,54 @@ def make_bs_mp_map_all(
         make_single_bs_mp_file(kind="rho")
 
 
+def plot_bs_deflection(runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+    y_arr = np.linspace(-20, 20, 201)
+    z_arr = np.linspace(-20, 20, 201)
+
+    outdir = wrkdir_DNR + extrafix + "Figs/bs_deflec"
+    create_dir_if_not_exist(outdir)
+
+    ymesh, zmesh = np.meshgrid(y_arr, z_arr)
+
+    yflat = ymesh.flatten()
+    zflat = zmesh.flatten()
+
+    for fnr in fnr_arr:
+        coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+        )
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+        ms_x_of_yz = interpolator_ms(yflat, zflat)
+        ms_x_of_yz_fit = polyval_2d(coeff_ms, yflat, zflat)
+
+        fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+        ax.pcolormesh(
+            ms_x_of_yz - ms_x_of_yz_fit,
+            yflat,
+            zflat,
+            shading="nearest",
+            cmap="vik",
+            vmin=-0.1,
+            vmax=0.1,
+        )
+        ax.set_xlim(-20, 20)
+        ax.set_ylim(-20, 20)
+        ax.set_xlabel("Y")
+        ax.set_ylabl("Z")
+
+        fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        print("Plotted bow shock deflection for fnr {}".format(fnr))
+
+
 def plot_bs_mp_map_all(runid="FIF"):
 
     if runid == "FIF":
@@ -3286,8 +3334,8 @@ def plot_bs_mp_map_all(runid="FIF"):
     elif runid == "FIL":
         extrafix = "/FIL/"
         fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
-    y_arr = np.linspace(-20, 20, 101)
-    z_arr = np.linspace(-20, 20, 101)
+    y_arr = np.linspace(-20, 20, 201)
+    z_arr = np.linspace(-20, 20, 201)
 
     outdir = wrkdir_DNR + extrafix + "Figs/bs_mp"
     create_dir_if_not_exist(outdir)
@@ -3327,22 +3375,22 @@ def plot_bs_mp_map_all(runid="FIF"):
 
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
 
-        ax_list[0].plot(ms_x_of_y, y_arr, "o", color="k")
+        ax_list[0].plot(ms_x_of_y, y_arr, ".", color="k")
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k")
 
-        ax_list[0].plot(rho_x_of_y, y_arr, "o", color="red")
+        ax_list[0].plot(rho_x_of_y, y_arr, ".", color="red")
         ax_list[0].plot(rho_x_of_y_fit, y_arr, color="red")
 
-        ax_list[0].plot(mp_x_of_y, y_arr, "o", color="k")
+        ax_list[0].plot(mp_x_of_y, y_arr, ".", color="k")
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k")
 
-        ax_list[1].plot(ms_x_of_z, z_arr, "o", color="k")
+        ax_list[1].plot(ms_x_of_z, z_arr, ".", color="k")
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k")
 
-        ax_list[1].plot(rho_x_of_z, z_arr, "o", color="red")
+        ax_list[1].plot(rho_x_of_z, z_arr, ".", color="red")
         ax_list[1].plot(rho_x_of_z_fit, z_arr, color="red")
 
-        ax_list[1].plot(mp_x_of_z, z_arr, "o", color="k")
+        ax_list[1].plot(mp_x_of_z, z_arr, ".", color="k")
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k")
 
         for ax in ax_list:
