@@ -3309,9 +3309,9 @@ def plot_bs_deflection(runid="FIF"):
         fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
         var = np.reshape(ms_x_of_yz - ms_x_of_yz_fit, ymesh.shape)
         ax.pcolormesh(
-            var,
             ymesh,
             zmesh,
+            var,
             shading="nearest",
             cmap="vik",
             vmin=-0.1,
