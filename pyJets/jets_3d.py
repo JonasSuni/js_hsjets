@@ -3278,7 +3278,7 @@ def make_bs_mp_map_all(
         make_single_bs_mp_file(kind="rho")
 
 
-def plot_bs_deflection(runid="FIF"):
+def plot_bs_deflection(runid="FIF", interpolate=True):
 
     if runid == "FIF":
         extrafix = ""
@@ -3306,17 +3306,33 @@ def plot_bs_deflection(runid="FIF"):
         ms_x_of_yz = interpolator_ms(yflat, zflat)
         ms_x_of_yz_fit = polyval_2d(coeff_ms, yflat, zflat)
 
+        ms_x_of_yz_fit_at_raw = polyval_2d(
+            coeff_ms, rawpoints_ms[:, 1], rawpoints_ms[:, 2]
+        )
+        var_alt = rawpoints_ms[:, 0] - ms_x_of_yz_fit_at_raw
+
         fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
         var = np.reshape(ms_x_of_yz - ms_x_of_yz_fit, ymesh.shape)
-        im = ax.pcolormesh(
-            ymesh,
-            zmesh,
-            var,
-            shading="nearest",
-            cmap="vik",
-            vmin=-1,
-            vmax=1,
-        )
+        if interpolate:
+            im = ax.pcolormesh(
+                ymesh,
+                zmesh,
+                var,
+                shading="nearest",
+                cmap="vik",
+                vmin=-1,
+                vmax=1,
+            )
+        else:
+            im = ax.pcolormesh(
+                rawpoints_ms[:, 1],
+                rawpoints_ms[:, 2],
+                var_alt,
+                shading="nearest",
+                cmap="vik",
+                vmin=-1,
+                vmax=1,
+            )
         plt.colorbar(im, ax=ax, label="BS deflection [RE]")
         ax.set_xlim(-15, 15)
         ax.set_ylim(-15, 15)
