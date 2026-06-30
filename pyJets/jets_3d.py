@@ -3308,19 +3308,20 @@ def plot_bs_deflection(runid="FIF"):
 
         fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
         var = np.reshape(ms_x_of_yz - ms_x_of_yz_fit, ymesh.shape)
-        ax.pcolormesh(
+        im, = ax.pcolormesh(
             ymesh,
             zmesh,
             var,
             shading="nearest",
             cmap="vik",
-            vmin=-0.5,
-            vmax=0.5,
+            vmin=-1,
+            vmax=1,
         )
-        ax.set_xlim(-20, 20)
-        ax.set_ylim(-20, 20)
-        ax.set_xlabel("Y")
-        ax.set_ylabel("Z")
+        plt.colorbar(im,ax=ax,label="BS deflection [RE]")
+        ax.set_xlim(-15, 15)
+        ax.set_ylim(-15, 15)
+        ax.set_xlabel("Y [RE]")
+        ax.set_ylabel("Z [RE]")
 
         fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
@@ -3397,8 +3398,8 @@ def plot_bs_mp_map_all(runid="FIF"):
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
-            ax.set_xlim(-10, 30)
-            ax.set_ylim(-20, 20)
+            ax.set_xlim(-10, 20)
+            ax.set_ylim(-15, 15)
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
