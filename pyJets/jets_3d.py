@@ -3324,18 +3324,16 @@ def plot_bs_deflection(runid="FIF", interpolate=True):
                 vmax=1,
             )
         else:
-            print(rawpoints_ms[:, 1].shape)
-            print(rawpoints_ms[:, 2].shape)
-            print(var_alt.shape)
-            im = ax.pcolormesh(
-                rawpoints_ms[:, 1],
+            # print(rawpoints_ms[:, 1].shape)
+            # print(rawpoints_ms[:, 2].shape)
+            # print(var_alt.shape)
+            im = ax.scatter(rawpoints_ms[:, 1],
                 rawpoints_ms[:, 2],
-                var_alt,
-                shading="nearest",
+                c=var_alt,
                 cmap="vik",
                 vmin=-1,
                 vmax=1,
-            )
+                marker="o")
         plt.colorbar(im, ax=ax, label="BS deflection [RE]")
         ax.set_xlim(-15, 15)
         ax.set_ylim(-15, 15)
