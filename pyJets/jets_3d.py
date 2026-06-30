@@ -2981,18 +2981,22 @@ def polyval_bs_at_time(fnr, y, z, ms=False, runid="FIF"):
 
     if ms:
         fit = np.loadtxt(
-            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(runid)
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(
+                runid
+            )
         )
     else:
         fit = np.loadtxt(
-            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(runid)
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(
+                runid
+            )
         )
     coeff = fit[int(fnr) - 600, 1:]
 
     return polyval_2d(coeff, y, z)
 
 
-def make_single_bs_mp_file(kind,runid="FIF"):
+def make_single_bs_mp_file(kind, runid="FIF"):
 
     extrafix = ""
     if runid == "FIL":
@@ -3010,11 +3014,21 @@ def make_single_bs_mp_file(kind,runid="FIF"):
         arr[idx, 1:] = data
 
     if kind == "ms":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(runid)
+        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat.ms".format(
+            runid
+        )
     elif kind == "rho":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(runid)
+        fname = (
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/bs_600_991.dat".format(
+                runid
+            )
+        )
     elif kind == "mp":
-        fname = "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/mp_600_991.dat".format(runid)
+        fname = (
+            "/turso/group/spacephysics/vlasiator/data/L1/3D/{}/mp_600_991.dat".format(
+                runid
+            )
+        )
 
     if kind != "mp":
         np.savetxt(
@@ -3155,7 +3169,9 @@ def make_mp_map_one(args):
 
     np.savetxt(outdir + "/{}.mp".format(int(fnr)), mp_coeff)
     if not coords_exist:
-        np.savetxt(wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz)
+        np.savetxt(
+            wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(int(fnr)), mp_xyz
+        )
 
 
 def make_bs_map_one(args):
@@ -3182,7 +3198,9 @@ def make_bs_map_one(args):
                 wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(int(fnr))
             )
         else:
-            bs_xyz = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr)))
+            bs_xyz = np.loadtxt(
+                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr))
+            )
     else:
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7)),
@@ -3228,10 +3246,14 @@ def make_bs_map_one(args):
     if not coords_exist:
         if ms:
             np.savetxt(
-                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(int(fnr)), bs_xyz
+                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(int(fnr)),
+                bs_xyz,
             )
         else:
-            np.savetxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr)), bs_xyz)
+            np.savetxt(
+                wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(int(fnr)),
+                bs_xyz,
+            )
 
 
 def make_bs_mp_map_all(
@@ -3260,10 +3282,10 @@ def plot_bs_mp_map_all(runid="FIF"):
 
     if runid == "FIF":
         extrafix = ""
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
     elif runid == "FIL":
         extrafix = "/FIL/"
-
-    fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
     y_arr = np.linspace(-20, 20, 101)
     z_arr = np.linspace(-20, 20, 101)
 
@@ -3272,7 +3294,9 @@ def plot_bs_mp_map_all(runid="FIF"):
 
     for fnr in fnr_arr:
         coeff = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs".format(fnr))
-        rawpoints_rho = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(fnr))
+        rawpoints_rho = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords".format(fnr)
+        )
         interpolator_rho = LinearNDInterpolator(
             rawpoints_rho[:, 1:], rawpoints_rho[:, 0]
         )
@@ -3282,7 +3306,9 @@ def plot_bs_mp_map_all(runid="FIF"):
         rho_x_of_z_fit = polyval_2d(coeff, np.zeros_like(y_arr), z_arr)
 
         coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
-        rawpoints_ms = np.loadtxt(wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+        )
         interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
         ms_x_of_y = interpolator_ms(y_arr, np.zeros_like(z_arr))
         ms_x_of_z = interpolator_ms(np.zeros_like(y_arr), z_arr)
@@ -3290,7 +3316,9 @@ def plot_bs_mp_map_all(runid="FIF"):
         ms_x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
 
         coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
-        rawpoints_mp = np.loadtxt(wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr))
+        rawpoints_mp = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr)
+        )
         interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
         mp_x_of_y = interpolator_mp(y_arr, np.zeros_like(z_arr))
         mp_x_of_z = interpolator_mp(np.zeros_like(y_arr), z_arr)
