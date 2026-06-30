@@ -3286,8 +3286,8 @@ def plot_bs_deflection(runid="FIF"):
     elif runid == "FIL":
         extrafix = "/FIL/"
         fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
-    y_arr = np.linspace(-20, 20, 201)
-    z_arr = np.linspace(-20, 20, 201)
+    y_arr = np.linspace(-15, 15, 201)
+    z_arr = np.linspace(-15, 15, 201)
 
     outdir = wrkdir_DNR + extrafix + "Figs/bs_deflec"
     create_dir_if_not_exist(outdir)
@@ -3314,8 +3314,8 @@ def plot_bs_deflection(runid="FIF"):
             var,
             shading="nearest",
             cmap="vik",
-            vmin=-0.1,
-            vmax=0.1,
+            vmin=-0.5,
+            vmax=0.5,
         )
         ax.set_xlim(-20, 20)
         ax.set_ylim(-20, 20)
@@ -3335,8 +3335,8 @@ def plot_bs_mp_map_all(runid="FIF"):
     elif runid == "FIL":
         extrafix = "/FIL/"
         fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
-    y_arr = np.linspace(-20, 20, 201)
-    z_arr = np.linspace(-20, 20, 201)
+    y_arr = np.linspace(-15, 15, 201)
+    z_arr = np.linspace(-15, 15, 201)
 
     outdir = wrkdir_DNR + extrafix + "Figs/bs_mp"
     create_dir_if_not_exist(outdir)
