@@ -3309,7 +3309,7 @@ def plot_raw_bs(runid="FIF", interpolate=True):
             im = ax.pcolormesh(
                 ymesh,
                 zmesh,
-                ms_x_of_yz,
+                np.reshape(ms_x_of_yz,ymesh.shape),
                 shading="nearest",
                 cmap="batlow",
                 vmin=6,
