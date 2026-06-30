@@ -3308,7 +3308,7 @@ def plot_bs_deflection(runid="FIF"):
 
         fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
         var = np.reshape(ms_x_of_yz - ms_x_of_yz_fit, ymesh.shape)
-        im, = ax.pcolormesh(
+        im = ax.pcolormesh(
             ymesh,
             zmesh,
             var,
@@ -3317,7 +3317,7 @@ def plot_bs_deflection(runid="FIF"):
             vmin=-1,
             vmax=1,
         )
-        plt.colorbar(im,ax=ax,label="BS deflection [RE]")
+        plt.colorbar(im, ax=ax, label="BS deflection [RE]")
         ax.set_xlim(-15, 15)
         ax.set_ylim(-15, 15)
         ax.set_xlabel("Y [RE]")
