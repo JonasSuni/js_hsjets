@@ -3307,10 +3307,11 @@ def plot_bs_deflection(runid="FIF"):
         ms_x_of_yz_fit = polyval_2d(coeff_ms, yflat, zflat)
 
         fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="compressed")
+        var = np.reshape(ms_x_of_yz - ms_x_of_yz_fit, ymesh.shape)
         ax.pcolormesh(
-            ms_x_of_yz - ms_x_of_yz_fit,
-            yflat,
-            zflat,
+            var,
+            ymesh,
+            zmesh,
             shading="nearest",
             cmap="vik",
             vmin=-0.1,
