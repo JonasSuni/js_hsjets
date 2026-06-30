@@ -3322,6 +3322,7 @@ def plot_bs_deflection(runid="FIF"):
         ax.set_ylim(-15, 15)
         ax.set_xlabel("Y [RE]")
         ax.set_ylabel("Z [RE]")
+        ax.set_title("t = {}s".format(fnr))
 
         fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
@@ -3400,6 +3401,7 @@ def plot_bs_mp_map_all(runid="FIF"):
             ax.set_xlabel("X")
             ax.set_xlim(-10, 20)
             ax.set_ylim(-15, 15)
+            ax.set_title("t = {}s".format(fnr))
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
 
