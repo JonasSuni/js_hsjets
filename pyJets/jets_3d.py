@@ -3320,7 +3320,7 @@ def plot_bs_deflection(runid="FIF"):
         ax.set_xlim(-20, 20)
         ax.set_ylim(-20, 20)
         ax.set_xlabel("Y")
-        ax.set_ylabl("Z")
+        ax.set_ylabel("Z")
 
         fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
