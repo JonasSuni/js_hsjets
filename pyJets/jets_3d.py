@@ -3087,10 +3087,13 @@ def bs_trace(vlsvobj, seedpoints, stopcond):
     respoints = []
     for idx in range(outarr.shape[0]):
         currarr = outarr[idx]
+        anynan = np.isnan(currarr).any(axis=1)
         if ~(np.isnan(currarr).any()):
             respoints.append([np.nan, np.nan, np.nan])
+        elif anynan[~anynan].size > 10:
+            respoints.append(currarr[~anynan, :][-1])
         else:
-            respoints.append(currarr[~np.isnan(currarr).any(axis=1), :][-1])
+            respoints.append([np.nan, np.nan, np.nan])
 
     return np.array(respoints)
 
@@ -3121,8 +3124,8 @@ def make_mp_map_one(args):
             vlsvobj.read_variable_to_cache("vg_beta_star", "pass")
             vlsvobj.read_variable_to_cache("proton/vg_v", "pass")
 
-        yarr = np.linspace(-10 * r_e, 5 * r_e, 60)
-        zarr = np.linspace(-5 * r_e, 5 * r_e, 30)
+        yarr = np.linspace(-10 * r_e, 5 * r_e, 90)
+        zarr = np.linspace(-5 * r_e, 5 * r_e, 45)
 
         ymesh, zmesh = np.meshgrid(yarr, zarr)
         yflat = ymesh.flatten()
@@ -3309,7 +3312,7 @@ def plot_raw_bs(runid="FIF", interpolate=True):
             im = ax.pcolormesh(
                 ymesh,
                 zmesh,
-                np.reshape(ms_x_of_yz,ymesh.shape),
+                np.reshape(ms_x_of_yz, ymesh.shape),
                 shading="nearest",
                 cmap="batlow",
                 vmin=6,
