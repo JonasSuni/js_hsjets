@@ -1,6 +1,7 @@
 import analysator as pt
 import os, subprocess
 import sys
+import struct
 from random import choice
 from copy import deepcopy
 
@@ -3552,3 +3553,98 @@ def make_shell_map_one(args):
 
     fig.savefig(outdir + "/{}.png".format(fnr), dpi=300, bbox_inches="tight")
     plt.close(fig)
+
+
+def read_ptr2_file(file):
+    f = open(file, "rb")
+    _size = f.read(8)
+    _datasize = f.read(8)
+    size = int.from_bytes(_size, "little")
+    datasize = int.from_bytes(_datasize, "little")
+    datatype = np.float32
+    if datasize == 8:
+        datatype = np.float64
+    x = np.fromfile(f, count=size, dtype=datatype)
+    y = np.fromfile(f, count=size, dtype=datatype)
+    z = np.fromfile(f, count=size, dtype=datatype)
+    vx = np.fromfile(f, count=size, dtype=datatype)
+    vy = np.fromfile(f, count=size, dtype=datatype)
+    vz = np.fromfile(f, count=size, dtype=datatype)
+    return x, y, z, vx, vy, vz
+
+
+def plot_traced_particles(tstart, cellid, runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+
+    indir = wrkdir_DNR + "traces/{}/tracking/{}_{}/".format(runid, cellid, tstart)
+    infiles = os.listdir(indir)
+    numin = len(infiles)
+
+    outdir = (
+        wrkdir_DNR + extrafix + "Figs/particle_tracing/{}_{}/".format(cellid, tstart)
+    )
+
+    fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)
+    state_range = np.arange(numin, dtype=int)
+    y_arr = np.linspace(-15, 15, 201)
+    z_arr = np.linspace(-15, 15, 201)
+
+    for idx in state_range:
+        fnr = fnr_range[idx]
+        x, y, z, vx, vy, vz = read_ptr2_file(
+            indir + "state.{}.ptr".format(str(idx).zfill(7))
+        )
+        coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+        )
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+        ms_x_of_y = interpolator_ms(y_arr, np.zeros_like(z_arr))
+        ms_x_of_z = interpolator_ms(np.zeros_like(y_arr), z_arr)
+        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
+        ms_x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
+
+        coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
+        rawpoints_mp = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr)
+        )
+        interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
+        mp_x_of_y = interpolator_mp(y_arr, np.zeros_like(z_arr))
+        mp_x_of_z = interpolator_mp(np.zeros_like(y_arr), z_arr)
+        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.zeros_like(z_arr))
+        mp_x_of_z_fit = polyval_2d(coeff_mp, np.zeros_like(y_arr), z_arr)
+
+        fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
+
+        ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
+        ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
+
+        ax_list[0].plot(mp_x_of_y, y_arr, color="red", zorder=4)
+        ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
+
+        ax_list[0].scatter(x, y, marker=".", color=CB_color_cycle[0], zorder=3)
+
+        ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
+        ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
+
+        ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
+        ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
+
+        ax_list[1].scatter(x, z, marker=".", color=CB_color_cycle[0], zorder=3)
+
+        for ax in ax_list:
+            ax.grid()
+            ax.set_xlabel("X")
+            ax.set_xlim(-10, 20)
+            ax.set_ylim(-15, 15)
+            ax.set_title("t = {}s".format(fnr))
+        ax_list[0].set_ylabel("Y")
+        ax_list[1].set_ylabel("Z")
+
+        fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        print("Plotted particle trace fnr {}".format(fnr))
