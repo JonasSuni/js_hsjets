@@ -3577,8 +3577,15 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
 
     if runid == "FIF":
         extrafix = ""
+        bulkpath = bulkpath_FIF
     elif runid == "FIL":
         extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
+    )
+    x0, y0, z0 = vlsvobj.get_cell_coordinates(cellid) / r_e
 
     indir = wrkdir_DNR + "traces/{}/tracking/{}_{}/".format(runid, cellid, tstart)
     infiles = os.listdir(indir)
@@ -3604,20 +3611,20 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
             wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
         )
         interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
-        ms_x_of_y = interpolator_ms(y_arr, np.zeros_like(z_arr))
-        ms_x_of_z = interpolator_ms(np.zeros_like(y_arr), z_arr)
-        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.zeros_like(z_arr))
-        ms_x_of_z_fit = polyval_2d(coeff_ms, np.zeros_like(y_arr), z_arr)
+        ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * z0)
+        ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * y0, z_arr)
+        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * z0)
+        ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * y0, z_arr)
 
         coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
         rawpoints_mp = np.loadtxt(
             wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr)
         )
         interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
-        mp_x_of_y = interpolator_mp(y_arr, np.zeros_like(z_arr))
-        mp_x_of_z = interpolator_mp(np.zeros_like(y_arr), z_arr)
-        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.zeros_like(z_arr))
-        mp_x_of_z_fit = polyval_2d(coeff_mp, np.zeros_like(y_arr), z_arr)
+        mp_x_of_y = interpolator_mp(y_arr, np.ones_like(z_arr) * z0)
+        mp_x_of_z = interpolator_mp(np.ones_like(y_arr) * y0, z_arr)
+        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * z0)
+        mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * y0, z_arr)
 
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
 
@@ -3627,7 +3634,9 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[0].plot(mp_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
 
-        ax_list[0].scatter(x/r_e, y/r_e, marker=".", color=CB_color_cycle[0], zorder=3)
+        ax_list[0].scatter(
+            x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+        )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
@@ -3635,16 +3644,19 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
 
-        ax_list[1].scatter(x/r_e, z/r_e, marker=".", color=CB_color_cycle[0], zorder=3)
+        ax_list[1].scatter(
+            x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+        )
 
         for ax in ax_list:
             ax.grid()
             ax.set_xlabel("X")
-            ax.set_xlim(-10, 20)
-            ax.set_ylim(-15, 15)
+            ax.set_xlim(x0 - 5, x0 + 5)
             ax.set_title("t = {}s".format(fnr))
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
+        ax_list[0].set_ylim(y0 - 5, y0 + 5)
+        ax_list[1].set_ylim(z0 - 5, z0 + 5)
 
         fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
