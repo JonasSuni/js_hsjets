@@ -3587,6 +3587,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
     outdir = (
         wrkdir_DNR + extrafix + "Figs/particle_tracing/{}_{}/".format(cellid, tstart)
     )
+    create_dir_if_not_exist(outdir)
 
     fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)
     state_range = np.arange(numin, dtype=int)
