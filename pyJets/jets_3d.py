@@ -3596,7 +3596,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
     )
     create_dir_if_not_exist(outdir)
 
-    fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)
+    fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
     state_range = np.arange(numin, dtype=int)
     y_arr = np.linspace(-15, 15, 201)
     z_arr = np.linspace(-15, 15, 201)
