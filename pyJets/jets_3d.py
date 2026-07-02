@@ -3627,7 +3627,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[0].plot(mp_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
 
-        ax_list[0].scatter(x, y, marker=".", color=CB_color_cycle[0], zorder=3)
+        ax_list[0].scatter(x/r_e, y/r_e, marker=".", color=CB_color_cycle[0], zorder=3)
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
@@ -3635,7 +3635,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
 
-        ax_list[1].scatter(x, z, marker=".", color=CB_color_cycle[0], zorder=3)
+        ax_list[1].scatter(x/r_e, z/r_e, marker=".", color=CB_color_cycle[0], zorder=3)
 
         for ax in ax_list:
             ax.grid()
