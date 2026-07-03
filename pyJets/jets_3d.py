@@ -3573,7 +3573,7 @@ def read_ptr2_file(file):
     return x, y, z, vx, vy, vz
 
 
-def plot_traced_particles(tstart, cellid, runid="FIF"):
+def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
 
     if runid == "FIF":
         extrafix = ""
@@ -3600,6 +3600,10 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
     state_range = np.arange(numin, dtype=int)
     y_arr = np.linspace(-15, 15, 201)
     z_arr = np.linspace(-15, 15, 201)
+
+    xhist = np.linspace(x0 - 5, x0 + 5, 100, dtype=float)
+    yhist = np.linspace(y0 - 5, y0 + 5, 100, dtype=float)
+    zhist = np.linspace(z0 - 5, z0 + 5, 100, dtype=float)
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -3637,9 +3641,15 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[0].plot(mp_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
 
-        ax_list[0].scatter(
-            x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
-        )
+        if histogram:
+            hist_xy, xedges, yedges = np.histogram2d(x / r_e, y / r_e, [xhist, yhist])
+            hist_xy[hist_xy == 0] = np.nan
+            im_xy = ax_list[0].pcolormesh(xedges,yedges,hist_xy,vmin=1,vmax=2**16,cmap="batlow")
+            cb_xy = ax_list[0].colorbar(im_xy,ax=ax_list[0],label="Particles")
+        else:
+            ax_list[0].scatter(
+                x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+            )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
@@ -3647,9 +3657,15 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
 
-        ax_list[1].scatter(
-            x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
-        )
+        if histogram:
+            hist_xz, xedges, zedges = np.histogram2d(x / r_e, z / r_e, [xhist, zhist])
+            hist_xz[hist_xz == 0] = np.nan
+            im_xz = ax_list[1].pcolormesh(xedges,zedges,hist_xz,vmin=1,vmax=2**16,cmap="batlow")
+            cb_xz = ax_list[1].colorbar(im_xz,ax=ax_list[1],label="Particles")
+        else:
+            ax_list[1].scatter(
+                x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+            )
 
         for ax in ax_list:
             ax.grid()
