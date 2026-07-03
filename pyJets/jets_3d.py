@@ -3644,8 +3644,10 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
         if histogram:
             hist_xy, xedges, yedges = np.histogram2d(x / r_e, y / r_e, [xhist, yhist])
             hist_xy[hist_xy == 0] = np.nan
-            im_xy = ax_list[0].pcolormesh(xedges,yedges,hist_xy,vmin=1,vmax=2**16,cmap="batlow")
-            cb_xy = ax_list[0].colorbar(im_xy,ax=ax_list[0],label="Particles")
+            im_xy = ax_list[0].pcolormesh(
+                xedges, yedges, hist_xy, vmin=1, vmax=2**16, cmap="batlow"
+            )
+            cb_xy = plt.colorbar(im_xy, ax=ax_list[0], label="Particles")
         else:
             ax_list[0].scatter(
                 x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
@@ -3660,8 +3662,10 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
         if histogram:
             hist_xz, xedges, zedges = np.histogram2d(x / r_e, z / r_e, [xhist, zhist])
             hist_xz[hist_xz == 0] = np.nan
-            im_xz = ax_list[1].pcolormesh(xedges,zedges,hist_xz,vmin=1,vmax=2**16,cmap="batlow")
-            cb_xz = ax_list[1].colorbar(im_xz,ax=ax_list[1],label="Particles")
+            im_xz = ax_list[1].pcolormesh(
+                xedges, zedges, hist_xz, vmin=1, vmax=2**16, cmap="batlow"
+            )
+            cb_xz = plt.colorbar(im_xz, ax=ax_list[1], label="Particles")
         else:
             ax_list[1].scatter(
                 x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
