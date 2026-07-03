@@ -3601,9 +3601,9 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
     y_arr = np.linspace(-15, 15, 201)
     z_arr = np.linspace(-15, 15, 201)
 
-    xhist = np.linspace(x0 - 5, x0 + 5, 100, dtype=float)
-    yhist = np.linspace(y0 - 5, y0 + 5, 100, dtype=float)
-    zhist = np.linspace(z0 - 5, z0 + 5, 100, dtype=float)
+    xhist = np.linspace(x0 - 5, x0 + 5, 1001, dtype=float)
+    yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
+    zhist = np.linspace(z0 - 5, z0 + 5, 1001, dtype=float)
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -3649,7 +3649,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
                 yedges,
                 hist_xy,
                 vmin=1,
-                vmax=2**16,
+                vmax=2**10,
                 cmap="batlow",
                 norm="log",
                 zorder=3,
@@ -3674,7 +3674,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
                 zedges,
                 hist_xz,
                 vmin=1,
-                vmax=2**16,
+                vmax=2**10,
                 cmap="batlow",
                 norm="log",
                 zorder=3,
