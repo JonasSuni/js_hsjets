@@ -3606,25 +3606,28 @@ def plot_traced_particles(tstart, cellid, runid="FIF"):
         x, y, z, vx, vy, vz = read_ptr2_file(
             indir + "state.{}.ptr".format(str(idx).zfill(7))
         )
+        meanx = np.nanmean(x) / r_e
+        meany = np.nanmean(y) / r_e
+        meanz = np.nanmean(z) / r_e
         coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
         rawpoints_ms = np.loadtxt(
             wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
         )
         interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
-        ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * z0)
-        ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * y0, z_arr)
-        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * z0)
-        ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * y0, z_arr)
+        ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * meanz)
+        ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * meany, z_arr)
+        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * meanz)
+        ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * meany, z_arr)
 
         coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
         rawpoints_mp = np.loadtxt(
             wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr)
         )
         interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
-        mp_x_of_y = interpolator_mp(y_arr, np.ones_like(z_arr) * z0)
-        mp_x_of_z = interpolator_mp(np.ones_like(y_arr) * y0, z_arr)
-        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * z0)
-        mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * y0, z_arr)
+        mp_x_of_y = interpolator_mp(y_arr, np.ones_like(z_arr) * meanz)
+        mp_x_of_z = interpolator_mp(np.ones_like(y_arr) * meany, z_arr)
+        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * meanz)
+        mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * meany, z_arr)
 
         fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
 
