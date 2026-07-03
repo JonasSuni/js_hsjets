@@ -3572,7 +3572,8 @@ def read_ptr2_file(file):
     vz = np.fromfile(f, count=size, dtype=datatype)
     return x, y, z, vx, vy, vz
 
-def trace_particles(tstart,cellid,runid="FIF"):
+
+def trace_particles(tstart, cellid, runid="FIF"):
 
     if runid == "FIF":
         extrafix = ""
@@ -3581,16 +3582,29 @@ def trace_particles(tstart,cellid,runid="FIF"):
         extrafix = "/FIL/"
         bulkpath = bulkpath_FIL
 
-    subprocess.run("module load GCC/13.2.0; module load CMake/3.27.6-GCCcore-13.2.0", shell=True)
-
-    sample_file = wrkdir_DNR+"traces/{}/samples/{}_{}.txt".format(runid,cellid,tstart)
-    outdir = wrkdir_DNR+"traces/{}/tracking/{}_{}".format(runid,cellid,tstart)
+    sample_file = wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(
+        runid, cellid, tstart
+    )
+    outdir = wrkdir_DNR + "traces/{}/tracking/{}_{}".format(runid, cellid, tstart)
     create_dir_if_not_exist(outdir)
     startfile = bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
 
-    subprocess.run("/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 65536 --target-cell {} {}".format(sample_file,tstart,cellid,startfile),shell=True)
+    subprocess.run(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 65536 --target-cell {} {}".format(
+            sample_file, tstart, cellid, startfile
+        ),
+        shell=True,
+    )
 
-    subprocess.run("/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --backward --input {} --output {}/state --buffer-size 30".format(bulkpath,tstart,tstart-29,tstart+1,sample_file,outdir), shell=True)
+    subprocess.run(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --backward --input {} --output {}/state --buffer-size 30".format(
+            bulkpath, tstart, tstart - 29, tstart + 1, sample_file, outdir
+        ),
+        shell=True,
+    )
+
+    plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
+
 
 def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
 
