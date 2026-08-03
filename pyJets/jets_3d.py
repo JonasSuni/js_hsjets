@@ -2034,18 +2034,19 @@ def ellipse_params(weight, mean, cov, normal, rho, B):
 
 def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
 
-    edgecolors = [
-        "#000000",
-        "#377eb8",
-        "#e41a1c",
-        "#999999",
-        "#a65628",
-        "#4daf4a",
-        "#ff7f00",
-        "#f781bf",
-        "#984ea3",
-        "#dede00",
-    ]
+    # edgecolors = [
+    #     "#000000",
+    #     "#377eb8",
+    #     "#e41a1c",
+    #     "#999999",
+    #     "#a65628",
+    #     "#4daf4a",
+    #     "#ff7f00",
+    #     "#f781bf",
+    #     "#984ea3",
+    #     "#dede00",
+    # ]
+    edgecolors = CB_color_cycle
     linestyles = ["solid", "dashed", "dotted", "dashdot"]
 
     niter = plot_gmm
