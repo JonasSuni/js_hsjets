@@ -3805,7 +3805,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False, gmm=None
             if gmm:
                 for idx in range(gmm):
                     mask = latent == idx
-                    ax_list[0].scatter(
+                    ax_list[1].scatter(
                         x[mask] / r_e,
                         z[mask] / r_e,
                         marker=".",
