@@ -3606,7 +3606,59 @@ def trace_particles(tstart, cellid, runid="FIF"):
     plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
 
 
-def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
+class GMM:
+
+    def __init__(self, nMaxwellians, weights, means, covs):
+        self.nMaxwellians = nMaxwellians
+        self.weights = weights
+        self.means = means
+        self.covs = covs
+
+        self.invcovs = []
+        self.covdets = []
+        for idx in range(nMaxwellians):
+            self.invcovs.append(np.linalg.inv(self.covs[idx]))
+            self.covdets.append(np.linalg.det(self.covs[idx]))
+
+    def evaluate_maxwellian(self, component, X):
+        X = np.array(X, ndmin=2)
+        return self.weights[component] * (
+            (2 * np.pi) ** (-3.0 / 2)
+            * self.covdets[component] ** (-1.0 / 2)
+            * np.exp(
+                -0.5
+                * np.vecdot(
+                    (X - self.means[component]),
+                    np.matmul(self.invcovs[component], (X - self.means[component]).T).T,
+                )
+            )
+        )
+
+    def component_lottery(self, X):
+
+        comp_range = np.arange(self.nMaxwellians)
+
+        prob_arr = np.empty((X.shape[0], self.nMaxwellians), dtype=float)
+        for idx in range(self.nMaxwellians):
+            prob_arr[:, idx] = self.evaluate_maxwellian(idx, X)
+        prob_arr = prob_arr / np.sum(prob_arr, axis=1)[:, None]
+        # cumprob_arr = np.cumsum(prob_arr,axis=1)
+        rng = np.random.default_rng()
+        latent = np.empty(X.shape[0], dtype=int)
+        for idx in range(latent.size):
+            latent[idx] = rng.choice(
+                comp_range,
+                size=None,
+                replace=False,
+                p=prob_arr[idx],
+                axis=0,
+                shuffle=False,
+            )
+
+        return latent
+
+
+def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False, gmm=None):
 
     if runid == "FIF":
         extrafix = ""
@@ -3637,6 +3689,15 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
     xhist = np.linspace(x0 - 5, x0 + 5, 1001, dtype=float)
     yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
     zhist = np.linspace(z0 - 5, z0 + 5, 1001, dtype=float)
+
+    if gmm:
+        weights, means, covs = get_gmm_params(gmm, cellid, tstart)
+        mixture = GMM(gmm, weights, means, covs)
+        x00, y00, z00, vx0, vy0, vz0 = read_ptr2_file(
+            indir + "state.{}.ptr".format(str(0).zfill(7))
+        )
+        varr = np.array([vx0, vy0, vz0]).T
+        latent = mixture.component_lottery(varr)
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -3689,9 +3750,22 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
             )
             cb_xy = plt.colorbar(im_xy, ax=ax_list[0], label="Particles")
         else:
-            ax_list[0].scatter(
-                x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
-            )
+            if gmm:
+                for idx in range(gmm):
+                    mask = latent == idx
+                    ax_list[0].scatter(
+                        x[mask] / r_e,
+                        y[mask] / r_e,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label="Component {}".format(idx),
+                    )
+                ax_list[0].legend()
+            else:
+                ax_list[0].scatter(
+                    x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+                )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
@@ -3714,9 +3788,21 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False):
             )
             cb_xz = plt.colorbar(im_xz, ax=ax_list[1], label="Particles")
         else:
-            ax_list[1].scatter(
-                x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
-            )
+            if gmm:
+                for idx in range(gmm):
+                    mask = latent == idx
+                    ax_list[0].scatter(
+                        x[mask] / r_e,
+                        z[mask] / r_e,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label="Component {}".format(idx),
+                    )
+            else:
+                ax_list[1].scatter(
+                    x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+                )
 
         for ax in ax_list:
             ax.grid()
