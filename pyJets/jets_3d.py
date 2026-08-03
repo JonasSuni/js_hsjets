@@ -3645,7 +3645,7 @@ class GMM:
             )
         )
 
-    def component_lottery(self, X):
+    def component_lottery(self, X, deterministic=False):
 
         comp_range = np.arange(self.nMaxwellians)
         # print(X)
@@ -3657,23 +3657,28 @@ class GMM:
             prob_arr[:, idx] = res
         # print(prob_arr)
         prob_arr = prob_arr / np.sum(prob_arr, axis=1)[:, None]
-        # cumprob_arr = np.cumsum(prob_arr,axis=1)
-        rng = np.random.default_rng()
-        latent = np.empty(X.shape[0], dtype=int)
-        for idx in range(latent.size):
-            latent[idx] = rng.choice(
-                comp_range,
-                size=None,
-                replace=False,
-                p=prob_arr[idx],
-                axis=0,
-                shuffle=False,
-            )
+        if deterministic:
+            latent = np.argmax(prob_arr, axis=1)
+        else:
+            # cumprob_arr = np.cumsum(prob_arr,axis=1)
+            rng = np.random.default_rng()
+            latent = np.empty(X.shape[0], dtype=int)
+            for idx in range(latent.size):
+                latent[idx] = rng.choice(
+                    comp_range,
+                    size=None,
+                    replace=False,
+                    p=prob_arr[idx],
+                    axis=0,
+                    shuffle=False,
+                )
 
         return latent
 
 
-def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False, gmm=None):
+def plot_traced_particles(
+    tstart, cellid, runid="FIF", histogram=False, gmm=None, deterministic=False
+):
 
     if runid == "FIF":
         extrafix = ""
@@ -3712,7 +3717,7 @@ def plot_traced_particles(tstart, cellid, runid="FIF", histogram=False, gmm=None
             indir + "state.{}.ptr".format(str(0).zfill(7))
         )
         varr = np.array([vx0, vy0, vz0]).T
-        latent = mixture.component_lottery(varr)
+        latent = mixture.component_lottery(varr, deterministic=deterministic)
 
     for idx in state_range:
         fnr = fnr_range[idx]
