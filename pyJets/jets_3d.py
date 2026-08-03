@@ -3648,6 +3648,7 @@ class GMM:
         comp_range = np.arange(self.nMaxwellians)
 
         prob_arr = np.empty((X.shape[0], self.nMaxwellians), dtype=float)
+        print(prob_arr)
         for idx in range(self.nMaxwellians):
             prob_arr[:, idx] = self.evaluate_maxwellian(idx, X)
         print(prob_arr)
