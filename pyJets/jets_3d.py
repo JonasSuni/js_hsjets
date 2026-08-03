@@ -3620,6 +3620,12 @@ class GMM:
             self.invcovs.append(np.linalg.inv(self.covs[idx]))
             self.covdets.append(np.linalg.det(self.covs[idx]))
 
+        print(self.weights)
+        print(self.means)
+        print(self.covs)
+        print(self.invcovs)
+        print(self.covdets)
+
     def evaluate_maxwellian(self, component, X):
         X = np.array(X, ndmin=2)
         return self.weights[component] * (
