@@ -3623,11 +3623,11 @@ class GMM:
             self.invcovs.append(np.linalg.inv(self.covs[idx]))
             self.covdets.append(np.linalg.det(self.covs[idx]))
 
-        print(self.weights)
-        print(self.means)
-        print(self.covs)
-        print(self.invcovs)
-        print(self.covdets)
+        # print(self.weights)
+        # print(self.means)
+        # print(self.covs)
+        # print(self.invcovs)
+        # print(self.covdets)
 
     def evaluate_maxwellian(self, component, X):
         return self.weights[component] * (
@@ -3647,14 +3647,14 @@ class GMM:
     def component_lottery(self, X):
 
         comp_range = np.arange(self.nMaxwellians)
-        print(X)
+        # print(X)
 
         prob_arr = np.empty((X.shape[0], self.nMaxwellians), dtype=float)
         for idx in range(self.nMaxwellians):
             res = self.evaluate_maxwellian(idx, X)
-            print(res)
+            # print(res)
             prob_arr[:, idx] = res
-        print(prob_arr)
+        # print(prob_arr)
         prob_arr = prob_arr / np.sum(prob_arr, axis=1)[:, None]
         # cumprob_arr = np.cumsum(prob_arr,axis=1)
         rng = np.random.default_rng()
