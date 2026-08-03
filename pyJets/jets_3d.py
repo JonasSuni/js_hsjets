@@ -3627,7 +3627,6 @@ class GMM:
         print(self.covdets)
 
     def evaluate_maxwellian(self, component, X):
-        X = np.array(X, ndmin=2)
         return self.weights[component] * (
             (2 * np.pi) ** (-3.0 / 2)
             * self.covdets[component] ** (-1.0 / 2)
@@ -3647,6 +3646,7 @@ class GMM:
         prob_arr = np.empty((X.shape[0], self.nMaxwellians), dtype=float)
         for idx in range(self.nMaxwellians):
             prob_arr[:, idx] = self.evaluate_maxwellian(idx, X)
+        print(prob_arr)
         prob_arr = prob_arr / np.sum(prob_arr, axis=1)[:, None]
         # cumprob_arr = np.cumsum(prob_arr,axis=1)
         rng = np.random.default_rng()
