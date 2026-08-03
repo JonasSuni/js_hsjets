@@ -3635,8 +3635,10 @@ class GMM:
             * np.exp(
                 -0.5
                 * np.vecdot(
-                    (X - self.means[component]),
-                    np.matmul(self.invcovs[component], (X - self.means[component]).T).T,
+                    (X - self.means[component][None, :]),
+                    np.matmul(
+                        self.invcovs[component], (X - self.means[component][None, :]).T
+                    ).T,
                 )
             )
         )
