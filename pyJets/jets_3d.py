@@ -3650,7 +3650,9 @@ class GMM:
 
         prob_arr = np.empty((X.shape[0], self.nMaxwellians), dtype=float)
         for idx in range(self.nMaxwellians):
-            prob_arr[:, idx] = self.evaluate_maxwellian(idx, X)
+            res = self.evaluate_maxwellian(idx, X)
+            print(res)
+            prob_arr[:, idx] = res
         print(prob_arr)
         prob_arr = prob_arr / np.sum(prob_arr, axis=1)[:, None]
         # cumprob_arr = np.cumsum(prob_arr,axis=1)
