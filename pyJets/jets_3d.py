@@ -3615,6 +3615,7 @@ class GMM:
         self.covs = covs
         for idx in range(nMaxwellians):
             self.means[idx] *= 1e3
+            self.covs[idx] *= 1e6
 
         self.invcovs = []
         self.covdets = []
