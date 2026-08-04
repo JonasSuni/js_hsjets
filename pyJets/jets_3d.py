@@ -3714,7 +3714,8 @@ def plot_traced_particles(
         weights, means, covs = get_gmm_params(gmm, cellid, tstart)
         mixture = GMM(gmm, weights, means, covs)
         t0arr, x00, y00, z00, vx0, vy0, vz0 = np.loadtxt(
-            wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart)
+            wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart),
+            delimiter=",",
         ).T
 
         varr = np.array([vx0, vy0, vz0]).T
