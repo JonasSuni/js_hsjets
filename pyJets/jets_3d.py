@@ -3713,9 +3713,10 @@ def plot_traced_particles(
     if gmm:
         weights, means, covs = get_gmm_params(gmm, cellid, tstart)
         mixture = GMM(gmm, weights, means, covs)
-        x00, y00, z00, vx0, vy0, vz0 = read_ptr2_file(
-            indir + "state.{}.ptr".format(str(0).zfill(7))
-        )
+        t0arr, x00, y00, z00, vx0, vy0, vz0 = np.loadtxt(
+            wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart)
+        ).T
+
         varr = np.array([vx0, vy0, vz0]).T
         latent = mixture.component_lottery(varr, deterministic=deterministic)
 
