@@ -3591,7 +3591,7 @@ def trace_particles(tstart, cellid, runid="FIF"):
     startfile = bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
 
     subprocess.run(
-        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 65536 --target-cell {} {}".format(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 1048576 --target-cell {} {}".format(
             sample_file, tstart, cellid, startfile
         ),
         shell=True,
