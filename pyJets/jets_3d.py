@@ -3680,6 +3680,8 @@ def plot_traced_particles(
     tstart, cellid, runid="FIF", histogram=False, gmm=None, deterministic=False
 ):
 
+    vmax = 2000
+
     if runid == "FIF":
         extrafix = ""
         bulkpath = bulkpath_FIF
@@ -3710,7 +3712,7 @@ def plot_traced_particles(
     yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
     zhist = np.linspace(z0 - 5, z0 + 5, 1001, dtype=float)
 
-    vxhist = np.linspace(-1500, 1500, 101, dtype=float)
+    vxhist = np.linspace(-vmax, vmax, 1001, dtype=float)
 
     if gmm:
         weights, means, covs = get_gmm_params(gmm, cellid, tstart)
@@ -3892,8 +3894,8 @@ def plot_traced_particles(
         for ax in ax_list[2:]:
             ax.grid()
             ax.set_xlabel("vx")
-            ax.set_xlim(-1500, 1500)
-            ax.set_ylim(-1500, 1500)
+            ax.set_xlim(-vmax, vmax)
+            ax.set_ylim(-vmax, vmax)
         ax_list[2].set_ylabel("vy")
         ax_list[3].set_ylabel("vz")
         ax_list[0].set_ylabel("Y")
