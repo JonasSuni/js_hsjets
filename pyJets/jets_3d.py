@@ -3710,6 +3710,8 @@ def plot_traced_particles(
     yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
     zhist = np.linspace(z0 - 5, z0 + 5, 1001, dtype=float)
 
+    vxhist = np.linspace(-3000, 3000, 1001, dtype=float)
+
     if gmm:
         weights, means, covs = get_gmm_params(gmm, cellid, tstart)
         mixture = GMM(gmm, weights, means, covs)
@@ -3749,7 +3751,8 @@ def plot_traced_particles(
         mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * meanz)
         mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * meany, z_arr)
 
-        fig, ax_list = plt.subplots(1, 2, figsize=(20, 10), layout="compressed")
+        fig, ax_list = plt.subplots(2, 2, figsize=(20, 20), layout="compressed")
+        ax_list = ax_list.flatten()
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
@@ -3771,6 +3774,23 @@ def plot_traced_particles(
                 zorder=3,
             )
             cb_xy = plt.colorbar(im_xy, ax=ax_list[0], label="Particles")
+
+            hist_vxy, vxedges, vyedges = np.histogram2d(
+                vx / 1e3, vy / 1e3, [vxhist, vxhist]
+            )
+            hist_vxy[hist_vxy == 0] = np.nan
+            im_vxy = ax_list[2].pcolormesh(
+                vxedges,
+                vyedges,
+                hist_vxy,
+                vmin=1,
+                vmax=2**10,
+                cmap="batlow",
+                norm="log",
+                zorder=3,
+            )
+            cb_vxy = plt.colorbar(im_vxy, ax=ax_list[2], label="Particles")
+
         else:
             if gmm:
                 for idx in range(gmm):
@@ -3783,10 +3803,21 @@ def plot_traced_particles(
                         zorder=3,
                         label="Component {}".format(idx),
                     )
+                    ax_list[2].scatter(
+                        vx[mask] / 1e3,
+                        vy[mask] / 1e3,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label="Component {}".format(idx),
+                    )
                 ax_list[0].legend()
             else:
                 ax_list[0].scatter(
                     x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+                )
+                ax_list[2].scatter(
+                    vx / 1e3, vy / 1e3, marker=".", color=CB_color_cycle[0], zorder=3
                 )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
@@ -3809,6 +3840,22 @@ def plot_traced_particles(
                 zorder=3,
             )
             cb_xz = plt.colorbar(im_xz, ax=ax_list[1], label="Particles")
+
+            hist_vxz, vxedges, vzedges = np.histogram2d(
+                vx / 1e3, vz / 1e3, [vxhist, vxhist]
+            )
+            hist_vxz[hist_vxz == 0] = np.nan
+            im_vxz = ax_list[3].pcolormesh(
+                vxedges,
+                vzedges,
+                hist_vxz,
+                vmin=1,
+                vmax=2**10,
+                cmap="batlow",
+                norm="log",
+                zorder=3,
+            )
+            cb_vxz = plt.colorbar(im_vxz, ax=ax_list[3], label="Particles")
         else:
             if gmm:
                 for idx in range(gmm):
@@ -3821,16 +3868,34 @@ def plot_traced_particles(
                         zorder=3,
                         label="Component {}".format(idx),
                     )
+                    ax_list[3].scatter(
+                        vx[mask] / 1e3,
+                        vz[mask] / 1e3,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label="Component {}".format(idx),
+                    )
             else:
                 ax_list[1].scatter(
                     x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
                 )
+                ax_list[3].scatter(
+                    vx / 1e3, vz / 1e3, marker=".", color=CB_color_cycle[0], zorder=3
+                )
 
-        for ax in ax_list:
+        for ax in ax_list[:2]:
             ax.grid()
             ax.set_xlabel("X")
             ax.set_xlim(x0 - 5, x0 + 5)
             ax.set_title("t = {}s".format(fnr))
+        for ax in ax_list[2:]:
+            ax.grid()
+            ax.set_xlabel("vx")
+            ax.set_xlim(-3000, 3000)
+            ax.set_ylim(-3000, 3000)
+        ax_list[2].set_ylabel("vy")
+        ax_list[3].set_ylabel("vz")
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
         ax_list[0].set_ylim(y0 - 5, y0 + 5)
