@@ -3751,7 +3751,7 @@ def plot_traced_particles(
         mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * meanz)
         mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * meany, z_arr)
 
-        fig, ax_list = plt.subplots(2, 2, figsize=(20, 20), layout="compressed")
+        fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
         ax_list = ax_list.flatten()
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
