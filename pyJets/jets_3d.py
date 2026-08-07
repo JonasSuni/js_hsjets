@@ -146,6 +146,7 @@ def get_msh_VDF_coordinates_new(runid="FIF", radius=15):
         outarr = np.array([vdf_cellids[mask], x[mask], y[mask], z[mask]])
         np.savetxt(outdir + "{}.txt".format(fnr), outarr.T)
 
+
 def get_msh_VDF_coordinates():
 
     outdir = wrkdir_DNR + "FIF/msh_vdf_locs/"
@@ -219,21 +220,24 @@ def VSC_timeseries(
     n_processes=1,
     draw=True,
 ):
-    bulkpath = bulkpath_FIF
+
+    if runid == "FIF":
+        extrafix = ""
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIF
+        Bimf = 5e-9
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIL
+        Bimf = 3e-9
+
     x0, y0, z0 = coords
 
-    figdir = wrkdir_DNR + "Figs/timeseries/{}".format(dirprefix)
-    txtdir = wrkdir_DNR + "txts/timeseries/{}".format(dirprefix)
-    if not os.path.exists(figdir):
-        try:
-            os.makedirs(figdir)
-        except OSError:
-            pass
-    if not os.path.exists(txtdir):
-        try:
-            os.makedirs(txtdir)
-        except OSError:
-            pass
+    figdir = wrkdir_DNR + extrafix + "Figs/timeseries/{}".format(dirprefix)
+    txtdir = wrkdir_DNR + extrafix + "txts/timeseries/{}".format(dirprefix)
+    create_dir_if_not_exist(figdir)
+    create_dir_if_not_exist(txtdir)
     if skip and os.path.isfile(
         figdir
         + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.png".format(
@@ -326,7 +330,7 @@ def VSC_timeseries(
     if delta:
         for idx in range(len(ylabels)):
             ylabels[idx] = "$\\delta " + ylabels[idx][1:]
-    e_sw = 750e3 * 5e-9 * q_p / m_p * 1e3
+    e_sw = 750e3 * Bimf * q_p / m_p * 1e3
     pdsw_npa = m_p * 1e6 * 750e3 * 750e3 / 1e-9
     ops = [
         "pass",
@@ -570,25 +574,36 @@ def VSC_timeseries(
     )
 
 
-def L3_vdf_timeseries(n_processes=16, skip=False, fromtxt=False):
+def L3_vdf_timeseries(runid, n_processes=16, skip=False, fromtxt=False):
 
-    fnr0 = 600
-    fnr1 = 991
+    if runid == "FIF":
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIL
 
-    data_600 = np.loadtxt(wrkdir_DNR + "FIF/msh_vdf_locs/600.txt")
-    cellids = data_600.T[0]
-    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+    fnr0 = fnr_arr[0]
+    fnr1 = fnr_arr[-1]
+
+    data_first = np.loadtxt(
+        wrkdir_DNR + "{}/msh_vdf_locs_new/{}.txt".format(runid, fnr0)
+    )
+    cellids = data_first.T[0]
+    vobj_first = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(fnr0).zfill(7))
+    )
 
     for ci in cellids:
-        refl = vobj_600.read_variable("vg_reflevel", cellids=int(ci))
+        refl = vobj_first.read_variable("vg_reflevel", cellids=int(ci))
         print(refl)
         if refl != 3:
             continue
 
-        coords = vobj_600.get_cell_coordinates(ci) / r_e
+        coords = vobj_first.get_cell_coordinates(ci) / r_e
         try:
             VSC_timeseries(
-                "FIF",
+                runid,
                 ci,
                 coords,
                 fnr0,
@@ -1086,38 +1101,51 @@ def jet_intervals_anim_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
-def jet_interval_sorter(len_thresh=1):
+def jet_interval_sorter(runid, len_thresh=1):
 
-    cellids, t0_arr, t1_arr = (
-        np.loadtxt(wrkdir_DNR + "good.txt", dtype=float).astype(int).T
+    if runid == "FIF":
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIF
+        extrafix = ""
+    elif runid == "FIL":
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIL
+        extrafix = "/FIL/"
+
+    cellids, xarr, yarr, zarr = (
+        np.loadtxt(wrkdir_DNR + "{}/msh_vdf_locs_new/".format(runid), dtype=float)
+        .astype(int)
+        .T
     )
-    vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
+    vobj_first = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(fnr_arr[0]).zfill(7))
+    )
+    fnr0 = fnr_arr[0]
+    fnr1 = fnr_arr[-1]
 
     pd_intervals_all = []
     pdx_intervals_all = []
 
-    for idx in range(100):
+    for idx in range(200):
         try:
-            print(t0_arr[idx])
-            coords = vobj_600.get_cell_coordinates(cellids[idx]) / r_e
+            print(cellids[idx])
+            coords = vobj_first.get_cell_coordinates(cellids[idx]) / r_e
         except:
             print("Index out of range, exiting gracefully!")
             break
 
         ci = cellids[idx]
-        t0 = t0_arr[idx]
-        t1 = t1_arr[idx]
 
-        txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+        txtdir = wrkdir_DNR + extrafix + "txts/timeseries/{}".format("")
         ts_data = np.loadtxt(
             txtdir
             + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
-                "FIF", coords[0], coords[1], coords[2], 600, 991, None
+                "FIF", coords[0], coords[1], coords[2], fnr0, fnr1, None
             )
         )
 
-        t_arr = np.arange(600, 991 + 0.1, 1)
-        t_restr = np.arange(690, 900 + 0.1, 1)
+        t_arr = np.arange(fnr0, fnr1 + 0.1, 1)
+        t_restr = np.arange(fnr0 + 90, fnr1 - 90 + 0.1, 1)
         tavg_arr = uniform_filter1d(
             ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
         )
@@ -1170,7 +1198,7 @@ def jet_interval_sorter(len_thresh=1):
         else:
             k_intervals.append(intval)
 
-    outdir = wrkdir_DNR + "txts/jet_intervals/"
+    outdir = wrkdir_DNR + extrafix + "txts/jet_intervals/"
     np.savetxt(
         outdir + "archer_intervals.txt",
         a_intervals,
