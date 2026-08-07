@@ -146,7 +146,6 @@ def get_msh_VDF_coordinates_new(runid="FIF", radius=15):
         outarr = np.array([vdf_cellids[mask], x[mask], y[mask], z[mask]])
         np.savetxt(outdir + "{}.txt".format(fnr), outarr.T)
 
-
 def get_msh_VDF_coordinates():
 
     outdir = wrkdir_DNR + "FIF/msh_vdf_locs/"
