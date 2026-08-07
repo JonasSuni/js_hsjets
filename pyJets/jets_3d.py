@@ -110,6 +110,43 @@ def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
     return out_arr
 
 
+def get_msh_VDF_coordinates_new(runid="FIF", radius=15):
+
+    if runid == "FIF":
+        extrafix = ""
+        fnr_arr = np.arange(600, 991 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        fnr_arr = np.arange(601, 1199 + 0.1, 1, dtype=int)
+        bulkpath = bulkpath_FIL
+
+    outdir = wrkdir_DNR + "{}/msh_vdf_locs_new/".format(runid)
+    create_dir_if_not_exist(outdir)
+
+    for fnr in fnr_arr:
+        fname = "bulk1.{}.vlsv".format(str(fnr).zfill(7))
+        vlsvobj = pt.vlsvfile.VlsvReader(bulkpath + fname)
+        cellids = vlsvobj.read_variable("CellID")
+        fsaved = vlsvobj.read_variable("vg_f_saved")
+        vdf_cellids = cellids[fsaved == 1]
+        coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+        coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
+        x, y, z = np.array(
+            [vlsvobj.get_cell_coordinates(ci) / r_e for ci in vdf_cellids]
+        ).T
+
+        x_bs = polyval_2d(coeff_ms, y, z)
+        x_mp = polyval_2d(coeff_mp, y, z)
+
+        maskx = np.logical_and(x >= x_mp, x <= x_bs)
+        maskr = y**2 + z**2 <= radius**2
+        mask = np.logical_and(maskx, maskr)
+
+        outarr = np.array([vdf_cellids[mask], x[mask], y[mask], z[mask]])
+        np.savetxt(outdir + "{}.txt".format(fnr), outarr.T)
+
+
 def get_msh_VDF_coordinates():
 
     outdir = wrkdir_DNR + "FIF/msh_vdf_locs/"
