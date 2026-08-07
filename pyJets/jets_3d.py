@@ -1199,6 +1199,7 @@ def jet_interval_sorter(runid, len_thresh=1):
             k_intervals.append(intval)
 
     outdir = wrkdir_DNR + extrafix + "txts/jet_intervals/"
+    create_dir_if_not_exist(outdir)
     np.savetxt(
         outdir + "archer_intervals.txt",
         a_intervals,
