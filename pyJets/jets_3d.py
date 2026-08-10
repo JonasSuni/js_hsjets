@@ -3676,24 +3676,27 @@ class GMM:
 
     def __init__(self, nMaxwellians, weights, means, covs):
         self.nMaxwellians = nMaxwellians
-        self.weights = weights
-        self.means = means
-        self.covs = covs
-        for idx in range(nMaxwellians):
-            self.means[idx] *= 1e3
-            self.covs[idx] *= 1e6
+        self.loglikelihood = None
+        self.weights = []
+        self.means = []
+        self.covs = []
 
         self.invcovs = []
         self.covdets = []
-        for idx in range(nMaxwellians):
+
+        self.update_parameters(nMaxwellians, weights, means, covs)
+
+    def update_parameters(self, weights, means, covs):
+
+        self.weights = weights
+        self.means = means
+        self.covs = covs
+
+        self.invcovs = []
+        self.covdets = []
+        for idx in range(self.nMaxwellians):
             self.invcovs.append(np.linalg.inv(self.covs[idx]))
             self.covdets.append(np.linalg.det(self.covs[idx]))
-
-        # print(self.weights)
-        # print(self.means)
-        # print(self.covs)
-        # print(self.invcovs)
-        # print(self.covdets)
 
     def evaluate_maxwellian(self, component, X):
         return self.weights[component] * (
@@ -3709,6 +3712,89 @@ class GMM:
                 )
             )
         )
+
+    def fit(self, X, sample_weights, tolerance=1):
+
+        old_loglikelihood = 0.0
+        member_probabilities, current_loglikelihood = self.ESTEP(X, sample_weights)
+
+        while np.abs(current_loglikelihood - old_loglikelihood) > tolerance:
+
+            new_weights, new_means, new_covs = self.MSTEP(
+                X, sample_weights, member_probabilities
+            )
+            self.update_parameters(new_weights, new_means, new_covs)
+
+            old_loglikelihood = current_loglikelihood
+            member_probabilities, current_loglikelihood = self.ESTEP(X, sample_weights)
+
+            print(
+                "Improvement: {}".format(
+                    np.abs(current_loglikelihood - old_loglikelihood)
+                )
+            )
+
+        return current_loglikelihood
+
+    def ESTEP(self, X, sample_weights):
+
+        weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
+        member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
+
+        # E STEP
+        for idx in range(self.nMaxwellians):
+            weighted_densities[:, idx] = self.weights[idx] * self.evaluate_maxwellian(
+                idx, X
+            )
+
+        for idx in range(self.nMaxwellians):
+            member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
+                weighted_densities, axis=1
+            )
+
+        current_loglikelihood = 0.0
+        for idx in range(self.nMaxwellians):
+            loglike = member_probabilities[:, idx] * (
+                -0.5
+                * np.vecdot(
+                    (X - self.means[idx][None, :]),
+                    np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
+                )
+                + np.log(self.weights[idx])
+                - 0.5 * np.log(self.covdets[idx])
+                - 1.5 * np.log(2 * np.pi)
+            )
+            current_loglikelihood += np.sum(loglike)
+
+        return (member_probabilities, current_loglikelihood)
+
+    def MSTEP(self, X, sample_weights, member_probabilities):
+
+        new_weights = []
+        new_means = []
+        new_covs = []
+        for idx in range(self.nMaxwellians):
+            new_weight = np.sum(sample_weights * member_probabilities[:, idx]) / np.sum(
+                sample_weights
+            )
+            new_weights.append(new_weight)
+
+            new_mean = np.sum(sample_weights[:,None]*member_probabilities[:, idx][:, None] * X) / np.sum(
+                sample_weights * member_probabilities[:, idx]
+            )
+            new_means.append(new_mean)
+
+            new_cov = np.sum(
+                (
+                    sample_weights[:, None]
+                    * member_probabilities[:, idx][:, None]
+                    * (X - new_mean[None, :])
+                ).T
+                @ (X - new_mean[None, :])
+            ) / np.sum(sample_weights * member_probabilities[:, idx])
+            new_covs.append(new_cov)
+
+        return (new_weights, new_means, new_covs)
 
     def component_lottery(self, X, deterministic=False):
 
@@ -3781,6 +3867,9 @@ def plot_traced_particles(
 
     if gmm:
         weights, means, covs = get_gmm_params(gmm, cellid, tstart)
+        for idx in range(gmm):
+            means[idx] *= 1e3
+            covs[idx] *= 1e6
         mixture = GMM(gmm, weights, means, covs)
         t0arr, x00, y00, z00, vx0, vy0, vz0 = np.loadtxt(
             wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart),
