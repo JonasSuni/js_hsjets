@@ -3779,9 +3779,10 @@ class GMM:
             )
             new_weights.append(new_weight)
 
-            new_mean = np.sum(sample_weights[:,None]*member_probabilities[:, idx][:, None] * X) / np.sum(
-                sample_weights * member_probabilities[:, idx]
-            )
+            new_mean = np.sum(
+                sample_weights[:, None] * member_probabilities[:, idx][:, None] * X,
+                axis=0,
+            ) / np.sum(sample_weights * member_probabilities[:, idx])
             new_means.append(new_mean)
 
             new_cov = np.sum(
@@ -3790,7 +3791,8 @@ class GMM:
                     * member_probabilities[:, idx][:, None]
                     * (X - new_mean[None, :])
                 ).T
-                @ (X - new_mean[None, :])
+                @ (X - new_mean[None, :]),
+                axis=0,
             ) / np.sum(sample_weights * member_probabilities[:, idx])
             new_covs.append(new_cov)
 
