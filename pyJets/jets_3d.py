@@ -3738,12 +3738,14 @@ class GMM:
 
     def ESTEP(self, X, sample_weights):
 
-        weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
+        weighted_densities = np.random.uniform(
+            0.0, 1e-30, (X.shape[0], self.nMaxwellians)
+        )
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
 
         # E STEP
         for idx in range(self.nMaxwellians):
-            weighted_densities[:, idx] = self.weights[idx] * self.evaluate_maxwellian(
+            weighted_densities[:, idx] += self.weights[idx] * self.evaluate_maxwellian(
                 idx, X
             )
 
