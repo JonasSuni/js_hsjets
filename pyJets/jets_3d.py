@@ -3684,7 +3684,7 @@ class GMM:
         self.invcovs = []
         self.covdets = []
 
-        self.update_parameters(nMaxwellians, weights, means, covs)
+        self.update_parameters(weights, means, covs)
 
     def update_parameters(self, weights, means, covs):
 
