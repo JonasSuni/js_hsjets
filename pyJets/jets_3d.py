@@ -3767,6 +3767,7 @@ class GMM:
                 - 1.5 * np.log(2 * np.pi)
             )
             current_loglikelihood += np.sum(loglike)
+        self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
 
@@ -3828,6 +3829,58 @@ class GMM:
                 )
 
         return latent
+
+
+def do_gmm_for_vdf(nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=None):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+
+    infile = wrkdir_DNR + extrafix + "vdf_txts/c{}/f{}.txt".format(ci, fnr)
+
+    try:
+        vdfdata = np.loadtxt(infile)
+    except:
+        print("VDF file for ci {} and fnr {} not found!".format(ci, fnr))
+        raise IOError
+
+    X = vdfdata[:, :3]
+    sample_weights = vdfdata[:, 3]
+
+    allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
+    allcov = (
+        (sample_weights[:, None] * (X - allmean[None, :])).T @ (X - allmean[None, :])
+    ) / np.sum(sample_weights)
+    std = np.sqrt(np.linalg.det(allcov))
+
+    offsets = np.linspace(
+        allmean - np.array([std, std, std]),
+        allmean + np.array([std, std, std]),
+        nMaxwellians,
+    )
+
+    if not weights:
+        weights = []
+        for idx in range(nMaxwellians):
+            weights.append(1.0 / nMaxwellians)
+
+    if not means:
+        means = []
+        for idx in range(nMaxwellians):
+            means.append(offsets[idx])
+
+    if not covs:
+        covs = []
+        for idx in range(nMaxwellians):
+            covs.append(allcov)
+
+    mixture = GMM(nMaxwellians, weights, means, covs)
+
+    mixture.fit(X, sample_weights, 1)
+
+    return mixture
 
 
 def plot_traced_particles(
