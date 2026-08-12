@@ -3751,13 +3751,12 @@ class GMM:
             weighted_densities[:, idx] += self.weights[idx] * self.evaluate_maxwellian(
                 idx, X
             )
-            weighted_densities[:, idx] = np.clip(
-                weighted_densities[:, idx], min=0.01 / X.shape[0]
-            )
+            weighted_densities[:, idx]
 
         for idx in range(self.nMaxwellians):
-            member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
-                weighted_densities, axis=1
+            member_probabilities[:, idx] = np.clip(
+                weighted_densities[:, idx] / np.sum(weighted_densities, axis=1),
+                min=0.01 / X.shape[0],
             )
 
         current_loglikelihood = 0.0
