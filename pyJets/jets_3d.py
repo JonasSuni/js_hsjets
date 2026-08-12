@@ -3760,21 +3760,35 @@ class GMM:
             )
 
         current_loglikelihood = 0.0
-        for idx in range(self.nMaxwellians):
-            loglike = member_probabilities[:, idx] * (
-                -0.5
-                * np.vecdot(
-                    (X - self.means[idx][None, :]),
-                    np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
-                )
-                + np.log(self.weights[idx])
-                - 0.5 * np.log(self.covdets[idx])
-                - 1.5 * np.log(2 * np.pi)
-            )
-            current_loglikelihood += np.sum(loglike)
+        # for idx in range(self.nMaxwellians):
+        #     loglike = member_probabilities[:, idx] * (
+        #         -0.5
+        #         * np.vecdot(
+        #             (X - self.means[idx][None, :]),
+        #             np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
+        #         )
+        #         + np.log(self.weights[idx])
+        #         - 0.5 * np.log(self.covdets[idx])
+        #         - 1.5 * np.log(2 * np.pi)
+        #     )
+        #     current_loglikelihood += np.sum(loglike)
+        # self.loglikelihood = current_loglikelihood
+        current_loglikelihood = self.loglike_figueiredo(X,member_probabilities)
         self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
+
+    def loglike_figueiredo(self,X,member_probabilities):
+
+        d = 3
+        N = d + d*(d+1)/2
+        n_samples = X.shape[0]
+
+        loglike = (self.nMaxwellians/2.)*np.log(n_samples/12.)+ (self.nMaxwellians*N+self.nMaxwellians)/2 + np.sum(np.log(np.sum(member_probabilities*np.array(self.weights)[None,:])))
+        for idx in range(self.nMaxwellians):
+            loglike += (N/2.)*np.log(n_samples*self.weights[idx]/12.)
+
+        return loglike
 
     def MSTEP(self, X, sample_weights, member_probabilities):
 
