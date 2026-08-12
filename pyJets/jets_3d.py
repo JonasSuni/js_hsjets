@@ -3881,7 +3881,7 @@ def do_gmm_for_vdf(
         * (X - allmean[None, :])[:, None, :],
         axis=0,
     ) / np.sum(sample_weights)
-    std = np.sqrt(np.linalg.det(allcov))
+    std = np.sqrt(np.linalg.trace(allcov) / 3)
 
     offsets = np.linspace(
         allmean - np.array([std, std, std]),
