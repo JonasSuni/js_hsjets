@@ -3716,7 +3716,7 @@ class GMM:
     def fit(self, X, sample_weights, tolerance=1):
 
         old_loglikelihood = 0.0
-        member_probabilities, current_loglikelihood = self.ESTEP(X, sample_weights)
+        member_probabilities, current_loglikelihood = self.ESTEP(X)
 
         while np.abs(current_loglikelihood - old_loglikelihood) > tolerance:
 
@@ -3726,7 +3726,7 @@ class GMM:
             self.update_parameters(new_weights, new_means, new_covs)
 
             old_loglikelihood = current_loglikelihood
-            member_probabilities, current_loglikelihood = self.ESTEP(X, sample_weights)
+            member_probabilities, current_loglikelihood = self.ESTEP(X)
 
             print(
                 "Improvement: {}".format(
@@ -3736,7 +3736,7 @@ class GMM:
 
         return current_loglikelihood
 
-    def ESTEP(self, X, sample_weights):
+    def ESTEP(self, X):
 
         weighted_densities = np.random.uniform(
             0.0, 1e-30, (X.shape[0], self.nMaxwellians)
@@ -3801,7 +3801,7 @@ class GMM:
 
         return (new_weights, new_means, new_covs)
 
-    def component_lottery(self, X, deterministic=False):
+    def component_lottery(self, X, deterministic=False, seed=42):
 
         comp_range = np.arange(self.nMaxwellians)
         # print(X)
@@ -3817,7 +3817,7 @@ class GMM:
             latent = np.argmax(prob_arr, axis=1)
         else:
             # cumprob_arr = np.cumsum(prob_arr,axis=1)
-            rng = np.random.default_rng()
+            rng = np.random.default_rng(seed)
             latent = np.empty(X.shape[0], dtype=int)
             for idx in range(latent.size):
                 latent[idx] = rng.choice(
@@ -3833,7 +3833,15 @@ class GMM:
 
 
 def do_gmm_for_vdf(
-    nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=None, tolerance=1
+    nMaxwellians,
+    runid,
+    ci,
+    fnr,
+    weights=None,
+    means=None,
+    covs=None,
+    tolerance=1,
+    random_sample=None,
 ):
 
     if runid == "FIF":
@@ -3851,6 +3859,18 @@ def do_gmm_for_vdf(
 
     X = vdfdata[:, :3]
     sample_weights = vdfdata[:, 3]
+
+    if random_sample:
+        rng = np.random.default_rng(random_sample)
+        newX = rng.choice(
+            X,
+            size=10 * X.shape[0],
+            replace=True,
+            p=sample_weights / np.sum(sample_weights),
+            shuffle=False,
+        )
+        X = newX
+        sample_weights = sample_weights * 0 + 1
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
     allcov = (
