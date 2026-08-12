@@ -3740,10 +3740,10 @@ class GMM:
 
     def ESTEP(self, X):
 
-        # weighted_densities = np.random.uniform(
-        #     0.0, 1e-30, (X.shape[0], self.nMaxwellians)
-        # )
-        weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
+        weighted_densities = np.random.uniform(
+            0.0, 1e-30, (X.shape[0], self.nMaxwellians)
+        )
+        # weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
 
         # E STEP
@@ -3754,26 +3754,25 @@ class GMM:
             weighted_densities[:, idx]
 
         for idx in range(self.nMaxwellians):
-            member_probabilities[:, idx] = np.clip(
-                weighted_densities[:, idx] / np.sum(weighted_densities, axis=1),
-                min=0.01 / X.shape[0],
+            member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
+                weighted_densities, axis=1
             )
 
         current_loglikelihood = 0.0
-        # for idx in range(self.nMaxwellians):
-        #     loglike = member_probabilities[:, idx] * (
-        #         -0.5
-        #         * np.vecdot(
-        #             (X - self.means[idx][None, :]),
-        #             np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
-        #         )
-        #         + np.log(self.weights[idx])
-        #         - 0.5 * np.log(self.covdets[idx])
-        #         - 1.5 * np.log(2 * np.pi)
-        #     )
-        #     current_loglikelihood += np.sum(loglike)
-        # self.loglikelihood = current_loglikelihood
-        current_loglikelihood = self.loglike_figueiredo(X, member_probabilities)
+        for idx in range(self.nMaxwellians):
+            loglike = member_probabilities[:, idx] * (
+                -0.5
+                * np.vecdot(
+                    (X - self.means[idx][None, :]),
+                    np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
+                )
+                + np.log(self.weights[idx])
+                - 0.5 * np.log(self.covdets[idx])
+                - 1.5 * np.log(2 * np.pi)
+            )
+            current_loglikelihood += np.sum(loglike)
+        self.loglikelihood = current_loglikelihood
+        # current_loglikelihood = self.loglike_figueiredo(X, member_probabilities)
         self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
