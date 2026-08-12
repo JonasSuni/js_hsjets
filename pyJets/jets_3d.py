@@ -3851,7 +3851,6 @@ def do_gmm_for_vdf(
 
     X = vdfdata[:, :3]
     sample_weights = vdfdata[:, 3]
-    sample_weights = sample_weights / np.max(sample_weights)
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
     allcov = (
