@@ -3908,7 +3908,9 @@ def do_gmm_for_vdf(
             tol=tolerance,
             max_iter=100,
             weights_init=weights,
-            means_init=means,verbose=2,
+            means_init=means,
+            verbose=2,
+            precisions_init=[np.linalg.inv(cov) for cov in covs],
         )
         mixture.fit(X)
     else:
