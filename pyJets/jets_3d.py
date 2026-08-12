@@ -3850,8 +3850,10 @@ def do_gmm_for_vdf(nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=
     sample_weights = vdfdata[:, 3]
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
-    allcov = (
-        (sample_weights[:, None] * (X - allmean[None, :])).T @ (X - allmean[None, :])
+    allcov = np.sum(
+        (sample_weights[:, None] * (X - allmean[None, :]))[:, :, None]
+        * (X - allmean[None, :])[:, None, :],
+        axis=0,
     ) / np.sum(sample_weights)
     std = np.sqrt(np.linalg.det(allcov))
 
