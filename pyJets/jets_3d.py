@@ -3720,7 +3720,7 @@ class GMM:
         old_loglikelihood = 0.0
         member_probabilities, current_loglikelihood = self.ESTEP(X)
 
-        while np.abs(current_loglikelihood - old_loglikelihood) > tolerance:
+        while np.abs(current_loglikelihood - old_loglikelihood) > tolerance*np.abs(current_loglikelihood):
 
             new_weights, new_means, new_covs = self.MSTEP(
                 X, sample_weights, member_probabilities
