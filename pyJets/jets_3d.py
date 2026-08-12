@@ -40,6 +40,8 @@ from matplotlib.animation import FuncAnimation, FFMpegFileWriter
 # plt.rcParams.update(params)
 import analysator.plot
 
+from sklearn.mixture import GaussianMixture
+
 plt.rcParams.update(
     {
         "ps.useafm": True,
@@ -3842,6 +3844,7 @@ def do_gmm_for_vdf(
     covs=None,
     tolerance=1,
     random_sample=None,
+    scikit=False,
 ):
 
     if runid == "FIF":
@@ -3899,9 +3902,18 @@ def do_gmm_for_vdf(
         for idx in range(nMaxwellians):
             covs.append(allcov)
 
-    mixture = GMM(nMaxwellians, weights, means, covs)
-
-    mixture.fit(X, sample_weights, tolerance)
+    if scikit and random_sample:
+        mixture = GaussianMixture(
+            nMaxwellians,
+            tol=tolerance,
+            max_iter=100,
+            weights_init=weights,
+            means_init=means,verbose=2,
+        )
+        mixture.fit(X)
+    else:
+        mixture = GMM(nMaxwellians, weights, means, covs)
+        mixture.fit(X, sample_weights, tolerance)
 
     return mixture
 
