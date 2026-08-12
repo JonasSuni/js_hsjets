@@ -3832,7 +3832,9 @@ class GMM:
         return latent
 
 
-def do_gmm_for_vdf(nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=None):
+def do_gmm_for_vdf(
+    nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=None, tolerance=1
+):
 
     if runid == "FIF":
         extrafix = ""
@@ -3849,6 +3851,7 @@ def do_gmm_for_vdf(nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=
 
     X = vdfdata[:, :3]
     sample_weights = vdfdata[:, 3]
+    sample_weights = sample_weights / np.sum(sample_weights)
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
     allcov = (
@@ -3879,7 +3882,7 @@ def do_gmm_for_vdf(nMaxwellians, runid, ci, fnr, weights=None, means=None, covs=
 
     mixture = GMM(nMaxwellians, weights, means, covs)
 
-    mixture.fit(X, sample_weights, 1)
+    mixture.fit(X, sample_weights, tolerance)
 
     return mixture
 
