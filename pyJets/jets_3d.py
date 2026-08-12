@@ -3870,7 +3870,7 @@ def do_gmm_for_vdf(
             shuffle=False,
         )
         X = newX
-        sample_weights = np.ones(X.shape[0])
+        sample_weights = np.ones(newX.shape[0])
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
     allcov = (
