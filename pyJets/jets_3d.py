@@ -3876,8 +3876,10 @@ def do_gmm_for_vdf(
         sample_weights = np.ones(newX.shape[0])
 
     allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
-    allcov = (
-        (sample_weights[:, None] * (X - allmean[None, :])).T @ (X - allmean[None, :])
+    allcov = np.sum(
+        (sample_weights[:, None] * (X - allmean[None, :]))[:, :, None]
+        * (X - allmean[None, :])[:, None, :],
+        axis=0,
     ) / np.sum(sample_weights)
     std = np.sqrt(np.linalg.det(allcov))
 
@@ -3901,6 +3903,10 @@ def do_gmm_for_vdf(
         covs = []
         for idx in range(nMaxwellians):
             covs.append(allcov)
+
+    print("Weights", weights)
+    print("Means", means)
+    print("Covariances", covs)
 
     if scikit and random_sample:
         mixture = GaussianMixture(
