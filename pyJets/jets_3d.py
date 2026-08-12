@@ -3740,8 +3740,11 @@ class GMM:
 
     def ESTEP(self, X):
 
-        weighted_densities = np.random.uniform(
-            0.0, 1e-30, (X.shape[0], self.nMaxwellians)
+        # weighted_densities = np.random.uniform(
+        #     0.0, 1e-30, (X.shape[0], self.nMaxwellians)
+        # )
+        weighted_densities = (
+            np.zeros((X.shape[0], self.nMaxwellians), dtype=float) + 1e-30
         )
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
 
