@@ -3919,6 +3919,7 @@ def do_gmm_for_vdf(
             precisions_init=[np.linalg.inv(cov) for cov in covs],
         )
         mixture.fit(X)
+        mixture.score(X)
     else:
         mixture = GMM(nMaxwellians, weights, means, covs)
         mixture.fit(X, sample_weights, tolerance)
