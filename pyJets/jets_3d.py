@@ -3743,15 +3743,16 @@ class GMM:
         # weighted_densities = np.random.uniform(
         #     0.0, 1e-30, (X.shape[0], self.nMaxwellians)
         # )
-        weighted_densities = (
-            np.zeros((X.shape[0], self.nMaxwellians), dtype=float) + 1e-30
-        )
+        weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
 
         # E STEP
         for idx in range(self.nMaxwellians):
             weighted_densities[:, idx] += self.weights[idx] * self.evaluate_maxwellian(
                 idx, X
+            )
+            weighted_densities[:, idx] = np.clip(
+                weighted_densities[:, idx], min=0.01 / X.shape[0]
             )
 
         for idx in range(self.nMaxwellians):
