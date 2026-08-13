@@ -3751,7 +3751,7 @@ class GMM:
             weighted_densities[:, idx] += self.weights[idx] * self.evaluate_maxwellian(
                 idx, X
             )
-            weighted_densities[:, idx]
+            # weighted_densities[:, idx]
 
         for idx in range(self.nMaxwellians):
             member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
@@ -3759,25 +3759,25 @@ class GMM:
             )
 
         current_loglikelihood = 0.0
-        for idx in range(self.nMaxwellians):
-            loglike = member_probabilities[:, idx] * (
-                -0.5
-                * np.vecdot(
-                    (X - self.means[idx][None, :]),
-                    np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
-                )
-                + np.log(self.weights[idx])
-                - 0.5 * np.log(self.covdets[idx])
-                - 1.5 * np.log(2 * np.pi)
-            )
-            current_loglikelihood += np.sum(loglike)
-        self.loglikelihood = current_loglikelihood
-        # current_loglikelihood = self.loglike_figueiredo(X, member_probabilities)
+        # for idx in range(self.nMaxwellians):
+        #     loglike = member_probabilities[:, idx] * (
+        #         -0.5
+        #         * np.vecdot(
+        #             (X - self.means[idx][None, :]),
+        #             np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
+        #         )
+        #         + np.log(self.weights[idx])
+        #         - 0.5 * np.log(self.covdets[idx])
+        #         - 1.5 * np.log(2 * np.pi)
+        #     )
+        #     current_loglikelihood += np.sum(loglike)
+        # self.loglikelihood = current_loglikelihood
+        current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
         self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
 
-    def loglike_figueiredo(self, X, member_probabilities):
+    def loglike_figueiredo(self, X, weighted_densities):
 
         d = 3
         N = d + d * (d + 1) / 2
@@ -3787,7 +3787,9 @@ class GMM:
             (self.nMaxwellians / 2.0) * np.log(n_samples / 12.0)
             + (self.nMaxwellians * N + self.nMaxwellians) / 2
             + np.sum(
-                np.log(np.sum(member_probabilities * np.array(self.weights)[None, :]))
+                np.log(
+                    np.sum(weighted_densities * np.array(self.weights)[None, :], axis=1)
+                )
             )
         )
         for idx in range(self.nMaxwellians):
