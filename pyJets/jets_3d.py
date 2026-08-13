@@ -3733,8 +3733,10 @@ class GMM:
             member_probabilities, current_loglikelihood = self.ESTEP(X)
 
             print(
-                "LL: {}, Improvement: {}".format(
-                    current_loglikelihood, current_loglikelihood - old_loglikelihood
+                "LL: {}, Improvement: {}, Weights: {}".format(
+                    current_loglikelihood,
+                    current_loglikelihood - old_loglikelihood,
+                    self.weights,
                 )
             )
 
