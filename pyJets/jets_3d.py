@@ -3928,9 +3928,7 @@ def do_gmm_for_vdf(
         sample_weights = np.ones(newX.shape[0])
 
     if not weights or not means or not covs:
-        kmeans = KMeans(
-            n_clusters=nMaxwellians, n_init=10, random_state=67, max_iter=1000
-        )
+        kmeans = KMeans(n_clusters=nMaxwellians, n_init=10, max_iter=1000)
         kmeans.fit(X, sample_weight=sample_weights)
         pred = kmeans.predict(X)
         # member_probabilities = np.zeros((X.shape[0],nMaxwellians),dtype=float)
