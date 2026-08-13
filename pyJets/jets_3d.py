@@ -3772,7 +3772,8 @@ class GMM:
         #     )
         #     current_loglikelihood += np.sum(loglike)
         # self.loglikelihood = current_loglikelihood
-        current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
+        # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
+        current_loglikelihood = self.loglike_ivan(X,weighted_densities)
         self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
@@ -3796,6 +3797,14 @@ class GMM:
             loglike += (N / 2.0) * np.log(n_samples * self.weights[idx] / 12.0)
 
         return loglike
+
+    def loglike_ivan(self,X,weighted_densities):
+
+        return np.sum(
+                np.log(
+                    np.sum(weighted_densities * np.array(self.weights)[None, :], axis=1)
+                )
+            )
 
     def MSTEP(self, X, sample_weights, member_probabilities):
 
