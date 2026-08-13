@@ -3721,7 +3721,7 @@ class GMM:
 
         old_loglikelihood = 0.0
         member_probabilities, current_loglikelihood = self.ESTEP(X)
-        best_loglike = np.inf
+        best_loglike = -np.inf
         best_weights = []
         best_means = []
         best_covs = []
@@ -3743,7 +3743,7 @@ class GMM:
                     self.weights,
                 )
             )
-            if current_loglikelihood < best_loglike:
+            if current_loglikelihood > best_loglike:
                 best_loglike = current_loglikelihood
                 best_weights = self.weights
                 best_means = self.means
