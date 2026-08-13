@@ -3721,6 +3721,10 @@ class GMM:
 
         old_loglikelihood = 0.0
         member_probabilities, current_loglikelihood = self.ESTEP(X)
+        best_loglike = np.inf
+        best_weights = []
+        best_means = []
+        best_covs = []
 
         while np.abs(current_loglikelihood - old_loglikelihood) > tolerance:
 
@@ -3739,8 +3743,16 @@ class GMM:
                     self.weights,
                 )
             )
+            if current_loglikelihood < best_loglike:
+                best_loglike = current_loglikelihood
+                best_weights = self.weights
+                best_means = self.means
+                best_covs = self.covs
 
-        return current_loglikelihood
+        self.update_parameters(best_weights, best_means, best_covs)
+        self.loglikelihood = best_loglike
+
+        return best_loglike
 
     def ESTEP(self, X):
 
