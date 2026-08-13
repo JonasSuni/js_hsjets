@@ -41,6 +41,7 @@ from matplotlib.animation import FuncAnimation, FFMpegFileWriter
 import analysator.plot
 
 from sklearn.mixture import GaussianMixture
+from sklearn.cluster import KMeans
 
 plt.rcParams.update(
     {
@@ -3741,7 +3742,7 @@ class GMM:
     def ESTEP(self, X):
 
         weighted_densities = np.random.uniform(
-            0.0, 1e-30, (X.shape[0], self.nMaxwellians)
+            0.0, 1e-10, (X.shape[0], self.nMaxwellians)
         )
         # weighted_densities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
@@ -3906,34 +3907,68 @@ def do_gmm_for_vdf(
         X = newX
         sample_weights = np.ones(newX.shape[0])
 
-    allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
-    allcov = np.sum(
-        (sample_weights[:, None] * (X - allmean[None, :]))[:, :, None]
-        * (X - allmean[None, :])[:, None, :],
-        axis=0,
-    ) / np.sum(sample_weights)
-    std = np.sqrt(np.linalg.trace(allcov) / 3)
-
-    offsets = np.linspace(
-        allmean - np.array([std / 3, std / 3, std / 3]),
-        allmean + np.array([std / 3, std / 3, std / 3]),
-        nMaxwellians,
-    )
-
-    if not weights:
+    if not weights or not means or not covs:
+        kmeans = KMeans(
+            n_clusters=nMaxwellians, n_init=10, random_state=67, max_iter=1000
+        )
+        kmeans.fit(X, sample_weight=sample_weights)
+        pred = kmeans.predict(X)
+        # member_probabilities = np.zeros((X.shape[0],nMaxwellians),dtype=float)
         weights = []
-        for idx in range(nMaxwellians):
-            weights.append(1.0 / nMaxwellians)
-
-    if not means:
         means = []
-        for idx in range(nMaxwellians):
-            means.append(offsets[idx])
-
-    if not covs:
         covs = []
         for idx in range(nMaxwellians):
-            covs.append(allcov / 10)
+            member_probabilities = (pred == idx).astype(float)
+            new_weight = np.sum(sample_weights * member_probabilities) / np.sum(
+                sample_weights
+            )
+            weights.append(new_weight)
+
+            new_mean = np.sum(
+                sample_weights[:, None] * member_probabilities[:, None] * X,
+                axis=0,
+            ) / np.sum(sample_weights * member_probabilities)
+            means.append(new_mean)
+
+            new_cov = np.sum(
+                (
+                    sample_weights[:, None]
+                    * member_probabilities[:, None]
+                    * (X - new_mean[None, :])
+                )[:, :, None]
+                * (X - new_mean[None, :])[:, None, :],
+                axis=0,
+            ) / np.sum(sample_weights * member_probabilities)
+            covs.append(new_cov)
+
+    # allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
+    # allcov = np.sum(
+    #     (sample_weights[:, None] * (X - allmean[None, :]))[:, :, None]
+    #     * (X - allmean[None, :])[:, None, :],
+    #     axis=0,
+    # ) / np.sum(sample_weights)
+    # std = np.sqrt(np.linalg.trace(allcov) / 3)
+
+    # offsets = np.linspace(
+    #     allmean - np.array([std / 3, std / 3, std / 3]),
+    #     allmean + np.array([std / 3, std / 3, std / 3]),
+    #     nMaxwellians,
+    # )
+
+    # if not weights:
+    #     weights = []
+    #     for idx in range(nMaxwellians):
+    #         weights.append(1.0 / nMaxwellians)
+
+    # if not means:
+    #     means = []
+    #     for idx in range(nMaxwellians):
+    #         means.append(offsets[idx])
+
+    # if not covs:
+    #     covs = []
+    #     for idx in range(nMaxwellians):
+    #         covs.append(allcov / 10)
 
     print("Weights", weights)
     print("Means", means)
