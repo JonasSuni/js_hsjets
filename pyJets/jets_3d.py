@@ -3773,7 +3773,7 @@ class GMM:
         #     current_loglikelihood += np.sum(loglike)
         # self.loglikelihood = current_loglikelihood
         # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
-        current_loglikelihood = self.loglike_ivan(X,weighted_densities)
+        current_loglikelihood = self.loglike_ivan(X, weighted_densities)
         self.loglikelihood = current_loglikelihood
 
         return (member_probabilities, current_loglikelihood)
@@ -3798,13 +3798,11 @@ class GMM:
 
         return loglike
 
-    def loglike_ivan(self,X,weighted_densities):
+    def loglike_ivan(self, X, weighted_densities):
 
         return np.sum(
-                np.log(
-                    np.sum(weighted_densities * np.array(self.weights)[None, :], axis=1)
-                )
-            )
+            np.log(np.sum(weighted_densities * np.array(self.weights)[None, :], axis=1))
+        )
 
     def MSTEP(self, X, sample_weights, member_probabilities):
 
@@ -3917,8 +3915,8 @@ def do_gmm_for_vdf(
     std = np.sqrt(np.linalg.trace(allcov) / 3)
 
     offsets = np.linspace(
-        allmean - np.array([std, std, std]),
-        allmean + np.array([std, std, std]),
+        allmean - np.array([std / 3, std / 3, std / 3]),
+        allmean + np.array([std / 3, std / 3, std / 3]),
         nMaxwellians,
     )
 
@@ -3935,7 +3933,7 @@ def do_gmm_for_vdf(
     if not covs:
         covs = []
         for idx in range(nMaxwellians):
-            covs.append(allcov)
+            covs.append(allcov / 10)
 
     print("Weights", weights)
     print("Means", means)
