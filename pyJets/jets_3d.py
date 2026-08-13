@@ -3765,20 +3765,20 @@ class GMM:
             )
 
         current_loglikelihood = 0.0
-        # for idx in range(self.nMaxwellians):
-        #     loglike = member_probabilities[:, idx] * (
-        #         -0.5
-        #         * np.vecdot(
-        #             (X - self.means[idx][None, :]),
-        #             np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
-        #         )
-        #         + np.log(self.weights[idx])
-        #         - 0.5 * np.log(self.covdets[idx])
-        #         - 1.5 * np.log(2 * np.pi)
-        #     )
-        #     current_loglikelihood += np.sum(loglike)
-        # self.loglikelihood = current_loglikelihood
-        current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
+        for idx in range(self.nMaxwellians):
+            loglike = member_probabilities[:, idx] * (
+                -0.5
+                * np.vecdot(
+                    (X - self.means[idx][None, :]),
+                    np.matmul(self.invcovs[idx], (X - self.means[idx][None, :]).T).T,
+                )
+                + np.log(self.weights[idx])
+                - 0.5 * np.log(self.covdets[idx])
+                - 1.5 * np.log(2 * np.pi)
+            )
+            current_loglikelihood += np.sum(loglike)
+        self.loglikelihood = current_loglikelihood
+        # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
         # current_loglikelihood = self.loglike_ivan(X, weighted_densities)
         self.loglikelihood = current_loglikelihood
 
