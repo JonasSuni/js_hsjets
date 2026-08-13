@@ -3677,9 +3677,10 @@ def trace_particles(tstart, cellid, runid="FIF"):
 
 class GMM:
 
-    def __init__(self, nMaxwellians, weights, means, covs):
+    def __init__(self, nMaxwellians, weights, means, covs, temperature=1e-15):
         self.nMaxwellians = nMaxwellians
         self.loglikelihood = None
+        self.temp = temperature
         self.weights = []
         self.means = []
         self.covs = []
@@ -3754,9 +3755,9 @@ class GMM:
             )
             # weighted_densities[:, idx]
 
-        weighted_densities = weighted_densities*(np.random.uniform(
-            0.0, 1e-10, (X.shape[0], self.nMaxwellians)
-        )+1.0)
+        weighted_densities = weighted_densities * (
+            np.random.uniform(0.0, self.temp, (X.shape[0], self.nMaxwellians)) + 1.0
+        )
 
         for idx in range(self.nMaxwellians):
             member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
@@ -3881,6 +3882,7 @@ def do_gmm_for_vdf(
     tolerance=1,
     random_sample=None,
     scikit=False,
+    temperature=1e-15,
 ):
 
     if runid == "FIF":
@@ -3991,7 +3993,7 @@ def do_gmm_for_vdf(
         mixture.fit(X)
         print("LL", mixture.score(X))
     else:
-        mixture = GMM(nMaxwellians, weights, means, covs)
+        mixture = GMM(nMaxwellians, weights, means, covs, temperature=temperature)
         mixture.fit(X, sample_weights, tolerance)
         print("LL", mixture.loglikelihood)
 
