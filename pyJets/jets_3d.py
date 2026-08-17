@@ -1139,6 +1139,11 @@ def jet_interval_sorter(runid, len_thresh=1):
             print("Index out of range, exiting gracefully!")
             break
 
+        refl = vobj_first.read_variable("vg_reflevel", cellids=int(ci))
+        print(refl)
+        if refl != 3:
+            continue
+
         ci = cellids[idx]
 
         txtdir = wrkdir_DNR + extrafix + "txts/timeseries/{}".format("")
