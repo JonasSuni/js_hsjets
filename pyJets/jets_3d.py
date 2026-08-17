@@ -1116,7 +1116,9 @@ def jet_interval_sorter(runid, len_thresh=1):
         extrafix = "/FIL/"
 
     cellids, xarr, yarr, zarr = (
-        np.loadtxt(wrkdir_DNR + "{}/msh_vdf_locs_new/".format(runid), dtype=float)
+        np.loadtxt(
+            wrkdir_DNR + "{}/msh_vdf_locs_new/600.txt".format(runid), dtype=float
+        )
         .astype(int)
         .T
     )
