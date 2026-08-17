@@ -741,23 +741,28 @@ def L3_good_timeseries_global_vdfs_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
-def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
+def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
 
     archer_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
     )
     koller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
     )
     archerkoller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals_new.txt", dtype=int
     )
 
     for p in archer_data:
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -765,7 +770,7 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -773,7 +778,7 @@ def extract_all_vdf(n_processes=16, fmin=1e-16, prepost_time=30):
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -1934,13 +1939,20 @@ def vspace_rotator(
 
 def vspace_extracter(args):
 
-    cellid, fnr, fmin = args
+    runid, cellid, fnr, fmin = args
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
 
     vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+        bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
 
-    outdir = wrkdir_DNR + "vdf_txts/"
+    outdir = wrkdir_DNR + extrafix + "vdf_txts_new/"
+    create_dir_if_not_exist(outdir)
 
     try:
         velcels = vlsvobj.read_velocity_cells(cellid)
