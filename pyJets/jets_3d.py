@@ -3976,35 +3976,6 @@ def do_gmm_for_vdf(
             ) / np.sum(sample_weights * member_probabilities)
             covs.append(new_cov)
 
-    # allmean = np.sum(sample_weights[:, None] * X, axis=0) / np.sum(sample_weights)
-    # allcov = np.sum(
-    #     (sample_weights[:, None] * (X - allmean[None, :]))[:, :, None]
-    #     * (X - allmean[None, :])[:, None, :],
-    #     axis=0,
-    # ) / np.sum(sample_weights)
-    # std = np.sqrt(np.linalg.trace(allcov) / 3)
-
-    # offsets = np.linspace(
-    #     allmean - np.array([std / 3, std / 3, std / 3]),
-    #     allmean + np.array([std / 3, std / 3, std / 3]),
-    #     nMaxwellians,
-    # )
-
-    # if not weights:
-    #     weights = []
-    #     for idx in range(nMaxwellians):
-    #         weights.append(1.0 / nMaxwellians)
-
-    # if not means:
-    #     means = []
-    #     for idx in range(nMaxwellians):
-    #         means.append(offsets[idx])
-
-    # if not covs:
-    #     covs = []
-    #     for idx in range(nMaxwellians):
-    #         covs.append(allcov / 10)
-
     print("Weights", weights)
     print("Means", means)
     print("Covariances", covs)
