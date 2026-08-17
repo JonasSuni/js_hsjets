@@ -1129,7 +1129,7 @@ def jet_interval_sorter(runid, len_thresh=1):
     pd_intervals_all = []
     pdx_intervals_all = []
 
-    for idx in range(200):
+    for idx in range(1000):
         try:
             print(cellids[idx])
             coords = vobj_first.get_cell_coordinates(cellids[idx]) / r_e
@@ -1204,17 +1204,17 @@ def jet_interval_sorter(runid, len_thresh=1):
     outdir = wrkdir_DNR + extrafix + "txts/jet_intervals/"
     create_dir_if_not_exist(outdir)
     np.savetxt(
-        outdir + "archer_intervals.txt",
+        outdir + "archer_intervals_new.txt",
         a_intervals,
         fmt="%d",
     )
     np.savetxt(
-        outdir + "koller_intervals.txt",
+        outdir + "koller_intervals_new.txt",
         k_intervals,
         fmt="%d",
     )
     np.savetxt(
-        outdir + "archerkoller_intervals.txt",
+        outdir + "archerkoller_intervals_new.txt",
         ak_intervals,
         fmt="%d",
     )
