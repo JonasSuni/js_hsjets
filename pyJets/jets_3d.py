@@ -749,13 +749,14 @@ def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
         extrafix = "/FIL/"
 
     archer_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
     )
     koller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
+        wrkdir_DNR + extrafix + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
     )
     archerkoller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals_new.txt", dtype=int
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archerkoller_intervals_new.txt",
+        dtype=int,
     )
 
     for p in archer_data:
