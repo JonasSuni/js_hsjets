@@ -3737,10 +3737,9 @@ class GMM:
             member_probabilities, current_loglikelihood = self.ESTEP(X)
 
             print(
-                "LL: {}, Improvement: {}, Weights: {}".format(
+                "LL: {}, Improvement: {}".format(
                     current_loglikelihood,
                     current_loglikelihood - old_loglikelihood,
-                    self.weights,
                 )
             )
             if current_loglikelihood > best_loglike:
