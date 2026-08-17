@@ -3777,8 +3777,8 @@ class GMM:
                 weighted_densities, axis=1
             )
 
-        # current_loglikelihood = self.loglike_wiki(X,weighted_densities)
-        current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
+        current_loglikelihood = self.loglike_wiki(X, weighted_densities)
+        # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
         # current_loglikelihood = self.loglike_ivan(X, weighted_densities)
         self.loglikelihood = current_loglikelihood
 
