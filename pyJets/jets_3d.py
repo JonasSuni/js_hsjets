@@ -3769,10 +3769,25 @@ class GMM:
             )
             # weighted_densities[:, idx]
 
-        weighted_densities = weighted_densities * (
-            np.random.uniform(0.0, self.temp, (X.shape[0], self.nMaxwellians)) + 1.0
+        weighted_densities = weighted_densities + np.random.uniform(
+            0.0, self.temp, (X.shape[0], self.nMaxwellians)
         )
 
+        for idx in range(self.nMaxwellians):
+            member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
+                weighted_densities, axis=1
+            )
+
+        # current_loglikelihood = self.loglike_wiki(X,weighted_densities)
+        # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
+        current_loglikelihood = self.loglike_ivan(X, weighted_densities)
+        self.loglikelihood = current_loglikelihood
+
+        return (member_probabilities, current_loglikelihood)
+
+    def loglike_wiki(self, X, weighted_densities):
+
+        member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
         for idx in range(self.nMaxwellians):
             member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
                 weighted_densities, axis=1
@@ -3791,12 +3806,8 @@ class GMM:
                 - 1.5 * np.log(2 * np.pi)
             )
             current_loglikelihood += np.sum(loglike)
-        self.loglikelihood = current_loglikelihood
-        # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
-        # current_loglikelihood = self.loglike_ivan(X, weighted_densities)
-        self.loglikelihood = current_loglikelihood
 
-        return (member_probabilities, current_loglikelihood)
+        return current_loglikelihood
 
     def loglike_figueiredo(self, X, weighted_densities):
 
