@@ -3687,6 +3687,7 @@ class GMM:
     def __init__(self, nMaxwellians, weights, means, covs, temperature=1e-15):
         self.nMaxwellians = nMaxwellians
         self.loglikelihood = None
+        self.member_probabilities = None
         self.temp = temperature
         self.weights = []
         self.means = []
@@ -3732,6 +3733,7 @@ class GMM:
         best_weights = []
         best_means = []
         best_covs = []
+        best_memprobs = None
 
         while np.abs(current_loglikelihood - old_loglikelihood) > tolerance:
 
@@ -3754,9 +3756,11 @@ class GMM:
                 best_weights = self.weights
                 best_means = self.means
                 best_covs = self.covs
+                best_memprobs = self.member_probabilities
 
         self.update_parameters(best_weights, best_means, best_covs)
         self.loglikelihood = best_loglike
+        self.member_probabilities = best_memprobs
 
         return best_loglike
 
@@ -3783,6 +3787,8 @@ class GMM:
             member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
                 weighted_densities, axis=1
             )
+
+        self.member_probabilities = member_probabilities
 
         current_loglikelihood = self.loglike_wiki(X, weighted_densities)
         # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
@@ -3923,6 +3929,13 @@ def do_gmm_for_vdf(
 
     infile = wrkdir_DNR + extrafix + "vdf_txts/c{}/f{}.txt".format(ci, fnr)
 
+    outdir = wrkdir_DNR + "vdf_gmm_new/"
+    create_dir_if_not_exist(outdir)
+
+    create_dir_if_not_exist(outdir + "n{}".format(nMaxwellians))
+
+    create_dir_if_not_exist(outdir + "n{}/c{}".format(nMaxwellians, ci))
+
     try:
         vdfdata = np.loadtxt(infile)
     except:
@@ -3997,7 +4010,111 @@ def do_gmm_for_vdf(
         mixture.fit(X, sample_weights, tolerance)
         print("LL", mixture.loglikelihood)
 
+    out_arr = []
+    for idx in range(nMaxwellians):
+        out_arr.append(
+            [mixture.weights[idx]]
+            + mixture.means[idx].tolist()
+            + mixture.covs[idx].flatten().tolist()
+            + [mixture.loglikelihood]
+            + [X.shape[0]]
+        )
+    np.savetxt(outdir + "n{}/c{}/f{}.fit".format(nMaxwellians, ci, fnr), out_arr)
+    predicted_cluster = mixture.member_probabilities
+    if nMaxwellians > 1:
+        np.savetxt(
+            outdir + "n{}/c{}/f{}.pred".format(nMaxwellians, ci, fnr),
+            predicted_cluster,
+        )
+
     return mixture
+
+
+def process_all_jet_gmm(
+    runid="FIF", nMaxwellians=2, skip=True, prepost_time=30, tjet_only=False
+):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archerkoller_intervals_new.txt",
+        dtype=int,
+    )
+
+    all_data = np.vstack((archer_data, koller_data, archerkoller_data))
+
+    for p in all_data:
+        ci, t0, t1, tjet = p
+        fnr_arr_pre = np.arange(t0 - prepost_time, tjet, 1, dtype=int)[::-1]
+        fnr_arr_post = np.arange(tjet + 1, t1 + prepost_time + 0.1, 1, dtype=int)
+        tjet_mixture = do_gmm_for_vdf(
+            nMaxwellians=nMaxwellians,
+            runid=runid,
+            ci=ci,
+            fnr=int(tjet),
+            weights=None,
+            means=None,
+            covs=None,
+            tolerance=1,
+            random_sample=None,
+            scikit=False,
+            temperature=1e-30,
+        )
+        tjet_priors, tjet_means, tjet_covs = (
+            tjet_mixture.weights,
+            tjet_mixture.means,
+            tjet_mixture.covs,
+        )
+        if not tjet_only:
+            old_means, old_covs, old_priors = (tjet_means, tjet_covs, tjet_priors)
+            for fnr in fnr_arr_pre:
+                try:
+                    out = do_gmm_for_vdf(
+                        nMaxwellians=nMaxwellians,
+                        runid=runid,
+                        ci=ci,
+                        fnr=int(fnr),
+                        weights=old_priors,
+                        means=old_means,
+                        covs=old_covs,
+                        tolerance=1,
+                        random_sample=None,
+                        scikit=False,
+                        temperature=1e-30,
+                    )
+                    old_means, old_covs, old_priors = out.means, out.covs, out.weights
+                except:
+                    print("File not found, continuing.")
+                    continue
+            old_means, old_covs, old_priors = (tjet_means, tjet_covs, tjet_priors)
+            for fnr in fnr_arr_post:
+                try:
+                    out = do_gmm_for_vdf(
+                        nMaxwellians=nMaxwellians,
+                        runid=runid,
+                        ci=ci,
+                        fnr=int(fnr),
+                        weights=old_priors,
+                        means=old_means,
+                        covs=old_covs,
+                        tolerance=1,
+                        random_sample=None,
+                        scikit=False,
+                        temperature=1e-30,
+                    )
+                    old_means, old_covs, old_priors = out.means, out.covs, out.weights
+                except:
+                    print("File not found, continuing.")
+                    continue
 
 
 def plot_traced_particles(
