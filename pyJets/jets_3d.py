@@ -4022,21 +4022,9 @@ def do_gmm_for_vdf(
         mixture.fit(X)
         print("LL", mixture.score(X))
     else:
-        while True:
-            mixture = GMM(nMaxwellians, weights, means, covs, temperature=temperature)
-            mixture.fit(X, sample_weights, tolerance)
-            print("LL", mixture.loglikelihood)
-            ll = mixture.loglikelihood
-            weights, means, covs = mixture.weights, mixture.means, mixture.covs
-            mixture_new = GMM(
-                nMaxwellians, weights, means, covs, temperature=temperature
-            )
-            mixture_new.fit(X, sample_weights, tolerance)
-            ll_new = mixture_new.loglikelihood
-            if ll_new < ll:
-                break
-            else:
-                continue
+        mixture = GMM(nMaxwellians, weights, means, covs, temperature=temperature)
+        mixture.fit(X, sample_weights, tolerance)
+        print("LL", mixture.loglikelihood)
 
     return mixture
 
