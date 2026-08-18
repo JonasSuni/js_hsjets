@@ -3947,7 +3947,7 @@ def do_gmm_for_vdf(
     elif runid == "FIL":
         extrafix = "/FIL/"
 
-    infile = wrkdir_DNR + extrafix + "vdf_txts/c{}/f{}.txt".format(ci, fnr)
+    infile = wrkdir_DNR + extrafix + "vdf_txts_new/c{}/f{}.txt".format(ci, fnr)
 
     outdir = wrkdir_DNR + "vdf_gmm_new/"
     create_dir_if_not_exist(outdir)
