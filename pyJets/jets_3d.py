@@ -3738,6 +3738,13 @@ class GMM:
             )
         )
 
+    def bic(self, X):
+
+        d = self.nMaxwellians * (3 + 3 * (3 + 1) / 2)
+        N = X.shape[0]
+
+        return -2 * self.loglikelihood + np.log(N) * d
+
     def fit(self, X, sample_weights, tolerance=1):
 
         old_loglikelihood = 0.0
