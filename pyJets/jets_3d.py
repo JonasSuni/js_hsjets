@@ -3810,6 +3810,7 @@ class GMM:
 
         self.member_probabilities = member_probabilities
 
+        # current_loglikelihood = self.loglike_wrong(X, weighted_densities)
         current_loglikelihood = self.loglike_wiki(X, weighted_densities)
         # current_loglikelihood = self.loglike_figueiredo(X, weighted_densities)
         # current_loglikelihood = self.loglike_ivan(X, weighted_densities)
@@ -3818,6 +3819,35 @@ class GMM:
         return (member_probabilities, current_loglikelihood)
 
     def loglike_wiki(self, X, weighted_densities):
+
+        member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
+        for idx in range(self.nMaxwellians):
+            member_probabilities[:, idx] = weighted_densities[:, idx] / np.sum(
+                weighted_densities, axis=1
+            )
+
+        latent = np.argmax(member_probabilities, axis=1)
+
+        current_loglikelihood = 0.0
+        for idx in range(self.nMaxwellians):
+            mask = latent == idx
+            loglike = (
+                -0.5
+                * np.vecdot(
+                    (X[mask, :] - self.means[idx][None, :]),
+                    np.matmul(
+                        self.invcovs[idx], (X[mask, :] - self.means[idx][None, :]).T
+                    ).T,
+                )
+                + np.log(self.weights[idx])
+                - 0.5 * np.log(self.covdets[idx])
+                - 1.5 * np.log(2 * np.pi)
+            )
+            current_loglikelihood += np.sum(loglike)
+
+        return current_loglikelihood
+
+    def loglike_wrong(self, X, weighted_densities):
 
         member_probabilities = np.zeros((X.shape[0], self.nMaxwellians), dtype=float)
         for idx in range(self.nMaxwellians):
@@ -3940,6 +3970,7 @@ def do_gmm_for_vdf(
     random_sample=None,
     scikit=False,
     temperature=1e-15,
+    savetxt=True,
 ):
 
     if runid == "FIF":
@@ -4039,13 +4070,14 @@ def do_gmm_for_vdf(
             + [mixture.loglikelihood]
             + [X.shape[0]]
         )
-    np.savetxt(outdir + "n{}/c{}/f{}.fit".format(nMaxwellians, ci, fnr), out_arr)
-    predicted_cluster = mixture.member_probabilities
-    if nMaxwellians > 1:
-        np.savetxt(
-            outdir + "n{}/c{}/f{}.pred".format(nMaxwellians, ci, fnr),
-            predicted_cluster,
-        )
+    if savetxt:
+        np.savetxt(outdir + "n{}/c{}/f{}.fit".format(nMaxwellians, ci, fnr), out_arr)
+        predicted_cluster = mixture.member_probabilities
+        if nMaxwellians > 1:
+            np.savetxt(
+                outdir + "n{}/c{}/f{}.pred".format(nMaxwellians, ci, fnr),
+                predicted_cluster,
+            )
 
     return mixture
 
