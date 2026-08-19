@@ -741,7 +741,9 @@ def L3_good_timeseries_global_vdfs_one(
     subprocess.run("rm {} -rf".format(outdir), shell=True)
 
 
-def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
+def extract_all_vdf(
+    runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30, skip=False
+):
 
     if runid == "FIF":
         extrafix = ""
@@ -763,7 +765,7 @@ def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([runid, ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin, skip])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -771,7 +773,7 @@ def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([runid, ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin, skip])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -779,7 +781,7 @@ def extract_all_vdf(runid="FIF", n_processes=16, fmin=1e-16, prepost_time=30):
         ci, t0, t1, tjet = p
         args_list = []
         for fnr in np.arange(t0 - prepost_time, t1 + prepost_time + 0.1, 1, dtype=int):
-            args_list.append([runid, ci, fnr, fmin])
+            args_list.append([runid, ci, fnr, fmin, skip])
         with Pool(processes=n_processes) as pool:
             pool.map(vspace_extracter, args_list)
 
@@ -1940,7 +1942,7 @@ def vspace_rotator(
 
 def vspace_extracter(args):
 
-    runid, cellid, fnr, fmin = args
+    runid, cellid, fnr, fmin, skip = args
     if runid == "FIF":
         extrafix = ""
         bulkpath = bulkpath_FIF
@@ -1955,30 +1957,35 @@ def vspace_extracter(args):
     outdir = wrkdir_DNR + extrafix + "vdf_txts_new/"
     create_dir_if_not_exist(outdir)
 
+    if os.path.isfile(outdir + "c{}/f{}.txt".format(cellid, fnr)):
+        if os.path.getsize(outdir + "c{}/f{}.txt".format(cellid, fnr)) > 0:
+            print("File exists and is not empty, skipping!")
+            return None
+
     try:
         velcels = vlsvobj.read_velocity_cells(cellid)
+        vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
+        vc_vals = np.array(list(velcels.values()))
+
+        ii_fm = np.where(vc_vals >= fmin)
+        vc_vals = vc_vals[ii_fm]
+        vc_coords = vc_coords[ii_fm, :][0, :, :]
+
+        vc_x, vc_y, vc_z = vc_coords.T
+
+        out_arr = np.array([vc_x, vc_y, vc_z, vc_vals]).T
+
+        if not os.path.exists(outdir + "c{}".format(cellid)):
+            try:
+                os.makedirs(outdir + "c{}".format(cellid))
+            except OSError:
+                pass
+
+        np.savetxt(outdir + "c{}/f{}.txt".format(cellid, fnr), out_arr)
+
+        vlsvobj.optimize_clear_fileindex_for_cellid()
     except:
         return None
-    vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
-    vc_vals = np.array(list(velcels.values()))
-
-    ii_fm = np.where(vc_vals >= fmin)
-    vc_vals = vc_vals[ii_fm]
-    vc_coords = vc_coords[ii_fm, :][0, :, :]
-
-    vc_x, vc_y, vc_z = vc_coords.T
-
-    out_arr = np.array([vc_x, vc_y, vc_z, vc_vals]).T
-
-    if not os.path.exists(outdir + "c{}".format(cellid)):
-        try:
-            os.makedirs(outdir + "c{}".format(cellid))
-        except OSError:
-            pass
-
-    np.savetxt(outdir + "c{}/f{}.txt".format(cellid, fnr), out_arr)
-
-    vlsvobj.optimize_clear_fileindex_for_cellid()
 
 
 def vspace_reducer(
