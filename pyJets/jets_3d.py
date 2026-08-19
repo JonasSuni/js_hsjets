@@ -1953,6 +1953,7 @@ def vspace_extracter(args):
     vlsvobj = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
     )
+    outdir = wrkdir_DNR + extrafix + "vdf_txts_new/"
 
     if skip:
         if os.path.isfile(outdir + "c{}/f{}.txt".format(cellid, fnr)):
@@ -1965,7 +1966,6 @@ def vspace_extracter(args):
         if not velcels:
             print("velcels is empty")
             return None
-        outdir = wrkdir_DNR + extrafix + "vdf_txts_new/"
         create_dir_if_not_exist(outdir)
         vc_coords = vlsvobj.get_velocity_cell_coordinates(list(velcels.keys()))
         vc_vals = np.array(list(velcels.values()))
