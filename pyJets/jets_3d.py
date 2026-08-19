@@ -1957,10 +1957,11 @@ def vspace_extracter(args):
     outdir = wrkdir_DNR + extrafix + "vdf_txts_new/"
     create_dir_if_not_exist(outdir)
 
-    if os.path.isfile(outdir + "c{}/f{}.txt".format(cellid, fnr)):
-        if os.path.getsize(outdir + "c{}/f{}.txt".format(cellid, fnr)) > 0:
-            print("File exists and is not empty, skipping!")
-            return None
+    if skip:
+        if os.path.isfile(outdir + "c{}/f{}.txt".format(cellid, fnr)):
+            if os.path.getsize(outdir + "c{}/f{}.txt".format(cellid, fnr)) > 0:
+                print("File exists and is not empty, skipping!")
+                return None
 
     try:
         velcels = vlsvobj.read_velocity_cells(cellid)
@@ -1985,6 +1986,7 @@ def vspace_extracter(args):
 
         vlsvobj.optimize_clear_fileindex_for_cellid()
     except:
+        vlsvobj.optimize_clear_fileindex_for_cellid()
         return None
 
 
