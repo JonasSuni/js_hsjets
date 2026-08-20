@@ -812,17 +812,17 @@ def jet_interval_snap_all(
     scale_g = scale
 
     archer_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
     )
     koller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
     )
     archerkoller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals_new.txt", dtype=int
     )
-    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/archer/")
-    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/koller/")
-    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm/archerkoller/")
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm_new/archer/")
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm_new/koller/")
+    create_dir_if_not_exist(wrkdir_DNR + "Figs/jet_gmm_new/archerkoller/")
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
 
@@ -837,21 +837,21 @@ def jet_interval_snap_all(
     for p in archer_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/jet_gmm/archer/{}_{}_{}_".format(ci, t0, t1)
+        outdir = wrkdir_DNR + "Figs/jet_gmm_new/archer/{}_{}_{}_".format(ci, t0, t1)
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
         make_timeseries_global_vdf_one(args)
 
     for p in koller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/jet_gmm/koller/{}_{}_{}_".format(ci, t0, t1)
+        outdir = wrkdir_DNR + "Figs/jet_gmm_new/koller/{}_{}_{}_".format(ci, t0, t1)
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
         make_timeseries_global_vdf_one(args)
 
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/jet_gmm/archerkoller/{}_{}_{}_".format(ci, t0, t1)
+        outdir = wrkdir_DNR + "Figs/jet_gmm_new/archerkoller/{}_{}_{}_".format(ci, t0, t1)
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
         make_timeseries_global_vdf_one(args)
 
@@ -2181,7 +2181,7 @@ def get_gmm_params(nMaxwellians, ci, fnr):
 
     try:
         gmm_fit = np.loadtxt(
-            wrkdir_DNR + "vdf_gmm/n{}/c{}/f{}.fit".format(nMaxwellians, int(ci), fnr)
+            wrkdir_DNR + "vdf_gmm_new/n{}/c{}/f{}.fit".format(nMaxwellians, int(ci), fnr)
         )
     except:
         raise Exception("Could not read GMM file")
