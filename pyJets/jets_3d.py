@@ -851,7 +851,9 @@ def jet_interval_snap_all(
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/jet_gmm_new/archerkoller/{}_{}_{}_".format(ci, t0, t1)
+        outdir = wrkdir_DNR + "Figs/jet_gmm_new/archerkoller/{}_{}_{}_".format(
+            ci, t0, t1
+        )
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
         make_timeseries_global_vdf_one(args)
 
@@ -2181,7 +2183,8 @@ def get_gmm_params(nMaxwellians, ci, fnr):
 
     try:
         gmm_fit = np.loadtxt(
-            wrkdir_DNR + "vdf_gmm_new/n{}/c{}/f{}.fit".format(nMaxwellians, int(ci), fnr)
+            wrkdir_DNR
+            + "vdf_gmm_new/n{}/c{}/f{}.fit".format(nMaxwellians, int(ci), fnr)
         )
     except:
         raise Exception("Could not read GMM file")
@@ -4181,7 +4184,13 @@ def process_all_jet_gmm(
 
 
 def plot_traced_particles(
-    tstart, cellid, runid="FIF", histogram=False, gmm=None, deterministic=False
+    tstart,
+    cellid,
+    runid="FIF",
+    histogram=False,
+    gmm=None,
+    deterministic=False,
+    ud_splitting=False,
 ):
 
     vmax = 2000
@@ -4231,6 +4240,20 @@ def plot_traced_particles(
 
         varr = np.array([vx0, vy0, vz0]).T
         latent = mixture.component_lottery(varr, deterministic=deterministic)
+
+    elif ud_splitting:
+
+        x00, y00, z00, vx0, vy0, vz0 = read_ptr2_file(
+            indir + "state.{}.ptr".format(str(state_range[-1]).zfill(7))
+        )
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr_range[-1])
+        )
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+
+        x_bs = interpolator_ms(y00 / r_e, z00 / r_e)
+
+        latent = (x_bs < x00 / r_e).astype(int)
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -4321,6 +4344,25 @@ def plot_traced_particles(
                         label="Component {}".format(idx),
                     )
                 ax_list[0].legend()
+            elif ud_splitting:
+                labs = ["Downstream", "Upstream"]
+                for idx in range(2):
+                    ax_list[0].scatter(
+                        x[latent == idx] / r_e,
+                        y[latent == idx] / r_e,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label=labs[idx],
+                    )
+                    ax_list[2].scatter(
+                        vx[latent == idx] / 1e3,
+                        vy[latent == idx] / 1e3,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label=labs[idx],
+                    )
             else:
                 ax_list[0].scatter(
                     x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
@@ -4384,6 +4426,25 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label="Component {}".format(idx),
+                    )
+            elif ud_splitting:
+                labs = ["Downstream", "Upstream"]
+                for idx in range(2):
+                    ax_list[1].scatter(
+                        x[latent == idx] / r_e,
+                        z[latent == idx] / r_e,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label=labs[idx],
+                    )
+                    ax_list[3].scatter(
+                        vx[latent == idx] / 1e3,
+                        vz[latent == idx] / 1e3,
+                        marker=".",
+                        color=CB_color_cycle[idx],
+                        zorder=3,
+                        label=labs[idx],
                     )
             else:
                 ax_list[1].scatter(
