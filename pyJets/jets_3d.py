@@ -4231,7 +4231,9 @@ def plot_traced_particle_energy(
     if color_by == "e_kin":
         color_var = (0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[::plot_every]
     if color_by == "e_kin_log":
-        color_var = np.log(0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[::plot_every]
+        color_var = np.log(0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[
+            ::plot_every
+        ]
     elif color_by == "temp":
         color_var = (
             0.5
@@ -4370,6 +4372,7 @@ def plot_traced_particles(
     gmm=None,
     deterministic=False,
     ud_splitting=False,
+    underplot=None,
 ):
 
     vmax = 2000
@@ -4465,6 +4468,21 @@ def plot_traced_particles(
         fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
         ax_list = ax_list.flatten()
 
+        if underplot:
+            pt.plot.plot_colormap3dslice(
+                filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+                axes=ax_list[0],
+                var="proton/vg_pdyn",
+                vmin=0.1,
+                vmax=2,
+                colormap="hot_desaturated",
+                # nocb=True,
+                normal="z",
+                title="",
+                noxlabels=1,
+                noylabels=1,
+            )
+
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
 
@@ -4555,6 +4573,21 @@ def plot_traced_particles(
 
         ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
+
+        if underplot:
+            pt.plot.plot_colormap3dslice(
+                filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+                axes=ax_list[1],
+                var="proton/vg_pdyn",
+                vmin=0.1,
+                vmax=2,
+                colormap="hot_desaturated",
+                # nocb=True,
+                normal="y",
+                title="",
+                noxlabels=1,
+                noylabels=1,
+            )
 
         if histogram:
             hist_xz, xedges, zedges = np.histogram2d(x / r_e, z / r_e, [xhist, zhist])
