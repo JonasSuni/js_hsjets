@@ -4542,7 +4542,7 @@ def plot_traced_particles(
                         zorder=3,
                         label="Component {}".format(idx),
                     )
-                ax_list[0].legend()
+                ax_list[0].legend(loc="upper right")
             elif ud_splitting:
                 labs = ["Downstream", "Upstream"]
                 for idx in range(2):
