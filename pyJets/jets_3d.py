@@ -4313,6 +4313,7 @@ def plot_traced_particle_energy(
                 noylabels=1,
                 vscale=1e9,
                 usesci=False,
+                cutpointre=meanz,
             )
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
@@ -4355,6 +4356,7 @@ def plot_traced_particle_energy(
                 noylabels=1,
                 vscale=1e9,
                 usesci=False,
+                cutpointre=meany,
             )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
@@ -4523,6 +4525,7 @@ def plot_traced_particles(
                 noylabels=1,
                 vscale=1e9,
                 usesci=False,
+                cutpointre=meanz,
             )
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
@@ -4651,6 +4654,7 @@ def plot_traced_particles(
                 noylabels=1,
                 vscale=1e9,
                 usesci=False,
+                cutpointre=meany,
             )
 
         if histogram:
