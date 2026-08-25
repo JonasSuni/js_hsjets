@@ -4230,6 +4230,8 @@ def plot_traced_particle_energy(
 
     if color_by == "e_kin":
         color_var = (0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[::plot_every]
+    if color_by == "e_kin_log":
+        color_var = np.log(0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[::plot_every]
     elif color_by == "temp":
         color_var = (
             0.5
