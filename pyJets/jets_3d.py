@@ -4184,7 +4184,13 @@ def process_all_jet_gmm(
 
 
 def plot_traced_particle_energy(
-    tstart, cellid, runid="FIF", plot_every=1, color_by="e_kin", markersize=1
+    tstart,
+    cellid,
+    runid="FIF",
+    plot_every=1,
+    color_by="e_kin",
+    markersize=1,
+    underplot=None,
 ):
 
     vmax = 2000
@@ -4292,6 +4298,23 @@ def plot_traced_particle_energy(
         #     )
         # )
 
+        if underplot:
+            pt.plot.plot_colormap3dslice(
+                filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+                axes=ax_list[0],
+                var="proton/vg_pdyn",
+                vmin=0.1,
+                vmax=2,
+                colormap="hot_desaturated",
+                # nocb=True,
+                normal="z",
+                title="",
+                noxlabels=1,
+                noylabels=1,
+                vscale=1e9,
+                usesci=False,
+            )
+
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
 
@@ -4316,6 +4339,23 @@ def plot_traced_particle_energy(
             zorder=3,
             s=markersize,
         )
+
+        if underplot:
+            pt.plot.plot_colormap3dslice(
+                filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+                axes=ax_list[1],
+                var="proton/vg_pdyn",
+                vmin=0.1,
+                vmax=2,
+                colormap="hot_desaturated",
+                # nocb=True,
+                normal="y",
+                title="",
+                noxlabels=1,
+                noylabels=1,
+                vscale=1e9,
+                usesci=False,
+            )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
