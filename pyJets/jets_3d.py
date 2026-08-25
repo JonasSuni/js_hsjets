@@ -4268,7 +4268,7 @@ def plot_traced_particle_energy(
             x / r_e, y / r_e, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
         )
         ax_list[2].scatter(
-            vx / 1e3, vy / 1e3, marker=".", cmap="hot_desaturated", zorder=3
+            vx / 1e3, vy / 1e3, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
         )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
