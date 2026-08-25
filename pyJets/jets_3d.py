@@ -4256,7 +4256,15 @@ def plot_traced_particle_energy(
         fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
         ax_list = ax_list.flatten()
 
-        e_kin = 0.5 * m_p * (vx**2 + vy**2 + vz**2)
+        e_kin = (
+            0.5
+            * m_p
+            * (
+                (vx - np.nanmean(vx)) ** 2
+                + (vy - np.nanmean(vy)) ** 2
+                + (vz - np.nanmean(vz)) ** 2
+            )
+        )
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
