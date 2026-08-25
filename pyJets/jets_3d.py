@@ -4481,6 +4481,8 @@ def plot_traced_particles(
                 title="",
                 noxlabels=1,
                 noylabels=1,
+                vscale=1e9,
+                usesci=False,
             )
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
@@ -4587,6 +4589,8 @@ def plot_traced_particles(
                 title="",
                 noxlabels=1,
                 noylabels=1,
+                vscale=1e9,
+                usesci=False,
             )
 
         if histogram:
