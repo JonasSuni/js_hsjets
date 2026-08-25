@@ -4183,11 +4183,7 @@ def process_all_jet_gmm(
                     continue
 
 
-def plot_traced_particle_energy(
-    tstart,
-    cellid,
-    runid="FIF",
-):
+def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
 
     vmax = 2000
 
@@ -4238,7 +4234,7 @@ def plot_traced_particle_energy(
             + (vy0 - np.nanmean(vy0)) ** 2
             + (vz0 - np.nanmean(vz0)) ** 2
         )
-    )
+    )[::plot_every]
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -4288,10 +4284,20 @@ def plot_traced_particle_energy(
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
 
         ax_list[0].scatter(
-            x / r_e, y / r_e, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
+            x[::plot_every] / r_e,
+            y[::plot_every] / r_e,
+            marker=".",
+            c=e_kin,
+            cmap="hot_desaturated",
+            zorder=3,
         )
         ax_list[2].scatter(
-            vx / 1e3, vy / 1e3, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
+            vx[::plot_every] / 1e3,
+            vy[::plot_every] / 1e3,
+            marker=".",
+            c=e_kin,
+            cmap="hot_desaturated",
+            zorder=3,
         )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
@@ -4301,10 +4307,20 @@ def plot_traced_particle_energy(
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
 
         ax_list[1].scatter(
-            x / r_e, z / r_e, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
+            x[::plot_every] / r_e,
+            z[::plot_every] / r_e,
+            marker=".",
+            c=e_kin,
+            cmap="hot_desaturated",
+            zorder=3,
         )
         ax_list[3].scatter(
-            vx / 1e3, vz / 1e3, marker=".", c=e_kin, cmap="hot_desaturated", zorder=3
+            vx[::plot_every] / 1e3,
+            vz[::plot_every] / 1e3,
+            marker=".",
+            c=e_kin,
+            cmap="hot_desaturated",
+            zorder=3,
         )
 
         for ax in ax_list[:2]:
