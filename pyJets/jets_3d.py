@@ -4184,7 +4184,7 @@ def process_all_jet_gmm(
 
 
 def plot_traced_particle_energy(
-    tstart, cellid, runid="FIF", plot_every=1, color_by="e_kin"
+    tstart, cellid, runid="FIF", plot_every=1, color_by="e_kin", markersize=1
 ):
 
     vmax = 2000
@@ -4301,6 +4301,7 @@ def plot_traced_particle_energy(
             c=color_var,
             cmap="hot_desaturated",
             zorder=3,
+            markersize=markersize,
         )
         ax_list[2].scatter(
             vx[::plot_every] / 1e3,
@@ -4309,6 +4310,7 @@ def plot_traced_particle_energy(
             c=color_var,
             cmap="hot_desaturated",
             zorder=3,
+            markersize=markersize,
         )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
@@ -4324,6 +4326,7 @@ def plot_traced_particle_energy(
             c=color_var,
             cmap="hot_desaturated",
             zorder=3,
+            markersize=markersize,
         )
         ax_list[3].scatter(
             vx[::plot_every] / 1e3,
@@ -4332,6 +4335,7 @@ def plot_traced_particle_energy(
             c=color_var,
             cmap="hot_desaturated",
             zorder=3,
+            markersize=markersize,
         )
 
         for ax in ax_list[:2]:
