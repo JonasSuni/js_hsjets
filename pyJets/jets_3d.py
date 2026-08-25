@@ -4533,6 +4533,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label="Component {}".format(idx),
+                        s=1,
+                        alpha=0.5,
                     )
                     ax_list[2].scatter(
                         vx[mask] / 1e3,
@@ -4541,6 +4543,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label="Component {}".format(idx),
+                        s=1,
+                        alpha=0.5,
                     )
                 ax_list[0].legend(loc="upper right")
             elif ud_splitting:
@@ -4553,6 +4557,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label=labs[idx],
+                        s=1,
+                        alpha=0.5,
                     )
                     ax_list[2].scatter(
                         vx[latent == idx] / 1e3,
@@ -4561,13 +4567,27 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label=labs[idx],
+                        s=1,
+                        alpha=0.5,
                     )
             else:
                 ax_list[0].scatter(
-                    x / r_e, y / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+                    x / r_e,
+                    y / r_e,
+                    marker=".",
+                    color=CB_color_cycle[0],
+                    zorder=3,
+                    s=1,
+                    alpha=0.5,
                 )
                 ax_list[2].scatter(
-                    vx / 1e3, vy / 1e3, marker=".", color=CB_color_cycle[0], zorder=3
+                    vx / 1e3,
+                    vy / 1e3,
+                    marker=".",
+                    color=CB_color_cycle[0],
+                    zorder=3,
+                    s=1,
+                    alpha=0.5,
                 )
 
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
@@ -4634,6 +4654,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label="Component {}".format(idx),
+                        s=1,
+                        alpha=0.5,
                     )
                     ax_list[3].scatter(
                         vx[mask] / 1e3,
@@ -4642,6 +4664,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label="Component {}".format(idx),
+                        s=1,
+                        alpha=0.5,
                     )
             elif ud_splitting:
                 labs = ["Downstream", "Upstream"]
@@ -4653,6 +4677,8 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label=labs[idx],
+                        s=1,
+                        alpha=0.5,
                     )
                     ax_list[3].scatter(
                         vx[latent == idx] / 1e3,
@@ -4661,13 +4687,27 @@ def plot_traced_particles(
                         color=CB_color_cycle[idx],
                         zorder=3,
                         label=labs[idx],
+                        s=1,
+                        alpha=0.5,
                     )
             else:
                 ax_list[1].scatter(
-                    x / r_e, z / r_e, marker=".", color=CB_color_cycle[0], zorder=3
+                    x / r_e,
+                    z / r_e,
+                    marker=".",
+                    color=CB_color_cycle[0],
+                    zorder=3,
+                    s=1,
+                    alpha=0.5,
                 )
                 ax_list[3].scatter(
-                    vx / 1e3, vz / 1e3, marker=".", color=CB_color_cycle[0], zorder=3
+                    vx / 1e3,
+                    vz / 1e3,
+                    marker=".",
+                    color=CB_color_cycle[0],
+                    zorder=3,
+                    s=1,
+                    alpha=0.5,
                 )
 
         for ax in ax_list[:2]:
