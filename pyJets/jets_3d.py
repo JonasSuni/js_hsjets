@@ -4183,7 +4183,9 @@ def process_all_jet_gmm(
                     continue
 
 
-def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
+def plot_traced_particle_energy(
+    tstart, cellid, runid="FIF", plot_every=1, color_by="e_kin"
+):
 
     vmax = 2000
 
@@ -4206,7 +4208,7 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
     outdir = (
         wrkdir_DNR
         + extrafix
-        + "Figs/particle_tracing_energies/{}_{}/".format(cellid, tstart)
+        + "Figs/particle_tracing_{}/{}_{}/".format(color_by, cellid, tstart)
     )
     create_dir_if_not_exist(outdir)
 
@@ -4226,15 +4228,24 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
         delimiter=",",
     ).T
 
-    e_kin = (
-        0.5
-        * m_p
-        * (
-            (vx0 - np.nanmean(vx0)) ** 2
-            + (vy0 - np.nanmean(vy0)) ** 2
-            + (vz0 - np.nanmean(vz0)) ** 2
-        )
-    )[::plot_every]
+    if color_by == "e_kin":
+        color_var = (0.5 * m_p * ((vx0) ** 2 + (vy0) ** 2 + (vz0) ** 2))[::plot_every]
+    elif color_by == "temp":
+        color_var = (
+            0.5
+            * m_p
+            * (
+                (vx0 - np.nanmean(vx0)) ** 2
+                + (vy0 - np.nanmean(vy0)) ** 2
+                + (vz0 - np.nanmean(vz0)) ** 2
+            )
+        )[::plot_every]
+    elif color_by == "vx":
+        color_var = vx0[::plot_every]
+    elif color_by == "vy":
+        color_var = vy0[::plot_every]
+    elif color_by == "vz":
+        color_var = vz0[::plot_every]
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -4287,7 +4298,7 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
             x[::plot_every] / r_e,
             y[::plot_every] / r_e,
             marker=".",
-            c=e_kin,
+            c=color_var,
             cmap="hot_desaturated",
             zorder=3,
         )
@@ -4295,7 +4306,7 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
             vx[::plot_every] / 1e3,
             vy[::plot_every] / 1e3,
             marker=".",
-            c=e_kin,
+            c=color_var,
             cmap="hot_desaturated",
             zorder=3,
         )
@@ -4310,7 +4321,7 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
             x[::plot_every] / r_e,
             z[::plot_every] / r_e,
             marker=".",
-            c=e_kin,
+            c=color_var,
             cmap="hot_desaturated",
             zorder=3,
         )
@@ -4318,7 +4329,7 @@ def plot_traced_particle_energy(tstart, cellid, runid="FIF", plot_every=1):
             vx[::plot_every] / 1e3,
             vz[::plot_every] / 1e3,
             marker=".",
-            c=e_kin,
+            c=color_var,
             cmap="hot_desaturated",
             zorder=3,
         )
