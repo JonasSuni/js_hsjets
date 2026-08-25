@@ -4225,6 +4225,21 @@ def plot_traced_particle_energy(
 
     vxhist = np.linspace(-vmax, vmax, 1001, dtype=float)
 
+    t0arr, x00, y00, z00, vx0, vy0, vz0 = np.loadtxt(
+        wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart),
+        delimiter=",",
+    ).T
+
+    e_kin = (
+        0.5
+        * m_p
+        * (
+            (vx0 - np.nanmean(vx0)) ** 2
+            + (vy0 - np.nanmean(vy0)) ** 2
+            + (vz0 - np.nanmean(vz0)) ** 2
+        )
+    )
+
     for idx in state_range:
         fnr = fnr_range[idx]
         x, y, z, vx, vy, vz = read_ptr2_file(
@@ -4256,15 +4271,15 @@ def plot_traced_particle_energy(
         fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
         ax_list = ax_list.flatten()
 
-        e_kin = (
-            0.5
-            * m_p
-            * (
-                (vx - np.nanmean(vx)) ** 2
-                + (vy - np.nanmean(vy)) ** 2
-                + (vz - np.nanmean(vz)) ** 2
-            )
-        )
+        # e_kin = (
+        #     0.5
+        #     * m_p
+        #     * (
+        #         (vx - np.nanmean(vx)) ** 2
+        #         + (vy - np.nanmean(vy)) ** 2
+        #         + (vz - np.nanmean(vz)) ** 2
+        #     )
+        # )
 
         ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
         ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
