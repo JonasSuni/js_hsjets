@@ -4492,6 +4492,7 @@ def plot_traced_particles(
     deterministic=False,
     ud_splitting=False,
     underplot=None,
+    plot_every=1,
 ):
 
     vmax = 2000
@@ -4540,7 +4541,9 @@ def plot_traced_particles(
         ).T
 
         varr = np.array([vx0, vy0, vz0]).T
-        latent = mixture.component_lottery(varr, deterministic=deterministic)
+        latent = mixture.component_lottery(varr, deterministic=deterministic)[
+            ::plot_every
+        ]
 
     elif ud_splitting:
 
@@ -4554,7 +4557,7 @@ def plot_traced_particles(
 
         x_bs = interpolator_ms(y00 / r_e, z00 / r_e)
 
-        latent = (x_bs < x00 / r_e).astype(int)
+        latent = (x_bs < x00 / r_e).astype(int)[::plot_every]
 
     for idx in state_range:
         fnr = fnr_range[idx]
@@ -4612,7 +4615,9 @@ def plot_traced_particles(
         ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
 
         if histogram:
-            hist_xy, xedges, yedges = np.histogram2d(x / r_e, y / r_e, [xhist, yhist])
+            hist_xy, xedges, yedges = np.histogram2d(
+                x[::plot_every] / r_e, y[::plot_every] / r_e, [xhist, yhist]
+            )
             hist_xy[hist_xy == 0] = np.nan
             im_xy = ax_list[0].pcolormesh(
                 xedges,
@@ -4627,7 +4632,7 @@ def plot_traced_particles(
             cb_xy = plt.colorbar(im_xy, ax=ax_list[0], label="Particles")
 
             hist_vxy, vxedges, vyedges = np.histogram2d(
-                vx / 1e3, vy / 1e3, [vxhist, vxhist]
+                vx[::plot_every] / 1e3, vy[::plot_every] / 1e3, [vxhist, vxhist]
             )
             hist_vxy[hist_vxy == 0] = np.nan
             im_vxy = ax_list[2].pcolormesh(
@@ -4647,8 +4652,8 @@ def plot_traced_particles(
                 for idx in range(gmm):
                     mask = latent == idx
                     ax_list[0].scatter(
-                        x[mask] / r_e,
-                        y[mask] / r_e,
+                        x[::plot_every][mask] / r_e,
+                        y[::plot_every][mask] / r_e,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4657,8 +4662,8 @@ def plot_traced_particles(
                         alpha=0.5,
                     )
                     ax_list[2].scatter(
-                        vx[mask] / 1e3,
-                        vy[mask] / 1e3,
+                        vx[::plot_every][mask] / 1e3,
+                        vy[::plot_every][mask] / 1e3,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4671,8 +4676,8 @@ def plot_traced_particles(
                 labs = ["Downstream", "Upstream"]
                 for idx in range(2):
                     ax_list[0].scatter(
-                        x[latent == idx] / r_e,
-                        y[latent == idx] / r_e,
+                        x[::plot_every][latent == idx] / r_e,
+                        y[::plot_every][latent == idx] / r_e,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4681,8 +4686,8 @@ def plot_traced_particles(
                         alpha=0.5,
                     )
                     ax_list[2].scatter(
-                        vx[latent == idx] / 1e3,
-                        vy[latent == idx] / 1e3,
+                        vx[::plot_every][latent == idx] / 1e3,
+                        vy[::plot_every][latent == idx] / 1e3,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4692,8 +4697,8 @@ def plot_traced_particles(
                     )
             else:
                 ax_list[0].scatter(
-                    x / r_e,
-                    y / r_e,
+                    x[::plot_every] / r_e,
+                    y[::plot_every] / r_e,
                     marker=".",
                     color=CB_color_cycle[0],
                     zorder=3,
@@ -4701,8 +4706,8 @@ def plot_traced_particles(
                     alpha=0.5,
                 )
                 ax_list[2].scatter(
-                    vx / 1e3,
-                    vy / 1e3,
+                    vx[::plot_every] / 1e3,
+                    vy[::plot_every] / 1e3,
                     marker=".",
                     color=CB_color_cycle[0],
                     zorder=3,
@@ -4735,7 +4740,9 @@ def plot_traced_particles(
             )
 
         if histogram:
-            hist_xz, xedges, zedges = np.histogram2d(x / r_e, z / r_e, [xhist, zhist])
+            hist_xz, xedges, zedges = np.histogram2d(
+                x[::plot_every] / r_e, z[::plot_every] / r_e, [xhist, zhist]
+            )
             hist_xz[hist_xz == 0] = np.nan
             im_xz = ax_list[1].pcolormesh(
                 xedges,
@@ -4750,7 +4757,7 @@ def plot_traced_particles(
             cb_xz = plt.colorbar(im_xz, ax=ax_list[1], label="Particles")
 
             hist_vxz, vxedges, vzedges = np.histogram2d(
-                vx / 1e3, vz / 1e3, [vxhist, vxhist]
+                vx[::plot_every] / 1e3, vz[::plot_every] / 1e3, [vxhist, vxhist]
             )
             hist_vxz[hist_vxz == 0] = np.nan
             im_vxz = ax_list[3].pcolormesh(
@@ -4769,8 +4776,8 @@ def plot_traced_particles(
                 for idx in range(gmm):
                     mask = latent == idx
                     ax_list[1].scatter(
-                        x[mask] / r_e,
-                        z[mask] / r_e,
+                        x[::plot_every][mask] / r_e,
+                        z[::plot_every][mask] / r_e,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4779,8 +4786,8 @@ def plot_traced_particles(
                         alpha=0.5,
                     )
                     ax_list[3].scatter(
-                        vx[mask] / 1e3,
-                        vz[mask] / 1e3,
+                        vx[::plot_every][mask] / 1e3,
+                        vz[::plot_every][mask] / 1e3,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4792,8 +4799,8 @@ def plot_traced_particles(
                 labs = ["Downstream", "Upstream"]
                 for idx in range(2):
                     ax_list[1].scatter(
-                        x[latent == idx] / r_e,
-                        z[latent == idx] / r_e,
+                        x[::plot_every][latent == idx] / r_e,
+                        z[::plot_every][latent == idx] / r_e,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4802,8 +4809,8 @@ def plot_traced_particles(
                         alpha=0.5,
                     )
                     ax_list[3].scatter(
-                        vx[latent == idx] / 1e3,
-                        vz[latent == idx] / 1e3,
+                        vx[::plot_every][latent == idx] / 1e3,
+                        vz[::plot_every][latent == idx] / 1e3,
                         marker=".",
                         color=CB_color_cycle[idx],
                         zorder=3,
@@ -4813,8 +4820,8 @@ def plot_traced_particles(
                     )
             else:
                 ax_list[1].scatter(
-                    x / r_e,
-                    z / r_e,
+                    x[::plot_every] / r_e,
+                    z[::plot_every] / r_e,
                     marker=".",
                     color=CB_color_cycle[0],
                     zorder=3,
@@ -4822,8 +4829,8 @@ def plot_traced_particles(
                     alpha=0.5,
                 )
                 ax_list[3].scatter(
-                    vx / 1e3,
-                    vz / 1e3,
+                    vx[::plot_every] / 1e3,
+                    vz[::plot_every] / 1e3,
                     marker=".",
                     color=CB_color_cycle[0],
                     zorder=3,
