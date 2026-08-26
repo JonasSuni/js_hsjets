@@ -3737,6 +3737,31 @@ def trace_particles(tstart, cellid, runid="FIF"):
     plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
 
 
+def trace_all_particles(runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archerkoller_intervals_new.txt",
+        dtype=int,
+    )
+
+    all_data = np.vstack((archer_data, koller_data, archerkoller_data))
+
+    for p in all_data:
+        ci, t0, t1, tjet = p
+        trace_particles(int(tjet), ci, runid="FIF")
+
+
 class GMM:
 
     def __init__(self, nMaxwellians, weights, means, covs, temperature=1e-15):
