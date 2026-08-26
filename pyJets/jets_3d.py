@@ -3759,7 +3759,20 @@ def trace_all_particles(runid="FIF"):
 
     for p in all_data:
         ci, t0, t1, tjet = p
-        trace_particles(int(tjet), ci, runid="FIF")
+        if os.path.isfile(
+            wrkdir_DNR + "vdf_txts_new/c{}/f{}.txt".format(int(ci), int(tjet))
+        ):
+            if (
+                os.path.getsize(
+                    wrkdir_DNR + "vdf_txts_new/c{}/f{}.txt".format(int(ci), int(tjet))
+                )
+                > 0
+            ):
+                trace_particles(int(tjet), int(ci), runid="FIF")
+            else:
+                continue
+        else:
+            continue
 
 
 class GMM:
