@@ -3737,7 +3737,7 @@ def trace_particles(tstart, cellid, runid="FIF"):
     plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
 
 
-def trace_all_particles(runid="FIF"):
+def trace_all_particles(runid="FIF", skip=False):
 
     if runid == "FIF":
         extrafix = ""
@@ -3768,7 +3768,14 @@ def trace_all_particles(runid="FIF"):
                 )
                 > 0
             ):
-                trace_particles(int(tjet), int(ci), runid="FIF")
+                if skip and os.path.isfile(
+                    wrkdir_DNR
+                    + "traces/{}/samples/{}_{}.txt".format(runid, int(ci), int(tjet))
+                ):
+                    print("Skip is True and sample file exists, skipping!")
+                    continue
+                else:
+                    trace_particles(int(tjet), int(ci), runid="FIF")
             else:
                 continue
         else:
