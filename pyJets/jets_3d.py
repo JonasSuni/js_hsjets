@@ -886,22 +886,22 @@ def jet_interval_snap_all(
 def jet_interval_gmm_timeseries(nMaxwellians):
 
     archer_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archer_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
     )
     koller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/koller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
     )
     archerkoller_data = np.loadtxt(
-        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals.txt", dtype=int
+        wrkdir_DNR + "txts/jet_intervals/archerkoller_intervals_new.txt", dtype=int
     )
     create_dir_if_not_exist(
-        wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}".format(nMaxwellians)
+        wrkdir_DNR + "Figs/gmm_timeseries_new/archer/n{}".format(nMaxwellians)
     )
     create_dir_if_not_exist(
-        wrkdir_DNR + "Figs/gmm_timeseries/koller/n{}".format(nMaxwellians)
+        wrkdir_DNR + "Figs/gmm_timeseries_new/koller/n{}".format(nMaxwellians)
     )
     create_dir_if_not_exist(
-        wrkdir_DNR + "Figs/gmm_timeseries/archerkoller/n{}".format(nMaxwellians)
+        wrkdir_DNR + "Figs/gmm_timeseries_new/archerkoller/n{}".format(nMaxwellians)
     )
 
     vobj_600 = pt.vlsvfile.VlsvReader(bulkpath_FIF + "bulk1.0000600.vlsv")
@@ -909,7 +909,7 @@ def jet_interval_gmm_timeseries(nMaxwellians):
     for p in archer_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/gmm_timeseries/archer/n{}/{}_{}_{}_".format(
+        outdir = wrkdir_DNR + "Figs/gmm_timeseries_new/archer/n{}/{}_{}_{}_".format(
             nMaxwellians, ci, t0, t1
         )
         args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
@@ -918,7 +918,7 @@ def jet_interval_gmm_timeseries(nMaxwellians):
     for p in koller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/gmm_timeseries/koller/n{}/{}_{}_{}_".format(
+        outdir = wrkdir_DNR + "Figs/gmm_timeseries_new/koller/n{}/{}_{}_{}_".format(
             nMaxwellians, ci, t0, t1
         )
         args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
@@ -927,8 +927,11 @@ def jet_interval_gmm_timeseries(nMaxwellians):
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
-        outdir = wrkdir_DNR + "Figs/gmm_timeseries/archerkoller/n{}/{}_{}_{}_".format(
-            nMaxwellians, ci, t0, t1
+        outdir = (
+            wrkdir_DNR
+            + "Figs/gmm_timeseries_new/archerkoller/n{}/{}_{}_{}_".format(
+                nMaxwellians, ci, t0, t1
+            )
         )
         args = (ci, coords, t0 - 30, t1 + 30, tjet, nMaxwellians, outdir)
         make_gmm_timeseries(args)
