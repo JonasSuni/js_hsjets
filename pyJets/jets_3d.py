@@ -804,6 +804,7 @@ def jet_interval_snap_all(
     calc_rel_dens=True,
     gmm=None,
     scale=1.3,
+    skip=False,
 ):
 
     global limitedsize_g, scale_g
@@ -839,14 +840,30 @@ def jet_interval_snap_all(
         coords = vobj_600.get_cell_coordinates(ci) / r_e
         outdir = wrkdir_DNR + "Figs/jet_gmm_new/archer/{}_{}_{}_".format(ci, t0, t1)
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
-        make_timeseries_global_vdf_one(args)
+        if skip and os.path.isfile(outdir + "{}.png".format(int(tjet))):
+            print(
+                "Skip is true and file {} exists, skipping!".format(
+                    outdir + "{}.png".format(int(tjet))
+                )
+            )
+            continue
+        else:
+            make_timeseries_global_vdf_one(args)
 
     for p in koller_data:
         ci, t0, t1, tjet = p
         coords = vobj_600.get_cell_coordinates(ci) / r_e
         outdir = wrkdir_DNR + "Figs/jet_gmm_new/koller/{}_{}_{}_".format(ci, t0, t1)
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
-        make_timeseries_global_vdf_one(args)
+        if skip and os.path.isfile(outdir + "{}.png".format(int(tjet))):
+            print(
+                "Skip is true and file {} exists, skipping!".format(
+                    outdir + "{}.png".format(int(tjet))
+                )
+            )
+            continue
+        else:
+            make_timeseries_global_vdf_one(args)
 
     for p in archerkoller_data:
         ci, t0, t1, tjet = p
@@ -855,7 +872,15 @@ def jet_interval_snap_all(
             ci, t0, t1
         )
         args = (ci, coords, t0, t1, tjet, limitedsize, outdir)
-        make_timeseries_global_vdf_one(args)
+        if skip and os.path.isfile(outdir + "{}.png".format(int(tjet))):
+            print(
+                "Skip is true and file {} exists, skipping!".format(
+                    outdir + "{}.png".format(int(tjet))
+                )
+            )
+            continue
+        else:
+            make_timeseries_global_vdf_one(args)
 
 
 def jet_interval_gmm_timeseries(nMaxwellians):
