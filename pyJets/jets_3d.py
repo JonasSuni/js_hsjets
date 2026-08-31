@@ -4483,6 +4483,54 @@ def plot_traced_particle_energy(
         print("Plotted particle trace fnr {}".format(fnr))
 
 
+def make_all_trace_plots(runid="FIF", skip=False):
+
+    if runid == "FIF":
+        extrafix = ""
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+
+    archer_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
+    )
+    koller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/koller_intervals_new.txt", dtype=int
+    )
+    archerkoller_data = np.loadtxt(
+        wrkdir_DNR + extrafix + "txts/jet_intervals/archerkoller_intervals_new.txt",
+        dtype=int,
+    )
+
+    all_data = np.vstack((archer_data, koller_data, archerkoller_data))
+
+    for p in all_data:
+        ci, t0, t1, tjet = p
+        if os.path.isfile(
+            wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, int(ci), int(tjet))
+        ):
+            if (
+                os.path.getsize(
+                    wrkdir_DNR
+                    + "traces/{}/samples/{}_{}.txt".format(runid, int(ci), int(tjet))
+                )
+                > 0
+            ):
+                plot_traced_particles(
+                    tjet,
+                    ci,
+                    runid=runid,
+                    gmm=2,
+                    deterministic=True,
+                    underplot=True,
+                    plot_every=16,
+                    skip=skip,
+                )
+            else:
+                continue
+        else:
+            continue
+
+
 def plot_traced_particles(
     tstart,
     cellid,
@@ -4493,6 +4541,7 @@ def plot_traced_particles(
     ud_splitting=False,
     underplot=None,
     plot_every=1,
+    skip=False,
 ):
 
     vmax = 2000
@@ -4517,6 +4566,10 @@ def plot_traced_particles(
         wrkdir_DNR + extrafix + "Figs/particle_tracing/{}_{}/".format(cellid, tstart)
     )
     create_dir_if_not_exist(outdir)
+
+    if skip and os.path.isfile(outdir + "{}.png".format(tstart)):
+        print("Skip is true and file exists, skipping!")
+        return None
 
     fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
     state_range = np.arange(numin, dtype=int)
