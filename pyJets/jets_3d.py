@@ -3734,7 +3734,7 @@ def trace_particles(tstart, cellid, runid="FIF"):
         shell=True,
     )
 
-    plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
+    # plot_traced_particles(tstart, cellid, runid=runid, histogram=True)
 
 
 def trace_all_particles(runid="FIF", skip=False):
