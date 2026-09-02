@@ -4779,7 +4779,7 @@ def plot_traced_particles(
         if underplot:
             pt.plot.plot_colormap3dslice(
                 filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
-                axes=ax_list[0],
+                axes=ax_list[1],
                 var="vg_b_vol",
                 operator="z",
                 vmin=-5.1,
@@ -4787,13 +4787,13 @@ def plot_traced_particles(
                 colormap="vik",
                 lin=10,
                 # nocb=True,
-                normal="z",
+                normal="y",
                 title="",
                 noxlabels=1,
                 noylabels=1,
                 vscale=1e9,
                 usesci=False,
-                cutpointre=meanz,
+                cutpointre=meany,
             )
 
         if histogram:
