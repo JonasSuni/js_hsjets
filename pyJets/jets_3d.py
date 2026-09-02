@@ -3704,6 +3704,50 @@ def read_ptr2_file(file):
     return x, y, z, vx, vy, vz
 
 
+def detailed_trace(tstart, cellid, runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    sample_file = wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(
+        runid, cellid, tstart
+    )
+    outdir = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}".format(
+        runid, cellid, tstart
+    )
+    create_dir_if_not_exist(outdir)
+    startfile = bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
+
+    if not os.path.isfile(sample_file):
+        subprocess.run(
+            "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 1048576 --target-cell {} {}".format(
+                sample_file, tstart, cellid, startfile
+            ),
+            shell=True,
+        )
+
+    create_dir_if_not_exist(outdir + "/bw/")
+    create_dir_if_not_exist(outdir + "/fw/")
+
+    subprocess.run(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.01 --backward --input {} --output {}/state --buffer-size 30".format(
+            bulkpath, tstart, tstart - 29, tstart + 1, sample_file, outdir + "/bw"
+        ),
+        shell=True,
+    )
+
+    subprocess.run(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.01 --input {} --output {}/state --buffer-size 30".format(
+            bulkpath, tstart, tstart - 1, tstart + 29, sample_file, outdir + "/fw"
+        ),
+        shell=True,
+    )
+
+
 def trace_particles(tstart, cellid, runid="FIF"):
 
     if runid == "FIF":
