@@ -3734,14 +3734,14 @@ def detailed_trace(tstart, cellid, runid="FIF"):
     create_dir_if_not_exist(outdir + "/fw/")
 
     subprocess.run(
-        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.01 --backward --input {} --output {}/state --buffer-size 30".format(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.1 --backward --input {} --output {}/state --buffer-size 30".format(
             bulkpath, tstart, tstart - 29, tstart + 1, sample_file, outdir + "/bw"
         ),
         shell=True,
     )
 
     subprocess.run(
-        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.01 --input {} --output {}/state --buffer-size 30".format(
+        "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_tracer --vlsv {} --tstart {} --tmin {} --tmax {} --tout 0.1 --input {} --output {}/state --buffer-size 30".format(
             bulkpath, tstart, tstart - 1, tstart + 29, sample_file, outdir + "/fw"
         ),
         shell=True,
