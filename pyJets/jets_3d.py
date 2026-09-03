@@ -3713,13 +3713,14 @@ def detailed_trace(tstart, cellid, runid="FIF"):
         extrafix = "/FIL/"
         bulkpath = bulkpath_FIL
 
-    sample_file = wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(
+    sample_file = wrkdir_DNR + "traces/{}/detailed_samples/{}_{}.txt".format(
         runid, cellid, tstart
     )
     outdir = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}".format(
         runid, cellid, tstart
     )
     create_dir_if_not_exist(outdir)
+    create_dir_if_not_exist(wrkdir_DNR + "traces/{}/detailed_samples".format(runid))
     startfile = bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
 
     if not os.path.isfile(sample_file):
