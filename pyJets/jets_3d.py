@@ -3725,7 +3725,7 @@ def detailed_trace(tstart, cellid, runid="FIF"):
 
     if not os.path.isfile(sample_file):
         subprocess.run(
-            "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 1048576 --target-cell {} {}".format(
+            "/turso/home/jesuni/proj/jslibs/vlsvrs/target/release/vlsv_particle_sampler -o {} --init-time {} --sparse 8e-16 --ppc 65536 --target-cell {} {}".format(
                 sample_file, tstart, cellid, startfile
             ),
             shell=True,
