@@ -3704,6 +3704,189 @@ def read_ptr2_file(file):
     return x, y, z, vx, vy, vz
 
 
+def calc_detailed_trace_times(tstart, cellid, runid="FIF", dt=0.1):
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    vobj_first = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
+    )
+
+    loginvdt = np.log10(1 / dt)
+
+    tfirst_exact = vobj_first.read_parameter("time")
+    tfirst_floor = np.floor(tfirst_exact)
+    tfirst_closest = np.floor(tfirst_exact * loginvdt) / loginvdt
+
+    fw_dir = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}/fw".format(
+        runid, cellid, tstart
+    )
+    bw_dir = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}/bw".format(
+        runid, cellid, tstart
+    )
+
+    fw_num = len(os.listdir(fw_dir))
+    bw_num = len(os.listdir(bw_dir))
+
+    bw_time_arr = np.arange(
+        tfirst_floor - (bw_num - 1) * dt, tfirst_floor + dt / 10.0, dt
+    )
+    fw_time_arr = np.arange(
+        tfirst_closest, tfirst_closest + (fw_num - 1) * dt + dt / 10.0, dt
+    )
+
+    bw_state_arr = np.arange(bw_num)[::-1]
+    fw_state_arr = np.arange(fw_num)
+
+    return (bw_state_arr, bw_time_arr, fw_state_arr, fw_time_arr)
+
+
+def interpolate_boundary_coeffs(t, kind="ms", runid="FIF"):
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    t_round = np.round(t)
+    if t >= t_round:
+        t0 = t_round
+        t1 = t_round + 1
+    else:
+        t0 = t_round - 1
+        t1 = t_round
+
+    if kind == "ms":
+        coeff0 = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(t0))
+        coeff1 = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(t1))
+    elif kind == "mp":
+        coeff0 = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(t0))
+        coeff1 = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(t1))
+
+    s = (t - t0) / (t1 - t0)
+
+    return coeff0 * (1 - s) + coeff1 * s
+
+
+def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    bw_state_arrs = []
+    bw_time_arrs = []
+    fw_state_arrs = []
+    fw_time_arrs = []
+    fwdirs = []
+    bwdirs = []
+
+    vobj_first = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(tstart_list[0]).zfill(7))
+    )
+
+    coords = vobj_first.get_cell_coordinates(cellid)
+
+    meanx = coords[0] / r_e
+    meany = coords[1] / r_e
+    meanz = coords[2] / r_e
+
+    y_arr = np.linspace(-15, 15, 201)
+    z_arr = np.linspace(-15, 15, 201)
+
+    tmin = -np.inf
+    tmax = np.inf
+
+    for idx in len(tstart_list):
+        tstart = tstart_list[idx]
+        res = calc_detailed_trace_times(tstart, cellid, runid=runid, dt=0.1)
+        bw_state_arrs.append(res[0])
+        bw_time_arrs.append(res[1])
+        fw_state_arrs.append(res[2])
+        fw_time_arrs.append(res[3])
+        fwdirs.append(
+            wrkdir_DNR
+            + "traces/{}/detailed_tracking/{}_{}/fw".format(runid, cellid, tstart)
+        )
+        bwdirs.append(
+            wrkdir_DNR
+            + "traces/{}/detailed_tracking/{}_{}/bw".format(runid, cellid, tstart)
+        )
+        tmin = max(tmin, np.min(res[1]))
+        tmax = min(tmax, np.max(res[3]))
+
+    time_arr = np.arange(tmin, tmax + 0.01, 0.1)
+
+    for idx in range(time_arr.size):
+        t = time_arr[idx]
+
+        x, y, z, vx, vy, vz = read_ptr2_file(
+            indir + "state.{}.ptr".format(str(idx).zfill(7))
+        )
+        coeff_ms = interpolate_boundary_coeffs(t,kind="ms",runid=runid)
+        ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * meanz)
+        ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * meany, z_arr)
+
+        coeff_mp = interpolate_boundary_coeffs(t,kind="mp",runid=runid)
+        mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * meanz)
+        mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * meany, z_arr)
+
+        fig, ax_list = plt.subplots(1, 2, figsize=(12, 8), layout="compressed")
+        ax_list = ax_list.flatten()
+
+        ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
+        ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
+
+        ax_list[0].scatter(
+            x[::plot_every] / r_e,
+            y[::plot_every] / r_e,
+            marker=".",
+            color=CB_color_cycle[0],
+            zorder=3,
+            s=1,
+            alpha=0.5,
+        )
+
+        ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
+        ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
+
+        ax_list[1].scatter(
+            x[::plot_every] / r_e,
+            z[::plot_every] / r_e,
+            marker=".",
+            color=CB_color_cycle[0],
+            zorder=3,
+            s=1,
+            alpha=0.5,
+        )
+
+        for ax in ax_list[:2]:
+            ax.grid()
+            ax.set_xlabel("X")
+            ax.set_xlim(meanx - 5, meanx + 5)
+            ax.set_title("t = {}s".format(t))
+        ax_list[2].set_ylabel("vy")
+        ax_list[3].set_ylabel("vz")
+        ax_list[0].set_ylabel("Y")
+        ax_list[1].set_ylabel("Z")
+        ax_list[0].set_ylim(meany - 5, meany + 5)
+        ax_list[1].set_ylim(meanz - 5, meanz + 5)
+
+        fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        print("Plotted particle trace fnr {}".format(fnr))
+
+
 def detailed_trace(tstart, cellid, runid="FIF"):
 
     if runid == "FIF":
@@ -4818,7 +5001,7 @@ def plot_traced_particles(
         ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
 
-        ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=54)
+        ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=4)
         ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
 
         if underplot:
