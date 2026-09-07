@@ -3795,8 +3795,10 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         bulkpath + "bulk1.{}.vlsv".format(str(tstart_list[0]).zfill(7))
     )
     outdir = (
-            wrkdir_DNR + extrafix + "Figs/detailed_particle_tracing/{}_{}/".format(cellid, tstart)
-        )
+        wrkdir_DNR
+        + extrafix
+        + "Figs/detailed_particle_tracing/{}_{}/".format(cellid, tstart)
+    )
     create_dir_if_not_exist(outdir)
 
     coords = vobj_first.get_cell_coordinates(cellid)
@@ -3834,11 +3836,11 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     for idx in range(time_arr.size):
         t = time_arr[idx]
 
-        coeff_ms = interpolate_boundary_coeffs(t,kind="ms",runid=runid)
+        coeff_ms = interpolate_boundary_coeffs(t, kind="ms", runid=runid)
         ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * meanz)
         ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * meany, z_arr)
 
-        coeff_mp = interpolate_boundary_coeffs(t,kind="mp",runid=runid)
+        coeff_mp = interpolate_boundary_coeffs(t, kind="mp", runid=runid)
         mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * meanz)
         mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * meany, z_arr)
 
@@ -3875,7 +3877,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
                 zorder=3,
                 s=1,
                 alpha=0.5,
-                label="t0 = {}".format(tstart_list[idx2])
+                label="t0 = {}".format(tstart_list[idx2]),
             )
 
             ax_list[1].scatter(
@@ -3893,7 +3895,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
             ax.set_xlabel("X")
             ax.set_xlim(meanx - 5, meanx + 5)
             ax.set_title("t = {}s".format(t))
-        ax_list[0].legend()
+        ax_list[0].legend(loc="upper right")
         ax_list[0].set_ylabel("Y")
         ax_list[1].set_ylabel("Z")
         ax_list[0].set_ylim(meany - 5, meany + 5)
