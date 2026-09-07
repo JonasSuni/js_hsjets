@@ -3815,7 +3815,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     tmin = -np.inf
     tmax = np.inf
 
-    for idx in len(tstart_list):
+    for idx in range(len(tstart_list)):
         tstart = tstart_list[idx]
         res = calc_detailed_trace_times(tstart, cellid, runid=runid, dt=0.1)
         bw_state_arrs.append(res[0])
