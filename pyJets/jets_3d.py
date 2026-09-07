@@ -3836,7 +3836,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     time_arr = np.arange(tmin, tmax + 0.01, 0.1)
 
     for idx in range(time_arr.size):
-        t = round(time_arr[idx], 1)
+        t = time_arr[idx]
         print(t)
 
         coeff_ms = interpolate_boundary_coeffs(t, kind="ms", runid=runid)
