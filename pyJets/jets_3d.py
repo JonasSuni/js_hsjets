@@ -3861,7 +3861,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
                 indir = bwdirs[idx2]
                 state_arr = bw_state_arrs[idx2]
                 time_arr = bw_time_arrs[idx2]
-            elif t in fw_time_arrs[idx]:
+            elif t in fw_time_arrs[idx2]:
                 indir = fwdirs[idx2]
                 state_arr = fw_state_arrs[idx2]
                 time_arr = fw_time_arrs[idx2]
