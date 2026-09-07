@@ -3824,11 +3824,11 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         fw_time_arrs.append(res[3])
         fwdirs.append(
             wrkdir_DNR
-            + "traces/{}/detailed_tracking/{}_{}/fw".format(runid, cellid, tstart)
+            + "traces/{}/detailed_tracking/{}_{}/fw/".format(runid, cellid, tstart)
         )
         bwdirs.append(
             wrkdir_DNR
-            + "traces/{}/detailed_tracking/{}_{}/bw".format(runid, cellid, tstart)
+            + "traces/{}/detailed_tracking/{}_{}/bw/".format(runid, cellid, tstart)
         )
         tmin = max(tmin, np.min(res[1]))
         tmax = min(tmax, np.max(res[3]))
