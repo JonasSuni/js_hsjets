@@ -3868,6 +3868,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
                 state_arr = fw_state_arrs[idx2]
                 time_arr = fw_time_arrs[idx2]
             else:
+                print("Time not found for tstart {}".format(idx2))
                 continue
 
             current_state = state_arr[np.where(time_arr == t)][0]
