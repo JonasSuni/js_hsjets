@@ -3733,13 +3733,11 @@ def calc_detailed_trace_times(tstart, cellid, runid="FIF", dt=0.1):
     fw_num = len(os.listdir(fw_dir))
     bw_num = len(os.listdir(bw_dir))
 
-    bw_time_arr = np.round(
-        np.arange(tfirst_floor - (bw_num - 1) * dt, tfirst_floor + dt / 10.0, dt),
-        loginvdt,
+    bw_time_arr = np.arange(
+        tfirst_floor - (bw_num - 1) * dt, tfirst_floor + dt / 10.0, dt
     )
-    fw_time_arr = np.round(
-        np.arange(tfirst_closest, tfirst_closest + (fw_num - 1) * dt + dt / 10.0, dt),
-        loginvdt,
+    fw_time_arr = np.arange(
+        tfirst_closest, tfirst_closest + (fw_num - 1) * dt + dt / 10.0, dt
     )
 
     bw_state_arr = np.arange(bw_num)[::-1]
@@ -3908,7 +3906,9 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         ax_list[0].set_ylim(meany - 5, meany + 5)
         ax_list[1].set_ylim(meanz - 5, meanz + 5)
 
-        fig.savefig(outdir + "{}.png".format(t), dpi=300, bbox_inches="tight")
+        fig.savefig(
+            outdir + "{}.png".format(np.round(t, 1)), dpi=300, bbox_inches="tight"
+        )
         plt.close(fig)
         print("Plotted particle trace time {}".format(t))
 
