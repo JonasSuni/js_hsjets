@@ -3837,6 +3837,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
 
     for idx in range(time_arr.size):
         t = time_arr[idx]
+        print(t)
 
         coeff_ms = interpolate_boundary_coeffs(t, kind="ms", runid=runid)
         ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * meanz)
@@ -3864,6 +3865,8 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
                 indir = fwdirs[idx2]
                 state_arr = fw_state_arrs[idx2]
                 time_arr = fw_time_arrs[idx2]
+            else:
+                continue
 
             current_state = state_arr[np.where(time_arr == t)][0]
 
