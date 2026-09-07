@@ -3819,9 +3819,9 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         tstart = tstart_list[idx]
         res = calc_detailed_trace_times(tstart, cellid, runid=runid, dt=0.1)
         bw_state_arrs.append(res[0])
-        bw_time_arrs.append(res[1])
+        bw_time_arrs.append(np.round(res[1], 1))
         fw_state_arrs.append(res[2])
-        fw_time_arrs.append(res[3])
+        fw_time_arrs.append(np.round(res[3], 1))
         fwdirs.append(
             wrkdir_DNR
             + "traces/{}/detailed_tracking/{}_{}/fw/".format(runid, cellid, tstart)
@@ -3836,7 +3836,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     time_arr = np.arange(tmin, tmax + 0.01, 0.1)
 
     for idx in range(time_arr.size):
-        t = time_arr[idx]
+        t = np.round(time_arr[idx], 1)
         print(t)
 
         coeff_ms = interpolate_boundary_coeffs(t, kind="ms", runid=runid)
