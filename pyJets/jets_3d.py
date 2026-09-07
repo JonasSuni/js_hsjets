@@ -3721,7 +3721,7 @@ def calc_detailed_trace_times(tstart, cellid, runid="FIF", dt=0.1):
 
     tfirst_exact = vobj_first.read_parameter("time")
     tfirst_floor = np.floor(tfirst_exact)
-    tfirst_closest = np.floor(tfirst_exact * loginvdt) / loginvdt
+    tfirst_closest = np.floor(tfirst_exact * (10**loginvdt)) / (10**loginvdt)
 
     fw_dir = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}/fw".format(
         runid, cellid, tstart
@@ -3733,11 +3733,13 @@ def calc_detailed_trace_times(tstart, cellid, runid="FIF", dt=0.1):
     fw_num = len(os.listdir(fw_dir))
     bw_num = len(os.listdir(bw_dir))
 
-    bw_time_arr = np.arange(
-        tfirst_floor - (bw_num - 1) * dt, tfirst_floor + dt / 10.0, dt
+    bw_time_arr = np.round(
+        np.arange(tfirst_floor - (bw_num - 1) * dt, tfirst_floor + dt / 10.0, dt),
+        loginvdt,
     )
-    fw_time_arr = np.arange(
-        tfirst_closest, tfirst_closest + (fw_num - 1) * dt + dt / 10.0, dt
+    fw_time_arr = np.round(
+        np.arange(tfirst_closest, tfirst_closest + (fw_num - 1) * dt + dt / 10.0, dt),
+        loginvdt,
     )
 
     bw_state_arr = np.arange(bw_num)[::-1]
