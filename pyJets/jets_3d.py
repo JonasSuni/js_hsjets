@@ -3794,10 +3794,12 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     vobj_first = pt.vlsvfile.VlsvReader(
         bulkpath + "bulk1.{}.vlsv".format(str(tstart_list[0]).zfill(7))
     )
+
+    tstart_all = "_".join(tstart_list)
     outdir = (
         wrkdir_DNR
         + extrafix
-        + "Figs/detailed_particle_tracing/{}_{}/".format(cellid, tstart)
+        + "Figs/detailed_particle_tracing/{}_{}/".format(cellid, tstart_all)
     )
     create_dir_if_not_exist(outdir)
 
