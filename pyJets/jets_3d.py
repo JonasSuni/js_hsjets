@@ -3795,7 +3795,7 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         bulkpath + "bulk1.{}.vlsv".format(str(tstart_list[0]).zfill(7))
     )
 
-    tstart_all = "_".join(tstart_list)
+    tstart_all = "_".join(map(str, tstart_list))
     outdir = (
         wrkdir_DNR
         + extrafix
