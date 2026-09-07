@@ -3757,11 +3757,11 @@ def interpolate_boundary_coeffs(t, kind="ms", runid="FIF"):
 
     t_round = np.round(t)
     if t >= t_round:
-        t0 = t_round
-        t1 = t_round + 1
+        t0 = int(t_round)
+        t1 = int(t_round) + 1
     else:
-        t0 = t_round - 1
-        t1 = t_round
+        t0 = int(t_round) - 1
+        t1 = int(t_round)
 
     if kind == "ms":
         coeff0 = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(t0))
