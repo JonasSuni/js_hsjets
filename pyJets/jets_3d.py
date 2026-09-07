@@ -3833,6 +3833,9 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
         tmin = max(tmin, np.min(np.round(res[1], 1)))
         tmax = min(tmax, np.max(np.round(res[3], 1)))
 
+    print("Tmin", tmin)
+    print("Tmax", tmax)
+
     time_arr = np.arange(tmin, tmax + 0.01, 0.1)
 
     for idx in range(time_arr.size):
