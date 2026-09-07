@@ -3830,8 +3830,8 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
             wrkdir_DNR
             + "traces/{}/detailed_tracking/{}_{}/bw/".format(runid, cellid, tstart)
         )
-        tmin = max(tmin, np.min(res[1]))
-        tmax = min(tmax, np.max(res[3]))
+        tmin = max(tmin, np.min(np.round(res[1], 1)))
+        tmax = min(tmax, np.max(np.round(res[3], 1)))
 
     time_arr = np.arange(tmin, tmax + 0.01, 0.1)
 
