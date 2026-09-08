@@ -3809,8 +3809,8 @@ def plot_detailed_trace(cellid, tstart_list, runid="FIF", plot_every=1):
     meany = coords[1] / r_e
     meanz = coords[2] / r_e
 
-    y_arr = np.linspace(-15, 15, 201)
-    z_arr = np.linspace(-15, 15, 201)
+    y_arr = np.linspace(-20, 20, 401)
+    z_arr = np.linspace(-20, 20, 401)
 
     tmin = -np.inf
     tmax = np.inf
@@ -4553,8 +4553,8 @@ def plot_traced_particle_energy(
 
     fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
     state_range = np.arange(numin, dtype=int)
-    y_arr = np.linspace(-15, 15, 201)
-    z_arr = np.linspace(-15, 15, 201)
+    y_arr = np.linspace(-20, 20, 401)
+    z_arr = np.linspace(-20, 20, 401)
 
     xhist = np.linspace(x0 - 5, x0 + 5, 1001, dtype=float)
     yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
@@ -4833,8 +4833,8 @@ def plot_traced_particles(
 
     fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
     state_range = np.arange(numin, dtype=int)
-    y_arr = np.linspace(-15, 15, 201)
-    z_arr = np.linspace(-15, 15, 201)
+    y_arr = np.linspace(-20, 20, 401)
+    z_arr = np.linspace(-20, 20, 401)
 
     xhist = np.linspace(x0 - 5, x0 + 5, 1001, dtype=float)
     yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
