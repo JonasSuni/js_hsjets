@@ -1642,11 +1642,16 @@ def make_gmm_timeseries(args):
 
     plot_labels = [
         "$\\rho\\,[\\mathrm{cm^{-3}}]$",
-        "$j_{\\mathrm{m},x}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
-        "$j_{\\mathrm{m},y}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
-        "$j_{\\mathrm{m},z}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
-        "$P_\\parallel\\,[\\mathrm{nPa}]$",
-        "$P_\\perp\\,[\\mathrm{nPa}]$",
+        # "$j_{\\mathrm{m},x}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        # "$j_{\\mathrm{m},y}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        # "$j_{\\mathrm{m},z}\\,[\\mathrm{kg\\,m^{-2}\\,s^{-1}}]$",
+        # "$P_\\parallel\\,[\\mathrm{nPa}]$",
+        # "$P_\\perp\\,[\\mathrm{nPa}]$",
+        "$v_x\\,[\\mathrm{km^{-2}\\,s^{-1}}]$",
+        "$v_y\\,[\\mathrm{km^{-2}\\,s^{-1}}]$",
+        "$v_z\\,[\\mathrm{km^{-2}\\,s^{-1}}]$",
+        "$T_\\parallel\\,[\\mathrm{MK}]$",
+        "$T_\\perp\\,[\\mathrm{MK}]$",
     ]
 
     fig, ax_list = plt.subplots(
@@ -1654,20 +1659,30 @@ def make_gmm_timeseries(args):
     )
     full_vars = [
         ts_data[0, :],
-        m_p * ts_data[0, :] * 1e6 * ts_data[1, :] * 1e3,
-        m_p * ts_data[0, :] * 1e6 * ts_data[2, :] * 1e3,
-        m_p * ts_data[0, :] * 1e6 * ts_data[3, :] * 1e3,
-        kb * ts_data[0, :] * 1e6 * ts_data[14, :] * 1e6 / 1e-9,
-        kb * ts_data[0, :] * 1e6 * ts_data[15, :] * 1e6 / 1e-9,
+        # m_p * ts_data[0, :] * 1e6 * ts_data[1, :] * 1e3,
+        # m_p * ts_data[0, :] * 1e6 * ts_data[2, :] * 1e3,
+        # m_p * ts_data[0, :] * 1e6 * ts_data[3, :] * 1e3,
+        # kb * ts_data[0, :] * 1e6 * ts_data[14, :] * 1e6 / 1e-9,
+        # kb * ts_data[0, :] * 1e6 * ts_data[15, :] * 1e6 / 1e-9,
+        ts_data[1, :],
+        ts_data[2, :],
+        ts_data[3, :],
+        ts_data[14, :],
+        ts_data[15, :],
     ]
     gmm_vars = [
         [
             dens_arr[:, idx] / 1e6,
-            m_p * dens_arr[:, idx] * means_arr[:, idx, 0],
-            m_p * dens_arr[:, idx] * means_arr[:, idx, 1],
-            m_p * dens_arr[:, idx] * means_arr[:, idx, 2],
-            kb * dens_arr[:, idx] * tpar_arr[:, idx] / 1e-9,
-            kb * dens_arr[:, idx] * tperp_arr[:, idx] / 1e-9,
+            # m_p * dens_arr[:, idx] * means_arr[:, idx, 0],
+            # m_p * dens_arr[:, idx] * means_arr[:, idx, 1],
+            # m_p * dens_arr[:, idx] * means_arr[:, idx, 2],
+            # kb * dens_arr[:, idx] * tpar_arr[:, idx] / 1e-9,
+            # kb * dens_arr[:, idx] * tperp_arr[:, idx] / 1e-9,
+            means_arr[:, idx, 0] / 1e3,
+            means_arr[:, idx, 1] / 1e3,
+            means_arr[:, idx, 2] / 1e3,
+            tpar_arr[:, idx] / 1e6,
+            tperp_arr[:, idx] / 1e6,
         ]
         for idx in range(nMaxwellians)
     ]
