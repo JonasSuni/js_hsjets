@@ -142,7 +142,7 @@ def plot_elsasser(fnr0, fnr1, dirname):
             color=CB_color_cycle[1],
         )
 
-        ax.set_ylabel(r"$\delta z^{\pm}$")
+        ax.set_ylabel(r"$\delta z^{\\pm}$")
         ax.set_xlabel(r"$x~[R_\\mathrm{E}]$")
         ax.set_xlim([x[0], x[-1]])
         ax.set_ylim(0, 25000)

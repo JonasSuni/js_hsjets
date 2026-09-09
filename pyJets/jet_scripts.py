@@ -1824,7 +1824,7 @@ def rev1_defplot(time_thresh=5, type="angmag"):
             "$\\mathrm{|v|-\\left<|v|\\right>~[kms^{-1}]}$", fontsize=20, labelpad=10
         )
         ax_list[1].set_ylabel(
-            "$\\mathrm{\\theta-\\left<\\theta\\right>~[^\circ]}$",
+            "$\\mathrm{\\theta-\\left<\\theta\\right>~[^\\circ]}$",
             fontsize=20,
             labelpad=10,
         )
@@ -1901,7 +1901,7 @@ def rev1_jetcone_all(time_thresh=5):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     # runid_labs = ["HM30","HM05","LM30","LM05"]
-    # runid_labs = ["$\\mathrm{30^\circ}$","$\\mathrm{5^\circ}$"]
+    # runid_labs = ["$\\mathrm{30^\\circ}$","$\\mathrm{5^\\circ}$"]
     runid_labs = ["HM30+LM30", "HM05+LM05"]
     cutoff_list = [10, 8, 10, 8]
 
@@ -1964,7 +1964,7 @@ def rev1_jetcone_all(time_thresh=5):
     ax_list[0].tick_params(labelsize=20)
     ax_list[1].set_xlim(-50, 50)
     ax_list[1].set_ylim(0, 0.3)
-    ax_list[1].set_xlabel("$\\phi(t_{last})$ [$^\circ$]", fontsize=25, labelpad=10)
+    ax_list[1].set_xlabel("$\\phi(t_{last})$ [$^\\circ$]", fontsize=25, labelpad=10)
     ax_list[1].tick_params(labelsize=20)
 
     ax_list[0].annotate(

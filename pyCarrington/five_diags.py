@@ -155,7 +155,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
-        "Precipitation integral energy flux [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Precipitation integral energy flux [$\\mathrm{keV}\\mathrm{cm}^{-2}\\mathrm{s}^{-1}\\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
     if min_energy:
@@ -216,7 +216,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
             ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
             ax.set_ylabel(
-                "Precipitation diff number flux [$\\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+                "Precipitation diff number flux [$\\mathrm{cm}^{-2}\\mathrm{s}^{-1}\\mathrm{sr}^{-1}$]",
                 fontsize=12,
             )
 
@@ -288,7 +288,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     # ax.set_ylabel(
-    #     "Maximum Precipitation\nintegral energy flux [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+    #     "Maximum Precipitation\nintegral energy flux [$\\mathrm{keV}\\mathrm{cm}^{-2}\\mathrm{s}^{-1}\\mathrm{sr}^{-1}$]",
     #     fontsize=12,
     # )
     # ax.set_xlabel(
@@ -296,7 +296,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     #     fontsize=14,
     # )
     ax.set_ylabel(
-        "Suurin protonisadannan energiavuo [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Suurin protonisadannan energiavuo [$\\mathrm{keV}\\mathrm{cm}^{-2}\\mathrm{s}^{-1}\\mathrm{sr}^{-1}$]",
         fontsize=12,
         labelpad=10,
     )
@@ -654,7 +654,7 @@ def plot_MP_theta():
     ax.set_ylim(70, 90)
 
     ax.set_ylabel(
-        "Dayside polar cap boundary [$^\circ$]",
+        "Dayside polar cap boundary [$^\\circ$]",
         fontsize=14,
     )
     ax.set_xlabel(

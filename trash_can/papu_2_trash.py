@@ -224,19 +224,19 @@ def jet_pos_plot():
     ax_flat[0].set_ylabel("$B_\\mathrm{IMF}=10$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
     ax_flat[2].set_ylabel("$B_\\mathrm{IMF}=5$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
-    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\\circ$",
     #     fontsize=20,
     # )
     # ax_flat[3].set_xlabel(
-    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\\circ$",
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\\circ$",
         fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\\circ$",
         fontsize=20,
     )
 
@@ -2617,7 +2617,7 @@ def non_type_hist(run_id="all"):
         "$Lifetime~[\\mathrm{s}]$",
         "$Tangential$\n$size~[R_\\mathrm{E}]$",
         "Size Ratio",
-        "First cone [$^\circ$]",
+        "First cone [$^\\circ$]",
         "First $y$ [$R_\\mathrm{E}$]",
     ]
     bins_list = [
@@ -4456,7 +4456,7 @@ def jmap_SEA_comp(run_id="all"):
         "$n$ [$n_\\mathrm{sw}$]",
         "$v_x$ [$v_\\mathrm{sw}$]",
         "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
-        "$| \mathbf{B} |$ [$B_\\mathrm{IMF}$]",
+        "$| \\mathbf{B} |$ [$B_\\mathrm{IMF}$]",
         "$T$ [$T_\\mathrm{sw}$]",
         # "$M_{\\mathrm{MS},x}$",
     ]
