@@ -413,7 +413,7 @@ def foreshock_jplot_SEA(run_id):
         "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
         "$B$ [$B_\\mathrm{IMF}$]",
         "$T$ [$T_\\mathrm{sw}$]",
-        # "$M_{\mathrm{MS},x}$",
+        # "$M_{\\mathrm{MS},x}$",
     ]
 
     data_arr = [rho_avg, v_avg, pdyn_avg, B_avg, T_avg, mmsx_avg]
@@ -613,7 +613,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
         "$B$ [$B_\\mathrm{IMF}$]",
         "$T$ [$T_\\mathrm{sw}$]",
-        # "$M_{\mathrm{MS},x}$",
+        # "$M_{\\mathrm{MS},x}$",
     ]
 
     cmap = ["batlow", "Blues_r", "batlow", "batlow", "batlow"]
@@ -3057,7 +3057,7 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
             "Mmsx",
             "Pdyn",
         ],
-        title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
+        title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\\mathrm{s}$",
         cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
     )
 
@@ -3795,7 +3795,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # proxy_labs = (
     #         "$n=2n_\\mathrm{sw}$",
     #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-    #         "$M_{\mathrm{MS},x}=1$",
+    #         "$M_{\\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
     #         "Non-FCS jet",
@@ -3808,7 +3808,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     proxy_labs = [
         "$n=2n_\\mathrm{sw}$",
         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-        "$M_{\mathrm{MS},x}=1$",
+        "$M_{\\mathrm{MS},x}=1$",
     ]
 
     xmin, xmax, ymin, ymax = (
@@ -4458,7 +4458,7 @@ def jmap_SEA_comp(run_id="all"):
         "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
         "$| \mathbf{B} |$ [$B_\\mathrm{IMF}$]",
         "$T$ [$T_\\mathrm{sw}$]",
-        # "$M_{\mathrm{MS},x}$",
+        # "$M_{\\mathrm{MS},x}$",
     ]
 
     fig, ax_list = plt.subplots(
@@ -4574,7 +4574,7 @@ def jmap_SEA_comp(run_id="all"):
         (
             "$n=2n_\\mathrm{sw}$",
             "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-            "$M_{\mathrm{MS},x}=1$",
+            "$M_{\\mathrm{MS},x}=1$",
         ),
         frameon=True,
         numpoints=1,

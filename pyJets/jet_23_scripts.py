@@ -569,7 +569,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # proxy_labs = (
     #         "$n=2n_\\mathrm{sw}$",
     #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-    #         "$M_{\mathrm{MS},x}=1$",
+    #         "$M_{\\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
     #         "Non-FCS jet",
@@ -582,7 +582,7 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     proxy_labs = [
         "$n=2n_\\mathrm{sw}$",
         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-        "$M_{\mathrm{MS},x}=1$",
+        "$M_{\\mathrm{MS},x}=1$",
     ]
 
     xmin, xmax, ymin, ymax = (
@@ -798,7 +798,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
     # proxy_labs = (
     #         "$n=2n_\\mathrm{sw}$",
     #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-    #         "$M_{\mathrm{MS},x}=1$",
+    #         "$M_{\\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
     #         "Non-FCS jet",
@@ -811,7 +811,7 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
     proxy_labs = [
         # "$n=2n_\\mathrm{sw}$",
         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
-        # "$M_{\mathrm{MS},x}=1$",
+        # "$M_{\\mathrm{MS},x}=1$",
     ]
 
     xmin, xmax, ymin, ymax = (
