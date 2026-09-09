@@ -5473,15 +5473,15 @@ def plot_vars_on_contour(
     )
     if filt:
         ylabels = [
-            r"$\delta X~[R_\mathrm{E}]$",
-            r"$\delta\rho~[\mathrm{cm}^{-3}]$",
-            r"$\delta v_x~[\mathrm{km/s}]$",
+            r"$\delta X~[R_\\mathrm{E}]$",
+            r"$\delta\rho~[\\mathrm{cm}^{-3}]$",
+            r"$\delta v_x~[\\mathrm{km/s}]$",
         ]
     else:
         ylabels = [
-            r"$X~[R_\mathrm{E}]$",
-            r"$\rho~[\mathrm{cm}^{-3}]$",
-            r"$v_x~[\mathrm{km/s}]$",
+            r"$X~[R_\\mathrm{E}]$",
+            r"$\rho~[\\mathrm{cm}^{-3}]$",
+            r"$v_x~[\\mathrm{km/s}]$",
         ]
     figdir = wrkdir_DNR + "Figs/plots_on_cont/"
     if not os.path.exists(figdir):
@@ -5522,7 +5522,7 @@ def plot_vars_on_contour(
 
         ax_list[2].plot(cont_y, vx)
         ax_list[2].set_ylabel(ylabels[2])
-        ax_list[2].set_xlabel(r"$Y~[R_\mathrm{E}]$")
+        ax_list[2].set_xlabel(r"$Y~[R_\\mathrm{E}]$")
 
         fig.savefig(figdir + "t0_{}_bs_contour_filt{}.png".format(t0, filt), dpi=300)
         plt.close(fig)

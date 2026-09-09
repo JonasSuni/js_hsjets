@@ -854,8 +854,8 @@ def fac_migration_plot():
     axs[1].plot(fnr_range, zarr)
     axs[2].plot(fnr_range, min_arr)
 
-    axs[0].set_ylabel("Y [$R_\mathrm{E}$]")
-    axs[1].set_ylabel("Z [$R_\mathrm{E}$]")
+    axs[0].set_ylabel("Y [$R_\\mathrm{E}$]")
+    axs[1].set_ylabel("Z [$R_\\mathrm{E}$]")
     axs[2].set_ylabel("min(FAC) [nA/m$^2$]")
     axs[2].set_xlabel("Time [s]")
     for ax in axs:

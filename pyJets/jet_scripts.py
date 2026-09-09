@@ -1091,12 +1091,12 @@ def hack_2019_fig4(columnspacing=-1.0, fontsize=15, time_thresh=5):
         "TPar_avg",
     ]
     ylabel_list = [
-        "$\mathrm{Extent~[R_e]}$",
-        "$\mathrm{n_{max}~[n_{sw}]}$",
-        "$\mathrm{|v|_{max}~[v_{sw}]}$",
-        "$\mathrm{P_{dyn,max}~[P_{dyn,sw}]}$",
-        "$\mathrm{|B|_{max}~[B_{IMF}]}$",
-        "$\mathrm{T_{mean}~[MK]}$",
+        "$\\mathrm{Extent~[R_e]}$",
+        "$\\mathrm{n_{max}~[n_{sw}]}$",
+        "$\\mathrm{|v|_{max}~[v_{sw}]}$",
+        "$\\mathrm{P_{dyn,max}~[P_{dyn,sw}]}$",
+        "$\\mathrm{|B|_{max}~[B_{IMF}]}$",
+        "$\\mathrm{T_{mean}~[MK]}$",
     ]
     xlabel_list = ["VLMax", "VLRand", "MMS"]
 
@@ -1236,9 +1236,9 @@ def hack_2019_fig6(time_thresh=5):
 
     var_list = ["duration", "size_tan", "size_ratio"]
     label_list = [
-        "$\mathrm{Lifetime~[s]}$",
-        "$\mathrm{Tangential~size~[R_e]}$",
-        "$\mathrm{Size~ratio}$",
+        "$\\mathrm{Lifetime~[s]}$",
+        "$\\mathrm{Tangential~size~[R_e]}$",
+        "$\\mathrm{Size~ratio}$",
     ]
     bins_list = np.array(
         [
@@ -1296,9 +1296,9 @@ def hack_2019_fig6_alt(time_thresh=5):
 
     var_list = ["duration", "size_tan", "size_ratio"]
     label_list = [
-        "$\mathrm{Lifetime~[s]}$",
-        "$\mathrm{Tangential~size~[R_e]}$",
-        "$\mathrm{Size~ratio}$",
+        "$\\mathrm{Lifetime~[s]}$",
+        "$\\mathrm{Tangential~size~[R_e]}$",
+        "$\\mathrm{Size~ratio}$",
     ]
     panel_label_list = ["a)", "b)", "c)"]
 
@@ -1818,13 +1818,13 @@ def rev1_defplot(time_thresh=5, type="angmag"):
         ax_list[1].set_xlim(-0.5, 2.1)
         ax_list[1].set_ylim(-45, 45)
         ax_list[0].axhline(0, linestyle="dashed", color="black", zorder=2)
-        # ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
-        # ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$",fontsize=20)
+        # ax_list[0].set_ylabel("$\\mathrm{Deflection~[kms^{-1}]}$",fontsize=20)
+        # ax_list[1].set_ylabel("$\\mathrm{Deflection~angle~[deg]}$",fontsize=20)
         ax_list[0].set_ylabel(
-            "$\mathrm{|v|-\\left<|v|\\right>~[kms^{-1}]}$", fontsize=20, labelpad=10
+            "$\\mathrm{|v|-\\left<|v|\\right>~[kms^{-1}]}$", fontsize=20, labelpad=10
         )
         ax_list[1].set_ylabel(
-            "$\mathrm{\\theta-\\left<\\theta\\right>~[^\circ]}$",
+            "$\\mathrm{\\theta-\\left<\\theta\\right>~[^\circ]}$",
             fontsize=20,
             labelpad=10,
         )
@@ -1835,28 +1835,28 @@ def rev1_defplot(time_thresh=5, type="angmag"):
         ax_list[0].set_ylim(0, 350)
         ax_list[1].set_xlim(-0.5, 2.1)
         ax_list[1].set_ylim(-30, 30)
-        ax_list[0].set_ylabel("$\mathrm{Deflection~[kms^{-1}]}$", fontsize=20)
-        ax_list[1].set_ylabel("$\mathrm{Deflection~angle~[deg]}$", fontsize=20)
+        ax_list[0].set_ylabel("$\\mathrm{Deflection~[kms^{-1}]}$", fontsize=20)
+        ax_list[1].set_ylabel("$\\mathrm{Deflection~angle~[deg]}$", fontsize=20)
     elif type == "xy":
         ax_list[0].set_xlim(-0.5, 2.1)
         ax_list[0].set_ylim(-300, 300)
         ax_list[1].set_xlim(-0.5, 2.1)
         ax_list[1].set_ylim(-300, 300)
-        ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$", fontsize=20)
-        ax_list[1].set_ylabel("$\mathrm{V_y~deflection~[kms^{-1}]}$", fontsize=20)
+        ax_list[0].set_ylabel("$\\mathrm{V_x~deflection~[kms^{-1}]}$", fontsize=20)
+        ax_list[1].set_ylabel("$\\mathrm{V_y~deflection~[kms^{-1}]}$", fontsize=20)
         ax_list[0].axhline(0, linestyle="dashed", color="black", zorder=2)
     elif type == "xyabs":
         ax_list[0].set_xlim(-0.5, 2.1)
         ax_list[0].set_ylim(-300, 300)
         ax_list[1].set_xlim(-0.5, 2.1)
         ax_list[1].set_ylim(-300, 300)
-        ax_list[0].set_ylabel("$\mathrm{V_x~deflection~[kms^{-1}]}$", fontsize=20)
+        ax_list[0].set_ylabel("$\\mathrm{V_x~deflection~[kms^{-1}]}$", fontsize=20)
         ax_list[1].set_ylabel(
-            "$\mathrm{V_y~def~away~from~SEL~[kms^{-1}]}$", fontsize=20
+            "$\\mathrm{V_y~def~away~from~SEL~[kms^{-1}]}$", fontsize=20
         )
         ax_list[0].axhline(0, linestyle="dashed", color="black", zorder=2)
 
-    ax_list[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
+    ax_list[-1].set_xlabel("$\\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
     ax_list[0].annotate(
         "HM30",
         xy=(0.5 - 0.2, 1.05),
@@ -1901,7 +1901,7 @@ def rev1_jetcone_all(time_thresh=5):
 
     runids = ["ABA", "ABC", "AEA", "AEC"]
     # runid_labs = ["HM30","HM05","LM30","LM05"]
-    # runid_labs = ["$\mathrm{30^\circ}$","$\mathrm{5^\circ}$"]
+    # runid_labs = ["$\\mathrm{30^\circ}$","$\\mathrm{5^\circ}$"]
     runid_labs = ["HM30+LM30", "HM05+LM05"]
     cutoff_list = [10, 8, 10, 8]
 
@@ -2077,11 +2077,11 @@ def DT_comparison(time_thresh=5):
 
     xlabel_list = ["VLMax", "VLRand", "MMS"]
     ylabel_list = [
-        "$\mathrm{\\Delta T~[MK]}$",
-        "$\mathrm{\\Delta n~[n_{SW}]}$",
-        "$\mathrm{\\Delta |v|~[v_{SW}]}$",
-        "$\mathrm{\\Delta P_{dyn}~[P_{dyn,SW}]}$",
-        "$\mathrm{\\Delta |B|~[B_{IMF}]}$",
+        "$\\mathrm{\\Delta T~[MK]}$",
+        "$\\mathrm{\\Delta n~[n_{SW}]}$",
+        "$\\mathrm{\\Delta |v|~[v_{SW}]}$",
+        "$\\mathrm{\\Delta P_{dyn}~[P_{dyn,SW}]}$",
+        "$\\mathrm{\\Delta |B|~[B_{IMF}]}$",
     ]
     hist_bins = [
         np.linspace(-5, 5, 10 + 1),
@@ -2157,11 +2157,11 @@ def DT_mach_comparison(fontsize=15, time_thresh=5):
 
     xlabel_list = ["VLMax", "VLRand", "MMS"]
     ylabel_list = [
-        "$\mathrm{\\Delta T~[MK]}$",
-        "$\mathrm{\\Delta n~[n_{sw}]}$",
-        "$\mathrm{\\Delta |v|~[v_{sw}]}$",
-        "$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
-        "$\mathrm{\\Delta |B|~[B_{IMF}]}$",
+        "$\\mathrm{\\Delta T~[MK]}$",
+        "$\\mathrm{\\Delta n~[n_{sw}]}$",
+        "$\\mathrm{\\Delta |v|~[v_{sw}]}$",
+        "$\\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
+        "$\\mathrm{\\Delta |B|~[B_{IMF}]}$",
     ]
     hist_bins = [
         np.linspace(-5, 5, 10 + 1),
@@ -2472,8 +2472,8 @@ def hack_2019_fig35():
     ax.set_ylim(-8, 6)
     ax.tick_params(labelsize=20)
     ax.legend(frameon=False, numpoints=1, markerscale=3, fontsize=15)
-    ax.set_xlabel("X [$\mathrm{R_e}$]", fontsize=25, labelpad=10)
-    ax.set_ylabel("Y [$\mathrm{R_e}$]", fontsize=25, labelpad=10)
+    ax.set_xlabel("X [$\\mathrm{R_e}$]", fontsize=25, labelpad=10)
+    ax.set_ylabel("Y [$\\mathrm{R_e}$]", fontsize=25, labelpad=10)
     plt.tight_layout()
 
     fig.savefig(homedir + "Figures/hackathon_paper/fig3.png")
@@ -2503,12 +2503,12 @@ def hack_2019_fig2(runid, htw=60):
     ]
     norm_list = [1.0e-9, 1.0e3, 1.0e-9, 1, 1.0e6, 1.0e6]
     ylabels = [
-        "$\mathrm{P_{dyn}~[nPa]}$",
-        "$\mathrm{v~[kms^{-1}]}$",
-        "$\mathrm{B~[nT]}$",
-        "$\mathrm{W~[eV]}$",
-        "$\mathrm{n~[cm^{-3}]}$",
-        "$\mathrm{T~[MK]}$",
+        "$\\mathrm{P_{dyn}~[nPa]}$",
+        "$\\mathrm{v~[kms^{-1}]}$",
+        "$\\mathrm{B~[nT]}$",
+        "$\\mathrm{W~[eV]}$",
+        "$\\mathrm{n~[cm^{-3}]}$",
+        "$\\mathrm{T~[MK]}$",
     ]
     annot_list_list = [
         [""],
@@ -2629,7 +2629,7 @@ def hack_2019_fig2(runid, htw=60):
                     ax.set_yscale("log")
                     cbar_mms = colorbar(im_mms, ax_list[:, 1].tolist())
                     cbar_mms.set_label(
-                        "log Diff. energy flux\n$\mathrm{keV / (cm^2~s~sr~keV)}$"
+                        "log Diff. energy flux\n$\\mathrm{keV / (cm^2~s~sr~keV)}$"
                     )
                     cbar_mms.set_ticks([5, 6, 7])
                     ax.set_yticks([1e2, 1e3, 1e4])
@@ -2985,12 +2985,12 @@ def h19_extra_1(runid, jetid):
 
     var_list = ["Dn", "Dv", "Dpd", "DB", "DTPerp", "DTPar"]
     lab_list = [
-        "$\mathrm{\\Delta n~[n_{sw}]}$",
-        "$\mathrm{\\Delta |v|~[v_{sw}]}$",
-        "$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
-        "$\mathrm{\\Delta |B|~[B_{IMF}]}$",
-        "$\mathrm{\\Delta T_{perp}~[MK]}$",
-        "$\mathrm{\\Delta T_{par}~[MK]}$",
+        "$\\mathrm{\\Delta n~[n_{sw}]}$",
+        "$\\mathrm{\\Delta |v|~[v_{sw}]}$",
+        "$\\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
+        "$\\mathrm{\\Delta |B|~[B_{IMF}]}$",
+        "$\\mathrm{\\Delta T_{perp}~[MK]}$",
+        "$\\mathrm{\\Delta T_{par}~[MK]}$",
     ]
 
     props = jio.PropReader(jetid, runid, 580)
@@ -3027,8 +3027,8 @@ def h19_extra_1(runid, jetid):
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         ax2.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list) - 1:
-            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$", fontsize=15, labelpad=10)
-            ax2.set_xlabel("$\mathrm{Simulation~time~[s]}$", fontsize=15, labelpad=10)
+            ax.set_xlabel("$\\mathrm{X-X_{BS}~[R_e]}$", fontsize=15, labelpad=10)
+            ax2.set_xlabel("$\\mathrm{Simulation~time~[s]}$", fontsize=15, labelpad=10)
 
     fig.savefig(
         homedir + "Figures/hackathon_timeseries/{}_{}_x.png".format(runid, jetid)
@@ -3042,9 +3042,9 @@ def h19_extra_1(runid, jetid):
     var_list = ["size_rad", "size_tan", "size_ratio"]
 
     lab_list = [
-        "$\mathrm{Extent~[R_e]}$",
-        "$\mathrm{Tangential~Size~[R_e]}$",
-        "$\mathrm{Size~Ratio}$",
+        "$\\mathrm{Extent~[R_e]}$",
+        "$\\mathrm{Tangential~Size~[R_e]}$",
+        "$\\mathrm{Size~Ratio}$",
     ]
 
     fig, ax_list = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
@@ -3074,8 +3074,8 @@ def h19_extra_1(runid, jetid):
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         ax2.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if idx == len(var_list) - 1:
-            ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$", fontsize=15, labelpad=10)
-            ax2.set_xlabel("$\mathrm{Simulation~time~[s]}$", fontsize=15, labelpad=10)
+            ax.set_xlabel("$\\mathrm{X-X_{BS}~[R_e]}$", fontsize=15, labelpad=10)
+            ax2.set_xlabel("$\\mathrm{Simulation~time~[s]}$", fontsize=15, labelpad=10)
 
     fig.savefig(
         homedir + "Figures/hackathon_timeseries/{}_{}_size_x.png".format(runid, jetid)
@@ -3169,18 +3169,18 @@ def hack_2019_fig78(time_thresh=5):
     var_list_8 = ["Dn", "Dv", "Dpd", "DB", "DTPerp", "DTPar"]
 
     lab_list_7 = [
-        "$\mathrm{Extent~[R_e]}$",
-        "$\mathrm{Tangential~Size~[R_e]}$",
-        "$\mathrm{Size~Ratio}$",
-        "$\mathrm{Number~of~Jets}$",
+        "$\\mathrm{Extent~[R_e]}$",
+        "$\\mathrm{Tangential~Size~[R_e]}$",
+        "$\\mathrm{Size~Ratio}$",
+        "$\\mathrm{Number~of~Jets}$",
     ]
     lab_list_8 = [
-        "$\mathrm{\\Delta n~[n_{sw}]}$",
-        "$\mathrm{\\Delta |v|~[v_{sw}]}$",
-        "$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
-        "$\mathrm{\\Delta |B|~[B_{IMF}]}$",
-        "$\mathrm{\\Delta T_{perp}~[MK]}$",
-        "$\mathrm{\\Delta T_{par}~[MK]}$",
+        "$\\mathrm{\\Delta n~[n_{sw}]}$",
+        "$\\mathrm{\\Delta |v|~[v_{sw}]}$",
+        "$\\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
+        "$\\mathrm{\\Delta |B|~[B_{IMF}]}$",
+        "$\\mathrm{\\Delta T_{perp}~[MK]}$",
+        "$\\mathrm{\\Delta T_{par}~[MK]}$",
     ]
 
     color_list = ["black", jx.violet, jx.orange, jx.green]
@@ -3273,10 +3273,10 @@ def hack_2019_fig78(time_thresh=5):
         ax.set_ylim(bottom=0)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         # if col == 3:
-        #    ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+        #    ax.set_xlabel("$\\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
 
-    # ax_list_7[-1].set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
-    ax_list_7[-1].set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
+    # ax_list_7[-1].set_xlabel("$\\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+    ax_list_7[-1].set_xlabel("$\\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
 
     ax_list_7[0].annotate(
         "HM30",
@@ -3350,8 +3350,8 @@ def hack_2019_fig78(time_thresh=5):
         ax.set_xlim(-0.5, 2.1)
         ax.yaxis.set_major_locator(MaxNLocator(nbins=5))
         if col == 5:
-            # ax.set_xlabel("$\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
-            ax.set_xlabel("$\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
+            # ax.set_xlabel("$\\mathrm{X-X_{BS}~[R_e]}$",fontsize=20)
+            ax.set_xlabel("$\\mathrm{X_{BS}-X~[R_e]}$", fontsize=20)
 
     ax_list_8[0].annotate(
         "HM30",
@@ -3390,9 +3390,9 @@ def hack_2019_fig9(time_thresh=5, nbins=10):
 
     var_list = ["B_avg", "n_avg", "v_avg"]
     xlabels = [
-        "$\mathrm{|B|_{mean}~[B_{IMF}]}$",
-        "$\mathrm{n_{mean}~[n_{sw}]}$",
-        "$\mathrm{|v|_{mean}~[v_{sw}]}$",
+        "$\\mathrm{|B|_{mean}~[B_{IMF}]}$",
+        "$\\mathrm{n_{mean}~[n_{sw}]}$",
+        "$\\mathrm{|v|_{mean}~[v_{sw}]}$",
     ]
     ylabels = ["Vlasiator\nFraction of jets", "MMS\nFraction of jets"]
     bin_list = [
@@ -3497,12 +3497,12 @@ def make_transient_timeseries(runid, jetid, transient="jet"):
 
     var_list = ["n_avg", "pd_avg", "v_avg", "B_avg"]
     label_list = [
-        "$\mathrm{n_{mean}~[cm^{-3}]}$",
-        "$\mathrm{P_{dyn,mean}~[nPa]}$",
-        "$\mathrm{|v|_{mean}~[kms^{-1}]}$",
-        "$\mathrm{|B|_{mean}~[nT]}$",
-        "$\mathrm{T_{mean}~[MK]}$",
-        "$\mathrm{x_{mean}~[R_e]}$",
+        "$\\mathrm{n_{mean}~[cm^{-3}]}$",
+        "$\\mathrm{P_{dyn,mean}~[nPa]}$",
+        "$\\mathrm{|v|_{mean}~[kms^{-1}]}$",
+        "$\\mathrm{|B|_{mean}~[nT]}$",
+        "$\\mathrm{T_{mean}~[MK]}$",
+        "$\\mathrm{x_{mean}~[R_e]}$",
     ]
     color_list = [
         jx.dark_blue,

@@ -91,7 +91,7 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
         "$v_y~[m/s]$",
         "$v_z~[m/s]$",
         "$v~[m/s]$",
-        "$P_\mathrm{dyn}~[Pa]$",
+        "$P_\\mathrm{dyn}~[Pa]$",
         "$B_x~[T]$",
         "$B_y~[T]$",
         "$B_z~[T]$",
@@ -567,8 +567,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     # proxy_labs = (
-    #         "$n=2n_\mathrm{sw}$",
-    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$n=2n_\\mathrm{sw}$",
+    #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #         "$M_{\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
@@ -580,8 +580,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         for itr in range(3)
     ]
     proxy_labs = [
-        "$n=2n_\mathrm{sw}$",
-        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        "$n=2n_\\mathrm{sw}$",
+        "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
         "$M_{\mathrm{MS},x}=1$",
     ]
 
@@ -796,8 +796,8 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     # proxy_labs = (
-    #         "$n=2n_\mathrm{sw}$",
-    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$n=2n_\\mathrm{sw}$",
+    #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #         "$M_{\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
@@ -809,8 +809,8 @@ def ext_jet_slim(ax, XmeshXY, YmeshXY, pass_maps):
         for itr in range(1)
     ]
     proxy_labs = [
-        # "$n=2n_\mathrm{sw}$",
-        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        # "$n=2n_\\mathrm{sw}$",
+        "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
         # "$M_{\mathrm{MS},x}=1$",
     ]
 

@@ -155,7 +155,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
     ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
     ax.set_ylabel(
-        "Precipitation integral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Precipitation integral energy flux [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
     )
     if min_energy:
@@ -216,7 +216,7 @@ def plot_precip(plot_diff=False, min_energy=None):
 
             ax.set_xlabel("$\\theta$ [$^\\circ$]", fontsize=14)
             ax.set_ylabel(
-                "Precipitation diff number flux [$\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+                "Precipitation diff number flux [$\\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
                 fontsize=12,
             )
 
@@ -288,15 +288,15 @@ def plot_precip(plot_diff=False, min_energy=None):
     # ax.set_xticks([1, 2, 3])
     # ax.set_xticklabels(["Normal", "Moderate", "Strong"])
     # ax.set_ylabel(
-    #     "Maximum Precipitation\nintegral energy flux [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+    #     "Maximum Precipitation\nintegral energy flux [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
     #     fontsize=12,
     # )
     # ax.set_xlabel(
-    #     "$P_\mathrm{dyn,sw}$ [nPa]",
+    #     "$P_\\mathrm{dyn,sw}$ [nPa]",
     #     fontsize=14,
     # )
     ax.set_ylabel(
-        "Suurin protonisadannan energiavuo [$\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
+        "Suurin protonisadannan energiavuo [$\\mathrm{keV}\mathrm{cm}^{-2}\mathrm{s}^{-1}\mathrm{sr}^{-1}$]",
         fontsize=12,
         labelpad=10,
     )
@@ -344,7 +344,7 @@ def plot_precip(plot_diff=False, min_energy=None):
     #     fontsize=14,
     # )
     # ax.set_xlabel(
-    #     "$P_\mathrm{dyn,sw}$ [nPa]",
+    #     "$P_\\mathrm{dyn,sw}$ [nPa]",
     #     fontsize=14,
     # )
     ax.set_ylabel(
@@ -528,11 +528,11 @@ def plot_driving_MP_theta():
     driving_3d = np.array([rho_3d, v_3d, pdyn_3d, B_3d])
 
     xlabel_arr = [
-        "$n_\mathrm{sw}~[\mathrm{cm}^{-3}]$",
-        "$v_\mathrm{sw}~[\mathrm{km/s}]$",
-        # "$P_\mathrm{dyn,sw}~[\mathrm{nPa}]$",
+        "$n_\\mathrm{sw}~[\\mathrm{cm}^{-3}]$",
+        "$v_\\mathrm{sw}~[\\mathrm{km/s}]$",
+        # "$P_\\mathrm{dyn,sw}~[\\mathrm{nPa}]$",
         "Aurinkotuulen dynaaminen paine [nPa]",
-        "$-B_{\mathrm{IMF},z}~[\mathrm{nT}]$",
+        "$-B_{\mathrm{IMF},z}~[\\mathrm{nT}]$",
     ]
     outname_arr = ["n", "v", "pdyn", "B"]
 
@@ -543,12 +543,12 @@ def plot_driving_MP_theta():
         ax.set_ylim(2, 10)
 
         # ax.set_ylabel(
-        #     "Magnetopause standoff [$R_\mathrm{E}$]",
+        #     "Magnetopause standoff [$R_\\mathrm{E}$]",
         #     fontsize=12,
         #     labelpad=10
         # )
         ax.set_ylabel(
-            "Magnetopaussin paikka [$R_\mathrm{E}$]", fontsize=12, labelpad=10
+            "Magnetopaussin paikka [$R_\\mathrm{E}$]", fontsize=12, labelpad=10
         )
         ax.set_xlabel(xlabel_arr[n1], fontsize=12, labelpad=10)
         ax.grid()
@@ -628,7 +628,7 @@ def plot_MP_theta():
         )
 
     ax.set_ylabel(
-        "Magnetopause standoff [$R_\mathrm{E}$]",
+        "Magnetopause standoff [$R_\\mathrm{E}$]",
         fontsize=14,
     )
     ax.set_xlabel(
@@ -780,8 +780,8 @@ def line_dipole_vis():
 
     ax.grid()
     ax.set(
-        xlabel="$X~[R_\mathrm{E}]$",
-        ylabel="$Z~[R_\mathrm{E}]$",
+        xlabel="$X~[R_\\mathrm{E}]$",
+        ylabel="$Z~[R_\\mathrm{E}]$",
         xlim=(-15, 15),
         ylim=(-15, 15),
     )

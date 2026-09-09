@@ -19,14 +19,14 @@ except:
 def fcs_jet_histogram(transient="jet", weight_by_run=False, magt=1.5):
 
     label_list = [
-        "$\mathrm{\\Delta n~[n_{sw}]}$",
-        "$\mathrm{\\Delta |v|~[v_{sw}]}$",
-        "$\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
-        "$\mathrm{\\Delta |B|~[B_{IMF}]}$",
-        "$\mathrm{\\Delta T~[T_{sw}]}$",
-        "$\mathrm{Lifetime~[s]}$",
-        "$\mathrm{Tangential~size~[R_e]}$",
-        "$\mathrm{Size~ratio}$",
+        "$\\mathrm{\\Delta n~[n_{sw}]}$",
+        "$\\mathrm{\\Delta |v|~[v_{sw}]}$",
+        "$\\mathrm{\\Delta P_{dyn}~[P_{dyn,sw}]}$",
+        "$\\mathrm{\\Delta |B|~[B_{IMF}]}$",
+        "$\\mathrm{\\Delta T~[T_{sw}]}$",
+        "$\\mathrm{Lifetime~[s]}$",
+        "$\\mathrm{Tangential~size~[R_e]}$",
+        "$\\mathrm{Size~ratio}$",
     ]
     if transient == "slams":
         bins_list = [

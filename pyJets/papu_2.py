@@ -297,22 +297,22 @@ def fig07_alt():
             ax.set_aspect("equal", adjustable="box")
         if label_bool:
             ax.legend(fontsize=11, loc="center left")
-    ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
-    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
+    ax_flat[0].set_ylabel("$B_\\mathrm{IMF}=10$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
+    ax_flat[2].set_ylabel("$B_\\mathrm{IMF}=5$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
-    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
     #     fontsize=20,
     # )
     # ax_flat[3].set_xlabel(
-    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
         fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
         fontsize=20,
     )
 
@@ -570,22 +570,22 @@ def jet_pos_plot(minA=1):
             ax.set_aspect("equal", adjustable="box")
         if label_bool:
             ax.legend(fontsize=11, loc="center left")
-    ax_flat[0].set_ylabel("$B_\mathrm{IMF}=10$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
-    ax_flat[2].set_ylabel("$B_\mathrm{IMF}=5$ nT\n\n$Y~[R_\mathrm{E}]$", fontsize=20)
+    ax_flat[0].set_ylabel("$B_\\mathrm{IMF}=10$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
+    ax_flat[2].set_ylabel("$B_\\mathrm{IMF}=5$ nT\n\n$Y~[R_\\mathrm{E}]$", fontsize=20)
     # ax_flat[2].set_xlabel(
-    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
     #     fontsize=20,
     # )
     # ax_flat[3].set_xlabel(
-    #     "$X-X_\mathrm{nose}~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+    #     "$X-X_\\mathrm{nose}~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
     #     fontsize=20,
     # )
     ax_flat[2].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=5^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=5^\circ$",
         fontsize=20,
     )
     ax_flat[3].set_xlabel(
-        "$X~[R_\mathrm{E}]$\n\n$\\theta_\mathrm{cone}=30^\circ$",
+        "$X~[R_\\mathrm{E}]$\n\n$\\theta_\\mathrm{cone}=30^\circ$",
         fontsize=20,
     )
 
@@ -821,11 +821,11 @@ def foreshock_jplot_SEA(run_id):
         return 0
 
     varname_list = [
-        "$n$ [$n_\mathrm{sw}$]",
-        "$v_x$ [$v_\mathrm{sw}$]",
-        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$B$ [$B_\mathrm{IMF}$]",
-        "$T$ [$T_\mathrm{sw}$]",
+        "$n$ [$n_\\mathrm{sw}$]",
+        "$v_x$ [$v_\\mathrm{sw}$]",
+        "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
+        "$B$ [$B_\\mathrm{IMF}$]",
+        "$T$ [$T_\\mathrm{sw}$]",
         # "$M_{\mathrm{MS},x}$",
     ]
 
@@ -897,7 +897,7 @@ def foreshock_jplot_SEA(run_id):
         ax.set_title(varname_list[idx], fontsize=24, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        # ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        # ax.set_xlabel("Epoch $x$ [$R_\\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
@@ -935,7 +935,7 @@ def foreshock_jplot_SEA(run_id):
         # ax.set_title(varname_list[idx], fontsize=20, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax.annotate(annot_sj[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
@@ -1021,11 +1021,11 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         return 0
 
     varname_list = [
-        "$n$ [$n_\mathrm{sw}$]",
-        "$v_x$ [$v_\mathrm{sw}$]",
-        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$B$ [$B_\mathrm{IMF}$]",
-        "$T$ [$T_\mathrm{sw}$]",
+        "$n$ [$n_\\mathrm{sw}$]",
+        "$v_x$ [$v_\\mathrm{sw}$]",
+        "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
+        "$B$ [$B_\\mathrm{IMF}$]",
+        "$T$ [$T_\\mathrm{sw}$]",
         # "$M_{\mathrm{MS},x}$",
     ]
 
@@ -1078,7 +1078,7 @@ def types_jplot_SEA(run_id, kind="beam", version="new"):
         ax.set_title(varname_list[idx], fontsize=24, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\\mathrm{E}$]", fontsize=24, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=24)
@@ -1232,7 +1232,7 @@ def types_P_jplot_SEA(run_id, kind="beam", version="new", shfa=False):
         ax.set_title(varname_list[idx], fontsize=20, pad=10)
         ax.set_xlim(x_range[0], x_range[-1])
         ax.set_ylim(t_range[0], t_range[-1])
-        ax.set_xlabel("Epoch $x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+        ax.set_xlabel("Epoch $x$ [$R_\\mathrm{E}$]", fontsize=20, labelpad=10)
         ax.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax.axvline(x0, linestyle="dashed", linewidth=0.6)
     ax_list[0].set_ylabel("Epoch time [s]", fontsize=20, labelpad=10)
@@ -1334,11 +1334,11 @@ def non_jet_jplots(runid, txt=False, draw=False):
 
     dx = 227e3 / r_e
     varname_list = [
-        "$n$ [$n_\mathrm{sw}$]",
-        "$v_x$ [$v_\mathrm{sw}$]",
-        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$B$ [$B_\mathrm{IMF}$]",
-        "$T$ [$T_\mathrm{sw}$]",
+        "$n$ [$n_\\mathrm{sw}$]",
+        "$v_x$ [$v_\\mathrm{sw}$]",
+        "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
+        "$B$ [$B_\\mathrm{IMF}$]",
+        "$T$ [$T_\\mathrm{sw}$]",
     ]
 
     # Solar wind parameters for the different runs
@@ -1516,7 +1516,7 @@ def non_jet_jplots(runid, txt=False, draw=False):
                 "Run: {}, JetID: {}, $y$ = {:.3f} ".format(
                     runids_paper[runid_list.index(runid)], non_id, y0
                 )
-                + "$R_\mathrm{E}$",
+                + "$R_\\mathrm{E}$",
                 fontsize=28,
             )
             for idx in range(len(varname_list)):
@@ -1549,7 +1549,7 @@ def non_jet_jplots(runid, txt=False, draw=False):
                 ax.set_title(varname_list[idx], fontsize=24, pad=10)
                 ax.set_xlim(x_range[0], x_range[-1])
                 ax.set_ylim(t_range[0], t_range[-1])
-                ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=24, labelpad=10)
+                ax.set_xlabel("$x$ [$R_\\mathrm{E}$]", fontsize=24, labelpad=10)
                 ax.axhline(t0, linestyle="dashed", linewidth=0.6)
                 ax.axvline(x0, linestyle="dashed", linewidth=0.6)
                 ax.annotate(
@@ -1673,7 +1673,7 @@ def P_jplots(runid):
         cb_list = []
         fig.suptitle(
             "Run: {}, JetID: {}, $y$ = {:.3f} ".format(runid, non_id, y0)
-            + "$R_\mathrm{E}$",
+            + "$R_\\mathrm{E}$",
             fontsize=20,
         )
         for idx, ax in enumerate(ax_list):
@@ -1697,7 +1697,7 @@ def P_jplots(runid):
             ax.set_title(varname_list[idx], fontsize=20, pad=10)
             ax.set_xlim(x_range[0], x_range[-1])
             ax.set_ylim(t_range[0], t_range[-1])
-            ax.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=20, labelpad=10)
+            ax.set_xlabel("$x$ [$R_\\mathrm{E}$]", fontsize=20, labelpad=10)
             ax.axhline(t0, linestyle="dashed", linewidth=0.6)
             ax.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_list[0].set_ylabel("Simulation time [s]", fontsize=20, labelpad=10)
@@ -1851,16 +1851,16 @@ def kind_SEA_timeseries(kind):
         True,
     ]
     ylabels = [
-        # "$\\rho~[\mathrm{cm}^{-3}]$",
-        # "$v~[\mathrm{km/s}]$",
-        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        # "$B~[\mathrm{nT}]$",
-        # "$T~[\mathrm{MK}]$",
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$T~[T_\mathrm{sw}]$",
+        # "$\\rho~[\\mathrm{cm}^{-3}]$",
+        # "$v~[\\mathrm{km/s}]$",
+        # "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        # "$B~[\\mathrm{nT}]$",
+        # "$T~[\\mathrm{MK}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$T~[T_\\mathrm{sw}]$",
     ]
     vmins = [1.5, -0.8, 0.4, -3.75, 10]
     vmaxs = [4.6, 0.8, 1.6, 3.75, 35]
@@ -1927,11 +1927,11 @@ def kind_SEA_timeseries(kind):
 def SEA_trifecta(kind):
     plot_labels = ["VS1", "VS2", "VS3"]
     ylabels = [
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$T~[T_\mathrm{sw}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$T~[T_\\mathrm{sw}]$",
     ]
     plot_colors = [
         CB_color_cycle[0],
@@ -2055,12 +2055,12 @@ def trifecta(runid, kind="non", draw=False):
     plot_labels = ["VS1", "VS2", "VS3"]
     scales = [1e-6, 1e9, 1e-3, 1e9, 1e-6, 1e-6]
     ylabels = [
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$T~[T_\mathrm{sw}]$",
-        "$T_{core}~[T_\mathrm{sw}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$T~[T_\\mathrm{sw}]$",
+        "$T_{core}~[T_\\mathrm{sw}]$",
     ]
     norm = [
         [1, 5, 750, 0.9408498320756251, 0.5, 0.5],
@@ -2276,16 +2276,16 @@ def kind_timeseries(runid, kind="non"):
         True,
     ]
     ylabels = [
-        # "$\\rho~[\mathrm{cm}^{-3}]$",
-        # "$v~[\mathrm{km/s}]$",
-        # "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
-        # "$B~[\mathrm{nT}]$",
-        # "$T~[\mathrm{MK}]$",
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$T~[T_\mathrm{sw}]$",
+        # "$\\rho~[\\mathrm{cm}^{-3}]$",
+        # "$v~[\\mathrm{km/s}]$",
+        # "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        # "$B~[\\mathrm{nT}]$",
+        # "$T~[\\mathrm{MK}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$T~[T_\\mathrm{sw}]$",
     ]
     norm = [
         [1, 750, 750, 750, 750, 0.9408498320756251, 5, 5, 5, 5, 0.5, 0.5],
@@ -2670,13 +2670,13 @@ def SEA_types(run_id="all"):
     for ax in ax_list:
         ax.grid()
 
-    ax_list[0].set_ylabel("$n~[n_\mathrm{sw}]$")
-    ax_list[1].set_ylabel("$v~[v_\mathrm{sw}]$")
-    ax_list[2].set_ylabel("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-    ax_list[3].set_ylabel("$B~[B_\mathrm{IMF}]$")
-    ax_list[4].set_ylabel("$T_\mathrm{perp}~[T_\mathrm{sw}]$")
-    ax_list[5].set_ylabel("$T_\mathrm{par}~[T_\mathrm{sw}]$")
-    ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
+    ax_list[0].set_ylabel("$n~[n_\\mathrm{sw}]$")
+    ax_list[1].set_ylabel("$v~[v_\\mathrm{sw}]$")
+    ax_list[2].set_ylabel("$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$")
+    ax_list[3].set_ylabel("$B~[B_\\mathrm{IMF}]$")
+    ax_list[4].set_ylabel("$T_\\mathrm{perp}~[T_\\mathrm{sw}]$")
+    ax_list[5].set_ylabel("$T_\\mathrm{par}~[T_\\mathrm{sw}]$")
+    ax_list[-1].set_xlabel("$\\Delta t~[\\mathrm{s}]$")
 
     # Loop over runs
     for runid in runid_list:
@@ -2888,20 +2888,20 @@ def SEA_plots(zero_level=False, run_id="all"):
         ax.grid()
 
     if zero_level:
-        ax_list[0].set_ylabel("$\\Delta n~[n_\mathrm{sw}]$")
-        ax_list[1].set_ylabel("$\\Delta v~[v_\mathrm{sw}]$")
-        ax_list[2].set_ylabel("$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-        ax_list[3].set_ylabel("$\\Delta B~[B_\mathrm{IMF}]$")
-        ax_list[4].set_ylabel("$\\Delta T_\mathrm{perp}~[T_\mathrm{sw}]$")
-        ax_list[5].set_ylabel("$\\Delta T_\mathrm{par}~[T_\mathrm{sw}]$")
+        ax_list[0].set_ylabel("$\\Delta n~[n_\\mathrm{sw}]$")
+        ax_list[1].set_ylabel("$\\Delta v~[v_\\mathrm{sw}]$")
+        ax_list[2].set_ylabel("$\\Delta P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$")
+        ax_list[3].set_ylabel("$\\Delta B~[B_\\mathrm{IMF}]$")
+        ax_list[4].set_ylabel("$\\Delta T_\\mathrm{perp}~[T_\\mathrm{sw}]$")
+        ax_list[5].set_ylabel("$\\Delta T_\\mathrm{par}~[T_\\mathrm{sw}]$")
     else:
-        ax_list[0].set_ylabel("$n~[n_\mathrm{sw}]$")
-        ax_list[1].set_ylabel("$v~[v_\mathrm{sw}]$")
-        ax_list[2].set_ylabel("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$")
-        ax_list[3].set_ylabel("$B~[B_\mathrm{IMF}]$")
-        ax_list[4].set_ylabel("$T_\mathrm{perp}~[T_\mathrm{sw}]$")
-        ax_list[5].set_ylabel("$T_\mathrm{par}~[T_\mathrm{sw}]$")
-    ax_list[-1].set_xlabel("$\\Delta t~[\mathrm{s}]$")
+        ax_list[0].set_ylabel("$n~[n_\\mathrm{sw}]$")
+        ax_list[1].set_ylabel("$v~[v_\\mathrm{sw}]$")
+        ax_list[2].set_ylabel("$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$")
+        ax_list[3].set_ylabel("$B~[B_\\mathrm{IMF}]$")
+        ax_list[4].set_ylabel("$T_\\mathrm{perp}~[T_\\mathrm{sw}]$")
+        ax_list[5].set_ylabel("$T_\\mathrm{par}~[T_\\mathrm{sw}]$")
+    ax_list[-1].set_xlabel("$\\Delta t~[\\mathrm{s}]$")
 
     # Loop over runs
     for runid in runid_list:
@@ -3033,16 +3033,16 @@ def non_type_hist(run_id="all"):
         "first_y",
     ]
     label_list = [
-        "$\\Delta n~[n_\mathrm{sw}]$",
-        "$\\Delta |v|~[v_\mathrm{sw}]$",
-        "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$\\Delta |B|~[B_\mathrm{IMF}]$",
-        "$\\Delta T~[T_\mathrm{sw}]$",
-        "$Lifetime~[\mathrm{s}]$",
-        "$Tangential$\n$size~[R_\mathrm{E}]$",
+        "$\\Delta n~[n_\\mathrm{sw}]$",
+        "$\\Delta |v|~[v_\\mathrm{sw}]$",
+        "$\\Delta P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$\\Delta |B|~[B_\\mathrm{IMF}]$",
+        "$\\Delta T~[T_\\mathrm{sw}]$",
+        "$Lifetime~[\\mathrm{s}]$",
+        "$Tangential$\n$size~[R_\\mathrm{E}]$",
         "Size Ratio",
         "First cone [$^\circ$]",
-        "First $y$ [$R_\mathrm{E}$]",
+        "First $y$ [$R_\\mathrm{E}$]",
     ]
     bins_list = [
         np.linspace(-2, 5, 10 + 1),
@@ -3271,13 +3271,13 @@ def fcs_non_jet_hist(lastbs=False, run_id="all"):
         "dies_at_bs",
     ]
     label_list = [
-        "$\\Delta n~[n_\mathrm{sw}]$",
-        "$\\Delta |v|~[v_\mathrm{sw}]$",
-        "$\\Delta P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$\\Delta |B|~[B_\mathrm{IMF}]$",
-        "$\\Delta T~[T_\mathrm{sw}]$",
-        "$Lifetime~[\mathrm{s}]$",
-        "$Tangential$\n$size~[R_\mathrm{E}]$",
+        "$\\Delta n~[n_\\mathrm{sw}]$",
+        "$\\Delta |v|~[v_\\mathrm{sw}]$",
+        "$\\Delta P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$\\Delta |B|~[B_\\mathrm{IMF}]$",
+        "$\\Delta T~[T_\\mathrm{sw}]$",
+        "$Lifetime~[\\mathrm{s}]$",
+        "$Tangential$\n$size~[R_\\mathrm{E}]$",
         "Size Ratio",
         "Leaves BS",
         "Dies\nat BS",
@@ -3482,7 +3482,7 @@ def colormap_with_contours(runid, filenr, sj_ids=[], non_ids=[]):
             "Pdyn",
         ],
         title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-        cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+        cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
     )
 
 
@@ -3745,7 +3745,7 @@ def vdf_plotter(runid, cellid, t0, zoom=1):
             vmin=0,
             vmax=pdmax * 1e-9,
             # vscale=1e9,
-            cbtitle="$P_\mathrm{dyn}$ [Pa]",
+            cbtitle="$P_\\mathrm{dyn}$ [Pa]",
             usesci=1,
             boxre=[
                 x_re - 2.0 / zoom,
@@ -3893,7 +3893,7 @@ def jet_vdf_plotter(runid):
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
-                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    cbtitle="$P_\\mathrm{dyn}$ [nPa]",
                     usesci=0,
                     boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                     # internalcb=True,
@@ -4089,7 +4089,7 @@ def jet_vdf_profile_plotter(runid, skip=[]):
                     vmin=0,
                     vmax=pdmax,
                     vscale=1e9,
-                    cbtitle="$P_\mathrm{dyn}$ [nPa]",
+                    cbtitle="$P_\\mathrm{dyn}$ [nPa]",
                     usesci=0,
                     boxre=[x_re - 2, x_re + 2, y_re - 2, y_re + 2],
                     # internalcb=True,
@@ -4138,8 +4138,8 @@ def jet_vdf_profile_plotter(runid, skip=[]):
                 ax_list[1].step(zbin_centers * 1e-3, zhist, "b", label="vz")
                 ax_list[1].legend(loc="upper right")
                 ax_list[1].set_xlim(-1000, 1000)
-                ax_list[1].set_xlabel("$v~[\mathrm{kms}^{-1}]$")
-                ax_list[1].set_ylabel("$f(v)~[\mathrm{sm}^{-4}]$")
+                ax_list[1].set_xlabel("$v~[\\mathrm{kms}^{-1}]$")
+                ax_list[1].set_ylabel("$f(v)~[\\mathrm{sm}^{-4}]$")
                 ax_list[1].set_ylim(0, 30)
 
                 # pt.plot.plot_vdf_profiles(
@@ -4488,8 +4488,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
     # ] + [non_pos, sj_pos]
 
     # proxy_labs = (
-    #         "$n=2n_\mathrm{sw}$",
-    #         "$T_\mathrm{core}=3T_\mathrm{sw}$",
+    #         "$n=2n_\\mathrm{sw}$",
+    #         "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
     #         "$M_{\mathrm{MS},x}=1$",
     #         "Jet",
     #         "FCS",
@@ -4501,8 +4501,8 @@ def ext_jet(ax, XmeshXY, YmeshXY, pass_maps):
         for itr in range(3)
     ]
     proxy_labs = [
-        "$n=2n_\mathrm{sw}$",
-        "$T_\mathrm{core}=3T_\mathrm{sw}$",
+        "$n=2n_\\mathrm{sw}$",
+        "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
         "$M_{\mathrm{MS},x}=1$",
     ]
 
@@ -4673,7 +4673,7 @@ def fig0(runid="ABC", jetid=596, minA=1):
         ),
     )
     ax[0].annotate(
-        "$P_\mathrm{dyn}$ [nPa]",
+        "$P_\\mathrm{dyn}$ [nPa]",
         (0.80, 0.95),
         xycoords="axes fraction",
         fontsize=20,
@@ -5054,8 +5054,8 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             ),
         )
         ax_nw.annotate(
-            # "$P_\mathrm{dyn}$ [nPa]",
-            "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
+            # "$P_\\mathrm{dyn}$ [nPa]",
+            "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
             (0.95, 1.05),
             xycoords="axes fraction",
             fontsize=20,
@@ -5080,7 +5080,7 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
         cb = fig.colorbar(im, ax=ax_ne, location="top", pad=-0.05)
         # cb_list.append(fig.colorbar(im_list[idx], ax=ax))
         cb.ax.tick_params(labelsize=16)
-        cb.set_label("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, labelpad=10)
+        cb.set_label("$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$", fontsize=24, labelpad=10)
         ax_ne.contour(
             XmeshXY,
             YmeshXY,
@@ -5105,10 +5105,10 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             colors=[CB_color_cycle[8]],
             linewidths=[2],
         )
-        # ax_ne.set_title("$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$", fontsize=24, pad=10)
+        # ax_ne.set_title("$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$", fontsize=24, pad=10)
         ax_ne.set_xlim(x_range[0], x_range[-1])
         ax_ne.set_ylim(t0 - 10, t0 + 10)
-        ax_ne.set_xlabel("$x$ [$R_\mathrm{E}$]", fontsize=22, labelpad=10)
+        ax_ne.set_xlabel("$x$ [$R_\\mathrm{E}$]", fontsize=22, labelpad=10)
         ax_ne.axhline(t0, linestyle="dashed", linewidth=0.6)
         ax_ne.axvline(x0, linestyle="dashed", linewidth=0.6)
         ax_ne.annotate(
@@ -5192,14 +5192,14 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
                 vms_xy[1],
                 color="k",
                 linestyle="dashed",
-                label="$v_\mathrm{MS}$",
+                label="$v_\\mathrm{MS}$",
             )
             ax_sw.plot(
                 va_xy[0],
                 va_xy[1],
                 color=CB_color_cycle[3],
                 linestyle="dashed",
-                label="$v_\mathrm{A}$",
+                label="$v_\\mathrm{A}$",
             )
             ax_sw.quiver(
                 0,
@@ -5207,7 +5207,7 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
                 propvx,
                 propvy,
                 color=CB_color_cycle[0],
-                label="$v_\mathrm{tr}$",
+                label="$v_\\mathrm{tr}$",
                 angles="xy",
                 scale_units="xy",
                 scale=1,
@@ -5220,7 +5220,7 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
             #     propvx_full,
             #     propvy_full,
             #     color=CB_color_cycle[6],
-            #     label="$v_\mathrm{tr,full}$",
+            #     label="$v_\\mathrm{tr,full}$",
             #     angles="xy",
             #     scale_units="xy",
             #     scale=1,
@@ -5242,10 +5242,10 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
                 ]
             )
             arrow_labels = [
-                "$v_\mathrm{n}$",
+                "$v_\\mathrm{n}$",
                 "$v$",
-                "$v_\mathrm{bulk}$",
-                # "$v_\mathrm{A}$",
+                "$v_\\mathrm{bulk}$",
+                # "$v_\\mathrm{A}$",
             ]
             for idx in range(1, len(vx_arr)):
                 ax_sw.quiver(
@@ -5270,8 +5270,8 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
                 fontsize=16,
                 loc="lower right",
             )
-            ax_sw.set_xlabel("$v_x~[\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
-            ax_sw.set_ylabel("$v_y~[\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
+            ax_sw.set_xlabel("$v_x~[\\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
+            ax_sw.set_ylabel("$v_y~[\\mathrm{kms^{-1}}]$", fontsize=24, labelpad=10)
             maxv = np.max([np.max(np.abs(vx_arr)), np.max(np.abs(vy_arr))])
             ax_sw.set_xlim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
             ax_sw.set_ylim(-1.1 * v_sw / 1e3, 1.1 * v_sw / 1e3)
@@ -5328,11 +5328,11 @@ def non_jet_omni(runid, only_man_figs=True, minA=1):
                 True,
             ]
             ylabels = [
-                "$\\rho~[\\rho_\mathrm{sw}]$",
-                "$v~[v_\mathrm{sw}]$",
-                "$P_\mathrm{dyn}$\n$[P_\mathrm{dyn,sw}]$",
-                "$B~[B_\mathrm{IMF}]$",
-                "$T~[T_\mathrm{sw}]$",
+                "$\\rho~[\\rho_\\mathrm{sw}]$",
+                "$v~[v_\\mathrm{sw}]$",
+                "$P_\\mathrm{dyn}$\n$[P_\\mathrm{dyn,sw}]$",
+                "$B~[B_\\mathrm{IMF}]$",
+                "$T~[T_\\mathrm{sw}]$",
             ]
             annots = ["(d)", "(e)", "(f)", "(g)", "(h)"]
             plot_index = [0, 1, 1, 1, 2, 3, 3, 3, 4, 4]
@@ -5500,11 +5500,11 @@ def jmap_SEA_comp(run_id="all", full_set=False, minA=1):
             return 0
 
     varname_list = [
-        "$n$ [$n_\mathrm{sw}$]",
-        "$v_x$ [$v_\mathrm{sw}$]",
-        "$P_\mathrm{dyn}$ [$P_\mathrm{dyn,sw}$]",
-        "$| \mathbf{B} |$ [$B_\mathrm{IMF}$]",
-        "$T$ [$T_\mathrm{sw}$]",
+        "$n$ [$n_\\mathrm{sw}$]",
+        "$v_x$ [$v_\\mathrm{sw}$]",
+        "$P_\\mathrm{dyn}$ [$P_\\mathrm{dyn,sw}$]",
+        "$| \mathbf{B} |$ [$B_\\mathrm{IMF}$]",
+        "$T$ [$T_\\mathrm{sw}$]",
         # "$M_{\mathrm{MS},x}$",
     ]
 
@@ -5624,7 +5624,7 @@ def jmap_SEA_comp(run_id="all", full_set=False, minA=1):
         else:
             ax_list[0][idx2].set_title(kind_names[idx2], fontsize=32, pad=10)
         ax_list[-1][idx2].set_xlabel(
-            "Epoch $x$ [$R_\mathrm{E}$]", fontsize=32, labelpad=10
+            "Epoch $x$ [$R_\\mathrm{E}$]", fontsize=32, labelpad=10
         )
     for idx, ax in enumerate(ax_list[:, 0]):
         # ax.set_ylabel(
@@ -5640,8 +5640,8 @@ def jmap_SEA_comp(run_id="all", full_set=False, minA=1):
     ax_list[0][0].legend(
         proxy,
         (
-            "$n=2n_\mathrm{sw}$",
-            "$T_\mathrm{core}=3T_\mathrm{sw}$",
+            "$n=2n_\\mathrm{sw}$",
+            "$T_\\mathrm{core}=3T_\\mathrm{sw}$",
             "$M_{\mathrm{MS},x}=1$",
         ),
         frameon=True,
@@ -5814,11 +5814,11 @@ def SEA_timeseries_comp(full_set=False):
         True,
     ]
     ylabels = [
-        "$n~[n_\mathrm{sw}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$T~[T_\mathrm{sw}]$",
+        "$n~[n_\\mathrm{sw}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$T~[T_\\mathrm{sw}]$",
     ]
     vmins = [0.2, -1.1, 0, -0.5, 0]
     vmaxs = [7, 1.1, 2.3, 5, 55]
@@ -6317,19 +6317,19 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
     kind_labels = ["Flankward jets", "Antisunward jets", "FCS-jets"]
     annot = ["(b)", "(c)", "(d)"]
     arrow_labels = [
-        "$v_\mathrm{n}$",
+        "$v_\\mathrm{n}$",
         "$v$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
-        "$v_\mathrm{bulk}$",
-        # "$v_\mathrm{A}$",
+        "$v_\\mathrm{bulk}$",
+        # "$v_\\mathrm{A}$",
     ]
     ylabels = [
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$T~[T_\mathrm{sw}]$",
-        "$T_{core}~[T_\mathrm{sw}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$T~[T_\\mathrm{sw}]$",
+        "$T_{core}~[T_\\mathrm{sw}]$",
     ]
 
     vsc_counter = [0, 0, 0]
@@ -6474,14 +6474,14 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
             ms_xy.T[1],
             color="k",
             linestyle="dashed",
-            label="$v_\mathrm{MS}$",
+            label="$v_\\mathrm{MS}$",
         )
         ax.plot(
             a_xy.T[0],
             a_xy.T[1],
             color=CB_color_cycle[3],
             linestyle="dashed",
-            label="$v_\mathrm{A}$",
+            label="$v_\\mathrm{A}$",
         )
 
         vx = [
@@ -6513,7 +6513,7 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
         #     np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
         #     np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
         #     color=CB_color_cycle[6],
-        #     label="$v_\mathrm{tr,full}$",
+        #     label="$v_\\mathrm{tr,full}$",
         #     angles="xy",
         #     scale_units="xy",
         #     scale=1,
@@ -6600,7 +6600,7 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
             np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
             color=CB_color_cycle[0],
-            label="$v_\mathrm{tr}$",
+            label="$v_\\mathrm{tr}$",
             angles="xy",
             scale_units="xy",
             scale=1,
@@ -6615,7 +6615,7 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
         ax.set_xlim(-vlim, vlim)
         ax.set_ylim(-vlim, vlim)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
-        ax.set_ylabel("$v_y$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        ax.set_ylabel("$v_y$ [$v_\\mathrm{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
             ax.legend(fontsize=24, loc="lower right")
             lhand, llab = ax.get_legend_handles_labels()
@@ -6634,7 +6634,7 @@ def timing_comp(vlim=1.3, minA=1, retain_vtr=True):
                 bbox_to_anchor=(0.5, -0.15),
                 ncols=3,
             )
-        ax.set_xlabel("$v_x$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        ax.set_xlabel("$v_x$ [$v_\\mathrm{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
@@ -6719,19 +6719,19 @@ def fig02_alt(vlim=1.3):
     ]
     annot = ["(a)", "(b)", "(c)", "(d)"]
     arrow_labels = [
-        "$v_\mathrm{n}$",
+        "$v_\\mathrm{n}$",
         "$v$",
         # "$v_{\\langle \mathrm{SC} \\rangle}$",
-        "$v_\mathrm{bulk}$",
-        # "$v_\mathrm{A}$",
+        "$v_\\mathrm{bulk}$",
+        # "$v_\\mathrm{A}$",
     ]
     ylabels = [
-        "$\\rho~[\\rho_\mathrm{sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$T~[T_\mathrm{sw}]$",
-        "$T_{core}~[T_\mathrm{sw}]$",
+        "$\\rho~[\\rho_\\mathrm{sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$T~[T_\\mathrm{sw}]$",
+        "$T_{core}~[T_\\mathrm{sw}]$",
     ]
 
     vsc_counter = [0] * len(kinds)
@@ -6884,14 +6884,14 @@ def fig02_alt(vlim=1.3):
             ms_xy.T[1],
             color="k",
             linestyle="dashed",
-            label="$v_\mathrm{MS}$",
+            label="$v_\\mathrm{MS}$",
         )
         ax.plot(
             a_xy.T[0],
             a_xy.T[1],
             color=CB_color_cycle[3],
             linestyle="dashed",
-            label="$v_\mathrm{A}$",
+            label="$v_\\mathrm{A}$",
         )
 
         vx = [
@@ -6923,7 +6923,7 @@ def fig02_alt(vlim=1.3):
         #     np.nanmedian(propv_arrs_full[idx, 0, : counters[idx]]),
         #     np.nanmedian(propv_arrs_full[idx, 1, : counters[idx]]),
         #     color=CB_color_cycle[6],
-        #     label="$v_\mathrm{tr,full}$",
+        #     label="$v_\\mathrm{tr,full}$",
         #     angles="xy",
         #     scale_units="xy",
         #     scale=1,
@@ -7010,7 +7010,7 @@ def fig02_alt(vlim=1.3):
             np.nanmedian(propv_arrs[idx, 0, : counters[idx]]),
             np.nanmedian(propv_arrs[idx, 1, : counters[idx]]),
             color=CB_color_cycle[0],
-            label="$v_\mathrm{tr}$",
+            label="$v_\\mathrm{tr}$",
             angles="xy",
             scale_units="xy",
             scale=1,
@@ -7025,7 +7025,7 @@ def fig02_alt(vlim=1.3):
         ax.set_xlim(-vlim, vlim)
         ax.set_ylim(-vlim, vlim)
         ax.annotate(annot[idx], (0.05, 0.90), xycoords="axes fraction", fontsize=32)
-        ax.set_ylabel("$v_y$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        ax.set_ylabel("$v_y$ [$v_\\mathrm{sw}$]", fontsize=32, labelpad=10)
         if idx == 1:
             ax.legend(fontsize=24, loc="lower right")
             lhand, llab = ax.get_legend_handles_labels()
@@ -7044,7 +7044,7 @@ def fig02_alt(vlim=1.3):
                 bbox_to_anchor=(0.5, -0.15),
                 ncols=3,
             )
-        ax.set_xlabel("$v_x$ [$v_\mathrm{sw}$]", fontsize=32, labelpad=10)
+        ax.set_xlabel("$v_x$ [$v_\\mathrm{sw}$]", fontsize=32, labelpad=10)
         ax.tick_params(labelsize=20)
         ax.grid()
         ax.set_aspect("equal")
@@ -7456,11 +7456,11 @@ def SEA_timeseries_comp_violin(full_set=False):
         True,
     ]
     ylabels = [
-        "$n~[n_\mathrm{sw}]$",
-        "$v~[v_\mathrm{sw}]$",
-        "$P_\mathrm{dyn}~[P_\mathrm{dyn,sw}]$",
-        "$B~[B_\mathrm{IMF}]$",
-        "$T~[T_\mathrm{sw}]$",
+        "$n~[n_\\mathrm{sw}]$",
+        "$v~[v_\\mathrm{sw}]$",
+        "$P_\\mathrm{dyn}~[P_\\mathrm{dyn,sw}]$",
+        "$B~[B_\\mathrm{IMF}]$",
+        "$T~[T_\\mathrm{sw}]$",
     ]
     vmins = [0.2, -1.1, 0, -0.5, 0]
     vmaxs = [7, 1.1, 2.3, 5, 55]

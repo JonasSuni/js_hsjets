@@ -411,11 +411,11 @@ def ipshock_1d_amr_target(fnr=100, a1=0.4, a2=1, resol="v30/8000"):
     #     "vg_b_vol",
     # ]
     # ylabels = [
-    #     "$\\rho~[\mathrm{cm}^{-3}]$",
-    #     "$\\rho_\mathrm{non-th}~[\mathrm{cm}^{-3}]$",
-    #     "$v_x~[\mathrm{km/s}]$",
-    #     "$v_{\mathrm{non-th},x}~[\mathrm{km/s}]$",
-    #     "$B_y~[\mathrm{nT}]$",
+    #     "$\\rho~[\\mathrm{cm}^{-3}]$",
+    #     "$\\rho_\\mathrm{non-th}~[\\mathrm{cm}^{-3}]$",
+    #     "$v_x~[\\mathrm{km/s}]$",
+    #     "$v_{\mathrm{non-th},x}~[\\mathrm{km/s}]$",
+    #     "$B_y~[\\mathrm{nT}]$",
     # ]
     # scales = [1e-6, 1e-6, 1e-3, 1e-3, 1e9]
     # miny = [None, 10**-4, -1000, -500, -5]

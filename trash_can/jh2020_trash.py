@@ -102,14 +102,14 @@ def jh2020_fig4(crit="ew_pd"):
         depths,indents = get_indent_depth(runid,crit=crit)
         ax.plot(depths,indents,marker_list[runids.index(runid)],label=runid)
 
-    ax.set_xlabel("$\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
-    #ax.set_ylabel("$\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
+    ax.set_xlabel("$\\mathrm{Last~X-X_{bs}~[R_e]}$",fontsize=20,labelpad=10)
+    #ax.set_ylabel("$\\mathrm{Indentation~[R_e]}$",fontsize=20,labelpad=10)
     if crit == "ew_pd":
-        ax.set_ylabel("$\mathrm{Mean~earthward~P_{dyn}~[P_{dyn,sw}]}$",fontsize=20,labelpad=10)
+        ax.set_ylabel("$\\mathrm{Mean~earthward~P_{dyn}~[P_{dyn,sw}]}$",fontsize=20,labelpad=10)
     elif crit == "nonloc":
-        ax.set_ylabel("$\mathrm{Bow~shock~nonlocality~[R_e]}$",fontsize=20,labelpad=10)
+        ax.set_ylabel("$\\mathrm{Bow~shock~nonlocality~[R_e]}$",fontsize=20,labelpad=10)
     else:
-        ax.set_ylabel("$\mathrm{Bow~shock~indentation~[R_e]}$",fontsize=20,labelpad=10)
+        ax.set_ylabel("$\\mathrm{Bow~shock~indentation~[R_e]}$",fontsize=20,labelpad=10)
     ax.legend(frameon=False,numpoints=1,markerscale=2)
     ax.tick_params(labelsize=20)
     ax.axvline(0,linestyle="dashed",linewidth=0.6,color="black")
@@ -376,7 +376,7 @@ def jh2020_fig2(xlim=[200.,399.5]):
     data_in = np.array([data_in[n+1]/norm_list[n] for n in range(len(data_in)-1)])
     data_out = np.array([data_out[n+1]/norm_list[n] for n in range(len(data_out)-1)])
 
-    label_list = ["$\mathrm{\\rho~[cm^{-3}]}$","$\mathrm{v~[km/s]}$","$\mathrm{B~[nT]}$","$\mathrm{P_{dyn}~[nPa]}$","$\mathrm{T~[MK]}$","$\mathrm{\\beta}$"]
+    label_list = ["$\\mathrm{\\rho~[cm^{-3}]}$","$\\mathrm{v~[km/s]}$","$\\mathrm{B~[nT]}$","$\\mathrm{P_{dyn}~[nPa]}$","$\\mathrm{T~[MK]}$","$\\mathrm{\\beta}$"]
 
     fig,ax_list = plt.subplots(6,2,figsize=(15,15),sharex=True,sharey="row")
 
@@ -440,8 +440,8 @@ def jh2020_fig3():
 
     fig,ax = plt.subplots(1,1,figsize=(10,7))
 
-    ax.set_xlabel("$\mathrm{X-X_{bs}~[R_e]}$",labelpad=10,fontsize=20)
-    # ax.set_ylabel("$\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
+    ax.set_xlabel("$\\mathrm{X-X_{bs}~[R_e]}$",labelpad=10,fontsize=20)
+    # ax.set_ylabel("$\\mathrm{P_{dyn,mean}~[P_{dyn,SW}]}$",labelpad=10,fontsize=20)
     ax.set_ylabel("Normalised count",labelpad=10,fontsize=20)
     #ax.set_xlim(-2.0,2.0)
     ax.axvline(0,linestyle="dashed",linewidth="0.5")

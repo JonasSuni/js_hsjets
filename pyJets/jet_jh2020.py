@@ -223,11 +223,11 @@ def jh2020_cut_plot(runid, filenr, min_cellid=1814480, max_cellid=1814540):
     var_list = ["rho", "pdyn", "B", "v", "TParallel", "TPerpendicular"]
     norm_list = [1.0e6, 1.0e-9, 1.0e-9, 1.0e3, 1.0e6, 1.0e6]
     label_list = [
-        "$\mathrm{\\rho~[cm^{-3}]}$",
-        "$\mathrm{P_{dyn}~[nPa]}$",
-        "$\mathrm{B~[nT]}$",
-        "$\mathrm{v~[kms^{-1}]}$",
-        "$\mathrm{T~[MK]}$",
+        "$\\mathrm{\\rho~[cm^{-3}]}$",
+        "$\\mathrm{P_{dyn}~[nPa]}$",
+        "$\\mathrm{B~[nT]}$",
+        "$\\mathrm{v~[kms^{-1}]}$",
+        "$\\mathrm{T~[MK]}$",
     ]
     lim_list = [(0, 30), (0, 8), (-35, 35), (-650, 650), (0, 20)]
     color_list = ["black", jx.medium_blue, jx.dark_blue, jx.orange]
@@ -282,7 +282,7 @@ def jh2020_cut_plot(runid, filenr, min_cellid=1814480, max_cellid=1814540):
         ax.plot(x, data)
         ax.set_ylabel(label_list[n], fontsize=20)
         if n == len(var_list) - 1:
-            ax.set_xlabel("$\mathrm{X~[R_e]}$", fontsize=20)
+            ax.set_xlabel("$\\mathrm{X~[R_e]}$", fontsize=20)
         for m in range(len(ann_list)):
             ax.annotate(
                 ann_list[m],
@@ -502,7 +502,7 @@ def jh2020_fig2_mesh(
             if custom:
                 ax.set_xlabel("Pos along path", fontsize=20)
             else:
-                ax.set_xlabel("$\mathrm{X~[R_e]}$", fontsize=20)
+                ax.set_xlabel("$\\mathrm{X~[R_e]}$", fontsize=20)
 
     fig.suptitle("Y = {:.3f} Re".format(y), fontsize=20)
 
@@ -1025,7 +1025,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             label="Non-FCS-jets",
         )
         ax[1].set_xlabel(
-            "Disappearance distance\n$x_\mathrm{last}-x_\mathrm{bs}~[R_\mathrm{E}]$",
+            "Disappearance distance\n$x_\\mathrm{last}-x_\\mathrm{bs}~[R_\\mathrm{E}]$",
             fontsize=18,
             labelpad=10,
         )
@@ -1053,7 +1053,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         ax[0].set_ylabel("Disappearance rate [s$^{-1}$]", fontsize=18, labelpad=10)
         ax[1].set_ylabel("CDF", fontsize=18, labelpad=10)
         ax[0].set_xlabel(
-            "Disappearance distance\n$x_\mathrm{last}-x_\mathrm{bs}~[R_\mathrm{E}]$",
+            "Disappearance distance\n$x_\\mathrm{last}-x_\\mathrm{bs}~[R_\\mathrm{E}]$",
             fontsize=18,
             labelpad=10,
         )
@@ -1068,7 +1068,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         # plt.grid()
         ax.set_xlabel(
-            "Disappearance distance\n$x_\mathrm{last}-x_\mathrm{bs}~[R_\mathrm{E}]$",
+            "Disappearance distance\n$x_\\mathrm{last}-x_\\mathrm{bs}~[R_\\mathrm{E}]$",
             fontsize=18,
             labelpad=10,
         )
@@ -1158,7 +1158,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             label="FCS-jets\n$e$-folding: {:.2f} $\pm$ {:.2f} ".format(
                 -1.0 / sj_popt[0], sj_a1_std
             )
-            + "$R_\mathrm{E}$",
+            + "$R_\\mathrm{E}$",
         )
         jet_max = non_hist[-1]
         ax[1].plot(
@@ -1169,7 +1169,7 @@ def pendep_hist(runids=["ABA", "ABC", "AEA", "AEC"], panel_one=True):
             label="Non-FCS-jets\n$e$-folding: {:.3f} $\pm$ {:.3f} ".format(
                 -1.0 / non_popt[0], non_a1_std
             )
-            + "$R_\mathrm{E}$",
+            + "$R_\\mathrm{E}$",
         )
         ax[0].annotate("a)", (0.05, 0.1), xycoords="axes fraction", fontsize=20)
         ax[1].annotate("b)", (0.05, 0.1), xycoords="axes fraction", fontsize=20)
@@ -1349,7 +1349,7 @@ def jh2020_movie(
             axes=ax[1],
             scale=1.5,
             title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-            cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+            cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
         )
 
         fig1twoa_g = False
@@ -1379,7 +1379,7 @@ def jh2020_movie(
             # nocb=True,
             scale=1.5,
             title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-            cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+            cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
         )
 
         ax[0].annotate("a)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
@@ -1422,7 +1422,7 @@ def jh2020_movie(
                     "Mmsx",
                 ],
                 title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-                cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+                cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             )
 
         return None
@@ -1458,7 +1458,7 @@ def jh2020_movie(
                     "Mmsx",
                 ],
                 title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-                cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+                cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             )
 
         return None
@@ -1491,7 +1491,7 @@ def jh2020_movie(
                 "Mmsx",
             ],
             title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-            cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+            cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
         )
 
         return None
@@ -1585,7 +1585,7 @@ def jh2020_movie(
         )
         ax_ur.annotate("b)", xy=(0.05, 0.9), xycoords="axes fraction", fontsize=20)
         cbax.annotate(
-            "$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+            "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             xy=(-0.5, 1.02),
             xycoords="axes fraction",
             fontsize=15,
@@ -1708,7 +1708,7 @@ def jh2020_movie(
                 fluxdir=fluxdir,
                 fluxlines=80,
                 title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-                cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+                cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             )
 
         else:
@@ -1740,7 +1740,7 @@ def jh2020_movie(
                 fluxdir=fluxdir,
                 fluxlines=40,
                 title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-                cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+                cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             )
 
             pt.plot.plot_colormap(
@@ -1770,7 +1770,7 @@ def jh2020_movie(
                 fluxdir=fluxdir,
                 fluxlines=80,
                 title="$t~=~$ {:.1f} ".format(filenr_g / 2.0) + "$~\mathrm{s}$",
-                cbtitle="$P_\mathrm{dyn}~[\mathrm{nPa}]$",
+                cbtitle="$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
             )
 
 
@@ -1904,7 +1904,7 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             # colors=jx.orange,
             colors=cb_colors[1],
         )
-        ch_cont.collections[0].set_label("$T_\mathrm{core} = 3T_\mathrm{sw}$")
+        ch_cont.collections[0].set_label("$T_\\mathrm{core} = 3T_\\mathrm{sw}$")
 
         slams_cont = ax.contour(
             XmeshXY,
