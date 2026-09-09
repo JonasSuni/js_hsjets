@@ -1,6 +1,6 @@
 outdir = ""
 
-import pytools
+import analysator
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -70,7 +70,7 @@ itr = 1000
 idx = str(itr).zfill(7)
 
 # CHANGE PATH HERE IF YOU WANT TO PLOT A DIFFERENT RUN
-f = pytools.vlsvfile.VlsvReader(
+f = analysator.vlsvfile.VlsvReader(
     "/wrk/group/spacephysics/vlasiator/3D/EGI/bulk/dense_cold_hall1e5_afterRestart374/bulk1."
     + idx
     + ".vlsv"
@@ -84,7 +84,7 @@ outputfile = "EGI_rho_vz_stream" + idx + ".png"
 
 fig, ax_list = plt.subplots(1, 2)
 
-pytools.plot.plot_colormap3dslice(
+analysator.plot.plot_colormap3dslice(
     vlsvobj=f,
     var="proton/vg_rho",
     normal="y",

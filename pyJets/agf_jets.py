@@ -16,7 +16,7 @@ from pyJets.jet_aux import (
     MP_xy,
 )
 from pyJets.jet_analyser import get_cell_volume, sw_par_dict
-import pytools as pt
+import analysator as pt
 import os
 import sys
 from random import choice

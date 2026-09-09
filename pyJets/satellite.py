@@ -3,7 +3,7 @@
 # import matplotlib.style
 # import matplotlib as mpl
 # import jet_aux as jx
-import pytools as pt
+import analysator as pt
 import os
 import sys
 from random import choice

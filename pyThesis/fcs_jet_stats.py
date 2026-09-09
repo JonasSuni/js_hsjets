@@ -1,4 +1,4 @@
-import pytools as pt
+import analysator as pt
 import jet_jh2020 as jh20
 import jet_io as jio
 import jet_analyser as ja

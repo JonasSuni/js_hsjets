@@ -14,7 +14,7 @@ elif sys.version_info.major == 2:
         jx.dark_blue,
         jx.orange,
     ]
-import pytools as pt
+import analysator as pt
 import os
 import scipy
 import scipy.linalg

@@ -1,5 +1,5 @@
 import numpy as np
-import pytools as pt
+import analysator as pt
 from scipy import interpolate
 import matplotlib.pyplot as plt
 

@@ -19,7 +19,7 @@ from pyJets.agf_jets import PropReader as AIC_PropReader
 from pyJets.jet_io import PropReader as OLD_PropReader
 from pyJets.papu_2 import get_fcs_jets
 from pyJets.jet_analyser import get_cell_volume, sw_par_dict
-import pytools as pt
+import analysator as pt
 import os
 import sys
 from random import choice

@@ -4,7 +4,7 @@
 # import matplotlib as mpl
 import jet_aux as jx
 from pyJets.jet_aux import CB_color_cycle
-import pytools as pt
+import analysator as pt
 import os
 
 # import scipy

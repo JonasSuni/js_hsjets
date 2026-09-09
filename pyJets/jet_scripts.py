@@ -13,7 +13,7 @@ from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import plot_contours as pc
-import pytools as pt
+import analysator as pt
 import os
 import scipy
 import numpy as np
