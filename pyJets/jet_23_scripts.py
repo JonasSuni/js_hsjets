@@ -96,8 +96,8 @@ def multi_VSC_timeseries(runid="ABC", time0=475, x=[10.5], y=[-2.1], pm=100):
         "$B_y~[T]$",
         "$B_z~[T]$",
         "$B~[T]$",
-        "$T_\parallel~[K]$",
-        "$T_\perp~[K]$",
+        "$T_\\parallel~[K]$",
+        "$T_\\perp~[K]$",
     ]
     nrows = len(ts_v_labels)
 

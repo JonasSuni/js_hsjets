@@ -1877,8 +1877,8 @@ def jh20f1_ext(ax, XmeshXY, YmeshXY, pass_maps):
             linewidths=markscaler * 0.6,
             colors=jx.violet,
         )
-        rho_cont.collections[0].set_label("$n \geq 2n_{sw}$")
-        mach_cont.collections[0].set_label("$M_{ms,x} \leq 1$")
+        rho_cont.collections[0].set_label("$n \\geq 2n_{sw}$")
+        mach_cont.collections[0].set_label("$M_{ms,x} \\leq 1$")
         if not fig5mov_g:
             ax.annotate(
                 "",

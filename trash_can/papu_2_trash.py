@@ -4818,7 +4818,7 @@ def SEA_timeseries_comp():
             t_arr,
             Tani_avg_arr[idx2],
             color="k",
-            # label="$T_\perp/T_\parallel$",
+            # label="$T_\\perp/T_\\parallel$",
             linewidth=2,
         )
         ax.boxplot(
@@ -4842,7 +4842,7 @@ def SEA_timeseries_comp():
         # ax.set_xticklabels(["", "", "-5", "", "0", "", "5", "", "10"])
         ax.tick_params(labelsize=20)
         if idx2 == 0:
-            ax.set_ylabel("$T_\perp/T_\parallel$", fontsize=40, labelpad=10)
+            ax.set_ylabel("$T_\\perp/T_\\parallel$", fontsize=40, labelpad=10)
         # ax.axvline(0, linestyle="dashed")
         ax.set_ylim(0, 4)
         ax.annotate(
