@@ -4758,7 +4758,7 @@ def plot_traced_particle_energy(
         print("Plotted particle trace fnr {}".format(fnr))
 
 
-def make_all_trace_plots(runid="FIF", skip=False):
+def make_all_trace_plots(runid="FIF", skip=False, skiparcher=False, skipkoller=False):
 
     if runid == "FIF":
         extrafix = ""
@@ -4776,7 +4776,14 @@ def make_all_trace_plots(runid="FIF", skip=False):
         dtype=int,
     )
 
-    all_data = np.vstack((archer_data, koller_data, archerkoller_data))
+    if not skiparcher and not skipkoller:
+        all_data = np.vstack((archer_data, koller_data, archerkoller_data))
+    elif skiparcher and not skipkoller:
+        all_data = np.vstack((koller_data, archerkoller_data))
+    elif skipkoller and not skiparcher:
+        all_data = np.vstack((archer_data, archerkoller_data))
+    else:
+        all_data = archerkoller_data
 
     for p in all_data:
         ci, t0, t1, tjet = p
