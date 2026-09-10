@@ -5001,6 +5001,12 @@ def plot_traced_particles(
                         s=1,
                         alpha=0.5,
                     )
+                    ax_list[0].plot(
+                        np.nanmean(x[::plot_every][mask] / r_e),
+                        np.nanmean(y[::plot_every][mask] / r_e),
+                        "o",
+                        color="black",
+                    )
                 ax_list[0].legend(loc="upper right")
             elif ud_splitting:
                 labs = ["Downstream", "Upstream"]
@@ -5126,6 +5132,12 @@ def plot_traced_particles(
                         label="Component {}".format(idx),
                         s=1,
                         alpha=0.5,
+                    )
+                    ax_list[1].plot(
+                        np.nanmean(x[::plot_every][mask] / r_e),
+                        np.nanmean(z[::plot_every][mask] / r_e),
+                        "o",
+                        color="black",
                     )
             elif ud_splitting:
                 labs = ["Downstream", "Upstream"]
