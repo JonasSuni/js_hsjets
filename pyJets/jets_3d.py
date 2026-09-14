@@ -5414,7 +5414,7 @@ def cutthrough_three_times(
     fig.savefig(
         outdir
         + "x{:.3f}_{:.3f}_y{:.3f}_{:.3f}_z{:.3f}_{:.3f}_t{}_{}_{}.png".format(
-            x0, x1, y0, y1, z0, z1, t1, t2, t3
+            x0 / r_e, x1 / r_e, y0 / r_e, y1 / r_e, z0 / r_e, z1 / r_e, t1, t2, t3
         ),
         dpi=300,
     )
