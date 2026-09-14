@@ -5379,7 +5379,12 @@ def cutthrough_three_times(
                 )
 
     fig, ax_list = plt.subplots(
-        len(ylabels), 3, figsize=(20, 20), sharex=True, sharey=True, layout="compressed"
+        len(ylabels),
+        3,
+        figsize=(20, 20),
+        sharex="col",
+        sharey="row",
+        layout="compressed",
     )
 
     for idx in range(3):
@@ -5399,7 +5404,7 @@ def cutthrough_three_times(
             if idx == 0:
                 ax.set_ylabel(ylabels[plot_index[idx2]], fontsize=20, labelpad=10)
             if idx2 == len(var_list) - 1:
-                ax.set_xlabel("X [RE]")
+                ax.set_xlabel("X [RE]", fontsize=20, labelpad=10)
 
     for ax in ax_list.flatten():
         ax.grid()
