@@ -5347,8 +5347,8 @@ def cutthrough_three_times(
         extrafix = "/FIL/"
         bulkpath = bulkpath_FIL
 
-    x0, y0, z0 = coords0 * r_e
-    x1, y1, z1 = coords1 * r_e
+    x0, y0, z0 = coords0
+    x1, y1, z1 = coords1
 
     t_arr = [t1, t2, t3]
 
@@ -5373,7 +5373,7 @@ def cutthrough_three_times(
             op = ops[idx2]
             scale = scales[idx2]
             for idx3 in range(npoints):
-                coord = [xarr[idx3], yarr[idx3], zarr[idx3]]
+                coord = [xarr[idx3] * r_e, yarr[idx3] * r_e, zarr[idx3] * r_e]
                 data_arr[idx, idx2, idx3] = (
                     vlsvobj.read_interpolated_variable(var, coord, operator=op) * scale
                 )
@@ -5388,14 +5388,26 @@ def cutthrough_three_times(
     )
 
     for idx in range(3):
+        fnr = t_arr[idx]
+        coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+        rawpoints_ms = np.loadtxt(
+            wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+        )
+        interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+        ms_x_of_yz = interpolator_ms(yarr, zarr)
+        ms_x_of_yz_fit = polyval_2d(coeff_ms, yarr, zarr)
+        x_bs = xarr[np.argmin(np.abs(xarr - ms_x_of_yz))]
+        x_bs_fit = xarr[np.argmin(np.abs(xarr - ms_x_of_yz_fit))]
         for idx2 in range(len(var_list)):
             ax = ax_list[plot_index[idx2], idx]
             ax.plot(
-                xarr / r_e,
+                xarr,
                 data_arr[idx, idx2],
                 color=plot_colors[idx2],
                 label=plot_labels[idx2],
             )
+            ax.axvline(x_bs, color="red")
+            ax.axvline(x_bs_fit, linestyle="dashed", color="red")
             if idx == 2 and draw_legend[idx2]:
                 ncols = 1
                 ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
@@ -5408,13 +5420,13 @@ def cutthrough_three_times(
 
     for ax in ax_list.flatten():
         ax.grid()
-        ax.set_xlim(xarr[0] / r_e, xarr[-1] / r_e)
+        ax.set_xlim(xarr[0], xarr[-1])
         ax.tick_params(labelsize=16)
 
     fig.savefig(
         outdir
         + "x{:.3f}_{:.3f}_y{:.3f}_{:.3f}_z{:.3f}_{:.3f}_t{}_{}_{}.png".format(
-            x0 / r_e, x1 / r_e, y0 / r_e, y1 / r_e, z0 / r_e, z1 / r_e, t1, t2, t3
+            x0, x1, y0, y1, z0, z1, t1, t2, t3
         ),
         dpi=300,
     )
