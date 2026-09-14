@@ -39,6 +39,7 @@ from matplotlib.animation import FuncAnimation, FFMpegFileWriter
 # params = {"text.latex.preamble": [r"\usepackage{amsmath}"]}
 # plt.rcParams.update(params)
 import analysator.plot
+from analysator.calculations import lineout
 
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
@@ -5211,3 +5212,205 @@ def plot_traced_particles(
         fig.savefig(outdir + "{}.png".format(fnr), dpi=300, bbox_inches="tight")
         plt.close(fig)
         print("Plotted particle trace fnr {}".format(fnr))
+
+
+def cutthrough_three_times(
+    coords0, coords1, t1, t2, t3, runid="FIF", npoints=None, dr=1000e3
+):
+
+    var_list = [
+        "proton/vg_rho",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_v",
+        "proton/vg_Pdyn",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_b_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "vg_e_vol",
+        "proton/vg_t_parallel",
+        "proton/vg_t_perpendicular",
+    ]
+    plot_labels = [
+        None,
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+    scales = [
+        1e-6,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e-3,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e9,
+        1e3,
+        1e3,
+        1e3,
+        1e3,
+        1e-6,
+        1e-6,
+    ]
+    draw_legend = [
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        False,
+        True,
+    ]
+    ylabels = [
+        "$\\rho~[\\mathrm{cm}^{-3}]$",
+        "$v~[\\mathrm{km/s}]$",
+        "$P_\\mathrm{dyn}~[\\mathrm{nPa}]$",
+        "$B~[\\mathrm{nT}]$",
+        "$E~[\\mathrm{mV/m}]$",
+        "$T~[\\mathrm{MK}]$",
+    ]
+    ops = [
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "x",
+        "y",
+        "z",
+        "magnitude",
+        "pass",
+        "pass",
+    ]
+    plot_index = [0, 1, 1, 1, 1, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5]
+    plot_colors = [
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+        CB_color_cycle[2],
+        "k",
+        CB_color_cycle[0],
+        CB_color_cycle[1],
+    ]
+
+    if type(coords0) is not np.ndarray:
+        coords0 = np.array(coords0)
+        coords1 = np.array(coords1)
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    x0, y0, z0 = coords0 * r_e
+    x1, y1, z1 = coords1 * r_e
+
+    t_arr = [t1, t2, t3]
+
+    outdir = wrkdir_DNR + "Figs/cut_three_times/"
+    create_dir_if_not_exist(outdir)
+
+    if not npoints:
+        npoints = int(np.linalg.norm(coords1 - coords0) / dr) + 1
+
+    xarr = np.linspace(x0, x1, npoints)
+    yarr = np.linspace(y0, y1, npoints)
+    zarr = np.linspace(z0, z1, npoints)
+
+    data_arr = np.zeros((3, len(var_list), npoints), dtype=float)
+
+    for idx in range(3):
+        vlsvobj = pt.vlsvfile.VlsvReader(
+            bulkpath + "bulk1.{}.vlsv".format(str(t_arr[idx]).zfill(7))
+        )
+        for idx2 in range(len(var_list)):
+            var = var_list[idx2]
+            op = ops[idx2]
+            scale = scales[idx2]
+            for idx3 in range(npoints):
+                coord = [xarr[idx3], yarr[idx3], zarr[idx3]]
+                data_arr[idx, idx2, idx3] = (
+                    vlsvobj.read_interpolated_variable(var, coord, operator=op) * scale
+                )
+
+    fig, ax_list = plt.subplots(
+        len(ylabels), 3, figsize=(20, 20), sharex=True, sharey=True, layout="compressed"
+    )
+
+    for idx in range(3):
+        for idx2 in range(len(var_list)):
+            ax = ax_list[plot_index[idx2], idx]
+            ax.plot(
+                xarr / r_e,
+                data_arr[idx, idx2],
+                color=plot_colors[idx2],
+                label=plot_labels[idx2],
+            )
+            if idx == 2 and draw_legend[idx2]:
+                ncols = 1
+                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
+            if idx2 == 0:
+                ax.set_title("t = {}s".format(t_arr[idx]), fontsize=20, pad=10)
+            if idx == 0:
+                ax.set_ylabel(ylabels[plot_index[idx2]], fontsize=20, labelpad=10)
+            if idx2 == len(var_list) - 1:
+                ax.set_xlabel("X [RE]")
+
+    for ax in ax_list.flatten():
+        ax.grid()
+        ax.set_xlim(xarr[0] / r_e, xarr[-1] / r_e)
+        ax.tick_params(labelsize=16)
+
+    fig.savefig(
+        outdir
+        + "x{}_{}_y{}_{}_z{}_{}_t{}_{}_{}.png".format(
+            x0, x1, y0, y1, z0, z1, t1, t2, t3
+        ),
+        dpi=300,
+    )
+    plt.close(fig)
