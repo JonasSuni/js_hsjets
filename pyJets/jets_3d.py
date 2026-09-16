@@ -5406,11 +5406,32 @@ def cutthrough_three_times(
                 color=plot_colors[idx2],
                 label=plot_labels[idx2],
             )
+            if idx2 == len(var_list) - 1:
+                T_total = (2 * data_arr[idx, idx2] + data_arr[idx, idx2 - 1]) / 3
+                ax.plot(
+                    xarr,
+                    T_total,
+                    color="black",
+                    label="T",
+                )
+            if idx2 == 5:
+                pdynx = m_p * data_arr[idx, 0] * 1e6 * data_arr[idx, 1] ** 2 * 1e6 * 1e9
+                ax.plot(
+                    xarr,
+                    pdynx,
+                    color=CB_color_cycle[0],
+                    label="$P_{\\mathrm{dyn},x}~[\\mathrm{nPa}]$",
+                )
             ax.axvline(x_bs, color="red")
             ax.axvline(x_bs_fit, linestyle="dashed", color="red")
             if idx == 2 and draw_legend[idx2]:
                 ncols = 1
-                ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols)
+                ax.legend(
+                    loc="center left",
+                    bbox_to_anchor=(1.01, 0.5),
+                    ncols=ncols,
+                    fontsize=16,
+                )
             if idx2 == 0:
                 ax.set_title("t = {}s".format(t_arr[idx]), fontsize=20, pad=10)
             if idx == 0:
