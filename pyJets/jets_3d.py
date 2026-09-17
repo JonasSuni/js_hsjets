@@ -5381,7 +5381,7 @@ def cutthrough_three_times(
     fig, ax_list = plt.subplots(
         len(ylabels),
         3,
-        figsize=(20, 20),
+        figsize=(30, 20),
         sharex="col",
         sharey="row",
         layout="compressed",
