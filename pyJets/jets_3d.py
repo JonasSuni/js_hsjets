@@ -5420,7 +5420,7 @@ def cutthrough_three_times(
                     xarr,
                     pdynx,
                     color=CB_color_cycle[0],
-                    label="$P_{\\mathrm{dyn},x}~[\\mathrm{nPa}]$",
+                    label="$P_{\\mathrm{dyn},x}$",
                 )
             ax.axvline(x_bs, color="red")
             ax.axvline(x_bs_fit, linestyle="dashed", color="red")
