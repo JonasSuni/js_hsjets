@@ -5215,7 +5215,15 @@ def plot_traced_particles(
 
 
 def cutthrough_three_times(
-    coords0, coords1, t1, t2, t3, runid="FIF", npoints=None, dr=1000e3
+    coords0,
+    coords1,
+    t1,
+    t2,
+    t3,
+    runid="FIF",
+    npoints=None,
+    dr=1000e3,
+    cellid_highlight=None,
 ):
 
     var_list = [
@@ -5368,6 +5376,8 @@ def cutthrough_three_times(
         vlsvobj = pt.vlsvfile.VlsvReader(
             bulkpath + "bulk1.{}.vlsv".format(str(t_arr[idx]).zfill(7))
         )
+        if cellid_highlight:
+            cellid_coords = vlsvobj.get_cell_coordinates(cellid_highlight) / r_e
         for idx2 in range(len(var_list)):
             var = var_list[idx2]
             op = ops[idx2]
@@ -5424,6 +5434,8 @@ def cutthrough_three_times(
                 )
             ax.axvline(x_bs, color="red")
             ax.axvline(x_bs_fit, linestyle="dashed", color="red")
+            if cellid_highlight:
+                ax.axvline(cellid_coords[0], color="blue", linestyle="dotted")
             if idx == 2 and draw_legend[idx2]:
                 ncols = 1
                 ax.legend(
