@@ -2605,7 +2605,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         fontsize=20,
         pad=10,
     )
-    ts_axes[-1].set_xlabel("t [s]", fontsize=16, labelpad=10)
+    ts_axes[-1].set_xlabel("t [s]", fontsize=20, labelpad=10)
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
         curr_lab = plot_labels[idx]
@@ -2650,7 +2650,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             if idx == 5:
                 ncols = 1
             ax.legend(
-                loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols, fontsize=16
+                loc="center left", bbox_to_anchor=(1.01, 0.5), ncols=ncols, fontsize=20
             )
 
     pdynx_peaks = argrelextrema(pdynx, np.greater)[0]
@@ -2667,7 +2667,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
 
     for idx, ax in enumerate(ts_axes):
         ax.grid()
-        ax.set_ylabel(ylabels[idx], fontsize=16, labelpad=10)
+        ax.set_ylabel(ylabels[idx], fontsize=20, labelpad=10)
         ax.fill_between(
             t_arr,
             0,
@@ -2688,7 +2688,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             transform=ax.get_xaxis_transform(),
             linewidth=0,
         )
-        ax.tick_params(labelsize=16)
+        ax.tick_params(labelsize=20)
         [ax.axvline(x, color="red", linestyle="dotted") for x in pdyn_peak_times]
         [ax.axvline(x, color="green", linestyle="dotted") for x in pdynx_peak_times]
 
