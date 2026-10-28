@@ -2648,7 +2648,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             )
 
         if clip_to_jet_interval:
-            ax.set_xlim(max(t0 - 10, 690), min(t1 + 10, 900))
+            ax.set_xlim(max(t0 - 30, 690), min(t1 + 30, 900))
         else:
             ax.set_xlim(min(t0, 690), max(t1, 900))
         if draw_legend[idx]:
