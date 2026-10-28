@@ -93,6 +93,7 @@ slicethick_g = 1
 calc_rel_dens_g = True
 plot_gmm = None
 scale_g = 1.3
+clip_to_jet_interval = False
 
 
 def array_to_disjoint_naive(data_arr, bool_arr, len_thresh=1):
@@ -806,12 +807,14 @@ def jet_interval_snap_all(
     gmm=None,
     scale=1.3,
     skip=False,
+    cliptojet=False,
 ):
 
-    global limitedsize_g, scale_g
+    global limitedsize_g, scale_g, clip_to_jet_interval
 
     limitedsize_g = limitedsize
     scale_g = scale
+    clip_to_jet_interval = cliptojet
 
     archer_data = np.loadtxt(
         wrkdir_DNR + "txts/jet_intervals/archer_intervals_new.txt", dtype=int
@@ -2220,7 +2223,7 @@ def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
             ),
         )
     if leg:
-        ax.legend()
+        ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.01), fontsize=16)
 
 
 def get_gmm_params(nMaxwellians, ci, fnr):
@@ -2324,7 +2327,14 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     )
     if plot_gmm and gmm_success:
         plot_ellipses(
-            means_sorted, covs_sorted, weights_sorted, vdf_axes[0], "z", B, rho
+            means_sorted,
+            covs_sorted,
+            weights_sorted,
+            vdf_axes[0],
+            "z",
+            B,
+            rho,
+            leg=True,
         )
         plot_ellipses(
             means_sorted, covs_sorted, weights_sorted, vdf_axes[1], "y", B, rho
@@ -2337,7 +2347,6 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
             "x",
             B,
             rho,
-            leg=True,
         )
 
 
@@ -2632,7 +2641,10 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
                 label="$3\\langle P_{\\mathrm{dyn},x}\\rangle$",
             )
 
-        ax.set_xlim(min(t0, 690), max(t1, 900))
+        if clip_to_jet_interval:
+            ax.set_xlim(max(t0, 690), min(t1, 900))
+        else:
+            ax.set_xlim(min(t0, 690), max(t1, 900))
         if draw_legend[idx]:
             ncols = 1
             if idx == 5:
