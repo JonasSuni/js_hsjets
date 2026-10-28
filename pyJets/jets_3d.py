@@ -2642,7 +2642,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
             )
 
         if clip_to_jet_interval:
-            ax.set_xlim(max(t0, 690), min(t1, 900))
+            ax.set_xlim(max(t0 - 10, 690), min(t1 + 10, 900))
         else:
             ax.set_xlim(min(t0, 690), max(t1, 900))
         if draw_legend[idx]:
@@ -2668,27 +2668,26 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
     for idx, ax in enumerate(ts_axes):
         ax.grid()
         ax.set_ylabel(ylabels[idx], fontsize=20, labelpad=10)
-        if not clip_to_jet_interval:
-            ax.fill_between(
-                t_arr,
-                0,
-                1,
-                where=ts_data[5, :] > 2 * tavg_arr,
-                color="red",
-                alpha=0.2,
-                transform=ax.get_xaxis_transform(),
-                linewidth=0,
-            )
-            ax.fill_between(
-                t_arr,
-                0,
-                1,
-                where=pdynx > 3 * tavg_x_arr,
-                color="green",
-                alpha=0.2,
-                transform=ax.get_xaxis_transform(),
-                linewidth=0,
-            )
+        ax.fill_between(
+            t_arr,
+            0,
+            1,
+            where=ts_data[5, :] > 2 * tavg_arr,
+            color="red",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
+        ax.fill_between(
+            t_arr,
+            0,
+            1,
+            where=pdynx > 3 * tavg_x_arr,
+            color="green",
+            alpha=0.2,
+            transform=ax.get_xaxis_transform(),
+            linewidth=0,
+        )
         ax.tick_params(labelsize=20)
         [ax.axvline(x, color="red", linestyle="dotted") for x in pdyn_peak_times]
         [ax.axvline(x, color="green", linestyle="dotted") for x in pdynx_peak_times]
