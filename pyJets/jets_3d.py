@@ -2608,8 +2608,8 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         "Run: {}, $x_0$: {:.3f}, $y_0$: {:.3f}, $z_0$: {:.3f}, cell: {}".format(
             "FIF", coords[0], coords[1], coords[2], int(ci)
         ),
-        fontsize=20,
-        pad=10,
+        fontsize=24,
+        pad=20,
     )
     ts_axes[-1].set_xlabel("t [s]", fontsize=20, labelpad=10)
     for idx in range(len(plot_labels)):
