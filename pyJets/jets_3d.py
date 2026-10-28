@@ -802,8 +802,8 @@ def create_dir_if_not_exist(outdir):
 def jet_interval_snap_all(
     limitedsize=False,
     B_vdfs=False,
-    slicethick=1,
-    calc_rel_dens=True,
+    slicethick=0,
+    calc_rel_dens=False,
     gmm=None,
     scale=1.3,
     skip=False,
@@ -2448,7 +2448,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         tickinterval=1.0,
         normal="z",
         cutpointre=z0,
-        # title="",
+        title="",
         limitedsize=limitedsize,
         external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
@@ -2668,26 +2668,27 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
     for idx, ax in enumerate(ts_axes):
         ax.grid()
         ax.set_ylabel(ylabels[idx], fontsize=20, labelpad=10)
-        ax.fill_between(
-            t_arr,
-            0,
-            1,
-            where=ts_data[5, :] > 2 * tavg_arr,
-            color="red",
-            alpha=0.2,
-            transform=ax.get_xaxis_transform(),
-            linewidth=0,
-        )
-        ax.fill_between(
-            t_arr,
-            0,
-            1,
-            where=pdynx > 3 * tavg_x_arr,
-            color="green",
-            alpha=0.2,
-            transform=ax.get_xaxis_transform(),
-            linewidth=0,
-        )
+        if not clip_to_jet_interval:
+            ax.fill_between(
+                t_arr,
+                0,
+                1,
+                where=ts_data[5, :] > 2 * tavg_arr,
+                color="red",
+                alpha=0.2,
+                transform=ax.get_xaxis_transform(),
+                linewidth=0,
+            )
+            ax.fill_between(
+                t_arr,
+                0,
+                1,
+                where=pdynx > 3 * tavg_x_arr,
+                color="green",
+                alpha=0.2,
+                transform=ax.get_xaxis_transform(),
+                linewidth=0,
+            )
         ax.tick_params(labelsize=20)
         [ax.axvline(x, color="red", linestyle="dotted") for x in pdyn_peak_times]
         [ax.axvline(x, color="green", linestyle="dotted") for x in pdynx_peak_times]
