@@ -2505,6 +2505,11 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
     fnr = int(vobj.read_parameter("time"))
 
+    rawpoints_ms = np.loadtxt(
+        wrkdir_DNR + "" + "raw_bs_coords/{}.coords.ms".format(fnr)
+    )
+    interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[0],
         vlsvobj=vobj,
@@ -2524,7 +2529,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=z0,
         title="",
         limitedsize=limitedsize,
-        external=ext_bs_mp,
+        # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
     )
@@ -2533,7 +2538,9 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     y_arr = np.linspace(y0 - boxwidth, y0 + boxwidth, 100)
     z_arr = np.ones_like(y_arr) * z0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
-    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.6, color="red")
+    ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * z0)
+    cmap_axes[0].plot(ms_x_of_y, y_arr, linewidth=0.6, color="red")
+    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.6, color="red", linestyle="dashed")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[1],
@@ -2554,7 +2561,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=y0,
         title="",
         limitedsize=limitedsize,
-        external=ext_bs_mp,
+        # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
     )
@@ -2563,7 +2570,9 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     z_arr = np.linspace(z0 - boxwidth, z0 + boxwidth, 100)
     y_arr = np.ones_like(z_arr) * y0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
-    cmap_axes[1].plot(x_arr, z_arr, linewidth=0.6, color="red")
+    ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * y0, z_arr)
+    cmap_axes[1].plot(ms_x_of_z, z_arr, linewidth=0.6, color="red")
+    cmap_axes[1].plot(x_arr, z_arr, linewidth=0.6, color="red", linestyle="dashed")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[2],
@@ -2585,7 +2594,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         cutpointre=x0,
         title="",
         limitedsize=limitedsize,
-        external=ext_bs_mp,
+        # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
     )
@@ -2595,7 +2604,13 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     z_arr = z_arr = np.linspace(z0 - boxwidth, z0 + boxwidth, 100)
     ymesh, zmesh = np.meshgrid(y_arr, z_arr)
     xmesh = polyval_bs_at_time(fnr, ymesh, zmesh, ms=True)
-    cmap_axes[2].contour(ymesh, zmesh, xmesh, [x0], linewidths=[0.6], colors=["red"])
+    xmesh_raw = interpolator_ms(ymesh, zmesh)
+    cmap_axes[2].contour(
+        ymesh, zmesh, xmesh_raw, [x0], linewidths=[0.6], colors=["red"]
+    )
+    cmap_axes[2].contour(
+        ymesh, zmesh, xmesh, [x0], linewidths=[0.6], colors=["red"], linestyle="dashed"
+    )
 
 
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
