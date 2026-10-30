@@ -1795,7 +1795,9 @@ def analyse_timeseries_enhancement(ci, coords, t0, t1, tjet):
         print("\nVariable is {}".format(plot_labels[idx]))
         print("3 minute average is {}".format(curr_avg[ts_idx]))
         print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
-        print("Enhancement is {}".format(curr_data[idx] / (curr_avg[idx] + 1e-27)))
+        print(
+            "Enhancement is {}".format(curr_data[ts_idx] / (curr_avg[ts_idx] + 1e-27))
+        )
 
     curr_data = pdynx
     curr_avg = tavg_x_arr
@@ -1803,7 +1805,7 @@ def analyse_timeseries_enhancement(ci, coords, t0, t1, tjet):
     print("\nVariable is {}".format("$P_{\\mathrm{dyn},x}$"))
     print("3 minute average is {}".format(curr_avg[ts_idx]))
     print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
-    print("Enhancement is {}".format(curr_data[idx] / (curr_avg[idx] + 1e-27)))
+    print("Enhancement is {}".format(curr_data[ts_idx] / (curr_avg[ts_idx] + 1e-27)))
 
 
 def make_timeseries_global_vdf_one(args):
