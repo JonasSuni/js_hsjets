@@ -2501,7 +2501,8 @@ def ext_bs_mp(ax, XmeshXY, YmeshXY, pass_maps):
 def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
 
     boxwidth = 4
-    fsaved = "yellow"
+    # fsaved = "yellow"
+    fsaved = None
 
     fnr = int(vobj.read_parameter("time"))
 
@@ -2539,8 +2540,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     z_arr = np.ones_like(y_arr) * z0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
     ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * z0)
-    cmap_axes[0].plot(ms_x_of_y, y_arr, linewidth=0.6, color="red")
-    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.6, color="red", linestyle="dashed")
+    cmap_axes[0].plot(ms_x_of_y, y_arr, linewidth=0.6, color="k")
+    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.6, color="red")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[1],
@@ -2571,8 +2572,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     y_arr = np.ones_like(z_arr) * y0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
     ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * y0, z_arr)
-    cmap_axes[1].plot(ms_x_of_z, z_arr, linewidth=0.6, color="red")
-    cmap_axes[1].plot(x_arr, z_arr, linewidth=0.6, color="red", linestyle="dashed")
+    cmap_axes[1].plot(ms_x_of_z, z_arr, linewidth=0.6, color="k")
+    cmap_axes[1].plot(x_arr, z_arr, linewidth=0.6, color="red")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[2],
@@ -2605,12 +2606,8 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     ymesh, zmesh = np.meshgrid(y_arr, z_arr)
     xmesh = polyval_bs_at_time(fnr, ymesh, zmesh, ms=True)
     xmesh_raw = interpolator_ms(ymesh, zmesh)
-    cmap_axes[2].contour(
-        ymesh, zmesh, xmesh_raw, [x0], linewidths=[0.6], colors=["red"]
-    )
-    cmap_axes[2].contour(
-        ymesh, zmesh, xmesh, [x0], linewidths=[0.6], colors=["red"], linestyle="dashed"
-    )
+    cmap_axes[2].contour(ymesh, zmesh, xmesh_raw, [x0], linewidths=[0.6], colors=["k"])
+    cmap_axes[2].contour(ymesh, zmesh, xmesh, [x0], linewidths=[0.6], colors=["red"])
 
 
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
