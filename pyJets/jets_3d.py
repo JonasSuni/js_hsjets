@@ -1740,6 +1740,72 @@ def make_gmm_timeseries(args):
     plt.close(fig)
 
 
+def analyse_timeseries_enhancement(ci, coords, t0, t1, tjet):
+
+    plot_labels = [
+        "$\\rho$",
+        "$v_x$",
+        "$v_y$",
+        "$v_z$",
+        "$|v|$",
+        "$P_\\mathrm{dyn}$",
+        "$B_x$",
+        "$B_y$",
+        "$B_z$",
+        "$|B|$",
+        "$E_x$",
+        "$E_y$",
+        "$E_z$",
+        "$|E|$",
+        "$T_\\parallel$",
+        "$T_\\perp$",
+    ]
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    ts_idx = tjet - 600
+    ts_avgs = np.nanmean(ts_data, axis=1)
+
+    t_arr = np.arange(600, 991 + 0.1, 1)
+    tavg_arr = uniform_filter1d(
+        ts_data[5, :], 180, mode="constant", cval=np.nanmean(ts_data[5, :])
+    )
+    pdynx = m_p * ts_data[0] * 1e6 * ts_data[1] * 1e3 * ts_data[1] * 1e3 * 1e9
+    tavg_x_arr = uniform_filter1d(pdynx, 180, mode="constant", cval=np.nanmean(pdynx))
+
+    avgs_data = []
+
+    print(
+        "\nCellid is {}, coords are ({:.3f}, {:.3f}, {:.3f}), tjet is {}".format(
+            ci, coords[0], coords[1], coords[2], tjet
+        )
+    )
+
+    for idx in range(len(plot_labels)):
+        curr_data = ts_data[idx, :]
+        curr_avg = uniform_filter1d(
+            curr_data, 180, mode="constant", cval=np.nanmean(curr_data)
+        )
+
+        print("\nVariable is {}".format(plot_labels[idx]))
+        print("3 minute average is {}".format(curr_avg[ts_idx]))
+        print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
+        print("Enhancement is {}".format(curr_data[idx] / (curr_avg[idx] + 1e-27)))
+
+    curr_data = pdynx
+    curr_avg = tavg_x_arr
+
+    print("\nVariable is {}".format("$P_{\\mathrm{dyn},x}$"))
+    print("3 minute average is {}".format(curr_avg[ts_idx]))
+    print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
+    print("Enhancement is {}".format(curr_data[idx] / (curr_avg[idx] + 1e-27)))
+
+
 def make_timeseries_global_vdf_one(args):
 
     ci, coords, t0, t1, fnr, limitedsize, outdir = args
