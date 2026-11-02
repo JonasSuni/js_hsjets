@@ -2702,8 +2702,8 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
         curr_lab = plot_labels[idx]
-        if idx in [0, 1, 2, 3, 14, 15]:
-            curr_lab = curr_lab + ", avg={:.0f}".format(ts_avgs[idx])
+        # if idx in [0, 1, 2, 3, 14, 15]:
+        #     curr_lab = curr_lab + ", avg={:.0f}".format(ts_avgs[idx])
         ax.plot(
             t_arr,
             ts_data[idx],
