@@ -1807,67 +1807,6 @@ def analyse_timeseries_enhancement(ci, coords, t0, t1, tjet):
     print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
     print("Enhancement is {}".format(curr_data[ts_idx] / (curr_avg[ts_idx] + 1e-27)))
 
-def fig2():
-
-    ci = 159062320
-    coords = [12.478,-4.944,-3.532]
-    t0 = 885
-    t1 = 895
-    fnr = 890
-    outdir = wrkdir_DNR+"Figs/"
-
-    global limitedsize_g, scale_g, clip_to_jet_interval
-    
-    limitedsize_g = True
-    scale_g = 2.5
-    clip_to_jet_interval = True
-
-    global plot_B_vdfs, slicethick_g, calc_rel_dens_g, plot_gmm
-    plot_B_vdfs = False
-    slicethick_g = 0
-    calc_rel_dens_g = False
-    plot_gmm = 2
-
-    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
-    ts_data = np.loadtxt(
-        txtdir
-        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
-            "FIF", coords[0], coords[1], coords[2], 600, 991, None
-        )
-    )
-    fig = plt.figure(figsize=(24, 16), layout="compressed")
-    axes = generate_axes(fig)
-    ts_axes = []
-    for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
-        ts_axes.append(axes[axname])
-    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"], axes["vdf_cb"]]
-    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"], axes["cmap_cb"]]
-
-    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
-    axvlines = []
-    for ax in ts_axes:
-        axvlines.append(ax.axvline(t0, linestyle="dashed"))
-
-    vlsvobj = pt.vlsvfile.VlsvReader(
-        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
-    )
-    generate_cmap_plots(
-        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], True
-    )
-    try:
-        generate_vdf_plots(vdf_axes, vlsvobj, ci)
-    except:
-        pass
-    for linepl in axvlines:
-        linepl.set_xdata([fnr, fnr])
-
-    fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
-    fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
-
-    print("Saved Figure 2")
-    plt.close(fig)
-
-    vlsvobj.optimize_clear_fileindex_for_cellid()
 
 def make_timeseries_global_vdf_one(args):
 
@@ -5624,3 +5563,84 @@ def cutthrough_three_times(
         dpi=300,
     )
     plt.close(fig)
+
+
+def fig2():
+
+    ci = 159062320
+    coords = [12.478, -4.944, -3.532]
+    t0 = 885
+    t1 = 895
+    fnr = 890
+    outdir = wrkdir_DNR + "Figs/"
+
+    global limitedsize_g, scale_g, clip_to_jet_interval
+
+    limitedsize_g = True
+    scale_g = 2.5
+    clip_to_jet_interval = True
+
+    global plot_B_vdfs, slicethick_g, calc_rel_dens_g, plot_gmm
+    plot_B_vdfs = False
+    slicethick_g = 0
+    calc_rel_dens_g = False
+    plot_gmm = 2
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    fig = plt.figure(figsize=(24, 16), layout="compressed")
+    gridspec = fig.add_gridspec(nrows=6, ncols=9)
+    axes = {}
+    axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 0:2])
+    axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 0:2])
+    axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 0:2])
+    axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 2:4])
+    axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 2:4])
+    axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 2:4])
+    axes["rho"] = fig.add_subplot(gridspec[0:1, 4:9])
+    axes["v"] = fig.add_subplot(gridspec[1:2, 4:9])
+    axes["pdyn"] = fig.add_subplot(gridspec[2:3, 4:9])
+    axes["b"] = fig.add_subplot(gridspec[3:4, 4:9])
+    axes["e"] = fig.add_subplot(gridspec[4:5, 4:9])
+    axes["t"] = fig.add_subplot(gridspec[5:6, 4:9])
+    axes["cmap_cb"] = fig.add_axes((0.05, -0.01, 0.15, 0.01))
+    axes["vdf_cb"] = fig.add_axes((0.24, -0.03, 0.15, 0.01))
+    ts_axes = []
+    for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
+        ts_axes.append(axes[axname])
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"], axes["vdf_cb"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"], axes["cmap_cb"]]
+
+    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
+    axvlines = []
+    for ax in ts_axes:
+        axvlines.append(ax.axvline(t0, linestyle="dashed"))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    generate_cmap_plots(cmap_axes, vlsvobj, coords[0], coords[1], coords[2], True)
+    try:
+        generate_vdf_plots(vdf_axes, vlsvobj, ci)
+    except:
+        pass
+    for linepl in axvlines:
+        linepl.set_xdata([fnr, fnr])
+
+    vlim_vdf = 2500
+    for ax in vdf_axes:
+        ax.set_xlim(-vlim_vdf, vlim_vdf)
+        ax.set_ylim(-vlim_vdf, vlim_vdf)
+
+    fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved Figure 2")
+    plt.close(fig)
+
+    vlsvobj.optimize_clear_fileindex_for_cellid()
