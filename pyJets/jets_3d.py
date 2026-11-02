@@ -2336,6 +2336,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     print("Plot GMM is {}".format(plot_gmm))
     B = vobj.read_variable("vg_b_vol", cellids=ci)
     rho = vobj.read_variable("proton/vg_rho", cellids=ci)
+    cmap = "lajolla"
 
     boxwidth = 3000e3
     fnr = int(vobj.read_parameter("time"))
@@ -2351,7 +2352,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         axes=vdf_axes[0],
         vlsvobj=vobj,
         cellids=[ci],
-        colormap="batlow",
+        colormap=cmap,
         bvector=1,
         xy=1,
         slicethick=slicethick_g,
@@ -2368,7 +2369,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         axes=vdf_axes[1],
         vlsvobj=vobj,
         cellids=[ci],
-        colormap="batlow",
+        colormap=cmap,
         bvector=1,
         xz=1,
         slicethick=slicethick_g,
@@ -2385,7 +2386,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         axes=vdf_axes[2],
         vlsvobj=vobj,
         cellids=[ci],
-        colormap="batlow",
+        colormap=cmap,
         bvector=1,
         yz=1,
         slicethick=slicethick_g,
