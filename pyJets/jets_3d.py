@@ -2336,7 +2336,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
     print("Plot GMM is {}".format(plot_gmm))
     B = vobj.read_variable("vg_b_vol", cellids=ci)
     rho = vobj.read_variable("proton/vg_rho", cellids=ci)
-    cmap = "lajolla"
+    cmap = "buda"
 
     boxwidth = 3000e3
     fnr = int(vobj.read_parameter("time"))
