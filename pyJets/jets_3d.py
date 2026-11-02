@@ -5605,7 +5605,7 @@ def fig2():
     axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 5:7])
     axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 5:7])
     axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 5:7])
-    axes["cmap_cb"] = fig.add_axes((0.05 + 5.0 / 9, -0.01, 0.15, 0.01))
+    axes["cmap_cb"] = fig.add_axes((0.0 + 5.0 / 9, -0.01, 0.15, 0.01))
 
     axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 7:9])
     axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 7:9])
