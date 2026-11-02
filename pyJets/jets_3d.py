@@ -2292,10 +2292,30 @@ def plot_ellipses(means, covs, weights, ax, normal, B, rho, leg=False):
             mean[1],
             "o",
             color=edgecolors[idx],
-            label="$\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),$\n$\\,T_\\parallel={:.1f},\\,T_\\perp={:.1f}$".format(
-                dens, means[idx][0], means[idx][1], means[idx][2], Tpar, Tperp
+            label="$G{},\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),$\n$\\,T_\\parallel={:.1f},\\,T_\\perp={:.1f}$".format(
+                idx + 1,
+                dens,
+                means[idx][0],
+                means[idx][1],
+                means[idx][2],
+                Tpar,
+                Tperp,
             ),
         )
+        if leg:
+            print(
+                "\n"
+                + "$G{},\\rho = {:.1f},\\,v=({:.0f},{:.0f},{:.0f}),$\n$\\,T_\\parallel={:.1f},\\,T_\\perp={:.1f}$".format(
+                    idx + 1,
+                    dens,
+                    means[idx][0],
+                    means[idx][1],
+                    means[idx][2],
+                    Tpar,
+                    Tperp,
+                )
+                + "\n"
+            )
     if leg:
         ax.legend(loc="lower center", bbox_to_anchor=(0.5, 1.01), fontsize=16)
 
