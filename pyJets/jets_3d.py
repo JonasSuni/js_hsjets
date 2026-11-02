@@ -5633,7 +5633,7 @@ def fig2():
         linepl.set_xdata([fnr, fnr])
 
     vlim_vdf = 2500
-    for ax in vdf_axes:
+    for ax in vdf_axes[:-1]:
         ax.set_xlim(-vlim_vdf, vlim_vdf)
         ax.set_ylim(-vlim_vdf, vlim_vdf)
 
