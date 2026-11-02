@@ -2384,7 +2384,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         contours=7,
         nocb=True,
         title="",
-        useimshow=False,
+        useimshow=True,
     )
     pt.plot.plot_vdf(
         axes=vdf_axes[1],
