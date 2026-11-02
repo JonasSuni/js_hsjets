@@ -1807,6 +1807,67 @@ def analyse_timeseries_enhancement(ci, coords, t0, t1, tjet):
     print("Value at peak pdyn is {}".format(curr_data[ts_idx]))
     print("Enhancement is {}".format(curr_data[ts_idx] / (curr_avg[ts_idx] + 1e-27)))
 
+def fig2():
+
+    ci = 159062320
+    coords = [12.478,-4.944,-3.532]
+    t0 = 885
+    t1 = 895
+    fnr = 890
+    outdir = wrkdir_DNR+"Figs/"
+
+    global limitedsize_g, scale_g, clip_to_jet_interval
+    
+    limitedsize_g = True
+    scale_g = 2.5
+    clip_to_jet_interval = True
+
+    global plot_B_vdfs, slicethick_g, calc_rel_dens_g, plot_gmm
+    plot_B_vdfs = False
+    slicethick_g = 0
+    calc_rel_dens_g = False
+    plot_gmm = 2
+
+    txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
+    ts_data = np.loadtxt(
+        txtdir
+        + "{}_x{:.3f}_y{:.3f}_z{:.3f}_t0{}_t1{}_delta{}.txt".format(
+            "FIF", coords[0], coords[1], coords[2], 600, 991, None
+        )
+    )
+    fig = plt.figure(figsize=(24, 16), layout="compressed")
+    axes = generate_axes(fig)
+    ts_axes = []
+    for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
+        ts_axes.append(axes[axname])
+    vdf_axes = [axes["vdf_xy"], axes["vdf_xz"], axes["vdf_yz"], axes["vdf_cb"]]
+    cmap_axes = [axes["cmap_xy"], axes["cmap_xz"], axes["cmap_yz"], axes["cmap_cb"]]
+
+    generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1)
+    axvlines = []
+    for ax in ts_axes:
+        axvlines.append(ax.axvline(t0, linestyle="dashed"))
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(int(fnr)).zfill(7))
+    )
+    generate_cmap_plots(
+        cmap_axes, vlsvobj, coords[0], coords[1], coords[2], True
+    )
+    try:
+        generate_vdf_plots(vdf_axes, vlsvobj, ci)
+    except:
+        pass
+    for linepl in axvlines:
+        linepl.set_xdata([fnr, fnr])
+
+    fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved Figure 2")
+    plt.close(fig)
+
+    vlsvobj.optimize_clear_fileindex_for_cellid()
 
 def make_timeseries_global_vdf_one(args):
 
