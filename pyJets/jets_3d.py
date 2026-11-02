@@ -5666,6 +5666,9 @@ def fig2():
         ax.set_xlim(-vlim_vdf, vlim_vdf)
         ax.set_ylim(-vlim_vdf, vlim_vdf)
 
+    h, l = axes["vdf_xy"].get_legend_handles_labels()
+    axes["vdf_xy"].legend(handles=h, labels=["G1,G2"])
+
     fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
     fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
 
