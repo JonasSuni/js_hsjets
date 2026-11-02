@@ -5602,20 +5602,22 @@ def fig2():
     fig = plt.figure(figsize=(24, 16), layout="compressed")
     gridspec = fig.add_gridspec(nrows=6, ncols=9)
     axes = {}
-    axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 0:2])
-    axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 0:2])
-    axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 0:2])
-    axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 2:4])
-    axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 2:4])
-    axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 2:4])
-    axes["rho"] = fig.add_subplot(gridspec[0:1, 4:9])
-    axes["v"] = fig.add_subplot(gridspec[1:2, 4:9])
-    axes["pdyn"] = fig.add_subplot(gridspec[2:3, 4:9])
-    axes["b"] = fig.add_subplot(gridspec[3:4, 4:9])
-    axes["e"] = fig.add_subplot(gridspec[4:5, 4:9])
-    axes["t"] = fig.add_subplot(gridspec[5:6, 4:9])
+    axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 5:7])
+    axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 5:7])
+    axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 5:7])
     axes["cmap_cb"] = fig.add_axes((0.05, -0.01, 0.15, 0.01))
+
+    axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 7:9])
+    axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 7:9])
+    axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 7:9])
     axes["vdf_cb"] = fig.add_axes((0.24, -0.03, 0.15, 0.01))
+
+    axes["rho"] = fig.add_subplot(gridspec[0:1, 0:5])
+    axes["v"] = fig.add_subplot(gridspec[1:2, 0:5])
+    axes["pdyn"] = fig.add_subplot(gridspec[2:3, 0:5])
+    axes["b"] = fig.add_subplot(gridspec[3:4, 0:5])
+    axes["e"] = fig.add_subplot(gridspec[4:5, 0:5])
+    axes["t"] = fig.add_subplot(gridspec[5:6, 0:5])
 
     ts_axes = []
     for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
