@@ -2364,6 +2364,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         contours=7,
         nocb=True,
         title="",
+        useimshow=True,
     )
     pt.plot.plot_vdf(
         axes=vdf_axes[1],
@@ -2381,6 +2382,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         contours=7,
         nocb=True,
         title="",
+        useimshow=True,
     )
     pt.plot.plot_vdf(
         axes=vdf_axes[2],
@@ -2399,6 +2401,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         cbaxes=vdf_axes[3],
         cb_horizontal=True,
         title="",
+        useimshow=True,
     )
     if plot_gmm and gmm_success:
         plot_ellipses(
@@ -2534,6 +2537,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
+        useimshow=True,
     )
     cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.6, color="k")
@@ -2566,6 +2570,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
+        useimshow=True,
     )
     cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -2599,6 +2604,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         # external=ext_bs_mp,
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
+        useimshow=True,
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.6, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.6, color="k")
@@ -5610,6 +5616,7 @@ def fig2():
     axes["t"] = fig.add_subplot(gridspec[5:6, 4:9])
     axes["cmap_cb"] = fig.add_axes((0.05, -0.01, 0.15, 0.01))
     axes["vdf_cb"] = fig.add_axes((0.24, -0.03, 0.15, 0.01))
+
     ts_axes = []
     for axname in ["rho", "v", "pdyn", "b", "e", "t"]:
         ts_axes.append(axes[axname])
