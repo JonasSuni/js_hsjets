@@ -5665,7 +5665,7 @@ def fig2():
     for ax in vdf_axes[:-1]:
         ax.set_xlim(-vlim_vdf, vlim_vdf)
         ax.set_ylim(-vlim_vdf, vlim_vdf)
-    for ax in cmap_axes[:-1]:
+    for ax in ts_axes:
         ax.label_outer()
 
     h, l = axes["vdf_xy"].get_legend_handles_labels()
