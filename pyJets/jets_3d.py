@@ -2527,6 +2527,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
     boxwidth = 4
     # fsaved = "yellow"
     fsaved = None
+    lw = 1
 
     fnr = int(vobj.read_parameter("time"))
 
@@ -2559,14 +2560,14 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         fsaved=fsaved,
         useimshow=True,
     )
-    cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=0.8, color="k")
-    cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=0.8, color="k")
+    cmap_axes[0].axvline(x0, linestyle="dashed", linewidth=lw, color="k")
+    cmap_axes[0].axhline(y0, linestyle="dashed", linewidth=lw, color="k")
     y_arr = np.linspace(y0 - boxwidth, y0 + boxwidth, 100)
     z_arr = np.ones_like(y_arr) * z0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
     ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * z0)
-    cmap_axes[0].plot(ms_x_of_y, y_arr, linewidth=0.8, color="k")
-    cmap_axes[0].plot(x_arr, y_arr, linewidth=0.8, color="red")
+    cmap_axes[0].plot(ms_x_of_y, y_arr, linewidth=lw, color="k")
+    cmap_axes[0].plot(x_arr, y_arr, linewidth=lw, color="red")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[1],
@@ -2592,14 +2593,14 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         fsaved=fsaved,
         useimshow=True,
     )
-    cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=0.8, color="k")
-    cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=0.8, color="k")
+    cmap_axes[1].axvline(x0, linestyle="dashed", linewidth=lw, color="k")
+    cmap_axes[1].axhline(z0, linestyle="dashed", linewidth=lw, color="k")
     z_arr = np.linspace(z0 - boxwidth, z0 + boxwidth, 100)
     y_arr = np.ones_like(z_arr) * y0
     x_arr = polyval_bs_at_time(fnr, y_arr, z_arr, ms=True)
     ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * y0, z_arr)
-    cmap_axes[1].plot(ms_x_of_z, z_arr, linewidth=0.8, color="k")
-    cmap_axes[1].plot(x_arr, z_arr, linewidth=0.8, color="red")
+    cmap_axes[1].plot(ms_x_of_z, z_arr, linewidth=lw, color="k")
+    cmap_axes[1].plot(x_arr, z_arr, linewidth=lw, color="red")
 
     pt.plot.plot_colormap3dslice(
         axes=cmap_axes[2],
@@ -2626,15 +2627,15 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         fsaved=fsaved,
         useimshow=True,
     )
-    cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=0.8, color="k")
-    cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=0.8, color="k")
+    cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=lw, color="k")
+    cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=lw, color="k")
     y_arr = np.linspace(y0 - boxwidth, y0 + boxwidth, 100)
     z_arr = z_arr = np.linspace(z0 - boxwidth, z0 + boxwidth, 100)
     ymesh, zmesh = np.meshgrid(y_arr, z_arr)
     xmesh = polyval_bs_at_time(fnr, ymesh, zmesh, ms=True)
     xmesh_raw = interpolator_ms(ymesh, zmesh)
-    cmap_axes[2].contour(ymesh, zmesh, xmesh_raw, [x0], linewidths=[0.8], colors=["k"])
-    cmap_axes[2].contour(ymesh, zmesh, xmesh, [x0], linewidths=[0.8], colors=["red"])
+    cmap_axes[2].contour(ymesh, zmesh, xmesh_raw, [x0], linewidths=[lw], colors=["k"])
+    cmap_axes[2].contour(ymesh, zmesh, xmesh, [x0], linewidths=[lw], colors=["red"])
 
 
 def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
