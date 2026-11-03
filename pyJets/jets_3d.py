@@ -5625,12 +5625,12 @@ def fig2():
     axes["cmap_xy"] = fig.add_subplot(gridspec[0:2, 5:7])
     axes["cmap_xz"] = fig.add_subplot(gridspec[2:4, 5:7])
     axes["cmap_yz"] = fig.add_subplot(gridspec[4:6, 5:7])
-    axes["cmap_cb"] = fig.add_axes((0.03 + 5.0 / 9, -0.01, 0.15, 0.01))
+    axes["cmap_cb"] = fig.add_axes((0.03 + 5.0 / 9 + 0.1, -0.01, 0.15, 0.01))
 
     axes["vdf_xy"] = fig.add_subplot(gridspec[0:2, 7:9])
     axes["vdf_xz"] = fig.add_subplot(gridspec[2:4, 7:9])
     axes["vdf_yz"] = fig.add_subplot(gridspec[4:6, 7:9])
-    axes["vdf_cb"] = fig.add_axes((0.24 + 5.0 / 9, -0.03, 0.15, 0.01))
+    axes["vdf_cb"] = fig.add_axes((0.24 + 5.0 / 9 + 0.1, -0.03, 0.15, 0.01))
 
     axes["rho"] = fig.add_subplot(gridspec[0:1, 0:5])
     axes["v"] = fig.add_subplot(gridspec[1:2, 0:5])
@@ -5667,7 +5667,7 @@ def fig2():
         ax.set_ylim(-vlim_vdf, vlim_vdf)
 
     h, l = axes["vdf_xy"].get_legend_handles_labels()
-    axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"])
+    axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
 
     fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
     fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
