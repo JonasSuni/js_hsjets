@@ -2645,16 +2645,16 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         "$v_x$",
         "$v_y$",
         "$v_z$",
-        None, #"$|v|$",
-        None, #"$P_\\mathrm{dyn}$",
+        None,  # "$|v|$",
+        None,  # "$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
-        None, #"$|B|$",
+        None,  # "$|B|$",
         "$E_x$",
         "$E_y$",
         "$E_z$",
-        None, #"$|E|$",
+        None,  # "$|E|$",
         "$T_\\parallel$",
         "$T_\\perp$",
     ]
@@ -5668,12 +5668,12 @@ def fig2():
         ax.set_ylim(-vlim_vdf, vlim_vdf)
     for ax in vdf_axes:
         ax.tick_params(labelsize=24)
-        ax.set_xlabel(ax.get_xlabel(),fontsize=24)
-        ax.set_ylabel(ax.get_ylabel(),fontsize=24)
+        ax.set_xlabel(ax.get_xlabel(), fontsize=24)
+        ax.set_ylabel(ax.get_ylabel(), fontsize=24)
     for ax in cmap_axes:
         ax.tick_params(labelsize=24)
-        ax.set_xlabel(ax.get_xlabel(),fontsize=24)
-        ax.set_ylabel(ax.get_ylabel(),fontsize=24)
+        ax.set_xlabel(ax.get_xlabel(), fontsize=24)
+        ax.set_ylabel(ax.get_ylabel(), fontsize=24)
     for ax in ts_axes:
         ax.label_outer()
 
