@@ -5677,13 +5677,15 @@ def fig2():
     for ax in ts_axes:
         ax.label_outer()
 
-    # axes["vdf_cb"].colorbar.set_label(
-    #     axes["vdf_cb"].colorbar.get_label(), size=24, loc="center"
-    # )
-    # axes["cmap_cb"].colorbar.set_label(
-    #     axes["cmap_cb"].colorbar.get_label(), size=24, loc="center"
-    # )
-    print(axes["vdf_yz"].images[-1].colorbar)
+    vdf_cb = axes["vdf_yz"].images[-1].colorbar
+    cmap_cb = axes["cmap_yz"].images[-1].colorbar
+
+    vdf_cb.set_label(
+        vdf_cb.get_label(), size=24, loc="center"
+    )
+    cmap_cb.set_label(
+        cmap_cb.get_label(), size=24, loc="center"
+    )
 
     # h, l = axes["vdf_xy"].get_legend_handles_labels()
     # axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
