@@ -2646,7 +2646,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         "$v_y$",
         "$v_z$",
         None, #"$|v|$",
-        "$P_\\mathrm{dyn}$",
+        None, #"$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
