@@ -5683,7 +5683,7 @@ def fig2():
     # axes["cmap_cb"].colorbar.set_label(
     #     axes["cmap_cb"].colorbar.get_label(), size=24, loc="center"
     # )
-    print(axes["vdf_yz"].images)
+    print(axes["vdf_yz"].images[-1])
 
     # h, l = axes["vdf_xy"].get_legend_handles_labels()
     # axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
