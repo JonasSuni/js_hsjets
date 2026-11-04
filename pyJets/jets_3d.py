@@ -2645,21 +2645,21 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         "$v_x$",
         "$v_y$",
         "$v_z$",
-        "$|v|$",
+        None, #"$|v|$",
         "$P_\\mathrm{dyn}$",
         "$B_x$",
         "$B_y$",
         "$B_z$",
-        "$|B|$",
+        None, #"$|B|$",
         "$E_x$",
         "$E_y$",
         "$E_z$",
-        "$|E|$",
+        None, #"$|E|$",
         "$T_\\parallel$",
         "$T_\\perp$",
     ]
     draw_legend = [
-        True,
+        False,
         False,
         False,
         False,
@@ -5611,7 +5611,7 @@ def fig2():
     plot_B_vdfs = False
     slicethick_g = 0
     calc_rel_dens_g = False
-    plot_gmm = 2
+    plot_gmm = None
 
     txtdir = wrkdir_DNR + "txts/timeseries/{}".format("")
     ts_data = np.loadtxt(
