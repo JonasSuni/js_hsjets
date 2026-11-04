@@ -5667,11 +5667,11 @@ def fig2():
         ax.set_xlim(-vlim_vdf, vlim_vdf)
         ax.set_ylim(-vlim_vdf, vlim_vdf)
     for ax in vdf_axes:
-        ax.tick_params(24)
+        ax.tick_params(labelsize=24)
         ax.set_xlabel(ax.get_xlabel(),fontsize=24)
         ax.set_ylabel(ax.get_ylabel(),fontsize=24)
     for ax in cmap_axes:
-        ax.tick_params(24)
+        ax.tick_params(labelsize=24)
         ax.set_xlabel(ax.get_xlabel(),fontsize=24)
         ax.set_ylabel(ax.get_ylabel(),fontsize=24)
     for ax in ts_axes:
