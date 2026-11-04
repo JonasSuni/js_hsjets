@@ -2719,7 +2719,7 @@ def generate_ts_plot(ts_axes, ts_data, ci, coords, t0, t1):
         fontsize=28,
         pad=20,
     )
-    ts_axes[-1].set_xlabel("t [s]", fontsize=24, labelpad=10)
+    ts_axes[-1].set_xlabel("$t$ [s]", fontsize=24, labelpad=10)
     for idx in range(len(plot_labels)):
         ax = ts_axes[plot_index[idx]]
         curr_lab = plot_labels[idx]
@@ -5666,6 +5666,14 @@ def fig2():
     for ax in vdf_axes[:-1]:
         ax.set_xlim(-vlim_vdf, vlim_vdf)
         ax.set_ylim(-vlim_vdf, vlim_vdf)
+    for ax in vdf_axes:
+        ax.tick_params(24)
+        ax.set_xlabel(ax.get_xlabel(),fontsize=24)
+        ax.set_ylabel(ax.get_ylabel(),fontsize=24)
+    for ax in cmap_axes:
+        ax.tick_params(24)
+        ax.set_xlabel(ax.get_xlabel(),fontsize=24)
+        ax.set_ylabel(ax.get_ylabel(),fontsize=24)
     for ax in ts_axes:
         ax.label_outer()
 
