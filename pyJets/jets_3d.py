@@ -5669,8 +5669,8 @@ def fig2():
     for ax in ts_axes:
         ax.label_outer()
 
-    h, l = axes["vdf_xy"].get_legend_handles_labels()
-    axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
+    # h, l = axes["vdf_xy"].get_legend_handles_labels()
+    # axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
 
     fig.savefig(outdir + "fig2.png".format(int(fnr)), dpi=300, bbox_inches="tight")
     fig.savefig(outdir + "fig2.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
