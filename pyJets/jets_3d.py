@@ -5680,12 +5680,8 @@ def fig2():
     vdf_cb = axes["vdf_yz"].images[-1].colorbar
     cmap_cb = axes["cmap_yz"].images[-1].colorbar
 
-    vdf_cb.set_label(
-        vdf_cb.get_label(), size=24, loc="center"
-    )
-    cmap_cb.set_label(
-        cmap_cb.get_label(), size=24, loc="center"
-    )
+    vdf_cb.set_label("$f(v)\\,[\\mathrm{m^{-5}\\,s^2}]$", size=24, loc="center")
+    cmap_cb.set_label("$P_\\mathrm{dyn}$ [nPa]", size=24, loc="center")
 
     # h, l = axes["vdf_xy"].get_legend_handles_labels()
     # axes["vdf_xy"].legend(handles=h, labels=["G1", "G2"], fontsize=20)
