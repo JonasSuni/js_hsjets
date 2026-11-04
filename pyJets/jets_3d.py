@@ -2420,6 +2420,7 @@ def generate_vdf_plots(vdf_axes, vobj, ci):
         contours=7,
         cbaxes=vdf_axes[3],
         cb_horizontal=True,
+        cbtitle="",
         title="",
         useimshow=True,
     )
@@ -2626,6 +2627,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         pass_vars=["vg_beta_star", "proton/vg_rho", "proton/vg_pdynx"],
         fsaved=fsaved,
         useimshow=True,
+        cbtitle="",
     )
     cmap_axes[2].axvline(y0, linestyle="dashed", linewidth=lw, color="k")
     cmap_axes[2].axhline(z0, linestyle="dashed", linewidth=lw, color="k")
