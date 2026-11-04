@@ -2611,7 +2611,7 @@ def generate_cmap_plots(cmap_axes, vobj, x0, y0, z0, limitedsize):
         vmax=2,
         lin=5,
         vscale=1e9,
-        cbtitle="$P_\\mathrm{dyn}$ [nPa]",
+        # cbtitle="$P_\\mathrm{dyn}$ [nPa]",
         usesci=0,
         boxre=[y0 - boxwidth, y0 + boxwidth, z0 - boxwidth, z0 + boxwidth],
         cbaxes=cmap_axes[3],
