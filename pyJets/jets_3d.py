@@ -5743,12 +5743,17 @@ def fig3():
             nocb=nocb[idx],
             title="",
             useimshow=True,
+            cbtitle="",
             cbaxes=cb_ax,
         )
         weights, means, covs = get_gmm_params(2, ci=ci, fnr=fnr)
         plot_ellipses(
             means, covs, weights, ax_list[idx], normals[idx], B, rho, leg=False
         )
+
+    vdf_cb = ax_list[2].images[-1].colorbar
+
+    vdf_cb.set_label("$f(v)\\,[\\mathrm{m^{-5}\\,s^2}]$", size=24, loc="center")
 
     fig.savefig(outdir + "fig3.png".format(int(fnr)), dpi=300, bbox_inches="tight")
     fig.savefig(outdir + "fig3.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
