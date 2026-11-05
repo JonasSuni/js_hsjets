@@ -5715,7 +5715,7 @@ def fig3():
     B = vobj.read_variable("vg_b_vol", cellids=ci)
     rho = vobj.read_variable("proton/vg_rho", cellids=ci)
 
-    fig, ax_list = plt.subplots(1, 3, figsize=(12, 5), layout="compressed")
+    fig, ax_list = plt.subplots(1, 3, figsize=(15, 6), layout="compressed")
     cb_ax = fig.add_axes((1.01, 0.25, 0.01, 0.6))
 
     boxwidth = 2500e3
@@ -5736,7 +5736,7 @@ def fig3():
             yz=cut_tuples[idx][2],
             slicethick=0,
             box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
-            scale=2.5,
+            scale=2,
             fmin=1e-10,
             fmax=1e-4,
             contours=7,
