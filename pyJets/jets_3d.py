@@ -5714,6 +5714,8 @@ def fig3():
     )
     B = vobj.read_variable("vg_b_vol", cellids=ci)
     rho = vobj.read_variable("proton/vg_rho", cellids=ci)
+    vbulk = vobj.read_variable("proton/vg_v", cellids=ci)
+    ttensor = vobj.read_variable("proton/vg_ttensor", cellids=ci)
 
     fig, ax_list = plt.subplots(1, 3, figsize=(15, 6), layout="compressed")
     cb_ax = fig.add_axes((1.01, 0.25, 0.01, 0.6))
@@ -5749,6 +5751,26 @@ def fig3():
         weights, means, covs = get_gmm_params(2, ci=ci, fnr=fnr)
         plot_ellipses(
             means, covs, weights, ax_list[idx], normals[idx], B, rho, leg=False
+        )
+
+        mean, width, height, angle, dens, Tpar, Tperp = ellipse_params(
+            1.0, vbulk, ttensor * kb / m_p, normals[idx], rho, B
+        )
+        ellipse = mpatches.Ellipse(
+            mean,
+            width,
+            height,
+            angle=angle,
+            edgecolor="k",
+            facecolor="none",
+            lw=2.5,
+        )
+        ax_list[idx].add_patch(ellipse)
+        ax_list[idx].plot(
+            mean[0],
+            mean[1],
+            "o",
+            color="k",
         )
 
     vdf_cb = ax_list[2].images[-1].colorbar
