@@ -5695,3 +5695,62 @@ def fig2():
     plt.close(fig)
 
     vlsvobj.optimize_clear_fileindex_for_cellid()
+
+
+def fig3():
+
+    ci = 159062320
+    coords = [12.478, -4.944, -3.532]
+    t0 = 885
+    t1 = 895
+    fnr = 890
+    outdir = wrkdir_DNR + "Figs/"
+
+    vobj = pt.vlsvfile.VlsvReader(
+        bulkpath_FIF + "bulk1.{}.vlsv".format(str(fnr).zfill(7))
+    )
+    B = vobj.read_variable("vg_b_vol", cellids=ci)
+    rho = vobj.read_variable("proton/vg_rho", cellids=ci)
+
+    fig, ax_list = plt.subplots(1, 3, figsize=(10, 6), layout="compressed")
+    cb_ax = fig.add_axes((1.01, 0.1, 0.01, 0.8))
+
+    boxwidth = 2500
+    cmap = "buda"
+    cut_tuples = [(1, None, None), (None, 1, None), (None, None, 1)]
+    nocb = [True, True, None]
+    normals = ["z", "y", "x"]
+
+    for idx in range(3):
+        pt.plot.plot_vdf(
+            axes=ax_list[idx],
+            vlsvobj=vobj,
+            cellids=[ci],
+            colormap=cmap,
+            bvector=1,
+            xy=cut_tuples[idx][0],
+            xz=cut_tuples[idx][1],
+            yz=cut_tuples[idx][2],
+            slicethick=0,
+            box=[-boxwidth, boxwidth, -boxwidth, boxwidth],
+            scale=1,
+            fmin=1e-10,
+            fmax=1e-4,
+            contours=7,
+            nocb=nocb[idx],
+            title="",
+            useimshow=True,
+            cbaxes=cb_ax,
+        )
+        weights, means, covs = get_gmm_params(2, ci=ci, fnr=fnr)
+        plot_ellipses(
+            means, covs, weights, ax_list[idx], normals[idx], B, rho, leg=False
+        )
+
+    fig.savefig(outdir + "fig3.png".format(int(fnr)), dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "fig3.pdf".format(int(fnr)), dpi=300, bbox_inches="tight")
+
+    print("Saved Figure 3")
+    plt.close(fig)
+
+    vobj.optimize_clear_fileindex_for_cellid()
