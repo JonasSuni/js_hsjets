@@ -5758,7 +5758,7 @@ def fig3():
         )
         print(mean, width, height, angle)
         ellipse = mpatches.Ellipse(
-            mean,
+            mean/1e3,
             width,
             height,
             angle=angle,
@@ -5768,8 +5768,8 @@ def fig3():
         )
         ax_list[idx].add_patch(ellipse)
         ax_list[idx].plot(
-            mean[0],
-            mean[1],
+            mean[0]/1e3,
+            mean[1]/1e3,
             "o",
             color="k",
         )
