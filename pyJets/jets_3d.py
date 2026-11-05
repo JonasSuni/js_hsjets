@@ -5706,6 +5706,9 @@ def fig3():
     fnr = 890
     outdir = wrkdir_DNR + "Figs/"
 
+    global plot_gmm
+    plot_gmm = 2
+
     vobj = pt.vlsvfile.VlsvReader(
         bulkpath_FIF + "bulk1.{}.vlsv".format(str(fnr).zfill(7))
     )
