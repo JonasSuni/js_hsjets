@@ -5754,19 +5754,19 @@ def fig3():
         )
 
         mean, width, height, angle, dens, Tpar, Tperp = ellipse_params(
-            1.0, vbulk/1e3, ttensor/1e6 * kb / m_p, normals[idx], rho, B
+            1.0, vbulk / 1e3, ttensor / 1e6 * kb / m_p, normals[idx], rho, B
         )
-        print(mean, width, height, angle)
-        ellipse = mpatches.Ellipse(
-            mean,
-            width,
-            height,
-            angle=angle,
-            edgecolor="k",
-            facecolor="none",
-            lw=2.5,
-        )
-        ax_list[idx].add_patch(ellipse)
+        # print(mean, width, height, angle)
+        # ellipse = mpatches.Ellipse(
+        #     mean,
+        #     width,
+        #     height,
+        #     angle=angle,
+        #     edgecolor="k",
+        #     facecolor="none",
+        #     lw=2.5,
+        # )
+        # ax_list[idx].add_patch(ellipse)
         ax_list[idx].plot(
             mean[0],
             mean[1],
