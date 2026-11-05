@@ -5718,7 +5718,7 @@ def fig3():
     fig, ax_list = plt.subplots(1, 3, figsize=(10, 6), layout="compressed")
     cb_ax = fig.add_axes((1.01, 0.1, 0.01, 0.8))
 
-    boxwidth = 2500
+    boxwidth = 2500e3
     cmap = "buda"
     cut_tuples = [(1, None, None), (None, 1, None), (None, None, 1)]
     nocb = [True, True, None]
