@@ -5756,6 +5756,7 @@ def fig3():
         mean, width, height, angle, dens, Tpar, Tperp = ellipse_params(
             1.0, vbulk, ttensor * kb / m_p, normals[idx], rho, B
         )
+        print(mean, width, height, angle)
         ellipse = mpatches.Ellipse(
             mean,
             width,
