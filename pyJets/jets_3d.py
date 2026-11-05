@@ -5754,11 +5754,11 @@ def fig3():
         )
 
         mean, width, height, angle, dens, Tpar, Tperp = ellipse_params(
-            1.0, vbulk, ttensor * kb / m_p, normals[idx], rho, B
+            1.0, vbulk/1e3, ttensor/1e6 * kb / m_p, normals[idx], rho, B
         )
         print(mean, width, height, angle)
         ellipse = mpatches.Ellipse(
-            mean/1e3,
+            mean,
             width,
             height,
             angle=angle,
@@ -5768,8 +5768,8 @@ def fig3():
         )
         ax_list[idx].add_patch(ellipse)
         ax_list[idx].plot(
-            mean[0]/1e3,
-            mean[1]/1e3,
+            mean[0],
+            mean[1],
             "o",
             color="k",
         )
