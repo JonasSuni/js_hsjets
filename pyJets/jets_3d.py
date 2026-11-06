@@ -5726,6 +5726,7 @@ def fig3():
     nocb = [True, True, None]
     normals = ["z", "y", "x"]
     pairs = [[0, 1], [0, 2], [1, 2]]
+    legs = [False, False, True]
 
     v_mean_bg = np.array([-209.68777133246522, 5.612694475979316, -104.75084904513882])
 
@@ -5775,13 +5776,20 @@ def fig3():
             mean[1],
             "o",
             color="k",
+            label="bulk",
         )
         ax_list[idx].plot(
             v_mean_bg[pairs[idx]][0],
             v_mean_bg[pairs[idx]][1],
             "o",
             color="red",
+            label="BG",
         )
+
+    ax_list[0].legend()
+
+    h, l = ax_list[0].get_legend_handles_labels()
+    ax_list[0].legend(handles=h, labels=["G1", "G2", l[2], l[3]], fontsize=20)
 
     vdf_cb = ax_list[2].images[-1].colorbar
 
