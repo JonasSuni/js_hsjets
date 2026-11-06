@@ -5778,7 +5778,7 @@ def fig3():
         )
         ax_list[idx].plot(
             v_mean_bg[pairs[idx]][0],
-            v_mean_bg[pairs[idx]][0],
+            v_mean_bg[pairs[idx]][1],
             "o",
             color="red",
         )
