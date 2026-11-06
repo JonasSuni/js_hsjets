@@ -5725,6 +5725,9 @@ def fig3():
     cut_tuples = [(1, None, None), (None, 1, None), (None, None, 1)]
     nocb = [True, True, None]
     normals = ["z", "y", "x"]
+    pairs = [[0, 1], [0, 2], [1, 2]]
+
+    v_mean_bg = np.array([-209.68777133246522, 5.612694475979316, -104.75084904513882])
 
     for idx in range(3):
         pt.plot.plot_vdf(
@@ -5772,6 +5775,12 @@ def fig3():
             mean[1],
             "o",
             color="k",
+        )
+        ax_list[idx].plot(
+            v_mean_bg[pairs[idx]][0],
+            v_mean_bg[pairs[idx]][0],
+            "o",
+            color="red",
         )
 
     vdf_cb = ax_list[2].images[-1].colorbar
