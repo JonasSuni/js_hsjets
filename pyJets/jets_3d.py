@@ -5776,20 +5776,20 @@ def fig3():
             mean[1],
             "o",
             color="k",
-            label="bulk",
+            label="$u(t_\\mathrm{max})$",
         )
         ax_list[idx].plot(
             v_mean_bg[pairs[idx]][0],
             v_mean_bg[pairs[idx]][1],
             "o",
             color="red",
-            label="BG",
+            label="$\\langle u \\rangle_\\mathrm{3\\,min}$",
         )
 
     ax_list[0].legend()
 
     h, l = ax_list[0].get_legend_handles_labels()
-    ax_list[0].legend(handles=h, labels=["G1", "G2", l[2], l[3]], fontsize=20, ncols=2)
+    ax_list[0].legend(handles=h, labels=["G1", "G2", l[2], l[3]], fontsize=16, ncols=2)
 
     vdf_cb = ax_list[2].images[-1].colorbar
 
