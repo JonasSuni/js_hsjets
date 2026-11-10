@@ -5804,3 +5804,262 @@ def fig3():
     plt.close(fig)
 
     vobj.optimize_clear_fileindex_for_cellid()
+
+
+def fig4():
+
+    cellid = 159062320
+    coords = [12.478, -4.944, -3.532]
+    t0 = 885
+    t1 = 895
+    runid = "FIF"
+    tstart = 890
+    outdir = wrkdir_DNR + "Figs/"
+    gmm = 2
+    plot_every = 10
+    trace_every = 1000
+    deterministic = True
+
+    vmax = 2000
+
+    if runid == "FIF":
+        extrafix = ""
+        bulkpath = bulkpath_FIF
+    elif runid == "FIL":
+        extrafix = "/FIL/"
+        bulkpath = bulkpath_FIL
+
+    vlsvobj = pt.vlsvfile.VlsvReader(
+        bulkpath + "bulk1.{}.vlsv".format(str(tstart).zfill(7))
+    )
+    x0, y0, z0 = vlsvobj.get_cell_coordinates(cellid) / r_e
+
+    indir = wrkdir_DNR + "traces/{}/tracking/{}_{}/".format(runid, cellid, tstart)
+    infiles = os.listdir(indir)
+    numin = len(infiles)
+
+    fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
+    state_range = np.arange(numin, dtype=int)
+    y_arr = np.linspace(-20, 20, 401)
+    z_arr = np.linspace(-20, 20, 401)
+
+    xhist = np.linspace(x0 - 5, x0 + 5, 1001, dtype=float)
+    yhist = np.linspace(y0 - 5, y0 + 5, 1001, dtype=float)
+    zhist = np.linspace(z0 - 5, z0 + 5, 1001, dtype=float)
+
+    vxhist = np.linspace(-vmax, vmax, 1001, dtype=float)
+
+    weights, means, covs = get_gmm_params(gmm, cellid, tstart)
+    for idx in range(gmm):
+        means[idx] *= 1e3
+        covs[idx] *= 1e6
+    mixture = GMM(gmm, weights, means, covs)
+    t0arr, x00, y00, z00, vx0, vy0, vz0 = np.loadtxt(
+        wrkdir_DNR + "traces/{}/samples/{}_{}.txt".format(runid, cellid, tstart),
+        delimiter=",",
+    ).T
+
+    varr = np.array([vx0, vy0, vz0]).T
+    latent = mixture.component_lottery(varr, deterministic=deterministic)[::plot_every]
+    latent_trace = mixture.component_lottery(varr, deterministic=deterministic)[
+        ::trace_every
+    ]
+
+    trace_data = np.zeros((latent_trace.size, numin, 3), dtype=float)
+
+    for idx in state_range:
+        x, y, z, vx, vy, vz = read_ptr2_file(
+            indir + "state.{}.ptr".format(str(idx).zfill(7))
+        )
+        trace_data[:, idx, 0] = x[::trace_every]
+        trace_data[:, idx, 1] = y[::trace_every]
+        trace_data[:, idx, 2] = z[::trace_every]
+
+    idx = state_range[-1]
+    fnr = tstart
+    x, y, z, vx, vy, vz = read_ptr2_file(
+        indir + "state.{}.ptr".format(str(idx).zfill(7))
+    )
+    meanx = np.nanmean(x) / r_e
+    meany = np.nanmean(y) / r_e
+    meanz = np.nanmean(z) / r_e
+    coeff_ms = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.bs.ms".format(fnr))
+    rawpoints_ms = np.loadtxt(
+        wrkdir_DNR + extrafix + "raw_bs_coords/{}.coords.ms".format(fnr)
+    )
+    interpolator_ms = LinearNDInterpolator(rawpoints_ms[:, 1:], rawpoints_ms[:, 0])
+    ms_x_of_y = interpolator_ms(y_arr, np.ones_like(z_arr) * coords[2])
+    ms_x_of_z = interpolator_ms(np.ones_like(y_arr) * coords[1], z_arr)
+    ms_x_of_y_fit = polyval_2d(coeff_ms, y_arr, np.ones_like(z_arr) * coords[2])
+    ms_x_of_z_fit = polyval_2d(coeff_ms, np.ones_like(y_arr) * coords[1], z_arr)
+
+    coeff_mp = np.loadtxt(wrkdir_DNR + extrafix + "bs_mp/{}.mp".format(fnr))
+    rawpoints_mp = np.loadtxt(
+        wrkdir_DNR + extrafix + "raw_mp_coords/{}.coords".format(fnr)
+    )
+    interpolator_mp = LinearNDInterpolator(rawpoints_mp[:, 1:], rawpoints_mp[:, 0])
+    mp_x_of_y = interpolator_mp(y_arr, np.ones_like(z_arr) * coords[2])
+    mp_x_of_z = interpolator_mp(np.ones_like(y_arr) * coords[1], z_arr)
+    mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * coords[2])
+    mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * coords[1], z_arr)
+
+    fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
+    ax_list = ax_list.flatten()
+
+    pt.plot.plot_colormap3dslice(
+        filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+        axes=ax_list[0],
+        var="vg_b_vol",
+        operator="z",
+        vmin=-5.1,
+        vmax=4.9,
+        colormap="vik",
+        lin=10,
+        # nocb=True,
+        normal="z",
+        title="",
+        # noxlabels=1,
+        # noylabels=1,
+        vscale=1e9,
+        usesci=False,
+        cutpointre=coords[2],
+    )
+
+    ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
+    ax_list[0].plot(ms_x_of_y_fit, y_arr, color="k", zorder=5)
+
+    ax_list[0].plot(mp_x_of_y, y_arr, color="red", zorder=4)
+    ax_list[0].plot(mp_x_of_y_fit, y_arr, color="k", zorder=5)
+
+    for idx in range(gmm):
+        mask = latent == idx
+        trace_mask = latent_trace == idx
+        ax_list[0].scatter(
+            x[::plot_every][mask] / r_e,
+            y[::plot_every][mask] / r_e,
+            marker=".",
+            color=CB_color_cycle[idx],
+            zorder=3,
+            label="Component {}".format(idx),
+            s=1,
+            alpha=0.5,
+        )
+        ax_list[2].scatter(
+            vx[::plot_every][mask] / 1e3,
+            vy[::plot_every][mask] / 1e3,
+            marker=".",
+            color=CB_color_cycle[idx],
+            zorder=3,
+            label="Component {}".format(idx),
+            s=1,
+            alpha=0.5,
+        )
+        ax_list[0].plot(
+            np.nanmean(x[::plot_every][mask] / r_e),
+            np.nanmean(y[::plot_every][mask] / r_e),
+            "o",
+            color=CB_color_cycle[idx],
+            edgecolor="black",
+            zorder=4,
+        )
+        for idx2 in range(latent_trace.size):
+            if not trace_mask[idx2]:
+                continue
+            ax_list[0].plot(
+                trace_data[idx2, :, 0] / r_e,
+                trace_data[idx2, :, 1] / r_e,
+                color=CB_color_cycle[idx],
+                linewidth=0.5,
+                zorder=4,
+            )
+
+    ax_list[0].legend(loc="upper right")
+
+    ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
+    ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
+
+    ax_list[1].plot(mp_x_of_z, z_arr, color="red", zorder=4)
+    ax_list[1].plot(mp_x_of_z_fit, z_arr, color="k", zorder=5)
+
+    pt.plot.plot_colormap3dslice(
+        filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
+        axes=ax_list[1],
+        var="vg_b_vol",
+        operator="z",
+        vmin=-5.1,
+        vmax=4.9,
+        colormap="vik",
+        lin=10,
+        # nocb=True,
+        normal="y",
+        title="",
+        # noxlabels=1,
+        # noylabels=1,
+        vscale=1e9,
+        usesci=False,
+        cutpointre=coords[1],
+    )
+
+    for idx in range(gmm):
+        mask = latent == idx
+        trace_mask = latent_trace == idx
+        ax_list[1].scatter(
+            x[::plot_every][mask] / r_e,
+            z[::plot_every][mask] / r_e,
+            marker=".",
+            color=CB_color_cycle[idx],
+            zorder=3,
+            label="Component {}".format(idx),
+            s=1,
+            alpha=0.5,
+        )
+        ax_list[3].scatter(
+            vx[::plot_every][mask] / 1e3,
+            vz[::plot_every][mask] / 1e3,
+            marker=".",
+            color=CB_color_cycle[idx],
+            zorder=3,
+            label="Component {}".format(idx),
+            s=1,
+            alpha=0.5,
+        )
+        ax_list[1].plot(
+            np.nanmean(x[::plot_every][mask] / r_e),
+            np.nanmean(z[::plot_every][mask] / r_e),
+            "o",
+            color=CB_color_cycle[idx],
+            edgecolor="black",
+            zorder=4,
+        )
+        for idx2 in range(latent_trace.size):
+            if not trace_mask[idx2]:
+                continue
+            ax_list[0].plot(
+                trace_data[idx2, :, 0] / r_e,
+                trace_data[idx2, :, 2] / r_e,
+                color=CB_color_cycle[idx],
+                linewidth=0.5,
+                zorder=4,
+            )
+
+    for ax in ax_list[:2]:
+        ax.grid()
+        ax.set_xlabel("X")
+        ax.set_xlim(x0 - 3, x0 + 3)
+        ax.set_title("t = {}s".format(fnr))
+    for ax in ax_list[2:]:
+        ax.grid()
+        ax.set_xlabel("vx")
+        ax.set_xlim(-vmax, vmax)
+        ax.set_ylim(-vmax, vmax)
+    ax_list[2].set_ylabel("vy")
+    ax_list[3].set_ylabel("vz")
+    ax_list[0].set_ylabel("Y")
+    ax_list[1].set_ylabel("Z")
+    ax_list[0].set_ylim(y0 - 3, y0 + 3)
+    ax_list[1].set_ylim(z0 - 3, z0 + 3)
+
+    fig.savefig(outdir + "fig4.png", dpi=300, bbox_inches="tight")
+    fig.savefig(outdir + "fig4.pdf", dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print("Plotted fig 4")
