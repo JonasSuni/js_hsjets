@@ -5959,7 +5959,7 @@ def fig4():
             np.nanmean(y[::plot_every][mask] / r_e),
             "o",
             color=CB_color_cycle[idx],
-            edgecolor="black",
+            markeredgecolor="black",
             zorder=4,
         )
         for idx2 in range(latent_trace.size):
@@ -6028,7 +6028,7 @@ def fig4():
             np.nanmean(z[::plot_every][mask] / r_e),
             "o",
             color=CB_color_cycle[idx],
-            edgecolor="black",
+            markeredgecolor="black",
             zorder=4,
         )
         for idx2 in range(latent_trace.size):
