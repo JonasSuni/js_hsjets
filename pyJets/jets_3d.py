@@ -5816,8 +5816,8 @@ def fig4():
     tstart = 890
     outdir = wrkdir_DNR + "Figs/"
     gmm = 2
-    plot_every = 10
-    trace_every = 1000
+    plot_every = 100
+    trace_every = 10000
     deterministic = True
 
     vmax = 2000
@@ -6034,7 +6034,7 @@ def fig4():
         for idx2 in range(latent_trace.size):
             if not trace_mask[idx2]:
                 continue
-            ax_list[0].plot(
+            ax_list[1].plot(
                 trace_data[idx2, :, 0] / r_e,
                 trace_data[idx2, :, 2] / r_e,
                 color=CB_color_cycle[idx],
