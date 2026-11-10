@@ -5923,6 +5923,7 @@ def fig4():
         vscale=1e9,
         usesci=False,
         cutpointre=coords[2],
+        useimshow=True,
     )
 
     ax_list[0].plot(ms_x_of_y, y_arr, color="red", zorder=4)
@@ -5998,6 +5999,7 @@ def fig4():
         vscale=1e9,
         usesci=False,
         cutpointre=coords[1],
+        useimshow=True,
     )
 
     for idx in range(gmm):
