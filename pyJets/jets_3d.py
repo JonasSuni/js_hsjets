@@ -6085,8 +6085,8 @@ def fig4():
     ax_list[0].set_ylim(y0 - 3, y0 + 3)
     ax_list[1].set_ylim(z0 - 3, z0 + 3)
 
-    lgnd.legendHandles[0]._sizes = [30]
-    lgnd.legendHandles[1]._sizes = [30]
+    lgnd.legend_handles[0]._sizes = [30]
+    lgnd.legend_handles[1]._sizes = [30]
 
     bz_cb = ax_list[1].images[-1].colorbar
     bz_cb.set_label("$B_z\\,[\\mathrm{nT}]$", size=24, loc="center")
