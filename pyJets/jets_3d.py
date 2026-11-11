@@ -5919,7 +5919,7 @@ def fig4():
     mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * coords[2])
     mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * coords[1], z_arr)
 
-    fig, ax_list = plt.subplots(1, 2, figsize=(12, 6), layout="compressed")
+    fig, ax_list = plt.subplots(1, 2, figsize=(15, 8), layout="compressed")
     ax_list = ax_list.flatten()
     cbax = fig.add_axes((1.01, 0.1, 0.01, 0.8))
 
@@ -5962,7 +5962,7 @@ def fig4():
             zorder=3,
             label="Component {}".format(idx),
             s=1,
-            alpha=0.5,
+            # alpha=0.5,
         )
         # ax_list[2].scatter(
         #     vx[::plot_every][mask] / 1e3,
@@ -5989,7 +5989,7 @@ def fig4():
                 trace_data[idx2, :, 0] / r_e,
                 trace_data[idx2, :, 1] / r_e,
                 color=CB_color_cycle[idx],
-                linewidth=0.5,
+                linewidth=1,
                 zorder=4,
             )
 
@@ -6036,7 +6036,7 @@ def fig4():
             zorder=3,
             label="Component {}".format(idx),
             s=1,
-            alpha=0.5,
+            # alpha=0.5,
         )
         # ax_list[3].scatter(
         #     vx[::plot_every][mask] / 1e3,
@@ -6063,7 +6063,7 @@ def fig4():
                 trace_data[idx2, :, 0] / r_e,
                 trace_data[idx2, :, 2] / r_e,
                 color=CB_color_cycle[idx],
-                linewidth=0.5,
+                linewidth=1,
                 zorder=4,
             )
 
