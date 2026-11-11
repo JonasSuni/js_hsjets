@@ -5919,8 +5919,9 @@ def fig4():
     mp_x_of_y_fit = polyval_2d(coeff_mp, y_arr, np.ones_like(z_arr) * coords[2])
     mp_x_of_z_fit = polyval_2d(coeff_mp, np.ones_like(y_arr) * coords[1], z_arr)
 
-    fig, ax_list = plt.subplots(2, 2, figsize=(12, 12), layout="compressed")
+    fig, ax_list = plt.subplots(1, 2, figsize=(12, 6), layout="compressed")
     ax_list = ax_list.flatten()
+    cbax = fig.add_axes((1.01, 0.2, 0.01, 0.6))
 
     pt.plot.plot_colormap3dslice(
         filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
@@ -5931,7 +5932,7 @@ def fig4():
         vmax=4.9,
         colormap="bam",
         lin=10,
-        # nocb=True,
+        nocb=True,
         normal="z",
         title="",
         # noxlabels=1,
@@ -5963,16 +5964,16 @@ def fig4():
             s=1,
             alpha=0.5,
         )
-        ax_list[2].scatter(
-            vx[::plot_every][mask] / 1e3,
-            vy[::plot_every][mask] / 1e3,
-            marker=".",
-            color=CB_color_cycle[idx],
-            zorder=3,
-            label="Component {}".format(idx),
-            s=1,
-            alpha=0.5,
-        )
+        # ax_list[2].scatter(
+        #     vx[::plot_every][mask] / 1e3,
+        #     vy[::plot_every][mask] / 1e3,
+        #     marker=".",
+        #     color=CB_color_cycle[idx],
+        #     zorder=3,
+        #     label="Component {}".format(idx),
+        #     s=1,
+        #     alpha=0.5,
+        # )
         ax_list[0].plot(
             np.nanmean(x[::plot_every][mask] / r_e),
             np.nanmean(y[::plot_every][mask] / r_e),
@@ -6012,6 +6013,8 @@ def fig4():
         # nocb=True,
         normal="y",
         title="",
+        cbtitle="",
+        cbaxes=cbax,
         # noxlabels=1,
         # noylabels=1,
         vscale=1e9,
@@ -6035,16 +6038,16 @@ def fig4():
             s=1,
             alpha=0.5,
         )
-        ax_list[3].scatter(
-            vx[::plot_every][mask] / 1e3,
-            vz[::plot_every][mask] / 1e3,
-            marker=".",
-            color=CB_color_cycle[idx],
-            zorder=3,
-            label="Component {}".format(idx),
-            s=1,
-            alpha=0.5,
-        )
+        # ax_list[3].scatter(
+        #     vx[::plot_every][mask] / 1e3,
+        #     vz[::plot_every][mask] / 1e3,
+        #     marker=".",
+        #     color=CB_color_cycle[idx],
+        #     zorder=3,
+        #     label="Component {}".format(idx),
+        #     s=1,
+        #     alpha=0.5,
+        # )
         ax_list[1].plot(
             np.nanmean(x[::plot_every][mask] / r_e),
             np.nanmean(z[::plot_every][mask] / r_e),
@@ -6069,17 +6072,21 @@ def fig4():
         ax.set_xlabel("X")
         ax.set_xlim(x0 - 3, x0 + 3)
         ax.set_title("t = {}s".format(fnr))
-    for ax in ax_list[2:]:
-        ax.grid()
-        ax.set_xlabel("vx")
-        ax.set_xlim(-vmax, vmax)
-        ax.set_ylim(-vmax, vmax)
-    ax_list[2].set_ylabel("vy")
-    ax_list[3].set_ylabel("vz")
+    # for ax in ax_list[2:]:
+    #     ax.grid()
+    #     ax.set_xlabel("vx")
+    #     ax.set_xlim(-vmax, vmax)
+    #     ax.set_ylim(-vmax, vmax)
+    # ax_list[2].set_ylabel("vy")
+    # ax_list[3].set_ylabel("vz")
     ax_list[0].set_ylabel("Y")
     ax_list[1].set_ylabel("Z")
     ax_list[0].set_ylim(y0 - 3, y0 + 3)
     ax_list[1].set_ylim(z0 - 3, z0 + 3)
+
+    bz_cb = ax_list[1].images[-1].colorbar
+    bz_cb.set_label("$B_z\\,[\\mathrm{nT}]$", size=24, loc="center")
+    cbax.tick_params(labelsize=20)
 
     fig.savefig(outdir + "fig4.png", dpi=300, bbox_inches="tight")
     fig.savefig(outdir + "fig4.pdf", dpi=300, bbox_inches="tight")
