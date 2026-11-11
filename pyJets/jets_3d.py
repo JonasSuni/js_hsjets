@@ -5952,7 +5952,7 @@ def fig4():
         mask = latent == idx
         trace_mask = latent_trace == idx
         trace_num = np.sum(trace_mask.astype(int))
-        trace_stride = trace_num // trace_tot
+        trace_stride = trace_num // trace_tot + 1
         ax_list[0].scatter(
             x[::plot_every][mask] / r_e,
             y[::plot_every][mask] / r_e,
@@ -6024,7 +6024,7 @@ def fig4():
         mask = latent == idx
         trace_mask = latent_trace == idx
         trace_num = np.sum(trace_mask.astype(int))
-        trace_stride = trace_num // trace_tot
+        trace_stride = trace_num // trace_tot + 1
         ax_list[1].scatter(
             x[::plot_every][mask] / r_e,
             z[::plot_every][mask] / r_e,
