@@ -5921,7 +5921,7 @@ def fig4():
 
     fig, ax_list = plt.subplots(1, 2, figsize=(12, 6), layout="compressed")
     ax_list = ax_list.flatten()
-    cbax = fig.add_axes((1.01, 0.2, 0.01, 0.6))
+    cbax = fig.add_axes((1.01, 0.1, 0.01, 0.8))
 
     pt.plot.plot_colormap3dslice(
         filename=bulkpath + "bulk1.{}.vlsv".format(str(fnr).zfill(7)),
@@ -6069,9 +6069,10 @@ def fig4():
 
     for ax in ax_list[:2]:
         ax.grid()
-        ax.set_xlabel("X")
+        ax.set_xlabel("X", fontsize=20)
         ax.set_xlim(x0 - 3, x0 + 3)
-        ax.set_title("t = {}s".format(fnr))
+        ax.set_title("t = {}s".format(fnr), fontsize=24)
+        ax.tick_params(labelsize=20)
     # for ax in ax_list[2:]:
     #     ax.grid()
     #     ax.set_xlabel("vx")
@@ -6079,8 +6080,8 @@ def fig4():
     #     ax.set_ylim(-vmax, vmax)
     # ax_list[2].set_ylabel("vy")
     # ax_list[3].set_ylabel("vz")
-    ax_list[0].set_ylabel("Y")
-    ax_list[1].set_ylabel("Z")
+    ax_list[0].set_ylabel("Y", fontsize=20)
+    ax_list[1].set_ylabel("Z", fontsize=20)
     ax_list[0].set_ylim(y0 - 3, y0 + 3)
     ax_list[1].set_ylim(z0 - 3, z0 + 3)
 
