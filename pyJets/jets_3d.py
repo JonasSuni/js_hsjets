@@ -5838,10 +5838,12 @@ def fig4():
     infiles = os.listdir(indir)
     numin = len(infiles)
 
-    indir_detailed = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}/bw/".format(runid, cellid, tstart)
+    indir_detailed = wrkdir_DNR + "traces/{}/detailed_tracking/{}_{}/bw/".format(
+        runid, cellid, tstart
+    )
     infiles_detailed = os.listdir(indir_detailed)
     numin_detailed = len(infiles_detailed)
-    state_range_detailed = np.arange(numin_detailed,dtype=int)
+    state_range_detailed = np.arange(numin_detailed, dtype=int)
 
     fnr_range = np.arange(tstart - numin + 1, tstart + 1, dtype=int)[::-1]
     state_range = np.arange(numin, dtype=int)
@@ -5868,16 +5870,17 @@ def fig4():
     latent = mixture.component_lottery(varr, deterministic=deterministic)[::plot_every]
 
     mixture_detailed = GMM(gmm, weights, means, covs)
-    t0arr,x00,y00,z00,vx0_detailed,vy0_detailed,vz0_detailed = np.loadtxt(
-        wrkdir_DNR + "traces/{}/detailed_samples/{}_{}.txt".format(runid, cellid, tstart),
+    t0arr, x00, y00, z00, vx0_detailed, vy0_detailed, vz0_detailed = np.loadtxt(
+        wrkdir_DNR
+        + "traces/{}/detailed_samples/{}_{}.txt".format(runid, cellid, tstart),
         delimiter=",",
     ).T
     varr_detailed = np.array([vx0_detailed, vy0_detailed, vz0_detailed]).T
-    latent_trace = mixture_detailed.component_lottery(varr_detailed, deterministic=deterministic)[
-        ::trace_every
-    ]
+    latent_trace = mixture_detailed.component_lottery(
+        varr_detailed, deterministic=deterministic
+    )[::trace_every]
 
-    trace_data = np.zeros((latent_trace.size, numin, 3), dtype=float)
+    trace_data = np.zeros((latent_trace.size, numin_detailed, 3), dtype=float)
 
     for idx in state_range_detailed:
         x, y, z, vx, vy, vz = read_ptr2_file(
