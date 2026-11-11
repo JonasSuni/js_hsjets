@@ -5819,6 +5819,7 @@ def fig4():
     plot_every = 100
     trace_every = 200
     deterministic = True
+    trace_stride = 32
 
     vmax = 2000
 
@@ -5983,8 +5984,8 @@ def fig4():
             if not trace_mask[idx2]:
                 continue
             ax_list[0].plot(
-                trace_data[idx2, :, 0][:: (trace_num // 100) + 1] / r_e,
-                trace_data[idx2, :, 1][:: (trace_num // 100) + 1] / r_e,
+                trace_data[idx2, :, 0][:: (trace_num // trace_stride) + 1] / r_e,
+                trace_data[idx2, :, 1][:: (trace_num // trace_stride) + 1] / r_e,
                 color=CB_color_cycle[idx],
                 linewidth=0.5,
                 zorder=4,
@@ -6054,8 +6055,8 @@ def fig4():
             if not trace_mask[idx2]:
                 continue
             ax_list[1].plot(
-                trace_data[idx2, :, 0][:: (trace_num // 100) + 1] / r_e,
-                trace_data[idx2, :, 2][:: (trace_num // 100) + 1] / r_e,
+                trace_data[idx2, :, 0][:: (trace_num // trace_stride) + 1] / r_e,
+                trace_data[idx2, :, 2][:: (trace_num // trace_stride) + 1] / r_e,
                 color=CB_color_cycle[idx],
                 linewidth=0.5,
                 zorder=4,
