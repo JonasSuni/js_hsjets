@@ -5976,7 +5976,7 @@ def fig4():
             "o",
             color=CB_color_cycle[idx],
             markeredgecolor="black",
-            zorder=4,
+            zorder=5,
         )
         for idx2 in range(latent_trace.size):
             if not trace_mask[idx2]:
@@ -6046,7 +6046,7 @@ def fig4():
             "o",
             color=CB_color_cycle[idx],
             markeredgecolor="black",
-            zorder=4,
+            zorder=5,
         )
         for idx2 in range(latent_trace.size):
             if not trace_mask[idx2]:
