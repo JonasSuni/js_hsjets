@@ -5993,7 +5993,7 @@ def fig4():
                 zorder=4,
             )
 
-    ax_list[0].legend(loc="upper right")
+    ax_list[0].legend(loc="upper right", fontsize=20)
 
     ax_list[1].plot(ms_x_of_z, z_arr, color="red", zorder=4)
     ax_list[1].plot(ms_x_of_z_fit, z_arr, color="k", zorder=5)
