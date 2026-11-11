@@ -5960,7 +5960,7 @@ def fig4():
             marker=".",
             color=CB_color_cycle[idx],
             zorder=3,
-            label="Component {}".format(idx),
+            label="G{}".format(idx),
             s=1,
             # alpha=0.5,
         )
@@ -6034,7 +6034,7 @@ def fig4():
             marker=".",
             color=CB_color_cycle[idx],
             zorder=3,
-            label="Component {}".format(idx),
+            label="G{}".format(idx),
             s=1,
             # alpha=0.5,
         )
