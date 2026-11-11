@@ -5819,7 +5819,7 @@ def fig4():
     plot_every = 100
     trace_every = 200
     deterministic = True
-    trace_stride = 32
+    trace_tot = 100
 
     vmax = 2000
 
@@ -5952,6 +5952,7 @@ def fig4():
         mask = latent == idx
         trace_mask = latent_trace == idx
         trace_num = np.sum(trace_mask.astype(int))
+        trace_stride = trace_num // trace_tot
         ax_list[0].scatter(
             x[::plot_every][mask] / r_e,
             y[::plot_every][mask] / r_e,
@@ -5981,11 +5982,11 @@ def fig4():
             zorder=5,
         )
         for idx2 in range(latent_trace.size):
-            if not trace_mask[idx2]:
+            if not trace_mask[idx2] or idx2 % trace_stride != 0:
                 continue
             ax_list[0].plot(
-                trace_data[idx2, :, 0][:: (trace_num // trace_stride) + 1] / r_e,
-                trace_data[idx2, :, 1][:: (trace_num // trace_stride) + 1] / r_e,
+                trace_data[idx2, :, 0] / r_e,
+                trace_data[idx2, :, 1] / r_e,
                 color=CB_color_cycle[idx],
                 linewidth=0.5,
                 zorder=4,
@@ -6023,6 +6024,7 @@ def fig4():
         mask = latent == idx
         trace_mask = latent_trace == idx
         trace_num = np.sum(trace_mask.astype(int))
+        trace_stride = trace_num // trace_tot
         ax_list[1].scatter(
             x[::plot_every][mask] / r_e,
             z[::plot_every][mask] / r_e,
@@ -6052,11 +6054,11 @@ def fig4():
             zorder=5,
         )
         for idx2 in range(latent_trace.size):
-            if not trace_mask[idx2]:
+            if not trace_mask[idx2] or idx2 % trace_stride != 0:
                 continue
             ax_list[1].plot(
-                trace_data[idx2, :, 0][:: (trace_num // trace_stride) + 1] / r_e,
-                trace_data[idx2, :, 2][:: (trace_num // trace_stride) + 1] / r_e,
+                trace_data[idx2, :, 0] / r_e,
+                trace_data[idx2, :, 2] / r_e,
                 color=CB_color_cycle[idx],
                 linewidth=0.5,
                 zorder=4,
