@@ -5817,7 +5817,7 @@ def fig4():
     outdir = wrkdir_DNR + "Figs/"
     gmm = 2
     plot_every = 100
-    trace_every = 1000
+    trace_every = 200
     deterministic = True
 
     vmax = 2000
