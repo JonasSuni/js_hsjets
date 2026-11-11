@@ -5819,7 +5819,7 @@ def fig4():
     plot_every = 100
     trace_every = 200
     deterministic = True
-    trace_tot = 100
+    trace_tot = 32
 
     vmax = 2000
 
@@ -5929,7 +5929,7 @@ def fig4():
         operator="z",
         vmin=-5.1,
         vmax=4.9,
-        colormap="vik",
+        colormap="bam",
         lin=10,
         # nocb=True,
         normal="z",
@@ -6007,7 +6007,7 @@ def fig4():
         operator="z",
         vmin=-5.1,
         vmax=4.9,
-        colormap="vik",
+        colormap="bam",
         lin=10,
         # nocb=True,
         normal="y",
